@@ -1,0 +1,548 @@
+---
+title: "Deploy 3D visual obstacle avoidance"
+description: "Deploy and configure MRDVS S Series ToF cameras for real-time 3D obstacle avoidance."
+---
+## 1. Overview
+
+Visual obstacle avoidance is based on Meyer Micro Vision's self-developed S series cameras and RGBD cameras based on the TOF principle. It integrates deep learning and traditional 3D vision algorithms to create an obstacle avoidance system that is suitable for rich scenes, accurate, real-time, single-machine configurable, multi-machine collaborative, and has a certain degree of initiative and predictability.
+
+The system has the following characteristics: real-time dynamic detection, adaptive ground detection, dynamic tracking of detection targets, supports multiple signal outputs, supports multiple mode switching, can support 5 modes, and supports multi-machine collaborative work.
+
+## 2. Camera installation and selection
+
+### 2.1 Underride AMR
+
+As shown in the figure below, the camera of the lurking vehicle is installed relatively low. It is recommended to use the S10 series camera, which is installed on the front surface of the lurking vehicle in the direction of movement. When designing the structure, pay attention to avoiding interference with the field of view.
+
+<Frame>
+  <img src="/images/legacy/2113c3b1-8f9d-41f4-ba4f-41d0f64ffc71/d803278d-67a2-4a78-a7ca-72e86b149803.avif" alt="Figure 2.1 Lurking car" />
+</Frame>
+
+### 2.2 Forklift
+
+As shown in Figure 2.2, the smart forklift camera is installed relatively high. It is recommended to use the S10 series camera, which is installed on the forklift mast camera at an angle of 30°-55° downward, so that the edge of the camera's field of view is just on the front surface of the forklift. It is recommended that the camera installation height should not be higher than 2m.
+
+<Frame>
+  <img src="/images/legacy/df29f779-2887-4494-8cd5-66a35fcbb05f/4d1053b7-cf49-4285-9a5e-232eef95b067.avif" alt="Figure 2.2 Forklift" />
+</Frame>
+
+## 3. Camera connection settings
+
+1. Before connecting the camera, you need to operate the following settings. The factory IP of the camera is 192.168.100.82. Before connecting, you need to set the local network port IP to the same network segment, as shown in Figure 3.1.
+
+<Frame>
+  <img src="/images/legacy/616df060-87e3-4812-8831-66b833e1f280/9aa43694-2c5f-456e-9552-c344b873acb4.avif" alt="Figure 3.1 IP settings closed" />
+</Frame>
+
+2. Set the firewall to off, as shown in Figure 3.2.
+
+<Frame>
+  <img src="/images/legacy/ccd4abae-1a00-4de4-b597-418920f24dca/99c52d00-ab91-4390-a1d5-ab1ef334f411.avif" alt="Figure 3.2 Firewall closed" />
+</Frame>
+
+3. If you need to modify the camera IP, you can open the "**LxCameraViewer**" PC software, click "**Other Tools**", network related → IP configuration tool → click on the IP address to modify, press Enter and click to confirm the modification. After the modification is completed, the camera will automatically restart and reconnect.
+
+<Frame>
+  <img src="/images/legacy/320b027b-2988-458f-9900-cbef3a254247/a3701254-2b0f-48f9-a359-fff2f50a84b3.avif" alt="Illustrations related to camera connection settings 3" />
+</Frame>
+
+4. You can check whether the IP has been modified successfully through the status bar in the lower left corner. If you are on a different network segment, you need to modify the local IP before reconnecting to the camera.
+
+<Frame>
+  <img src="/images/legacy/26fef8c4-ff64-4fcc-a9b3-974d68c3a90d/d0d23fb7-fe18-4d75-9c7c-ff87020690d9.avif" alt="Illustrations related to camera connection settings 4" />
+</Frame>
+
+5. Open the pre-installed host computer software LxCameraViewer. The host computer software automatically retrieves the camera under the current network segment. Clicking to open the camera will automatically open the depth map and point cloud image, as shown in Figure 3.3.
+
+<Frame>
+  <img src="/images/legacy/5565c511-bef1-4ae7-a803-6e2cd4b2ea1a/772be638-3857-41bc-9055-f88086a49b5d.avif" alt="Figure 3.3 PC software display" />
+</Frame>
+
+6. After opening the camera, expand the 3D settings and filter settings to adjust the camera parameters. The recommended configuration parameters for obstacle avoidance applications are **high exposure 650, low exposure 200, filter settings and low signal thresholds recommended to be set to 10-20 (the S10 series only needs to set the glare level to 1, and the exposure, low signal threshold, etc. do not need to be set)**. For other installation and parameter configurations for unconventional models, it is recommended to communicate with Meyer Micro Vision technical support personnel.
+
+<Frame>
+  <img src="/images/legacy/e8dd9101-6ed2-4bc7-b001-24186895e11f/056ee982-803d-4f8f-85bc-383de72655a2.avif" alt="Illustrations related to camera connection settings 6" />
+</Frame>
+
+## 4. Obstacle avoidance parameter configuration
+
+1. After completing the above camera parameter settings, click the Apply Algorithm button. The algorithm setting item will pop up in the status bar on the right. Set it to the normally open mode according to the application. The S10 camera application algorithm needs to select [Obstacle Avoidance Algorithm]. For other cameras, you need to select [Obstacle Avoidance Algorithm 2.0], and the algorithm version number is displayed below. The S10 camera does not support the use of sector-shaped obstacle avoidance area types, which may cause deviations in obstacle avoidance results.
+
+<Frame>
+  <img src="/images/legacy/4777637e-6cfe-456f-9ca7-fc2d4b4146f7/46274569-4a2d-429a-a270-1f561e8b2a63.avif" alt="Illustrations related to obstacle avoidance parameter configuration" />
+</Frame>
+
+2. The rectangular obstacle avoidance area and the fan-shaped obstacle avoidance area are shown in Figure 4.1.
+
+<Frame>
+  <img src="/images/legacy/75f84757-7045-4504-9742-e49c74d38889/f6daa1cb-71af-46bf-b501-0cb503ff01ea.avif" alt="Obstacle avoidance parameter configuration related diagram 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a01278e9-15ec-436b-a9ed-62dedce4db2e/856adc1f-bbde-47e2-a750-33e72a921d54.avif" alt="Obstacle avoidance parameter configuration related diagram 3" />
+</Frame>
+
+Figure 4.1 Rectangular obstacle avoidance area and fan-shaped obstacle avoidance area
+
+3. As shown in Figure 4.2, the obstacle avoidance parameters are divided into the camera installation external parameters and the obstacle avoidance area configuration parameters. After the camera external parameter configuration is completed and the settings are completed, the other four configuration areas are automatically updated to the current external parameters.
+
+Among them, the S2/S2 Max2.0 camera can switch between four sets of obstacle avoidance area configuration 0, configuration 1, configuration 2, and configuration 3 through IO.
+
+Up to 20 groups of obstacle avoidance areas can be switched through SDK / UDP / RS485, which can be switched according to the car's operation scenario. For example, when the car moves to a narrow channel, it can be switched to a narrow channel configuration, and when the car moves to a wide channel, it can be switched to a wide channel configuration.
+
+<Frame>
+  <img src="/images/legacy/e45aed16-cda9-48cd-91b0-eb9b14dd4996/381adb42-b038-401f-a1a3-e6d438b64c5f.avif" alt="Obstacle avoidance parameter configuration related diagram 4" />
+</Frame>
+
+## 5. External parameter settings
+
+### 5.1 Parameter description
+
+| Parameter item | Parameter value | Description |
+| --- | --- | --- |
+| Obstacle avoidance function | | Switch different obstacle avoidance parameters by setting different modes |
+| Camera angle Roll (x-axis) | 180 | Camera external parameters, pitch angle roll, the default camera is 180 |
+| Camera angle Pitch (y-axis) | 90 | Camera external parameter, roll angle pitch, the default is vertical installation, which is 90 |
+| Camera angle Yaw (z-axis) | 90 | Camera external parameters, heading angle yaw, default is 90 |
+| Camera position (distance x) | 430 | The distance between the front and rear of the camera in the X direction and the front and rear distance of the AMR in the view, unit: mm. |
+| Camera position (width y) | 0 | The left and right distance of the camera in the y direction from the AMR in the view. If installed in the middle, it is 0. Unit: mm. |
+| Camera position (height z) | 120 | The camera installation height parameter is the height of the camera from the ground. Unit: mm. |
+
+### 5.2 Parameter settings
+
+For example, when the camera is installed on the front surface of the AGV, close other images and only use point cloud images to debug camera parameters. Prioritize the camera installation height. After fine-tuning the roll angle RX, adjust the roll angle to horizontal, then adjust the pitch angle RY. After adjusting the effect to the effect shown in the figure below, click "**Send Parameters**", and the camera installation external parameters will be synchronized to other configurations.
+
+<Frame>
+  <img src="/images/legacy/da147810-37df-42ef-a56c-582790c66e41/b89815fa-fd77-452d-a8f8-3ec9180d9544.avif" alt="Illustrations related to parameter settings" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/b8f949cb-62e8-414d-98a9-c44a463f5b67/9e6574f0-4eb3-4fd1-9d33-af87ca067cbc.avif" alt="Illustrations related to parameter setting 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6aa95f32-ffd6-495d-aaf4-b1b0319edf07/0a556ebd-5ebb-45ea-841e-f4710776ecd9.avif" alt="Illustrations related to parameter setting 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6d8661c4-f56b-4480-8fdc-6ba45f4b87b9/956d5953-d011-481a-99b8-2199658fa193.avif" alt="Illustrations related to parameter setting 4" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5ec21f8c-bffe-4026-be4a-823625c1b39f/2454e37b-650e-413e-8849-9776ed708b75.avif" alt="Illustrations related to parameter setting 5" />
+</Frame>
+
+## 6. Obstacle avoidance area setting
+
+### 6.1 Zone parameter reference
+
+<Frame>
+  <img src="/images/legacy/cbe6b898-926a-43a4-9e5e-8fb984fcba7d/34531a14-4faa-488d-bc64-7ac0102eac10.avif" alt="Illustrations related to regional parameter descriptions" />
+</Frame>
+
+| Parameter name | Value | Parameter definition |
+| --- | --- | --- |
+| Early warning distance (x far) | 2000 | Obstacle avoidance range, the distance from the center of the car in the Unit: mm |
+| Alarm distance (x middle) | 1500 | Obstacle avoidance range, the distance from the center of the car in the Unit: mm. |
+| Shielding distance (x near) | 600 | Shielding range, the x direction is lower than the shielding distance x (near), it is a blind area, and obstacles cannot be avoided in this area. Unit: mm. |
+| Obstacle avoidance range left (y left) | -810 | Obstacle avoidance range, the distance from the left side of the y direction to the center of the car. Unit: mm. |
+| Obstacle avoidance range right (y right) | 1270 | Obstacle avoidance range, the distance from the right side of the y direction to the center of the car. Unit: mm. |
+| Obstacle avoidance range (under z) | 10 | Obstacle avoidance range, height from the ground. No processing will be performed below this height. If the setting is too small, false alarms may occur due to ranging errors; if the setting is too large, large obstacles on the ground may be filtered out, resulting in false alarms. Unit: mm. |
+| Obstacle avoidance height (z up) | 1500 | Obstacle avoidance range, height from the ground, heights higher than this will not be processed. Unit: mm. |
+
+### 6.2 Obstacle avoidance area setting
+
+1. The current obstacle avoidance application has 20 groups of built-in obstacle avoidance areas. Users can configure the obstacle avoidance area after completing the camera parameter configuration. When the AMR moves to different obstacle avoidance ranges, switch the configuration area to control the obstacle avoidance range (IO: four groups of obstacle avoidance areas 0, 1, 2, and 3 can be switched, and 20 groups can be switched for UDP, 485, API, and CAN).
+
+- Early warning distance (X far): indicates the camera early warning (deceleration) obstacle avoidance range of 2300, that is, early warning distance 2300 - camera position 430 = 1870mm, as shown in Figure 6.1.
+
+- Alarm distance (in
+
+- Shielding distance (X close): Indicates the camera shielding range, that is, shielding distance 450-camera position 430=20mm, as shown in Figure 6.1.
+
+<Frame>
+  <img src="/images/legacy/4519dd9a-acbb-4e8e-84e6-8161d406964b/c6a73f89-55f2-4dba-837f-215c8e7422e1.avif" alt="Illustrations related to obstacle avoidance area settings" />
+</Frame>
+
+Figure 6.1 Warning distance picture
+
+- Obstacle avoidance range left (y left): Indicates that the camera detects obstacles within a range of -500mm to the left of the obstacle avoidance camera, as shown in Figure 6.2.
+
+- Obstacle avoidance range left (yright): indicates that the camera detects obstacles within a range of 500mm to the right of the obstacle avoidance camera, as shown in Figure 6.2.
+
+<Frame>
+  <img src="/images/legacy/66455b6e-2c49-4387-bae4-d1e60d4364ec/0c081553-64f1-482a-b982-1145ad687df4.avif" alt="Illustrations related to obstacle avoidance area setting 2" />
+</Frame>
+
+Figure 6.2 Picture of obstacle avoidance range
+
+- Obstacle avoidance height (Z below): Indicates the detection of obstacles within 10mm below the ground at the installation height, as shown in Figure 6.3.
+
+- Obstacle avoidance height (Z top): Indicates that the camera detects obstacles within a range of 500mm above the ground, as shown in Figure 6.3.
+
+<Frame>
+  <img src="/images/legacy/bb805708-d45d-41d9-8f5e-8197b63c6b0d/8ea1a9c6-e585-4567-b8da-ac4708637026.avif" alt="Illustrations related to obstacle avoidance area setting 3" />
+</Frame>
+
+Figure 6.3 Obstacle avoidance height picture
+
+2. Obstacle avoidance output:
+
+- Indicates normal and no obstacles
+
+- Indicates that obstacles are detected in the warning area (within the yellow box)
+
+- Indicates that obstacles are detected in the alarm area (within the red box)
+
+3. After using the host computer to configure parameters according to the above process, you can go to the software installation path \\Tools\\params\\ and the current camera ID\\avoidance.json to back up the avoidance.json file and quickly synchronize the obstacle avoidance parameters for different cameras: After turning on the camera, execute "Load configuration from file", select the backed up avoidance.json file and wait for the setting to be completed.
+
+<Frame>
+  <img src="/images/legacy/5d0604b8-8852-49f2-b3b4-cc268f47f6d6/74e7e96b-e2cb-4c66-85ac-13083d78e2c7.avif" alt="Illustrations related to obstacle avoidance area setting 4" />
+</Frame>
+
+## 7. Communication method
+
+1. Before understanding or using various communication methods, **you must use the host computer we provide to configure the contents of the obstacle avoidance parameters one by one** before you can use **non-API communication methods** to switch different obstacle avoidance parameters. **Note:**
+
+**① Some communication protocols are unique to a certain model, such as RS485 communication is unique to M4Pro; **
+
+② When using but not limited to the API method to obtain obstacle avoidance results, it is recommended to first confirm whether the obstacle avoidance configuration is switched successfully, that is, first query the current obstacle avoidance configuration area number;
+
+③ Use UDP and CAN obstacle avoidance communication methods to check the obstacle avoidance area. For details, see the detailed introduction of each communication method.
+
+<Frame>
+  <img src="/images/legacy/db6c3d37-ba35-439f-9cb2-a844323e0d93/668b983c-c6a4-492d-a676-f4de871c62b1.avif" alt="Illustrations related to communication methods" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/eaa2b8fd-e8aa-419d-87d3-4f3fe27bac32/044bd51a-61c8-4a52-af64-dc9cba9d38cd.avif" alt="Illustrations related to communication methods 2" />
+</Frame>
+
+2. All obstacle avoidance related parameters of S2 Max/S10 pro can be set through the host computer and API provided by us, but for other communication methods (IO / UDP / CAN / 485), only the obstacle avoidance parameter index can be modified. The obstacle avoidance related parameters of S10 can be set through the host computer provided by us, but all communication methods are limited to modifying the obstacle avoidance parameter index.
+
+| Camera type | Supported obstacle avoidance module communication methods |
+| --- | --- |
+| S2 | API、UDP、IO |
+| S2Max | API、UDP、CAN |
+| S2Max V2.0 | API、UDP、IO、CAN |
+| M4Pro | API、UDP、RS485 |
+| M4 | API、UDP、CAN |
+| M4 Mega | API、UDP、IO、CAN |
+
+| Camera type | Obstacle avoidance parameter index modification | Obstacle avoidance detailed parameter settings support modification |
+| --- | --- | --- |
+| S2 | All communication methods can be modified | Can only be modified using the host computer we provide |
+| S2 Max, S2 Max2.0, M4, M4Pro, M4 Mega | All communication methods can be modified | Only the host computer and API can be modified |
+
+**Note: Obstacle avoidance parameter index** refers to the parameter group index of configuration 0, 1, 2, etc.; **Obstacle avoidance detailed parameters** refers to all parameters except obstacle avoidance parameters, such as camera angle, warning distance, etc.
+
+| Priority | Communication method | Object |
+| --- | --- | --- |
+| 1 | IO communication | The parameters take effect immediately and cannot be interfered with by other means. If they are left floating or do not support IO communication, the default parameters or temporary parameters will be used. |
+| 2 | Host computer and API settings | The default parameters are set and are not affected by power outages. |
+| 2 | Others (such as 485, etc.) | The settings are temporary parameters. This parameter will be modified if there is a power outage or other communications. It can be saved as the default parameters through instructions, |
+
+3. For modification of obstacle avoidance parameters, the camera will strictly follow the logic of priority.
+
+4. The biggest difference between temporary parameters and default parameters is whether they are saved after power off. Which parameter is used depends on what communication method was used last time.
+
+5. During IO communication (IO is not suspended), the current parameters cannot be modified using the communication method of priority 2, but the default parameters and temporary parameters can be modified. When IO communication is disconnected (IO is suspended), the specific default parameters or temporary parameters are used according to the last setting method. The last time 485 or UDP settings are used, temporary parameters are used. The last time API calls or host computer settings are used, the default parameters are used. The logic is as follows:
+
+<Frame>
+  <img src="/images/legacy/9de2e18d-de3f-4a0a-b783-6cc5c8208344/8bf4f672-a74b-4a6b-9746-55438829cada.avif" alt="Illustrations related to communication methods 3" />
+</Frame>
+
+6. For the S10 camera, it takes 200~300ms to switch parameters until loading is completed. Therefore, S2 performs a filtering operation on the switching parameter operation, and the last setting within 250ms will be ignored. Whether it is S10 or S2Max/S10pro, it is not recommended to switch parameters too frequently, as this will increase the camera's resource usage and reduce the image frame rate. Because the refresh rate of obstacle avoidance results is related to the frame rate, it will also cause the refresh rate of obstacle avoidance results to be reduced. The obstacle avoidance result refresh rate is equal to the image frame rate.
+
+### 7.1 API calling method
+
+The API calling method can support C++, C#, JAVA, ROS1, ROS2 and other environments of windows, Linux, arm and other environments. After the SDK of the windows environment is installed on the host computer software, the SDK files and sample program codes are all in the installation path (for example: D:\\Program Files\\Lanxin-MRDVS). The Linux environment SDK can be downloaded from the relevant technical support provided by Meier Microvision or from the official website. It is not recommended to use this method to switch parameters for S10 cameras. It is recommended to use UDP or IO to switch parameters.
+
+- The Document folder contains SDK and host computer usage documentation.
+
+- The FirmWare folder is the directory where the camera firmware package is stored.
+
+- The Sample folder is the directory where the sample code source code is stored, which can be selected according to the development environment.
+
+- The SDK folder is the directory where SDK library files are stored. You can configure environment variables according to the development environment.
+
+- The obstacle avoidance application can parameterize the obstacle avoidance API source code program of C/application\_obstacled in the Sampl directory.
+
+### 7.2 485 communication method
+
+1. 485 communication only supports M4 pro cameras, using Modbus RTU transmission protocol. The following is the camera wiring harness definition:
+
+| Port | Pin | Signal | Description | Remarks |
+| --- | --- | --- | --- | --- |
+| Socket definition | 1 | GND | Signal ground | Blue |
+| | 2 | 485_A | RS485_A | Gray |
+| | 3 | 485_B | RS485_B | White |
+| | 4 | VIN + | 24V power input positive terminal | Brown |
+| | 5 | VIN - | 24V power input negative terminal | Black |
+
+2. The 485 debugging method is as follows:
+
+- When connecting via RS485, in the debugging assistant, the baud rate is set to 9600.
+
+- Use the host computer to check the current Modbus address, read the two register addresses starting from address 108 (0x6C) of the input register (0x04), and the fed back register value is the current obstacle avoidance result.
+
+<Frame>
+  <img src="/images/legacy/97dd2a2a-4b90-419b-bef8-8e4504a30720/2f79d722-9523-4a5e-904b-da95fbb4ca5b.avif" alt="485 communication method related icons" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f3ee28c-ea54-426e-8bd5-bbae25de955c/e5bfac8e-14fb-4540-91b2-d72de1aa86fc.avif" alt="Illustrations related to 485 communication method 2" />
+</Frame>
+
+- If you need to modify the obstacle avoidance parameters, you can write the 106 (0x6A) address of a single saving register (0x06).
+
+<Frame>
+  <img src="/images/legacy/65d76022-f5da-4827-b160-8c597f7c0a5f/c64c76ff-8c7a-442d-8fa2-2cacba78affb.avif" alt="Illustrations related to 485 communication method 3" />
+</Frame>
+
+### 7.3 UDP communication method
+
+Obstacle avoidance function type field meaning:
+
+| Number | Transmission direction | Message | Obstacle avoidance result |
+| --- | --- | --- | --- |
+| 1 | Camera->Body | ACED0410XX000000 | Barrier-free, XX represents the current obstacle avoidance parameters |
+| 2 | | ACED0410XX000001 | Early warning deceleration |
+| 3 | | ACED0410XX000002 | Alarm stop |
+| 4 | Main body->Camera | ACED040000000000 | Establish UDP connection |
+| 5 | | ACED041A00000000 | Obstacle avoidance parameter 0 |
+| 6 | | ACED041A00000001 | Obstacle avoidance parameter 1 |
+| 7 | | ACED041A00000002 | Obstacle avoidance parameter 2 |
+| 8 | | ACED041A00000003 | Obstacle avoidance parameter 3 |
+| 9 | | ... | (and so on until parameter 19) |
+| 10 | Body->Camera | ACED041B00000000 | Set current parameters as default parameters |
+| 11 | Camera->Body | ACED041B00000001 | Default parameters set successfully |
+
+1. When connecting through UDP, use the network debugging assistant to test the communication connection with the camera, and select hexadecimal transmission and reception for receiving and sending data. It is recommended to use command No. 4 for the first communication. After establishing a UDP connection, the obstacle avoidance results will be sent automatically. The sending frequency is related to the current image frame rate. After modifying the parameters, you can confirm whether the modification is successful through the message message sent by the camera to the body. The XX in the message numbered 1 is the current parameter.
+
+2. The parameters set by DP will be effective until the camera is restarted, unless the power is cut off or modified using other communication methods. If you want it to still take effect after a power outage, you can use message number 10 to save it as default parameters. The function of saving as default parameters is a unique function of UDP communication, CAN, 485.
+
+3. Set the local host address and local host port, click to open; the remote host is the camera, fill in the camera IP port: 192.168.100.12:6688, if the camera IP has changed, it will be: camera IP:6688 ; Take the current parameter 19 and modify it to parameter 0 as an example. Click to send data number 5. The successful setting sign is that the fifth byte is changed from 0x13 (parameter 19) to 0x00 (parameter 0), as shown below.
+
+<Frame>
+  <img src="/images/legacy/e8a8533b-6b41-4853-bfc7-9217abd0524d/d75adea6-f4e9-4d89-adf3-2772681f0406.avif" alt="Illustrations related to UDP communication method" />
+</Frame>
+
+### 7.4 TCP communication method
+
+Obstacle avoidance function type field meaning:
+
+| Number | Transmission direction | Message | Obstacle avoidance result |
+| --- | --- | --- | --- |
+| 1 | Camera->Body | ACED0410XX000000 | Barrier-free, XX represents the current obstacle avoidance parameters |
+| 2 | | ACED0410XX000001 | Early warning deceleration |
+| 3 | | ACED0410XX000002 | Alarm stop |
+| 4 | Body->Camera | ACED041A00000000 | Obstacle avoidance parameter 0 |
+| 5 | | ACED041A00000001 | Obstacle avoidance parameter 1 |
+| 6 | | ACED041A00000002 | Obstacle avoidance parameter 2 |
+| 7 | | ACED041A00000003 | Obstacle avoidance parameter 3 |
+| 8 | | ... | (and so on until parameter 19) |
+| 9 | Body->Camera | ACED041B00000000 | Set current parameters as default parameters |
+| 10 | Camera->Body | ACED041B00000001 | Default parameters set successfully |
+
+1. When connecting through TCP, use the network debugging assistant to test the communication connection with the camera, and select hexadecimal transmission and reception for receiving and sending data. After the TCP connection is established, the obstacle avoidance results will be sent automatically, and the sending frequency is related to the current image frame rate. After modifying the parameters, you can confirm whether the modification is successful through the message message sent by the camera to the body. The XX in the message numbered 1 is the current parameter.
+
+2. The parameters set by TCP will be effective until the camera is restarted, unless the power is cut off or modified using other communication methods. If you want it to still take effect after a power outage, you can use message number 10 to save it as default parameters. The function of saving as default parameters is a unique function of TCP communication and is not supported by CAN or 485.
+
+3. The camera can be tested with the assistant. Select TCP Client for the protocol, select the camera ip for the ip, and select 6688 for the port. Before using TCP communication, you need to confirm whether the obstacle avoidance area currently used has been set on the host computer.
+
+<Frame>
+  <img src="/images/legacy/b1e7b075-b88e-4547-9e9e-813399cee1de/426d1e53-dda3-4ea0-80fb-5ad61ee30884.avif" alt="Illustrations related to TCP communication method" />
+</Frame>
+
+### 7.5 CAN communication method
+
+1. CAN communication only supports S2-MAX cameras. The communication protocol uses CanOpen. The CanOpen protocol is an application layer protocol running on the standard CAN bus. Its communication mode is also the "master-slave" mode communication commonly used in industrial communication protocols. That is, there will be a master station + multiple slave stations in the network. The slave stations will not directly communicate with each other. All communications are between the master station and the slave stations. The master station is also called the "client" and the slave station is also called the "server".
+
+2. The underlying communication method uses the CAN standard frame format, that is, the CAN ID is 11 bits (0x000~7FF) and the data is 8 bytes.
+
+3. The usage convention of CAN ID: Divide the 11-bit ID into 4-bit function code and 7-bit node ID, and CAN ID is also called COB ID:
+
+<Frame>
+  <img src="/images/legacy/6b14ef30-ae22-4eb0-bdd0-ff371a395ef5/2b8174cc-315e-4622-af5e-c288fd5a391c.avif" alt="Illustrations related to CAN communication method" />
+</Frame>
+
+4. Can baud rate: The default is 250K, which can be configured according to the application.
+
+5. Node number: Default is 0x212, which can be configured according to the application.
+
+6. The SDO communication message is a basic protocol format in CanOpen. The 8-byte data in the CAN message is defined by the communication protocol as the following format:
+
+<Frame>
+  <img src="/images/legacy/2097250b-a7c5-43f8-8dac-53940a7ccb01/662148d5-54f3-469a-bb77-2d22e7d96075.avif" alt="Illustrations related to CAN communication method 2" />
+</Frame>
+
+**Obstacle avoidance module communication protocol:**
+
+1. The message format sent by the ontology to the device.
+
+<Frame>
+  <img src="/images/legacy/109df244-17e5-4c9b-9900-298a5c5dfcd3/4a23ea06-77c9-4dea-9862-34bd67b013a0.avif" alt="Illustrations related to CAN communication method 3" />
+</Frame>
+
+- Reference message: 40 00 00 00 0B 00 00 00, 0B: MODECTRL, which means setting the obstacle avoidance parameters to area 11.
+
+2. The format of the message sent by the device to the main body.
+
+<Frame>
+  <img src="/images/legacy/e43f7fa2-780a-4885-b98d-1f8b412a1198/4ebef067-087d-46ab-811b-49ff027bb6b4.avif" alt="Illustrations related to CAN communication method 4" />
+</Frame>
+
+- Reference characters: 43 00 00 00 0B 00 00 02, 0B: MODECTRL, indicating that the current obstacle avoidance parameter is area 11; 02: result, indicating the current obstacle avoidance result.
+
+**3. Note: As shown in the figure below, setting obstacle avoidance parameters does not take effect immediately. **
+
+<Frame>
+  <img src="/images/legacy/c102285c-5b45-4762-87fd-713da40e2468/bd1a716a-80e2-437e-92d2-2acbfb00a2d5.avif" alt="Illustrations related to CAN communication method 5" />
+</Frame>
+
+## 7.5 IO communication method
+
+### 7.5.1 IO input status and obstacle avoidance parameter correspondence table
+
+| Input1 status | Input2 status | Remarks |
+| --- | --- | --- |
+| High level | High level | Obstacle avoidance parameter 2 |
+| High level | Low level | Obstacle avoidance parameter 1 |
+| Low level | High level | Obstacle avoidance parameter 0 |
+| Low level | Low level | Use default parameters or temporary parameters for obstacle avoidance |
+
+- Note: When the input IO is left floating, it is low level, and the recommended voltage for high level is 5~25V.
+
+- Note: For the logic of using default parameters or temporary parameters, please refer to the preface of Chapter 7 (Communication Methods). Simply put, when the camera is powered on and does not use other communication methods (except API) to configure obstacle avoidance parameters, the default parameters will be used. Otherwise, temporary parameters will be used.
+
+### 7.5.2 IO output status and obstacle avoidance parameter correspondence table
+
+### IO status is push-pull
+
+| Output1 status | Output2 status | Remarks |
+| --- | --- | --- |
+| 24V | 24V | Accessible |
+| 24V | 0V | Deceleration signal |
+| 0V | 24V | Emergency stop signal |
+| 0V | 0V | Obstacle avoidance, initialization, exception not enabled |
+
+- Note: When obstacle avoidance is turned on but the output IOs are all grounded, please ensure that the current obstacle avoidance parameters have been set by the host computer.
+
+<Frame>
+  <img src="/images/legacy/fae16d2e-4221-46a3-a426-1b504d07a04a/c3a59086-bee5-4c6a-91d2-46a71152a6a1.avif" alt="IO status is push-pull related icons" />
+</Frame>
+
+**IO status is open-drain**
+
+| Output1 status | Output2 status | Remarks |
+| --- | --- | --- |
+| Suspended | Suspended | Accessible |
+| Floating | 0V | Deceleration signal |
+| 0V | Floating | Emergency stop signal |
+| 0V | 0V | Obstacle avoidance, initialization, exception not enabled |
+
+### 7.5.3 S2 camera I/O wiring method
+
+The details of the external cable with the power label are shown in the following table:
+
+| Label name | Color | Remarks |
+| --- | --- | --- |
+| IN1 | Orange | I/O function input signal line 1+ |
+| IN_COM1 | Yellow | I/O function input signal line 1- |
+| IN2 | Green | I/O function input signal line 2+ |
+| OUT_1 | Purple | I/O function output signal line 1+ |
+| OUT_COM1 | Gray | I/O function output signal line 1- |
+| IN_COM2 | Blue | I/O function input signal line 2- |
+| OUT_2 | Brown | I/O function output signal line 2+ |
+| OUT_COM2 | White | I/O function output signal line 2- |
+
+### 7.5.4 S10 camera and industrial computer I/O wiring method
+
+Note that the camera 24V- should be connected to the power ground of the industrial computer, and IN\_G and OUT\_G should be connected to the signal ground of the industrial computer. Customers can modify the common ground connection method according to the actual situation. If the industrial computer does not have power ground and signal areas, you can connect the camera 24V-, IN\_G, and OUT\_G to the GND of the industrial computer.
+
+### 7.5.4.1 Input terminal IN\_wiring method
+
+1. The figure below shows the wiring method between the PNP type output of the industrial computer and the input terminal of the S10 camera (hereinafter abbreviated as IN\_\*, \* represents 1 and 2):
+
+<Frame>
+  <img src="/images/legacy/db796979-a48a-4e8f-a439-41163142b7eb/3a6e88b9-58b3-4afc-be18-a86b38d69f44.avif" alt="Illustrations related to input terminal IN\_ wiring method" />
+</Frame>
+
+2. The following figure shows the wiring method between the NPN output of the industrial computer and the input terminal of the S10 camera:
+
+<Frame>
+  <img src="/images/legacy/87186c64-88c9-4afc-a17e-de2ab83ab740/993feed3-fbc4-4587-8f21-29d85d3570ff.avif" alt="Relevant diagram of input terminal IN\_ wiring method 2" />
+</Frame>
+
+3. Since the output circuit designs of industrial computers from different manufacturers are different, it is necessary to judge whether it is necessary to add a pull-up resistor and its resistance value based on the actual situation.
+
+4. You need to test according to the following steps:
+
+- Use a multimeter to measure the impedance of the industrial computer output to 24 V. If it is &lt;50 kΩ, no pull-up resistor is needed. If it is ≥50 kΩ, add a pull-up resistor. Use a through-hole metal-film resistor with 10 kΩ resistance and ≥1 W power. You can use another resistor for temporary testing, but long-term use can affect reliability. The resistance must not be less than 3 kΩ, and you must not connect the output directly to 24 V.
+
+- After the connection is confirmed, pull the output terminal of the industrial computer high and use a multimeter to measure the voltage between the output terminal and ground. If the voltage is ≤ 2V, disconnect the camera circuit and check whether the industrial computer can pull the voltage high; if the voltage is > 2V, pull the output terminal low again to check whether there is a change in the input of the S2 camera. If there is a change, it means it can be used normally; if there is no change, pull the output terminal of the industrial computer low and measure the voltage between the output terminal and ground. If the voltage If it is greater than 1V, it means that the pull-up strength is too strong and it is difficult to pull it down. You need to increase the pull-up resistor resistance, and then measure whether there is any change in the input of the S2 camera after pulling it down. If the voltage is less than 1V, disconnect the industrial computer, connect the camera IN\_\* to 24V and GND through the resistor, and check whether there is a change in the camera input. If there is a change, check whether the connection between the industrial computer and the camera is correct; if there is no change, contact technical support to troubleshoot the problem.
+
+5. The logic tree is as shown below:
+
+<Frame>
+  <img src="/images/legacy/dbde924e-e206-4ed7-a609-b954a60a36cc/b727aee2-58b2-4a2b-bf87-a34d4fa94a63.avif" alt="Relevant diagram of input terminal IN\_ wiring method 3" />
+</Frame>
+
+### 7.5.4.2 Output terminal Out\_wiring method
+
+1. There are two kinds of f and pnp inside the camera.
+
+2. The following figure shows the wiring method between the input terminal of the industrial computer and the output terminal of the S2 camera (hereinafter abbreviated as OUT\_\*, \* represents 1 and 2):
+
+<Frame>
+  <img src="/images/legacy/4b34864c-b203-45de-add7-422469d59886/a9234957-e7a1-4eb7-9307-0e93c76c25e4.avif" alt="Illustrations related to output terminal Out\_wiring method" />
+</Frame>
+
+## 8. Frequently Asked Questions
+
+### 8.1 Black objects
+
+Due to the TOF principle, S series cameras are affected by the reflectivity of the black pallet. With a 5% reflectivity of the black pallet, the S2max camera can be used to achieve imaging within a range of 2m. During debugging, the imaging effect of the black pallet can also be optimized through the high integration time and low signal threshold of the host computer software. If there is a black fork arm in the obstacle avoidance scene, it is recommended that the user add a higher reflectivity to the fork tip to assist in obstacle avoidance, such as spraying a small section in front of the fork tip with a paint surface of other colors.
+
+### 8.2 Low ground objects
+
+Objects on the ground cannot avoid obstacles. In obstacle avoidance applications, we generally use the ground as the basis for external parameter configuration. If obstacle avoidance cannot be achieved when encountering low obstacles on the ground, you can refer to the following solutions:
+
+- The point cloud image of the host computer shows that no obstacle is selected. You need to confirm whether the obstacle avoidance height (bottom) is a positive value. If it is a positive value, it is recommended to temporarily set it to 0 to determine whether the obstacle can be detected. If it still cannot be detected, it is recommended to adjust the camera installation height.
+
+- The point cloud image of the host computer can select the obstacle object but the obstacle avoidance result output is 0. This phenomenon may be caused by the incorrect configuration of the camera installation height. It is recommended that the user adjust the camera installation height.
+
+### 8.3 Obstacle avoidance parameters do not take effect
+
+- Did not click Setup Complete when configuring parameters.
+
+- Modification of illegal parameters caused the setting to fail.
+
+- The camera connection is unstable and disconnected, causing parameter delivery to fail.
+
+### 8.4 Installation structure interference
+
+- During installation, there are structures around the camera that block the camera's field of view, resulting in abnormal camera data.
+
+- During the structural design, the camera design interferes with the rear view, causing abnormal camera data.
+
+- The protective film on the camera mirror has not been removed, resulting in abnormal camera data.
+
+- Other protective glass is installed on the camera mirror, causing data anomalies.
+
+Welcome to contact us through the following methods:
+
+- If you have not purchased a product, [contact our presales team on WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Contact presales")
+
+- If you have purchased a product, [contact technical support on WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Contact technical support")
+
+- **Official website**: [www.mrdvs.cn](https://www.mrdvs.cn/ "www.mrdvs.cn")
+
+- **Bilibili**: [Video tutorials and application examples](https://space.bilibili.com/3546755102672963 "Video tutorials and application examples")
+
+- **GitHub**: [Download the SDK and sample code](https://github.com/Lanxin-MRDVS/CameraSDK "Download the SDK and sample code")
+
+- **Email**: [service@mrdvs.com](mailto:service@mrdvs.com "service@mrdvs.com")
+
+- ：400-025-6680

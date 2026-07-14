@@ -1,0 +1,161 @@
+---
+title: "V2 Pro UDP protocol"
+description: "Configure V2 Pro UDP communication and use its message structures, interface types, and examples."
+hidden: true
+---
+V2PRO supports UDP mode to interact with the client. The target device IP and port configuration can be completed in the WEB host computer. The specific location is as follows:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="Illustrations related to V2PRO UDP communication protocol" />
+</Frame>
+
+Among them, portCode is the port number that the target device listens to, and portName is the IP of the target device. V2 PRO will listen on port 8001 to receive information from other devices.
+
+## **1.1** Data format
+
+1.1.1 Adopt big-endian mode: high byte first, low byte last
+
+1.1.2 The communication frame format is as follows: data header + data length + command byte + data content + check code.
+
+1.1.3 Check: 1 byte, all bytes except the data header and check code byte are XORed to get the check code.
+
+1.1.3 Data length: The length field is calculated without check byte and header. Not all frames have Length.
+
+1.1.4 The map format only allows the combination of English letters, ‘\_’ and numbers, and must start with an English letter.
+
+## **1.2 V2 PRO** Received information
+
+a. Odometer information frame (13 bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x0a |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | V 3 _ | V 2 _ | V 1 _ | V 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+It should be noted that v and theta are transmitted in four-byte integers, where the unit of v is mm/s and the unit of angle theta is 0.01 degrees. That is, 9000 is required for 90 degrees
+
+b. Reposition frame (deliver pose X, Y, Theta)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x02 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | x 3 _ | x 2 _ | x 1 _ | x 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | y 3 _ | y 2 _ | y 1 _ | y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Content | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+It should be noted that x, ,y, and theta are all transmitted in four-byte integers, where the unit of x and y is mm, and the unit of angle theta is 0.01 degrees. That is, 9000 is required for 90 degrees
+
+c. Start/end mapping
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x02 |
+
+| Bytes | Byte4(Status) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Content | 0x01 | map name 0 _ _ | … | map name 29 _ _ |
+
+| Bytes | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+Fill in the number of bytes of the map name from Byte5 (map\_name\_0 to map\_name\_29), the fixed bytes are 30 (standard ASCII encoding is used, only English characters, numbers, and underscores are supported. Please do not start the map name with a number). The insufficient bytes are filled with 0x00. At the same time, the map can only be built once (please do not send map building commands continuously). Byte4 (Status) Determine the mapping status. When it is 0x00, it will end the mapping. When it is 0x01, it will start the mapping.
+
+d.Switch map
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x0C |
+
+| Bytes | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Content | map name 0 _ _ | … | … | map name 29 _ _ |
+
+| Bytes | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+The 30 BYTEs starting from Byte5map\_name\_0 are the map names that need to be switched. It is necessary to ensure that the map name has completed the mapping task.
+
+## Message sent by **1.2 V2 PRO**
+
+a. Positioning frame (25bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x01 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | X 3 _ | X 2 _ | X 1 _ | X 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | Y 3 _ | Y 2 _ | Y 1 _ | Y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Content | THETA 3 _ | THETA 2 _ | THETA 1 _ | THETA 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Content | TIMESTAMP 7 _ | TIMESTAMP 6 _ | TIMESTAMP 5 _ | TIMESTAMP 4 _ |
+
+| Bytes | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Content | TIMESTAMP 3 _ | TIMESTAMP 2 _ | TIMESTAMP 1 _ | TIMESTAMP 0 _ |
+
+| Bytes | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | CHECK |  |  |  |
+
+It should be noted that the unit of X and Y is MM, and the unit of THETA is 0.001 radians.
+
+After the relocation is successful, V2PRO will always send the positioning frame.
+
+b.Task execution result return frame
+
+Including the return of start/end mapping results and the return of switching map results. This type of frame has the following structure:
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0xFF |
+
+| Bytes | Id | Status | Byte 6 |
+| --- | --- | --- | --- |
+| Content | 0x01 | 0x01 | Check |
+
+Where Id is the task type byte:
+
+| 0x01: | Indicates starting mapping |
+| --- | --- |
+| 0x02: | Indicates the end of mapping |
+| 0x03: | Indicates switching map |
+
+Status corresponds to whether the task is successful, 0x01 means success and 0x00 means failure.
+
+It should be noted that it takes a long time to end the mapping, which is about 1/3 of the actual mapping scanning time. After the long task is issued, the status will be returned.

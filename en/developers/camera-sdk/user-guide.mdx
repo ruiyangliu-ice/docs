@@ -1,0 +1,1294 @@
+---
+title: "Camera SDK User Guide"
+description: "Integrate supported MRDVS cameras on x86 Windows or x86 and Arm Linux systems with the Camera SDK APIs."
+hidden: true
+---
+## 1. **Overview**
+
+This document is mainly intended for developers related to camera device access (requires software development capabilities). Currently supports M4/M4 Mega/M4 Pro/V1Pro/S2/S2/H3 series products. The main purpose of this document is to explain how to use the API provided by the SDK. Camera SDK supports running on x86-based Windows operating systems, and X86 and Arm-based Linux operating systems.
+
+Camera SDK provides a unified access control and parameter configuration interface, supporting synchronous or asynchronous acquisition of device data (including depth images, intensity images, point cloud images, RGB images). Some camera models support obstacle avoidance, docking, positioning and other data.
+
+This document provides development assistance to the greatest extent, and the content provided may be defective or incomplete.
+
+* * *
+
+## 2**. Environment setup**
+
+### 2.1 Host recommended system configuration
+
+| Configuration items | Recommended configuration |
+| --- | --- |
+| Operating system | Windows7 Windows10 Windows11<br />Ubuntu16.04 and above |
+| Memory | 4G and above |
+| CPU | 4-core Cortex-A57 or equivalent and above |
+| Network card | Gigabit and above |
+
+### 2.2 Environment setup
+
+#### 2.2.1 Hardware environment setup
+
+The camera is connected to an external 24V voltage and is connected to the host computer where the host computer is located using a network cable, as shown in Figure 2.1.
+
+<Frame>
+  <img src="/images/legacy/2c0d602c-834d-4780-beab-f69d6c37593c/9d585c4c-d229-4e71-8275-014d7a30f2eb.avif" alt="Illustrations related to hardware environment construction" />
+</Frame>
+
+Figure 2.1 Camera connection diagram
+
+#### 2.2.2 Network environment setup
+
+1. The default IP network segment of the camera is: 192.168.100.\*
+
+2. On the host computer, set the IP address of the network port connected to the camera to an address in the 192.168.100.x network segment and ensure that it does not conflict with the device. The subnet mask is 255.255.255.0, as shown in the figure below:
+
+<Frame>
+  <img src="/images/legacy/dda39d36-adb1-490c-a208-2b7221a9e628/68567bcb-79e9-4442-bade-9266bc2e6aba.avif" alt="Illustrations related to network environment construction" />
+</Frame>
+
+3. When connecting to the camera, it is recommended to turn off the firewall to prevent the camera data packets from being intercepted by the host where the SDK is located, as shown in the following figure:
+
+<Frame>
+  <img src="/images/legacy/f3a9f7f1-d341-43d6-ac8d-4c1e5b6d1d50/9c5cfdd9-1dd2-4e9e-873f-08625c29e9dc.avif" alt="Illustrations related to network environment construction 2" />
+</Frame>
+
+4. The network configuration of Linux system is the same as that of Windows. The method of turning off the firewall may be different in different systems. Take Ubuntu as an example:
+
+- Stop the firewall service: sudo systemctl stop ufw.service
+
+- Disable the firewall service: sudo systemctl disable ufw.service Check whether the firewall service is turned off: sudo ufw status
+
+#### 2.2.3 Software environment construction
+
+##### 2.2.3.1 Windows system installation:
+
+Open the installation package and install Lanxin-MRDVS-xxx.exe. If you need to install it for all users, you need administrator rights to run the installation package. The figure below shows the installation process.
+
+<Frame>
+  <img src="/images/legacy/0a7392e3-bf32-471b-aa31-8fa8fce6cced/06c7291e-7290-4c3d-8a90-88bd2bff7be6.avif" alt="Windows System Installation: Related Illustrations" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/18efed64-f390-4fe3-8540-f5509c3af2d4/84f19e25-ae92-4889-bc34-e8fb6f09bf53.avif" alt="Windows System Installation: Related Illustration 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a5542933-3960-4d25-b48d-6d1f41153f9a/8e13b104-d47a-4fd6-be41-ae61441048c3.avif" alt="Windows System Installation: Related Illustration 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/d2995663-9902-43ef-9556-d02e800b725b/eab5e847-062d-4fbd-a23b-503ec60e26b2.avif" alt="Windows System Installation: Related Illustrations 4" />
+</Frame>
+
+##### 2.2.3.2 Linux system installation:
+
+1. Unzip and execute the installation script
+
+- tar xvf Lanxin-MRDVS-xxx.tar.gz
+
+- cd Lanxin-MRDVS
+
+2. Because installation requires root permissions, if the current user is not root, you need to switch to the root user
+
+- sudo su root
+
+3. Then perform the installation
+
+- chmod +x install.sh
+
+- ./install.sh
+
+The installation script will install the sdk to the /opt/Lanxin-MRDVS directory and set the environment variables. It should be noted that the environment variables set in the script are the environment variables of the current user. If the running program is not the root user, you need to re-run the install.sh script to set the environment variables or manually add export LD\_LIBRARY\_PATH=/opt/Lanxin-MRDVS/lib/:$LD\_LIBRARY\_PATH at the end of ~/.bashrc of the current user.
+
+For terminal sessions that have been opened before installation, you need to execute source ~/.bashrc to update the LD\_LIBRARY\_PATH environment variable before running the program.
+
+* * *
+
+## 3**. Camera SDK usage instructions**
+
+### 3.1 Camera SDK directory structure
+
+The contents of the Camera SDK directory include the following images:
+
+<Frame>
+  <img src="/images/legacy/e63ed7f0-5413-49e4-ae83-5b1ca5701c3f/c8513558-20e0-42d9-8a4a-cf788fbddee2.avif" alt="Camera SDK directory structure related diagram" />
+</Frame>
+
+- Document contains various documentation for the SDK
+
+- FirmWare contains camera firmware upgrade package
+
+- Sample contains sample code using the Camera SDK in various programming languages
+
+- SDK includes the header files and library files of Camera SDK
+
+### 3.2 Development process
+
+#### 3.2.1 Project configuration
+
+C/C++ is recommended as the main secondary development programming language to integrate the SDK, and the CMakeLists.txt script for building projects through the Cmake tool is provided; at the same time, the Sample folder provides examples of development methods in different languages. For details, please refer to the information under Sample and the "Linux Sample Program Instructions".
+
+#### 3.2.2 Synchronous interface calling process
+
+<Frame>
+  <img src="/images/legacy/821c0e91-5da0-4bb9-ad44-9aff7d3e5b4f/5d92b8cc-615b-4948-aeea-4dd0e96daed5.avif" alt="Synchronous mode interface call flow chart" />
+</Frame>
+
+#### 3.2.3 Asynchronous interface calling process
+
+<Frame>
+  <img src="/images/legacy/b7bf7592-9337-4597-9443-807edf3803b1/7d62fa56-8dd8-4fdb-bdfe-4c9e4b249429.avif" alt="Asynchronous mode interface call flow chart" />
+</Frame>
+
+* * *
+
+## 4. **Camera SDK calling notes**
+
+### 4.1 General principles of Camera SDK interface calling
+
+1. For enumeration types prefixed with LX\_INT, use DcSetIntValue or DcGetIntValue to set or get INT type parameters;
+
+2. For enumeration types prefixed with LX\_FLOAT, use DcSetFloatValue or DcGetFloatValue to set or get FLOAT type parameters;
+
+3. For enumeration types prefixed with LX\_BOOL, use DcSetBoolValue or DcGetBoolValue to set or get BOOL type parameters;
+
+4. For enumeration types prefixed with LX\_STRING, use DcSetStringValue or DcGetStringValue to set or get string type parameters;
+
+5. Use DcSetCmd to execute instructions for enumeration types prefixed with LX\_CMD;
+
+6. For enumeration types prefixed with LX\_PTR, use DcGetPtrValue to obtain pointer type results;
+
+### 4.2 Camera SDK interface part calling preconditions
+
+**1. When the flow is started or the working mode (LX\_INT\_WORK\_MODE) is normally open mode, the following functions are not allowed to be set:**
+
+- DcSetRoi
+
+- LX\_INT\_3D\_BINNING\_MODE;
+
+- LX\_INT\_2D\_BINNING\_MODE;
+
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH;
+
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR;
+
+- LX\_BOOL\_ENABLE\_MULTI\_MACHINE;
+
+- LX\_INT\_TRIGGER\_MODE;
+
+- LX\_INT\_CALCULATE\_UP;
+
+- LX\_BOOL\_ENABLE\_HDR;
+
+- LX\_BOOL\_ENABLE\_TOF\_DEPTH\_CALIBE;
+
+- LX\_BOOL\_ENABLE\_SYNC\_FRAME
+
+- LX\_INT\_SAVE\_PARAMS\_GROUP
+
+**2. Settings are not allowed even when the working mode (LX\_INT\_WORK\_MODE) is normally open:** 
+
+- LX\_INT\_TOF\_FREQMODE<br />
+
+**3. When 3D automatic exposure (LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE) is turned on, the following function enumeration operations are not allowed:** 
+
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR ;
+
+- LX\_INT\_FIRST\_EXPOSURE;
+
+- LX\_INT\_SECOND\_EXPOSURE;
+
+- LX\_INT\_THIRD\_EXPOSURE;
+
+- LX\_INT\_GAIN;<br />
+
+**4.When 3D automatic exposure (LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE) is turned off, the following function enumeration is not allowed to operate:** 
+
+- LX\_INT\_3D\_AUTO\_EXPOSURE\_LEVEL
+
+Setting the 3D automatic exposure maximum value (LX\_INT\_3D\_AUTO\_EXPOSURE\_MAX) and minimum value is not allowed
+
+- (LX\_INT\_3D\_AUTO\_EXPOSURE\_MIN)
+
+**5. When 2D automatic exposure (LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE) is turned on, the following function enumeration operations are not allowed:** 
+
+- LX\_INT\_2D\_MANUAL\_EXPOSURE
+
+<br />**6. When 2D automatic exposure (LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE) is turned off, the following function enumeration is not allowed to operate:** 
+
+- LX\_INT\_2D\_AUTO\_EXPOSURE\_LEVEL;
+
+<br />7.**In extraordinary filtering mode, the following settings are not allowed:**
+
+- LX\_INT\_FILTER\_SMOOTH\_LEVEL LX\_INT\_FILTER\_NOISE\_LEVEL
+
+- LX\_INT\_FILTER\_TIME\_LEVEL
+
+<br />8.**When turning on 2D anti-distortion, RGBD alignment must be turned on first:**
+
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH
+
+<br />9.**For non-S2 type devices, when turning on the built-in algorithm, you need to set the tof algorithm first. The algorithm parameters are only allowed to be set when the built-in algorithm (LX\_INT\_ALGORITHM\_MODE) is turned on.**
+
+- (LX\_STRING\_ALGORITHM\_PARAMS)
+
+<br />10.**To obtain point cloud data (LX\_PTR\_XYZ\_DATA), you must first open the depth map**
+
+- (LX\_BOOL\_ENABLE\_3D\_DEPTH\_STREAM)
+
+* * *
+
+## 5. **Data type description**
+
+### 5.1 LX\_STATE
+
+Function: SDK interface function return value status code
+
+| Keywords | Description |
+| --- | --- |
+| LX_SUCCESS | Function execution successful |
+| LX_ERROR | Function execution failed |
+| LX_E_NOT_SUPPORT | The connected camera does not support this function |
+| LX_E_NETWORK_ERROR | Network communication error |
+| LX_E_INPUT_ILLEGAL | Illegal function parameters passed in |
+| LX_E_RECONNECTING | Device reconnecting |
+| LX_E_DEVICE_ERROR | Equipment failure |
+| LX_E_DEVICE_NEED_UPDATE | The device version is too low and the firmware version needs to be upgraded |
+| LX_E_API_NEED_UPDATE | API version is too low, SDK needs to be upgraded |
+| LX_E_CTRL_PERMISS_ERROR | Exclusive control permission failed (the device can only have one SDK connection at the same time) |
+| LX_E_GET_DEVICEINFO_ERROR | Failed to obtain device information |
+| LX_E_IMAGE_SIZE_ERROR | Image size does not match, reopen the camera |
+| LX_E_IMAGE_PARTITION_ERROR | Image parsing failed |
+| LX_E_DEVICE_NOT_CONNECTED | Camera not connected |
+| LX_E_DEVICE_INIT_FAILED | Camera initialization failed |
+| LX_E_DEVICE_NOT_FOUND | No matching camera found |
+| LX_E_FILE_INVALID | File error (incorrect file name or type or format) |
+| LX_E_CRC_CHECK_FAILED | File crc or md5 verification failed |
+| LX_E_TIME_OUT | Timeout |
+| LX_E_FRAME_LOSS | Missing frame |
+| LX_E_ENABLE_ANYSTREAM_FAILED | Failed to open any stream |
+| LX_E_NOT_RECEIVE_STREAM | Streaming data not received |
+| LX_E_PARSE_STREAM_FAILED | Streaming started successfully but failed to parse stream data |
+| LX_E_PROCESS_IMAGE_FAILED | Image calculation processing failed |
+| LX_E_SETTING_NOT_ALLOWED | Setting is not allowed in normally open mode |
+| LX_E_LOAD_DATAPROCESSLIB_ERROR | Error loading image processing algorithm library |
+| LX_E_FUNCTION_CALL_LOGIC_ERROR | Function call logic error |
+| LX_E_IPAPPDR_UNREACHABLE_ERROR | IP unreachable or network configuration error |
+| LX_E_FRAME_ID_NOT_MATCH | Frame out of sync error within timeout range |
+| LX_E_FRAME_MULTI_MACHINE | Multi-machine interference signal detected in the frame |
+
+### 5.2 LX\_DATA\_TYPE
+
+Function: data format. 3D intensity map and depth map have different data formats. To obtain the data pointer, you need to use the corresponding feature.
+
+| Keywords | Description |
+| --- | --- |
+| LX_DATA_UNSIGNED_CHAR | Unsigned character type |
+| LX_DATA_UNSIGNED_SHORT | Unsigned short integer |
+| LX_DATA_SIGNED_SHORT | Signed short |
+| LX_DATA_FLOAT | Floating point type |
+| LX_DATA_OBSTACLE | Obstacle avoidance algorithm structure type |
+| LX_DATA_PALLET | Pallet algorithm structure type |
+| LX_DATA_LOCATION | Visual positioning algorithm structure type |
+| LX_DATA_OBSTACLE | Obstacle avoidance algorithm V2 structure type |
+
+### 5.3 LX\_BINNING\_MODE
+
+Function: Bining mode
+
+| Keywords | Description |
+| --- | --- |
+| LX_BINNING_1X1 | 1x1Binning |
+| LX_BINNING_2X2 | 2x2Binning |
+| LX_BINNING_4X4 | 4x4Binning |
+
+### 5.4 LX\_STRUCT\_LIGHT\_CODE\_MODE
+
+Function:
+
+| Keywords | Description |
+| --- | --- |
+| LX_CODE_NORMAL | General |
+| LX_CODE_STATBLE | Stable |
+| LX_CODE_ENHANCE | High precision enhancement |
+
+### 5.5 LX\_ALGORITHM\_MODE
+
+Function:
+
+| Keywords | Description |
+| --- | --- |
+| MODE_ALL_OFF | Turn off the camera's built-in algorithm |
+| MODE_AVOID_OBSTACLE | Built-in obstacle avoidance algorithm |
+| MODE_PALLET_LOCATE | Built-in pallet algorithm |
+| MODE_VISION_LOCATION | Built-in visual positioning algorithm |
+| MODE_AVOID_OBSTACLE2 | Built-in obstacle avoidance algorithm V2 |
+
+### 5.6 LX\_CAMERA\_WORK\_MODE
+
+Function:
+
+| Keywords | Description |
+| --- | --- |
+| KEEP_HEARTBEAT | Heartbeat mode, SDK camera enters standby state after heartbeat interruption |
+| WORK_FOREVER | Normally on mode, the camera always keeps working |
+
+### 5.7 LX\_TRIGGER\_MODE
+
+Function:
+
+| Keywords | Description |
+| --- | --- |
+| LX_TRIGGER_MODE_OFF | Close trigger mode, streaming mode, default |
+| LX_TRIGGER_SOFTWARE | Soft trigger mode |
+| LX_TRIGGER_HARDWARE | Hard trigger mode |
+
+### 5.8 LX\_CAMERA\_FEATURE
+
+Function: Various readable and writable parameters
+
+#### 5.8.1 int type parameters
+
+##### 5.8.1.1 General parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_INT_FIRST_EXPOSURE | Exposure value, unit us, for multiple points, it is the exposure time of the first point |
+| LX_INT_SECOND_EXPOSURE | For multiple points, the exposure time of the second point |
+| LX_INT_THIRD_EXPOSURE | In the case of multiple points, the exposure time of the third point is supported by some models |
+| LX_INT_FOURTH_EXPOSURE | In the case of multiple points, the exposure time of the fourth point is supported by some models |
+| LX_INT_GAIN | Gain, equivalent to exposure effect. Noise will be introduced, and the gain can be appropriately adjusted to prevent the exposure parameters from being too large |
+| LX_INT_MIN_DEPTH | Minimum depth value, values ​​outside the range are invalid |
+| LX_INT_MAX_DEPTH | Maximum depth value, values ​​outside the range are invalid |
+| LX_INT_MIN_AMPLITUDE | Minimum effective signal strength value, depth value beyond the range is invalid |
+| LX_INT_MAX_AMPLITUDE | The maximum strength value of the valid signal, the depth value beyond the range is set to be invalid |
+| LX_INT_CODE_MODE | Structural light camera encoding mode, refer to CODE_MODE (supported by some models) |
+| LX_INT_WORK_MODE | Working mode, refer to LX_CAMERA_WORK_MODE |
+| LX_INT_LINK_SPEED | The negotiated network card speed is 100-100 Mbit/s, 1000-1000 Mbit/s, only supports acquisition and cannot be set |
+| LX_INT_TOF_GLOBAL_OFFSET | TOF depth data offset |
+| LX_INT_ALGORITHM_MODE | Built-in algorithm enable mode, supported by some models, the corresponding values ​​refer to LX_ALGORITHM_MODE |
+| LX_INT_TRIGGER_MODE | Trigger mode, the corresponding value refers to LX_TRIGGER_MODE |
+| LX_INT_MODBUS_ADDR | modbus address, some models support MODBUS protocol output through the serial port |
+| LX_INT_HEART_TIME | Heartbeat time, the camera will automatically standby if it times out and does not receive a heartbeat |
+| LX_INT_GVSP_PACKET_SIZE | GVSP single packet data packet size, unit byte |
+| LX_INT_CALCULATE_UP | Allow the tof or rgb algorithm to move up and down, saving the computing power of the host computer or camera, which may affect the frame rate and delay |
+| LX_INT_CAN_BAUD_RATE | baud rate value of can, unit bps |
+| LX_INT_SAVE_PARAMS_GROUP | Save the current camera configuration as the specified parameter group |
+| LX_INT_LOAD_PARAMS_GROUP | Load the parameter group of the specified index with one click |
+
+##### 5.8.1.2 3D image parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_INT_3D_IMAGE_WIDTH | 3D image resolution current width |
+| LX_INT_3D_IMAGE_HEIGHT | 3D image resolution current height |
+| LX_INT_3D_IMAGE_OFFSET_X | ROI horizontal offset pixels, please use DcSetRoI to set parameters |
+| LX_INT_3D_IMAGE_OFFSET_Y | ROI vertical offset pixels, please use DcSetRoI to set parameters |
+| LX_INT_3D_BINNING_MODE | Pixel merging, refer to LX_BINNING_MODE |
+| LX_INT_3D_DEPTH_DATA_TYPE | Depth image data format, can only be obtained. For the corresponding value, refer to LX_DATA_TYPE |
+| LX_INT_3D_AMPLITUDE_CHANNEL | Number of 3D intensity image channels, shared with depth image channels |
+| LX_INT_3D_AMPLITUDE_DATA_TYPE | Intensity image data format, can only be obtained. For the corresponding value, refer to LX_DATA_TYPE |
+| LX_INT_3D_AUTO_EXPOSURE_LEVEL | The exposure level when 3D automatic exposure is turned on, during which exposure value and gain are not allowed to be set |
+| LX_INT_3D_AUTO_EXPOSURE_MAX | 3D automatic exposure upper limit |
+| LX_INT_3D_AUTO_EXPOSURE_MIN | 3D automatic exposure lower limit value |
+| LX_INT_3D_UNDISTORT_SCALE | 3D image anti-distortion coefficient |
+
+##### 5.8.1.4 2D image parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_INT_2D_IMAGE_CHANNEL | 2D image channel number, monochrome is 1, color is 3 |
+| LX_INT_2D_IMAGE_WIDTH | 2D image resolution current width |
+| LX_INT_2D_IMAGE_HEIGHT | 2D image resolution current height |
+| LX_INT_2D_IMAGE_OFFSET_X | 2D image ROI horizontal offset pixels, can only be obtained, please use DcSetRoI to set parameters |
+| LX_INT_2D_IMAGE_OFFSET_Y | 2D image ROI vertical offset pixels, can only be obtained, please use DcSetRoI to set parameters |
+| LX_INT_2D_BINNING_MODE | Pixel merging, refer to LX_BINNING_MODE |
+| LX_INT_2D_MANUAL_EXPOSURE | Exposure value during 2D manual exposure |
+| LX_INT_2D_MANUAL_GAIN | Gain value during 2D manual exposure |
+| LX_INT_2D_AUTO_EXPOSURE_LEVEL | Exposure level during automatic exposure of 2D images |
+| LX_INT_2D_IMAGE_DATA_TYPE | 2D image data format, can only be obtained. For the corresponding value, refer to LX_DATA_TYPE |
+| LX_INT_2D_UNDISTORT_SCALE | 2D image anti-distortion coefficient |
+
+##### 5.8.1.5 Trigger parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_INT_TRIGGER_MODE | Trigger mode, the corresponding value refers to LX_TRIGGER_MODE |
+| LX_INT_HARDWARE_TRIGGER_FILTER_TIME | Hard trigger filter time, unit us |
+| LX_INT_TRIGGER_MIN_PERIOD_TIME | Minimum trigger time interval, unit us |
+| LX_INT_TRIGGER_DELAY_TIME | Trigger delay time in µs. A value &lt;= 1000 takes effect immediately. Values greater than 1000 take effect after a delay. This feature is reserved. |
+| LX_INT_TRIGGER_FRAME_COUNT | Single trigger frame number |
+| LX_INT_IO_WORK_MODE | GPIO signal output control mode, refer to LX_IO_WORK_MODE |
+| LX_INT_IO_OUTPUT_STATE | User control mode of GPIO signal output, refer to LX_IO_OUTPUT_STATE |
+
+##### 5.8.1.6 Filter parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_INT_FILTER_MODE | Filter mode, refer to LX_FILTER_MODE |
+| LX_INT_FILTER_SMOOTH_LEVEL | When LX_INT_FILTER_MODE is FILTER_NORMAL, <br /> can set the filter smoothing level, [0, 3], the larger the value, the stronger the filtering |
+| LX_INT_FILTER_NOISE_LEVEL | When LX_INT_FILTER_MODE is FILTER_NORMAL, <br /> can set the filter noise level, [0, 3], the larger the value, the stronger the filtering |
+| LX_INT_FILTER_TIME_LEVEL | When LX_INT_FILTER_MODE is FILTER_NORMAL, <br /> can set the filter time domain level, [0, 3]. The larger the value, the stronger the filtering |
+
+#### 5.8.2 float type parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_FLOAT_FILTER_LEVEL | Filtering level, 0-1, the larger the value, the higher the filtering intensity |
+| LX_FLOAT_EST_OUT_EXPOSURE | Whether to evaluate overexposure data, 0-1, if 1, the overexposure data is invalid |
+| LX_FLOAT_LIGHT_INTENSITY | Light intensity, supported by some models |
+| LX_FLOAT_3D_DEPTH_FPS | Current frame rate of depth map |
+| LX_FLOAT_3D_AMPLITUDE_FPS | Current frame rate of intensity map |
+| LX_FLOAT_2D_IAMGE_FPS | RGB image current frame rate |
+| LX_FLOAT_DEVICE_TEMPERATURE | Get the current camera temperature |
+
+#### 5.8.3 bool type parameter
+
+| Keywords | Description |
+| --- | --- |
+| LX_BOOL_CONNECT_STATE | Current connection status |
+| LX_BOOL_ENABLE_3D_DEPTH_STREAM | Turn on/off the depth map (supported by some cameras) |
+| LX_BOOL_ENABLE_3D_AMP_STREAM | Turn on/off intensity map (supported by some cameras) |
+| LX_BOOL_ENABLE_3D_AUTO_EXPOSURE | 3D automatic exposure enablement |
+| LX_BOOL_ENABLE_3D_UNDISTORT | 3D anti-distortion enable |
+| LX_BOOL_ENABLE_BACKGROUND_AMP | Intensity background light enable |
+| LX_BOOL_ENABLE_ANTI_FLICKER | Anti-stroboscopic enablement, LED ambient lighting may cause obvious ripples in data, some models support |
+| LX_BOOL_ENABLE_2D_STREAM | Turn on/off RGB |
+| LX_BOOL_ENABLE_2D_AUTO_EXPOSURE | 2D automatic exposure enable |
+| LX_BOOL_ENABLE_2D_UNDISTORT | 2D anti-distortion enable |
+| LX_BOOL_ENABLE_2D_TO_DEPTH | RGBD coordinate alignment enable |
+| LX_BOOL_ENABLE_MULTI_MACHINE | Multi-machine mode enabled, supported by some models |
+| LX_BOOL_ENABLE_MULTI_EXPOSURE_HDR | HDR (multi-exposure high dynamic range mode) enabled |
+| LX_BOOL_ENABLE_SYNC_FRAME | Whether to enable forced frame synchronization, the default data real-time priority is given, if RGBD synchronization is required, <br /> needs to enable this mode |
+
+#### 5.8.4 string type parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_STRING_DEVICE_VERSION | Device version number |
+| LX_STRING_FIRMWARE_NAME | Firmware file name, used to upgrade device version, can only be set |
+| LX_STRING_FILTER_PARAMS | Filter algorithm parameters, string in json format |
+| LX_STRING_ALGORITHM_PARAMS | Built-in algorithm parameters, different opening modes, corresponding to different json format strings, <br /> prerequisite needs to be set LX_ALGORITHM_MODE |
+| LX_STRING_ALGORITHM_VERSION | Built-in algorithm version number, different opening modes, return the corresponding version number, can only be obtained, <br /> prerequisite needs to be set LX_ALGORITHM_MODE |
+| LX_STRING_DEVICE_OS_VERSION | Device system image version number |
+| LX_STRING_IMPORT_PARAMS_FROM_FILE | Load parameters from local file to camera |
+| LX_STRING_EXPORT_PARAMS_TO_FILE | Export the current parameters of the camera to a local file |
+
+#### 5.8.5 Command type parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_CMD_GET_NEW_FRAME | Update data once, default timeout is 1s |
+| LX_CMD_RETURN_VERSION | Roll back to the previous version |
+| LX_CMD_RESTART_DEVICE | Restart camera |
+| LX_CMD_WHITE_BALANCE | Auto white balance |
+| LX_CMD_RESET_PARAM | Restore default parameters |
+
+#### 5.8.6 ptr type parameters
+
+| Keywords | Description |
+| --- | --- |
+| LX_PTR_2D_IMAGE_DATA | Get the 2D image data pointer, the data length is determined by the 2D image size, channel number and data format (LX_INT_2D_IMAGE_DATA_TYPE) |
+| LX_PTR_3D_AMP_DATA | Get the 3D intensity map data pointer. The data length is determined by the 3D image size, channel number and data format (LX_INT_3D_AMPLITUDE_DATA_TYPE) |
+| LX_PTR_3D_DEPTH_DATA | Get the 3D depth map data pointer. The data length is determined by the 3D image size, channel number and data format (LX_INT_3D_DEPTH_DATA_TYPE) |
+| LX_PTR_XYZ_DATA | Get the point cloud data pointer, three channels of float* type (x, y, z are a set of data, looped in sequence), the data length is LX_INT_3D_IMAGE_WIDTH*LX_INT_3D_IMAGE_HEIG HT*sizeof(float)*3 |
+| LX_PTR_ALGORITHM_OUTPUT | Get the built-in algorithm output, related to the algorithm mode. MODE_AVOID_OBSTACLE is the LxAvoidanceOutput pointer, MODE_PALLET_LOCATE is the LxPalletPose pointer, and MODE_VISION_LOCATION is the reference LxLocation pointer |
+| LX_PTR_2D_INTRIC_PARAM | Get 2D image internal parameters, float* type pointer, <br /> length is fixed at 9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX_PTR_3D_INTRIC_PARAM | Get 3D image internal parameters, float* type pointer, <br /> length is fixed at 9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX_PTR_3D_EXTRIC_PARAM | Get the 3D image external parameters, float* type pointer, the length of <br /> is fixed at 12*sizeof(float) (the first 9 represent the rotation matrix, the last 3 represent the translation vector) |
+| LX_PTR_FRAME_DATA | Obtain a complete frame of data, and the output result refers to the structure FrameInfo |
+
+### 5.9 LxDeviceInfo
+
+Function: Device attribute information structure
+
+| Field | Type | Description |
+| --- | --- | --- |
+| handle | DcHandle | device unique identifier |
+| dev_type | LX_DEVICE_TYPE | Device type |
+| id | Char array | device id |
+| ip | Char array | Device ip:port |
+| sn | Char array | Device serial number |
+| mac | Char array | device mac address |
+| firmware_ver | Char array | Device software version number |
+| algor_ver | Char array | Device algorithm version number |
+| name | Char array | Device name, such as: camera_M3_192.168.11.13_9803 |
+| reserve | Char array | reserved field, subnet mask |
+| reserve2 | Char array | Reserved field 2, gateway |
+| reserve3 | Char array | Reserved field 3 |
+| reserve4 | Char array | Reserved field 4 |
+
+### 5.10 LxIntValueInfo
+
+Function: Device attribute information structure
+
+| Field | Type | Description |
+| --- | --- | --- |
+| set_available | Bool | Whether the current value is settable, true - can be set, false - cannot be set |
+| cur_value | Int | Current value |
+| max_value | Int | maximum value |
+| min_value | Int | Minimum value |
+| reserve | Int array | reserved field |
+
+### 5.11 LxFloatValueInfo
+
+Function: Device attribute information structure
+
+| Field | Type | Description |
+| --- | --- | --- |
+| set_available | Bool | Whether the current value can be set, true - can be set, false - cannot be set |
+| cur_value | float | current value |
+| max_value | float | maximum value |
+| min_value | float | minimum value |
+| reserve | float array | reserved field |
+
+### 5.12 LX\_DEVICE\_TYPE
+
+Function: device type
+
+| Keywords | Description |
+| --- | --- |
+| LX_DEVICE_M2 | M2 Camera |
+| LX_DEVICE_M3 | M3 camera |
+| LX_DEVICE_M4 Pro | M4 Pro Camera |
+| LX_DEVICE_M4_MEGA | M4 Mega Camera |
+| LX_DEVICE_M4 | M4 camera |
+| LX_DEVICE_S1 | S1 Camera |
+| LX_DEVICE_S2 | S2 Camera |
+| LX_DEVICE_I1 | I1 camera |
+| LX_DEVICE_I2 | I2 camera |
+| LX_DEVICE_T1 | T1 camera |
+| LX_DEVICE_T2 | T2 camera |
+| LX_DEVICE_H3 | H3 Camera |
+| LX_DEVICE_V1Pro | V1Pro camera |
+| LX_DEVICE_NULL | Reserved |
+
+### 5.13 LX\_OPEN\_MODE
+
+Function: device type
+
+| Keywords | Description |
+| --- | --- |
+| OPEN_BY_INDEX | Open according to the index subscript in the search list. The corresponding parameter is the index number. When the searched device list changes, the device selected by <br /> to open will also be different |
+| OPEN_BY_IP | Open according to the corresponding ip in the search list, and the corresponding parameter is the device ip or ip:port |
+| OPEN_BY_SN | Open according to the corresponding sn mode in the search list, and the corresponding parameter is the device sn |
+| OPEN_BY_ID | Open according to the corresponding id in the search list, and the corresponding parameter is the device id |
+
+### 5.14 FrameDataInfo
+
+Function: Image display information structure
+
+| Field | Type | Description |
+| --- | --- | --- |
+| frame_data_type | LX_DATA_TYPE | Frame data type |
+| frame_width | Int | Frame data image width |
+| frame_height | Int | Frame data image height |
+| frame_channel | Int | Number of frame data channels |
+| frame_data | Void *pointer type | frame data content |
+| sensor_timestamp | Unsigned long long type | sensor image timestamp |
+| recv_timestamp | Unsigned long long type | The timestamp when the frame data is received |
+
+### 5.15 FrameInfo
+
+Function: Data frame information structure
+
+| Field | Type | Description |
+| --- | --- | --- |
+| frame_state | LX_STATE | Frame data status |
+| handle | DcHandle | device unique identifier |
+| depth_data | FrameDataInfo type | Depth map frame data structure |
+| amp_data | FrameDataInfo type | Intensity map frame data structure |
+| rgb_data | FrameDataInfo type | Rgb frame data structure |
+| app_data | FrameDataInfo type | Algorithm output structure |
+| reserve_data | Void *pointer type | extended reserved field |
+
+* * *
+
+## 6**. API Description**
+
+### 6.1 Find, connect and close the camera
+
+#### 6.1.1 DcGetDeviceList
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/574fb5b6-8cf7-4a0b-b362-47859b5a7bbe/8b322247-9b7e-4131-b5ee-10120e5a5bae.avif" alt="DcGetDeviceList related icons" />
+</Frame>
+
+**Function function:**
+
+Get a list of supported cameras.
+
+**Function parameters:**
+
+- \[out\]devlist Found camera list
+
+- \[out\]devnum Number of cameras found
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Remarks:** The memory is maintained internally, and there is no need to allocate external memory. However, because the original content will be cleared before each search, external thread safety needs to be ensured.
+
+#### 6.1.2 DcOpenDevice
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/f628bf77-caf9-4975-8bcd-c810744df8ad/fecb1fc4-7432-4b45-8a6c-85e3c236dffb.avif" alt="DcOpenDevice related icons" />
+</Frame>
+
+**Function function:**
+
+Connect your device.
+
+**Function parameters:**
+
+- \[in\]open\_mode open mode, see OpenMode for details
+
+- \[in\]param different opening methods, fill in different parameters
+
+- \[out\]handle is the device handle returned after successful connection. All subsequent interface access depends on this handle.
+
+- \[out\]info Camera details returned after successful connection
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.1.3 DcCloseDevice
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/71d93c55-6e7c-4c44-b488-4e83dfb49edd/3450f411-98f1-4c8f-8ae9-90d6544d38b5.avif" alt="DcCloseDevice related icons" />
+</Frame>
+
+**Function function:**
+
+Turn off the device
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.2 Start streaming and close streaming
+
+#### 6.2.1 DcStartStream
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/39b2d399-7df6-4e9d-bff4-4a0a5c6746c6/b1907a64-3f0e-4dde-b25a-49e376793bd4.avif" alt="DcStartStream related icons" />
+</Frame>
+
+**Function:**Open data stream
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.2.2 DcStopStream
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/9fc6dd98-36e4-4462-888b-658e9c590504/7e6b2b0d-3094-431b-8e8b-400ed269710f.avif" alt="DcStopStream related icons" />
+</Frame>
+
+**Function:**Close data flow
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.3 Reading and setting camera parameters
+
+#### 6.3.1 DcSetIntValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/6d8c8c16-79bf-4053-a7d6-0df27577a5d2/7f58b2cf-096a-47fe-a512-d821284fcf54.avif" alt="DcSetIntValue related icons" />
+</Frame>
+
+**Function function:**
+
+Set int type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[in\]value sets parameter value
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.2 DcGetIntValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/6de18c97-e83c-490b-8075-43fbb4fbae45/b64ee220-a648-459f-9d9f-6d9e388285a7.avif" alt="DcGetIntValue related icons" />
+</Frame>
+
+**Function function:**
+
+Get int type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[out\]value returns the parameter structure, the maximum and minimum values ​​of the parameters, the current value, etc.
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.3 DcSetFloatValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/6a7513d0-16c8-4013-8e53-ef59f5207840/9a31bf61-c101-40aa-867a-57dd5756517a.avif" alt="DcSetFloatValue related icons" />
+</Frame>
+
+**Function function:**
+
+Set float type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[in\]value sets parameter value
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.4 DcGetFloatValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/e7d8d4fe-6cc2-4323-a4c3-a8481c1ae7ef/a3d3272e-4c3e-4949-8166-79918b3268bc.avif" alt="DcGetFloatValue related icons" />
+</Frame>
+
+**Function function:**
+
+Get float type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[out\]value returns the parameter structure, the maximum and minimum values ​​of the parameters, the current value, etc.
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.5 DcSetBoolValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/87940dfa-c21f-41c3-aedf-4da82823857a/56fae64f-16a3-47db-9672-09edabbbf90d.avif" alt="DcSetBoolValue related icons" />
+</Frame>
+
+**Function function:**
+
+Set bool type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[in\]value sets parameter value
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.6 DcGetBoolValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/fdf6d572-85d6-450f-a32b-57a3666971e2/da68f6d4-8396-4940-bee4-e8fc3298b957.avif" alt="DcGetBoolValue related icons" />
+</Frame>
+
+**Function function:**
+
+Get bool type parameter
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[out\]value return parameters
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.7 DcSetStringValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/3deec81d-fab8-4ed1-8aaf-2c1828fdc6f3/52abe248-6d06-4f2a-b2ef-ec92e1ec0a13.avif" alt="DcSetStringValue related icons" />
+</Frame>
+
+**Function function:**
+
+Set string type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd refer to LX\_CAMERA\_FEATURE
+
+- \[in\]value sets parameter value
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.8 DcGetStringValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/b7ce6c7f-8fa6-4f4e-be45-6da51924afe3/feb87fff-fcaa-4556-8615-5ff6cf782778.avif" alt="DcGetStringValue related icons" />
+</Frame>
+
+**Function function:**
+
+Get string type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[out\]value returns parameters without external allocation of memory
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.9 DcGetPtrValue
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/71e88e0b-fc25-496e-8a5a-70999dcdeee6/87125244-175a-4688-b868-32f52ecd7106.avif" alt="DcGetPtrValue related icons" />
+</Frame>
+
+**Function function:**
+
+Get pointer type parameters
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+- \[out\]value returns parameters without external allocation of memory
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.3.10 DcSetCmd
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/48722082-f1c2-42fe-91ba-0aa517a0607e/d5ec99a5-a579-4740-b90b-75da81714ae6.avif" alt="DcSetCmd related icons" />
+</Frame>
+
+**Function function:**
+
+Execute corresponding CMD type command operation
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]cmd reference LX\_CAMERA\_FEATURE
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.4 Save point cloud
+
+#### 6.4.1 DcSaveXYZ
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/294db837-9ec7-4c6c-8964-991eaccf5737/6a2ad8e7-fad9-4104-b44e-544c6e5ee322.avif" alt="DcSaveXYZ related icons" />
+</Frame>
+
+**Function function:**
+
+Save the point cloud and call it directly
+
+**Function parameters:**
+
+- handle device handle
+
+- filename file name, supports txt, ply and pcd formats. txt format saves all data in image order, ply and pcd only save non-zero data
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.5 Special Controls
+
+#### 6.5.1 DcSpecialControl
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/464ec28f-aded-4bb0-b1a8-21510aea51b8/4c95d60d-5677-4cee-9aa8-99c636ab3b34.avif" alt="DcSpecialControl related icons" />
+</Frame>
+
+**Function function:**
+
+LX\_CAMERA\_FEATURE Special operations beyond the definition
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]param operation
+
+- \[inout\]value is the corresponding input parameter when set, and the corresponding outgoing parameter when obtained, without external allocation of memory.
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.6 Set ROI and parameter path
+
+#### 6.6.1 DcSetRoI
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/e5d10918-25dd-463c-afb0-164434434e85/fa418b0e-69d4-47d4-9af9-784af13f7387.avif" alt="DcSetRoI related icons" />
+</Frame>
+
+**Function function:**
+
+Set the ROI area. If the input value is not an integer multiple of 8, it will be automatically processed internally as the nearest integer multiple of 8 to the target value. Image size parameters need to be updated after setting
+
+**Function parameters:**
+
+- \[in\]handle device handle
+
+- \[in\]offsetx horizontal offset of starting point in pixels
+
+- \[in\]offsety vertical offset of starting point in pixels
+
+- \[in\]widthroi width of the target area
+
+- \[in\]heightroi height of the target area
+
+- \[in\]type0-3D image 1-2D image
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.7 Set camera IP
+
+#### 6.7.1 DcSetCameraIp
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/04d3cb25-46d7-4698-b58a-3912be71be4c/6995c86c-31e7-4bf4-b3e8-1eeb18a0170d.avif" alt="DcSetCameraIp related icons" />
+</Frame>
+
+**Function function:**
+
+Set camera IP and subnet mask, gateway
+
+**Function parameters:**
+
+- \[in\]handle device handle,
+
+- \[in\]ip device IP,
+
+- \[in\]netmask subnet mask (if empty, the internal default is "255.255.0.0")
+
+- \[in\]gateway gateway ip (if empty, the internal default is to set the last network segment of ip to "1" as the gateway)
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** When the device is not connected, you need to obtain it through search first. If the device supports modifying the gateway and subnet mask, set the gateway to the same network segment and the subnet mask to "255.255.0.0". After modification, the device list will change, and you need to call the DcGetDeviceList interface again to obtain the new device list.
+
+### 6.8 Log information and version information
+
+#### 6.8.1 DcGetApiVersion
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/0caa9bec-1869-40f0-aa97-300ad1b74751/8b7829b0-af3b-44cb-a05a-9998373a2072.avif" alt="DcGetApiVersion related icons" />
+</Frame>
+
+**Function function:**
+
+Get API version number
+
+**Function parameters:**
+
+**Return value:**
+
+char pointer data.
+
+**Remark:**
+
+#### 6.8.2 DcSetInfoOutput
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/a28e3b3b-9399-48a2-adbc-79724aaf8ba1/8d807a90-2d59-4619-903c-8544768c1004.avif" alt="DcSetInfoOutput related icons" />
+</Frame>
+
+**Function function:**
+
+Set printing information level
+
+**Function parameters:**
+
+- \[in\]print\_level 0: info all debugging information; 1: warn important and warning debugging information; 2: error only output error information
+
+- \[in\]enable\_screen\_print whether to print in the window
+
+- \[in\]log\_path The log file saving path (does not include the log file name), can be empty. Windows defaults to the current user path, and Linux defaults to the /var/log path.
+
+- \[in\]language language (not used yet)
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.8.3 DcLog
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/e8c65075-57c0-46b8-979b-88da89690207/aad615f7-a4e3-4d86-9ee0-61e129664cfe.avif" alt="DcLog related icons" />
+</Frame>
+
+**Function function:**
+
+Allow users to output debugging information to the log file
+
+**Function parameters:**
+
+- \[in\]str The string to be output, terminated by '\\0'
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.8.4 DcRegisterFrameCallback
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/2c7da0a7-d94a-4dd1-8882-97c453121aee/d6580ec0-bde6-499f-9e75-089e327989fb.avif" alt="DcRegisterFrameCallback related icons" />
+</Frame>
+
+**Function function:**
+
+Register a data frame callback function and automatically call it when new data is received.
+
+**Function parameters:**
+
+- \[in\]handle device handle,
+
+- \[in\]func frame data callback function,
+
+- \[in\]usr\_data user-defined parameters, can be passed empty
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.8.5 DcUnregisterFrameCallback
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/f1d5c426-1b39-47e9-8cbe-e5a942557600/e97dda1c-88b0-4860-928d-d92008d680f8.avif" alt="DcUnregisterFrameCallback related icons" />
+</Frame>
+
+**Function function:**
+
+Cancel frame callback
+
+**Function parameters:**
+
+- \[in\]handle device handle,
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+### 6.9 Device status callback
+
+#### 6.9.1 DcRegisterCameraStatusCallback
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/1ff6db5a-98b2-4ab9-b138-5d72450dad30/a641903d-04eb-4cde-8a36-b3b460be7a3f.avif" alt="DcRegisterCameraStatusCallback related icons" />
+</Frame>
+
+**Function function:**
+
+Register the camera status callback function, which is automatically called when the camera status changes.
+
+**Function parameters:**
+
+- \[in\]handle device handle,
+
+- \[in\]func frame data callback function,
+
+- \[in\]usr\_data user-defined parameters, can be passed empty
+
+**Note:** Make sure the parameters passed in are valid
+
+#### 6.9.2 DcUnregisterCameraStatusCallback
+
+**Function prototype:**
+
+<Frame>
+  <img src="/images/legacy/162713c3-9690-4a16-a1ab-ee8d902a5270/a139a7a4-b7b6-4156-8cc3-c0ed4f8db165.avif" alt="DcUnregisterCameraStatusCallback related icons" />
+</Frame>
+
+**Function function:**
+
+Cancel camera status registration callback
+
+**Function parameters:**
+
+- \[in\]handle device handle,
+
+**Return value:**
+
+Int data, this value is equal to LX\_SUCCESS, indicating that the interface call is successful.
+
+**Note:** Make sure the parameters passed in are valid
+
+* * *
+
+## 7. **Versions and Updates**
+
+| Version number | Update instructions |
+| --- | --- |
+| 2.4.16 | 1. Support S2 camera <br />2. Add parameter import and export and parameter group switching <br />3. Add related function settings |
+| 2.4.9 | 1. Optimize and add some functions and configuration parameters 2. Change the timestamp to us |
+| 2.4.2 | Support M4/M4 Mega/M4 Pro/V1Pro/S2/H3 cameras |
+| 2.0.2 | Fix some known issues, adjust some interfaces and parameters |
+
+* * *
+
+Welcome to contact us through the following methods:
+
+- If you have not purchased the product yet, please [Click me](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Click me") to add a pre-sales engineer/sales enterprise WeChat account
+
+- Users who have purchased products, please [click me](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "click me") to add after-sales technical support enterprise WeChat
+
+[https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe](https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe "https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe")
+
+* * *
+
+Use this documentation to learn more about MRDVS products and solutions.

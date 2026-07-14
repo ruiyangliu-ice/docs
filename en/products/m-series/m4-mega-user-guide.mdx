@@ -1,0 +1,587 @@
+---
+title: "M4 Mega product user guide"
+description: "Specifications, features, and operating instructions for the MRDVS M4 Mega camera."
+hidden: true
+---
+## Revision history
+
+| Date | Version | Change |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Initial document |
+| 2023/04/03 | V1.0 | Added software and hardware trigger instructions |
+| 2024/05/10 | V1.1 | Corrected camera information and parameters |
+| 2024/06/17 | V1.2 | Corrected the camera wire order and added a certificate of conformity to the package |
+| 2024/11/125 | V1.3 | Updated the camera storage temperature |
+
+## 1. Product overview
+
+This guide describes the M4 Mega camera developed by Zhejiang MRDVS Technology Co., Ltd., including its specifications, features, and operating instructions.
+
+The M4 Mega product family includes the M4 Mega camera. This ToF product uses a Gigabit Ethernet communication interface and a 24VDC power supply.
+
+<Frame>
+  <img src="/images/legacy/dfa15fb3-9172-4f91-9552-5e84b02ac2df/9e681e0b-79da-495d-997b-3622da10cf53.avif" alt="M4 Mega camera overview" />
+</Frame>
+
+Figure 1.1. M4 Mega camera
+
+### 1.1 Product features
+
+- Built-in 1Tops compute capacity for operation without an external CPU
+
+- RGB-D support
+
+- Standalone obstacle avoidance, docking, localization, soft-package grasping, storage-location detection, and volume measurement
+
+- Gigabit Ethernet port
+
+- IP67 ingress protection
+
+### 1.2 Terms of use
+
+**Observe the following requirements during use:**
+
+- Do not remove labels from the product.
+
+- Do not disassemble the product. Disassembly may damage it.
+
+- Do not use the product in strong magnetic fields.
+
+- Do not use the product under intense sunlight above 100KLUX.
+
+- To clean the enclosure, wipe it with a soft, lint-free cloth lightly dampened with purified water or alcohol.
+
+- Keep the original packaging and use it whenever possible during transport.
+
+* * *
+
+## 2. Product specifications
+
+### 2.1 Distance measurement principle
+
+The M4 Mega camera uses time-of-flight (ToF) ranging. It measures the time between emitting light and receiving the reflection from an object to calculate the distance between the object and camera.
+
+The M4 Mega camera captures depth directly, providing high-quality depth information with minimal compute resources and building depth scenes at a high frame rate. Like LiDAR, ToF cameras can use pulsed ToF (P\_ToF) or continuous-wave modulated ToF (CW\_ToF). P\_ToF emits light pulses, usually invisible, and calculates distance from their round-trip time. CW\_ToF emits modulated continuous light and calculates distance from the phase difference between the emitted and returned light.
+
+<Frame>
+  <img src="/images/legacy/9073b55e-eee9-4096-9763-f0dff90715c4/48b26d0f-36a5-43d7-a236-8e885b07fe10.avif" alt="ToF distance measurement principle" />
+</Frame>
+
+Figure 2.1. Detection principle
+
+### 2.2 Product overview
+
+This compact industrial RGB-D camera integrates a Sony CW iToF camera with three-channel true-color RGB output. It provides depth data from 0.2m~5m and aligns RGB and depth images spatially and temporally. The camera can also output structured pallet-recognition results over CAN.
+
+### 2.3 Specifications
+
+Table 2-1. Product specifications
+
+| Camera | Model | Eagle-M4 Mega |
+| --- | --- | --- |
+| Performance | Sensor | Sony sensor |
+| ㅤ | Measurement method | Time of flight |
+| ㅤ | Operating wavelength | 940nm |
+| ㅤ | TOF resolution and frame rate | 640×480 (typical 15fps, Max 25fps) |
+| ㅤ | TOF field of view | 81°×61° |
+| ㅤ | RGB resolution and frame rate | 1280×960 (typical 15fps, Max 25fps) |
+| ㅤ | RGB field of view | 86°×55° |
+| ㅤ | Measurement range | 0.2~5m (90% reflectivity); 0.2~2.5m (10% reflectivity) |
+| ㅤ | Measurement accuracy | ±3mm+0.25%×depth |
+| Electrical | Communication interface | Ethernet / CAN / IO |
+| ㅤ | Power connector | Industrial 5-pin circular connector |
+| ㅤ | Power supply | 24V DC / 2A |
+| ㅤ | Average power consumption | 6.8w |
+| Mechanical | Dimensions | 92mm×47mm×51mm |
+| ㅤ | Weight | 449g |
+| ㅤ | Ingress protection | IP67 |
+| ㅤ | Operating temperature | -20℃~60℃ |
+| ㅤ | Storage temperature | -40℃~85℃ |
+| ㅤ | Humidity | 10%~90%RH, non-condensing |
+| Other | Ambient-light immunity | Supports sunlight up to 100Klux |
+| ㅤ | Shadow-to-light transition | Less than 1cm variation across a 100Klux shadow-light boundary |
+| ㅤ | Software environment | C / C++ / ROS SDK |
+| ㅤ | Supported operating systems | Windows7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Cooling | Passive |
+
+Note: Refer to the 3D model for product dimensions.
+
+* * *
+
+## 3. Product characteristics
+
+### 3.1 Electrical characteristics
+
+Table 3-1. Electrical characteristics
+
+| Parameter | Symbol | Condition | Minimum | Typical | Maximum | Unit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Supply voltage | VDD | ㅤ | 18 | 24 | 30 | V |
+| Digital I/O | IN | ㅤ | 3.3 | ㅤ | 24 | V |
+| CAN | ㅤ | ㅤ | 0 | ㅤ | 5V | V |
+| Operating temperature | Ta | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Operating humidity | ㅤ | ㅤ | 20 | ㅤ | 80 | % |
+| Storage humidity | ㅤ | ㅤ | -25 | ㅤ | 80 | % |
+| Storage temperature | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### 3.2 Output characteristics
+
+By default, the M4 Mega camera outputs a depth image (Figure 3.1), per-pixel signal intensity data (Figure 3.2), and a point cloud generated from the depth data (Figure 3.3). The object shown is an aluminum profile.
+
+<Frame>
+  <img src="/images/legacy/7fba5ea3-f9bc-4302-8e63-bf4b09d06542/9cf66ae3-32b0-4888-b89b-088c2d9ccdb2.avif" alt="M4 Mega depth image" />
+</Frame>
+
+Figure 3.1. Depth image
+
+<Frame>
+  <img src="/images/legacy/2f31d128-6807-4da9-ab0f-2a75815adf78/40d8b3a3-0f10-4908-9d0a-31e407159724.avif" alt="M4 Mega amplitude image" />
+</Frame>
+
+Figure 3.2. Amplitude image
+
+<Frame>
+  <img src="/images/legacy/e6af30f3-0b25-4d52-b50d-5ab6f0e04039/4ee38776-48ad-4426-8d59-8236dae4152b.avif" alt="M4 Mega point cloud" />
+</Frame>
+
+Figure 3.3. Point cloud
+
+The camera uses inter-frame high dynamic range (HDR) to extend the measurement range. The sensor outputs two depth frames with different integration times and calibration parameters. For each pixel, the host application selects the frame with the higher intensity and combines the results into the final output, improving depth accuracy across measurement ranges.
+
+### 3.3 Detection range
+
+Figure 3.4 shows the M4 Mega detection area. The camera's horizontal field of view is 81°, and its vertical field of view is 61°. Detection distance depends on optical power. Higher optical power and target reflectivity increase the near blind zone but reduce the far blind zone. Lower optical power and target reflectivity reduce the near blind zone but increase the far blind zone. For objects with 10%~90% reflectivity, the M4 Mega measurement range is 0.2~5m. Beyond 5m, weak reflected signals are more susceptible to ambient light and produce larger errors.
+
+<Frame>
+  <img src="/images/legacy/d2c7d1d4-7874-4390-946b-d8730eea406b/d6a07ab9-42fc-4b9c-a880-f18036ec5d5e.avif" alt="M4 Mega detection range" />
+</Frame>
+
+Figure 3.4. Field of view
+
+### 3.4 Reflectivity reference
+
+Reflectivity values in this guide are measured against a Kodak standard white card. Reference values for other materials appear below.
+
+Table 3-2. Material reflectivity
+
+| No. | Material | Reflectivity |
+| --- | --- | --- |
+| 1 | Black rubber | 22% |
+| 2 | Black ceramic mug | 34% |
+| 3 | Black plastic sheet | 42% |
+| 4 | Newspaper | 45% |
+| 5 | Black cloth | 78% |
+| 6 | Opaque plastic bottle | 85% |
+| 7 | Smooth wood panel | 90% |
+| 8 | White paper | 90% |
+| 9 | Kodak standard white card | 100% |
+| 10 | Clear glass | 140% |
+| 11 | Glossy, light-colored metal surface | 150% |
+
+### 3.5 Dimensions
+
+<Frame>
+  <img src="/images/legacy/41e5cfff-1f96-4d8b-b5c3-778510deecc6/92c19eea-e8de-492c-974b-c336c6e9c35a.avif" alt="M4 Mega camera dimensions" />
+</Frame>
+
+Figure 3.5. M4 Mega camera dimensions
+
+### 3.6 Optical coordinate systems and origin
+
+**Optical coordinate systems:**
+
+- The optical coordinate systems include the camera coordinate system (CCS) and world coordinate system (WCS).
+
+- The camera coordinate system is the two-dimensional depth-image coordinate system. Its origin is the optical center.
+
+- The world coordinate system is the three-dimensional point-cloud coordinate system.
+
+- Use the camera intrinsics to convert depth-image coordinates to 3D point-cloud coordinates. See the SDK examples.
+
+<Frame>
+  <img src="/images/legacy/15bb76dc-0f9d-44b5-b5e1-ff5f5db180c9/66151ae6-e148-4e2f-b3cc-cc7c07ab6786.avif" alt="Optical coordinate systems" />
+</Frame>
+
+Figure 3.6. Optical coordinate systems
+
+**The camera origin is defined as follows:**
+
+1.  The X-coordinate origin aligns with the product's X-axis.
+
+2.  The Y-coordinate origin aligns with the product's Y-axis.
+
+3.  The Z-coordinate origin is on the front surface of the camera.
+
+<Frame>
+  <img src="/images/legacy/0ad35a33-5ffd-4ac5-aa4a-4c49510b3086/d103a7c5-96e8-41f6-a584-9d84290acf49.avif" alt="M4 Mega camera origin" />
+</Frame>
+
+Figure 3.7. Camera origin
+
+### 3.7 Product interfaces
+
+### 3.7.1 Camera-side interfaces
+
+The camera has three interfaces: a DC24V power port, a Gigabit Ethernet port, and an I/O/CAN function port.
+
+<Frame>
+  <img src="/images/legacy/084d1df0-d394-47f2-8b63-36772f8206a7/bc4360fc-0155-417f-acd3-25f738923f47.avif" alt="M4 Mega camera-side interfaces" />
+</Frame>
+
+Table 3-3. Pin definitions
+
+| Port | Pin | Signal | Description |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | Gigabit Ethernet |
+| ㅤ | 2 | MDI0_p | ㅤ |
+| ㅤ | 3 | MDI1_N | ㅤ |
+| ㅤ | 4 | MDI1_p | ㅤ |
+| ㅤ | 5 | MDI2_N | ㅤ |
+| ㅤ | 6 | MDI2_p | ㅤ |
+| ㅤ | 7 | MDI3_N | ㅤ |
+| ㅤ | 8 | MDI3_p | ㅤ |
+| Function port | 1 | CAN_H | CAN_H |
+| ㅤ | 2 | CAN_L | CAN_L |
+| ㅤ | 3 | GND | CAN GND |
+| ㅤ | 4 | OUT_1 | I/O output 1 |
+| ㅤ | 5 | COM | I/O COM terminal |
+| ㅤ | 6 | OUT_2 | I/O output 2 |
+| ㅤ | 7 | IN_1 | I/O input 1 |
+| ㅤ | 8 | IN_2 | I/O input 2 |
+| Power port | 1 | 24+ | DC power female connector, 5.5-2.1mm |
+| ㅤ | G | 24- | ㅤ |
+
+### 3.7.2 Function cable wire order
+
+<Frame>
+  <img src="/images/legacy/127c7be8-df93-4eb0-b3d3-43900a9f8029/9b15e07f-c965-496b-8a78-e8218383e90b.avif" alt="M4 Mega function cable wire order" />
+</Frame>
+
+Table 3-4. Function cable wire order
+
+| Cable | Color | Pin | Description |
+| --- | --- | --- | --- |
+| Function cable | Orange | CAN_H | CAN_H |
+| ㅤ | Yellow | CAN_L | CAN_L |
+| ㅤ | Green | GND | CAN GND |
+| ㅤ | Brown | IN_1 | I/O input 1 |
+| ㅤ | White | IN_2 | I/O input 2 |
+| ㅤ | Purple | COM | I/O COM terminal |
+| ㅤ | Blue | OUT_1 | I/O output 1 |
+| ㅤ | Gray | OUT_2 | I/O output 2 |
+| Power cable | Red | 24V+ | Positive power terminal |
+| ㅤ | Black | GND | Negative power terminal |
+
+Note: Some older function cables use different colors. Connect wires according to their labels.
+
+### 3.8 Hardware trigger
+
+1.  Hardware triggering works only when the product is in hardware-trigger mode. Hardware-trigger and obstacle-avoidance modes are mutually exclusive. In hardware-trigger mode, the camera waits for a valid pulse on I/O input pin 1, exposes one frame, and returns to the waiting state.
+
+2.  The hardware trigger signal must be 3.3V~24V and provide at least 10mA drive current. Add a decoupling circuit to the trigger signal pin to prevent false triggers from pulse noise.
+
+### 3.8.1 Configure hardware triggering in the host application
+
+Open the camera → verify that the obstacle-avoidance algorithm is off → stop the stream → **Basic tools** → **Acquisition settings** → switch **Trigger mode** to **Hardware trigger** → configure the parameters → start the stream and wait for an external trigger signal.
+
+**1. Hardware trigger parameters**
+
+**Filter time:** Time to wait before checking the trigger signal again after the hardware trigger input receives it. This filters noise. Use a value below 5ms. A larger value may filter valid trigger signals.
+
+**Minimum interval:** Interval between two consecutive automatic trigger signals. The range is 70000~100000000μs, and the value must exceed the integration time.
+
+**Trigger time:** Delay after checking the trigger signal again. Set to 0 for immediate triggering. The range is 0~100000000μs.
+
+**Frames per trigger:** Number of consecutive frames triggered by one hardware trigger. The range is 1~200 frames.
+
+**2. Hardware trigger examples**
+
+**Example 1:** Filter time: 1000; minimum interval: 70000 (minimum); trigger time: 2000; frames per trigger: 10.
+
+After receiving the signal, the camera waits 1ms and checks it again. It waits another 2ms before triggering the first frame, then waits 70ms between subsequent frames until frame 10. Trigger signals received during this sequence are ignored.
+
+**Example 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+
+After receiving the signal, the camera waits 1ms, checks it again, and triggers immediately. The minimum interval does not apply when frames per trigger is 1.
+
+**Example 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+
+### 3.9 Software trigger
+
+Software triggering works only when the product is in software-trigger mode. Software-trigger and obstacle-avoidance modes are mutually exclusive. In software-trigger mode, the camera waits for a valid software trigger signal, exposes one frame, and returns to the waiting state.
+
+### 3.9.1 Configure software triggering in the host application
+
+Open the camera → verify that the obstacle-avoidance algorithm is off → stop the stream → **Basic tools** → **Acquisition settings** → switch **Trigger mode** to **Software trigger** → configure the parameters → start the stream → select **Send software trigger**.
+
+1.  **Software trigger parameters**
+
+**Filter time:** Time to wait before checking the trigger signal again after the software trigger input receives it. This filters noise. Use a value below 5ms. A larger value may filter valid trigger signals.
+
+**Minimum interval:** Interval between two consecutive automatic trigger signals. The range is 70000~100000000μs, and the value must exceed the integration time.
+
+**Trigger time:** Delay after checking the trigger signal again. Set to 0 for immediate triggering. The range is 0~100000000μs.
+
+**Frames per trigger:** Number of consecutive frames triggered by one software trigger. The range is 1~200 frames.
+
+1.  **Software trigger examples**
+
+**Example 1:** Filter time: 1000; minimum interval: 70000 (minimum); trigger time: 2000; frames per trigger: 10.
+
+After receiving the signal, the camera waits 1ms and checks it again. It waits another 2ms before triggering the first frame, then waits 70ms between subsequent frames until frame 10. Trigger signals received during this sequence are ignored.
+
+**Example 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+
+After receiving the signal, the camera waits 1ms, checks it again, and triggers immediately. The minimum interval does not apply when frames per trigger is 1.
+
+**Example 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+
+### 3.10 Camera components
+
+<Frame>
+  <img src="/images/legacy/64b9fcbe-8510-47da-879a-9f507a420b39/f10ec8bf-9fbd-4171-8bfd-343f75a7aab1.avif" alt="M4 Mega camera components" />
+</Frame>
+
+| No. | Component |
+| --- | --- |
+| 1 | Power indicator; flashes slowly after power-on |
+| 2 | 940 light source |
+| 3 | Multi-camera interference source detection module |
+| 4 | TOF lens |
+| 5 | RGB lens |
+
+### 3.11 Recommended installation
+
+**Use one of the following three installation methods.**
+
+**Installation 1:** Neither the right wall nor floor is visible. Place the camera in a corner with only the wall ahead in its field of view. This configuration provides good ranging performance.
+
+<Frame>
+  <img src="/images/legacy/030ef6a4-ef27-4b36-8352-3a1445bd2832/28aafc0b-35e5-4805-85f3-33b81dd90b1b.avif" alt="Recommended M4 Mega installation 1" />
+</Frame>
+
+Figure 3.8. Installation 1
+
+**Installation 2:** The right wall is visible, but the floor is not. Place the camera in a corner at least 20cm from the right wall, measured by distance `d`. This configuration can achieve ±15mm ranging accuracy.
+
+<Frame>
+  <img src="/images/legacy/76b2edc0-9998-4b48-b1b3-eb5a4bb70ff2/705dd490-d064-4673-ae1d-ea26a5988268.avif" alt="Recommended M4 Mega installation 2" />
+</Frame>
+
+Figure 3.9. Installation 2
+
+**Installation 3:** The floor is visible, but the right wall is not. Install the camera at a recommended height of 10cm~30cm above the floor.
+
+<Frame>
+  <img src="/images/legacy/af31b3dd-2dfe-4c86-9cd8-ad3cf733b6d5/781c4b72-b66f-4333-8863-e8841134f91c.avif" alt="Recommended M4 Mega installation 3" />
+</Frame>
+
+Figure 3.10. Installation 3
+
+When the camera is close to the floor, the nearby floor becomes overexposed and affects other areas. Stray light and multipath reflections also affect near-floor measurements, as shown in Figure 3.11.
+
+<Frame>
+  <img src="/images/legacy/7ed5f394-5804-4d15-bb62-5af975b04ea0/52e4d051-d12c-485b-a332-881a4079bec3.avif" alt="Near-floor multipath effects" />
+</Frame>
+
+Figure 3.11. Near-floor multipath effects
+
+In imaging optics, stray light primarily appears as ghosting and flare, as shown in Figure 3.12.
+
+<Frame>
+  <img src="/images/legacy/be215d41-1668-41b1-94d9-307fc00c3111/74c91749-1740-42f4-8102-db289a1ac9ac.avif" alt="Ghosting and flare from stray light" />
+</Frame>
+
+Figure 3.12. Ghosting and flare
+
+**Do not install the product where both the right wall and floor are visible**, as shown below. Stray light from the floor and multipath reflections from the wall can affect measurements in complex ways.
+
+<Frame>
+  <img src="/images/legacy/6b579da9-bf2d-47ee-ae55-79872f74719d/991a71f8-ec30-46b0-bd22-529f0fb6716d.avif" alt="Unsupported M4 Mega installation" />
+</Frame>
+
+Figure 3.13. Unsupported installation
+
+* * *
+
+## 4. Accuracy and precision
+
+### 4.1 Accuracy
+
+Calibration removes fixed offsets between sensor measurements and actual values by mapping one to the other. To calibrate an M4 Mega camera, mount it on a rail and point it at a white wall. Map each pixel's measured value to the distance between the camera and the corresponding wall area, then correct measurements with this mapping, as shown in Figure 4.1.
+
+<Frame>
+  <img src="/images/legacy/379b03b6-5b43-4db0-bc44-b715c859694e/cd16d195-e215-49ca-a673-1c00034af49f.avif" alt="M4 Mega calibration setup" />
+</Frame>
+
+Figure 4.1. Calibration
+
+The M4 Mega uses active ranging, so many factors affect its accuracy. Improper installation can introduce multipath effects and distort measurements.
+
+This is especially noticeable when measuring a low-reflectivity target beside a highly reflective object. Ideally, light follows the blue path. Light reflected from a wall may also reach the target and return to the camera along the green path. Illumination reflected directly from the adjacent high-reflectivity object may enter the camera along the red path. Optical imperfections turn this light into glare that interferes with ranging, as shown in Figure 4.2.
+
+<Frame>
+  <img src="/images/legacy/e4159efc-5b5f-458d-b57f-e01e572c892f/b523267e-64ca-4b4c-9c2d-6d3c5afd55b6.avif" alt="M4 Mega installation and reflection paths" />
+</Frame>
+
+Figure 4.2. Camera installation
+
+### 4.2 Precision
+
+Precision typically refers to single-point variation (1-σ). As an optoelectronic measurement device, the M4 Mega is affected by ADC conversion, signal-to-noise ratio, and system noise. Figure 4.3 shows the relationship between measurement precision and signal intensity.
+
+<Frame>
+  <img src="/images/legacy/ee73d646-4d62-4aaf-8833-5f2c4b5cf3d9/a3a07cf5-cd92-42b4-a817-e1ef02896e6d.avif" alt="Measurement precision and signal intensity" />
+</Frame>
+
+Figure 4.3. Measurement precision and signal intensity
+
+The M4 Mega converts optoelectronic analog signals into digital data. During ADC conversion, the analog value is rounded to the smallest resolution step, introducing noise. A 1.1V signal may be represented as 1V, producing 10% error. A 10.1V signal may become 10V, and a 100.1V signal may become 100V, each producing about 1% error. ADC conversion therefore introduces more noise and error at low signal levels. A ToF camera's signal-to-noise ratio generally follows SNR∝1/√t, where `t` is integration time. Increasing integration time raises signal intensity.
+
+* * *
+
+## 5. Multi-camera interference
+
+### 5.1 Parallel interference
+
+When two cameras are installed in parallel, each can receive both its own reflected illumination and illumination from the other camera, interfering with depth data. Parallel interference increases measurement error when two M4 Mega cameras face the same direction.
+
+<Frame>
+  <img src="/images/legacy/3b09c42a-62ef-4a7f-96ad-6366d662588e/172c3d00-c862-4b8b-b294-8cfbcccfe558.avif" alt="Parallel camera interference" />
+</Frame>
+
+To avoid parallel interference, install the cameras at an angle to the horizontal. If they must be installed at 0° to the horizontal plane, contact MRDVS for a custom configuration.
+
+* * *
+
+## 6. Software overview
+
+### 6.1 SDK
+
+Use the SDK to initialize and start the camera, retrieve data, and close the camera. For platforms other than Linux or Windows, port the application by referring to the SDK source code.
+
+Table 6-1. SDK details
+
+| Operating system | Linux&Windows |
+| --- | --- |
+| Programming language | C/C++ |
+| Data format | 16-bit unsigned short |
+| Integration | Shared library (.so), dynamic-link library (.dll), or integrated SDK source code |
+
+### 6.2 SDK output order
+
+<Frame>
+  <img src="/images/legacy/84ac41e4-cda9-4a16-8090-118e488a3bb8/cd2fd356-196f-47a6-a7e3-2dadb89d7acd.avif" alt="SDK output order" />
+</Frame>
+
+Figure 6.1. SDK output order
+
+The SDK outputs one frame each of depth and amplitude data at the configured resolution. Each frame is stored as a one-dimensional array, beginning at the upper-left pixel and proceeding from left to right, then top to bottom. Figure 6.1 shows output along the x-axis followed by the y-axis, producing this order:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Each depth-image pixel is a 16-bit unsigned short representing the distance from the measured object to the camera plane.
+
+Each amplitude-image pixel is a 16-bit unsigned short representing the returned signal intensity.
+
+### 6.3 IP address
+
+The M4 Mega camera's default IP address is 192.168.100.82. To change the IP address or enable DHCP, use the demo application provided by MRDVS.
+
+### 6.4 Demo application
+
+### 6.4.1 IP configuration
+
+Connect the power cable, then connect the camera to the computer with an Ethernet cable. Because the camera's factory-default IP address is 192.168.100.82, set the computer to the 192.168.100.x subnet, excluding 100.82, with subnet mask 255.255.255.0. Open **Settings** → **Ethernet** → **Change adapter options**. Right-click **Ethernet**, select **Properties**, then select **Internet Protocol Version 4 (TCP/IPv4)**. For example, set the IP address to 192.168.100.20 and the subnet mask to 255.255.255.0.
+
+### 6.4.2 Open the application
+
+Download and install the software, then double-click the LxCameraViwer demo icon. The host application opens, searches for a camera, opens it, and starts acquisition automatically when one camera is connected.
+
+**Note: On first launch, some systems require you to allow the application through the firewall.**
+
+The application includes basic controls, image selection, camera configuration, and camera information. Camera information includes the IP address, ID, MAC address, serial number, and software and algorithm versions. Select the depth, amplitude, RGB, or point-cloud checkbox to display that view in the center panel.
+
+<Frame>
+  <img src="/images/legacy/cd14e0c2-b881-4edd-b937-a746441fd228/704290c3-d6e3-4760-95bc-961f6e265dea.avif" alt="LxCameraViewer image display" />
+</Frame>
+
+Figure 6.2. Image display
+
+### 6.4.3 Save images
+
+Select **Save** to save the selected images to the `./data` folder in the installation directory. The terminal also prints the path, for example: `save path= ./data/<camera-ID>`.
+
+After saving, `_a` identifies an amplitude image, `_d` a depth image, and `_r` an RGB (MONO) image. `.pcd` identifies a point cloud. Depth and amplitude images use PGM format, RGB images use PNG, and point clouds use PCD.
+
+<Frame>
+  <img src="/images/legacy/f357c339-6f49-43d3-89f3-e06f5282e21d/980df246-024e-4047-a082-49269a6058c1.avif" alt="Saved image files" />
+</Frame>
+
+Figure 6.3. Saved images
+
+### 6.4.4 Change the IP address
+
+Enter the required IP address, such as 192.168.10.199. Enter subnet mask 255.255.255.0 and gateway 192.168.10.1. The gateway must be on the same subnet as the required IP address; set its last octet to 1. Confirm the change, then power-cycle the camera.
+
+<Frame>
+  <img src="/images/legacy/d11694ec-a58e-43fc-add5-3214bbb90002/28bc8364-e86f-453b-9298-c890fcb21d01.avif" alt="Change the camera IP address" />
+</Frame>
+
+* * *
+
+## 7. Main features
+
+### 7.1 Distance range
+
+The M4 Mega camera measures from 0.2~5m. Contact MRDVS if you need a custom range.
+
+### 7.2 Filtering
+
+The MRDVS SDK provides these filters:
+
+- Median filter
+
+- Mode filter
+
+- Flying-pixel removal
+
+* * *
+
+## 8. Precautions
+
+### 8.1 Laser safety class
+
+<Frame>
+  <img src="/images/legacy/4a9c13b4-2d4e-4703-95cc-ee1d8b2121f8/3b5b8b5d-d12d-484a-9ce5-8e96e138ade3.avif" alt="Laser safety class" />
+</Frame>
+
+### 8.2 Correct operation
+
+The M4 Mega camera uses a 24V DC power supply. Connect the power cable before applying power. Do not reverse the positive and negative terminals, as this may damage the product.
+
+| No. | Issue | Resolution |
+| --- | --- | --- |
+| 1 | The camera does not respond when opened | Confirm that the firewall is disabled. |
+| 2 | The host application detects multiple IP addresses | A duplicate IP address exists on the LAN. Select the required IP address. |
+| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable. Data may initially be unstable over a 100Mbps cable. |
+| 4 | Software installation location | Installing to the default location on the C drive may require permission changes. |
+
+* * *
+
+### 8.3 Operating temperature
+
+Keep the ambient temperature within the range specified in Table 2-1. Mount the product on a thermally conductive component, such as a metal bracket, to improve heat dissipation and achieve optimal performance.
+
+* * *
+
+## 9. FAQ
+
+Table 9-1. Frequently asked questions
+
+| No. | Issue | Resolution |
+| --- | --- | --- |
+| 1 | The camera does not respond when opened | Confirm that the firewall is disabled. |
+| 2 | The host application detects multiple IP addresses | A duplicate IP address exists on the LAN. Select the required IP address. |
+| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable. Data may initially be unstable over a 100Mbps cable. |
+| 4 | Software installation location | Installing to the default location on the C drive may require permission changes. |

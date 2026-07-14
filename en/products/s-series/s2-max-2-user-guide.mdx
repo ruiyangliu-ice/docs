@@ -1,0 +1,326 @@
+---
+title: "S2 Max 2.0 product user guide"
+description: "1. Updated the pinout and added electrical specifications. 2. Added the inspection certificate to the package contents."
+hidden: true
+---
+## Revision history
+
+| Date | Version | Changes |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Initial release |
+| 2024/05/10 | V1.0 | Updated camera parameters |
+| 2024/06/17 | V1.1 | 1. Updated the pinout and added electrical specifications. 2. Added the inspection certificate to the package contents. |
+| 2024/11/25 | V1.2 | Updated camera storage temperature |
+
+## 1. Introduction
+
+### 1.1 Purpose and scope
+
+This document describes the S2 Max 2.0 camera specifications and selected design details for developers who integrate and use the product.
+
+### 1.2 Terminology
+
+| RGBD camera | A camera that outputs synchronized and spatially aligned RGB and depth images |
+| --- | --- |
+| Depth | A video stream similar to a color or monochrome stream, where each pixel represents its distance from the camera |
+| FOV | Field of view: the angular range of a scene captured by a camera, including horizontal (HFOV), vertical (VFOV), and diagonal (DFOV) fields of view |
+| IR camera | An infrared camera; in this product, it primarily captures the near-infrared band |
+| RGB camera | A color camera |
+| Depth camera | A camera whose depth module typically includes a dot projector, an IR camera, and a depth processor; its color module is typically an RGB camera |
+| SoC | System on a chip used for image processing, depth calculation, and application algorithms |
+
+### 1.3 Operating principle
+
+This product measures distance with indirect time of flight (iToF). The camera emits a laser pulse, and the receiver compares the received waveform with the transmitted waveform to calculate the phase difference and the pulse flight time Δt.
+
+Calculate the target's distance from the camera with: distance = speed of light \* Δt / 2
+
+<Frame>
+  <img src="/images/legacy/f04762f5-7261-4a17-9b69-e0b6abd03511/b327809f-9560-45a7-a951-860596bd7fc9.avif" alt="iToF operating principle" />
+</Frame>
+
+* * *
+
+## 2. Product overview
+
+This compact industrial RGB-D camera integrates a SONY CW iToF camera and outputs three-channel true-color RGB images with depth data from 0.2m to 5m. It spatially and temporally aligns RGB and depth images, switches among four obstacle-avoidance zones, and outputs emergency-stop, slowdown, and safe-state signals.
+
+### 2.1 Product appearance
+
+<Frame>
+  <img src="/images/legacy/b8f9c970-bf1d-4fcc-843d-c1f3db33ce88/9840b66e-ff77-4f7f-aa25-23d7936996b8.avif" alt="S2 Max 2.0 camera" />
+</Frame>
+
+### 2.2 Features
+
+- Integrated 1.0 TOPS compute platform that runs obstacle-avoidance algorithms without an external CPU
+
+- Compact form factor for flexible, concealed integration
+
+- Strong environmental adaptability: resists 100KLUX sunlight and operates from darkness to bright light, indoors and outdoors
+
+- Wide 0.2~5m measurement range
+
+- Standalone obstacle avoidance, bin detection, and volume measurement
+
+- RGB-D output
+
+## 3. Specifications
+
+### 3.1 Basic specifications
+
+| Product model | S2 Max 2.0 |
+| --- | --- |
+| Chip | Sony chip |
+| Output format | Depth&RGB&Amplitude Map |
+| TOF resolution and frame rate | 320×240 (typical 12fps) |
+| TOF field of view | Typical: 81° horizontal, 61° vertical |
+| RGB resolution and frame rate | 1920×1080 (typical 12fps) |
+| RGB field of view | Typical: 88° horizontal, 56° vertical |
+| Range | 0.2m~5m (@90%), 0.2~2.5m (@10%) |
+| Accuracy | ±3mm+0.5%*depth |
+| Power consumption | 6.4W |
+| Laser | 940nm |
+| Dimensions | 92mm×47mm×51mm |
+| Weight | 449g |
+| Power input | 24V DC / 2A |
+| Communication interface | Ethernet / IO (optional) |
+| Protection rating | IP67 |
+| Operating temperature | -20°C~60°C |
+| Storage temperature | -40°C~85°C |
+| Software environment | C / C++ / ROS SDK |
+| Operating system support | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Cooling | Passive, no fan |
+| Sunlight resistance | 100KLUX |
+
+**Note: The 3D model defines the product dimensions.**
+
+* * *
+
+### 3.2 Electrical specifications
+
+Table 3-2. Product electrical specifications
+
+| Parameter | Symbol | Condition | Minimum | Typical | Maximum | Unit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Supply voltage | VDD |  | 18 | 24 | 30 | V |
+| Digital I/O | IN |  | 3.3 |  | 24 | V |
+| CAN interface |  |  | 0 |  | 5V | V |
+| Operating temperature | Ta |  | -20 |  | 60 | ℃ |
+| Operating humidity |  |  | 20 |  | 80 | % |
+| Storage temperature |  |  | -40 |  | 85 | ℃ |
+| Storage humidity |  |  | 20 |  | 80 | % |
+
+### 3.3 Product interfaces
+
+### 3.3.1 Camera-side interfaces
+
+The camera has three interfaces: a DC24V power connector, a Gigabit Ethernet connector, and an IO/CAN function connector.
+
+<Frame>
+  <img src="/images/legacy/e7e11524-8868-480f-ab4b-74ad6ee65346/360257fb-58ff-4da8-bb82-18e3ed2cb9d8.avif" alt="Camera-side interfaces" />
+</Frame>
+
+| Port | Pin | Signal | Description |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | Gigabit Ethernet |
+|  | 2 | MDI0_p |  |
+|  | 3 | MDI1_N |  |
+|  | 4 | MDI1_p |  |
+|  | 5 | MDI2_N |  |
+|  | 6 | MDI2_p |  |
+|  | 7 | MDI3_N |  |
+|  | 8 | MDI3_p |  |
+| Function connector | 1 | CAN_H | CAN_H |
+|  | 2 | CAN_L | CAN_L |
+|  | 3 | GND | CAN GND |
+|  | 4 | OUT_1 | IO output 1 |
+|  | 5 | COM | IO COM terminal |
+|  | 6 | OUT_2 | IO output 2 |
+|  | 7 | IN_1 | IO input 1 |
+|  | 8 | IN_2 | IO input 2 |
+| Power connector | 1 | 24+ | DC power female connector, 5.5-2.1mm |
+|  | G | 24- |  |
+
+### 3.3.2 Cable pinout
+
+<Frame>
+  <img src="/images/legacy/1fac8068-a62a-463f-8fea-b348b0817a51/b3a002b1-866c-4e53-a670-3e21563803ad.avif" alt="Cable pinout" />
+</Frame>
+
+| Cable | Color | Pin | Description |
+| --- | --- | --- | --- |
+| Function cable | Orange | CAN_H | CAN_H |
+|  | Yellow | CAN_L | CAN_L |
+|  | Green | GND | CAN GND |
+|  | Brown | IN_1 | IO input 1 |
+|  | White | IN_2 | IO input 2 |
+|  | Purple | COM | IO COM terminal |
+|  | Blue | OUT_1 | IO output 1 |
+|  | Gray | OUT_2 | IO output 2 |
+| Power cable | Red | 24V+ | Positive power terminal |
+|  | Black | GND | Negative power terminal |
+
+Note: Some older function cables use different colors. Follow the labels on the actual cable.
+
+### 3.4 Camera components
+
+<Frame>
+  <img src="/images/legacy/079e0e65-3c06-47a4-b5c4-115964d71d5a/478aa068-1207-408b-99ee-c79d1670eb4a.avif" alt="Camera components" />
+</Frame>
+
+| No. | Component |
+| --- | --- |
+| 1 | Power indicator; flashes slowly after power-on |
+| 2 | 940nm light source |
+| 3 | Multi-camera interference detection module |
+| 4 | TOF lens |
+| 5 | RGB lens |
+
+## 4. Camera integration guide
+
+### 4.1 Camera detection range
+
+Figure 4.1 shows the S2 Max 2.0 detection region. The horizontal detection angle is 81°, and the vertical angle is 61°. Detection distance depends on optical power. Higher optical power and target reflectivity increase the near blind zone and reduce the far blind zone. Lower optical power and target reflectivity reduce the near blind zone and increase the far blind zone. For targets with 10%~90% reflectivity, the S2 Max 2.0 range is 0.2~5m. Beyond 5m, low reflected-signal strength and ambient-light interference cause substantial ranging errors.
+
+<Frame>
+  <img src="/images/legacy/36ec75a7-5443-41d8-9059-840623414d35/98bbffe4-ec39-4b8b-b418-64060da315ea.avif" alt="Camera detection range" />
+</Frame>
+
+### 4.2 Camera dimensions
+
+<Frame>
+  <img src="/images/legacy/9a8db5e7-9d0f-44d4-bd26-c48fa963e143/4413a8bb-bb59-4f7c-a483-1c47015d7ed9.avif" alt="Camera dimensions" />
+</Frame>
+
+### 4.3 Optical and origin coordinate systems
+
+**Optical coordinate system:**
+
+- The optical coordinate system includes the camera coordinate system (CCS) and world coordinate system (WCS).
+
+- The camera coordinate system is the 2D depth-image coordinate system. Its origin is the optical center.
+
+- The world coordinate system is the 3D point-cloud coordinate system.
+
+- Use the camera intrinsics to transform depth-image coordinates into 3D point-cloud coordinates. See the SDK examples.
+
+<Frame>
+  <img src="/images/legacy/80b1c745-7eb5-47ee-92c7-464aea3d8673/2c1d56ea-40ec-4833-9328-81c1a40bf269.avif" alt="Optical coordinate system" />
+</Frame>
+
+**The camera origin is defined as follows:**
+
+1.  The X-coordinate origin aligns with the product's X-axis.
+
+2.  The Y-coordinate origin aligns with the product's Y-axis.
+
+3.  The Z-coordinate origin is on the camera's front surface.
+
+<Frame>
+  <img src="/images/legacy/392ee590-9d85-474b-ac4c-74e431d7c6f4/c0551ed1-0be6-439d-9b08-21956fc127dd.avif" alt="Camera origin" />
+</Frame>
+
+### 4.4 Software SDK
+
+See the MRDVS host software user guide and MRDVS SDK development guide.
+
+## 5. Environment and reliability
+
+| Item |  | Specification |
+| --- | --- | --- |
+| Operating environment | Temperature | -20℃~60℃ |
+|  | Humidity | 0%–95% RH, non-condensing |
+|  | Illumination | 0KLUX~100KLUX |
+| Storage environment | Temperature | -40℃~85℃ |
+|  | Humidity | 10%–95% RH, non-condensing |
+| Temperature rise during normal operation |  | Enclosure temperature rise &lt;25℃ |
+| ESD rating |  | ±4KV contact discharge, ±8KV air discharge |
+| RE rating |  | Complies with GB 9254 CLASS A |
+| Service life |  | More than 3 years |
+| Environmental certification |  | RoHS |
+
+## 6. Quickstart
+
+### 6.1 Connection test
+
+<Frame>
+  <img src="/images/legacy/9fcc4978-9fad-470b-9174-652d0eeafdc3/473a4d79-b79c-4fd3-b837-e9ad281365c8.avif" alt="Connection test" />
+</Frame>
+
+1.  Connect the camera to a 24V/2A DC supply. A slowly flashing blue power indicator confirms normal power-on.
+
+2.  Connect the camera to the computer with a Category 6 Ethernet cable.
+
+3.  The factory-default camera IP address is 192.168.100.82.
+
+4.  Set the computer IP to the camera's subnet and disable the computer firewall.
+
+5.  Run the host software to view the camera images.
+
+6.  Contact MRDVS sales or technical support to obtain the host software.
+
+### 6.2 IO wiring
+
+| Interface | Type | Notes |
+| --- | --- | --- |
+| IN1 | Input | Active-high discrete input; supports 24V/open input |
+| IN2 | Input | Active-high discrete input; supports 24V/open input |
+| OUT1 | Output | Ground/open discrete output; supports 24V pull-up |
+| OUT2 | Output | Ground/open discrete output; supports 24V pull-up |
+| COM | GND | Common ground for discrete outputs, shared by IN and OUT |
+
+## 7. Precautions
+
+### 7.1 Laser safety class
+
+| <img src="/images/legacy/be205c16-cf8f-4c39-9d60-55ecaeb62dd6/3cf7f1de-6b6b-41fe-8b05-58b060c26fe3.avif" alt="Laser safety" /> | Laser safety |
+| --- | --- |
+| This product emits an invisible laser during operation. Avoid exposing eyes to the beam. The laser complies with Class 1 and does not harm people during normal use as defined by EN60825. |  |
+
+### 7.2 Correct operation
+
+The S2 Max 2.0 camera uses a 24V DC supply. Connect the power cable before applying power, and do not reverse the positive and negative terminals. Reverse polarity can damage the product.
+
+### 7.3 Operating temperature
+
+Keep the ambient temperature within the range in the product specifications (Table 2-1). Mount the product on a thermally conductive component such as a metal bracket to improve heat dissipation and achieve optimal performance.
+
+## 8. Troubleshooting
+
+| No. | Problem | Resolution |
+| --- | --- | --- |
+| 1 | Camera does not respond when opened | Verify that the firewall is disabled |
+| 2 | Host software detects multiple IP addresses | Another device on the LAN uses the same IP; select the required IP address |
+| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable; data can initially be unstable over Fast Ethernet |
+| 4 | Software installation location | A default installation on drive C may be affected by permission settings |
+
+## Appendix: Package contents
+
+<Frame>
+  <img src="/images/legacy/3f3660c4-7da6-45f1-9711-fe4305effc6e/ab208cbd-23eb-4476-a6b2-bde7700ad842.avif" alt="S2 Max 2.0 camera" />
+</Frame>
+
+S2 Max 2.0 camera
+
+<Frame>
+  <img src="/images/legacy/b7383fd0-ef1a-4d33-9163-2d86241b4bd1/b0dc1e5e-e73b-49f6-87eb-30d9d71e82ad.avif" alt="8-pin function cable" />
+</Frame>
+
+8-pin function cable
+
+<Frame>
+  <img src="/images/legacy/3ff48931-e15d-4ef6-91e5-7cdedcf68c7e/cef46b22-6500-46d1-aab0-c174810b0d8c.avif" alt="Two four-piece waterproof kits" />
+</Frame>
+
+Two four-piece waterproof kits
+
+<Frame>
+  <img src="/images/legacy/599a77ee-8d91-46b2-b779-b3f6ffbbebb7/13a6d34d-c493-442f-9351-f36d0b237350.avif" alt="Inspection certificate" />
+</Frame>
+
+One inspection certificate
+
+* * *
+
+* * *

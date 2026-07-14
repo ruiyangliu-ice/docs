@@ -1,0 +1,400 @@
+---
+title: "Development FAQs"
+description: "Troubleshoot SDK error codes, streaming, library conflicts, and development environments."
+---
+## FAQ
+
+<AccordionGroup>
+<Accordion title="LX_ERROR = -1">
+
+**Possible reasons**
+
+unknown error
+
+**Resolution**
+
+The result is abnormal and the device log needs to be pulled and sent to MRDVS for processing.
+
+</Accordion>
+
+<Accordion title="LX_E_NOT_SUPPORT = -2">
+
+**Possible reasons**
+
+Function not supported
+
+**Resolution**
+
+The current device does not support this feature
+
+</Accordion>
+
+<Accordion title="LX_E_NETWORK_ERROR = -3">
+
+**Possible reasons**
+
+Network communication error
+
+**Resolution**
+
+Network communication failure, signal transmission packet loss and other problems, check the IP configuration, check whether the network cables and switches are normal, and troubleshoot packet loss problems
+
+</Accordion>
+
+<Accordion title="LX_E_INPUT_ILLEGAL = -4">
+
+**Possible reasons**
+
+Illegal to take ginseng
+
+**Resolution**
+
+The parameters passed in are wrong. You need to check the parameters of the calling interface.
+
+</Accordion>
+
+<Accordion title="LX_E_RECONNECTING = -5">
+
+**Possible reasons**
+
+Device reconnecting
+
+**Resolution**
+
+1. The device is reconnecting, please wait for a short delay and try again until the reconnection is successful<br />2. Check whether the camera is turned on normally and whether the network connection is normal.
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_ERROR = -6">
+
+**Possible reasons**
+
+Device failure or device response failure
+
+**Resolution**
+
+Device abnormality, restart the program or camera and try again
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+
+**Possible reasons**
+
+The device version is too low and needs to be upgraded.
+
+**Resolution**
+
+Upgrade firmware version
+
+</Accordion>
+
+<Accordion title="LX_E_API_NEED_UPDATE = -8">
+
+**Possible reasons**
+
+API version is too low
+
+**Resolution**
+
+Update SDK
+
+</Accordion>
+
+<Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+
+**Possible reasons**
+
+Exclusive control permission failed
+
+**Resolution**
+
+The camera only supports one primary authority client connection. When the camera is closed abnormally, you need to wait 3-5 seconds to release permissions.
+
+</Accordion>
+
+<Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+
+**Possible reasons**
+
+Failed to obtain device information
+
+**Resolution**
+
+Confirm device firmware version or contact MRDVS support
+
+</Accordion>
+
+<Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+
+**Possible reasons**
+
+Image size does not match and needs to be reopened
+
+**Resolution**
+
+The size of the obtained image does not match the size in the actual code stream. You need to close the device and reopen it.
+
+</Accordion>
+
+<Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+
+**Possible reasons**
+
+Image parsing failed (pixformat is incorrect), you need to try to open it again
+
+**Resolution**
+
+Turn device back on
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+
+**Possible reasons**
+
+Camera not connected
+
+**Resolution**
+
+It is an illegal type of parameter input. If you operate the camera when the camera is not turned on, this error will be returned. You need to check the calling code logic to ensure that the camera has been successfully turned on.
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+
+**Possible reasons**
+
+Camera initialization failed
+
+**Resolution**
+
+Turn camera back on
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+
+**Possible reasons**
+
+Camera not found (or no matching camera found)
+
+**Resolution**
+
+A type of illegal input parameters. This error code is usually returned when the handle of the camera passed to the interface is illegal. You need to check the calling code logic.
+
+</Accordion>
+
+<Accordion title="LX_E_FILE_INVALID = -16">
+
+**Possible reasons**
+
+File error (incorrect file name or type or format or file opening failed)
+
+**Resolution**
+
+If the file path/type is wrong or the file does not exist or cannot be opened, you need to check whether the incoming parameter file path can be opened manually.
+
+</Accordion>
+
+<Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+
+**Possible reasons**
+
+File crc or md5 check failed
+
+**Resolution**
+
+crc or md5 verification failed when uploading or downloading files, need to try again
+
+</Accordion>
+
+<Accordion title="LX_E_TIME_OUT = -18">
+
+**Possible reasons**
+
+timeout
+
+**Resolution**
+
+Try again. It may be due to network reasons that there is a lot of packet loss or the camera frame rate is too low.
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_LOSS = -19">
+
+**Possible reasons**
+
+Missing frames
+
+**Resolution**
+
+Packet loss and frame loss often occur in callback mode. In a small number of cases, no special processing is required; in a large number of cases, network bandwidth, cache, etc. need to be checked.
+
+</Accordion>
+
+<Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+
+**Possible reasons**
+
+Failed to open any stream
+
+**Resolution**
+
+Before version 2.4.9, it is not allowed to close all stream data. This error code has been abolished in subsequent versions.
+
+</Accordion>
+
+<Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+
+**Possible reasons**
+
+Streaming data not received
+
+**Resolution**
+
+No code stream data received, reference camera is open and there is no data.
+
+</Accordion>
+
+<Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+
+**Possible reasons**
+
+The stream started successfully but failed to parse the stream data.
+
+**Resolution**
+
+Failed to parse the code stream. Please confirm the firmware version or contact MRDVS support.
+
+</Accordion>
+
+<Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+
+**Possible reasons**
+
+Image calculation processing failed
+
+**Resolution**
+
+Confirm image algorithm library version "Dataprocess"
+
+</Accordion>
+
+<Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+
+**Possible reasons**
+
+Setting is not allowed in normally open mode
+
+**Resolution**
+
+In the working mode, normally open mode, operations such as setting ROI or setting multiple cameras/alignment are not allowed. The calling logic needs to be adjusted. Set the camera working mode first, and then perform the setting operation.
+
+</Accordion>
+
+<Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+
+**Possible reasons**
+
+Error loading image processing algorithm library
+
+**Resolution**
+
+Make sure that the image algorithm library Dataprocess (dynamic link library/shared object file) exists and is included in the environment variables loaded by the library. Execute: source install.sh
+
+</Accordion>
+
+<Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+
+**Possible reasons**
+
+Function call logic error
+
+**Resolution**
+
+If the function calling sequence or pre-logic is wrong, you need to report an error according to the SDK log and adjust the calling logic. Common logic problems are as follows:<br />1. Setting parameters will cause the image size to change, so the flow needs to be stopped first;<br />2. In the normally-on mode, the image size is not allowed to be changed;<br />3. Moving the algorithm up is mutually exclusive with turning on the built-in application algorithm;<br />4. Automatic exposure is not allowed to be turned on when HDR is enabled;<br />5. Automatic exposure related parameters are related to the automatic light explosion state;<br /> />6. Trigger related parameters are related to trigger mode
+
+</Accordion>
+
+<Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+
+**Possible reasons**
+
+IP unreachable or network configuration error
+
+**Resolution**
+
+The network is unavailable. You need to ensure that the SDK host can ping the visual device.
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+
+**Possible reasons**
+
+Frame out of sync error within timeout range
+
+**Resolution**
+
+When the RGBD frame synchronization function is turned on, this error is reported when the tof and rgb data frames are out of sync in the actual code stream. You can choose to discard the frame data or ignore the error according to the actual usage scenario (high priority for synchronization or high priority for data real-time).
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+
+**Possible reasons**
+
+Multi-machine interference signal detected in the frame
+
+**Resolution**
+
+Depending on the actual usage scenario, choose to discard the frame data or ignore the error report.
+
+</Accordion>
+
+<Accordion title="error code: -25 or LxDataProcess loading failure">
+
+**Possible reasons**
+
+(Applicable to Linux operating system environment only) The algorithm library is not configured to environment variables
+
+**Resolution**
+
+Execute source install.sh
+
+</Accordion>
+
+<Accordion title="Take three-thirds of the streamed image">
+
+**Possible reasons**
+
+After acquiring the image, the displayed aspect ratio is abnormal.
+
+</Accordion>
+
+<Accordion title="ros2 conflicts with SDK library">
+
+**Resolution**
+
+The camera sdk is encapsulated in the util folder and indirectly links to the camera sdk library.
+
+</Accordion>
+
+<Accordion title="How to determine whether the camera is a Lite version or a standard version with RGB at the software level">
+
+**Resolution**
+
+DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb) If the camera is a Lite version, it will return not supported
+
+</Accordion>
+
+<Accordion title="Time synchronization method">
+
+**Resolution**
+
+SDK and PTP are synchronized. Each interface call is automatically synchronized without additional triggering.
+
+</Accordion>
+
+</AccordionGroup>

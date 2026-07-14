@@ -1,0 +1,1099 @@
+---
+title: "LxCameraViewer user guide"
+description: "Install and use the Windows LxCameraViewer application with MRDVS cameras and the C or C++ Camera SDK."
+---
+Download the latest version of the manual PDF version:
+
+[LxCameraViewer User Manual.pdf](/files/legacy/eb7e3080-2d7f-4d21-9acf-fdce85d40a91/f734e513-b541-4ccd-9c4f-650b54dc966c.pdf)
+
+## 1. Overview
+
+LxCameraViewer is a Windows host computer software developed based on Blue Core's self-developed camera products and camera SDK C or C++ development kit, hereafter referred to as this software.
+
+This software provides camera users with simple and fast functions such as view, camera settings, algorithm settings, IP configuration, point cloud viewing, packet capture tools, communication tools, firewall configuration and other functions. Currently, this software supports the opening and viewing of multiple devices, supports viewing the output of depth images, intensity images, point cloud images, and RGB images. It also supports the reading and setting of parameters such as basic camera functions and basic configuration of algorithms.
+
+Through this application, users can view and save high-precision image data obtained from the camera, camera configuration, and algorithm detailed data, etc.
+
+## 2. Installation
+
+### 2.1 Recommended system configuration
+
+| Configuration items | Recommended configuration |
+| --- | --- |
+| Operating System | Windows10 (64-bit) Windows11 (64-bit) |
+| Memory | 4G and above |
+| Network card/network cable | Gigabit and above |
+
+| Configuration items | Recommended configuration |
+| --- | --- |
+| Operating System | Ubuntu (64-bit) |
+| Memory | 4G and above |
+| Network card/network cable | Gigabit and above |
+
+### 2.2 IP address and gateway configuration
+
+- The connection method is a fixed IP address connection. If you need to modify the IP, you can modify it through this software.
+
+- The camera's default IP address is: 192.168.100.82.
+
+- Default gateway can be empty.
+
+- The subnet mask is 255.255.0.0, 255.255.255.0 under Linux platform
+
+- Set the IP address of the Ethernet connected to the camera on the host computer to 192.168.100.x. x represents any number between 3 and 254. The host computer IP and the camera IP cannot be the same.
+
+- For example, when the camera IP is 192.168.100.12, the host computer IP address is set to 192.168.100.89, and the subnet mask is 255.255.0.0 as shown in the figure below:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7147dc86-d32e-4afb-8575-65f404e42d47.avif" alt="Illustration related to IP address and gateway configuration" />
+</Frame>
+
+### 2.3 Host computer installation
+
+- Double-click to open the host computer installation package Lanxin-MRDVS-x.x.x.xxxx.exe
+
+- Click to allow the app to make changes to the device
+
+- Select the language to be used during installation (Figure 1)
+
+- Select the installation path, it is recommended to use the default installation path (Figure 2)
+
+- Check [Create desktop shortcut] (Figure 3)
+
+- After the installation is completed, uncheck [Run Lanxin-MRDVS] and click Finish (Figure 4)
+
+- When opening the host computer for the first time, you need to use administrator rights to open it. Right-click the desktop software icon and click [Run as administrator] (Figure 5)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8b8740cd-5d09-4b72-bfb0-58675ea2cda1.avif" alt="Illustrations related to the installation of the host computer" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/33d54828-e95f-45b1-9c2c-ba58053fe1e1.avif" alt="Illustrations related to host computer installation 2" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96ac4701-9de1-4083-a2f4-6a75ab387aeb.avif" alt="Illustrations related to host computer installation 3" />
+</Frame>
+
+Figure 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a26f6a36-047d-46c6-95a8-d60e1335433c.avif" alt="Illustrations related to host computer installation 4" />
+</Frame>
+
+Figure 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d1860fc-2d7f-4069-a405-26b39933f032.avif" alt="Illustrations related to host computer installation 5" />
+</Frame>
+
+Figure 5
+
+### 2.4 Firewall configuration
+
+To open the camera, you need to turn off the firewall. The setting process is as shown in the figure below (taking WIN10 as an example):
+
+Open this software and click the [Other Tools] button above
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a1d2044-52c3-4094-aee5-ba2e74529e6c.avif" alt="Firewall configuration related icons" />
+</Frame>
+
+Figure 1
+
+Select [Network Card Configuration Tool] in the pop-up bar on the right
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/347b75c7-d48d-449f-a4db-a17d48d7b801.avif" alt="Firewall configuration related diagram 2" />
+</Frame>
+
+Figure 2
+
+In the network card configuration tool, click the button below [Open/Close]
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14eb74a6-5be7-4aed-a5f1-d0ae5c8f149f.avif" alt="Firewall configuration related diagram 3" />
+</Frame>
+
+![Firewall configuration related icon 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df0eba42-c3b8-4230-87ba-b4676ab32e37.avif)Figure 3
+
+When the pop-up is shown in Figure 4, the firewall is on. When the pop-up is as shown in Figure 5 and Figure 6 is pop-up in the lower right corner, the firewall is off.
+
+![Firewall configuration related icon 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/079270ad-0c8d-4a96-9ffa-096bc980f692.avif) ![Firewall configuration related icon 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ebbf202-28ae-4474-93df-85549c0bd78c.avif)
+
+Figure 4 Figure 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6ba5fc85-0e0f-46e4-80b0-a23e2551cf85.avif" alt="Firewall configuration related diagram 7" />
+</Frame>
+
+Figure 6
+
+If the above method does not work, you can click the [Firewall Configuration Page] button as shown below and wait for the page to open.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b807be23-6a9f-4930-bf30-5919fa9e8349.avif" alt="Firewall configuration related diagram 8" />
+</Frame>
+
+Figure 7
+
+**Firewall needs to be turned off**
+
+## 3. LxCameraViewer Instructions for Use
+
+### 3.1 Overview of software interface
+
+#### 3.1.1 Overview of the software interface (without opening the camera)
+
+The initial interface of this software is divided into 3 major sections:
+
+- List bar (number 1 blue area):
+
+    - Device list
+
+    - Current information
+
+    - Device information
+
+- Menu bar (number 2 green area):
+
+    - Three right toolbar buttons
+
+    - Interface language switching button
+
+- Image display bar (number 4 red area):
+
+    - Point cloud display
+
+    - Depth map display
+
+    - Intensity graph display
+
+    - RGB image display
+
+- Double-click in the menu bar area to maximize/minimize, hold down the left mouse button and move the mouse to drag the interface
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b8b763b-d8a2-4e74-ac00-1e7f5ca4fff6.avif" alt="Software interface overview (camera not opened) related icons" />
+</Frame>
+
+#### 3.1.2 Software interface overview (camera turned on)
+
+After opening the camera, there is an additional function bar on the right side of the interface (number 3 rouge area)
+
+- Basic tools that provide the following functions:
+
+- Image display settings
+
+    - 2D settings
+
+    - 3D settings
+
+    - filtering
+
+    - Hardware interface
+
+    - Collection settings
+
+    - Function settings
+
+- Apply algorithms to provide the following functions:
+
+    - Working mode settings
+
+    - Algorithm mode settings
+
+    - Algorithm version display
+
+    - Algorithm detailed settings
+
+- Others, providing the following functions:
+
+    - Load local point cloud
+
+    - IP configuration tool
+
+    - Packet capture tool
+
+    - Network card configuration tool
+
+    - Communication tools
+
+    - GPU enabled
+
+    - Log level
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e2f50c2a-95f2-4019-a47b-215f46aeb5b4.avif" alt="Software interface overview (camera turned on) related icons" />
+</Frame>
+
+### 3.2 Turning the device on and off
+
+#### 3.2.1 Device list
+
+- The device list is located in the upper left corner of the interface (in the red box in Figure 1)
+
+- The [Refresh] button is located next to the device list (in the red box in Figure 2)
+
+- The device list collapsing/expanding button is located to the right of the refresh button (green box in Figure 2). After collapsing, see Figure 3.
+
+- Three properties will be displayed in the device list bar:
+
+    - Whether the camera is turned on (in the rouge box in Figure 2, device one is turned on, but device two is not turned on)
+
+    - Camera ID (inside the yellow box in Figure 2)
+
+    - Camera IP, hover the mouse over the camera ID to view (shown in the red box in Figure 4 is the IP of the second camera)
+
+- The device list sets a button for each camera found. Click the text [On] or [Close] to turn on or off the camera (in the blue box in Figure 2). The button will also display the current status information of the camera (Figure 5)
+
+- The font of the selected camera in the device list bar is blue, and the font of other cameras is white (as shown in Figure 6, the second camera is selected but not opened, and the first camera is opened but not selected)
+
+- Multiple devices can be opened in the device list at the same time (as shown in Figure 7), but you need to pay attention to whether the network bandwidth is sufficient. Click the camera ID to switch to view different cameras.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8cfcca2f-d122-4354-a8cf-5efa532028c2.avif" alt="Device list related icons" />
+</Frame>
+
+Figure 1
+
+![Device list related icon 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/720170de-c154-457f-b05e-50ad20a1a722.avif) ![Device list related icon 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76d9c825-e6ea-4d68-bd83-d6e550f8ea75.avif)
+
+Figure 2 Figure 3
+
+![Device list related icon 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6fceb9c-d6e4-4051-a48f-3336850ecd35.avif) ![Device list related icon 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c9a2fd72-e489-4e66-ab3b-805c320d1e96.avif)
+
+Figure 4 Figure 5
+
+![Device list related icon 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3794ca81-4a2e-4eef-95b2-113facaeefd2.avif) ![Device list related icon 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1964dd45-e345-45af-9348-04b1ba499c94.avif)
+
+Figure 6 Figure 7
+
+### 3.3 Application information
+
+- The device list is located in the middle of the left side of the interface (in the red box in Figure 1)
+
+- The device list will display the following information:
+
+    - All information about the camera (red box in Figure 2)
+
+    - Software operation (green box in Figure 2)
+
+    - Operation results (blue box in Figure 2)
+
+    - Flow acquisition results (rouge color box in Figure 4)
+
+- When the text is too long, you can drag the blue scroll bar below to view the complete text (as shown in Figure 3, there is an extra blue scroll bar at the bottom)
+
+- The current information displays up to 25 related information, which can be scrolled using the mouse wheel. Old information will be overwritten.
+
+- Click the Collapse button to collapse the current information (in the yellow box in Figure 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f399ea28-827f-487f-85b7-7e9897b3a32a.avif" alt="Application information related icons" />
+</Frame>
+
+Figure 1
+
+![Image related to application information 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/150dd70b-5072-4fd8-957f-a0d198ed3155.avif) ![Image related to application information 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95953500-0432-4510-b0ac-e20b95894bb5.avif) ![Image related to application information 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/223211b0-34d8-4b8a-a775-2cf65b18db6c.avif)
+
+Figure 2 Figure 3 Figure 4
+
+### 3.4 Device information
+
+- The device information is located in the lower left corner of the interface (in the red box in Figure 1)
+
+- Device information displays relevant information about the device currently selected in the device list. The information is as follows:
+
+    - Serial number: unique identifier of the device
+
+    - Camera ID: The unique identifier of the device. You can use SKD to open the device according to the camera ID.
+
+    - IP address: IP address of the device
+
+    - Physical address: MAC address of the device
+
+    - Software version: device built-in software version
+
+    - Algorithm version: device built-in algorithm version (displayed after opening the camera)
+
+    - Network card network speed: When the device is not turned on, it is disconnected. After it is turned on, the network card network cable determines whether it is 100 Mbit or Gigabit.
+
+    - Camera type: device model
+
+    - Mirror version: device built-in mirror version (displayed after opening the camera)
+
+- Click the fold button to fold the device information (in the yellow box in Figure 2)
+
+- Right-click an item in the device information to copy the information (as shown in Figure 3, copy the network card speed information)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9652a7cc-2a78-4f7a-94cb-35a679b171a5.avif" alt="Device information related icons" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2b1e261-dd83-4d61-82da-e82008fefa83.avif" alt="Device information related icon 2" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9a413f8-5329-4057-92b2-3da999a09560.avif" alt="Device information related icon 3" />
+</Frame>
+
+Figure 3
+
+### 3.5 Image and data and saving
+
+#### 3.5.1 Preview
+
+- The middle area of the image and image data and image related operation software (inside the red box in Figure 1)
+
+- [Start/Stop Flow] [Single Save] [Depth Map] [Intensity Map] [RGB] [Point Cloud] is the image operation control
+
+- The three images in the middle are depth images, intensity images, point cloud images, and RGB images obtained from the device.
+
+- The white font at the bottom is camera and image data (as shown in Figure 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fa05fb01-9d59-4202-992c-e770002d078d.avif" alt="Preview related icons" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/007f900d-d780-4883-b875-b6370bbd87a7.avif" alt="Preview related icon 2" />
+</Frame>
+
+Figure 2
+
+#### 3.5.2 Image (flow) control
+
+- [Start/stop flow] button: Click to start or stop the flow of the device
+
+- [Single Save] button: Save the image of the stream data that has been turned on
+
+    - For example, Figure 2 only saves the depth image and point cloud image. The RGB image and intensity image are not turned on so they are not saved.
+
+    - The suffix for depth map and intensity map files is .pgm, the suffix for RGB image files is .png, and the suffix for point cloud image files is .pcd
+
+    - The saved depth image, intensity image and point cloud image are the original images without adding false colors.
+
+    - You can click multiple times to save continuously, but you can save up to three times in a row.
+
+- [Depth Map] checkbox: whether to display (turn on) the depth map
+
+- [Intensity graph] check box: whether to display (turn on) the intensity graph
+
+- [Point Cloud] check box: whether to display (turn on) the point cloud image
+
+- [RGB] check box: whether to turn on RGB image
+
+- After unchecking RGB/intensity map, the device will stop collecting RGB/intensity map images, but the device will only stop collecting depth data when the depth map and point cloud map are turned off at the same time.
+
+- In Figure 2, the device starts streaming and displays depth images, point cloud images, RGB images, and intensity images.
+
+- In Figure 3, the device stops flowing and no type of picture can be seen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/10bcfd4f-2447-44fb-9229-60922e39b3a3.avif" alt="Image (flow) control related icons" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0732a8cf-e7fa-4a4d-bc1e-27e92d99234d.avif" alt="Image (flow) control related diagram 2" />
+</Frame>
+
+Figure 3
+
+#### 3.5.3 Image data
+
+- Display camera temperature (red box in Figure 4)
+
+- Display the depth map frame rate when the depth map is checked (green box in Figure 4)
+
+- Display intensity map frame rate when intensity map is checked (blue box in Figure 4)
+
+- Display RGB image frame rate when RGB image is checked (rouge color box in Figure 4)
+
+- When the RGB image is checked, the value of the selected pixel in the RGB image is displayed (black box in Figure 4)
+
+- When the depth map is checked, the value of the selected pixel in the depth map is displayed (yellow box in Figure 4)
+
+- When the intensity map is checked, the value of the selected pixel in the intensity map is displayed (orange box in Figure 4)
+
+- When the point cloud map is checked, the point cloud value corresponding to the selected pixel in the depth map is displayed (purple box in Figure 4)
+
+- When no pixel is selected, the (0,0) pixel is selected by default
+
+- When the frame rate is higher than 12, the background color is green, if it is greater than 6 and less than 12, it is orange, and if it is less than 6, it is red.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/066e6c1a-c11a-463d-9173-f8d8a0c9df32.avif" alt="Image data related icons" />
+</Frame>
+
+Figure 4
+
+#### 3.5.4 Image display
+
+- You can choose different display methods:
+
+    - Single screen: When one of the four images is checked, a single screen will be displayed (as shown in Figure 5)
+
+    - Dual screen: When two of the four images are checked, a dual screen will be displayed (as shown in Figure 6)
+
+    - Three pictures: When three of the four images are checked, three pictures will be displayed (as shown in Figure 7)
+
+    - Quad screen: When all four images are checked, four screens will be displayed (as shown in Figure 8)
+
+- When moving the mouse over the image, you can use the mouse wheel to zoom in or out with the mouse as the center, hold down the left mouse button and drag (compare the RGB images in Figure 5 and Figure 6)
+
+- Left-click the image to select pixels, and the arrow keys can move the selected pixels (Figure 6)
+
+![Image related to image display](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/038be00d-997d-47ea-8c6e-3da9cb2f5737.avif)![Image related to image display 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a3715e8b-c3fa-417a-bccd-c819ea029b5a.avif)
+
+Figure 5 Figure 6
+
+![Image related to image display 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/320369a9-49ff-4524-8019-622ada69f7c5.avif)![Image related to image display 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08a8e2a6-a3ee-4d1b-8b6c-a2c30d3d60f2.avif)
+
+Figure 7 Figure 8
+
+#### 3.5.5 Point cloud image operation
+
+- Press and hold the left button on the point cloud image and drag to rotate the camera perspective
+
+- Press and hold the middle of the mouse and drag to move the focus
+
+- Hold down the right mouse button and drag the mouse up or down, or use the mouse wheel to zoom in or out of the point cloud
+
+- Point cloud image shortcut key operations are as follows:
+
+|  |  |
+| --- | --- |
+| Shortcut keys | Functions |
+| W | Grid display model, press S to switch |
+| R | Reset camera view |
+| S | Surface display model, press W to switch |
+| P | Hide all line segments, surfaces and meshes, press W, S to restore |
+| U | Call user-defined function (invalid) |
+| O | Eliminate the fisheye effect, press again to restore |
+| F | Zoom in to the mouse position and set the mouse position as the rotation center |
+| G | Show scale bar and scale, press again to hide |
+|
+| M | Display the point cloud bounding box, press again to display the point cloud |
+| A | Reduce the point cloud thickness to a minimum of 1 |
+| D | Increase the point cloud thickness, up to 6 |
+| E | Return to initial perspective |
+| [ | Use the average center point as the focus to move to the front view, not supported in obstacle avoidance mode |
+| ] | Use the average center point as the focus to move to the back perspective, not supported in obstacle avoidance mode |
+| ; | Use the average center point as the focus to move to the left side perspective, not supported in obstacle avoidance mode |
+| ‘ | Use the average center point as the focus to move to the right perspective, not supported in obstacle avoidance mode |
+| . | Use the average center point as the focus to switch to the top view, which is not supported in obstacle avoidance mode |
+| / | Use the average center point as the focus to turn to the upward view, which is not supported in obstacle avoidance mode |
+
+### 3.6 Menu bar
+
+- The menu bar includes [Basic Functions] [Application Algorithm] [Others] [Language] (Figure 1)
+
+- Click [Basic Functions] to display as shown in Figure 2
+
+- Click [Apply Algorithm] to display as shown in Figure 3
+
+- Click [Other Tools] to display as shown in Figure 4
+
+- Click [Language] to display as shown in Figure 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e35d1c41-3e31-4595-92e6-4168ccb63928.avif" alt="Menu bar related icons" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d0d806a-9d20-4881-b74d-f5f6261d6b6c.avif" alt="Menu bar related icons 2" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec624ff5-e5e5-4399-8f0a-122fa54b23de.avif" alt="Menu bar related icons 3" />
+</Frame>
+
+Figure 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d18452fe-8cbe-4826-95f9-3429617c8b1d.avif" alt="Menu bar related icons 4" />
+</Frame>
+
+Figure 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6bb109ee-e3fc-4d19-8013-65a21fda8286.avif" alt="Menu bar related icons 5" />
+</Frame>
+
+Figure 5
+
+### 3.7 Function bar
+
+#### 3.7.1 Display function
+
+- Collapse the right column (red box in Figure 1)
+
+- Expand all and collapse all (in the blue box in Figure 1, the superscript means collapse all, the subscript means expand all)
+
+- Click the function name to display the corresponding setting information in the SDK (in the blue box at the bottom of Figure 1)
+
+    - For example, in the picture, anti-distortion in the 2D settings is clicked (text in the green box), and the API interface and enumeration value when calling this function are displayed in the blue box.
+
+- Expanded state and collapsed state (2D in Figure 1 is set to the expanded state, others are set to the collapsed state)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08dceb49-92e5-4dba-8ea9-422242ae540a.avif" alt="Display function related icons" />
+</Frame>
+
+Figure 1
+
+#### 3.7.2 Basic tools
+
+- Click [Basic Tools] on the menu bar to see the relevant settings of the basic tools on the right side of the interface (Figure 1)
+
+- The basic tools include [Image Display Settings] [2D Settings] [3D Settings] [Filtering] [Hardware Interface] [Acquisition Settings] [Function Settings] (Figure 2)
+
+- The function name and enumeration value corresponding to the interface are displayed in the blue box below (Figure 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1634ffda-c43e-49ce-a3c1-6d327b4c1397.avif" alt="Illustrations related to basic tools" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1bdfe8e-e7d0-47fa-8171-1f9b73c84073.avif" alt="Illustrations related to basic tools 2" />
+</Frame>
+
+Figure 2
+
+##### 3.7.2.1 Image display settings
+
+- [Display camera model] Display (Figure 4) or not display (Figure 5) the camera model on the point cloud image
+
+- [Display false colors] Display depth colors on point clouds, and display RGB colors after turning on RGB alignment
+
+- [Point Cloud Stability] Turning on can stabilize the point cloud display when the point cloud disappears due to adaptation reasons on some computers.
+
+- [Strong Image Synchronization] Modify the minimum depth of the depth map and point cloud map displayed on the interface, and the camera output remains unchanged.
+
+- [Keep interference frames] Modify the maximum depth of the depth map and point cloud map displayed on the interface, and the camera output remains unchanged.
+
+- [Minimum depth] Modify the minimum depth of the depth map and point cloud map displayed on the interface, and the camera output remains unchanged.
+
+- [Maximum depth] Modify the maximum depth of the depth map and point cloud map displayed on the interface, and the camera output remains unchanged.
+
+- [Minimum intensity] Modify the minimum intensity of the depth map and point cloud image displayed on the interface, and the camera output remains unchanged.
+
+- [Maximum intensity] Modify the maximum intensity of the depth map and point cloud image displayed on the interface, and the camera output remains unchanged.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3631db86-23a0-4ed3-a73a-1748d1a97727.avif" alt="Image display settings related icons" />
+</Frame>
+
+Figure 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe564767-2b53-4033-b8b7-d50612a5f49b.avif" alt="Illustrations related to image display settings 2" />
+</Frame>
+
+Figure 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2adbbdfb-2ddf-4b3d-a201-00feab5b6348.avif" alt="Illustrations related to image display settings 3" />
+</Frame>
+
+Figure 5
+
+##### 3.7.2.2 2D settings
+
+- [RGB Width] RGB image pixel width, determined by the device model and cannot be set
+
+- [RGB height] RGB image pixel height, determined by the device model and cannot be set
+
+- [Pixel binning] Press 1\*1 or 2\*2 or N\*N to add the pixel values in the matrix and divide by 2\*2 or N\*N to obtain the binning image (the image size becomes the original size divided by the binning pixel size horizontally and vertically);
+
+- [Anti-distortion] Call the distortion parameters in the internal parameters to remove the distortion of the image in the interface display
+
+- [Anti-distortion coefficient] Adjust the distortion coefficient to enhance or weaken the distortion of the shielded image
+
+- [Auto Exposure] Turn on or off the camera to automatically set the RGB exposure value
+
+- [Exposure] Manual exposure, can be set when automatic exposure is turned off
+
+- [Gain] Manual gain, can be set when automatic exposure is turned off
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6dbead-0b0e-475a-b5a1-389f486de155.avif" alt="2D settings related icons" />
+</Frame>
+
+Figure 6
+
+##### 3.7.2.3 3D settings
+
+- [3D Width] The width of the point cloud image is determined by the device model and cannot be set.
+
+- [3D Height] The height of the point cloud image is determined by the device model and cannot be set.
+
+- [Pixel binning] Press 1\*1 or 2\*2 or N\*N to add the pixel values in the matrix and divide by 2\*2 or N\*N to get the binning image, which can be modified after stopping the flow (the image size becomes the original size and is divided by the binning pixel size horizontally and vertically)
+
+- [RGB Alignment] Align the depth map, intensity map, point cloud and RGB image. After the alignment, the depth map and intensity map will have the same width and height as the RGB image. The point cloud data will increase and can be modified after stopping the flow.
+
+- [Multi-camera mode] Turning on when using multiple cameras at the same time can eliminate interference from other cameras, and can be modified after stopping the flow.
+
+- [Multi-machine algorithm sensitivity] The built-in parameters of the device are determined by the device model and cannot be set.
+
+- [Anti-distortion] Call the distortion parameters in the internal parameters to remove the distortion of the image in the interface display
+
+- [Anti-distortion coefficient] Adjust the distortion coefficient to enhance or weaken the distortion of the shielded image
+
+- [Frequency Mode] The built-in parameters of the device are determined by the device model (the frequency of some cameras is fixed and cannot be set)
+
+- [HDR Enable] Turning on HDR enable can improve the picture clarity in scenes with strong changes in light and dark.
+
+- [Auto Exposure] When turned on, the device automatically adjusts the exposure parameters according to the ambient light intensity.
+
+- [Target intensity] Intensity threshold when acquiring depth images (cannot be set)
+
+- [Auto exposure upper limit] Set the upper limit of automatic exposure
+
+- [Auto exposure lower limit] Set the lower limit for automatic exposure (cannot be set)
+
+- [Gain] can increase the intensity value by multiples (cannot be set)
+
+- [x] The x coordinate of the upper left corner of the ROI area set, which can be modified after the flow is stopped.
+
+- [y] Set the y coordinate of the upper left corner of the ROI area, which can be modified after the flow is stopped.
+
+- [High integration] High integration time (increasing it allows the camera to measure distance further)
+
+- [Low Integration] Low integration time (mainly controls distance measurement at a closer distance, generally does not need to be changed)
+
+- [x offset] offset value in the width direction, which can be modified after stopping the flow
+
+- [y offset] The offset value in the high direction, which can be modified after the flow is stopped.
+
+- [Width] The width of the set ROI area, which can be modified after stopping the flow.
+
+- [High] The height of the ROI area set, which can be modified after stopping the flow.
+
+- [3D Frame Rate] Set the point cloud frame rate within the device frame rate range
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b1dcad39-ddcd-4db3-9940-9a6776a8e5ef.avif" alt="3D settings related icons" />
+</Frame>
+
+Figure 7
+
+##### 3.7.2.4 Filter settings
+
+- [Minimum depth] The lower limit of the depth map's false color or distance. Below this value, the false color is displayed as black and is forcibly set to zero.
+
+- [Maximum depth] The upper limit of the depth map's false color or distance. Above this value, the false color is displayed as black and is forcibly set to zero.
+
+- [Low signal threshold] The lower limit of the intensity value. Below this value, the corresponding pixels in the depth map are forcibly set to zero (not effective for the intensity map)
+
+- [High signal threshold] The upper limit of the intensity value. If it is higher than this value, the corresponding pixels in the depth map are forcibly set to zero (does not take effect on the intensity map)
+
+- [Small signal measurement] Set the small signal detection level. The higher the level, the easier it is to detect.
+
+- [Filter Mode] Set filter shielding level
+
+- [Smoothing Level] Controls the smoothing intensity of spatial filtering, retaining object edge details while smoothing noise
+
+- [Noise Level] Set the threshold for noise filtering (the larger the value, the more noise)
+
+- [Temporal Level] Control the intensity of temporal filtering and use historical multi-frame data to improve the continuity of depth data
+
+- Note: Setting the smoothing level, noise level, and time domain level to 0 means turning off filtering.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6178fcc4-ee41-41dd-b01e-42b877764fd9.avif" alt="Illustrations related to filter settings" />
+</Frame>
+
+Figure 8
+
+##### 3.7.2.5 Hardware interface
+
+- [IO output mode] You can set the IO interface output format
+
+- [IO user control mode] The built-in parameters of the device define the IO interface and cannot be modified.
+
+- [CAN baud rate] The default value is 250000. The baud rate must be consistent when communicating with other devices via CAN.
+
+- [CAN protocol type] The default is MRDVS official protocol type, which can be modified to kcrobots
+
+- [CAN address] CAN communication starting address, the default is 18
+
+- [MODBUS address] MODBUS communication starting address, the default is 23
+
+- [Get IO status] Get the current IO interface return status
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6a48416-31fc-41c0-869f-d745b3c54c99.avif" alt="Hardware interface diagram" />
+</Frame>
+
+Figure 9
+
+##### 3.7.2.6 Collection settings
+
+- [Frame synchronization] Control the environmental conditions of each type of image capture to be consistent when saving images
+
+- [Trigger Mode] Control the flow mode to be continuous, passive or active
+
+- [Point cloud saving method]
+
+    - Regular (unordered point cloud): The number of point clouds remains unchanged, width = width\*height, height = 1, as shown in Figure 3
+
+    - Ordered point cloud: The number of point clouds remains unchanged, width = TOF width, height = TOF height, as shown in Figure 4
+
+- [Point cloud saving format] Set the data format for saving point clouds
+
+    - BINARY: Save in binary format
+
+    - ASCII: Save in ascii code format, that is, save in text mode
+
+- [Point cloud value unit] Set the measurement unit of the data in the point cloud image.
+
+- [Start saving pictures] Continuously save the currently selected type of pictures
+
+- [Open Save Path] Open the path to save pictures with the [Single Save] function
+
+Note: For a 640\*480 image, the ascii saving time is about 6.6s, and the binary saving time is about 32ms. The binary saving speed is 206 times that of ascii. It is recommended to save in binary format.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/571ef290-056a-4f5a-8c4a-cee7c35fd78c.avif" alt="Collection settings related icons" />
+</Frame>
+
+Figure 10
+
+##### 3.7.2.7 Function Settings
+
+- [Select configuration] You can select the camera parameter configuration that has been set
+
+- [Save Configuration] Manually save the current parameter configuration of the camera
+
+- [Load configuration] Apply the already set camera parameter configuration to the current camera
+
+- [Export configuration to file] Package the current camera parameter configuration into a json format file and export it
+
+- [Load configuration from file] Import the json file with camera parameter configuration into the current camera and apply the configuration
+
+- [User-defined ID] Customize the ID of the current parameter configuration
+
+- [Algorithm Move Up] Migrate the current built-in algorithm to the upper platform for running
+
+- [Get internal parameters] View the camera's built-in parameter configuration
+
+- [Restore Factory Settings] Restore the camera to its factory state. This operation will forget all set configurations, including but not limited to camera IP. The camera will automatically turn off and needs to be turned back on manually.
+
+- [Firmware Upgrade] Upgrade the camera's firmware. After clicking, a file selection dialog box will pop up. Select the file with the .bin suffix.
+
+- [Camera Restart] Restart the camera. The camera will not turn off automatically, but it will enter the reconnection state. Please do not do other operations when reconnecting.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/18de7052-ce07-4e34-8108-d51560225d1e.avif" alt="Function settings related icons" />
+</Frame>
+
+Figure 11
+
+#### 3.7.3 Application algorithm
+
+- Click [Apply Algorithm] on the menu bar to see the relevant settings of the application algorithm on the right side of the interface (Figure 1)
+
+- [Working Mode] You can set the camera to continue outputting algorithm results even when it is disconnected from the host computer.
+
+- [Application Algorithm] Select the application algorithm to be enabled:
+
+    - [Close] (Picture 2)
+
+    - [Obstacle avoidance algorithm 2.0] (Figure 3)
+
+    - [Pallet positioning and expansion] (Figure 4)
+
+- [Algorithm version] displays the version number of the currently selected algorithm
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb61c0f8-1d50-40eb-abe4-45d837a52c48.avif" alt="Illustrations related to application algorithms" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d876d359-e0a8-404d-8287-5871e2c4ce18.avif" alt="Application algorithm related diagram 2" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a21b97d3-250e-4c14-b41e-68c62e02919a.avif" alt="Application algorithm related diagram 3" />
+</Frame>
+
+Figure 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f7fb3525-ef8a-4a2e-9bb2-ca68a77a5a9d.avif" alt="Application algorithm related diagram 4" />
+</Frame>
+
+Figure 4
+
+##### 3.7.3.1 Obstacle avoidance algorithm
+
+- Set the application algorithm to obstacle avoidance algorithm, and obstacle avoidance related configurations will be displayed.
+
+- [Display car body] You can turn off or turn on the car model that displays the position of the car body in the point cloud image.
+
+- [Obstacle avoidance index] Obstacle avoidance can have multiple configurations, set through this option
+
+- [Camera Angle Roll (x-axis)] Camera external parameter, roll angle, the default camera is 180
+
+- [Camera angle Pitch (y-axis)] Camera external parameter, pitch angle, default vertical installation, is 90
+
+- [Camera angle Yaw (z-axis)] Camera external parameter, heading angle yaw, default is 90
+
+- [Camera position (distance x)] Camera external parameter, the distance between the x direction and the origin, unit: meters.
+
+- [Camera position (width y)] Camera external parameter, the distance between the y direction and the origin, if installed in the middle, it is 0. Unit: Meter.
+
+- [Camera position (height z)] The external parameter of the camera, the distance between the z direction and the origin, can be understood as the height of the camera from the ground, unit: meters.
+
+- [Early Warning Distance (x far)] Obstacle avoidance range, the distance from the center of the car in the x direction. Obstacles beyond this distance are considered safe; the distance between the early warning distance and the alarm distance is considered early warning deceleration, and the interface displays a yellow area. Unit: meter.
+
+- [Alarm distance (x center)] Obstacle avoidance range, the distance from the center of the car in the x direction. Obstacles below this distance are regarded as alarm stops, and the interface displays a red area; the distance between the pre-warning distance and the alarm distance is regarded as an early warning deceleration, and the interface displays a yellow area. Unit: meter.
+
+- [Shielding distance (near x)] Obstacle avoidance range, the distance in the x direction from the center of the car. Obstacles within this distance will be ignored. Unit: meter.
+
+- [Obstacle avoidance range left (y left)] Obstacle avoidance range, the distance from the left side of the y direction to the center of the car. Unit: meter.
+
+- [Obstacle avoidance range right (y right)] Obstacle avoidance range, the distance from the right side of the y direction to the center of the car. Unit: meter.
+
+- [Obstacle avoidance height lower (z lower)] Obstacle avoidance range, height from the ground, below this height will not be processed. If the setting is too small, false alarms may occur due to ranging errors; if the setting is too large, large obstacles on the ground may be filtered out, resulting in false alarms. Unit: meter.
+
+- [Obstacle avoidance height upper (z upper)] Obstacle avoidance range, height from the ground, higher than this height will not be processed. Unit: Meter.
+
+- [Obstacle avoidance output] Output obstacle avoidance results
+
+- [Reset camera external parameters] Restore all parameters that have not been written to the camera
+
+- [Set external parameters] Write all parameters to the camera
+
+- For detailed obstacle avoidance settings, please see the obstacle avoidance documentation.
+
+##### 3.7.3.3 Pallet positioning
+
+- Set the application algorithm to pallet positioning, and obstacle avoidance related configurations will be displayed.
+
+- [Project Name] Name the current pallet recognition parameter configuration
+
+- [Quick Configuration] Several configurations provided by the camera by default
+
+- [Camera Angle Roll (x-axis)] The tilt angle of the camera relative to the X-axis
+
+- [Camera angle Pitch (y-axis)] The tilt angle of the camera relative to the Y-axis
+
+- [Camera Angle Yaw (z-axis)] The tilt angle of the camera relative to the Z-axis
+
+- [Camera position (distance x)] The relative distance between the camera optical center and the forklift rotation center in the X direction
+
+- [Camera position (width y)] The relative distance between the camera optical center and the forklift rotation center in the Y direction
+
+- [Camera position (height z)] The relative distance between the camera optical center and the forklift rotation center in the Z direction
+
+- [Ground Height] The distance from the optical center of the camera to the ground
+
+- [Maximum pallet leg width] Must be compatible with the maximum width of pallet legs in the pallet type
+
+- [Minimum Pallet Leg Width] Must be compatible with the minimum width of pallet legs in the pallet type
+
+- [Distance from the tray] The distance from the optical center of the camera to the tray after the insertion is completed
+
+- [Installation method] Set according to the fixed direction of the camera, the default is formal installation (0)
+
+- [Minimum Z value] Identify the closest depth distance of the pallet
+
+- [Maximum Z value] Identify the farthest depth distance of the pallet
+
+- [Minimum X value] Identify the lateral boundary of the pallet (the left boundary with the camera as the center)
+
+- [Maximum X value] Identify the lateral boundary of the pallet (the right boundary with the camera centered)
+
+- [Pallet algorithm output] displays the results of the pallet algorithm
+
+- [Calibration Instructions] Automatically calibrate when the ground is flat and there is no obstruction in front of the pallet. The pallet is of standard size.
+
+- [Restore default parameters] Restore all parameters to factory defaults
+
+- [Read external parameters from camera] Read all parameters from the camera, all unsent parameters will be overwritten
+
+- [Send parameters] Write all parameters to the camera
+
+- For detailed settings of pallet detection, please refer to the pallet detection function documentation.
+
+#### 3.7.4 Other tools
+
+- [Load local point cloud] You can open point cloud files in .pcl, .png format and view them. Please refer to the tool description for details.
+
+- [IP Configuration Tool] You can configure the camera’s IP, subnet mask, and gateway
+
+- [Packet Capture Tool] can be used to capture network card packet data, please see the tool description for details
+
+- [Network Card Configuration Tool] supports setting up network cards and firewalls, please see the tool description for details
+
+- [Communication Tool] Supports TCP, UDP, MODBUS, FTP communication, please refer to the tool description for details
+
+- [GPU Enable] Allows the use of gpu calculations to process graphics
+
+- [Log Level] Control the detail level of log printing information
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b8797c14-d930-417a-a6bd-85d45c22adbd.avif" alt="Other tools related icons" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/51669a0b-c3c1-4878-98e0-e436ceed6807.avif" alt="Other tools related icons 2" />
+</Frame>
+
+Figure 2
+
+## 4. Access the camera system
+
+- Connect via ssh to the camera's IP address, port 22
+
+    - Take MobaXterm as an example, assuming the camera IP is 192.168.100.15 (Figure 1, Figure 2)
+
+- Username: user, password: user. After successful login, you will see the interface as shown in Figure 3.
+
+- The system comes with configuration as shown in the table below
+
+|  |  |
+| --- | --- |
+| Built-in configuration | Version number |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| Pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Note: Please do not modify the system's built-in configuration at will, as it may cause the system to crash**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/611909af-41f3-4eab-a4b0-74221d61b2f4.avif" alt="4. Access camera system related icons" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6198bda7-f6e3-4a6c-a8e8-8782066d5fbf.avif" alt="4. Illustrations related to accessing the camera system 2" />
+</Frame>
+
+Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/40ff82ed-4595-4753-842c-48c471c5fbf9.avif" alt="4. Illustrations related to accessing the camera system 3" />
+</Frame>
+
+Figure 3
+
+## Tool description
+
+### 5.1 IP configuration tool
+
+- After opening the [IP Configuration Tool], as shown in Figure 1
+
+- Double-click the information after the MAC address to copy, double-click the information after the IP address, subnet mask, and gateway to write, click other options to cancel the modification, and press Enter to confirm the modification, as shown in Figure 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db8cd5ed-0942-4a8d-9719-a2401e268c52.avif" alt="Windows IPv4 network settings interface" />
+</Frame>
+
+Figure 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4eca7e7e-b50d-43ac-ae67-ca82cd2062e3.avif" alt="Windows IPv4 network settings interface 2" />
+</Frame>
+
+Figure 2
+
+### 5.2 Communication tools
+
+- Open [Communication Tools] as shown in Figure 1
+
+- Communication tools support TCP, UDP, FTP, Modbus TCP, Modbus RTU, CAN (linux)
+
+- Communication tools support multiple opening of different tabs
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3f776879-9244-4d03-be34-a4b1ed20fffa.avif" alt="Illustrations related to communication tools" />
+</Frame>
+
+Figure 1
+
+### 5.3 Network card configuration tool
+
+- After opening the [Local Point Cloud Tool], as shown in Figure 1
+
+- The network card configuration tool can set up the firewall
+
+- After selecting the network card, you can open the network card properties and configuration interface that comes with Windows.
+
+-Support opening the firewall configuration page
+
+- Support opening task manager
+
+-Support opening the Network Connection Center
+
+- Language automatically follows this software
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76495e2c-d92d-4f17-b2f8-21d1bb7b9072.avif" alt="Illustrations related to the network card configuration tool" />
+</Frame>
+
+Figure 1
+
+## Frequently Asked Questions and Solutions
+
+|  |  |
+| --- | --- |
+| Problem Description | Solution |
+| Cannot find the camera | * Check whether the camera power is connected. After the power is turned on, the blue light on the front of the camera is always on * Check whether the IP address and subnet mask are correct * Check whether the host computer is prohibited from accessing the network |
+| The camera can be opened but the streaming fails | Please check whether the host computer has been opened with administrator rights |
+| Image lag | Check whether the network card, network cable, and switch are Gigabit. After turning on RGB alignment, the 100M network will experience a certain degree of lag |
+| The camera frequently reconnects | After restoring factory settings, firmware upgrade, or when the camera is turned on for the first time under 100M network, the camera will adjust/restart itself for about 30 seconds. Within 30 seconds, the host computer will keep trying to connect to the camera until the camera is stable |
+| No depth data, point cloud data | * Check whether the camera is blocked * Check whether the object is within the camera shooting range * Check whether the maximum/minimum depth values are correct * Check whether the filter parameters are correct |
+| The point cloud disappears and only the white frame can be seen on the interface | Click the point cloud image with the mouse and press the 'm' key to turn on point cloud stabilization |
+| Point cloud display is abnormal | Check whether the point cloud shortcut key has been operated and turn on point cloud stability |
+| The point cloud is not displayed after opening the camera under Linux | Please use the mouse to press and drag the point cloud image to display |
+| Application display: VTK loading failed, point cloud will not be displayed, please check the graphics card configuration and graphics card driver | * Check whether the graphics card configuration is too low * Check whether the graphics card driver is running normally * Point cloud display requires a graphics card with independent video display memory and its driver |
+
+## Help
+
+### 7.1 About
+
+Click [About] in the upper right corner, or in the current information when the software is first started, you can view the software version number, SDK version number and other related information. Click the [Open Help Document] button to open this document, as shown in the figure below:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c3d926d9-7023-4d79-83d6-1a51ce88ad55.avif" alt="About related icons" />
+</Frame>
+
+### 7.2 User Manual
+
+Right-click the shortcut of this software → open the file location → return to the upper directory → you can view all related documents in Document, as shown in the figure below:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cbee533-fab9-4664-8a6b-0b6ea4bb2a34.avif" alt="User manual related icons" />
+</Frame>

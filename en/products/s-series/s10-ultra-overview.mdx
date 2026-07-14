@@ -1,0 +1,231 @@
+---
+title: "S10 Ultra Series 3D cameras"
+description: "Specifications, interfaces, IMU, SLAM support, and operating instructions for the S10 Ultra dToF RGB-D camera."
+---
+For the complete document, download the product manual from the [Download center](/en/resources/downloads/specifications-and-user-guides "Download center").
+
+## Product overview
+
+The MRDVS S10 Ultra is an industrial vision-LiDAR camera based on dToF technology with a 0.2-42m indoor and outdoor range. It supports spatial and temporal RGB-depth alignment and includes an IMU with data output up to 200Hz for use with SLAM algorithms such as FastLio and [FastLio2](https://github.com/Lanxin-MRDVS/MRDVS-S10Ultra_Mapping "FastLio2"). The camera includes an SoC, supports software triggering, and is available as a MIPI module.
+
+<Frame>
+  <img src="/images/legacy/a2ec1932-73d9-4c34-b1f4-045ea8ceb946/b57c7d10-1a66-4d79-aefc-e3706f78f6f8.avif" alt="S10 Ultra camera" />
+</Frame>
+
+## Core technology and applications
+
+- dToF depth sensing: Calculates distance from the round-trip time of the laser signal, providing a 0.2-42m range and resistance to 100 kLux ambient light.
+
+- Synchronized data output: Outputs depth, high-quality RGB, and IR images with spatial and temporal synchronization.
+
+- Solid-state design: Contains no moving parts, has compact 106×69×43mm dimensions, resists vibration, and provides aligned RGBD data.
+
+**Primary applications:**
+
+- Robotic lawn mowers: Localization and navigation in yards and lawns.
+
+- Industrial quadruped robots: Localization, navigation, and perception for inspection and exploration.
+
+- Multirotor drones: Localization, navigation, obstacle avoidance, and perception for inspection and surveying.
+
+<Frame>
+  <img src="/images/legacy/74e53d10-47b1-47c1-8495-da341b854496/6fa61ae1-77db-4510-8ad0-982542a2afa3.avif" alt="Figure 1. S10 Ultra on an embodied quadruped robot" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f317e34-29b9-4e0d-a405-89afd7f6c34f/2d4a23b0-1117-475a-a700-93ed73a86400.avif" alt="Figure 2. S10 Ultra on a lawn mower" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0378bc88-1491-4152-8f03-8e0eb6964b5c/183ae5da-42dd-4200-bb67-3299d2a212f0.avif" alt="Figure 3. Multirotor drone application" />
+</Frame>
+
+## Specifications
+
+| Specification | S10 Ultra |
+| --- | --- |
+| Environment | Indoor/outdoor |
+| Depth technology | dToF |
+| Laser wavelength | 940nm |
+| Depth range | 0.2~42m (90% reflectivity)<br />0.2~30m (10% reflectivity) |
+| Ranging accuracy | ≤4cm |
+| Output data | Depth (point cloud)/RGB/IR (amplitude) images |
+| Depth resolution/frame rate | 240×160 @Max 10fps/10fps typical |
+| Depth FOV | 120°×80°±3° |
+| RGB resolution/frame rate | 1280×1080 @Max 20fps, 10fps typical |
+| RGB FOV | 120°×110°±3° |
+| RGBD alignment | Supported |
+| Data interface | Ethernet |
+| Operating temperature | -20℃~75℃ |
+| Storage temperature | -40℃~85℃ |
+| Time synchronization | PTP |
+| Protection rating | IP67 |
+| Eye safety | CLASS I |
+| Dimensions | 106×69×43mm |
+| Weight | Approximately 440g |
+| Power consumption | < 9W |
+| Power input | 12~27V |
+| Software environment | C/C++/ROS SDK |
+| System support | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Ambient-light resistance | 100 kLux |
+| IMU output frequency | 200Hz |
+
+## Mechanical design and software
+
+### Dimensions
+
+<Frame>
+  <img src="/images/legacy/2aa056c7-b51d-4adf-962b-ee8bd931f064/9dae8fb1-222d-495e-bc60-8f403e451934.avif" alt="S10 Ultra dimensions" />
+</Frame>
+
+### Software SDK
+
+See the MRDVS host software user guide and SDK development guide.
+
+## Product integration guide
+
+| Item |  | Specification |
+| --- | --- | --- |
+| Operating environment | Temperature | -20℃--75℃ |
+|  | Illumination | 0KLUX--100KLUX |
+| Storage environment | Temperature | -40℃--85℃ |
+|  | Humidity | Max 90% RH |
+
+## Camera detection range
+
+<Frame>
+  <img src="/images/legacy/d2c3be3a-bf40-44fe-9fa7-e9a06fbab482/d7b9eb6a-d928-4bca-8cfe-883234e52c63.avif" alt="Camera detection range" />
+</Frame>
+
+## Important installation precautions
+
+### Recommended installation
+
+Keep the illustrated clearance area completely free of objects when installing the 3D vision camera. An object in this area interferes with point cloud data and can cause image noise, false stops, and data errors.
+
+<Frame>
+  <img src="/images/legacy/6adbdf3c-c914-456a-9777-5a4721879f16/d195c008-fd7a-4674-953f-f37919a40b89.avif" alt="Recommended installation" />
+</Frame>
+
+### Causes of camera errors
+
+An unsuitable installation environment can interfere with time-of-flight and triangulation measurements and cause operational errors:
+
+1. Improper hardware installation: physical obstruction and FOV clipping
+
+Enclosure edges or ribs can enter the specified FOV. Off-center installation or an opening that is too small can also clip the view and cause the sensor to detect the enclosure as a target. Symptoms include fixed blind spots, false short-range measurements, and a compressed FOV, which can cause missed obstacles and incorrect paths.
+
+2. Optical interference: near-field infrared crosstalk and reflections
+
+This common failure occurs when a confined installation space causes abnormal infrared reflections and crosstalk:
+
+First, reflections from inner walls cause multipath interference. Infrared light reflects from enclosure walls multiple times before reaching the receiver, changing the measured time and distorting the calculated distance.
+
+Second, highly reflective surfaces cause local failures. Smooth, bright materials such as polished metal and mirrors create specular reflections, causing missing signals or saturated overexposure.
+
+Third, strong reflections from nearby structures cause glare contamination. When a bright, smooth structure is less than 10cm from the sensor, strong reflections saturate the receiver. Glare disrupts an iToF camera's phase and prevents flight-time calculation. This interference distorts data, accelerates receiver aging, and affects core functions.
+
+3. Optical interference: optical windows
+
+The material and cleanliness of protective glass or other optical windows in front of the sensor can cause three types of interference:
+
+First, multiple reflections cause image artifacts. Reflections from both window surfaces mix with the valid signal, causing ghosting and flying pixels in the depth image and duplicate LiDAR point clouds.
+
+Second, contamination and fog reduce the signal-to-noise ratio. Sealed spaces can allow the window to fog or collect dust, preventing the sensor from identifying valid signals.
+
+Third, incompatible materials attenuate the signal. Signals may not pass through ordinary glass or acrylic, causing complete data loss. Window interference increases measurement error, can damage the lens, and raises maintenance costs. High-transmission glass can improve performance.
+
+4. Other indirect factors
+
+First, installation stress: Over-tightened clips can deform the lens or shift the optical axis, causing ToF distance errors.
+
+Second, thermal interference: Poor heat dissipation in a sealed space raises sensor temperature and deforms the window, causing range drift and possible long-term failure.
+
+## Quickstart
+
+### Connection test
+
+<Frame>
+  <img src="/images/legacy/3b17fd5d-5aee-40d8-90bd-be711fd0ea96/84ce70a3-9bfd-46d9-961d-a4d57091a8cb.avif" alt="Connection test" />
+</Frame>
+
+Connection test diagram
+
+### Power the camera
+
+- Connect one end of the DC cable to the camera and the other to a 12~27V/3A DC adapter.
+
+- A slowly flashing blue power indicator confirms normal power-on.
+
+- If the indicator is off or abnormal, such as solid red, check the power connector and adapter.
+
+### Configure the network
+
+- Connect the camera directly to the computer with a Category 6 Ethernet cable.
+
+- The factory-default camera IP address is 192.168.100.82.
+
+- Set the computer IP to the same subnet and disable the firewall.
+
+### Run the software
+
+- Run the host software, acquire camera images, and verify that they are clear and stable.
+
+- See section 5.3 or the LxCameraViewer user guide.
+
+- Contact MRDVS sales or technical support for further help.
+
+## Interface overview
+
+LxCameraViewer opens and displays multiple devices. It displays depth, intensity, point cloud, and RGB images and configures basic camera and algorithm parameters. You can view and save image data, camera configuration, and algorithm details.
+
+The initial interface has a device list (blue area 1), menu bar (green area 2), and image display (red area 4). Double-click the menu bar to maximize or minimize it. Drag the interface with the left mouse button.
+
+<Frame>
+  <img src="/images/legacy/039de4f0-71e7-4a2e-a01c-a7f17bd8f4e8/e6945a49-8ace-487b-a38c-793ff8bfbf99.avif" alt="Interface before opening a camera" />
+</Frame>
+
+Interface before opening a camera
+
+After opening a camera, a function panel appears on the right (area 3). Use **Basic tools**, **Application algorithms**, and **Other** at the top. Basic tools include image display, 2D settings, 3D settings, and filtering.
+
+<Frame>
+  <img src="/images/legacy/3d8475ee-e7db-4454-a232-72d54359f815/21260dfa-61bc-493e-843c-f5d8cd8c2fdc.avif" alt="Interface with an open camera" />
+</Frame>
+
+Interface with an open camera
+
+The device list is in the upper left. Click **Open** or **Close** to control the camera. The center-left area shows camera information, software operations, results, and stream results. The lower-left area shows information for the selected device.
+
+Click **Capture** to start or stop image acquisition. The button remains disabled until the operation finishes. Click **Save frame** to save images from active streams. Select **Depth**, **Intensity**, **RGB**, or **Point cloud** to open the required views.
+
+For details, see the LxCameraViewer user guide.
+
+## Laser safety class
+
+<Frame>
+  <img src="/images/legacy/3e69ba1d-2ef0-43c0-a1f1-e0d6678e1f89/3fadcf0c-5f15-49e3-9c07-631fef6c3faa.avif" alt="Laser safety class" />
+</Frame>
+
+## Troubleshooting
+
+| No. | Problem | Resolution |
+| --- | --- | --- |
+| 1 | Camera does not respond when opened | Verify that the firewall is disabled |
+| 2 | Host software detects multiple IP addresses | Another device on the LAN uses the same IP; select the required IP |
+| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable; Fast Ethernet may initially be unstable |
+| 4 | Software installation location | A default installation on drive C may be affected by permissions |
+
+### S10 Ultra featured as a representative product at IROS 2025
+
+<Frame>
+  <img src="/images/legacy/4039bcf6-5835-435c-9acc-a3772876c353/c9b68b10-48f7-4f85-ad89-64e51a072bb0.avif" alt="S10 Ultra at IROS 2025" />
+</Frame>
+
+## Case studies
+
+[How Company F's autonomous forklifts safely complete more than 500 tasks each day](/en/solutions/warehouse/cases/unmanned-forklift-500-tasks "Autonomous forklift case study")
+
+[Under-ride AMR obstacle avoidance](/en/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Under-ride AMR obstacle avoidance")
+
+[3D obstacle avoidance for a wheeled humanoid robot](/en/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Wheeled humanoid robot obstacle avoidance")

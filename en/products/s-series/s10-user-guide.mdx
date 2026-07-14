@@ -1,0 +1,226 @@
+---
+title: "S10 camera user guide"
+description: "Product specifications and selected design details for developers who integrate and use the S10 camera."
+hidden: true
+---
+## Revision history
+
+| Date | Version | Changes |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Initial release |
+| 2025/02/27 | V1.1 | Updated TOF field of view |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## 1. Introduction
+
+### 1.1 Purpose and scope
+
+This document describes the S10 camera specifications and selected design details for developers who integrate and use the product.
+
+### 1.2 Terminology
+
+| RGBD camera | A camera that outputs synchronized and spatially aligned RGB and depth images |
+| --- | --- |
+| Depth | A video stream similar to a color or monochrome stream, where each pixel represents its distance from the camera |
+| FOV | Field of view: the angular range of a scene captured by a camera, including horizontal (HFOV), vertical (VFOV), and diagonal (DFOV) fields of view |
+| IR camera | An infrared camera; in this product, it primarily captures the near-infrared band |
+| RGB camera | A color camera |
+| Depth camera | A camera whose depth module typically includes a dot projector, an IR camera, and a depth processor; its color module is typically an RGB camera |
+| SoC | System on a chip used for image processing, depth calculation, and application algorithms |
+| DTOF | Distance-sensing technology based on time-of-flight measurement |
+
+### 1.3 Operating principle
+
+This product is a DTOF 3D depth camera with long range, good accuracy, low cost, strong interference resistance, and stable data. An integrated RGB module captures color images. The camera aligns RGB and depth images internally.
+
+## 2. Product overview
+
+This compact industrial RGBD camera provides depth data from 0.3m to 8m. It spatially and temporally aligns RGB and depth images. Its integrated SoC outputs depth, intensity, RGB, point cloud, and obstacle-detection results. In addition to Ethernet, two IO inputs and two IO outputs switch among four obstacle-avoidance zones and output emergency-stop, slowdown, and safe-state signals.
+
+* * *
+
+### 2.1 Product appearance
+
+![S10 camera](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+
+Figure 1. S10 camera
+
+### 2.2 Features
+
+- Low DTOF power consumption and compact size
+
+- Integrated processing that outputs obstacle-detection results for plug-and-play operation
+
+- Strong environmental adaptability: resists 100KLUX sunlight and operates from darkness to bright light, indoors and outdoors
+
+- Wide 0.3-8m measurement range
+
+* * *
+
+## 3. Specifications
+
+### 3.1 Basic specifications
+
+| Product model | S10 |
+| --- | --- |
+| Operating principle | DTOF depth camera |
+| Output format | Depth & RGB & Amplitude Map |
+| TOF resolution and frame rate | 240x160 @Max. 20fps, typical 15fps |
+| TOF field of view | 90°*61° |
+| RGB resolution and frame rate | 1920×1080 @Max. 20fps, typical 15fps |
+| RGB field of view | 90°*70° |
+| Range | 0.3-8m (@90% ref), 0.3-3m (@5%) |
+| Accuracy | 1 standard deviation &lt;3cm at room temperature (25℃), 70% ref, and &lt;50kLux illumination |
+| Power consumption | ≤4W & 28w |
+| Laser | 940nm |
+| Dimensions | 80mm wide × 25mm high × 37mm deep |
+| Weight | ≤300g |
+| Power input | 24V±20% |
+| Communication interface | Ethernet / IO |
+| Protection rating | IP54 |
+| Operating temperature | -20°C~60°C |
+| Storage temperature | -40°C~85°C |
+| Software environment | C / C++ / ROS SDK |
+| Operating system support | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Cooling | Passive, no fan |
+
+Note: The 3D model defines the product dimensions.
+
+### 3.2 Interface definitions
+
+Camera-side interfaces:
+
+The camera has three interfaces: a DC24V power connector, a Fast Ethernet connector, and an 8-pin IO connector.
+
+<Frame>
+  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Camera interface definitions" />
+</Frame>
+
+Cable pinout:
+
+<Frame>
+  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Cable pinout" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Cable pinout detail" />
+</Frame>
+
+| Cable | P1 pin | Color | Description |
+| --- | --- | --- | --- |
+| Ethernet cable | 1 | Orange | OUT_COM2 |
+| ㅤ | 2 | Yellow | OUT_2 |
+| ㅤ | 3 | Green | OUT_COM1 |
+| ㅤ | 4 | Blue | OUT_1 |
+| ㅤ | 5 | Purple | IN_COM2 |
+| ㅤ | 6 | Gray | IN_2 |
+| ㅤ | 7 | Brown | IN_COM1 |
+| ㅤ | 8 | White | IN_1 |
+| Power cable | 1 | Red | 24V+ |
+| ㅤ | G | Black | 24V- |
+
+### 3.3 Camera components
+
+<Frame>
+  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Camera components" />
+</Frame>
+
+| VCSEL | Laser emitter |
+| --- | --- |
+| SPAD | Single-photon avalanche diode |
+| RGB | RGB module |
+| Power indicator | Flashes slowly after power-on |
+
+## 4. Camera integration guide
+
+### 4.1 Mechanical design
+
+### 4.1.1 Camera field of view
+
+<Frame>
+  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Camera field of view" />
+</Frame>
+
+Figure 3. Camera field of view
+
+### 4.1.2 Camera dimensions
+
+<Frame>
+  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Camera dimensions" />
+</Frame>
+
+### 4.2 Software SDK
+
+See the MRDVS host software user guide and MRDVS SDK development guide.
+
+* * *
+
+## 5. Environment and reliability
+
+| Item | ㅤ | Specification |
+| --- | --- | --- |
+| Operating environment | Temperature | -20℃--60℃ |
+| ㅤ | Humidity | 0%–95% RH, non-condensing |
+| ㅤ | Illumination | 0KLUX--100KLUX |
+| Storage environment | Temperature | -40℃--85℃ |
+| ㅤ | Humidity | 10%–95% RH, non-condensing |
+| Temperature rise during normal operation | ㅤ | Enclosure temperature rise &lt;25℃ |
+| ESD rating | ㅤ | ±4KV contact discharge, ±8KV air discharge |
+| RE rating | ㅤ | Complies with GB 9254 CLASS A |
+| Service life | ㅤ | 10 years |
+| Environmental certification | ㅤ | RoHS |
+
+* * *
+
+## 6. Quickstart
+
+### 6.1 Connection test
+
+<Frame>
+  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Connection test" />
+</Frame>
+
+1.  Connect the camera to a 24V/2A DC supply. A slowly flashing blue power indicator confirms normal power-on.
+
+2.  Connect the camera to the computer with a Category 6 Ethernet cable.
+
+3.  The factory-default camera IP address is 192.168.100.82.
+
+4.  Set the computer IP to the camera's subnet and disable the computer firewall.
+
+5.  Run the host software to view the camera images.
+
+6.  Contact MRDVS sales or technical support to obtain the host software.
+
+### 6.2 IO wiring
+
+| Interface | Type | Notes |
+| --- | --- | --- |
+| IN1 | Input | Active-high discrete input; supports 24V/open input |
+| IN2 | Input | Active-high discrete input; supports 24V/open input |
+| OUT1 | Output | Ground/open discrete output; supports 24V pull-up |
+| OUT2 | Output | Ground/open discrete output; supports 24V pull-up |
+| COM | GND | Common ground for discrete outputs; use IN1 with IN_COM1 |
+
+* * *
+
+## 7. Precautions
+
+### 7.1 Laser safety class
+
+<Frame>
+  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Laser safety class" />
+</Frame>
+
+* * *
+
+## 8. Troubleshooting
+
+| No. | Problem | Resolution |
+| --- | --- | --- |
+| 1 | Camera does not respond when opened | Verify that the firewall is disabled |
+| 2 | Host software detects multiple IP addresses | Another device on the LAN uses the same IP; select the required IP address |
+| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable; data can initially be unstable over Fast Ethernet |
+| 4 | Software installation location | A default installation on drive C may be affected by permission settings |

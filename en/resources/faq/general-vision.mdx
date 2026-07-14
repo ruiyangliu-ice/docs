@@ -1,0 +1,252 @@
+---
+title: "General vision FAQs"
+description: "Troubleshoot camera networking, streaming, imaging, filtering, and device states."
+---
+## Camera and imaging
+
+<AccordionGroup>
+<Accordion title="The power indicator light is off or the blue light is weak">
+
+**Possible reasons**
+
+The power supply voltage is unstable
+
+**Resolution**
+
+Power requirement 24VDC 2A
+
+</Accordion>
+
+<Accordion title="Camera automatically restarts frequently">
+
+**Resolution**
+
+1. Check the bandwidth usage<br />2. Check whether the power supply is sufficient
+
+</Accordion>
+
+<Accordion title="The LxCameraViewer obstacle avoidance result is normal and the IO result is abnormal">
+
+**Resolution**
+
+1. Check whether the IO wiring is correct<br />2. Check whether the function cable is intact<br />3. Check whether the firmware version is May or later.
+
+</Accordion>
+
+<Accordion title="Network card shows disconnected">
+
+**Possible reasons**
+
+Network connection abnormality
+
+**Resolution**
+
+Check whether the network, network card, and switch are normal or blocked.
+
+</Accordion>
+
+<Accordion title="canopen protocol communication clients cannot receive or receive mismatch">
+
+**Resolution**
+
+1. Check whether the baud rate and CANID match<br />2. Whether the CAN line is connected correctly
+
+</Accordion>
+
+</AccordionGroup>
+## LxCameraViewer/visual imaging part
+
+<AccordionGroup>
+<Accordion title="No data after the LxCameraViewer opens the camera (the LxCameraViewer reports an error and does not receive the data stream)">
+
+**Possible reasons**
+
+1. The firewall is turned on;<br />2. The network card and camera network segment do not match;<br />3. Switch interception;<br />4. Caused by abnormality of the customer's own computer;
+
+**Resolution**
+
+1. Turn off the firewall<br />2. Set the same network segment IP<br />3. Troubleshoot switch problems<br />4. Replace the computer<br />5. Configure multiple network segments
+
+</Accordion>
+
+<Accordion title="The observation data on the depth map is missing standard rectangular blocks, and the depth appears as black rectangular holes">
+
+**Possible reasons**
+
+Multiple machine error detection
+
+**Resolution**
+
+After stopping the flow, turn off the multi-machine mode in the 3D settings (the algorithm mode needs to be changed to turn off when disconnected)
+
+</Accordion>
+
+<Accordion title="S10/S10 pro camera software cannot open the image or the depth image is compact (very small)">
+
+**Possible reasons**
+
+PC software version does not match
+
+**Resolution**
+
+Update to Lanxin-MRDVS-1.3.66.0606 or later versions
+
+</Accordion>
+
+<Accordion title="Camera opening failed, network communication error">
+
+**Possible reasons**
+
+The camera and computer are not on the same network segment
+
+**Resolution**
+
+Change the camera or computer network segment to the same network segment
+
+</Accordion>
+
+<Accordion title="Exclusive application permission failed">
+
+**Possible reasons**
+
+Multi-user connection to camera
+
+**Resolution**
+
+Make sure that only one user is connected to the camera at the same time (2.4.50.0720 and later versions will enter multi-user permissions)
+
+</Accordion>
+
+<Accordion title="Open camera device in restricted mode: Success">
+
+**Possible reasons**
+
+Multi-user connection to camera
+
+**Resolution**
+
+If multiple processes connect to the camera device at the same time, there may be no data flow to the host computer or other processes. Only the restricted mode device can view the data stream after turning on the data stream with master permission (the first process to open the camera device).
+
+</Accordion>
+
+<Accordion title="The image of the detected object is sparse or missing">
+
+**Possible reasons**
+
+Underexposed or over-filtered
+
+**Resolution**
+
+1. Check the high exposure parameters (usually 600-1200)<br />2. Check the low signal threshold (usually 10-30)
+
+</Accordion>
+
+<Accordion title="The host computer starts streaming normally but has no image data, and the frame rate displays normally">
+
+**Possible reasons**
+
+Laser is weak or extinguished
+
+**Resolution**
+
+Use the mobile phone camera to capture the front face of the camera to confirm the status of the laser. If it goes out or is weak, replace the camera hardware.
+
+</Accordion>
+
+<Accordion title="There is no object in the space ahead, but there is data on the point cloud">
+
+</Accordion>
+
+<Accordion title="When facing the object under test, noise data appears on the side of the object under test">
+
+**Possible reasons**
+
+caused by glare
+
+**Resolution**
+
+1. Turn on glare algorithm optimization<br />2. Increase the low signal threshold
+
+</Accordion>
+
+<Accordion title="The center of the rgb image is reddish and the rgb image is blurred">
+
+**Resolution**
+
+Replace hardware
+
+</Accordion>
+
+<Accordion title="rgb image facing straight, depth image squinting">
+
+**Resolution**
+
+Replace hardware
+
+</Accordion>
+
+<Accordion title="There is adhesion in point clouds between adjacent objects">
+
+**Resolution**
+
+Increase denoising and smoothing levels in filter settings
+
+</Accordion>
+
+<Accordion title="RGB has no data after setting rgbd alignment">
+
+**Possible reasons**
+
+Software version problem
+
+**Resolution**
+
+Update software version (Github download link: https://github.com/Lanxin-MRDVS/CameraSDK/releases）
+
+</Accordion>
+
+<Accordion title="Point cloud appears obviously layered (S series)">
+
+**Resolution**
+
+Replace hardware
+
+</Accordion>
+
+<Accordion title="Poor edge accuracy of near white objects (S series)">
+
+**Possible reasons**
+
+caused by glare
+
+**Resolution**
+
+Optimized glare algorithm turned on, but black detection may be missing
+
+</Accordion>
+
+<Accordion title="Large-area overexposure of the reflective column (S series)">
+
+**Possible reasons**
+
+caused by glare
+
+**Resolution**
+
+Turn on glare suppression algorithm
+
+</Accordion>
+
+<Accordion title="Incomplete imaging detection of black objects (S series)">
+
+**Possible reasons**
+
+Turn on high exposure mode
+
+**Resolution**
+
+TOF register 100130B0 is set to 240
+
+</Accordion>
+
+</AccordionGroup>

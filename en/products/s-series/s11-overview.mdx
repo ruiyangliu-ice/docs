@@ -1,0 +1,255 @@
+---
+title: "S11 dToF RGBD camera"
+description: "Specifications, interfaces, mechanical design, and operating instructions for the S11 dToF RGB-D camera."
+---
+For the complete document, download the product manual from the [Download center](/en/resources/downloads/specifications-and-user-guides "Download center").
+
+## 1 Product overview
+
+### 1.1 Introduction
+
+The MRDVS S11 is a solid-state RGB-D camera based on dToF technology for mobile robots, with Ethernet and USB versions. Its typical outdoor range is 0.1-5m\[1\], with ranging accuracy up to 1cm. It synchronously outputs depth data, RGB images, and IR images for obstacle avoidance, spatial perception, and modeling. A custom MIPI module has the same performance specifications but different communication, dimensions, and power requirements.
+
+Note \[1\]: The maximum indoor range is 10m.
+
+<Frame>
+  <img src="/images/legacy/958d7f8b-32a7-43d5-a347-0e0daf9c522a/cfa8d3dc-62ff-4008-ae47-9661f344d9c7.avif" alt="S11 camera" />
+</Frame>
+
+### 1.2 Features
+
+- dToF depth sensing: Calculates distance from the round-trip time of a laser signal. Compared with iToF, it provides higher accuracy (≤1cm), a wider effective range (0.1-10m), and stronger outdoor ambient-light resistance.
+
+- Synchronized data output: Outputs depth, RGB, and IR amplitude images without acquisition delay.
+
+- Solid-state design: Contains no moving parts. The 90×25×25mm camera weighs approximately 130g with Ethernet or 90g with USB and resists vibration. A custom 33×18×13mm MIPI module is also available.
+
+### 1.3 Applications
+
+1.  Cleaning robots for floor-obstacle detection
+
+2.  Industrial mobile robots (AGV/AMR)
+
+3.  Service robots for retail guidance and delivery
+
+4.  Home companion robots for environment perception
+
+5.  Special-purpose robots for cold or humid environments
+
+<Frame>
+  <img src="/images/legacy/f3bc1aeb-552d-4cba-87e3-b0f54613d1ab/fedb1f84-cfd2-434f-bbcc-f77482551b2e.avif" alt="Cleaning robot application" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/8eec16dd-ef83-4db8-bbdc-4d4fca5c6583/19b38065-602a-41c0-8921-f280f56a4550.avif" alt="Industrial mobile robot application" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5167363b-13a9-4049-94f6-2f4fb74bca31/4db4841d-3b5d-45e1-98fa-cb45e367de1e.avif" alt="Service robot application" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/75d26716-a460-4969-9e30-4436ca56d441/708321ba-1cd8-479c-a72f-2db184a673eb.avif" alt="Special-purpose robot application" />
+</Frame>
+
+### Specifications
+
+| S11 camera | Ethernet | USB | MIPI |
+| --- | --- | --- | --- |
+| Environment | Indoor/outdoor | Indoor/outdoor | Indoor/outdoor |
+| Depth technology | dToF | dToF | dToF |
+| Laser wavelength | 940nm | 940nm | 940nm |
+| Depth range | 0.1-5m outdoors,<br />10%-90% reflectivity | 0.1-5m outdoors,<br />10%-90% reflectivity | 0.1-5m outdoors,<br />10%-90% reflectivity |
+| Ranging accuracy | 1cm | 1cm | 1cm |
+| Output data | Depth (point cloud)/RGB/IR (amplitude) images | Depth (point cloud)/RGB/IR (amplitude) images | Depth (point cloud)/RGB/IR (amplitude) images |
+| Depth resolution/frame rate | 240×96 @max. 20fps/10fps typical | 240×96 @max. 20fps/10fps typical | 240×96 @max. 20fps/10fps typical |
+| Depth FOV | 136°×56° | 136°×56° | 136°×56° |
+| RGB resolution/frame rate | 1280×1080 @max. 20fps/10fps typical | 1280×1080 @max. 20fps/10fps typical | N/A |
+| RGB FOV | 120°×110°±3° | 120°×110°±3° | N/A |
+| RGBD alignment | Supported | Supported | N/A |
+| Data interface | Ethernet | USB | MIPI |
+| Operating temperature | -20℃~60℃ | -20℃~60℃ | N/A |
+| Storage temperature | -20℃~70℃ | -20℃~70℃ | N/A |
+| Time synchronization | PTP | PTP | N/A |
+| Protection rating | IP54 | N/A | N/A |
+| Eye safety | CLASS I | CLASS I | CLASS I |
+| Dimensions | 90×25×25mm | 90×25×25mm | 33×18×13mm |
+| Weight | Approximately 130g | Approximately 90g | &lt;10g |
+| Power consumption | < 4W average,<br />13W peak | < 4W average,<br />30W peak | ≤2W average,<br />8W peak |
+| Power input | 12V~24V DC | 5V USB3.0 | 3.3V/5V DC |
+| Software environment | C/C++/ROS SDK | C/C++/ROS SDK | C/C++/ROS SDK |
+| System support | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS |
+| Ambient-light resistance | 100 kLux | 100 Klux | 100 kLux |
+
+## 3 Mechanical design
+
+<Frame>
+  <img src="/images/legacy/94accd48-6237-45e3-91c3-f1fda82f45f8/a7e9439d-0b98-4283-a3b8-b3ec843cadbc.avif" alt="S11 Ethernet dimensions" />
+</Frame>
+
+S11 Ethernet dimensions
+
+<Frame>
+  <img src="/images/legacy/ac90042c-202c-47e2-8194-838fdd1ecc8c/c793856e-0c27-4797-a05b-b410a1673bc5.avif" alt="S11 USB dimensions" />
+</Frame>
+
+S11 USB dimensions
+
+<Frame>
+  <img src="/images/legacy/46907574-b827-4f0b-8e31-b48a56c0b916/a6a5216a-3534-4c63-bde1-8726bc1f742f.avif" alt="S11 MIPI 140-degree module" />
+</Frame>
+
+S11 MIPI 140°
+
+## 4 Camera integration guide
+
+### 4.1 Camera detection range
+
+<Frame>
+  <img src="/images/legacy/57895a39-84d3-4ffc-9213-d5a6ff5a30e8/32c5e22d-646a-4942-be2e-fea2917c797b.avif" alt="Camera detection range" />
+</Frame>
+
+S11 Series 140°×56° field of view
+
+### 4.2 Important installation precautions
+
+#### 4.2.1 Recommended installation
+
+Keep the illustrated clearance area completely free of objects when installing the 3D vision camera. An object in this area interferes with point cloud data and can cause image noise, false stops, and data errors.
+
+<Frame>
+  <img src="/images/legacy/73e05d6f-add8-455c-94fa-2a7a356f554e/0449536b-6ccf-4cc7-9ba9-f3c0d66dee1e.avif" alt="Recommended installation" />
+</Frame>
+
+#### 4.2.2 Causes of camera errors
+
+An unsuitable installation environment can interfere with time-of-flight and triangulation measurements and cause operational errors:
+
+1. Improper hardware installation: physical obstruction and FOV clipping
+
+Enclosure edges or ribs can enter the specified FOV. Off-center installation or an opening that is too small can also clip the view and cause the sensor to detect the enclosure as a target. Symptoms include fixed blind spots, false short-range measurements, and a compressed FOV, which can cause missed obstacles and incorrect paths.
+
+2. Optical interference: near-field infrared crosstalk and reflections
+
+This common failure occurs when a confined installation space causes abnormal infrared reflections and crosstalk:
+
+First, reflections from inner walls cause multipath interference. Infrared light reflects from enclosure walls multiple times before reaching the receiver, changing the measured time and distorting the calculated distance.
+
+Second, highly reflective surfaces cause local failures. Smooth, bright materials such as polished metal and mirrors create specular reflections, causing missing signals or saturated overexposure.
+
+Third, strong reflections from nearby structures cause glare contamination. When a bright, smooth structure is less than 10cm from the sensor, strong reflections saturate the receiver. Glare disrupts an iToF camera's phase and prevents flight-time calculation. This interference distorts data, accelerates receiver aging, and affects core functions.
+
+3. Optical interference: optical windows
+
+The material and cleanliness of protective glass or other optical windows in front of the sensor can cause three types of interference:
+
+First, multiple reflections cause image artifacts. Reflections from both window surfaces mix with the valid signal, causing ghosting and flying pixels in the depth image and duplicate LiDAR point clouds.
+
+Second, contamination and fog reduce the signal-to-noise ratio. Sealed spaces can allow the window to fog or collect dust, preventing the sensor from identifying valid signals.
+
+Third, incompatible materials attenuate the signal. Signals may not pass through ordinary glass or acrylic, causing complete data loss. Window interference increases measurement error, can damage the lens, and raises maintenance costs. High-transmission glass can improve performance.
+
+4. Other indirect factors
+
+First, installation stress: Over-tightened clips can deform the lens or shift the optical axis, causing ToF distance errors.
+
+Second, thermal interference: Poor heat dissipation in a sealed space raises sensor temperature and deforms the window, causing range drift and possible long-term failure.
+
+### 4.3 SDK
+
+See the MRDVS host software user guide and SDK development guide.
+
+### 4.4 Environment and reliability
+
+| Item |  | Specification |
+| --- | --- | --- |
+| Operating environment | Temperature | -20℃--60℃ |
+| Illumination | 0KLUX--100KLUX |  |
+| Storage environment | Temperature | -40℃--70℃ |
+| Humidity | Max 90% RH |  |
+| Temperature rise during normal operation |  | Enclosure temperature rise &lt;25℃ |
+| ESD rating |  | ±4KV contact discharge, ±8KV air discharge |
+| RE rating |  | Complies with GB 9254 CLASS A |
+| Service life |  | 3 years |
+| Environmental certification |  | RoHS |
+
+## 5 Quickstart
+
+### 5.1 Connection test
+
+<Frame>
+  <img src="/images/legacy/45ef596f-1507-4062-bb8f-480af2742ac6/b2df4d53-b802-4387-b1ca-b8e45f0a5ac5.avif" alt="Connection test" />
+</Frame>
+
+#### 5.1.1 Power the camera
+
+1.  Connect one end of the DC cable to the camera and the other to a 24V/2A DC adapter.
+
+2.  A slowly flashing blue power indicator confirms normal power-on.
+
+3.  If the indicator is off or abnormal, such as solid red, check the power connector and adapter.
+
+#### 5.1.2 Configure the network
+
+1.  Connect the camera directly to the computer with a Category 6 Ethernet cable.
+
+2.  The factory-default camera IP address is 192.168.100.82.
+
+3.  Set the computer IP to the same subnet and disable the firewall.
+
+#### 5.1.3 Run the software
+
+1.  Run the host software, acquire camera images, and verify that they are clear and stable.
+
+2.  See section 5.3 or the LxCameraViewer user guide.
+
+3.  Contact MRDVS sales or technical support for further help.
+
+### 5.2 Interface overview
+
+LxCameraViewer opens and displays multiple devices. It displays depth, intensity, point cloud, and RGB images and configures basic camera and algorithm parameters. You can view and save image data, camera configuration, and algorithm details.
+
+The initial interface has a device list (blue area 1), menu bar (green area 2), and image display (red area 4). Double-click the menu bar to maximize or minimize it. Drag the interface with the left mouse button.
+
+<Frame>
+  <img src="/images/legacy/aece6251-f13b-4919-9246-e02a6f5a5308/a70d39dd-1006-4527-9dc8-c75198c2a986.avif" alt="Interface before opening a camera" />
+</Frame>
+
+Interface before opening a camera
+
+After opening a camera, a function panel appears on the right (area 3). Use **Basic tools**, **Application algorithms**, and **Other** at the top. Basic tools include image display, 2D settings, 3D settings, and filtering.
+
+<Frame>
+  <img src="/images/legacy/7a1d437e-3a64-4a89-be9c-a7e1cdbebf94/2667b6e5-8fbf-4e8e-943c-55019cd885f1.avif" alt="Interface with an open camera" />
+</Frame>
+
+Interface with an open camera
+
+The device list is in the upper left. Click **Open** or **Close** to control the camera. The center-left area shows camera information, software operations, results, and stream results. The lower-left area shows information for the selected device.
+
+Click **Capture** to start or stop image acquisition. The button remains disabled until the operation finishes. Click **Save frame** to save images from active streams. Select **Depth**, **Intensity**, **RGB**, or **Point cloud** to open the required views.
+
+For details, see the LxCameraViewer user guide.
+
+## 6 Troubleshooting
+
+| No. | Problem | Resolution |
+| --- | --- | --- |
+| 1 | Camera does not respond when opened | Disable the firewall so it does not block camera communication |
+| 2 | Host software detects multiple IP addresses | Resolve the LAN address conflict and select the correct IP address |
+| 3 | Camera stream is unstable | Use a Gigabit Ethernet cable; Fast Ethernet can cause initial instability |
+| 4 | Software installation location | Use a directory with suitable read and write permissions instead of the default drive C location |
+
+## 7 Precautions
+
+<Frame>
+  <img src="/images/legacy/c02ee1e1-3bf8-4ed6-9c4c-7013b74a1c30/8e6fe3fb-d466-4347-be43-b9139e15f0b3.avif" alt="Camera precautions" />
+</Frame>
+
+### Case studies
+
+[How Company F's autonomous forklifts safely complete more than 500 tasks each day](/en/solutions/warehouse/cases/unmanned-forklift-500-tasks "Autonomous forklift case study")
+
+[Under-ride AMR obstacle avoidance](/en/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Under-ride AMR obstacle avoidance")
+
+[3D obstacle avoidance for a wheeled humanoid robot](/en/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Wheeled humanoid robot obstacle avoidance")
