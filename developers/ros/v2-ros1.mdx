@@ -1,0 +1,481 @@
+---
+title: "V2 ROS1 接口说明"
+description: "介绍 V2 定位模块 ROS1 SDK 的编译、运行、话题和服务接口。"
+hidden: true
+legacyId: "019ce649-f8a5-7e5c-a554-418838f1dbd6"
+legacyUrls:
+  - "/node/019ce649-f8a5-7e5c-a554-418838f1dbd6"
+  - "/doc/editor/019ce649-f8a5-7e5c-a554-418838f1dbd6"
+---
+## 一：编译
+
+### 1. 确保上位机中已经安装好了QT5，编译需要QT5中的 Core、Network等功能包
+
+```cpp
+// 不同linux版本安装方式可能不同，在此提供 安装示例：
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+### 2.安装libzip功能包
+
+在libzip官网下载源文件(https://libzip.org/download/), 之后按照官网教程编译。
+
+### 3.编译ros功能包
+
+在/V2-ROS-SDK-service路径下(与/src同级)使用指令`catkin_make`编译。
+
+## 二：运行
+
+运行ROS示例前，若相机中已经部署ROS主从，需先关闭ROS主从相关设置，否则会因ROS产生相关通讯异常。若相机中有ROS环境，需上电后等待约20s左右，再运行ROS示例程序。
+
+ROS节点创建步骤：
+
+1.  进入示例程序代码文件目录`home/username/V2_ROS_SDK`, 在与src文件夹同级下运行指令
+
+2.  catkin\_make
+
+3.  source devel/setup.bash
+
+## 三：ROS话题接口
+
+根据功能分类如下：
+
+建图阶段：
+
+1.  建图使能接口
+
+2.  接收建图状态接口
+
+3.  接收建图进度接口
+
+定位阶段：
+
+1.  重定位接口
+
+    2.  接收定位状态接口
+
+2.  切换地图接口
+
+异常，参数配置及其他接口：
+
+1.  设置参数接口
+
+2.  获收当前相机已使用硬盘空间接口
+
+3.  接收当前出现故障的模块名
+
+4.  下载轮廓地图接口 (仅激光轮廓)
+
+5.  上传地图文件zip接口（new）
+
+测试接口前需将相机本体开机(等待30s让本体程序启动)，开启ROS SDK节点(见上节)。
+
+### 接收定位位姿接口
+
+1.  ROS持续接收从相机发出的定位值x, y, theta。
+
+2.  发布定位值x, y 和四元数(由theta转换而来)到topic：`LxCamera_LocationPoseResult`
+
+3.  将定位值和四元数通过TF变换广播出去
+
+```cpp
+rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+```
+
+### 接收定位状态接口
+
+1.  ROS持续接收\*\*(频率:1s)\*\*从相机发出的定位定位状态“`true/false`”，代表当前是否正常定位。
+
+2.  ROS将定位状态(`std_msgs::Bool`类型的数据)发布到topic：`LxCamera_LocationResult`
+
+3.  可通过订阅Topic来获得定位状态(当前是否定位成功)
+
+```cpp
+//通过指令查看topic是否正常发布数据
+rostopic echo /lx_localization_node/LxCamera_LocationResult
+```
+
+### 接收当前相机已使用硬盘空间接口
+
+1.  ROS持续接收\*\*(频率:2s)\*\*从相机发出的存储空间使用占比。
+
+2.  ROS将占用状态(`std_msgs::Float32`类型的数据)发布到topic：`LxCamera_Capacity_Status`
+
+3.  可通过订阅Topic来获得占用状态占比
+
+```cpp
+//通过指令查看topic是否正常发布数据
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+### 接收当前出现故障的模块名
+
+1.  ROS持续从相机发出的错误模块名。
+
+2.  ROS将占用状态(`std_msgs::String`类型的数据)发布到topic：`LxCamera_Module_Error`
+
+3.  可通过订阅Topic来获得异常模块名字
+
+```cpp
+//通过指令查看topic是否正常发布数据
+rostopic echo /lx_localization_node/LxCamera_Module_Error
+```
+
+### 接收建图状态接口
+
+1.  开始建图后
+
+2.  ROS将定位状态(`std_msgs::Bool`类型的数据)发布到topic：`LxCamera_MappingState`
+
+3.  可通过订阅Topic来获得建图状态的切换
+
+```cpp
+//通过指令查看topic是否正常发布数据
+rostopic echo /lx_localization_node/LxCamera_MappingState
+```
+
+#### 接收建图进度接口
+
+1.  开始建图后
+
+2.  ROS2将定位状态(`std_msgs::Int32`类型的数据)发布到topic：`LxCamera_Mapping_Progress`
+
+3.  可通过订阅Topic来获得建图进度 (0-100)
+
+```bash
+//通过指令查看topic是否正常发布数据
+rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
+```
+
+### 设置参数接口
+
+1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_SetParam`
+
+2.  消息格式为9个浮点数，使用英文逗号“,”分割，分别代表：`x,y,z,yaw,pitch,roll,x,y,yaw`，**前6个参数是相机的位姿，后3个是激光雷达的位姿**。
+
+3.  修改成功后，相机路径`/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`文件中\[Laser1\]和\[Camera1\]中的相关参数会被设置，示例：
+
+```cpp
+// 进入lx_camera_udp目录
+//开启终端
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
+```
+
+### 切换地图接口
+
+1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_SwitchMap`
+
+2.  消息格式为一个地图名称(**前提是在相机中已经建图完成**)
+
+3.  如果相机的网页中显示的地图已经变化(刷新网页)，则切换成功。
+
+```cpp
+// 进入lx_camera_udp目录
+//开启终端
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
+```
+
+### 上传里程计
+
+1.  用户发布`nav_msgs::Odometry`类型数据到topic：`/sim/odom` (可修改)
+
+rostopic pub /odom nav\_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame\_id: 'odom' child\_frame\_id: 'base\_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
+
+```cpp
+// 进入lx_camera_udp目录
+//开启终端
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
+```
+
+### 下载轮廓地图接口
+
+1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_DownloadMap`
+
+2.  消息格式为一个保存地址和一个地图名称，使用英文逗号“,”分割。地址是上位机中的地址，使用绝对路径；地图名是相机中已经完成建图的“.zip”格式的文件名。
+
+3.  成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个`pgm地图文件`和一个`yaml配置文件`。
+
+```cpp
+// 进入lx_camera_udp目录
+//开启终端
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
+```
+
+### 上传地图文件zip接口（new）
+
+1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_UploadMapZip`
+
+2.  消息内容为需要上传的**地图压缩包路径**, 例如：“/home/fr1511b/map.zip” ,需上传 由下载接口下载下来的压缩包
+
+3.  如果找到地图文件则打包后发送到相机，相机接收后会解压到指定的路径：`/home/fr1511b/hontai/map/`
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
+```
+
+### 重定位接口
+
+1.  用户发布`geometry_msgs::PoseWithCovarianceStamped`类型的数据到topic：`LxCamera_UploadReloc`
+
+2.  数据为激光位姿，包含：`x,y,yaw`
+
+3.  相机网页上显示的本体位置更新为发送的位置则重定位成功。
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
+header:
+  frame_id: ''
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0
+      y: 0
+      z: -0.694658
+      w: 0.71934
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+> 测试时四元数有约束要求，不可随意填写。可使用[网页工具](https://www.itutool.com/tools/euler-quaternion-converter "网页工具")将`欧拉角yaw`转换成`四元数xyzw`
+
+## ROS服务接口：
+
+建图、切换地图、下载地图、重定位四个功能在使用上述话题（ROS TOPIC）实现的同时，也支持使用服务（ROS SERVICE）接口来通信，并反馈服务响应结果(操作是否成功)，相较于TOPIC，推荐优先使用以下的服务接口
+
+1.  通过rosservice指令订阅服务接口
+
+2.  如果返回“true”则代表操作成功, 返回“false”代表操作失败
+
+根据功能分类如下：
+
+建图阶段：
+
+1.  建图
+
+2.  退出建图
+
+3.  增量建图（即在已有地图增量建图并自动合并）
+
+定位阶段：
+
+1.  重定位接口
+
+2.  切换地图
+
+其他接口：
+
+1.  获取当前地图名
+
+2.  下载地图
+
+3.  获取当前地图列表
+
+4.  删除地图
+
+5.  下载热力图
+
+### 建图
+
+服务名称：`/lx_localization_node/LxCamera_Mapping_srv`
+
+服务格式定义：
+
+```cpp
+bool status      # 是否开始建图 1:开始建图 0:停止建图
+string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
+mapname: 'test_map'"
+```
+
+### 切换地图
+
+服务名称：`/lx_localization_node/LxCamera_SwitchMap_srv`
+
+服务格式定义：
+
+```cpp
+string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
+```
+
+### 下载地图
+
+服务名称：`/lx_localization_node/LxCamera_DownloadMap_srv`
+
+服务格式定义：
+
+```cpp
+string mapname    # 地图名称,不能以数字开头,30个字符以内
+string save_path  # 保存路径,例如 “/home/lx/map”，最后不带“/”
+---
+bool result
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
+save_path: '/home/fr1511b/T/TEST'"
+```
+
+### 重定位
+
+服务名称：`/lx_localization_node/LxCamera_UploadReloc_srv`
+
+服务格式定义：
+
+```cpp
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+  header:
+    seq: 0
+    stamp:
+      secs: 0
+      nsecs: 0
+    frame_id: 'map'
+  pose:
+    pose:
+      position:
+        x: 4.5
+        y: -15.5
+        z: 0.0
+      orientation:
+        x: 0.0
+        y: 0.0
+        z: 0.694658
+        w: 0.71934
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+### 获取当前地图名
+
+服务名称：`/lx_localization_node/LxCamera_GetCurMapname_srv`
+
+服务格式定义：
+
+```cpp
+bool get_cur_mapname #获取地图标识
+---
+string mapname     #当前地图名
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+### 获取当前地图列表
+
+服务名称：`/lx_localization_node/LxCamera_GetMapList_srv`
+
+服务格式定义：
+
+```cpp
+bool get_map_list # 是否获取地图列表
+---
+string[] map_list # 地图列表
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
+```
+
+### 退出建图 (定制接口)
+
+服务名称：`/lx_localization_node/LxCamera_ExitMapping_srv`
+
+服务格式定义：
+
+```cpp
+bool exit_mapping #是否退出建图
+---
+bool state #退出建图是否成功
+```
+
+指令调试：
+
+rosservice call /lx\_localization\_node/LxCamera\_ExitMapping\_srv "exit\_mapping: true"
+
+### 删除地图
+
+服务名称：`/lx_localization_node/LxCamera_EraseMap_srv`
+
+服务格式定义：
+
+```cpp
+string mapname    # 地图名称,不能以数字开头,30个字符以内
+---
+bool result #删除地图是否成功
+```
+
+指令调试：
+
+rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "mapname: 'TEST888'"
+
+### 下载热力图
+
+服务名称：`/lx_localization_node/LxCamera_DownloadMap_srv`
+
+服务格式定义：
+
+```cpp
+string mapname    # 地图名称,不能以数字开头,30个字符以内
+string save_path  # 保存路径,例如 “/home/lx/map”，最后不带“/”
+---
+bool result
+```
+
+指令调试：
+
+rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "mapname: 'TEST\_999' save\_path: '/home/fr1511b/T/TEST'"
+
+### 增量建图
+
+服务名称：`/lx_localization_node/LxCamera_IncMapping_srv`
+
+服务格式定义：
+
+```cpp
+bool status      # 是否开始建图 1:开始建图 0:停止建图
+string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result
+```
+
+指令调试：
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
+mapname: 'test_map'"
+```

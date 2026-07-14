@@ -1,0 +1,153 @@
+---
+title: "M4-G系列3D相机"
+description: "M4-G iToF RGB-D 相机的规格、接口、结构尺寸、软件支持和应用场景。"
+legacyId: "019cb78c-5e80-7897-98e6-6e6d525fa0e5"
+legacyUrls:
+  - "/node/019cb78c-5e80-7897-98e6-6e6d525fa0e5"
+  - "/doc/editor/019cb78c-5e80-7897-98e6-6e6d525fa0e5"
+---
+如需下载全文，请前往[下载中心](/resources/downloads/specifications-and-user-guides "下载中心")下载该产品的用户手册
+
+## 产品概述
+
+迈尔微视M4-G是一款基于iToF技术的RGB-D相机，面向具身机器人近距离环境感知，提供GMSL2接口。相机工作范围为0.05-1m，最高测距精度为4mm，可按30fps同步输出深度数据和1080P RGB图像，用于近距离感知、桌面物体抓取和灵巧操作。
+
+<Frame>
+  <img src="/images/legacy/0c305d49-25f8-4018-9ef2-c65a21cac289/0e5b76fc-5a62-461f-a3fb-6bcd0b2f8ec7.avif" alt="产品概述相关图示" />
+</Frame>
+
+## 核心技术与应用场景
+
+- 深度感知：采用ToF技术输出近距离深度数据。
+
+- 低光环境：采用主动光技术，可在夜间或低光照环境下输出深度数据。
+
+- 数据空洞更少：相机采用主动光方案，可以有效减少数据空洞，提高深度数据的完整性。
+
+- 输出格式多样：支持多数据同步输出，可同时获取深度图、RGB图，支持RGB对齐。
+
+- 数据传输：配备GMSL2接口，用于较长距离的数据传输和抗干扰连接。
+
+**主要应用场景：**
+
+该产品应用于人形机器人腕部（VLA），实现桌面物体抓取与工业场景中的灵巧操作。
+
+- 桌面物体抓取：人形机器人在桌面环境中自主识别并抓取各类物品，适用于家庭服务、办公辅助等场景。
+
+- 灵巧操作：在工业场景中，人形机器人通过高精度视觉引导实现零件的识别、抓取与装配，如无序分拣、精密装配、上下料等任务。
+
+## 规格参数
+
+| 性能指标 | MRDVS M4-G |
+| --- | --- |
+| 工作原理 | iToF |
+| 输出格式 | Depth & RGB & 点云 |
+| TOF分辨率和帧率 | 640x480(VGA),典型:30fps |
+| TOF视野角度 | 90°×70°（±3°） |
+| RGB分辨率/帧率 | 1280×1056，典型30fps |
+| RGB视野角度 | 115°×100°（±3°） |
+| RGB像素大小 | 2.5um |
+| RGB ISP | 自带 |
+| RGB HDR | ≥100dB |
+| RGB镜头光圈(F#) | 2.05 |
+| RGB有效焦距(EFL) | 1.28mm |
+| 测距范围 | 0.05m~1m |
+| 测距精度 | 1%(最高 4mm@1m) |
+| 功耗 | 3W |
+| 激光 | 940nm |
+| 尺寸 | 60×30×29mm |
+| 重量 | &lt;200g |
+| 供电方式 | 12V DC/1A |
+| 通讯接口 | Serdes |
+| 工作温度 | -20℃~60℃ |
+| 存储温度 | -40℃~85℃ |
+| 软件环境 | C/C++/ROS SDK |
+| 操作系统支持 | Windows 7+，Linux，Arm Linux/ROS |
+| 散热方式 | 被动散热 |
+| 人眼安全 | CLASS I |
+
+## 产品结构及软件
+
+### 结构尺寸
+
+<Frame>
+  <img src="/images/legacy/40ea8153-cd48-468c-8c89-8fc2e3d775e1/953b2c43-da9e-4805-87b7-0867304253ac.avif" alt="图1 M4-G 3D相机结构外形尺寸" />
+</Frame>
+
+### 软件SDK
+
+参考MRDVS上位机使用说明书和SDK开发指南。
+
+## 硬件接口（GMSL解串）
+
+### 串化器配置
+
+| 串化器 |  |
+| --- | --- |
+| 型号 | MAX96717 |
+| I2C地址 | 0X40(7bit) |
+| GMSL Rate | GMSL2(6Gbps) |
+| 模式 | Pixel Mode |
+| Frame Sync | Controlled by MAX96717 MFP0 |
+
+### 传感器参数
+
+| Sensor信息 |  |
+| --- | --- |
+| TOF分辨率 | 2560*960(raw8) |
+| Data type | 0X2A |
+| TOF I2C地址 | FPGA转发 |
+| 虚拟通道 | VC0 |
+| RGB分辨率 | 1280*1080 (YUV422 8bit) |
+| Data type | 0X1E |
+| RGB I2C地址 | FPGA转发 |
+| 虚拟通道 | VC1 |
+
+### FPGA配置
+
+| FPGA |  |
+| --- | --- |
+| I2C地址 | 0X11(7bit) |
+| MIPI | 4Lane 1.2Gbps |
+
+## 相机拿图的前提条件
+
+### 有触发信号
+
+按照96717的手册，与解串器搭配做硬触发；如MAX9672
+
+<Frame>
+  <img src="/images/legacy/941f3e6f-8eb5-4b57-81a2-8f6ca90d32be/e7a99ea7-43eb-46b5-b7bb-f7fbea7b0e55.avif" alt="图2 MAX96724/F/R Frame Sync 信号传输机制图" />
+</Frame>
+
+在96717内部对MFP0做GPIO模拟触发信号参考《trig.c》
+
+### 收到开流指令
+
+i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+
+0x2000 0 关流 1 开流；
+
+0x11是FPGA地址
+
+## 产品集成指南
+
+| 项目 |  | 规格 |
+| --- | --- | --- |
+| 工作环境 | 温度 | -20℃-- 60℃ |
+|  | 照度 | 0KLUX--100KLUX |
+| 存储环境 | 温度 | -40℃--85℃ |
+|  | 湿度 | 相对湿度：Max 90% RH |
+| 正常工作温升 |  | 外壳温升&lt;25℃ |
+| ESD等级 |  | 接触放电±4KV，空气放电±8KV |
+| RE等级 |  | 符合GB 9254 CLASS A规范 |
+| 工作寿命 |  | 10年 |
+| 环保认证 |  | RoHS |
+
+## 应用案例
+
+[案例分享：看F公司无人叉车如何每日安全稳定执行超500条任务](/solutions/cases/warehouse/unmanned-forklift-500-tasks "案例分享：看F公司无人叉车如何每日安全稳定执行超500条任务")
+
+[案例分享：潜伏式AMR避障A](/solutions/cases/mobile-robots/under-ride-amr-obstacle-avoidance "案例分享：潜伏式AMR避障A")
+
+[案例分享：轮式人形机器人3D避障](/solutions/cases/mobile-robots/wheeled-humanoid-obstacle-avoidance "案例分享：轮式人形机器人3D避障")

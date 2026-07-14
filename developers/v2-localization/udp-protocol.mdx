@@ -1,0 +1,165 @@
+---
+title: "V2 Pro UDP 通信协议"
+description: "V2 Pro UDP 通信配置、报文结构、接口类型和示例。"
+hidden: true
+legacyId: "019ce639-e42a-79fe-b7f7-e362a17c3d8e"
+legacyUrls:
+  - "/node/019ce639-e42a-79fe-b7f7-e362a17c3d8e"
+  - "/doc/editor/019ce639-e42a-79fe-b7f7-e362a17c3d8e"
+---
+V2PRO 支持UDP 方式与客户端交互，其中目标设备IP 及端口配置可以在WEB 上位机 中完成，具体位置如下：
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="V2PRO UDP通讯协议相关图示" />
+</Frame>
+
+其中portCode 为目标设备监听的端口号，portName 为目标设备IP。V2 PRO 将监听8001 端口以接收其他设备发过来的信息。
+
+## **1.1** 数据格式
+
+1.1.1 采用大端模式：高字节在前，低字节在后
+
+1.1.2 通讯帧格式如下：数据头+ 数据长度+ 指令字节+数据内容+ 校验码。
+
+1.1.3 校验：1 字节，除数据头和校验码本字节外的所有字节进行异或后得到校验码。
+
+1.1.3 数据长度：length 字段计算时不含check byte、包头，不是所有帧都带有Length。
+
+1.1.4 地图格式只允许英文字母，‘\_’ 和数字的组合，且必须以英文字母开头
+
+## **1.2 V2 PRO** 接收的信息
+
+a.里程计信息帧(13bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x0a |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | V 3 _ | V 2 _ | V 1 _ | V 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+需要注意的是，v,theta均采用四字节整型传输，其中v单位为mm/s,角度theta单位是0.01 度。即90度需发9000
+
+b.重定位帧（下发位姿X，Y，Theta)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x02 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | x 3 _ | x 2 _ | x 1 _ | x 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | y 3 _ | y 2 _ | y 1 _ | y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Content | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+需要注意的是x, ,y, theta均采用四字节整型传输，其中x,y单位为mm,角度theta单位是 0.01度。即90度需发9000
+
+c.开始/结束建图
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x02 |
+
+| Bytes | Byte4(Status) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Content | 0x01 | map name 0 _ _ | … | map name 29 _ _ |
+
+| Bytes | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+从Byte5（map\_name\_0至map\_name\_29）填充地图名字节数量，固定字节为30个（采 用标准ASCII编码，仅支持英文字符，数字及下划线等符号，地图名请不要用数字开头）， 不足的字节补0x00，同时只能进行一次建图（请不要连续发送建图指令），Byte4(Status) 决定建图状态，为0x00的时候为结束建图，为0x01的时候为开始建图
+
+d.切换地图
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x0C |
+
+| Bytes | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Content | map name 0 _ _ | … | … | map name 29 _ _ |
+
+| Bytes | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | Check |  |  |  |
+
+从Byte5map\_name\_0开始30个BYTE为需要切换的地图名，需确保该地图名已经完成建图任务。
+
+## **1.2 V2 PRO** 发送的信息
+
+a.定位帧(25bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0x01 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Content | X 3 _ | X 2 _ | X 1 _ | X 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Content | Y 3 _ | Y 2 _ | Y 1 _ | Y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Content | THETA 3 _ | THETA 2 _ | THETA 1 _ | THETA 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Content | TIMESTAMP 7 _ | TIMESTAMP 6 _ | TIMESTAMP 5 _ | TIMESTAMP 4 _ |
+
+| Bytes | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Content | TIMESTAMP 3 _ | TIMESTAMP 2 _ | TIMESTAMP 1 _ | TIMESTAMP 0 _ |
+
+| Bytes | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Content | CHECK |  |  |  |
+
+需要注意的是，X,Y 单位是MM, THETA 的单位是0.001 弧度
+
+在重定位成功后，V2PRO 将一直发送该定位帧。
+
+b.任务执行结果返回帧
+
+包括开始/结束建图结果返回，切换地图结果返回，此类帧具有如下的结构：
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Content | AC | ED | Length | 0xFF |
+
+| Bytes | Id | Status | Byte 6 |
+| --- | --- | --- | --- |
+| Content | 0x01 | 0x01 | Check |
+
+其中Id为任务类型字节：
+
+| 0x01: | 表示开始建图 |
+| --- | --- |
+| 0x02: | 表示结束建图 |
+| 0x03: | 表示切换地图 |
+
+Status 对应任务是否成功，0x01为成功 0x00为失败。
+
+需注意结束建图耗时较长，与实际建图扫图耗时有关约为扫图耗时1/3 左右，长任务下发后会有状态返回。

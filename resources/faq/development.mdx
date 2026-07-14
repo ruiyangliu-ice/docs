@@ -1,0 +1,404 @@
+---
+title: "二次开发部分"
+description: "二次开发部分的常见问题、原因分析与处理方法。"
+legacyId: "019cb7ea-d22b-73a1-ae6c-daa3a8fbaa12"
+legacyUrls:
+  - "/node/019cb7ea-d22b-73a1-ae6c-daa3a8fbaa12"
+  - "/doc/editor/019cb7ea-d22b-73a1-ae6c-daa3a8fbaa12"
+---
+## 常见问题
+
+<AccordionGroup>
+<Accordion title="LX_ERROR = -1">
+
+**可能原因**
+
+未知错误
+
+**处理方法**
+
+结果异常，需拉取设备日志发送MRDVS处理
+
+</Accordion>
+
+<Accordion title="LX_E_NOT_SUPPORT = -2">
+
+**可能原因**
+
+功能不支持
+
+**处理方法**
+
+当前设备不支持此功能
+
+</Accordion>
+
+<Accordion title="LX_E_NETWORK_ERROR = -3">
+
+**可能原因**
+
+网络通讯错误
+
+**处理方法**
+
+网络通信故障，信号传输丢包等问题，查看IP配置，排查网线、交换机是否正常，排查丢包问题
+
+</Accordion>
+
+<Accordion title="LX_E_INPUT_ILLEGAL = -4">
+
+**可能原因**
+
+入参非法
+
+**处理方法**
+
+传入的参数错误，需要检查调用接口的参数
+
+</Accordion>
+
+<Accordion title="LX_E_RECONNECTING = -5">
+
+**可能原因**
+
+设备重连中
+
+**处理方法**
+
+1、设备正在重连，请等待短暂延时时间后重试，直到重连成功<br />2、检查相机是否正常开启，网络连接是否正常
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_ERROR = -6">
+
+**可能原因**
+
+设备故障或设备响应失败
+
+**处理方法**
+
+设备异常，重启程序或相机后重试
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+
+**可能原因**
+
+设备版本过低，需升级
+
+**处理方法**
+
+升级固件版本
+
+</Accordion>
+
+<Accordion title="LX_E_API_NEED_UPDATE = -8">
+
+**可能原因**
+
+API版本过低
+
+**处理方法**
+
+更新SDK
+
+</Accordion>
+
+<Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+
+**可能原因**
+
+独占控制权限失败
+
+**处理方法**
+
+相机仅支持一个主要权限客户端连接。相机非正常关闭时需要等待3-5s释放权限
+
+</Accordion>
+
+<Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+
+**可能原因**
+
+获取设备信息失败
+
+**处理方法**
+
+确认设备固件版本或联系MRDVS支持
+
+</Accordion>
+
+<Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+
+**可能原因**
+
+图像尺寸不匹配，需重新打开
+
+**处理方法**
+
+获取图像尺寸与实际码流中尺寸不匹配，需关闭设备后重新打开
+
+</Accordion>
+
+<Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+
+**可能原因**
+
+图像解析失败(pixformat不正确)，需尝试重新打开
+
+**处理方法**
+
+重新打开设备
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+
+**可能原因**
+
+相机未连接
+
+**处理方法**
+
+属于入参非法的一种，在相机未打开状态下操作相机会返回该错误，需检查调用代码逻辑，确保已经成功打开相机
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+
+**可能原因**
+
+相机初始化失败
+
+**处理方法**
+
+重新打开相机
+
+</Accordion>
+
+<Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+
+**可能原因**
+
+未找到相机（或未找到匹配的相机）
+
+**处理方法**
+
+输入入参非法的一种，通常为接口传入相机的句柄非法时返回该错误码，需检查调用代码逻辑
+
+</Accordion>
+
+<Accordion title="LX_E_FILE_INVALID = -16">
+
+**可能原因**
+
+文件错误（文件名或类型或格式不正确或文件打开失败）
+
+**处理方法**
+
+文件路径/类型错误或文件不存在或无法打开等情况，需检查传入参数文件路径是否可以手动打开
+
+</Accordion>
+
+<Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+
+**可能原因**
+
+文件crc或md5校验失败
+
+**处理方法**
+
+文件上传或下载时crc或md5校验失败，需重试
+
+</Accordion>
+
+<Accordion title="LX_E_TIME_OUT = -18">
+
+**可能原因**
+
+超时
+
+**处理方法**
+
+重试。可能由于网络原因导致丢包较多或相机帧率过低
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_LOSS = -19">
+
+**可能原因**
+
+漏帧
+
+**处理方法**
+
+常发生在回调方式下丢包丢帧，少量情况下无需特殊处理；大量出现情况下，需检查网络带宽，缓存等情况
+
+</Accordion>
+
+<Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+
+**可能原因**
+
+开启任意流失败
+
+**处理方法**
+
+版本2.4.9之前不允许关闭所有流数据，后续版本该错误码已废除
+
+</Accordion>
+
+<Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+
+**可能原因**
+
+未收到流数据
+
+**处理方法**
+
+未收到码流数据，参考相机打开无数据
+
+</Accordion>
+
+<Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+
+**可能原因**
+
+启流成功但解析流数据失败
+
+**处理方法**
+
+解析码流失败，需确认固件版本或联系MRDVS支持
+
+</Accordion>
+
+<Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+
+**可能原因**
+
+图像计算处理失败
+
+**处理方法**
+
+确认图像算法库版本“Dataprocess”
+
+</Accordion>
+
+<Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+
+**可能原因**
+
+常开模式下不允许设置
+
+**处理方法**
+
+工作模式,常开模式下，不允许设置ROI或设置多机/对齐等操作，需调整调用逻辑，先设置相机工作模式，再做设置操作
+
+</Accordion>
+
+<Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+
+**可能原因**
+
+加载图像处理算法库错误
+
+**处理方法**
+
+确保图像算法库Dataprocess（动态链接库 / 共享对象文件）存在且包含在库加载的环境变量中，执行：source install.sh
+
+</Accordion>
+
+<Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+
+**可能原因**
+
+函数调用逻辑错误
+
+**处理方法**
+
+函数调用顺序或前置逻辑有误，需根据SDK日志报错，调整调用逻辑，常见逻辑问题如下：<br />1、设置参数会导致图像尺寸变化，需先停流；<br />2、常开模式下，不允许改变图像尺寸；<br />3、算法上移与开启内置应用算法互斥；<br />4、HDR使能开启时不允许开启自动曝光；<br />5、自动曝光相关参数与自动光爆状态有关；<br />6、触发相关参数与触发模式有关
+
+</Accordion>
+
+<Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+
+**可能原因**
+
+IP不可达或网络配置错误
+
+**处理方法**
+
+网络不通，需确保SDK端主机可以ping通视觉设备
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+
+**可能原因**
+
+超时范围内帧不同步错误
+
+**处理方法**
+
+当开启RGBD帧同步功能后，实际码流中出现tof与rgb数据帧不同步情况下报该错，可根据实际使用场景（同步优先级高还是数据实时性优先级高）区分选择丢弃该帧数据或忽视该报错
+
+</Accordion>
+
+<Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+
+**可能原因**
+
+帧中检测到多机干扰信号
+
+**处理方法**
+
+根据实际使用场景，选择丢弃该帧数据或忽视该报错
+
+</Accordion>
+
+<Accordion title="error code：-25或报LxDataProcess加载失败">
+
+**可能原因**
+
+（仅适用于 Linux 操作系统环境）算法库未配置到环境变量
+
+**处理方法**
+
+执行source install.sh
+
+</Accordion>
+
+<Accordion title="取流后图像三分">
+
+**可能原因**
+
+获取图像后，显示的长宽比例异常
+
+</Accordion>
+
+<Accordion title="ros2与SDK库冲突">
+
+**处理方法**
+
+util文件夹里面封装了相机sdk，间接去链接相机sdk库
+
+</Accordion>
+
+<Accordion title="如何在软件层面判断相机是Lite版本还是标准带rgb版本">
+
+**处理方法**
+
+DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb) 如果相机是Lite版本，会返回不支持
+
+</Accordion>
+
+<Accordion title="时间同步方式">
+
+**处理方法**
+
+SDK和PTP同步，每次接口调用自动同步，无需额外触发
+
+</Accordion>
+
+</AccordionGroup>
