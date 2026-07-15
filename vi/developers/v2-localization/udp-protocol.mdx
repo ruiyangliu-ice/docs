@@ -1,0 +1,161 @@
+---
+title: "Giao thức V2 Pro UDP"
+description: "Định cấu hình giao tiếp UDP V2 Pro và sử dụng cấu trúc thông báo, loại giao diện và ví dụ của nó."
+hidden: true
+---
+V2PRO hỗ trợ chế độ UDP để tương tác với máy khách. Cấu hình cổng và IP của thiết bị mục tiêu có thể được hoàn thành trong máy tính chủ WEB. Vị trí cụ thể như sau:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="Hình ảnh minh họa liên quan đến giao thức truyền thông V2PRO UDP" />
+</Frame>
+
+Trong số đó, portCode là số cổng mà thiết bị đích lắng nghe và portName là IP của thiết bị đích. V2 PRO sẽ lắng nghe trên cổng 8001 để nhận thông tin từ các thiết bị khác.
+
+## **1.1** Định dạng dữ liệu
+
+1.1.1 Áp dụng chế độ big-endian: byte cao trước, byte thấp cuối cùng
+
+1.1.2 Định dạng khung truyền thông như sau: tiêu đề dữ liệu + độ dài dữ liệu + byte lệnh + nội dung dữ liệu + mã kiểm tra.
+
+1.1.3 Kiểm tra: 1 byte, tất cả các byte ngoại trừ tiêu đề dữ liệu và byte mã kiểm tra đều được XOR để lấy mã kiểm tra.
+
+1.1.3 Độ dài dữ liệu: Trường độ dài được tính toán mà không cần byte kiểm tra và tiêu đề. Không phải tất cả các khung đều có Độ dài.
+
+1.1.4 Định dạng bản đồ chỉ cho phép kết hợp các chữ cái tiếng Anh, ‘\_’ và số và phải bắt đầu bằng một chữ cái tiếng Anh.
+
+## **1.2 V2 PRO** Đã nhận được thông tin
+
+Một. Khung thông tin đo đường (13 byte)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0x0a |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Nội dung | V 3 _ | V 2 _ | V 1 _ | V 0 _ |
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Nội dung | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Byte | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Nội dung | Kiểm tra |  |  |  |
+
+Cần lưu ý rằng v và theta được truyền dưới dạng số nguyên bốn byte, trong đó đơn vị của v là mm/s và đơn vị của góc theta là 0,01 độ. Tức là cần 9000 cho 90 độ
+
+b. Khung định vị lại (cung cấp tư thế X, Y, Theta)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0x02 |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Nội dung | x 3 _ | x 2 _ | x 1 _ | x 0 _ |
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Nội dung | năm 3 _ | năm 2 _ | năm 1 _ | y 0 _ |
+
+| Byte | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Nội dung | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Byte | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Nội dung | Kiểm tra |  |  |  |
+
+Cần lưu ý rằng x, y và theta đều được truyền dưới dạng số nguyên bốn byte, trong đó đơn vị của x và y là mm và đơn vị của góc theta là 0,01 độ. Tức là cần 9000 cho 90 độ
+
+c. Ánh xạ bắt đầu/kết thúc
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0x02 |
+
+| Byte | Byte4(Trạng thái) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Nội dung | 0x01 | tên bản đồ 0 _ _ | … | tên bản đồ 29 _ _ |
+
+| Byte | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Nội dung | Kiểm tra |  |  |  |
+
+Điền số byte của tên bản đồ từ Byte5 (map\_name\_0 đến map\_name\_29), byte cố định là 30 (sử dụng mã hóa ASCII tiêu chuẩn, chỉ hỗ trợ ký tự tiếng Anh, số và dấu gạch dưới. Vui lòng không bắt đầu tên bản đồ bằng số). Các byte không đủ được điền bằng 0x00. Đồng thời, bản đồ chỉ được xây dựng một lần (vui lòng không gửi lệnh xây dựng bản đồ liên tục). Byte4 (Trạng thái) Xác định trạng thái ánh xạ. Khi nó là 0x00, nó sẽ kết thúc ánh xạ. Khi nó là 0x01, nó sẽ bắt đầu ánh xạ.
+
+d.Chuyển bản đồ
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0x0C |
+
+| Byte | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Nội dung | tên bản đồ 0 _ _ | … | … | tên bản đồ 29 _ _ |
+
+| Byte | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Nội dung | Kiểm tra |  |  |  |
+
+30 BYTE bắt đầu từ Byte5map\_name\_0 là tên bản đồ cần được chuyển đổi. Cần đảm bảo rằng tên bản đồ đã hoàn thành nhiệm vụ lập bản đồ.
+
+## Tin nhắn được gửi bởi **1.2 V2 PRO**
+
+Một. Khung định vị (25byte)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0x01 |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Nội dung | X 3 _ | X 2 _ | X 1 _ | X 0 _ |
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Nội dung | Y 3 _ | Y 2 _ | Y 1 _ | Y 0 _ |
+
+| Byte | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Nội dung | THETA 3 _ | THETA 2 _ | THETA 1 _ | THETA 0 _ |
+
+| Byte | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Nội dung | DẤU THỜI GIAN 7 _ | DẤU THỜI GIAN 6 _ | DẤU THỜI GIAN 5 _ | DẤU THỜI GIAN 4 _ |
+
+| Byte | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Nội dung | DẤU THỜI GIAN 3 _ | DẤU THỜI GIAN 2 _ | DẤU THỜI GIAN 1 _ | DẤU THỜI GIAN 0 _ |
+
+| Byte | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Nội dung | KIỂM TRA |  |  |  |
+
+Cần lưu ý đơn vị của X và Y là MM, đơn vị của THETA là 0,001 radian.
+
+Sau khi di dời thành công, V2PRO sẽ luôn gửi khung định vị.
+
+b.Khung trả về kết quả thực hiện nhiệm vụ
+
+Bao gồm việc trả về kết quả ánh xạ bắt đầu/kết thúc và trả về kết quả chuyển đổi bản đồ. Loại khung này có cấu trúc như sau:
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Nội dung | AC | ED | Chiều dài | 0xFF |
+
+| Byte | Mã | Trạng thái | Byte 6 |
+| --- | --- | --- | --- |
+| Nội dung | 0x01 | 0x01 | Kiểm tra |
+
+Trong đó Id là byte loại tác vụ:
+
+| 0x01: | Cho biết bắt đầu lập bản đồ |
+| --- | --- |
+| 0x02: | Cho biết sự kết thúc của ánh xạ |
+| 0x03: | Cho biết bản đồ chuyển đổi |
+
+Trạng thái tương ứng với việc tác vụ có thành công hay không, 0x01 nghĩa là thành công và 0x00 nghĩa là thất bại.
+
+Cần lưu ý rằng thời gian kết thúc việc lập bản đồ sẽ mất nhiều thời gian, tức là khoảng 1/3 thời gian quét bản đồ thực tế. Sau khi nhiệm vụ dài được ban hành, trạng thái sẽ được trả về.

@@ -1,0 +1,125 @@
+---
+title: "Impilamento contenitori per carrello elevatore AGV"
+description: "Utilizza la visione 3D per guidare i carrelli elevatori AGV durante il rilevamento preciso dei contenitori, l'aggancio e l'impilamento multistrato."
+---
+Dare all'AGV la capacità di agganciare con precisione ceste, pallet, ecc. è un requisito rigido nel campo della visione dei robot mobili. Non solo può migliorare l’efficienza operativa dei robot mobili, ma anche raggiungere una produzione flessibile attraverso l’aggancio accurato dei robot mobili a diverse postazioni di lavoro. Attualmente, la realizzazione della funzione di impilamento dei cestelli dei carrelli elevatori AGV deve ancora affrontare una serie di sfide tecniche:
+
+**Difficoltà uno: requisiti di alta precisione**
+
+La tolleranza di impilamento delle gabbie superiore e inferiore è ridotta, il che non consente l'attrito tra il materiale e il contenitore. Con l'aumento del numero di strati impilati, garantire la sicurezza richiede un posizionamento e una revisione ad alta precisione.
+
+**Difficoltà 2: Gabbie e merci diversificate**
+
+Il sistema di posizionamento con visione 3D deve adattarsi a diversi tipi di gabbie e merci ed eseguire un adattamento preciso e una regolazione adattiva in base ai requisiti applicativi effettivi per soddisfare le esigenze di vari scenari applicativi.
+
+**Difficoltà tre: scenari industriali e logistici complessi e in evoluzione**
+
+L'illuminazione e l'ambiente di lavoro di diversi scenari industriali possono interferire con il lavoro di attracco, pertanto è necessario affrontare condizioni ambientali complesse e mutevoli.
+
+## Panoramica della soluzione
+
+La soluzione di impilamento di cestelli con microvisione di Meyer si basa sulla tecnologia di visione 3D ed è appositamente progettata per carrelli elevatori intelligenti. Utilizza telecamere 3D ad alta precisione per identificare in modo intelligente le informazioni sulla posizione e l'orientamento dei cestelli sul carrello elevatore e dei cestelli nel magazzino, calcolare la posizione relativa e la differenza di postura e guidare il carrello elevatore per completare operazioni di impilamento precise e flessibili. Questa soluzione migliora efficacemente il livello di automazione e l'efficienza operativa delle operazioni di impilamento ed è adatta a scenari come lo stoccaggio intelligente e la distribuzione logistica.
+
+## Vantaggi principali
+
+**1. Riconoscimento ad alta precisione**: in base al valore di deviazione riconosciuto dalla telecamera, il carrello elevatore può regolare in modo flessibile l'atteggiamento di impilamento, con precisione di posizionamento di ±5 mm, precisione angolare fino a 0,1° e intervallo di riconoscimento dell'offset della gabbia di ±15°;
+
+2. Identificazione intelligente delle gabbie dei materiali: l'algoritmo AI autosviluppato fornisce direttamente informazioni sulla posizione relativa in tempo reale delle gabbie dei materiali superiore e inferiore e regola la postura del carrello elevatore in tempo reale;
+
+**3. Elaborazione dei dati in tempo reale**: il tempo di elaborazione dei dati del sistema per frame è inferiore a 100 millisecondi, garantendo il funzionamento efficiente delle operazioni del carrello elevatore;
+
+4. Impilamento multistrato: supporta 1-4 strati di impilamento, modalità impilamento 2\*2
+
+<Frame>
+  <img src="/images/legacy/296770eb-776f-4dbb-a0d6-8bf43ccd6710/f463210e-deb3-443b-87f7-d6ef9290e20d.avif" alt="Illustrazioni relative ai punti di forza principali" />
+</Frame>
+
+Dati della nuvola di punti durante il processo di attracco di carico e scarico delle gabbie
+
+## Dimostrazione di animazione
+
+<Frame>
+  <img src="/images/legacy/1701bfc3-a9c4-4767-923a-e7034a195513/46987e2e-f3c5-48c9-b12d-112c3b5ddabc.avif" alt="Illustrazioni relative alla dimostrazione dell'animazione" />
+</Frame>
+
+## Descrizione del lavoro
+
+> **Suggerimenti per la selezione della telecamera**
+
+Serie M: M4Pro, M4mega (esigenze specifiche da definire in base alle esigenze, contattare il supporto tecnico MRDVS per assistenza nella scelta)
+
+> **Metodo di installazione della telecamera**
+
+**• Metodo di installazione 1: soluzione con telecamera singola**
+
+**•Posizione**: la telecamera è fissata sul meccanismo di sollevamento, riprende in orizzontale ed è responsabile dell'identificazione dei cestelli di carico del braccio forca su entrambi i lati.
+
+**•Requisiti di altezza**: la telecamera si trova a 35-55 cm di distanza dal bordo inferiore del braccio della forca, garantendo che l'errore di posizione del meccanismo di sollevamento non superi 1 cm.
+
+**• Caratteristiche**: Un'unica telecamera è responsabile dell'identificazione contemporanea delle gambe del cestello sui bracci forche sinistro e destro.
+
+<Frame>
+  <img src="/images/legacy/2455a499-e74f-459d-8f80-b6dd0f9f9e9a/72824b55-1af1-44b8-97b7-e20e4908d18b.avif" alt="Illustrazioni relative alle istruzioni di lavoro" />
+</Frame>
+
+**• Metodo di installazione 2: soluzione con doppia fotocamera**
+
+**• Posizione**: la telecamera è installata fissa su entrambi i lati del carrello elevatore, a 30-40 cm di distanza dalla superficie del braccio della forca e l'angolo di ripresa è di 45° rispetto al suolo.
+
+**• Caratteristiche**: la fotocamera sinistra scatta una foto del braccio della forca sinistro, mentre la fotocamera destra scatta una foto del lato destro, identificando rispettivamente i cestelli su entrambi i lati per ottenere un impilamento accurato.
+
+<Frame>
+  <img src="/images/legacy/26796314-c886-40df-a983-da918d896fc3/ef85b979-fd41-4452-9218-a16363c78210.avif" alt="Grafica relativa alla descrizione del lavoro 2" />
+</Frame>
+
+> **Soluzione di comunicazione**
+
+Il sistema utilizza il **protocollo TCP/IP** per la trasmissione dei dati tra il carrello elevatore e la telecamera 3D:
+
+**• Richiedi informazioni**: Invia una richiesta per ottenere le coordinate X, Y e l'angolo (θ) del paniere dei materiali.
+
+**•Informazioni sulla restituzione**:
+
+**• Coordinate X, Y**: l'unità è millimetri, tipo a virgola mobile a 32 bit.
+
+**•Angolo Theta**: intervallo da -90° a 90°, identifica accuratamente le deviazioni.
+
+**• Codice errore**: Stato del riconoscimento (0: Riuscito, -1: Anomalia fotocamera, -2: Errore di posizionamento, -3: Errore algoritmo).
+
+> **Flusso di lavoro specifico**
+
+**Procedura di ritiro**:
+
+**1. Posizionamento**: Spostare il carrello elevatore in una posizione distante 2,4-2,6 metri dal bordo anteriore del cestello.
+
+**2. Riconoscimento della telecamera**: il braccio della forca viene sollevato nella posizione impostata, attivando la telecamera 3D per riconoscere la postura del cestello.
+
+**3. Regola posizione**: il carrello elevatore regola la propria angolazione e posizione in base alle informazioni sulla deviazione emesse dalla telecamera.
+
+**4. Operazione di prelievo**: Dopo che il carrello elevatore ha confermato che la posizione del cestello del materiale è corretta, il braccio della forca esegue l'operazione di prelievo.
+
+**Processo di impilamento**:
+
+**1. Preposizionamento**: il carrello elevatore si sposta a circa 80 cm davanti al cestello del materiale da impilare e il braccio della forca viene sollevato in una posizione a 50 cm dalla superficie superiore del cestello del materiale.
+
+**2. Riconoscimento della fotocamera**: il sistema emette il valore di deviazione attraverso la fotocamera 3D per ottimizzare la sinistra, la destra e l'angolo.
+
+**3. Allineamento preciso**: dopo aver confermato che l'angolo e la posizione soddisfano la soglia, il carrello elevatore completa l'allineamento attraverso la regolazione fine.
+
+**4. Completamento dell'impilamento**: Dopo la conferma, il braccio forca scende per completare l'operazione di impilamento.
+
+> **Note sulla distribuzione**
+
+**1. Requisiti ambientali**: evitare ambienti polverosi e umidi per evitare di compromettere le prestazioni della fotocamera.
+
+**2. Requisiti di installazione**: garantire la rigidità e la stabilità della staffa della fotocamera 3D per evitare di compromettere la precisione del riconoscimento.
+
+**3. Manutenzione regolare**: pulire regolarmente l'obiettivo della fotocamera per evitare la copertura della polvere e garantire una visione chiara della fotocamera.
+
+> **Visualizzazione dell'effetto di riconoscimento**
+
+<Frame>
+  <img src="/images/legacy/c0179ee8-b6fb-4c8f-92cf-0c590ea45ce3/20031c64-666e-41d2-862f-74b10bba8a8f.avif" alt="Illustrazioni relative alla descrizione del lavoro 3" />
+</Frame>
+
+* * *

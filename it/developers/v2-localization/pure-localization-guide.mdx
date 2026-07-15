@@ -1,0 +1,162 @@
+---
+title: "Guida solo alla localizzazione V2"
+description: "Utilizza l'interfaccia Web di sola localizzazione V2 per la mappatura, la localizzazione e la gestione delle mappe."
+hidden: true
+---
+## Descrizione dell'interfaccia
+
+Barra dei menu rossa: fare clic per inserire i dettagli operativi della funzione corrispondente, come l'avvio della mappatura, il trasferimento, la gestione della mappa, ecc.
+
+Riquadro blu: visibile utilizzando la mappa di contorno 2D caricata e l'icona di visualizzazione del posizionamento dell'auto
+
+Riquadro verde: visualizza l'immagine RGB in tempo reale della telecamera con vista dall'alto
+
+Riquadro giallo: visualizzazione in tempo reale della potenza del segnale di riposizionamento (verde: potenza eccellente, blu: buona potenza, rosso: scarsa potenza); visualizzazione in tempo reale delle coordinate della posizione attuale dell'auto, della velocità di movimento attuale dell'auto e delle coordinate della posizione del mouse
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="Icone relative alla descrizione dell'interfaccia" />
+</Frame>
+
+Figura 1 Descrizione dell'interfaccia
+
+## 1. Inizia a costruire la mappa
+
+Fare clic sul pulsante **Avvia creazione mappa** sull'interfaccia web, come mostrato nella figura seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="1. Illustrazioni relative all'inizio della costruzione di una mappa" />
+</Frame>
+
+Inserisci il nome della mappa (il nome della mappa è composto da lettere, numeri e trattini bassi e non può iniziare con numeri), come mostrato nella figura seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="1. Illustrazioni relative all'avvio della mappatura 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="1. Illustrazioni relative all'avvio della mappatura 3" />
+</Frame>
+
+Questa è la pagina per iniziare la mappatura
+
+Quindi spostare l'AGV per scansionare la mappa nell'area operativa. Una volta completata la scansione, fare clic sulla barra dei menu per terminare la costruzione della mappa. Si prega di attendere pazientemente (il tempo di attesa dipende dalla dimensione dell'area di scansione).
+
+Quando la mappatura ha esito positivo, i dati di mappatura possono essere visualizzati nella voce di gestione della mappa.
+
+mappatura incrementale
+
+Funzione: aggiungi nuove aree della mappa basate su mappe esistenti, come espansione della mappa e integrazione dei punti ciechi
+
+Prerequisito: quando si creano mappe incrementali, è necessario assicurarsi che la pagina Web abbia completato il riposizionamento e che si sia passati alla mappa da aggiungere.
+
+(Per il momento viene emessa una richiesta HTTP manuale)
+
+Indirizzo [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
+
+Parametro Json
+
+```json
+{
+
+    "cmd":905, // 904 starts incremental mapping; 905 stops incremental mapping
+
+    "attach":{
+
+        "sub_command":0,
+
+        "param":""
+
+}
+
+}
+```
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="1. Illustrazioni relative all'avvio della mappatura 4" />
+</Frame>
+
+Una volta completata la mappatura incrementale, l'area appena registrata verrà aggiunta direttamente alla mappa originale e sarà sufficiente riavviare il riposizionamento.
+
+## 2. Gestione della mappa
+
+![2. Illustrazioni relative alla gestione della mappa](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif) Figura 2 Schema di gestione della mappa
+
+Una volta completata la creazione della mappa, fai clic su **Gestione mappa** sulla barra dei menu. Puoi vedere il nome della mappa appena creata nell'elenco delle mappe host. Fare clic sul pulsante Applica per passare alla mappa. Allo stesso modo, se ci sono più mappe regionali da cambiare, è necessario utilizzare anche la funzione di gestione delle mappe per cambiare. Fare clic sul pulsante Elimina per eliminare la mappa corrispondente; **Applica mappa:** dopo aver fatto clic su Applica, assicurati di riavviare l'host prima che la mappa venga applicata e abbia effetto, altrimenti il ​​trasferimento non sarà possibile.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="2. Illustrazioni relative alla gestione della mappa 2" />
+</Frame>
+
+Figura 3 Diagramma schematico della mappa dell'applicazione
+
+## 3. Trasferimento
+
+Dopo aver fatto clic sul riposizionamento, è possibile trascinare il mouse per fornire la posa di riposizionamento approssimativa in base alla richiesta di corrispondenza della nuvola di punti laser e della mappa del contorno laser per il riposizionamento;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="3. Icone relative al trasferimento" />
+</Frame>
+
+Figura 4 Diagramma schematico della funzione di rilocalizzazione
+
+Una volta che il trasferimento ha esito positivo, l'eccezione **timeout di posizionamento** scompare.
+
+Riposizionamento del codice QR
+
+Quando crei una mappa, puoi scegliere di incollare il codice Apritag in alcune posizioni per il trasferimento. Quando il codice QR completo appare nella prospettiva del dispositivo, identificherà automaticamente su quale mappa e posizione si trova il codice, cambierà automaticamente la mappa e si sposterà.
+
+Sito web per la generazione del codice QR [https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="3. Icone relative al trasferimento 2" />
+</Frame>
+
+Assicurati solo che il Tag ID nell'area in cui si trova un dispositivo non venga ripetuto. TagFamily è stato corretto come mostrato sopra.
+
+## 4. Configurazione e visualizzazione dei parametri
+
+Visualizza e configura i parametri esterni del laser e della telecamera nei parametri di posizionamento del telaio e nei valori di calibrazione del sensore della configurazione del robot
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="4. Configurazione dei parametri e icone relative al display" />
+</Frame>
+
+Figura 5 Configurazione dei parametri
+
+## 5. Funzione di esportazione dei registri
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="5. Illustrazioni relative alla funzione di esportazione dei log" />
+</Frame>
+
+Figura 6 Funzione di importazione ed esportazione dei registri
+
+Come mostrato nella figura sopra, è possibile filtrare i registri corrispondenti in base all'intervallo di tempo, al tipo di modulo e ad altre opzioni. Il registro sottostante è il registro di recupero corrispondente, che può essere esportato dopo la selezione.
+
+## 7. Aggiornamento del firmware
+
+Visualizza pacchetto locale: importa il firmware locale che deve essere aggiornato (chassis, attuatore, firmware della fotocamera).
+
+Pacchetto di ripristino: registra la versione del firmware prima dell'ultimo aggiornamento. Se hai bisogno di tornare indietro, basta fare clic su di esso.
+
+![7. Icone relative all'aggiornamento del firmware](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif) Figura 7 Aggiornamento firmware
+
+Aggiornamento del firmware dell'host della telecamera
+
+È possibile utilizzare un normale computer host per aggiornare il firmware. Non è possibile eseguire il rollback di questo metodo di aggiornamento ed è necessario eseguire l'aggiornamento con cautela. ![7. Icone relative all'aggiornamento del firmware 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
+
+## 8. Arresta e riavvia l'applicazione principale
+
+Fare clic sul controllo appropriato. Prima di connettere LxCameraViewer alla fotocamera, arresta l'applicazione principale del robot. Altrimenti, il robot mantiene il controllo della telecamera e impedisce la connessione di LxCameraViewer. ![Principali controlli dell'applicazione](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
+
+Figura 8 Funzioni ontologiche
+
+9. Interrogazione sulla versione
+
+Fare clic per interrogare la versione dell'ontologia e la versione front-end.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="7. Icone relative all'aggiornamento del firmware 4" />
+</Frame>
+
+Figura 9 Interrogazione sulla versione

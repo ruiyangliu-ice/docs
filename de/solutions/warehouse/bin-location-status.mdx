@@ -1,0 +1,89 @@
+---
+title: "Erkennung des Lagerplatzstatus"
+description: "Erkennen Sie besetzte und leere Lagerstandorte in Echtzeit, damit das WMS genaue und sichere Anweisungen an AGVs erteilen kann."
+---
+## Hintergrundeinführung
+
+Herausforderung: In den meisten Lagern, in denen AGVs eingesetzt werden, werden Artikel immer noch manuell gestapelt. Dies führt dazu, dass das WMS-System nicht in der Lage ist, die tatsächliche Belegung jedes Lagerstandorts in Echtzeit zu beurteilen, was dazu führt, dass das WMS den AGVs ungenaue Informationen liefert. Wenn das belegte Lager nicht rechtzeitig identifiziert werden kann, kann es sein, dass das AGV falsche Anweisungen erhält, was nicht nur die Betriebseffizienz verringert, sondern auch leicht mit anderen Gütern oder Geräten kollidiert. In schweren Fällen kann es sogar zu einem Sicherheitsunfall kommen und die Sicherheit von Personal und Ausrüstung gefährden.
+
+Aus diesem Grund wurde das System zur Identifizierung des Lagerstatus entwickelt. Durch Funktionen wie automatische Positionierung, Echtzeit-Datensynchronisierung und präzise Bestandskontrolle optimiert das System die Zuweisung von Lagerressourcen, reduziert menschliche Fehler und verbessert die betriebliche Effizienz.
+
+<Frame>
+  <img src="/images/legacy/b8e92a99-9044-4228-bc87-0ff0f64ad6df/a1c8f0e7-3d9f-42e2-b250-12b1f8c64152.avif" alt="Illustrationen zur Hintergrundeinführung" />
+</Frame>
+
+* * *
+
+**Zwei häufige Schwachstellen von Sensoren zur Speicherortstatuserkennung:**
+
+- Die vom Single-Point-Lidar übermittelten Lagerortinformationen sind nicht genau genug und können leicht zu Stapelunfällen führen.
+
+Einige Lagerhäuser verwenden Einzelpunkt-Lidar zur Lagerorterkennung, dieses Entfernungsradar kann jedoch jeweils nur einen Laserstrahl aussenden, um einen Punkt auf der Oberfläche eines Objekts zu bilden. Die Lücken zwischen Kartons oder Paletten werden möglicherweise ignoriert, was zu einer falschen Identifizierung des Lagerortstatus und damit zu Unfällen beim Stapeln führt.
+
+- Die Kalibrierungsmethode reiner RGB-Kameras ist einheitlich und es besteht die Gefahr von Fehleinschätzungen und fehlenden Informationen.
+
+Beim Einsatz von RGB-Kameras zur Standortbestimmung ergeben sich folgende Nachteile:
+
+- Bei Verwendung von Deep Learning zur Erkennung von Zielen können Objekte außerhalb des Trainingssatzes, die in das Lager gelangen, zu falschen Erkennungen führen und falsche Informationen liefern.
+
+- Mangelnde Informationen zur Ladungshöhe erschweren die Organisation von Stapelaufgaben.
+
+- Ultraweitwinkel-Fisheye-Kameras weisen bei der Bestimmung des Lagerstandorts Kantenverzerrungsprobleme auf, was sich auf die Genauigkeit des Modelltrainings und der Modellvorhersage auswirkt und die Serverkosten erhöht.
+
+* * *
+
+## Lösungsübersicht
+
+Meyer Micro Vision nutzt eine **RGB-D-Kamera**, um dreidimensionale Daten und Farbinformationen von Lagerstandorten bereitzustellen und automatisch das Vorhandensein, die Platzierungsvorgaben und die abnormale Belegung von Waren zu erkennen. Mithilfe des intelligenten 3D-Vision-KI-Systems können außerdem Frachtkategorien unterschieden und an das Versandsystem ausgegeben werden, um eine intelligente Eingangs- und Ausgangskontrolle zu ermöglichen. Die Kamera verfügt über eine integrierte Rechenleistung und benötigt keinen externen Industriecomputer. Gleichzeitig bietet Meyer Micro Vision integrierte Software- und Hardwarelösungen zur Identifizierung des Lagerstatus sowie professionelle Modellschulung und Bereitstellungsberatung sowie andere Serviceunterstützung.
+
+<Frame>
+  <img src="/images/legacy/cc79bcea-1ede-422f-a072-54e7f48bc49e/a76fdfe2-3848-47e4-a0fc-e97d97879d7c.avif" alt="Grafiken zur Lösungsübersicht" />
+</Frame>
+
+## Kernvorteile
+
+- Umfassende Überwachung: Identifizieren Sie den Status des Lagerorts genau durch die Erfassung dreidimensionaler Daten und Farbinformationen in Kombination mit KI-Technologie.
+
+- Einfache Bereitstellung: Der Algorithmus zur Erkennung des Speicherortstatus ist auf der Kameraseite platziert, um die Bereitstellungs- und Wartungskosten zu senken.
+
+- Flexible Kommunikation: Unterstützt TCP/IP, UDP, HTTP und andere Kommunikationsmethoden und meldet Daten in Echtzeit im JSON-Format an das Steuerungssystem.
+
+- Verbesserung der Effizienz: Die Echtzeitübertragung von Lagerstandortinformationen hilft dem Versandsystem, Aufgaben schnell und genau zuzuweisen.
+
+## Szenendemonstration
+
+<Frame>
+  <img src="/images/legacy/c1a3c8e5-f742-49c5-b9dd-ef5ce1ceb6c7/607dc6a7-6055-4434-a416-9e8914631393.avif" alt="Illustrationen zur Szenendemonstration" />
+</Frame>
+
+Demonstration des Speicherortstatus-Erkennungsszenarios
+
+## Stellenbeschreibung
+
+> **Vorschläge zur Kameraauswahl: S10Pro**
+
+> **Kamerainstallationsmethode**
+
+Feste Installation: Bei der Installation der Kamera an einer Säule oder Decke empfiehlt es sich, diese direkt über dem zu überwachenden Lagerort zu installieren.
+
+<Frame>
+  <img src="/images/legacy/13530b5b-265b-4977-b960-e3987b55083e/a9108d02-119f-4e4d-a995-d99ef3400339.avif" alt="Abbildungen zu Arbeitsanweisungen" />
+</Frame>
+
+> **Spezifischer Arbeitsablauf**
+
+Schritt 1: Das übergeordnete Steuerungssystem sendet Aufgabenanweisungen, und die 3D-Vision-Kamera sammelt Bilder und ermittelt genau den angegebenen Lagerstatus.
+
+Schritt 2: Die Ergebnisse der Speicherorterkennung werden über JSON an das übergeordnete System gemeldet, um das Dispatching-System bei der Umsetzung einer intelligenten Ein- und Ausgangsverwaltung zu unterstützen.
+
+Kommunikationsmethode: TCP, UDP, HTTP
+
+> **Bereitstellungshinweise**
+
+Anwendungsumgebung: Es ist notwendig, raue Umgebungen mit starkem Staub und Kondensation zu vermeiden;
+
+Installationsanforderungen: Stellen Sie die Steifigkeit und Stabilität der Kamerahalterung sicher.
+
+[Bereitstellungshandbuch zur Erkennung des Lagerortstatus](/de/developers/deployment/algorithm-detection "Bereitstellungshandbuch zur Erkennung des Lagerortstatus")
+
+* * *

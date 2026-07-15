@@ -1,0 +1,1152 @@
+---
+title: "Distribuire algoritmi di rilevamento MRDVS"
+description: "Installa, configura, calibra e utilizza gli algoritmi di rilevamento disponibili sulle telecamere MRDVS."
+---
+Manuale utente della funzione di rilevamento dell'algoritmo MRDVS
+
+## 1. Introduzione
+
+Questo articolo introduce principalmente la distribuzione e l'utilizzo degli algoritmi dell'applicazione Meyer Micro Vision.
+
+## 2. Composizione del sistema di rilevamento
+
+Il sistema comprende una telecamera, un software per computer host con algoritmo e un computer industriale.
+
+## 3. Distribuzione dell'hardware della fotocamera
+
+### Usa il tipo di fotocamera
+
+|  |  |
+| --- | --- |
+| Tipo di fotocamera | Fotocamera 3D S10Pro |
+| Manuale utente della fotocamera ↓ [Fotocamera ToF S10Pro](/it/products/s-series/s10-overview) | |
+
+#### Supporto per l'algoritmo della fotocamera
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+|  | M4pro | S10 | S10Pro |
+| Rilevamento umano | √| | |
+| Rilevamento della posizione di archiviazione | | | √|
+| Rilevamento del volume | | √| √|
+
+### Radar
+
+|  |  |
+| --- | --- |
+| Tipo radar | metà360 |
+
+### Metodo di installazione della fotocamera
+
+La telecamera deve essere fissata con una staffa. È possibile utilizzare il metodo di installazione e la staffa della telecamera mostrati nella figura seguente per installare la telecamera. La figura seguente mostra lo schema di installazione.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ed7d4ff9-ebc7-456e-9382-c1bbad17757e.avif" alt="Illustrazioni relative ai metodi di installazione della telecamera" />
+</Frame>
+
+Schema di installazione
+
+La funzione di rilevamento umano è generalmente installata con un angolo inclinato (meno di 30°) o orizzontale.
+
+### Connessione alla fotocamera
+
+1. La telecamera è alimentata a 24 V e collegata tramite un cavo di rete di categoria 6e/categoria 7. Dopo aver installato e distribuito la telecamera, aprire il software del computer host di rilevamento della posizione del magazzino tramite un laptop per calibrare i parametri esterni della telecamera e impostare l'intervallo di rilevamento. L'algoritmo viene eseguito all'interno della fotocamera in tempo reale.
+
+2. Quando si distribuiscono più telecamere, è necessario collegarle tramite uno switch Gigabit. In base all'altezza di installazione pianificata nel CAD, la telecamera per la visione 3D viene installata in una posizione fissa tramite la staffa di montaggio per garantire che la telecamera sia fissata saldamente. Dopo aver installato la telecamera, collegarla all'alimentatore CC regolato da 24 V e utilizzare il cavo di rete corrispondente per collegarla all'interruttore o al controllo principale.
+
+3. Una volta completata la preparazione, posizionare la merce nel magazzino all'interno del campo visivo della telecamera e procedere con l'implementazione del software.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5be1e0db-e949-477f-bfb4-5c89a0debd78.avif" alt="Modificare" />
+</Frame>
+
+### Configurazione della rete della telecamera
+
+1. Prendi come esempio il sistema Win10, fai doppio clic sul pannello di controllo
+
+2. Dopo essere entrati nel pannello di controllo, fare clic su "**Visualizza stato e attività della rete**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d0ad7fd5-7f9c-43fb-8c8e-fb45f83fcf98.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera" />
+</Frame>
+
+3. Accedere all'interfaccia del Centro connessioni di rete e condivisione e fare clic su "**Modifica impostazioni scheda**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c7f569d-7ce6-4c16-a926-03cfd5e42d13.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 2" />
+</Frame>
+
+4. Accedere all'interfaccia di connessione di rete, fare doppio clic con il mouse per selezionare l'Ethernet a cui è collegata la telecamera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a8ff254-6ffc-4a84-9cbe-19c42f984c93.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 3" />
+</Frame>
+
+5. Controllare lo stato Ethernet (si consiglia di utilizzare una porta di rete Gigabit) e fare clic sul pulsante "**Proprietà**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b59f551e-1741-4f24-b4ff-8b77bbf16981.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 4" />
+</Frame>
+
+6. Accedere all'interfaccia delle proprietà Ethernet, trovare "**Protocollo Internet versione 4 (TCP/IPv4)**" e fare doppio clic per aprirlo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b166daac-7f5c-45c6-9595-2861ff9f2633.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 5" />
+</Frame>
+
+7. Accedere all'interfaccia del protocollo Internet versione 4 (TCP/IPv4), selezionare "**Utilizza il seguente indirizzo IP**" per scrivere l'indirizzo IP, la maschera di sottorete e il gateway predefinito.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1798a3b3-d233-4cd1-90a8-77416cf0160f.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 6" />
+</Frame>
+
+8. Impostazione indirizzo IP: 192.168.100.xxx Maschera di sottorete: 255.255.255.0 Gateway predefinito: 192.168.100.1. Imposta l'IP come mostrato di seguito. Una volta completata l'impostazione, fare clic sul pulsante "OK".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ec8d1e2-5747-4f79-8976-d3bf0256e8d1.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera 7" />
+</Frame>
+
+9. Dopo aver fatto clic sul pulsante OK, si ritornerà automaticamente all'interfaccia precedente. Fare nuovamente clic su "**OK**" per completare la configurazione di rete.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a22760b-a0a6-44d1-b3ce-5e73bddcac75.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera 8" />
+</Frame>
+
+### Conferma di spegnimento del firewall
+
+1. Dopo che la telecamera è stata installata e distribuita in modo fisso, il firewall del computer deve essere disattivato.
+
+2. Prendendo come esempio il sistema Win10, fare doppio clic su [**Pannello di controllo**] sul desktop e fare clic su [**Sistema e sicurezza**] dopo l'accesso.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3354b940-7e03-4c38-a151-af6d75808642.avif" alt="Configurazione del firewall" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2d360745-c9b5-48a6-8139-e6cc2f673a9d.avif" alt="Configurazione del firewall 2" /> |
+
+1. Fare clic sul pulsante [**Windows Defender Firewall**] per accedere alla pagina del firewall.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0cff2eb6-5667-497b-bd7b-780f02c8ad68.avif" alt="Icona relativa alla conferma dell'arresto del firewall 3" />
+</Frame>
+
+1. Fare clic sul pulsante [**Abilita o disattiva Windows Defender Firewall**] per accedere alla pagina di attivazione/disattivazione del firewall.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1a7157a-348a-48ea-b574-a175a2a39356.avif" alt="Icona relativa alla conferma dell'arresto del firewall 4" />
+</Frame>
+
+1. Selezionare [**Disattiva Windows Defender Firewall**] sia per le reti private che per quelle pubbliche e fare clic sul pulsante [**Conferma**] per disattivare il firewall. Q
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1dd2137-e249-4193-a4ee-3e095b5171f7.avif" alt="Icona relativa alla conferma dell'arresto del firewall 5" />
+</Frame>
+
+## 4. Guida all'installazione del software della fotocamera
+
+### Processo di installazione del software
+
+- Quando si utilizza il software per la prima volta, è possibile seguire la seguente procedura per completare l'operazione.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c8922d3a-2b74-4582-9b3d-119ba6be460d.avif" alt="Immagine 2" />
+</Frame>
+
+### Requisiti dell'ambiente operativo del software del computer host dell'algoritmo
+
+Si consiglia di utilizzare l'attrezzatura informatica superiore per il rilevamento della posizione del magazzino per soddisfare i requisiti.
+
+|  |  |
+| --- | --- |
+| Sistema operativo | Windows10 e versioni successive |
+| CPU | Intel® Core™ i5 di settima generazione e versioni successive consigliato |
+| Memoria | 8G e versioni successive |
+| GPU | Display grafico/core Intel® UHD o superiore |
+
+### Installa il software host della fotocamera
+
+1. Scarica il software host della telecamera dalla knowledge base MRDVS: [Scaricamento del software](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Scaricamento del software")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30f8b131-71f1-468d-bbe5-20ee85bf684b.avif" alt="Illustrazioni relative all'installazione del software host della telecamera" />
+</Frame>
+
+1. Fare doppio clic per installare il software del computer host Lanxin-MRDVS. Il computer host deve essere installato all'esterno dell'unità c.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8dcb4047-56e6-40a1-8b31-96a7222e187d.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 2" />
+</Frame>
+
+1. Dopo aver selezionato la lingua da utilizzare, fare clic su [**OK**], selezionare una directory di installazione diversa dall'unità C e fare clic su [**Avanti**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f68ebcb-d10d-4601-9cb4-aa816f1e1efc.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 3" />
+</Frame>
+
+1. Selezionare [**Crea collegamento sul desktop**] e fare clic su [**Avanti**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/35e66c38-ebb9-47d9-a0f5-1c2bcad9a357.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 4" />
+</Frame>
+
+1. Fare clic sul pulsante [**Installa**] per avviare l'installazione del software.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c659d00-a437-4e7a-b17f-e90c008c78d0.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 5" />
+</Frame>
+
+1. Al termine dell'installazione, è possibile eseguire il software host della telecamera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/62cfa35a-c531-43e9-a9f8-56b8bdf06649.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 6" />
+</Frame>
+
+### Installa il software del computer host dell'algoritmo
+
+1. Copiare il software del computer host dell'algoritmo ottenuto sul computer host della telecamera \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cb41b49-454e-4400-8181-44dbc75bdd48.avif" alt="Illustrazioni relative all'installazione del software del computer host dell'algoritmo" />
+</Frame>
+
+1. Durante la sostituzione, selezionare [**Sostituisci file nella destinazione**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/276f9cf3-d080-4af9-800c-871e99488471.avif" alt="Illustrazioni relative all'installazione del software del computer host dell'algoritmo 2" />
+</Frame>
+
+1. Fare doppio clic per aprire il software per eseguirlo.
+
+2. Nella barra dell'elenco dei dispositivi a sinistra, lo stato della fotocamera è giallo, il che significa che la fotocamera non ha avviato l'algoritmo di rilevamento.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/61ad5b70-d5ee-43b1-86fa-d63010b7d237.avif" alt="Illustrazioni relative all'installazione del software del computer host dell'algoritmo 3" />
+</Frame>
+
+### Aggiornamento del software del PC dell'algoritmo
+
+Per aggiornare il software del computer host dell'algoritmo, è necessario sostituire solo il file "**.exe**".
+
+### Aggiornamento dell'algoritmo
+
+Nota: prima di aggiornare il firmware dell'algoritmo, è necessario assicurarsi che il firmware della fotocamera sia la versione MDS.
+
+#### Computer host della fotocamera
+
+1. Per aggiornare l'algoritmo della fotocamera, è necessario aprire il software host della fotocamera e fare doppio clic su [**LxCameraViewer.exe**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7aebe7e0-a511-4443-bcc4-23df3ece2209.avif" alt="Illustrazioni relative al computer host della fotocamera" />
+</Frame>
+
+1. Fare clic sul pulsante [**Apri**] per visualizzare l'immagine della telecamera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/74ff1e45-932d-4b06-b1f3-9034f41bcbb6.avif" alt="Illustrazioni relative al computer host della fotocamera 2" />
+</Frame>
+
+1. Fare clic su Strumenti di base→Impostazioni funzioni→[**Aggiornamento firmware**] per aggiornare l'algoritmo di rilevamento. (Chiedere al personale del supporto tecnico di ottenere l'algoritmo)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1d2f22cd-74da-44b4-909a-fed4c986507e.avif" alt="Illustrazioni relative al computer host della fotocamera 3" />
+</Frame>
+
+1. Dopo aver fatto clic sul pulsante [**Esegui**], selezionare "Algoritmo di rilevamento" e fare clic sul pulsante [**Apri**] per avviare il flashing dell'algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Illustrazioni relative al computer host della fotocamera 4" />
+</Frame>
+
+#### Computer host dell'algoritmo
+
+1. Utilizzare il software del computer host dell'algoritmo per aggiornare il firmware ed è necessario selezionare una fotocamera. Fare innanzitutto clic sulla fotocamera da aggiornare nell'elenco dei dispositivi a sinistra, quindi fare clic su [**Aggiorna firmware**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3d76226-6572-4c82-8754-8bd0bf34a713.avif" alt="wwww" />
+</Frame>
+
+1. Selezionare "Algoritmo di rilevamento" e fare clic sul pulsante [**Apri**] per avviare l'aggiornamento dell'algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Diagramma relativo al computer host dell'algoritmo 2" />
+</Frame>
+
+#### Risultati dell'aggiornamento
+
+1. Durante il processo di flashing dell'algoritmo, la fotocamera si riavvierà e l'ID della fotocamera nell'elenco dei dispositivi a sinistra scomparirà. Dopo che è stato rivisualizzato, significa che il lampeggio ha avuto successo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e847d737-d14d-4e55-b756-1377aa6ef832.avif" alt="Illustrazioni relative ai risultati dell'aggiornamento" />
+</Frame>
+
+1. Una volta completato l'aggiornamento, lo sfondo della fotocamera corrispondente viene visualizzato in verde sul software del computer host dell'algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b43d8cd7-58e6-467f-abcc-ff8c9cc1af4e.avif" alt="Icona relativa al risultato dell'aggiornamento 2" />
+</Frame>
+
+## 5. Interfaccia del software del computer host dell'algoritmo
+
+### Avvio del programma del computer host dell'algoritmo
+
+1. Fare doppio clic sul programma [**LxApplicationViewer.exe**] per avviare il software del computer host dell'algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4e40bb9a-d669-45ad-bf6a-557496333fda.avif" alt="Amministratore" />
+</Frame>
+
+Elenco dei dispositivi. L'icona verde indica che la fotocamera è collegata normalmente. Fare clic per passare alla prospettiva della telecamera corrispondente.
+
+Elenco informazioni. Questo elenco mostrerà tutti i record delle operazioni relative alla fotocamera e i relativi risultati.
+
+Commutazione della modalità di visualizzazione. Selezionando la modalità RGB verrà visualizzata un'immagine 2D, mentre selezionando la modalità nuvola di punti verrà visualizzata una nuvola di punti 3D.
+
+Menù funzioni. In questo menu è possibile cambiare l'algoritmo di visualizzazione corrente, regolare le impostazioni di base dell'algoritmo, configurare i parametri della fotocamera o modificare la lingua dell'interfaccia.
+
+Funzioni di base. Può essere commutato per gestire i parametri dell'algoritmo, gli utenti ordinari hanno solo i permessi di visualizzazione. Qui diversi algoritmi mostreranno parametri aggiuntivi e opzioni di controllo. Inoltre, gli amministratori possono cambiare l'algoritmo attualmente in esecuzione.
+
+Funzionamento della fotocamera. È possibile eseguire alcune operazioni direttamente sulla fotocamera.
+
+1. L'utente corrente seleziona l'amministratore e non ha bisogno di inserire una password. Fare clic direttamente su Conferma per accedere alla modalità amministratore (i parametri dell'algoritmo non possono essere impostati in modalità utente).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/34efc169-ddf1-4544-bf3a-43f7e249e6f4.avif" alt="Schermata 2025-03-04 111733" />
+</Frame>
+
+### Strumenti di base
+
+Gli strumenti di base includono principalmente il cambio utente, la terra ideale, la terra dei parametri esterni, la cache di visualizzazione, la visualizzazione dell'algoritmo, l'archiviazione delle immagini esportate e la riproduzione cronologica.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7480b2d4-a30a-4a88-b067-f004930c84f8.avif" alt="2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Strumenti di base | Significato funzionale |
+| Cambio utente | Cambia autorizzazioni, autorizzazioni utente: visualizza solo i risultati del rilevamento. Diritti di amministratore: può configurare la telecamera, i parametri dell'algoritmo di rilevamento, ecc. |
+| Terreno ideale | Il terreno si riferisce alla linea orizzontale e può essere disattivato. |
+| Parametro esterno terra | Il piano orizzontale su cui vengono calibrati i parametri esterni della fotocamera. Può essere spento. |
+| Visualizza cache | Nessuna modifica richiesta. |
+| Algoritmo di visualizzazione | L'algoritmo attualmente utilizzato. |
+| Esporta immagini memorizzate | Esporta le immagini memorizzate. |
+| Riproduzione della cronologia | Visualizza i log delle immagini RGB e TOF. |
+| Commutazione dell'algoritmo dell'applicazione | Selezionare l'algoritmo da utilizzare. Gli amministratori ordinari possono eseguire al massimo un algoritmo contemporaneamente. Dopo la selezione, fare clic su Salva ed emetti |
+| Visualizzazione dei risultati del rilevamento | Visualizza i risultati del rilevamento dell'algoritmo attualmente visualizzato. |
+
+### Lingua
+
+Passa dal cinese all'inglese.
+
+### Barra di stato
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/50568f80-85ac-45cc-8aa6-330262048ac9.avif" alt="25909893521\_171648620291\_Screenshot 2025-03-05 134432" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Barra di stato | Significato funzionale |
+| RGB | Selezionare per visualizzare le immagini RGB |
+| Nuvola di punti | Dopo la verifica, visualizza l'immagine della nuvola di punti |
+| Arresta algoritmo | Dopo aver fatto clic per interrompere l'algoritmo, l'algoritmo non verrà avviato fino alla successiva accensione della fotocamera. |
+| Aggiorna firmware | Eseguire l'aggiornamento del firmware dell'algoritmo. |
+| Riavvia la fotocamera | Riavvia la fotocamera. |
+
+### Riproduci e visualizza
+
+Ogni volta che lo stato cambia, viene salvato un fotogramma di dati, che viene salvato come fotogramma di immagine RGB e dati della nuvola di punti al momento del cambio. La riproduzione tra diversi algoritmi non è interoperabile. Lo standard temporale è l'ora del sistema interno della fotocamera. Si prega di non giudicare in base all'ora del sistema informatico.
+
+Fare clic per visualizzare la riproduzione. Il lato sinistro della finestra pop-up mostra le immagini riprodotte. Fare clic su qualsiasi elemento per aprire i dati di riproduzione della data corrispondente. È possibile visualizzare immagini RGB o dati TOF.
+
+**![Riproduzione RGB](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0537bd17-ebb2-44f8-819d-1ab86f6c5db0.avif)![TOF di riproduzione](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4fe3d671-26ad-4b45-9bb6-36e13bf879dd.avif)**
+
+### Funzioni globali
+
+Assicurarsi che l'algoritmo sia stato attivato nella fotocamera e che la fotocamera non funzioni correttamente dopo aver configurato i parametri tramite il computer host della fotocamera in condizioni di utilizzo normali. La funzione di aggiornamento automatico deve essere abilitata nelle seguenti situazioni.
+
+(1) Se lo sfondo della telecamera corrispondente nell'elenco dei dispositivi viene visualizzato in giallo, ciò indica che l'algoritmo incontra un blocco durante il processo di acquisizione dell'immagine.
+
+(2) Se lo sfondo della telecamera corrispondente nell'elenco dei dispositivi è verde, ma l'immagine non viene aggiornata, significa anche che l'algoritmo è bloccato nel processo di acquisizione dell'immagine. Sebbene la comunicazione sia normale, il sistema continua a inviare i dati memorizzati nella cache.
+
+## 6. Calibrazione dei parametri esterni della fotocamera
+
+### Configurazione della telecamera
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9000666e-1285-403f-941b-5cbcfd74305c.avif" alt="kappframework-SImIQI(1)(1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Impostazioni della fotocamera | Significato della funzione |
+| Nome della fotocamera | Modifica il nome della telecamera corrente. Quando sono presenti più telecamere, puoi giudicare dal nome della telecamera. |
+| Modalità simulazione | Uso interno, gli utenti non hanno bisogno di aprirlo. |
+| Modalità di salvataggio delle immagini | Attiva il salvataggio algoritmico delle immagini per memorizzare i dati dell'immagine all'interno della fotocamera. |
+| Modalità di acquisizione | La modalità di acquisizione è divisa in MDS e SDK. L'utilizzo di MDS non occuperà le autorizzazioni della fotocamera e potrà aprire normalmente il computer host della fotocamera. L'utilizzo dell'SDK occuperà le autorizzazioni della fotocamera e il computer host non potrà essere aperto durante l'esecuzione dell'algoritmo. |
+| x| fotocamera calibrata x posizione |
+| sì | La posizione y della calibrazione della fotocamera |
+| z | Fotocamera calibrata all'altezza z da terra |
+| rotolo | angolo di calibrazione della fotocamera |
+| passo | angolo di calibrazione della fotocamera |
+| imbardata | angolo di calibrazione della fotocamera |
+| Terreno ideale | Lascialo come predefinito. |
+| Salva e invia | Una volta completata la calibrazione dei parametri esterni, fare clic sul pulsante [Salva e invia] per salvare, altrimenti i parametri non avranno effetto |
+| Leggi la configurazione dalla telecamera | Leggere i parametri di configurazione correnti dalla telecamera |
+| Calibrazione parametri esterni | Calibrare l'altezza della telecamera da terra, gli angoli di rotazione, beccheggio e imbardata. |
+
+### Installazione verticale della calibrazione dei parametri esterni
+
+1. Fare clic sulla configurazione della telecamera e passare all'interfaccia di calibrazione dei parametri. Prima di eseguire la calibrazione dei parametri esterni, assicurarsi che x, y, z, rollio, beccheggio e imbardata siano 0. Se non sono 0, è necessario riportare tutti i parametri a 0 e fare clic sul pulsante [**Salva e invia**]. Dopo che i parametri sono stati salvati con successo, ricalibrare i parametri esterni.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/528da252-dee3-4e31-9d54-07c406b80e8e.avif" alt="Illustrazioni relative all'installazione verticale della calibrazione dei parametri esterni" />
+</Frame>
+
+1. Dopo aver confermato che i parametri sono tutti 0, fare clic sul pulsante [**Calibrazione parametri esterni**]. Una volta completata con successo la calibrazione, il software visualizzerà una finestra di messaggio. Puoi vedere i parametri della fotocamera calibrata nella colonna dei parametri a destra. Differenti algoritmi avranno schemi di allineamento corrispondenti.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4795bbe1-801c-4fa8-82f8-3a9c5e461f95.avif" alt="Illustrazioni relative all'installazione verticale della calibrazione dei parametri esterni 2" />
+</Frame>
+
+### Calibrazione dei parametri esterni dell'installazione orizzontale
+
+Fare clic sulla configurazione della telecamera per passare all'interfaccia di calibrazione dei parametri. Durante l'installazione in orizzontale, è necessario allineare manualmente la nuvola di punti del terreno al sistema di coordinate. Generalmente è necessario regolare solo il rotolo e la dimensione Z. Gli altri sono impostati su 0 per impostazione predefinita. Allo stesso tempo, assicurati che l'asse X (rosso) e l'asse Y (verde) coincidano con la nuvola di punti del suolo e che l'asse Z (blu) sia perpendicolare alla nuvola di punti del suolo e sia rivolto verso l'alto.
+
+Dopo aver completato la regolazione, fare clic su Salva e invia. ![3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/549297ef-b224-4d08-a1fb-633301a4ed18.avif)![2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/45ad1ad0-f171-463c-b789-790f4cbec1b2.avif)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/abfab570-cb25-4850-acd9-924bd891853c.avif" alt="1" />
+</Frame>
+
+## 7. Significato dei parametri dell'algoritmo
+
+### Rilevamento del corpo umano
+
+#### Configurazione globale del rilevamento umano
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Illustrazioni relative alla configurazione globale del rilevamento umano" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione globale del rilevamento umano | Significato funzionale |
+| Numero di versione dell'algoritmo | Informazioni sulla versione attuale dell'algoritmo. |
+| Frequenza di rilevamento | Frequenza di rilevamento dell'algoritmo. Cioè, quanti ms per aggiornare l'immagine + i dati dei risultati. |
+| Filtraggio nel dominio del tempo | Parametro filtro, quando il valore del parametro è impostato su 3, il sistema richiede che i risultati del rilevamento di tre volte consecutive siano completamente coerenti prima di essere giudicati dati validi. |
+| Dimensione del nocciolo | La corrosione espande la dimensione del kernel su un'immagine 2D. I kernel grandi ridurranno significativamente il target o espanderanno lo sfondo, mentre i kernel piccoli manterranno più dettagli. Cambia secondo necessità. |
+| Soglia di distanza | Utilizzato per determinare se due punti dati sono "simili" o "appartengono alla stessa categoria". Se il risultato è inferiore alla soglia, viene considerato una corrispondenza o un tipo simile. |
+| Numero minimo di punti | Il numero minimo di nuvole di punti richieste per il clustering semantico. |
+| Numero minimo di punti non semantici | Numero minimo non semantico di nuvole di punti richieste per il clustering. |
+| Dimensione del dominio | Determina quali punti sono considerati "punti vicini", influenzando direttamente la granularità e l'accuratezza dei risultati del clustering. Modificare secondo necessità. |
+| Rilevamento della rotazione | A seconda della posizione di installazione della telecamera, il logo anteriore 0° si trova in basso, regolare di conseguenza. |
+
+#### Configurazione dell'area di rilevamento persone
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30812d41-81b0-48aa-8e5b-87b2d0c273b4.avif" alt="25909893521\_171648566990\_Parametri di configurazione rilevamento persone (1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione dell'area di rilevamento umano | Significato funzionale |
+| Aggiungi zona | Aggiungi area di rilevamento umano. |
+| Elimina area | Elimina l'area di rilevamento umano. |
+| Quadro attuale | Il riquadro seleziona l'area corrente di rilevamento umano. |
+| Minimo X | Il valore minimo nella direzione X del frame di rilevamento umano. |
+| Massimo X | Il valore massimo nella direzione X del frame di rilevamento umano. |
+| Minimo Y | Il valore minimo nella direzione Y del frame di rilevamento umano. |
+| Massimo Y | Il valore massimo nella direzione Y del frame di rilevamento umano. |
+| Minimo Z | Il valore minimo nella direzione Z del frame di rilevamento umano. |
+| Z massimo | Il valore massimo nella direzione Z del frame di rilevamento umano. |
+| ID | Il nome del frame di rilevamento umano. Quando si disegnano più aree di rilevamento umano, è possibile distinguerle modificando i nomi ID. |
+| Trascinare il mouse per regolare l'area | Nell'area di regolazione, tenere premuto il pulsante sinistro per trascinare l'area di rilevamento umano per traslarla nelle direzioni xey. Fare clic con il tasto destro e tenere premuto per trascinare l'area di rilevamento umano per spostarla nella direzione z. |
+
+### Rilevamento della posizione di archiviazione
+
+#### Configurazione globale del rilevamento della posizione
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ab2707-a23e-4f52-9a27-32a5d1de9579.avif" alt="Illustrazioni relative alla configurazione globale del rilevamento della posizione di archiviazione" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione globale del rilevamento della posizione di archiviazione | Significato funzionale |
+| Numero di versione dell'algoritmo | Informazioni sulla versione attuale dell'algoritmo. |
+| Filtraggio AI | Supporta la semantica e può segmentare le persone senza essere rilevate. (Non ancora aperto) |
+| Frequenza di rilevamento | Frequenza di rilevamento dell'algoritmo. |
+| Angolo di allineamento | L'angolo di offset massimo consentito per un oggetto rispetto alla posizione (valido quando l'effetto di allineamento è attivato). |
+| Effetto di allineamento | Dopo aver attivato l'effetto di allineamento, verrà rilevato l'offset angolare dell'oggetto corrente e se supera l'area di rilevamento disegnata. L'oggetto rilevato avrà una casella del volume gialla. |
+| Filtraggio nel dominio del tempo | Parametro filtro, quando il valore del parametro è impostato su 3, il sistema richiede che i risultati del rilevamento di tre volte consecutive siano completamente coerenti prima di essere giudicati dati validi. |
+| Numero minimo di punti | Quando la nuvola di punti dell'oggetto è maggiore del numero minimo di punti, si considera che esista un oggetto. |
+
+#### Configurazione dell'area di rilevamento della posizione di archiviazione (2D RGB)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/54021f59-b55a-4174-b5bb-3efbdb872c60.avif" alt="Parametri di creazione della posizione 2D" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione dell'area di rilevamento della posizione di archiviazione | Significato funzionale |
+| Aggiungi una posizione | Aggiungi un'area di rilevamento della posizione. |
+| Elimina posizione | Elimina l'area di rilevamento della posizione. |
+| Casella attuale | Inquadra l'area di rilevamento della posizione corrente. |
+| Minimo X | Il valore minimo nella direzione X del frame di rilevamento della posizione. (unità pixel) |
+| Massimo X | Il valore massimo nella direzione X del frame di rilevamento della posizione. (unità pixel) |
+| Minimo Y | Valore minimo nella direzione Y del frame di rilevamento della posizione. (unità pixel) |
+| Massimo Y | Il valore massimo nella direzione Y del frame di rilevamento della posizione. (unità pixel) |
+| ID | Il nome della casella di rilevamento della posizione. Quando si disegnano più aree di rilevamento delle posizioni di archiviazione, è possibile distinguerle modificando i nomi ID. |
+
+#### Configurazione dell'area di rilevamento della posizione di archiviazione (nuvola di punti 3D)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef7ad2be-87a8-4336-a4f8-870e78fef268.avif" alt="Illustrazioni relative alla configurazione dell'area di rilevamento della posizione di archiviazione (nuvola di punti 3D)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione dell'area di rilevamento della posizione di archiviazione | Significato funzionale |
+| Aggiungi una posizione | Aggiungi un'area di rilevamento della posizione. |
+| Elimina posizione | Elimina l'area di rilevamento della posizione. |
+| Casella attuale | Inquadra l'area di rilevamento della posizione corrente. |
+| Minimo X | Il valore minimo nella direzione X del frame di rilevamento della posizione. |
+| Massimo X | Il valore massimo nella direzione X del frame di rilevamento della posizione. |
+| Minimo Y | Valore minimo nella direzione Y del frame di rilevamento della posizione. |
+| Massimo Y | Il valore massimo nella direzione Y del frame di rilevamento della posizione. |
+| Minimo Z | Il valore minimo nella direzione Z del frame di rilevamento della posizione. |
+| Z massimo | Il valore massimo nella direzione Z del frame di rilevamento della posizione di archiviazione. |
+| ID | Il nome della casella di rilevamento della posizione. Quando si disegnano più aree di rilevamento delle posizioni di archiviazione, è possibile distinguerle modificando i nomi ID. |
+| Trascinare il mouse per regolare l'area | Nell'area di regolazione, tenere premuto il pulsante sinistro per trascinare l'area di rilevamento della posizione per traslarla nelle direzioni xey. Fare clic con il tasto destro e tenere premuto per trascinare l'area di rilevamento della posizione per spostarla nella direzione z. |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ffc444e5-62c6-4098-a750-9be912ee5023.avif" alt="Illustrazioni relative alla configurazione dell'area di rilevamento della posizione di archiviazione (nuvola di punti 3D) 2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Funzione avanzata di rilevamento della posizione: copia del frame della posizione | Significato funzionale |
+| Copia il fotogramma corrente | L'area di rilevamento della posizione attualmente selezionata può essere copiata. |
+| Cosa devi sapere sulla copia e sul pan | Suggerimenti sulla copia e la panoramica dei contenuti. |
+| Direzione | La direzione dell'area di rilevamento della posizione della copia prevede tre direzioni: X, Y e Z. |
+| Spaziatura | La distanza tra l'area di rilevamento della posizione e l'area di copia. |
+| Quantità | La quantità dell'area di rilevamento della posizione della copia. |
+| Esegui | Dopo aver fatto clic sul pulsante Esegui, copiare più posizioni di ispezione con la stessa spaziatura. |
+
+|  |  |
+| --- | --- |
+| Funzione avanzata di rilevamento della posizione di archiviazione - Calibrazione del codice QR | Significato funzionale |
+| Cosa devi sapere sulla calibrazione del codice QR | Suggerimenti sui contenuti per la calibrazione del codice QR. |
+| X| Larghezza della posizione. |
+| Y | Lunghezza della posizione. |
+| Z_MIN | La profondità minima della posizione. |
+| Z_MAX | La posizione di rilevamento più alta del magazzino. |
+| Calibrazione | Fare clic sul pulsante di calibrazione per calibrare la posizione del magazzino per la verifica del codice QR. |
+
+### Rilevamento del volume
+
+#### Configurazione globale del rilevamento del volume
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/85a006a7-b982-48a6-a38a-e0c6029c1629.avif" alt="Illustrazioni relative alla configurazione globale del rilevamento del volume" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione globale del rilevamento del volume | Significato funzionale |
+| Numero di versione dell'algoritmo | Informazioni sulla versione attuale dell'algoritmo. |
+| Modalità di attivazione | Pulsante dell'interruttore di attivazione. Dopo aver attivato la modalità trigger, fare clic sul pulsante "Salva e invia" per attivarla correttamente. |
+| Rilevamento verso l'alto | Rilevamento inverso del sistema di coordinate della telecamera. |
+| Frequenza di rilevamento | La frequenza con cui l'algoritmo rileva. Cioè, quanti ms per aggiornare l'immagine + i dati dei risultati. |
+| Rileva la distanza del piano | Confermare la posizione della superficie inferiore dell'oggetto. Unità: mm. |
+| Soglia del numero del vicino | Filtra i parametri, non sono necessarie modifiche. Il valore predefinito è sufficiente. |
+| Soglia di distanza del quartiere | Parametri di filtraggio, non è necessario modificarli, sono sufficienti i valori predefiniti. |
+| Soglia del filtro vettoriale normale | Parametro del filtro del raccordo del bordo dell'oggetto, utilizzato per filtrare il piano di inclinazione della nuvola di punti. Se il volume misurato è inferiore al valore effettivo, il valore può essere regolato su un valore maggiore. Si consiglia 60 (generalmente non è necessaria alcuna regolazione). |
+| Soglia della distanza del vettore normale | Parametro filtro, valore consigliato 20-30 (compatibile con la maggior parte degli oggetti rilevati). |
+| Numero minimo di punti | Quando la nuvola di punti dell'oggetto è maggiore del numero minimo di punti, si considera che esista un oggetto. |
+| Minimo X | La lunghezza minima dell'oggetto. Se viene misurato un valore inferiore a questo, l'algoritmo filtrerà l'oggetto. Unità: mm. |
+| Minimo Y | La larghezza minima dell'oggetto. Se viene misurato un valore inferiore a questo, l'algoritmo filtrerà l'oggetto. Unità: mm. |
+| Minimo Z | L'altezza minima dell'oggetto. Se viene misurato un valore inferiore a questo, l'algoritmo filtrerà l'oggetto. Unità: mm. |
+
+#### Configurazione dell'area di rilevamento del volume
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/60bf86ae-e1e2-45f0-b30a-b260d8aff036.avif" alt="Illustrazione relativa alla configurazione dell'area di rilevamento del volume" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configurazione dell'area di rilevamento del volume | Significato funzionale |
+| Minimo X | Valore minimo nella direzione X del riquadro di rilevamento del volume |
+| Massimo X | Valore massimo nella direzione X del riquadro di rilevamento del volume |
+| Minimo Y | Valore minimo nella direzione Y del riquadro di rilevamento del volume |
+| Massimo Y | Valore massimo nella direzione Y del riquadro di rilevamento del volume |
+| Minimo Z | Valore minimo nella direzione Z del riquadro di rilevamento del volume |
+| Z massimo | Valore massimo nella direzione Z del riquadro di rilevamento del volume |
+
+## 8. Processo di distribuzione dell'algoritmo
+
+Nota: dopo aver aperto il software del computer host dell'algoritmo, passare alla visualizzazione della nuvola di punti, spostare il mouse sull'area di visualizzazione dell'immagine e far scorrere la rotella del mouse per visualizzare i dati della nuvola di punti.
+
+### 8.1 Processo di distribuzione del rilevamento umano
+
+#### Rilevamento del corpo umano - calibrazione dei parametri esterni
+
+Per i dettagli, vedere 6.3 Calibrazione dei parametri esterni per l'installazione orizzontale.
+
+Una volta completata la calibrazione, assicurarsi che l'asse X (freccia rossa) e l'asse Y (freccia verde) coincidano con la nuvola di punti al suolo e che l'asse Z (freccia blu) sia perpendicolare alla nuvola di punti al suolo e punti verso l'alto.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagramma di calibrazione dei parametri esterni della posizione di archiviazione" />
+</Frame>
+
+#### Rilevamento umano: impostazioni globali
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Rilevamento umano: icone relative alle impostazioni globali" />
+</Frame>
+
+1. Fare clic su Rilevamento persone per immettere le impostazioni dei parametri, regolare principalmente il rilevamento della rotazione globale e lasciare gli altri parametri come predefiniti. Il rilevamento della rotazione è correlato all'angolo di installazione della telecamera e la rotazione in senso orario della telecamera è limitata a 0°, 90°, 180° e 270°.
+
+2. Una volta completate le impostazioni di configurazione globali, fare clic sul pulsante [**Salva e invia**] per salvare i parametri sulla telecamera.
+
+#### Rilevamento esseri umani: configurazione della regione
+
+1. Per impostare l'intervallo di rilevamento e regolare la lunghezza e la larghezza (xy) del rilevamento, si consiglia di passare prima alle visualizzazioni superiore e inferiore. Di seguito sono riportati i tasti di scelta rapida per ciascuna vista. ![Rilevamento umano: illustrazioni relative alla configurazione regionale](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif)
+
+2. Fare clic sul pulsante [**Aggiungi area di rilevamento**]. Nella configurazione dell'area di rilevamento, verranno aggiunti il ​​numero di aree di rilevamento e il nome ID dell'area di rilevamento. ![123](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d97865c8-086f-46d1-b41f-c3a63ed994ff.avif)
+
+3. La modifica della dimensione massima dell'asse XYZ dell'area di rilevamento creata può confermare direttamente la dimensione di un'area di rilevamento. Come mostrato nella figura seguente viene creata un'area di rilevamento di 1000\*1000\*2000 (unità mm). ![Creazione dell'area di rilevamento umano](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1d33db3-1c36-4cb6-8235-7ecbb302fe0e.avif)
+
+1. Trascinare l'area di rilevamento creata sull'area di rilevamento target trascinando il mouse nell'area di marcatura.
+
+![L'area di rilevamento umano si sposta in avanti](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7e9db737-c5b8-4532-9235-33750006cfce.avif)![L'area di rilevamento umano si sposta indietro](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3a1abc56-d148-47ef-8c05-c510f4ef981d.avif)
+
+5. Dopo aver configurato l'area di rilevamento, fare clic sul pulsante [Salva e invia] per salvare i parametri nella telecamera e iniziare a rilevare l'area corrente.
+
+#### Visualizza i risultati dei test umani
+
+1. Dopo aver impostato la calibrazione dei parametri esterni, i parametri di rilevamento umano e l'area di rilevamento umano, fare clic su "**Strumenti di base**" ed eseguire il test camminando nell'area di rilevamento per visualizzare i risultati. Non c'è nessuno nell'area di rilevamento corrente e nessun bersaglio viene rilevato nella barra delle funzioni di base.
+
+![La parte anteriore non è nel campo di rilevamento (nuvola di punti)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d03e2dc2-9450-4b40-a0b3-bb443a97d9b2.avif)![La parte anteriore non è nel riquadro di rilevamento (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a5cd29e-9132-46b6-8705-5d00994b9cc5.avif)
+
+1. Quando qualcuno entra nell'area, il bersaglio designato viene rilevato nella colonna di visualizzazione dello stato di rilevamento umano. Nella parte inferiore del software verrà visualizzato il risultato **Risultato**. 1 rappresenta qualcuno.
+
+![25909893521\_171673957420\_Prima persona nell'area di rilevamento (nuvola di punti)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ef7d562-faa1-40a1-9224-c71063f17c46.avif)![25909893521\_171674018465\_Persona frontale nell'area di rilevamento (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/508a3e95-86a5-4433-9396-bab02f0fba4b.avif)
+
+#### Visualizza il registro di rilevamento umano
+
+Quando lo stato di rilevamento del corpo umano cambia, fare clic sulla riproduzione della cronologia e fare clic sull'ora che si desidera visualizzare a sinistra per visualizzare i cambiamenti negli oggetti all'interno del campo visivo effettivo in quel momento. Per i dettagli vedere 5.5 riproduzione.
+
+#### Determinazione dei risultati dei test sul corpo umano
+
+1. La regola di corrispondenza rileverà tutti gli oggetti solo nel caso della profondità e, nel caso della semantica più profondità, verranno giudicati solo i cluster la cui semantica è costituita da persone.
+
+2. La seguente tabella mostra i risultati di output di Risultato in diverse circostanze.
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| | Nessuno | Qualcuno | Ci sono ostacoli | Persone + ostacoli |
+| solo profondità | 0| 2| 2| 2|
+| Semantica più profondità | 0| 1| 0| 1|
+
+### Rilevamento della posizione di archiviazione e processo di distribuzione
+
+#### Rilevamento della posizione di archiviazione - calibrazione dei parametri esterni
+
+Per i dettagli, vedere 6. Calibrazione dei parametri esterni della telecamera.
+
+Dopo la calibrazione, assicurarsi che l'asse X (freccia rossa) e l'asse Y (freccia verde) coincidano con il suolo e che l'asse Z (freccia blu) sia perpendicolare al suolo e verso l'alto.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagramma di calibrazione dei parametri esterni della posizione di archiviazione" />
+</Frame>
+
+#### Rilevamento della posizione di archiviazione: impostazioni globali
+
+1. Fare clic sul rilevamento della posizione per passare alla pagina di impostazione dei parametri di rilevamento della posizione. Nella configurazione globale, è necessario prestare attenzione all'angolo di allineamento, all'effetto di allineamento e al numero minimo di punti.
+
+2. Se il posizionamento degli articoli nella posizione di archiviazione deve seguire un angolo specifico, si consiglia di attivare l'effetto di allineamento e impostare l'angolo di allineamento corrispondente. Una volta che l'angolo dell'oggetto supera la soglia preimpostata, il sistema genererà il risultato di rilevamento corrispondente.
+
+|  |  |
+| --- | --- |
+| Stato | Risultato |
+| Nessun oggetto | 0|
+| C'è un oggetto | 1|
+| L'angolo di un oggetto supera l'angolo di allineamento (attiva l'effetto di allineamento) | 2|
+| Un oggetto supera l'intervallo di selezione della posizione (attiva l'effetto di allineamento) | 3|
+
+1. Quando si identificano merci di piccole e medie dimensioni in un magazzino, se ci sono dubbi sull'identificazione o rischi di errata valutazione, si consiglia di utilizzare il parametro "quantità minima di punti" per lo screening. Questo parametro specifica la soglia minima del numero di nuvole di punti richiesta per riconoscere un oggetto. Quando viene rilevato un oggetto ma il suo numero di nuvola di punti non raggiunge questa soglia, l'oggetto verrà escluso dai risultati del riconoscimento.
+
+2. Una volta completate le impostazioni di configurazione globali, fare clic sul pulsante [**Salva e invia**] per salvare i parametri sulla telecamera.
+
+#### Rilevamento della posizione di archiviazione: configurazione della posizione di archiviazione
+
+##### Impostazione della posizione in modalità nuvola di punti
+
+1. Impostare il raggio di rilevamento. Per regolare la lunghezza e la larghezza (xy) del rilevamento, si consiglia di passare prima alla visualizzazione su e giù. Di seguito sono riportati i tasti di scelta rapida per ciascuna vista.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti" />
+</Frame>
+
+1. Posizionare il pallet nel campo visivo e fare clic sul pulsante [**Aggiungi posizione**]. Nella configurazione della posizione, verranno aggiunti il ​​numero di posizioni e il nome ID della posizione. Possiamo modificare l'ID, che attualmente è modificato in "Location Test 1".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427a2154-d262-4c8c-acf6-92c912f3ada1.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/47d79ced-617b-41cd-8a4b-aa086f289789.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 3" />
+</Frame>
+
+1. Dopo aver fatto clic su "Aggiungi posizione di archiviazione", passare la nuvola di punti alla vista dal basso, fare clic sull'immagine della nuvola di punti con il mouse e premere il tasto [X] sulla tastiera per disegnare l'area della posizione di archiviazione. Quando si preme [X], il pulsante "Aggiungi posizione di archiviazione" diventerà grigio, il che significa che l'area della posizione di archiviazione può essere disegnata nell'area di visualizzazione delle immagini. (Il tasto x sulla tastiera avvia la funzione di disegno dell'ubicazione del magazzino e del numero di sezione delle ubicazioni del magazzino. Premere una volta per iniziare a disegnare e premere una volta per terminare il disegno.)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/846b9c20-37c5-4847-b10d-82b766443aab.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 4" />
+</Frame>
+
+1. A questo punto è possibile ingrandire l'immagine facendo scorrere la rotella, tenendo premuto il pulsante sinistro del mouse e disegnando una cornice rettangolare che avvolga l'intero pallet. Rilascia il pulsante sinistro del mouse e l'area di rilevamento della posizione corrente verrà disegnata automaticamente. Premere il pulsante [X] sulla tastiera per annullare il disegno dell'area di rilevamento. A questo punto è possibile confermare l'intervallo di dimensioni dell'area regolando il massimo e il minimo
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/997b81b0-165a-441c-b2e2-51ea8799ec7f.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 5" />
+</Frame>
+
+1. Utilizzare le scorciatoie da tastiera per passare alla vista inferiore, come mostrato nella figura seguente. La freccia rossa punta verso la direzione x del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente la direzione x è leggermente più grande della larghezza del vassoio.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/98bf259d-d459-4ed7-8a73-0448576f14bc.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 6" />
+</Frame>
+
+1. La freccia verde indica la direzione y del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente la direzione y è leggermente più grande della lunghezza del pallet.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d8990bab-9614-4f97-8561-6ae7076c7b20.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 7" />
+</Frame>
+
+1. La freccia blu punta verso la direzione z del campo di rilevamento. Il valore può essere modificato scorrendo con la rotellina del mouse oppure è possibile inserirlo direttamente. Si consiglia di impostare il valore z minimo dell'intervallo di rilevamento corrente leggermente più in alto della distanza dal suolo per evitare che il terreno venga rilevato erroneamente. Imposta la z massima su 1500 e l'altezza massima in base alla dimensione dell'oggetto. Se l'altezza dell'oggetto supera il valore z massimo, l'algoritmo non lo rileverà.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07ff02c7-8418-4913-a62e-3728b54839c5.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 8" />
+</Frame>
+
+1. Dopo aver configurato l'area di rilevamento, fare clic sul pulsante [**Salva e invia**] per salvare i parametri nella fotocamera, quindi iniziare a rilevare se sono presenti merci nell'ubicazione corrente del magazzino.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4263bf6-5cd5-40f1-b0e2-696906ee4502.avif" alt="Illustrazioni relative all'impostazione della posizione in modalità nuvola di punti 9" />
+</Frame>
+
+##### Impostazione della posizione della libreria in modalità RGB
+
+1. Passa alla modalità di visualizzazione RGB, fai clic per aggiungere una posizione di archiviazione e sposta il mouse sull'immagine RGB, ![Creazione della posizione di archiviazione 2D](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/595aef48-fd89-41ce-93c9-fcd89622f141.avif)
+
+Fare clic con il pulsante sinistro del mouse sull'area di rilevamento per creare un'area di rilevamento della posizione 2D e fare clic con il pulsante destro del mouse per uscire dalla modalità di creazione della posizione 2D.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f38061e-4044-4ce8-ac8d-98adf248ffd8.avif" alt="Posizione 2D creata correttamente" />
+</Frame>
+
+2. Se è necessario eliminare un'ubicazione di magazzino, selezionare l'ID della casella da eliminare nella casella corrente. L'ID della posizione del magazzino corrispondente verrà visualizzato sull'immagine. Fare clic per eliminare l'ubicazione del magazzino. ![Estensione per la creazione di posizioni 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f9c485c-f591-4e95-8bc6-45df833eb341.avif)
+
+3. Posizionare il mouse al centro dell'area di rilevamento della posizione di memorizzazione (posizione della freccia blu) per trascinare l'area di rilevamento da spostare, posizionare il mouse sui quattro angoli dell'area di rilevamento della posizione di memorizzazione (posizione della freccia rossa) e trascinare con il pulsante sinistro del mouse per modificare le dimensioni dell'area di rilevamento. ![Estensione per la creazione di posizioni 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/71096a08-65a6-45f9-b033-59d9a5ae9fa6.avif)
+
+4. Dopo aver confermato la posizione, è necessario fare clic su [Salva e invia] per salvare la posizione sulla fotocamera prima che abbia effetto. Conferma se il salvataggio ha avuto esito positivo e controlla se lo stato della posizione è salvato. Se non salvato, non verrà salvato. ![6cec7d56ad74e8745f624af0e0ce582c\_compress](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b3e11ff5-e79e-4141-8f4d-71c2474caa70.avif)
+
+5. Il rilevamento della posizione di archiviazione 2D supporta solo la modalità semantica e deve essere abbinato a un modello semantico per il rilevamento.
+
+#### Rilevamento della posizione di archiviazione - impostazioni avanzate
+
+##### Funzione avanzata: copia posizione
+
+1. Fare clic su [**Ulteriori informazioni su copia e panoramica**] e verranno richieste le informazioni relative alla panoramica. La copia della posizione consente agli utenti di progettare la posizione in base ai disegni CAD durante la distribuzione effettiva, quindi di disegnare un'area di posizione per eseguirne più copie senza doverla disegnare nuovamente manualmente.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/575918bf-cf7e-428a-a302-c365284da6bc.avif" alt="Funzione avanzata: copia le icone relative alla posizione" />
+</Frame>
+
+1. L'impostazione corrente è la direzione X, la spaziatura è 10 e la quantità è 2. Fare clic sul pulsante Esegui e ti verrà richiesto di confermare se eseguire la traduzione della copia.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a52afac-6e72-4cfb-8acb-fa7910288287.avif" alt="Funzione avanzata: copia delle icone relative alla posizione 2" />
+</Frame>
+
+1. Dopo aver fatto clic su Sì, verranno generati due contenitori della stessa dimensione nella direzione x positiva con una spaziatura di 10. Nella casella di riepilogo della posizione del contenitore, è possibile vedere che l'area del contenitore generata ha il suffisso aumentato di (0) e (1) in base all'ID di rilevamento della posizione del contenitore originale.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e213b2fb-9331-48e5-beda-2afb91fc4fa8.avif" alt="Funzione avanzata: copia delle icone relative alla posizione 3" />
+</Frame>
+
+1. Impostare su direzione Y, spaziatura su -40 e quantità su 3. Fare clic sul pulsante Esegui per generare 3 posizioni di archiviazione con la stessa dimensione nella direzione y negativa. Gli ID della casella di riepilogo della posizione vengono aggiunti (2), (3) e (4) sulla base dell'originale (0) e (1).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cc9aab42-e06f-4910-869a-fa8335d089a6.avif" alt="Funzione avanzata: copia delle icone relative alla posizione 4" />
+</Frame>
+
+1. Dopo aver copiato la posizione, è necessario fare clic sul pulsante [**Salva e rilascia**] per salvare i parametri, altrimenti i parametri non avranno effetto.
+
+##### Funzione avanzata - Calibrazione QR (calibrazione del codice QR)
+
+1. La calibrazione QR (codice QR) può simulare scenari reali di distribuzione del magazzino e continuare il disegno automatico delle aree del magazzino senza disegno manuale, consentendo agli utenti di distribuirlo comodamente. Si consiglia che la scheda del codice QR sia di 1 m×1 m o più. Fare clic su [**È necessario conoscere la calibrazione del codice QR**] e verrà richiesto il processo di calibrazione.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c2767a5-5a42-41b0-85aa-5257d6bdf3f1.avif" alt="Funzione avanzata: icone relative alla calibrazione QR (calibrazione del codice QR)." />
+</Frame>
+
+1. Posizionare la piastra di calibrazione del codice QR nell'area target, passare all'immagine RGB e assicurarsi che il codice QR possa essere visto nel campo visivo RGB.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427f065c-f102-49fc-a996-dd04d2f4cece.avif" alt="Funzioni avanzate - Icone relative alla calibrazione QR (calibrazione del codice QR) 2" />
+</Frame>
+
+1. Una volta che il codice QR si trova al centro del campo visivo, passare all'immagine della nuvola di punti e trovare la barra di calibrazione [**QR Code**]. Preinserire la dimensione della posizione X (larghezza della posizione), Y (lunghezza della posizione), Z\_min (profondità minima della posizione), Z\_max (profondità massima della posizione),
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9e83a1a-50be-4664-8f4c-9a02ffaa752e.avif" alt="Funzioni avanzate - Icone relative alla calibrazione QR (calibrazione del codice QR) 3" />
+</Frame>
+
+1. Quindi fare clic sul pulsante [**Calibrazione**] per disegnare automaticamente l'ubicazione del magazzino in base alle X, Y e Z impostate nel QR, che può essere visualizzato attraverso la casella dell'area di configurazione dell'ubicazione del magazzino. QR\_BOX è l'area box impostata per il codice QR.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c0bec5-7ba4-444b-9da6-4b0e919a86ed.avif" alt="Funzioni avanzate - Icone relative alla calibrazione QR (calibrazione del codice QR) 4" />
+</Frame>
+
+1. Una volta completata la calibrazione del codice QR, è necessario fare clic sul pulsante [**Salva e invia**], altrimenti i parametri non avranno effetto.
+
+#### Controlla i risultati del rilevamento della posizione
+
+1. Dopo aver impostato la calibrazione dei parametri esterni, i parametri di rilevamento della posizione di archiviazione e l'area di rilevamento della posizione di archiviazione, fare clic su "**Strumenti di base**" e posizionare gli oggetti nell'area di rilevamento per visualizzare i risultati. Al momento non è presente alcun oggetto e nessun oggetto verrà visualizzato nella barra delle funzioni di base. ![Visualizza le icone pertinenti per i risultati del rilevamento della posizione di archiviazione](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/481feb15-bd76-46db-9025-f17efcef2c71.avif)
+
+2. Dopo aver posizionato il pallet, la colonna di visualizzazione dello stato dell'inventario mostrerà che la posizione corrente è in stock. Nella parte inferiore del software verrà visualizzato il risultato, con 1 che indica che è disponibile. ![Immagine relativa alla visualizzazione dei risultati del rilevamento della posizione di archiviazione 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5b066a5a-b7e9-4a11-9fc5-01a2e8842be2.avif)
+
+3. Dopo aver attivato l'effetto di allineamento, il risultato del risultato verrà visualizzato nella parte inferiore del software. 2 significa che ci sono merci ma c'è uno spostamento angolare. ![La posizione non è allineata](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95d79300-5e45-45d6-8c84-a0486a90a94b.avif)
+
+4. Dopo aver attivato la verifica dell'allineamento, il risultato del risultato verrà visualizzato nella parte inferiore del software. 3 significa che la merce c'è ma supera l'area di rilevamento del luogo di stoccaggio. La casella rossa indica l'area di rilevamento della posizione di archiviazione e la casella gialla indica l'oggetto rilevato. ![L'allineamento della posizione è attivo e fuori dai limiti](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1688c5-d897-4a0c-8014-e03f6eea2be9.avif)
+
+#### Visualizza il registro di rilevamento della posizione di archiviazione
+
+Quando lo stato della posizione di memorizzazione cambia, fare clic sulla riproduzione storica e fare clic sull'ora che si desidera visualizzare a sinistra per visualizzare le modifiche negli oggetti all'interno del campo visivo effettivo in quel momento. Per i dettagli vedere 5.5 riproduzione.
+
+#### Determinazione dei risultati del rilevamento della posizione di archiviazione
+
+1. Disegnare l'area di rilevamento per determinare l'esistenza, l'angolo di offset e lo status transfrontaliero delle merci.
+
+2. Giudicare lo stato delle merci attraverso i risultati dei risultati ottenuti.
+
+|  |  |
+| --- | --- |
+| Stato | Risultati |
+| Esaurito | 0|
+| Disponibile | 1|
+| Disponibile e allineato (attiva la convalida dell'allineamento) | 1|
+| Disponibile e non allineato (attiva la convalida dell'allineamento) | 2|
+| In stock e fuori limite (attiva convalida allineamento) | 3|
+
+1. Con la funzione di verifica dell'allineamento abilitata, posizionare l'oggetto al confine dell'area di rilevamento. L'output Risultato è 3. Questo risultato indica che le merci hanno superato il confine e hanno occupato lo spazio di stoccaggio.
+
+**![Illustrazione relativa alla determinazione dei risultati del rilevamento della posizione di archiviazione](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa582c1-5052-4756-be13-e015f9c9fd86.avif)**
+
+### Processo di distribuzione del rilevamento del volume
+
+#### Rilevamento del volume - calibrazione dei parametri esterni
+
+1. Per i dettagli, vedere 6.2 Calibrazione dei parametri esterni dell'installazione verticale
+
+2. Una volta completata la calibrazione, assicurarsi che l'asse delle coordinate Z (freccia blu) sia verticalmente verso il basso, l'asse X (freccia rossa) e l'asse Y (freccia verde) formino un piano parallelo al suolo e il metodo di rilevamento dell'algoritmo di rilevamento del volume sia dall'alto verso il basso.
+
+![Vista dall'alto della calibrazione dei parametri esterni di rilevamento del volume](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/81e5f706-27db-4c18-87bb-3d3320387374.avif)![Vista laterale della calibrazione dei parametri esterni di rilevamento del volume](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96891baa-0237-440c-84bd-8840d0c91c86.avif)
+
+#### Rilevamento del volume: impostazioni globali
+
+1. Fare clic su Rilevamento volume. Dopo aver effettuato l'accesso all'interfaccia di impostazione dei parametri, è necessario concentrarsi sull'impostazione della "distanza del piano di rilevamento" (utilizzata per determinare la posizione della superficie inferiore dell'oggetto e calcolare il volume) e la dimensione minima XYZ.
+
+2. Controlla le impostazioni dell'aereo. Se la merce viene posizionata direttamente a terra, la distanza del piano di rilevamento è impostata all'altezza del suolo;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9e91e37-7a17-4f1c-8ac5-066ef8fe859c.avif" alt="La nuvola di punti a terra coincide con il piano di rilevamento 1" />
+</Frame>
+
+Se è presente un pallet e si vuole calcolare solo l'area della merce sul pallet, il piano di rilevamento deve coincidere con la nuvola di punti del pallet. ![Il piano di rilevamento è sul pallet](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0ed32689-0326-4afb-93c7-6880e62385ea.avif)
+
+1. Impostazioni minime XYZ. Utilizzato per impostare il limite inferiore della lunghezza, larghezza e altezza dell'oggetto rilevato (unità: pixel). Quando una qualsiasi delle dimensioni di lunghezza, larghezza o centro dell'oggetto rilevato è inferiore alla soglia, il sistema ignorerà automaticamente l'oggetto. ![È possibile rilevare le immagini](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d35dea57-dec2-4d30-863d-73ee462daabb.avif)![È possibile rilevare le merci](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a596eae-f1c2-45c1-9882-4cea9f374156.avif)
+
+Dopo aver aumentato il valore, l'oggetto viene ignorato. ![Parametri che impediscono il rilevamento](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2014538-6ac1-440f-9238-860c2da3f04b.avif)
+
+1. Una volta completate le impostazioni di configurazione globali, fare clic sul pulsante [**Salva e invia**] per salvare i parametri sulla telecamera.
+
+#### Rilevamento del volume - impostazione dell'intervallo
+
+1. Impostare il raggio di rilevamento. Per regolare la lunghezza e la larghezza (xy) del rilevamento, si consiglia di passare prima alla visualizzazione su e giù. Di seguito sono riportati i tasti di scelta rapida per ciascuna vista.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Rilevamento del volume: icone relative all'impostazione dell'intervallo" />
+</Frame>
+
+1. Utilizzare i tasti di scelta rapida della tastiera per passare alla visualizzazione su e giù, come mostrato nella figura seguente. La casella bianca puntata dalla freccia rossa indica la direzione x del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente, l'intervallo di rilevamento massimo e minimo nella direzione x è impostato su 600 e -600.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/78cf7eed-d5ba-4969-8be3-3579a41f49a1.avif" alt="Rilevamento del volume - diagramma relativo all'impostazione dell'intervallo 2" />
+</Frame>
+
+1. La casella bianca puntata dalla freccia verde indica la direzione y del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente, l'intervallo di rilevamento massimo e minimo nella direzione y è impostato su 480 e -580.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c1c97b6-76f9-490d-a262-0ec7de2d4e83.avif" alt="Rilevamento del volume - diagramma relativo all'impostazione dell'intervallo 3" />
+</Frame>
+
+1. La freccia blu punta verso la direzione z del campo di rilevamento. Si consiglia che il piano di rilevamento sia coerente con il valore z massimo. Il raggio di rilevamento minimo viene impostato in base alle dimensioni dell'oggetto. Se l'altezza dell'oggetto supera il valore z minimo, l'algoritmo lo filtrerà.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/66d82c1c-cb72-4c8e-805e-a8356b7a8103.avif" alt="Rilevamento del volume - diagramma relativo all'impostazione dell'intervallo 4" />
+</Frame>
+
+1. Dopo aver configurato l'area di rilevamento, fare clic sul pulsante [**Salva e invia**] per salvare i parametri nella telecamera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d5aa71bc-e458-4195-835a-45bd4150ff99.avif" alt="Rilevamento del volume - diagramma relativo all'impostazione dell'intervallo 5" />
+</Frame>
+
+#### Visualizza i risultati del test del volume
+
+1. Dopo aver configurato l'area di rilevamento, fare clic sul pulsante [**Salva e invia**] per salvare i parametri nella telecamera.
+
+2. Dopo aver impostato la calibrazione dei parametri esterni, i parametri di rilevamento del volume e l'area di rilevamento del volume, fare clic su "**Strumenti di base**" e posizionare gli oggetti nell'area di rilevamento per visualizzare i risultati. Al momento non è presente alcun oggetto e nessun oggetto verrà visualizzato nella barra delle funzioni di base.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ca238803-1d9a-4ad8-993f-d9c37dae9ad5.avif" alt="nessun oggetto" />
+</Frame>
+
+1. Dopo aver posizionato un oggetto, le informazioni attuali su lunghezza, larghezza e altezza dell'oggetto verranno visualizzate nella barra di visualizzazione dello stato del volume.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3c4511ff-69fa-4ea8-9918-c657aa999752.avif" alt="Rilevazione volumetrica di un singolo oggetto" />
+</Frame>
+
+4. Quando vengono posizionati più oggetti, la barra di visualizzazione dei risultati del rilevamento del volume mostrerà la lunghezza, la larghezza e l'altezza di più oggetti e verrà visualizzato il numero di oggetti. ![Rilevamento del volume di più oggetti](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f33c8bf-37d0-4b5b-a84a-4e1f1814eeba.avif)
+
+#### Funzione di rilevamento del volume con trigger singolo
+
+1. Nell'interfaccia di impostazione del rilevamento del volume, attivare la modalità trigger e fare clic sul pulsante [**Salva e invia**] per attivare correttamente la modalità trigger.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/48d2348e-0816-4231-9f14-03a426584e4e.avif" alt="Illustrazioni relative alla funzione di trigger singolo di rilevamento del volume" />
+</Frame>
+
+1. Fare clic sullo strumento di base e ottenere immagini e risultati facendo clic sul pulsante [**Trigger singolo**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f3dfaf70-6664-4a9e-9451-a5ccf693367b.avif" alt="unico grilletto" />
+</Frame>
+
+## Protocollo di comunicazione
+
+La modalità di trigger singolo inclusa nel rilevamento del volume invia TM\_TRIGGER tramite TCP o UDP, che consente alla telecamera di eseguire l'algoritmo di rilevamento del volume una volta e restituire il risultato una volta.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ec9bc8-1c02-4ce3-9ed5-2333ac4d8961.avif" alt="Rilevamento volume UDP TM\_TRIGGER" />
+</Frame>
+
+### Comunicazione TCP
+
+I risultati sono disponibili tramite la comunicazione TCP. Attraverso l'assistente di debug di rete, l'IP della telecamera remota: 192.168.100.83, porta: 14951, invia RESULT\_UPDATE per visualizzare le informazioni sul risultato restituito.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/13faa673-1d57-4ae0-8db9-c5258d95ae77.avif" alt="IMG\_256" />
+</Frame>
+
+### Comunicazione UDP
+
+I risultati del rilevamento della posizione possono essere ottenuti tramite la comunicazione UDP. Attraverso l'assistente per il debug di rete, l'IP della telecamera remota: 192.168.100.83, porta: 14950, invia RESULT\_UPDATE per visualizzare le informazioni sul risultato del rilevamento della posizione restituite.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76326c8d-54d2-491e-b315-b7681e6aef72.avif" alt="IMG\_256" />
+</Frame>
+
+### Comunicazione HTTP
+
+1. I risultati del rilevamento dell'algoritmo possono essere ottenuti tramite la comunicazione HTTP, numero di porta: 14952.
+
+2. Il sistema di livello superiore (WMS) invia il segnale del risultato alla visione e la visione restituisce una stringa in formato JSON.
+
+3. Procedure operative
+
+Imposta prima le intestazioni
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d26e7a0a-afc0-4df4-bca6-c63f5e0b3c2e.avif" alt="Operazione 1" />
+</Frame>
+
+Quindi impostare il parametro Body su RESULT\_UPDATE
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a833cf86-a300-4097-839e-7b233edba3f8.avif" alt="Operazione 2" />
+</Frame>
+
+Fai clic su Invia per ottenere il risultato![Operazione 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f9c2553-db2b-4646-b101-bf7b9c1ca543.avif)
+
+|  |  |
+| --- | --- |
+| WMS → Visione | |
+| Risultato | Significato |
+| RISULTATO_AGGIORNAMENTO | Attiva il segnale di ritorno del risultato visivo |
+| Visione → WMS (rilevamento umano) | |
+| Risultato | Significato |
+| IP | IP della telecamera di origine dati |
+| SG | Stato di rilevamento del corpo umano, 0 è vuoto, 1 significa che c'è qualcuno e 2 significa che la regola di corrispondenza dei fotogrammi prevede il rilevamento degli oggetti solo in profondità. __object_details contiene tutte le coordinate del cluster rilevate |
+| SG_DATA_TIME | Tempo di estrazione dei dati di rilevamento |
+| SG_RES_TIME | Orario di uscita del risultato del test |
+| soprannome | Nome della telecamera, configurabile nella telecamera |
+| codice_ret | Codice di ritorno, 0 è successo |
+| Visione → WMS (Rilevamento della posizione dello stock) | |
+| IP | IP della telecamera di origine dati |
+| SS | Stato di rilevamento del luogo di stoccaggio, 0 significa che il luogo di stoccaggio non è occupato, 1 significa che il luogo di stoccaggio è occupato, 2 significa che il luogo di stoccaggio è occupato e l'offset dell'angolo delle merci supera il parametro preimpostato, 3 significa che il luogo di stoccaggio è occupato e fuori dai limiti X__object_details è l'informazione specifica del luogo di stoccaggio X, contenente la dimensione della scatola del volume dell'oggetto effettivamente occupato |
+| SG_DATA_TIME | Tempo di estrazione dei dati di rilevamento |
+| SG_RES_TIME | Orario di uscita del risultato del test |
+| soprannome | Nome della telecamera, configurabile nella telecamera |
+| codice_ret | Codice di ritorno, 0 è successo |
+| Visione → WMS (Rilevamento del volume) | |
+| IP | IP della telecamera di origine dati |
+| TM | Ogni articolo è un volume box completo rilevato all'interno della regione |
+| SG_DATA_TIME | Tempo di estrazione dei dati di rilevamento |
+| SG_RES_TIME | Orario di uscita del risultato del test |
+| soprannome | Nome della telecamera, configurabile nella telecamera |
+| codice_ret | Codice di ritorno, 0 è successo |
+
+### modbus-tcp (rilevamento della posizione della libreria)
+
+I risultati del rilevamento vengono ordinati automaticamente in base all'ID della posizione e verranno restituiti solo i primi 16 risultati della posizione.
+
+#### Parametri di configurazione dello slave
+
+##### Configurazione di comunicazione di base
+
+1. \****Numero di porta*****: 16502
+
+2. \****Indirizzo di ascolto***\*: tutte le interfacce di rete (0.0.0.0)
+
+3. \****Numero di registri***\*: 16
+
+4. \****Indirizzo iniziale registrazione***\*: 0x100
+
+5. \****Ordine byte***\*: modalità Big-Endian (Big-Endian)
+
+##### Registra le regole di archiviazione
+
+|  |  |  |
+| --- | --- | --- |
+| Indirizzo di registrazione**** | Contenuto di archiviazione**** | Formato dati**** |
+| *0x100 +ID* | Risultato del rilevamento della posizione + risultato del rilevamento dell'indicatore | *2 byte (uint16_t)* |
+| *Regole divise* | | |
+| *Byte 0 (8 bit alti)* | Codice stato posizione | *0-2 (vedi definizione sotto)* |
+| *Byte 1 (8 bit inferiori)* | Codice di stato del marcatore (non ancora aperto, il contenuto è coerente con il codice di stato della posizione) | *0-2 (vedi definizione sotto)* |
+
+#### Definizione del codice di stato
+
+##### Codice di stato della posizione
+
+|  |  |  |
+| --- | --- | --- |
+| Codifica | Significato fisico | Condizioni di attivazione |
+| *0* | Non occupato | *Nessuna merce/pallet* |
+| *1* | Occupazione normale | *La merce standard è posizionata correttamente* |
+| *2* | Occupazione anomala | *Offset dimensioni/posizione del carico* |
+
+##### Codice di stato del marcatore
+
+|  |  |  |
+| --- | --- | --- |
+| Codifica**** | Significato fisico**** | Condizione di attivazione**** |
+| *0* | Nessun marcatore rilevato | |
+| *1* | Marker rilevato | |
+| *2* | Rileva anomalie | |
+
+#### Esempio
+
+\****Leggi lo stato della 4a posizione***\*
+
+##### 1. Messaggio di richiesta del cliente
+
+esadecimale
+
+1. \[01\]\[00\]\[00\]\[00\]\[06\]\[FF\]\[03\]\[01\]\[03\]\[00\]\[01\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Nome campo* | *Valore (HEX)* | *Lunghezza in byte* | *Descrizione* |
+| *Numero di sequenza del messaggio* | *00 01* | *2 byte* | *Identificatore della transazione (numero di sequenza incrementale)* |
+| *Identificatore di protocollo* | *00 00* | *2 byte* | *Valore fisso Modbus/TCP* |
+| *Lunghezza dati* | *00 06* | *2 byte* | *Lunghezza totale dei dati successivi (6 byte)* |
+| *Identificativo unità* | *FF* | *1 byte* | *Modalità di trasmissione (0xFF) o indirizzo del dispositivo* |
+| *Codice funzione* | *03* | *1 byte* | *Lettura registro di mantenimento (codice funzione standard)* |
+| *Registra l'indirizzo di partenza* | *01 03* | *2 byte* | *Indirizzo iniziale=0x100 + 4 (decimale)* |
+| *Numero di registri* | *00 01* | *2 byte* | *Leggi 1 registro (2 byte)* |
+
+##### 2. Messaggio di risposta del dispositivo
+
+esadecimale
+
+1.  \[05\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[02\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Nome campo* | *Valore (HEX)* | *Lunghezza in byte* | *Descrizione* |
+| *Numero di sequenza del messaggio* | *00 05* | *2 byte* | *Coerentemente con il messaggio di richiesta* |
+| *Identificatore di protocollo* | *00 00* | *2 byte* | *Valore fisso Modbus/TCP* |
+| *Lunghezza dati* | *00 02* | *2 byte* | *Lunghezza totale dei dati successivi (2 byte)* |
+| *Identificativo unità* | *FF* | *1 byte* | *Coerentemente con il messaggio di richiesta* |
+| *Codice funzione* | *03* | *1 byte* | *Leggi la risposta del registro di mantenimento* |
+| *Lunghezza dati restituiti* | *02* | *1 byte* | *Lunghezza effettiva dei dati restituiti (2 byte)* |
+| *Dati di stato* | *00 02* | *2 byte* | *Valore di stato della 4a posizione* |
+
+### Appendice (analisi del json restituito)
+
+#### Rilevamento del corpo umano
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SG"**: {         **"1"**: **1**,// Target detected in detection box 1         **"2"**: **0**,// No target detected in detection box 2         **"__object_details"**: \[ // Each item is a JSON string that must be deserialized again; each item represents one cluster
+
+            **"{\\"rbx2d\\":584.0,\\"rby2d\\":500.0,\\"semantic_index\\":-1,\\"tlx2d\\":234.0,\\"tly2d\\":386.0,\\"traceID\\":\\"\\",\\"x_max\\":33.46769714355469,\\"x_min\\":-130.08856201171875,\\"y_max\\":28.804279327392578,\\"y_min\\":9.872406005859375,\\"z_max\\":170.76319885253906,\\"z_min\\":70.43941497802734}"**,             **"{\\"rbx2d\\":405.0,\\"rby2d\\":333.0,\\"semantic_index\\":0,\\"tlx2d\\":159.0,\\"tly2d\\":11.0,\\"traceID\\":\\"IoXSYuQ0rM34LYqL\\",\\"x_max\\":-201.1272430419922,\\"x_min\\":-395.1332702636719,\\"y_max\\":99.76918029785156,\\"y_min\\":-228.9674530029297,\\"z_max\\":611.3909912109375,\\"z_min\\":233.85450744628906}"**         \]     },     **"SG_DATA_TIME"**: **"2023_03_02_21_52_11.408"**, // Human-detection data timestamp     **"SG_RES_TIME"**: **"2023_03_02_21_52_11.689"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"\_\_object\_details": //Single spiegazione dell'oggetto
+
+```json
+{     **"rbx2d"**: **405**, // x-coordinate of the lower-left corner of the 2D cluster box     **"rby2d"**: **333**, // y-coordinate of the lower-left corner of the 2D cluster box     **"semantic_index"**: **0**, // Model index when semantic data exists; otherwise -1     **"tlx2d"**: **159**, // x-coordinate of the upper-right corner of the 2D cluster box     **"tly2d"**: **11**,// y-coordinate of the upper-right corner of the 2D cluster box     **"traceID"**: **"IoXSYuQ0rM34LYqL"**,// Each detected class has a unique ID for matching the object across frames     **"x_max"**: **\-201.1272430419922**,// 3D point-cloud cluster-box coordinate     **"x_min"**: **\-395.1332702636719**,// 3D point-cloud cluster-box coordinate     **"y_max"**: **99.76918029785156**,// 3D point-cloud cluster-box coordinate     **"y_min"**: **\-228.9674530029297**,// 3D point-cloud cluster-box coordinate     **"z_max"**: **611.3909912109375**,// 3D point-cloud cluster-box coordinate     **"z_min"**: **233.85450744628906**// 3D point-cloud cluster-box coordinate }
+```
+
+#### Rilevamento della posizione di archiviazione
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SS"**: { X_detail_info contains cargo data detected in storage location X         **"1"**: **1**,// Storage location 1 is occupied         **"2"**: **1**,// Storage location 2 is occupied         **"3"**: **3**,// Storage location 3 is occupied and the object extends outside it         **"1__detail__info"**: \[             **\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**         \],         **"2__detail__info"**:             **\-7**,**258**,**261**,**545**,**403**,**204**,**89**         \],         **"3__detail__info"**: \[             **114**,**73**,**37**,**92**,**42**,**75**, **\-88**         \]     },     **"SS_DATA_TIME"**: **"2023_03_02_22_13_01.286"**, // Human-detection data timestamp     **"SS_RES_TIME"**: **"2023_03_02_22_13_01.572"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"X\_\_detail\_\_info": //Single spiegazione, X è l'ID univoco della posizione
+
+**"2\_\_dettaglio\_\_info"**: \[             **\-7**,// Coordinata x del punto centrale
+
+**258**,//Center coordinata del punto y
+
+**261**,//Center coordinata del punto z
+
+**545**,//long
+
+**403**,//width
+
+**204**,//High
+
+**89** //Offset angolo rispetto al riquadro di delimitazione \]
+
+**"1\_\_detail\_\_info"**: \[//This case è l'intervallo di rilevamento della posizione creato dall'ispezione 2D per la posizione 1, i valori sono tutti -1                                                                                                      
+
+#### Rilevamento del volume
+
+```json
+{     **"IP"**: **"192.168.100.83"**,// Camera IP     **"TM"**: \[ // Each item is a complete volume box detected within the detection area         {             **"angle"**: **\-81.56423950195313**,             **"cx"**: **\-287**,             **"cy"**: **88**,             **"cz"**: **2887**,             **"height"**: **224**,             **"length"**: **320**,             **"type"**: **""**,             **"valid"**: **true**,             **"width"**: **174**         }     \],     **"TM_DATA_TIME"**: **"2023_03_02_21_01_31.769"**, // Human-detection data timestamp     **"TM_RES_TIME"**: **"2023_03_02_21_01_31.987"**,// Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+L'oggetto `TM` contiene questi campi:
+
+- `angle`: angolo di offset.
+- `cx`, `cy` e `cz`: coordinate del punto centrale.
+- `height`, `length` e `width`: dimensioni dell'oggetto.
+- `type`: tipo semantico.
+- `valid`: se il risultato del rilevamento è valido.

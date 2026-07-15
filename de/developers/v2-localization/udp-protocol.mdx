@@ -1,0 +1,161 @@
+---
+title: "V2 Pro UDP-Protokoll"
+description: "Konfigurieren Sie die UDP-Kommunikation von V2 Pro und verwenden Sie deren Nachrichtenstrukturen, Schnittstellentypen und Beispiele."
+hidden: true
+---
+V2PRO unterstützt den UDP-Modus für die Interaktion mit dem Client. Die IP- und Portkonfiguration des Zielgeräts kann im WEB-Hostcomputer abgeschlossen werden. Der konkrete Standort ist wie folgt:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="Abbildungen zum V2PRO UDP-Kommunikationsprotokoll" />
+</Frame>
+
+Unter diesen ist PortCode die Portnummer, die das Zielgerät abhört, und PortName ist die IP des Zielgeräts. V2 PRO überwacht Port 8001, um Informationen von anderen Geräten zu empfangen.
+
+## **1.1** Datenformat
+
+1.1.1 Übernehmen Sie den Big-Endian-Modus: High-Byte zuerst, Low-Byte zuletzt
+
+1.1.2 Das Format des Kommunikationsrahmens lautet wie folgt: Datenkopf + Datenlänge + Befehlsbyte + Dateninhalt + Prüfcode.
+
+1.1.3 Prüfung: 1 Byte, alle Bytes außer dem Datenheader und dem Prüfcode-Byte werden XOR-verknüpft, um den Prüfcode zu erhalten.
+
+1.1.3 Datenlänge: Das Längenfeld wird ohne Prüfbyte und Header berechnet. Nicht alle Frames haben eine Länge.
+
+1.1.4 Das Kartenformat erlaubt nur die Kombination von englischen Buchstaben, „\_“ und Zahlen und muss mit einem englischen Buchstaben beginnen.
+
+## **1.2 V2 PRO** Erhaltene Informationen
+
+A. Kilometerzähler-Informationsrahmen (13 Byte)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0x0a |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Inhalt | V 3 _ | V 2 _ | V 1 _ | V 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Inhalt | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Inhalt | Prüfen |  |  |  |
+
+Es ist zu beachten, dass v und Theta in 4-Byte-Ganzzahlen übertragen werden, wobei die Einheit von v mm/s und die Einheit des Winkels Theta 0,01 Grad beträgt. Das heißt, für 90 Grad sind 9000 erforderlich
+
+B. Rahmen neu positionieren (Pose X, Y, Theta liefern)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0x02 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Inhalt | x 3 _ | x 2 _ | x 1 _ | x 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Inhalt | y 3 _ | y 2 _ | y 1 _ | y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Inhalt | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Inhalt | Prüfen |  |  |  |
+
+Es ist zu beachten, dass x, ,y und Theta alle in 4-Byte-Ganzzahlen übertragen werden, wobei die Einheit von x und y mm und die Winkeleinheit Theta 0,01 Grad beträgt. Das heißt, für 90 Grad sind 9000 erforderlich
+
+C. Start-/Ende-Mapping
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0x02 |
+
+| Bytes | Byte4(Status) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Inhalt | 0x01 | Kartenname 0 _ _ | … | Kartenname 29 _ _ |
+
+| Bytes | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Inhalt | Prüfen |  |  |  |
+
+Geben Sie die Anzahl der Bytes des Kartennamens von Byte5 (Karte\_Name\_0 bis Karte\_Name\_29) ein. Die festen Bytes sind 30 (Standard-ASCII-Codierung wird verwendet, nur englische Zeichen, Zahlen und Unterstriche werden unterstützt. Bitte beginnen Sie den Kartennamen nicht mit einer Zahl). Die nicht ausreichenden Bytes werden mit 0x00 aufgefüllt. Gleichzeitig kann die Karte nur einmal erstellt werden (bitte senden Sie nicht kontinuierlich Befehle zum Kartenaufbau). Byte4 (Status) Bestimmen Sie den Mapping-Status. Wenn es 0x00 ist, wird die Zuordnung beendet. Wenn es 0x01 ist, wird die Zuordnung gestartet.
+
+d. Karte wechseln
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0x0C |
+
+| Bytes | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Inhalt | Kartenname 0 _ _ | … | … | Kartenname 29 _ _ |
+
+| Bytes | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Inhalt | Prüfen |  |  |  |
+
+Die 30 BYTEs beginnend mit Byte5map\_name\_0 sind die Map-Namen, die gewechselt werden müssen. Es muss sichergestellt werden, dass der Kartenname die Zuordnungsaufgabe abgeschlossen hat.
+
+## Nachricht gesendet von **1.2 V2 PRO**
+
+A. Positionierungsrahmen (25 Byte)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0x01 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Inhalt | X 3 _ | X 2 _ | X 1 _ | X 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Inhalt | Y 3 _ | Y 2 _ | Y 1 _ | Y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Inhalt | THETA 3 _ | THETA 2 _ | THETA 1 _ | THETA 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Inhalt | ZEITSTEMPEL 7 _ | ZEITSTEMPEL 6 _ | ZEITSTEMPEL 5 _ | ZEITSTEMPEL 4 _ |
+
+| Bytes | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Inhalt | ZEITSTEMPEL 3 _ | ZEITSTEMPEL 2 _ | ZEITSTEMPEL 1 _ | ZEITSTEMPEL 0 _ |
+
+| Bytes | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Inhalt | PRÜFEN |  |  |  |
+
+Es ist zu beachten, dass die Einheit von X und Y MM ist und die Einheit von THETA 0,001 Bogenmaß ist.
+
+Nach erfolgreicher Verlagerung sendet V2PRO immer den Positionierungsrahmen.
+
+b.Rückgaberahmen für das Ergebnis der Aufgabenausführung
+
+Einschließlich der Rückgabe von Start-/End-Mapping-Ergebnissen und der Rückgabe von Switching-Mapping-Ergebnissen. Dieser Rahmentyp hat folgenden Aufbau:
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Inhalt | AC | ED | Länge | 0xFF |
+
+| Bytes | ID | Status | Byte 6 |
+| --- | --- | --- | --- |
+| Inhalt | 0x01 | 0x01 | Prüfen |
+
+Wobei Id das Aufgabentyp-Byte ist:
+
+| 0x01: | Zeigt den Beginn der Zuordnung | an
+| --- | --- |
+| 0x02: | Zeigt das Ende der Zuordnung | an
+| 0x03: | Zeigt die Schaltkarte | an
+
+Der Status entspricht dem Erfolg der Aufgabe. 0x01 bedeutet Erfolg und 0x00 bedeutet Fehler.
+
+Es ist zu beachten, dass das Beenden des Mappings lange dauert, was etwa 1/3 der tatsächlichen Mapping-Scanzeit ausmacht. Nachdem die lange Aufgabe ausgegeben wurde, wird der Status zurückgegeben.

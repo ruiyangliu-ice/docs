@@ -1,0 +1,486 @@
+---
+title: "Protocollo HTTP V2"
+description: "Utilizza gli endpoint HTTP, i parametri di richiesta e i formati di risposta del modulo di localizzazione visiva V2."
+hidden: true
+---
+## Recupera informazioni globali
+
+### Aggiorna il programma principale
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+Esempio di richiesta:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### Imposta l'altezza della telecamera
+
+Richiedi URL `http://<ip>:9998/tool/rob/setHeightRequest` Esempio:
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Recupera informazioni globali
+
+### Ottieni la versione del programma
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+Esempio di richiesta: omesso
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### Ottieni informazioni di base sul veicolo
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+Esempio di richiesta: omesso
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### Ottieni il pacchetto mappa dall'host
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+Richiedi parametri:
+
+Tipo di contenuto: application/json
+
+|  |  |  |
+| --- | --- | --- |
+| Obbligatorio | Parametri | Descrizione |
+| Sì | Nome | Nome della mappa |
+
+Esempio di risposta:
+
+Restituisce un file con tipo di contenuto: application/zip
+
+### OttieniAGVPose
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\. **Trasloco (vai online)**
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/relocate`
+
+Richiedi parametri:
+
+Tipo di contenuto: application/json
+
+|  |  |  |
+| --- | --- | --- |
+| Obbligatorio | Parametri | Descrizione |
+| Sì | x| Posizione X (metri) |
+| Sì | sì | Posizione Y (metri) |
+| Sì | angolo | – |
+| Sì | rumorosoX | Rumoroso (metri) |
+| Sì | rumorosoY | Rumoroso (metri) |
+| Sì | angolo rumoroso | Rumoroso (metri) |
+
+Esempio di richiesta: omesso
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Operazioni sulla mappa
+
+### Distribuisci la mappa
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+Richiedi parametri
+
+|  |  |  |
+| --- | --- | --- |
+| Obbligatorio | Parametri | Descrizione |
+| Sì | id | Nome della mappa |
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Applica la mappa
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+Richiedi parametri
+
+|  |  |  |
+| --- | --- | --- |
+| Obbligatorio | Parametri | Descrizione |
+| Sì | nome | Nome della mappa |
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Inizia la mappatura
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+Richiedi parametri
+
+|  |  |  |
+| --- | --- | --- |
+| Obbligatorio | Parametri | Descrizione |
+| Sì | nome | Nome della mappa |
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Interrompi la mappatura
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Avvia la mappatura incrementale
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Esempio di richiesta:
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Interrompe la mappatura incrementale
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Esempio di richiesta:
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Ottieni l'elenco delle mappe locali (backend) (Ottieni l'elenco delle mappe di sfondo, non consigliato)
+
+Richiedi URL
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### Ottieni l'elenco delle mappe locali (consigliato)
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### Carica il pacchetto mappe sulla fotocamera
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+Parametri della richiesta: nessuno
+
+Esempio di richiesta:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Scarica la mappa
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+Parametri della richiesta: nessuno
+
+Esempio di richiesta:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## Interfacce operative
+
+### Riavvia il programma della fotocamera
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/restart`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Riavvia la fotocamera
+
+Richiedi URL
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+Parametri della richiesta: nessuno
+
+Esempio di risposta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

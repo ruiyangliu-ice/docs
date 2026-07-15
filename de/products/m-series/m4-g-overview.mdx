@@ -1,0 +1,149 @@
+---
+title: "3D-Kamera der M4-G-Serie"
+description: "Spezifikationen, Schnittstellen, Abmessungen, Softwareunterstützung und Anwendungen für die M4-G iToF RGB-D-Kamera."
+---
+Um das vollständige Dokument herunterzuladen, holen Sie sich das Produkt-Benutzerhandbuch von der [Download-Center](/de/resources/downloads/specifications-and-user-guides "Download-Center").
+
+## Produktübersicht
+
+Die MRDVS M4-G ist eine RGB-D-Kamera basierend auf der iToF-Technologie. Es wurde für die Wahrnehmung im Nahbereich an verkörperten Robotern entwickelt und bietet eine GMSL2-Schnittstelle. Die Kamera arbeitet im Bereich von 0,05–1 m mit einer Entfernungsgenauigkeit von bis zu 4 mm. Es gibt Tiefendaten und 1080P-RGB-Bilder synchron mit bis zu 30 Bildern pro Sekunde aus, um die Wahrnehmung aus nächster Nähe, das Erfassen von Objekten auf dem Tisch und eine geschickte Manipulation zu ermöglichen.
+
+<Frame>
+  <img src="/images/legacy/0c305d49-25f8-4018-9ef2-c65a21cac289/0e5b76fc-5a62-461f-a3fb-6bcd0b2f8ec7.avif" alt="M4-G Produktübersicht" />
+</Frame>
+
+## Kerntechnologie und Anwendungen
+
+- Tiefenmessung: Verwendet ToF-Technologie zur Ausgabe von Tiefendaten im Nahbereich.
+
+- Betrieb bei schlechten Lichtverhältnissen: Verwendet aktive Beleuchtung, um Tiefendaten bei Nacht oder bei schlechten Lichtverhältnissen auszugeben.
+
+- Weniger Datenlücken: Aktive Beleuchtung reduziert fehlende Daten und verbessert die Tiefenvollständigkeit.
+
+- Mehrere Ausgabeformate: Gibt Tiefen- und RGB-Bilder synchron mit RGB-Ausrichtung aus.
+
+- Datenübertragung: Bietet eine GMSL2-Schnittstelle für längere Übertragungsstrecken und störungssichere Verbindungen.
+
+**Hauptanwendungen:**
+
+Die Kamera wird an einem Handgelenk eines humanoiden Roboters (VLA) montiert, um Objekte auf dem Tisch zu greifen und geschickte industrielle Arbeiten durchzuführen.
+
+- Greifen von Objekten auf dem Tisch: Humanoide Roboter identifizieren und greifen selbstständig Objekte auf einer Tischplatte für den Heimservice, die Bürounterstützung und ähnliche Anwendungen.
+
+- Geschickte Manipulation: Hochpräzises Sehen führt humanoide Roboter durch die Identifizierung, das Greifen und die Montage von Teilen bei industriellen Aufgaben wie zufälliger Behälterauswahl, Präzisionsmontage und Maschinenbedienung.
+
+## Spezifikationen
+
+| Leistungsmetrik | MRDVS M4-G |
+| --- | --- |
+| Funktionsprinzip | iToF |
+| Ausgabeformat | Tiefe & RGB & Punktwolke |
+| TOF-Auflösung und Bildrate | 640x480 (VGA), typisch: 30fps |
+| TOF-Sichtfeld | 90°×70°（±3°） |
+| RGB-Auflösung/Bildrate | 1280×1056, typisch 30fps |
+| RGB-Sichtfeld | 115°×100°（±3°） |
+| RGB-Pixelgröße | 2,5um |
+| RGB-ISP | Integriert |
+| RGB HDR | ≥100dB |
+| RGB-Objektivblende (F#) | 2,05 |
+| RGB effektive Brennweite (EFL) | 1,28 mm |
+| Messbereich | 0,05 m ~ 1 m |
+| Distanzgenauigkeit | 1 % (bis zu 4 mm bei 1 m) |
+| Stromverbrauch | 3W |
+| Laser | 940nm |
+| Abmessungen | 60×30×29mm |
+| Gewicht | &lt;200g |
+| Stromversorgung | 12V DC/1A |
+| Kommunikationsschnittstelle | Serdes |
+| Betriebstemperatur | -20℃~60℃ |
+| Lagertemperatur | -40℃~85℃ |
+| Softwareumgebung | C/C++/ROS SDK |
+| Unterstützte Betriebssysteme | Windows 7+, Linux, Arm Linux/ROS |
+| Kühlung | Passiv |
+| Augensicherheit | KLASSE I |
+
+## Produktstruktur und Software
+
+### Abmessungen
+
+<Frame>
+  <img src="/images/legacy/40ea8153-cd48-468c-8c89-8fc2e3d775e1/953b2c43-da9e-4805-87b7-0867304253ac.avif" alt="Abbildung 1. Abmessungen der M4-G 3D-Kamera" />
+</Frame>
+
+### Software-SDK
+
+Weitere Informationen finden Sie im Benutzerhandbuch der MRDVS-Hostanwendung und im SDK-Entwicklungshandbuch.
+
+## Hardware-Schnittstelle (GMSL-Deserialisierung)
+
+### Serializer-Konfiguration
+
+| Serialisierer |  |
+| --- | --- |
+| Modell | MAX96717 |
+| I2C-Adresse | 0X40(7bit) |
+| GMSL-Rate | GMSL2(6Gbit/s) |
+| Modus | Pixelmodus |
+| Frame-Synchronisierung | Gesteuert durch MAX96717 MFP0 |
+
+### Sensorparameter
+
+| Sensorinformationen |  |
+| --- | --- |
+| TOF-Auflösung | 2560*960(raw8) |
+| Datentyp | 0X2A |
+| TOF I2C-Adresse | Weitergegeben durch FPGA |
+| Virtueller Kanal | VC0 |
+| RGB-Auflösung | 1280*1080 (YUV422 8bit) |
+| Datentyp | 0X1E |
+| RGB-I2C-Adresse | Weitergegeben durch FPGA |
+| Virtueller Kanal | VC1 |
+
+### FPGA-Konfiguration
+
+| FPGA |  |
+| --- | --- |
+| I2C-Adresse | 0X11(7bit) |
+| MIPI | 4Lane 1,2 Gbit/s |
+
+## Voraussetzungen für die Aufnahme von Bildern
+
+### Triggersignal vorhanden
+
+Befolgen Sie das 96717-Handbuch, um die Hardware-Triggerung mit einem Deserialisierer wie MAX9672 zu konfigurieren.
+
+<Frame>
+  <img src="/images/legacy/941f3e6f-8eb5-4b57-81a2-8f6ca90d32be/e7a99ea7-43eb-46b5-b7bb-f7fbea7b0e55.avif" alt="Abbildung 2. MAX96724/F/R Frame-Sync-Signalübertragung" />
+</Frame>
+
+Informationen zum Simulieren eines GPIO-Triggersignals auf MFP0 im 96717 finden Sie unter `trig.c`.
+
+### Stream-Start-Befehl empfangen
+
+i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+
+Für 0x2000: 0 stoppt den Stream; 1 startet den Stream.
+
+0x11 ist die FPGA-Adresse.
+
+## Leitfaden zur Produktintegration
+
+| Artikel |  | Spezifikation |
+| --- | --- | --- |
+| Betriebsumgebung | Temperatur | -20℃-- 60℃ |
+|  | Beleuchtungsstärke | 0KLUX--100KLUX |
+| Speicherumgebung | Temperatur | -40℃--85℃ |
+|  | Luftfeuchtigkeit | Relative Luftfeuchtigkeit: Max. 90 % RH |
+| Normaler Betriebstemperaturanstieg |  | Anstieg der Gehäusetemperatur &lt;25℃ |
+| ESD-Bewertung |  | Kontaktentladung ±4KV, Luftentladung ±8KV |
+| RE-Rating |  | Entspricht GB 9254 KLASSE A |
+| Lebensdauer |  | 10 Jahre |
+| Umweltkonformität |  | RoHS |
+
+## Fallstudien
+
+[Wie die autonomen Gabelstapler von Unternehmen F jeden Tag über 500 Aufgaben sicher erledigen](/de/solutions/warehouse/cases/unmanned-forklift-500-tasks "Wie die autonomen Gabelstapler von Unternehmen F jeden Tag über 500 Aufgaben sicher erledigen")
+
+[AMR-Hindernisvermeidung bei Unterfahrt A](/de/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "AMR-Hindernisvermeidung bei Unterfahrt A")
+
+[3D-Hindernisvermeidung für einen humanoiden Roboter mit Rädern](/de/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "3D-Hindernisvermeidung für einen humanoiden Roboter mit Rädern")

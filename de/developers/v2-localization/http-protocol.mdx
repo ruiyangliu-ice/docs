@@ -1,0 +1,486 @@
+---
+title: "V2 HTTP-Protokoll"
+description: "Verwenden Sie HTTP-Endpunkte, Anforderungsparameter und Antwortformate des visuellen Lokalisierungsmoduls V2."
+hidden: true
+---
+## Globale Informationen abrufen
+
+### Hauptprogramm aktualisieren
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+Anfragebeispiel:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### Stellen Sie die Kamerahöhe ein
+
+Anforderungs-URL `http://<ip>:9998/tool/rob/setHeightRequest` Beispiel:
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Globale Informationen abrufen
+
+### Programmversion abrufen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+Anforderungsbeispiel: weggelassen
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### Erhalten Sie grundlegende Fahrzeuginformationen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+Anforderungsbeispiel: weggelassen
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### Kartenpaket vom Host abrufen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+Anforderungsparameter:
+
+Inhaltstyp: application/json
+
+|  |  |  |
+| --- | --- | --- |
+| Erforderlich | Parameter | Beschreibung |
+| Ja | Name | Kartenname |
+
+Antwortbeispiel:
+
+Gibt eine Datei mit dem Inhaltstyp application/zip zurück
+
+### GetAGVPose
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\. **Umzug (Online gehen)**
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/relocate`
+
+Anforderungsparameter:
+
+Inhaltstyp: application/json
+
+|  |  |  |
+| --- | --- | --- |
+| Erforderlich | Parameter | Beschreibung |
+| Ja | x | X-Position (Meter) |
+| Ja | y | Y-Position (Meter) |
+| Ja | Winkel | – |
+| Ja | noisyX | Laut (Meter) |
+| Ja | lautY | Laut (Meter) |
+| Ja | noisyAngle | Laut (Meter) |
+
+Anforderungsbeispiel: weggelassen
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Kartenoperationen
+
+### Karte bereitstellen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+Anforderungsparameter
+
+|  |  |  |
+| --- | --- | --- |
+| Erforderlich | Parameter | Beschreibung |
+| Ja | id | Kartenname |
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Karte anwenden
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+Anforderungsparameter
+
+|  |  |  |
+| --- | --- | --- |
+| Erforderlich | Parameter | Beschreibung |
+| Ja | Name | Kartenname |
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Starten Sie die Zuordnung
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+Anforderungsparameter
+
+|  |  |  |
+| --- | --- | --- |
+| Erforderlich | Parameter | Beschreibung |
+| Ja | Name | Kartenname |
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Stoppen Sie die Zuordnung
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Inkrementelles Mapping starten
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Anfragebeispiel:
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Inkrementelles Mapping stoppen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Anfragebeispiel:
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Lokale Kartenliste abrufen (Backend) (Hintergrundkartenliste abrufen, nicht empfohlen)
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### Holen Sie sich die lokale Kartenliste (empfohlen)
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### Kartenpaket auf die Kamera hochladen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+Anforderungsparameter: keine
+
+Anfragebeispiel:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Karte herunterladen
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+Anforderungsparameter: keine
+
+Anfragebeispiel:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## Bedienschnittstellen
+
+### Kameraprogramm neu starten
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/restart`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Kamera neu starten
+
+Anfrage-URL
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+Anforderungsparameter: keine
+
+Antwortbeispiel:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

@@ -1,0 +1,231 @@
+---
+title: "Hướng dẫn sử dụng máy ảnh H3310"
+description: "Thông số kỹ thuật sản phẩm và chi tiết thiết kế để tích hợp và sử dụng camera H3310."
+hidden: true
+---
+## Lịch sử sửa đổi
+
+| Ngày sửa đổi | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 21/11/2023 | V0.1 | Phát hành lần đầu |
+| 25/11/2024 | V1.0 | Cập nhật nhiệt độ bảo quản máy ảnh |
+
+## 1. Giới thiệu
+
+### 1.1 Mục đích và phạm vi
+
+Tài liệu này cung cấp thông số kỹ thuật và chi tiết thiết kế của camera H3310 cho các nhà phát triển tích hợp và sử dụng sản phẩm.
+
+### 1.2 Thuật ngữ
+
+| Đường cơ sở | Trong camera độ sâu âm thanh nổi, đường cơ sở là khoảng cách theo chiều ngang giữa hai camera. Chính xác hơn, đó là khoảng cách giữa các trục quang học của chúng và thường được đo bằng milimét (mm). |
+| --- | --- |
+| Độ sâu | Giống như luồng video màu hoặc đơn sắc, luồng độ sâu gán cho mỗi pixel một giá trị. Giá trị này thể hiện khoảng cách của pixel với máy ảnh. |
+| FOV | Trường nhìn. Phạm vi góc của cảnh mà máy ảnh có thể chụp được. Nó bao gồm FOV ngang (HFOV), FOV dọc (VFOV) và FOV chéo (DFOV). |
+| Camera hồng ngoại | Một camera hồng ngoại. Ở sản phẩm này, nó chủ yếu chụp ảnh ở phổ cận hồng ngoại. |
+| Máy ảnh RGB | Một chiếc máy ảnh màu. |
+| Camera độ sâu | Máy ảnh có mô-đun chụp ảnh độ sâu thường bao gồm máy chiếu điểm, camera hồng ngoại và bộ xử lý độ sâu. Mô-đun hình ảnh màu của nó thường là máy ảnh RGB. |
+| SoC | Một hệ thống trên chip xử lý dữ liệu hình ảnh, tính toán độ sâu và chạy các thuật toán ứng dụng. |
+
+### 1.3 Công nghệ ánh sáng cấu trúc
+
+Ánh sáng có cấu trúc hai mắt là công nghệ đo thị giác 3D phổ biến kết hợp tầm nhìn âm thanh nổi với chiếu ánh sáng có cấu trúc. Nó sử dụng hai camera và một máy chiếu ánh sáng có cấu trúc để ghi lại hình dạng và chiều sâu 3D của vật thể.
+
+Quá trình này hoạt động như sau:
+
+1. Chiếu ánh sáng có cấu trúc: Máy chiếu chiếu ánh sáng có cấu trúc lên đối tượng mục tiêu. Nguồn ánh sáng hồng ngoại hoặc ánh sáng khả kiến ​​thường tạo ra ánh sáng, được mã hóa hoặc điều chế đặc biệt bằng cách sử dụng mô hình lưới hoặc đốm. Ánh sáng chiếu tạo ra các hoa văn sáng, tối hoặc méo mó trên bề mặt vật thể.
+
+2. Hình ảnh nổi: Trong khi chiếu ánh sáng có cấu trúc, hai camera sẽ chụp đối tượng mục tiêu cùng một lúc. Các camera cách nhau một khoảng cố định, tương tự như khoảng cách giữa hai mắt người. Họ ghi lại cả mô hình được chiếu và hình dáng của vật thể.
+
+3. Chụp ảnh: Camera chụp ảnh trái và phải. Sự biến dạng hoặc dịch chuyển của mẫu được chiếu trong những hình ảnh này sẽ mã hóa thông tin độ sâu của đối tượng.
+
+4. Xử lý hình ảnh: Sự khác biệt giữa hình ảnh bên trái và bên phải được sử dụng để tính toán độ sâu bề mặt. Kết hợp những khác biệt này với mẫu được chiếu sẽ tạo ra mô hình đám mây điểm 3D của đối tượng.
+
+5. Đo lường và tái thiết: Đám mây điểm 3D thu được có thể được sử dụng để đo, phân tích hoặc tái tạo hình dạng và kích thước của vật thể.
+
+<Frame>
+  <img src="/images/legacy/a61ed5fb-17e0-43a4-ada4-5340e15a4b19/d01b639a-c41f-46c8-b093-00dddfed7d5d.avif" alt="Công nghệ ánh sáng có cấu trúc hoạt động như thế nào" />
+</Frame>
+
+Hình 1.1
+
+* * *
+
+## 2. Tổng quan về sản phẩm
+
+H3310 là máy ảnh ánh sáng có cấu trúc công nghiệp RGB-D có trọng lượng 400g. Bạn có thể gắn nó trên một robot ghép hoặc cánh tay robot nhỏ. Ở khoảng cách nhận dạng 30-60cm, nó cung cấp dữ liệu 3D có độ chính xác cao và dữ liệu RGB có độ phân giải cao. Nền tảng điện toán tích hợp của nó chạy các thuật toán ứng dụng AI một cách độc lập cho các nhiệm vụ nhận dạng, kiểm tra và định vị robot công nghiệp.
+
+### 2.1 Hình thức sản phẩm
+
+<Frame>
+  <img src="/images/legacy/338d1fbe-bfb7-4fdf-82f3-206a9c8c8aff/c0bca9b4-dacf-4e17-892e-adc10dd00300.avif" alt="máy ảnh H3310" />
+</Frame>
+
+Hình 2.1 Camera H3310
+
+### 2.2 Tính năng
+
+- Nền tảng điện toán tích hợp: Cung cấp sức mạnh tính toán 6.0 TOPS và chạy các thuật toán ứng dụng mà không cần CPU ngoài.
+
+- Đầu ra dữ liệu 3D: Kết hợp hình ảnh ánh sáng có cấu trúc với thuật toán AI để cung cấp dữ liệu 3D có độ chính xác cao.
+
+- Thiết kế nhỏ gọn: Nặng 400g và cung cấp giao diện mở để triển khai.
+
+- Sản xuất hàng loạt: Hỗ trợ sản xuất ổn định, khối lượng lớn.
+
+* * *
+
+## 3. Thông số kỹ thuật
+
+### 3.1 Thông số chung
+
+| Người mẫu | H3310 |
+| --- | --- |
+| Nguyên lý hoạt động | Công nghệ ánh sáng có cấu trúc mã hóa hai mắt |
+| Độ phân giải độ sâu (HxV) | 1280x1024 |
+| Độ phân giải RGB (HxV) | 1920x1080 |
+| Thời gian thu thập dữ liệu | Khoảng 0,8 giây |
+| Đầu ra | Hình ảnh độ sâu, RGB và biên độ |
+| Phạm vi hoạt động | 300mm đến 600mm |
+| Trường nhìn (HxV) | 55°×45° |
+| Độ chính xác | ±0,1mm (@350mm) |
+| Tiêu thụ điện năng | 8W@24VDC |
+| Kích thước (LxWxH) | 124mm×70mm×53mm |
+| Cân nặng | 400g |
+| Nguồn điện | 12V-24VDC/3A |
+| Giao diện dữ liệu | Gigabit Ethernet |
+| Bảo vệ xâm nhập | IP55 |
+| Nhiệt độ hoạt động | 0°C đến 40°C |
+| Nhiệt độ bảo quản | -40°C đến 85°C |
+| Ngôn ngữ lập trình | C/C++ |
+| Hỗ trợ của bên thứ ba | ROS/ROS2 |
+| Hệ điều hành | - ARM Linux (AArch64) |
+| ㅤ | - Linux (x86_64) |
+| ㅤ | - Windows 7/8/10/11 |
+| Làm mát | Làm mát thụ động |
+| An toàn cho mắt | Lớp 3R |
+| Dung sai ánh sáng xung quanh | 10Klux |
+
+### 3.2 Sơ đồ chân của đầu nối
+
+**Các đầu nối phía máy ảnh:**
+
+**Đầu nối nguồn** **Đầu nối Ethernet**
+
+<Frame>
+  <img src="/images/legacy/893a78d3-9354-4185-b28d-b6bbdfabdc0a/32e71e5d-7906-424f-8588-5018186891d3.avif" alt="Sơ đồ chân của đầu nối" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c4ac542c-fa27-4c1f-bc87-ed38f6972cec/a97d5c1e-0d04-40c8-9ffc-3f2721d61095.avif" alt="Sơ đồ chân đầu nối 2" />
+</Frame>
+
+**Bảng 3.1 Sơ đồ chân của đầu nối**
+
+| Cảng | Ghim | Tín hiệu | Mô tả |
+| --- | --- | --- | --- |
+| Đầu nối Ethernet | 1 | 0+ | Cam/trắng |
+| ㅤ | 2 | 0- | Cam |
+| ㅤ | 3 | 1+ | Xanh/trắng |
+| ㅤ | 4 | 1- | Xanh |
+| ㅤ | 5 | 2+ | Màu xanh |
+| ㅤ | 6 | 2- | Xanh/trắng |
+| ㅤ | 7 | 3+ | Nâu/trắng |
+| ㅤ | 8 | 3- | Nâu |
+| Đầu nối nguồn | 1 | CON_IN | Thiết bị đầu cuối chung cho đầu vào IO |
+| ㅤ | 2 | IN_2 | Đầu vào IO 2 |
+| ㅤ | 3 | IN_1 | Đầu vào IO 1 |
+| ㅤ | 4 | COM_OUT | Thiết bị đầu cuối chung cho đầu ra IO |
+| ㅤ | 5 | NGOÀI_2 | Đầu ra IO 2 |
+| ㅤ | 6 | NGOÀI_1 | Đầu ra IO 1 |
+| ㅤ | 7 | VIN+ | Nguồn DC 24v dương |
+| ㅤ | 8 | VIN- | Nguồn DC 24v âm |
+
+### 3.3 Linh kiện máy ảnh
+
+<Frame>
+  <img src="/images/legacy/45450db9-7808-4927-abbe-66fd471ff7cf/72fdc20c-725a-4769-87b3-446427cce099.avif" alt="Linh kiện máy ảnh" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/348abb3d-3f69-4f1e-84f2-9a3dd573bf81/45c2bac2-d3f2-4a47-81f4-3757543f069b.avif" alt="Linh kiện máy ảnh 2" />
+</Frame>
+
+| Số | Thành phần |
+| --- | --- |
+| 1 | Camera hồng ngoại |
+| 2 | Máy ảnh RGB |
+| 3 | Máy chiếu ánh sáng có cấu trúc |
+| 4 | Cáp nguồn |
+| 5 | Ethernet |
+
+* * *
+
+## 4. Hướng dẫn tích hợp camera
+
+### 4.1 Trường nhìn của camera
+
+<Frame>
+  <img src="/images/legacy/face6745-edf1-4df2-b756-02f8d65eff58/f31b095b-1d37-4be4-9633-87fef66f4ee6.avif" alt="Trường nhìn của camera" />
+</Frame>
+
+### 4.2 Gốc tọa độ camera
+
+1. Gốc trục X thẳng hàng với đường tâm trục X của sản phẩm.
+
+2. Điểm gốc của trục Y thẳng hàng với đường tâm trục Y của sản phẩm.
+
+3. Gốc trục Z nằm ở mặt trước của máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/a3ee9173-0ca3-42bd-9750-899a5062dbc7/f62d395a-966f-4eec-911f-b728dfdf04b0.avif" alt="Nguồn gốc tọa độ camera" />
+</Frame>
+
+### 4.3 Kích thước camera
+
+<Frame>
+  <img src="/images/legacy/6288c91a-62ab-4b00-aae6-87c1768d64df/ab3d50eb-d654-417a-a702-ba8ddcdea070.avif" alt="Kích thước máy ảnh" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5acd27ac-becd-4f6b-8cc4-89c82ceecfbb/328cbea7-de84-48c3-b225-74feca5519c1.avif" alt="Kích thước camera 2" />
+</Frame>
+
+* * *
+
+## 5. Môi trường và độ tin cậy
+
+| Mục | ㅤ | Đặc điểm kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | 0oC-- 40oC |
+| ㅤ | Độ ẩm | Độ ẩm tương đối: 0%～95%RH, không ngưng tụ |
+| ㅤ | Độ sáng | 0KLUX--30KLUX |
+| Môi trường lưu trữ | Nhiệt độ | -20oC--85oC |
+| ㅤ | Độ ẩm | Độ ẩm tương đối: 10%～95%RH, không ngưng tụ |
+| Nhiệt độ tăng trong quá trình hoạt động bình thường | ㅤ | Tăng nhiệt độ vỏ &lt;20oC |
+| Đánh giá ESD | ㅤ | Xả tiếp xúc ±4KV, xả khí ±8KV |
+| Đánh giá RE | ㅤ | Tuân thủ GB 9254 LỚP A |
+| Tuổi thọ sử dụng | ㅤ | Hơn 3 năm |
+| Chứng nhận môi trường | ㅤ | RoHS |
+| An toàn tia laser | ㅤ | Lớp 1 |
+
+* * *
+
+## 6. Biện pháp phòng ngừa
+
+### 6.1 Cấp độ an toàn laser
+
+<Frame>
+  <img src="/images/legacy/2177acfb-be60-4020-9cc6-7c2d5e81c1a4/7a95289d-a785-412d-9502-93f484d3bc68.avif" alt="Lớp an toàn laser" />
+</Frame>
+
+* * *
+
+## 7. Câu hỏi thường gặp
+
+| Số | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Máy ảnh không phản hồi khi bạn cố mở nó | Kiểm tra xem tường lửa có bị tắt hay không. Bạn phải vô hiệu hóa tường lửa. |
+| 2 | Máy chủ phát hiện nhiều địa chỉ IP | Máy ảnh có được địa chỉ IP đã được sử dụng trên mạng LAN. Chọn địa chỉ IP cần thiết để mở camera. |
+| 3 | Dữ liệu camera không ổn định sau khi mở camera | Sử dụng cáp Gigabit Ethernet. Dữ liệu ban đầu có thể không ổn định với cáp Ethernet 100 Mbps. |
+| 4 | Vị trí cài đặt phần mềm | Việc cài đặt phần mềm trên ổ C mặc định có thể yêu cầu cài đặt quyền. |

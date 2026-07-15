@@ -1,0 +1,1152 @@
+---
+title: "Implementar algoritmos de detección de MRDVS"
+description: "Instale, configure, calibre y utilice los algoritmos de detección disponibles en las cámaras MRDVS."
+---
+Manual del usuario de la función de detección del algoritmo MRDVS
+
+## 1. Introducción
+
+Este artículo presenta principalmente la implementación y el uso de los algoritmos de aplicación Meyer Micro Vision.
+
+## 2. Composición del sistema de detección
+
+El sistema incluye una cámara, un software de computadora host de algoritmos y una computadora industrial.
+
+## 3. Implementación del hardware de la cámara
+
+### Usar tipo de cámara
+
+|  |  |
+| --- | --- |
+| Tipo de cámara | Cámara 3D S10Pro |
+| Manual de usuario de la cámara ↓ [Cámara ToF S10Pro](/es/products/s-series/s10-overview) | |
+
+#### Compatibilidad con algoritmos de cámara
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+|  | M4pro | T10 | S10 Pro |
+| Detección humana | √ | | |
+| Detección de ubicación de almacenamiento | | | √ |
+| Detección de volumen | | √ | √ |
+
+### Radar
+
+|  |  |
+| --- | --- |
+| Tipo de radar | mediados de 360 ​​|
+
+### Método de instalación de la cámara
+
+La cámara debe fijarse con un soporte. Puede utilizar el método de instalación y el soporte de la cámara que se muestran en la siguiente figura para instalar la cámara. La siguiente figura muestra el diagrama de instalación.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ed7d4ff9-ebc7-456e-9382-c1bbad17757e.avif" alt="Ilustraciones relacionadas con los métodos de instalación de la cámara." />
+</Frame>
+
+Diagrama de instalación
+
+La función de detección de personas generalmente se instala en un ángulo inclinado (menos de 30°) u horizontal.
+
+### Conexión de cámara
+
+1. La cámara funciona con 24 V y se conecta a través de un cable de red de Categoría 6e/Categoría 7. Después de instalar e implementar la cámara, abra el software de la computadora host de detección de ubicación del almacén a través de una computadora portátil para calibrar los parámetros externos de la cámara y configurar el rango de detección. El algoritmo se ejecuta dentro de la cámara en tiempo real.
+
+2. Al implementar varias cámaras, es necesario conectarlas mediante un conmutador Gigabit. De acuerdo con la altura de instalación planificada en el CAD, la cámara de visión 3D se instala en una posición fija a través del soporte de montaje para garantizar que la cámara esté firmemente fijada. Una vez instalada la cámara, conéctela a la fuente de alimentación CC regulada de 24 V y utilice el cable de red correspondiente para conectarla al interruptor o control principal.
+
+3. Una vez completada la preparación, coloque los productos en el almacén dentro del campo de visión de la cámara y continúe con la implementación del software.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5be1e0db-e949-477f-bfb4-5c89a0debd78.avif" alt="Editar" />
+</Frame>
+
+### Configuración de red de la cámara
+
+1. Tome el sistema Win10 como ejemplo, haga doble clic en el panel de control
+
+2. Después de ingresar al panel de control, haga clic en "**Ver estado y tareas de la red**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d0ad7fd5-7f9c-43fb-8c8e-fb45f83fcf98.avif" alt="Ilustraciones relacionadas con la configuración de la red de cámaras." />
+</Frame>
+
+3. Ingrese a la interfaz del Centro de redes y recursos compartidos y haga clic en "**Cambiar configuración del adaptador**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c7f569d-7ce6-4c16-a926-03cfd5e42d13.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 2" />
+</Frame>
+
+4. Ingrese a la interfaz de conexión de red, haga doble clic con el mouse para seleccionar la Ethernet a la que está conectada la cámara.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a8ff254-6ffc-4a84-9cbe-19c42f984c93.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 3" />
+</Frame>
+
+5. Verifique el estado de Ethernet (se recomienda usar un puerto de red Gigabit) y haga clic en el botón "**Propiedades**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b59f551e-1741-4f24-b4ff-8b77bbf16981.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 4" />
+</Frame>
+
+6. Ingrese a la interfaz de propiedades de Ethernet, busque "**Protocolo de Internet versión 4 (TCP/IPv4)**" y haga doble clic para abrirlo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b166daac-7f5c-45c6-9595-2861ff9f2633.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 5" />
+</Frame>
+
+7. Ingrese a la interfaz del Protocolo de Internet versión 4 (TCP/IPv4), seleccione "**Usar la siguiente dirección IP**" para escribir la dirección IP, la máscara de subred y la puerta de enlace predeterminada.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1798a3b3-d233-4cd1-90a8-77416cf0160f.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 6" />
+</Frame>
+
+8. Configuración de dirección IP: 192.168.100.xxx Máscara de subred: 255.255.255.0 Puerta de enlace predeterminada: 192.168.100.1. Configure la IP como se muestra a continuación. Una vez completada la configuración, haga clic en el botón "Aceptar".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ec8d1e2-5747-4f79-8976-d3bf0256e8d1.avif" alt="Ilustraciones relacionadas con la configuración de red de la cámara 7" />
+</Frame>
+
+9. Después de hacer clic en el botón Aceptar, volverá automáticamente a la interfaz anterior. Haga clic en "**Aceptar**" nuevamente para completar la configuración de la red.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a22760b-a0a6-44d1-b3ce-5e73bddcac75.avif" alt="Ilustraciones relacionadas con la configuración de red de cámaras 8" />
+</Frame>
+
+### Confirmación de cierre del firewall
+
+1. Una vez que la cámara esté instalada e implementada de manera fija, es necesario apagar el firewall de la computadora.
+
+2. Tomando el sistema Win10 como ejemplo, haga doble clic en [**Panel de control**] en el escritorio y haga clic en [**Sistema y seguridad**] después de ingresar.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3354b940-7e03-4c38-a151-af6d75808642.avif" alt="Configuración del cortafuegos" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2d360745-c9b5-48a6-8139-e6cc2f673a9d.avif" alt="Configuración del cortafuegos 2" /> |
+
+1. Haga clic en el botón [**Firewall de Windows Defender**] para ingresar a la página del firewall.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0cff2eb6-5667-497b-bd7b-780f02c8ad68.avif" alt="Icono relacionado con la confirmación de apagado del firewall 3" />
+</Frame>
+
+1. Haga clic en el botón [**Activar o desactivar el Firewall de Windows Defender**] para ingresar a la página de activación/desactivación del firewall.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1a7157a-348a-48ea-b574-a175a2a39356.avif" alt="Icono relacionado con la confirmación de apagado del firewall 4" />
+</Frame>
+
+1. Seleccione [**Desactivar Firewall de Windows Defender**] para redes públicas y privadas y haga clic en el botón [**Confirmar**] para desactivar el firewall. q
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1dd2137-e249-4193-a4ee-3e095b5171f7.avif" alt="Icono relacionado con la confirmación de apagado del firewall 5" />
+</Frame>
+
+## 4. Guía de instalación del software de la cámara
+
+### Proceso de instalación del software
+
+- Cuando utilice el software por primera vez, puede seguir el siguiente proceso para completar la operación.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c8922d3a-2b74-4582-9b3d-119ba6be460d.avif" alt="Imagen 2" />
+</Frame>
+
+### Requisitos del entorno operativo del software de la computadora host del algoritmo
+
+Se recomienda ejecutar el equipo informático superior para la detección de la ubicación del almacén para cumplir con los requisitos.
+
+|  |  |
+| --- | --- |
+| Sistema operativo | Windows10 y superior |
+| CPU | Intel® Core™ i5 recomendado de 7.ª generación y superior |
+| Memoria | 8G y superior |
+| GPU | Pantalla Intel® UHD Graphics/core o superior |
+
+### Instalar el software del host de la cámara
+
+1. Descargue el software del host de la cámara desde la base de conocimientos de MRDVS: [Descarga de programas](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Descarga de programas")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30f8b131-71f1-468d-bbe5-20ee85bf684b.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara" />
+</Frame>
+
+1. Haga doble clic para instalar el software de la computadora host Lanxin-MRDVS. La computadora host debe instalarse fuera de la unidad c.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8dcb4047-56e6-40a1-8b31-96a7222e187d.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 2" />
+</Frame>
+
+1. Después de seleccionar el idioma a usar, haga clic en [**Aceptar**], seleccione un directorio de instalación que no sea la unidad C y haga clic en [**Siguiente**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f68ebcb-d10d-4601-9cb4-aa816f1e1efc.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 3" />
+</Frame>
+
+1. Marque [**Crear acceso directo en el escritorio**] y haga clic en [**Siguiente**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/35e66c38-ebb9-47d9-a0f5-1c2bcad9a357.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 4" />
+</Frame>
+
+1. Haga clic en el botón [**Instalar**] para comenzar a instalar el software.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c659d00-a437-4e7a-b17f-e90c008c78d0.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 5" />
+</Frame>
+
+1. Una vez completada la instalación, puede ejecutar el software del host de la cámara.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/62cfa35a-c531-43e9-a9f8-56b8bdf06649.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 6" />
+</Frame>
+
+### Instalar el software del ordenador host del algoritmo
+
+1. Copie el software de la computadora host del algoritmo obtenido en la computadora host de la cámara \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cb41b49-454e-4400-8181-44dbc75bdd48.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host del algoritmo." />
+</Frame>
+
+1. Al reemplazar, seleccione [**Reemplazar archivos en destino**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/276f9cf3-d080-4af9-800c-871e99488471.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host del algoritmo 2" />
+</Frame>
+
+1. Haga doble clic para abrir el software y ejecutarlo.
+
+2. En la barra de lista de dispositivos de la izquierda, el estado de la cámara es amarillo, lo que significa que la cámara no ha iniciado el algoritmo de detección.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/61ad5b70-d5ee-43b1-86fa-d63010b7d237.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host del algoritmo 3" />
+</Frame>
+
+### Actualización del software del algoritmo para PC
+
+Para actualizar el software del ordenador host del algoritmo, sólo es necesario reemplazar el archivo "**.exe**".
+
+### Actualización del algoritmo
+
+Nota: Antes de actualizar el firmware del algoritmo, debe asegurarse de que el firmware de la cámara sea la versión MDS.
+
+#### Computadora host de la cámara
+
+1. Para actualizar el algoritmo de la cámara, debe abrir el software del host de la cámara y hacer doble clic en [**LxCameraViewer.exe**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7aebe7e0-a511-4443-bcc4-23df3ece2209.avif" alt="Ilustraciones relacionadas con el ordenador host de la cámara" />
+</Frame>
+
+1. Haga clic en el botón [**Abrir**] para ver la imagen de la cámara.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/74ff1e45-932d-4b06-b1f3-9034f41bcbb6.avif" alt="Ilustraciones relacionadas con el ordenador host de la cámara 2" />
+</Frame>
+
+1. Haga clic en Herramientas básicas→Configuración de funciones→[**Actualización de firmware**] para actualizar el algoritmo de detección. (Solicite al personal de soporte técnico para obtener el algoritmo)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1d2f22cd-74da-44b4-909a-fed4c986507e.avif" alt="Ilustraciones relacionadas con la computadora host de la cámara 3" />
+</Frame>
+
+1. Después de hacer clic en el botón [**Ejecutar**], seleccione "Algoritmo de detección" y haga clic en el botón [**Abrir**] para comenzar a parpadear el algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Ilustraciones relacionadas con la computadora host de la cámara 4" />
+</Frame>
+
+#### Computadora host del algoritmo
+
+1. Utilice el software del ordenador host del algoritmo para actualizar el firmware y deberá seleccionar una cámara. Primero haga clic en la cámara que necesita actualizarse en la lista de dispositivos de la izquierda y luego haga clic en [**Actualizar firmware**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3d76226-6572-4c82-8754-8bd0bf34a713.avif" alt="wwwww" />
+</Frame>
+
+1. Seleccione "Algoritmo de detección" y haga clic en el botón [**Abrir**] para comenzar a parpadear el algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Diagrama 2 relacionado con la computadora host del algoritmo" />
+</Frame>
+
+#### Resultados de actualización
+
+1. Durante el proceso de actualización del algoritmo, la cámara se reiniciará y la ID de la cámara en la lista de dispositivos de la izquierda desaparecerá. Después de que vuelva a aparecer, significa que el parpadeo se realizó correctamente.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e847d737-d14d-4e55-b756-1377aa6ef832.avif" alt="Ilustraciones relacionadas con los resultados de la actualización" />
+</Frame>
+
+1. Una vez completada la actualización, el fondo de la cámara correspondiente se muestra en verde en el software del ordenador host del algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b43d8cd7-58e6-467f-abcc-ff8c9cc1af4e.avif" alt="Icono relacionado con el resultado de actualización 2" />
+</Frame>
+
+## 5. Interfaz del software del ordenador host del algoritmo
+
+### Inicio del programa informático host del algoritmo
+
+1. Haga doble clic en el programa [**LxApplicationViewer.exe**] para iniciar el software del ordenador host del algoritmo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4e40bb9a-d669-45ad-bf6a-557496333fda.avif" alt="Administrador" />
+</Frame>
+
+Lista de dispositivos. El icono verde indica que la cámara está conectada normalmente. Haga clic para cambiar a la perspectiva de la cámara correspondiente.
+
+Lista de información. Esta lista mostrará todos los registros de operaciones relacionados con la cámara y sus resultados.
+
+Cambio de modo de visualización. Al seleccionar el modo RGB se mostrará una imagen 2D, mientras que al seleccionar el modo de nube de puntos se mostrará una nube de puntos 3D.
+
+Menú de funciones. En este menú, puede cambiar el algoritmo de visualización actual, ajustar la configuración básica del algoritmo, configurar los parámetros de la cámara o cambiar el idioma de la interfaz.
+
+Funciones básicas. Se puede cambiar para administrar los parámetros del algoritmo; los usuarios normales solo tienen permisos de visualización. Aquí diferentes algoritmos mostrarán parámetros y opciones de control adicionales. Además, los administradores pueden cambiar el algoritmo que se está ejecutando actualmente.
+
+Funcionamiento de la cámara. Puede realizar algunas operaciones directamente en la cámara.
+
+1. El usuario actual selecciona el administrador y no necesita ingresar una contraseña. Haga clic en Confirmar directamente para ingresar al modo de administrador (los parámetros del algoritmo no se pueden configurar en el modo de usuario).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/34efc169-ddf1-4544-bf3a-43f7e249e6f4.avif" alt="Captura de pantalla 2025-03-04 111733" />
+</Frame>
+
+### Herramientas básicas
+
+Las herramientas básicas incluyen principalmente cambio de usuario, terreno ideal, terreno de parámetros externos, caché de visualización, visualización de algoritmos, almacenamiento de imágenes exportadas y reproducción histórica.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7480b2d4-a30a-4a88-b067-f004930c84f8.avif" alt="2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Herramientas básicas | Significado funcional |
+| Cambio de usuario | Cambiar permisos, permisos de usuario: ver solo los resultados de la detección. Derechos de administrador: puede configurar la cámara, los parámetros del algoritmo de detección, etc. |
+| Terreno ideal | El suelo se refiere a la línea horizontal y se puede apagar. |
+| Tierra de parámetros externos | El plano horizontal en el que se calibran los parámetros externos de la cámara. Se puede apagar. |
+| Mostrar caché | No se requiere modificación. |
+| Algoritmo de visualización | El algoritmo utilizado actualmente. |
+| Exportar imágenes almacenadas | Exportar imágenes almacenadas. |
+| Reproducción del historial | Ver registros de imágenes RGB y TOF. |
+| Cambio de algoritmo de aplicación | Seleccione el algoritmo a utilizar. Los administradores comunes pueden ejecutar como máximo un algoritmo al mismo tiempo. Después de seleccionar, haga clic en Guardar y emitir |
+| Visualización del resultado de la detección | Muestra los resultados de detección del algoritmo mostrado actualmente. |
+
+### Idioma
+
+Cambia entre chino e inglés.
+
+### Barra de estado
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/50568f80-85ac-45cc-8aa6-330262048ac9.avif" alt="25909893521\_171648620291\_Captura de pantalla 2025-03-05 134432" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Barra de estado | Significado funcional |
+| RGB | Marque para ver imágenes RGB |
+| Nube de puntos | Después de verificar, vea la imagen de la nube de puntos |
+| Algoritmo de parada | Después de hacer clic para detener el algoritmo, éste no se iniciará hasta la próxima vez que se encienda la cámara. |
+| Actualizar firmware | Realice la actualización del firmware del algoritmo. |
+| Reiniciar cámara | Reinicie la cámara. |
+
+### Reproducir y ver
+
+Cada vez que cambia el estado, se guarda un cuadro de datos, que se guarda como un cuadro de imagen RGB y datos de nube de puntos en el momento del cambio. La reproducción entre diferentes algoritmos no es interoperable. El estándar de tiempo es el tiempo del sistema interno de la cámara. Por favor, no juzgues según la hora del sistema informático.
+
+Haga clic para ver la reproducción. El lado izquierdo de la ventana emergente muestra las imágenes de reproducción. Haga clic en cualquier elemento para abrir los datos de reproducción de la fecha correspondiente. Puede ver imágenes RGB o datos TOF.
+
+**![Reproducción RGB](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0537bd17-ebb2-44f8-819d-1ab86f6c5db0.avif)![TOF de reproducción](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4fe3d671-26ad-4b45-9bb6-36e13bf879dd.avif)**
+
+### Funciones globales
+
+Asegúrese de que el algoritmo se haya activado en la cámara y de que la cámara falle después de configurar los parámetros a través de la computadora host de la cámara en condiciones de uso normales. La función de actualización automática debe habilitarse en las siguientes situaciones.
+
+(1) Si el fondo de la cámara correspondiente en la lista de dispositivos se muestra en amarillo, esto indica que el algoritmo encuentra un bloqueo durante el proceso de adquisición de imágenes.
+
+(2) Si el fondo de la cámara correspondiente en la lista de dispositivos es verde, pero la imagen no se actualiza, esto también significa que el algoritmo está bloqueado en el proceso de adquisición de imágenes. Aunque la comunicación es normal, el sistema continúa enviando datos almacenados en caché.
+
+## 6. Calibración de parámetros externos de la cámara
+
+### Configuración de la cámara
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9000666e-1285-403f-941b-5cbcfd74305c.avif" alt="kappframework-SImIQI(1)(1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración de la cámara | Significado de la función |
+| Nombre de la cámara | Modifica el nombre de la cámara actual. Cuando hay varias cámaras, puedes juzgar por el nombre de la cámara. |
+| Modo simulación | Uso interno, los usuarios no necesitan abrirlo. |
+| Modo de ahorro de imagen | Active el guardado algorítmico de imágenes para almacenar datos de imágenes dentro de la cámara. |
+| Modo de captura | El modo de captura se divide en MDS y SDK. El uso de MDS no ocupará los permisos de la cámara y podrá abrir la computadora host de la cámara normalmente. El uso del SDK ocupará los permisos de la cámara y la computadora host no se podrá abrir cuando se ejecute el algoritmo. |
+| x | cámara calibrada posición x |
+| y | La posición y de la calibración de la cámara |
+| z | Cámara calibrada altura z desde el suelo |
+| rollo | ángulo de calibración de la cámara |
+| tono | ángulo de calibración de la cámara |
+| guiñada | ángulo de calibración de la cámara |
+| Terreno ideal | Déjalo como predeterminado. |
+| Guardar y enviar | Una vez completada la calibración de los parámetros externos, haga clic en el botón [Guardar y enviar] para guardar; de lo contrario, los parámetros no tendrán efecto |
+| Leer configuración desde la cámara | Leer los parámetros de configuración actuales de la cámara |
+| Calibración de parámetros externos | Calibre la altura de la cámara desde el suelo, el giro de la cámara, los ángulos de inclinación y orientación. |
+
+### Instalación vertical de calibración de parámetros externos.
+
+1. Haga clic en la configuración de la cámara y cambie a la interfaz de calibración de parámetros. Antes de realizar la calibración de parámetros externos, asegúrese de que x, y, z, balanceo, cabeceo y guiñada sean 0. Si no son 0, debe devolver todos los parámetros a 0 y hacer clic en el botón [**Guardar y enviar**]. Una vez que los parámetros se hayan guardado correctamente, vuelva a calibrar los parámetros externos.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/528da252-dee3-4e31-9d54-07c406b80e8e.avif" alt="Ilustraciones relacionadas con la instalación vertical de calibración de parámetros externos" />
+</Frame>
+
+1. Después de confirmar que todos los parámetros son 0, haga clic en el botón [**Calibración de parámetros externos**]. Una vez que la calibración sea exitosa, el software mostrará un cuadro emergente. Puede ver los parámetros de la cámara calibrada en la columna de parámetros de la derecha. Diferentes algoritmos tendrán esquemas de alineación correspondientes.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4795bbe1-801c-4fa8-82f8-3a9c5e461f95.avif" alt="Ilustraciones relacionadas con la instalación vertical de la calibración de parámetros externos 2" />
+</Frame>
+
+### Calibración de parámetros externos de instalación horizontal
+
+Haga clic en configuración de la cámara para cambiar a la interfaz de calibración de parámetros. Al instalar horizontalmente, debe alinear manualmente la nube de puntos del terreno con el sistema de coordenadas. Generalmente, sólo necesitas ajustar el rollo y el tamaño Z. Otros están configurados en 0 de forma predeterminada. Al mismo tiempo, asegúrese de que el eje X (rojo) y el eje Y (verde) coincidan con la nube de puntos del suelo, y que el eje Z (azul) sea perpendicular a la nube de puntos del suelo y mire hacia arriba.
+
+Después de completar el ajuste, haga clic en Guardar y enviar. ![3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/549297ef-b224-4d08-a1fb-633301a4ed18.avif)![2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/45ad1ad0-f171-463c-b789-790f4cbec1b2.avif)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/abfab570-cb25-4850-acd9-924bd891853c.avif" alt="1" />
+</Frame>
+
+## 7. Significado de los parámetros del algoritmo
+
+### Detección del cuerpo humano
+
+#### Configuración global de detección humana.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Ilustraciones relacionadas con la configuración global de detección humana." />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración global de detección humana | Significado funcional |
+| Número de versión del algoritmo | Información de la versión actual del algoritmo. |
+| Frecuencia de detección | Frecuencia de detección del algoritmo. Es decir, cuántos ms actualizar la imagen + datos del resultado. |
+| Filtrado en el dominio del tiempo | Parámetro de filtro: cuando el valor del parámetro se establece en 3, el sistema requiere que los resultados de la detección de tres veces consecutivas sean completamente consistentes antes de que se consideren datos válidos. |
+| Tamaño del grano | La corrosión expande el tamaño del núcleo en una imagen 2D. Los kernels grandes reducirán significativamente el objetivo o expandirán el fondo, mientras que los kernels pequeños retendrán más detalles. Cambie según sea necesario. |
+| Umbral de distancia | Se utiliza para determinar si dos puntos de datos son "similares" o "pertenecen a la misma categoría". Si el resultado es inferior al umbral, se considera una coincidencia o un tipo similar. |
+| Número mínimo de puntos | El número mínimo de nubes de puntos necesarias para la agrupación semántica. |
+| Número mínimo de puntos no semántico | Número mínimo no semántico de nubes de puntos necesarias para la agrupación. |
+| Tamaño del dominio | Determina qué puntos se consideran "puntos vecinos", lo que afecta directamente la granularidad y precisión de los resultados de la agrupación. Modificar según sea necesario. |
+| Detección de rotación | Según la posición de instalación de la cámara, el logotipo frontal de 0° está en la parte inferior; ajústelo en consecuencia. |
+
+#### Configuración del área de detección humana
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30812d41-81b0-48aa-8e5b-87b2d0c273b4.avif" alt="25909893521\_171648566990\_Parámetros de configuración de detección humana (1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración del área de detección humana | Significado funcional |
+| Agregar área | Agregar área de detección humana. |
+| Eliminar área | Eliminar el área de detección humana. |
+| Cuadro actual | Frame selecciona el área de detección humana actual. |
+| Mínimo X | El valor mínimo en la dirección X del marco de detección humana. |
+| Máximo X | El valor máximo en la dirección X del marco de detección humana. |
+| Mínimo Y | El valor mínimo en la dirección Y del marco de detección humana. |
+| Máximo Y | El valor máximo en la dirección Y del marco de detección humana. |
+| Z mínima | El valor mínimo en la dirección Z del marco de detección humana. |
+| Máximo Z | El valor máximo en la dirección Z del marco de detección humana. |
+| identificación | El nombre del marco de detección humana. Al dibujar varias áreas de detección humana, se pueden distinguir modificando los nombres de ID. |
+| Arrastre el mouse para ajustar el área | En el área de ajuste, presione y mantenga presionado el botón izquierdo para arrastrar el área de detección humana y trasladarla en las direcciones x e y. Haga clic derecho y mantenga presionado para arrastrar el área de detección humana y moverla en la dirección z. |
+
+### Detección de ubicación de almacenamiento
+
+#### Configuración global de detección de ubicación
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ab2707-a23e-4f52-9a27-32a5d1de9579.avif" alt="Ilustraciones relacionadas con la configuración global de detección de ubicación de almacenamiento" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración global de detección de ubicación de almacenamiento | Significado funcional |
+| Número de versión del algoritmo | Información de la versión actual del algoritmo. |
+| Filtrado de IA | Admite semántica y puede segmentar personas sin detección. (Aún no está abierto) |
+| Frecuencia de detección | Frecuencia de detección del algoritmo. |
+| Ángulo de alineación | El ángulo de desplazamiento máximo permitido para un objeto en relación con la ubicación (válido cuando el efecto de alineación está activado). |
+| Efecto de alineación | Después de activar el efecto de alineación, se detectará el desplazamiento angular del objeto actual y si excede el área de detección dibujada. El objeto detectado tendrá un cuadro de volumen amarillo. |
+| Filtrado en el dominio del tiempo | Parámetro de filtro: cuando el valor del parámetro se establece en 3, el sistema requiere que los resultados de la detección de tres veces consecutivas sean completamente consistentes antes de que se consideren datos válidos. |
+| Número mínimo de puntos | Cuando la nube de puntos del objeto es mayor que el número mínimo de puntos, se considera que existe un objeto. |
+
+#### Configuración del área de detección de ubicación de almacenamiento (2D RGB)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/54021f59-b55a-4174-b5bb-3efbdb872c60.avif" alt="Parámetros de creación de ubicaciones 2D" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración del área de detección de ubicación de almacenamiento | Significado funcional |
+| Agregar una ubicación | Agregue un área de detección de ubicación. |
+| Eliminar ubicación | Eliminar el área de detección de ubicación. |
+| Cuadro actual | Encuadre el área de detección de ubicación actual. |
+| Mínimo X | El valor mínimo en la dirección X del marco de detección de ubicación. (unidad de píxel) |
+| Máximo X | El valor máximo en la dirección X del marco de detección de ubicación. (unidad de píxel) |
+| Mínimo Y | Valor mínimo en la dirección Y del marco de detección de ubicación. (unidad de píxel) |
+| Máximo Y | El valor máximo en la dirección Y del marco de detección de ubicación. (unidad de píxel) |
+| identificación | El nombre del cuadro de detección de ubicación. Al dibujar varias áreas de detección de ubicaciones de almacenamiento, puede distinguirlas modificando los nombres de ID. |
+
+#### Configuración del área de detección de ubicación de almacenamiento (nube de puntos 3D)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef7ad2be-87a8-4336-a4f8-870e78fef268.avif" alt="Ilustraciones relacionadas con la configuración del área de detección de la ubicación de almacenamiento (nube de puntos 3D)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración del área de detección de ubicación de almacenamiento | Significado funcional |
+| Agregar una ubicación | Agregue un área de detección de ubicación. |
+| Eliminar ubicación | Eliminar el área de detección de ubicación. |
+| Cuadro actual | Encuadre el área de detección de ubicación actual. |
+| Mínimo X | El valor mínimo en la dirección X del marco de detección de ubicación. |
+| Máximo X | El valor máximo en la dirección X del marco de detección de ubicación. |
+| Mínimo Y | Valor mínimo en la dirección Y del marco de detección de ubicación. |
+| Máximo Y | El valor máximo en la dirección Y del marco de detección de ubicación. |
+| Z mínima | El valor mínimo en la dirección Z del marco de detección de ubicación. |
+| Máximo Z | El valor máximo en la dirección Z del marco de detección de ubicación de almacenamiento. |
+| identificación | El nombre del cuadro de detección de ubicación. Al dibujar varias áreas de detección de ubicaciones de almacenamiento, puede distinguirlas modificando los nombres de ID. |
+| Arrastre el mouse para ajustar el área | En el área de ajuste, presione y mantenga presionado el botón izquierdo para arrastrar el área de detección de ubicación y trasladarla en las direcciones x e y. Haga clic derecho y mantenga presionado para arrastrar el área de detección de ubicación y moverla en la dirección z. |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ffc444e5-62c6-4098-a750-9be912ee5023.avif" alt="Ilustraciones relacionadas con la configuración del área de detección de ubicación de almacenamiento (nube de puntos 3D) 2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Función avanzada de detección de ubicación: copia del marco de ubicación | Significado funcional |
+| Copiar fotograma actual | Se puede copiar el área de detección de ubicación actualmente seleccionada. |
+| Lo que necesita saber sobre copiar y desplazar | Consejos para copiar y desplazar contenido. |
+| Dirección | La dirección del área de detección de ubicación de copia, hay tres direcciones: X, Y y Z. |
+| Espaciado | La distancia entre el área de detección de ubicación y el área de copia. |
+| Cantidad | La cantidad del área de detección de ubicación de copia. |
+| Ejecutar | Después de hacer clic en el botón Ejecutar, copie varias ubicaciones de inspección con el mismo espacio. |
+
+|  |  |
+| --- | --- |
+| Función avanzada de detección de ubicación de almacenamiento - Calibración de código QR | Significado funcional |
+| Lo que necesitas saber sobre la calibración del Código QR | Consejos sobre el contenido de calibración del código QR. |
+| X | Ancho de ubicación. |
+| Y | Longitud de la ubicación. |
+| Z_MIN | La profundidad mínima de la ubicación. |
+| Z_MAX | La posición de detección más alta del almacén. |
+| Calibración | Haga clic en el botón de calibración para calibrar la ubicación del almacén para la verificación del código QR. |
+
+### Detección de volumen
+
+#### Configuración global de detección de volumen
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/85a006a7-b982-48a6-a38a-e0c6029c1629.avif" alt="Ilustraciones relacionadas con la configuración global de la detección de volumen." />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración global de detección de volumen | Significado funcional |
+| Número de versión del algoritmo | Información de la versión actual del algoritmo. |
+| Modo de disparo | Botón de interruptor de gatillo. Después de activar el modo de activación, haga clic en el botón "Guardar y enviar" para activarlo correctamente. |
+| Detección ascendente | Detección inversa del sistema de coordenadas de la cámara. |
+| Frecuencia de detección | Con qué frecuencia detecta el algoritmo. Es decir, cuántos ms actualizar la imagen + datos del resultado. |
+| Detectar distancia del plano | Confirme la posición de la superficie inferior del objeto. Unidad: mm. |
+| Umbral de número de vecinos | Filtrar parámetros, no se requieren cambios. El valor predeterminado es suficiente. |
+| Umbral de distancia del vecindario | Parámetros de filtrado, no es necesario cambiarlos, los valores predeterminados son suficientes. |
+| Umbral de filtro de vector normal | Parámetro de filtro de filete de borde de objeto, utilizado para filtrar el plano de inclinación de la nube de puntos. Si el volumen medido es menor que el valor real, el valor se puede ajustar a un valor mayor. Se recomienda 60 (generalmente no se requiere ajuste). |
+| Umbral de distancia vectorial normal | Parámetro de filtro, valor recomendado 20-30 (compatible con la mayoría de los objetos detectados). |
+| Número mínimo de puntos | Cuando la nube de puntos del objeto es mayor que el número mínimo de puntos, se considera que existe un objeto. |
+| Mínimo X | La longitud mínima del objeto. Si se mide menos de este valor, el algoritmo filtrará el objeto. Unidad: mm. |
+| Mínimo Y | El ancho mínimo del objeto. Si se mide menos de este valor, el algoritmo filtrará el objeto. Unidad: mm. |
+| Z mínima | La altura mínima del objeto. Si se mide menos de este valor, el algoritmo filtrará el objeto. Unidad: mm. |
+
+#### Configuración del área de detección de volumen
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/60bf86ae-e1e2-45f0-b30a-b260d8aff036.avif" alt="Ilustración relacionada con la configuración del área de detección de volumen" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Configuración del área de detección de volumen | Significado funcional |
+| Mínimo X | Valor mínimo en la dirección X del marco de detección de volumen |
+| Máximo X | Valor máximo en la dirección X del cuadro de detección de volumen |
+| Mínimo Y | Valor mínimo en la dirección Y del marco de detección de volumen |
+| Máximo Y | Valor máximo en la dirección Y del marco de detección de volumen |
+| Z mínima | Valor mínimo en la dirección Z del marco de detección de volumen |
+| Máximo Z | Valor máximo en la dirección Z del cuadro de detección de volumen |
+
+## 8. Proceso de implementación del algoritmo
+
+Nota: Después de abrir el software de la computadora host del algoritmo, cambie a la vista de nube de puntos, mueva el mouse al área de visualización de la imagen y deslice la rueda del mouse para mostrar los datos de la nube de puntos.
+
+### 8.1 Proceso de implementación de detección humana
+
+#### Detección del cuerpo humano: calibración de parámetros externos
+
+Para obtener más información, consulte 6.3 Calibración de parámetros externos para instalación horizontal.
+
+Una vez completada la calibración, asegúrese de que el eje X (flecha roja) y el eje Y (flecha verde) coincidan con la nube de puntos del terreno, y que el eje Z (flecha azul) sea perpendicular a la nube de puntos del terreno y apunte hacia arriba.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagrama de calibración de parámetros externos de ubicación de almacenamiento" />
+</Frame>
+
+#### Detección humana: configuración global
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Detección humana: iconos relacionados con la configuración global" />
+</Frame>
+
+1. Haga clic en Detección humana para ingresar la configuración de los parámetros, principalmente ajustar la detección de rotación global y dejar otros parámetros como predeterminados. La detección de rotación está relacionada con el ángulo de instalación de la cámara y la rotación de la cámara en el sentido de las agujas del reloj está limitada a 0°, 90°, 180° y 270°.
+
+2. Una vez completados los ajustes de configuración global, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+#### Detección humana: configuración de región
+
+1. Para configurar el rango de detección y ajustar la longitud y el ancho (xy) de la detección, se recomienda cambiar primero a las vistas superior e inferior. Las siguientes son las teclas de acceso directo para cada vista. ![Detección humana: ilustraciones relacionadas con la configuración regional](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif)
+
+2. Haga clic en el botón [**Agregar área de detección**]. En la configuración del área de detección, se agregará el número de áreas de detección y el nombre de identificación del área de detección. ![123](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d97865c8-086f-46d1-b41f-c3a63ed994ff.avif)
+
+3. Modificar el tamaño máximo del eje XYZ del área de detección creada puede confirmar directamente el tamaño de un área de detección. Como se muestra en la figura siguiente, se crea un área de detección de 1000\*1000\*2000 (unidad mm). ![Creación de área de detección humana.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1d33db3-1c36-4cb6-8235-7ecbb302fe0e.avif)
+
+1. Arrastre el área de detección creada al área de detección de destino arrastrando el mouse en el área de marcado.
+
+![El área de detección humana se mueve hacia adelante.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7e9db737-c5b8-4532-9235-33750006cfce.avif)![El área de detección humana retrocede](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3a1abc56-d148-47ef-8c05-c510f4ef981d.avif)
+
+5. Después de configurar el área de detección, haga clic en el botón [Guardar y enviar] para guardar los parámetros en la cámara y comenzar a detectar el área actual.
+
+#### Ver resultados de pruebas en humanos
+
+1. Después de configurar la calibración de parámetros externos, los parámetros de detección humana y el área de detección humana, haga clic en "**Herramientas básicas**" y pruebe caminando por el área de detección para ver los resultados. No hay nadie en el área de detección actual y no se detecta ningún objetivo en la barra de funciones básicas.
+
+![El frente no está en el marco de detección (nube de puntos)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d03e2dc2-9450-4b40-a0b3-bb443a97d9b2.avif)![El frente no está en el marco de detección (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a5cd29e-9132-46b6-8705-5d00994b9cc5.avif)
+
+1. Cuando alguien ingresa al área, el objetivo designado se detecta en la columna de visualización del estado de detección humana. En la parte inferior del software, se mostrará el resultado **Resultado**. 1 representa a alguien.
+
+![25909893521\_171673957420\_Persona delantera en el área de detección (nube de puntos)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ef7d562-faa1-40a1-9224-c71063f17c46.avif)![25909893521\_171674018465\_Persona delantera en el área de detección (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/508a3e95-86a5-4433-9396-bab02f0fba4b.avif)
+
+#### Ver registro de detección humana
+
+Cuando cambie el estado de detección del cuerpo humano, haga clic en la reproducción del historial y haga clic en el tiempo que desea ver a la izquierda para ver los cambios en los objetos dentro del campo de visión efectivo en ese momento. Consulte 5.5 reproducción para obtener más detalles.
+
+#### Determinación de los resultados de las pruebas del cuerpo humano.
+
+1. La regla de coincidencia detectará todos los objetos solo en el caso de profundidad, y en el caso de semántica más profundidad, solo se juzgarán los grupos cuya semántica sean personas.
+
+2. La siguiente tabla muestra los resultados de salida de Result en diferentes circunstancias.
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| | Nadie | Alguien | Hay obstáculos | Personas + obstáculos |
+| profundidad solamente | 0 | 2 | 2 | 2 |
+| Semántica más profundidad | 0 | 1 | 0 | 1 |
+
+### Proceso de implementación y detección de ubicación de almacenamiento
+
+#### Detección de ubicación de almacenamiento: calibración de parámetros externos
+
+Para obtener más información, consulte 6. Calibración de parámetros externos de la cámara.
+
+Después de la calibración, asegúrese de que el eje X (flecha roja) y el eje Y (flecha verde) coincidan con el suelo, y que el eje Z (flecha azul) sea perpendicular al suelo y hacia arriba.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagrama de calibración de parámetros externos de ubicación de almacenamiento" />
+</Frame>
+
+#### Detección de ubicación de almacenamiento: configuración global
+
+1. Haga clic en la detección de ubicación para cambiar a la página de configuración de parámetros de detección de ubicación. En la configuración global, debe prestar atención al ángulo de alineación, el efecto de alineación y la cantidad mínima de puntos.
+
+2. Si la colocación de artículos en la ubicación de almacenamiento debe seguir un ángulo específico, se recomienda activar el efecto de alineación y establecer el ángulo de alineación correspondiente. Una vez que el ángulo del objeto excede el umbral preestablecido, el sistema generará el resultado de detección correspondiente.
+
+|  |  |
+| --- | --- |
+| Estado | Resultado |
+| Ningún objeto | 0 |
+| Hay un objeto | 1 |
+| El ángulo de un objeto excede el ángulo de alineación (activa el efecto de alineación) | 2 |
+| Un objeto excede el rango de selección de ubicación (activa el efecto de alineación) | 3 |
+
+1. Al identificar mercancías pequeñas y medianas en un almacén, si existen dudas sobre la identificación o riesgos de error de cálculo, se recomienda utilizar el parámetro de "cantidad mínima" para la selección. Este parámetro especifica el umbral mínimo de número de nube de puntos necesario para reconocer un objeto. Cuando se detecta un objeto pero su número de nube de puntos no alcanza este umbral, el objeto será excluido de los resultados del reconocimiento.
+
+2. Una vez completados los ajustes de configuración global, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+#### Detección de ubicación de almacenamiento: configuración de ubicación de almacenamiento
+
+##### Configuración de ubicación del modo de nube de puntos
+
+1. Configure el rango de detección. Para ajustar la longitud y el ancho (xy) de la detección, se recomienda cambiar primero a la vista arriba y abajo. Las siguientes son las teclas de acceso directo para cada vista.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Ilustraciones relacionadas con la configuración de ubicación en modo de nube de puntos" />
+</Frame>
+
+1. Coloque el palé en el campo de visión y haga clic en el botón [**Agregar ubicación**]. En la configuración de ubicación, se agregará la cantidad de ubicaciones y el nombre de identificación de la ubicación. Podemos modificar el ID, que actualmente está modificado a "Prueba de Ubicación 1".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427a2154-d262-4c8c-acf6-92c912f3ada1.avif" alt="Ilustraciones relacionadas con la configuración de ubicación del modo de nube de puntos 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/47d79ced-617b-41cd-8a4b-aa086f289789.avif" alt="Ilustraciones relacionadas con la configuración de ubicación del modo de nube de puntos 3" />
+</Frame>
+
+1. Después de hacer clic en "Agregar ubicación de almacenamiento", cambie la nube de puntos a la vista inferior, haga clic en la imagen de la nube de puntos con el mouse y presione la tecla [X] en el teclado para dibujar el área de la ubicación de almacenamiento. Al presionar [X], el botón "Agregar ubicación de almacenamiento" se volverá gris, lo que significa que el área de la ubicación de almacenamiento se puede dibujar en el área de visualización de la imagen. (La tecla x en el teclado inicia la función de dibujar la ubicación del almacén y el número de sección de las ubicaciones del almacén. Presione una vez para comenzar a dibujar y presione una vez para finalizar el dibujo).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/846b9c20-37c5-4847-b10d-82b766443aab.avif" alt="Ilustraciones relacionadas con la configuración de ubicación del modo de nube de puntos 4" />
+</Frame>
+
+1. En este momento, puede ampliar la imagen deslizando la rueda, manteniendo presionado el botón izquierdo del mouse y dibujando un marco rectangular que envuelve toda la paleta. Suelte el botón izquierdo del mouse y el área de detección de ubicación actual se dibujará automáticamente. Presione el botón [X] en el teclado para cancelar el dibujo del área de detección. En este momento, puede confirmar el rango de tamaño del área ajustando el máximo y el mínimo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/997b81b0-165a-441c-b2e2-51ea8799ec7f.avif" alt="Ilustraciones relacionadas con la configuración de ubicación en el modo de nube de puntos 5" />
+</Frame>
+
+1. Utilice atajos de teclado para cambiar a la vista inferior, como se muestra en la siguiente figura. La flecha roja apunta a la dirección x del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, la dirección x es ligeramente mayor que el ancho de la bandeja.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/98bf259d-d459-4ed7-8a73-0448576f14bc.avif" alt="Ilustraciones relacionadas con la configuración de ubicación en el modo de nube de puntos 6" />
+</Frame>
+
+1. La flecha verde indica la dirección y del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, la dirección y es ligeramente mayor que la longitud del palet.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d8990bab-9614-4f97-8561-6ae7076c7b20.avif" alt="Ilustraciones relacionadas con la configuración de ubicación en el modo de nube de puntos 7" />
+</Frame>
+
+1. La flecha azul apunta a la dirección z del rango de detección. El valor se puede modificar desplazándose con la rueda del ratón o se puede introducir el valor directamente. Se recomienda que el valor z mínimo del rango de detección actual se establezca ligeramente por encima de la distancia del suelo para evitar que el suelo se detecte por error. Establezca la z máxima en 1500 y la altura máxima según el tamaño del objeto. Si la altura del objeto excede el valor z máximo, el algoritmo no lo detectará.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07ff02c7-8418-4913-a62e-3728b54839c5.avif" alt="Ilustraciones relacionadas con la configuración de ubicación del modo de nube de puntos 8" />
+</Frame>
+
+1. Después de configurar el área de detección, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara y luego comience a detectar si hay mercancías en la ubicación actual del almacén.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4263bf6-5cd5-40f1-b0e2-696906ee4502.avif" alt="Ilustraciones relacionadas con la configuración de ubicación del modo de nube de puntos 9" />
+</Frame>
+
+##### Configuración de ubicación de la biblioteca del modo RGB
+
+1. Cambie al modo de visualización RGB, haga clic para agregar una ubicación de almacenamiento y mueva el mouse a la imagen RGB, ![Creación de ubicación de almacenamiento 2D](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/595aef48-fd89-41ce-93c9-fcd89622f141.avif)
+
+Haga clic con el botón izquierdo del mouse en el área de detección para crear un área de detección de ubicación 2D y haga clic derecho para salir del modo de creación de ubicación 2D.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f38061e-4044-4ce8-ac8d-98adf248ffd8.avif" alt="Ubicación 2D creada con éxito" />
+</Frame>
+
+2. Si necesita eliminar una ubicación de almacén, seleccione el ID de casilla que debe eliminarse en la casilla actual. La identificación de la ubicación del almacén correspondiente se mostrará en la imagen. Haga clic para eliminar la ubicación del almacén. ![Extensión de creación de ubicaciones 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f9c485c-f591-4e95-8bc6-45df833eb341.avif)
+
+3. Coloque el mouse en el medio del área de detección de la ubicación de almacenamiento (posición de la flecha azul) para arrastrar el área de detección y moverla, coloque el mouse en las cuatro esquinas del área de detección de la ubicación de almacenamiento (posición de la flecha roja) y arrastre con el botón izquierdo del mouse para modificar el tamaño del área de detección. ![Extensión de creación de ubicaciones 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/71096a08-65a6-45f9-b033-59d9a5ae9fa6.avif)
+
+4. Después de confirmar la ubicación, debe hacer clic en [Guardar y enviar] para guardar la ubicación en la cámara antes de que surta efecto. Confirme si el guardado se realizó correctamente y verifique si se guarda el estado de la ubicación. Si no se guarda, no se guardará. ![6cec7d56ad74e8745f624af0e0ce582c\_comprimir](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b3e11ff5-e79e-4141-8f4d-71c2474caa70.avif)
+
+5. La detección de la ubicación de almacenamiento 2D solo admite el modo semántico y debe combinarse con un modelo semántico para la detección.
+
+#### Detección de ubicación de almacenamiento: configuración avanzada
+
+##### Función avanzada: ubicación de copia
+
+1. Haga clic en [**Necesita saber sobre copia y panorámica**] y se le solicitará información relacionada con la panorámica. Copiar la ubicación permite a los usuarios diseñar la ubicación basándose en dibujos CAD durante la implementación real y luego dibujar un área de ubicación para hacer múltiples copias sin tener que volver a dibujarla manualmente.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/575918bf-cf7e-428a-a302-c365284da6bc.avif" alt="Función avanzada: copiar iconos relacionados con la ubicación" />
+</Frame>
+
+1. La configuración actual es la dirección X, el espaciado es 10 y la cantidad es 2. Haga clic en el botón Ejecutar y se le pedirá que confirme si desea ejecutar la traducción de la copia.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a52afac-6e72-4cfb-8acb-fa7910288287.avif" alt="Función avanzada: copiar iconos relacionados con la ubicación 2" />
+</Frame>
+
+1. Después de hacer clic en Sí, se generarán dos contenedores del mismo tamaño en la dirección x positiva con un espacio de 10. En el cuadro de lista de ubicación del contenedor, puede ver que el área del contenedor generada tiene el sufijo aumentado en (0) y (1) según el ID de detección de ubicación del contenedor original.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e213b2fb-9331-48e5-beda-2afb91fc4fa8.avif" alt="Función avanzada: copiar iconos relacionados con la ubicación 3" />
+</Frame>
+
+1. Establezca la dirección Y, el espaciado en -40 y la cantidad en 3. Haga clic en el botón ejecutar para generar 3 ubicaciones de almacenamiento con el mismo tamaño en la dirección y negativa. Los ID del cuadro de lista de ubicaciones se agregan (2), (3) y (4) sobre la base de los (0) y (1) originales.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cc9aab42-e06f-4910-869a-fa8335d089a6.avif" alt="Función avanzada: copiar iconos relacionados con la ubicación 4" />
+</Frame>
+
+1. Después de copiar la ubicación, debe hacer clic en el botón [**Guardar y liberar**] para guardar los parámetros; de lo contrario, los parámetros no tendrán efecto.
+
+##### Función avanzada: calibración QR (calibración de código QR)
+
+1. La calibración QR (código QR) puede simular escenarios reales de implementación del almacén y continuar dibujando automáticamente las áreas del almacén sin dibujar manualmente, lo que permite a los usuarios implementar cómodamente. Se recomienda que el tablero de códigos QR mida 1m×1m o más. Haga clic en [**Es necesario saber sobre la calibración del código QR**] y se le solicitará el proceso de calibración.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c2767a5-5a42-41b0-85aa-5257d6bdf3f1.avif" alt="Función avanzada: iconos relacionados con la calibración QR (calibración de código QR)" />
+</Frame>
+
+1. Coloque la placa de calibración del código QR en el área de destino, cambie a la imagen RGB y asegúrese de que el código QR se pueda ver en el campo de visión RGB.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427f065c-f102-49fc-a996-dd04d2f4cece.avif" alt="Función avanzada: iconos relacionados con la calibración QR (calibración de código QR) 2" />
+</Frame>
+
+1. Después de que el código QR esté en el centro del campo de visión, cambie a la imagen de la nube de puntos y busque la barra de calibración [**Código QR**]. Introduzca previamente el tamaño de la ubicación X (ancho de la ubicación), Y (longitud de la ubicación), Z\_min (profundidad mínima de la ubicación), Z\_max (profundidad máxima de la ubicación),
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9e83a1a-50be-4664-8f4c-9a02ffaa752e.avif" alt="Función avanzada: iconos relacionados con la calibración QR (calibración de código QR) 3" />
+</Frame>
+
+1. Luego haga clic en el botón [**Calibración**] para dibujar automáticamente la ubicación del almacén según los X, Y y Z configurados en el QR, que se pueden ver a través del cuadro del área de configuración de la ubicación del almacén. QR\_BOX es el cuadro de área configurado para el código QR.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c0bec5-7ba4-444b-9da6-4b0e919a86ed.avif" alt="Función avanzada: iconos relacionados con la calibración QR (calibración de código QR) 4" />
+</Frame>
+
+1. Una vez completada la calibración del código QR, debe hacer clic en el botón [**Guardar y enviar**]; de lo contrario, los parámetros no tendrán efecto.
+
+#### Verifique los resultados de la detección de ubicación
+
+1. Después de configurar la calibración de parámetros externos, los parámetros de detección de la ubicación de almacenamiento y el área de detección de la ubicación de almacenamiento, haga clic en "**Herramientas básicas**" y coloque objetos en el área de detección para ver los resultados. Actualmente no hay ningún objeto y no se mostrará ningún objeto en la barra de funciones básicas. ![Ver íconos relevantes para los resultados de detección de ubicación de almacenamiento](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/481feb15-bd76-46db-9025-f17efcef2c71.avif)
+
+2. Después de colocar la plataforma, la columna de visualización del estado del inventario mostrará que la ubicación actual está en stock. En la parte inferior del software, se mostrará el Resultado, donde 1 indica que está en stock. ![Imagen relacionada con la visualización de los resultados de la detección de la ubicación de almacenamiento 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5b066a5a-b7e9-4a11-9fc5-01a2e8842be2.avif)
+
+3. Después de activar el efecto de alineación, el resultado se mostrará en la parte inferior del software. 2 significa que hay bienes pero hay un desplazamiento angular. ![La ubicación no está alineada](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95d79300-5e45-45d6-8c84-a0486a90a94b.avif)
+
+4. Después de activar la verificación de alineación, el resultado se mostrará en la parte inferior del software. 3 significa que hay mercancías pero excede el área de detección del lugar de almacenamiento. El cuadro rojo indica el área de detección de la ubicación de almacenamiento y el cuadro amarillo indica el objeto detectado. ![La alineación de la ubicación está dentro y fuera de los límites](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1688c5-d897-4a0c-8014-e03f6eea2be9.avif)
+
+#### Ver el registro de detección de ubicación de almacenamiento
+
+Cuando cambie el estado de la ubicación de almacenamiento, haga clic en la reproducción histórica y haga clic en el tiempo que desea ver a la izquierda para ver los cambios en los objetos dentro del campo de visión efectivo en ese momento. Consulte 5.5 reproducción para obtener más detalles.
+
+#### Determinación de los resultados de detección de la ubicación de almacenamiento
+
+1. Dibujar el área de detección para determinar la existencia, ángulo de desplazamiento y estado transfronterizo de la mercancía.
+
+2. Juzgar el estado de los bienes a través de los resultados obtenidos.
+
+|  |  |
+| --- | --- |
+| Estado | Resultados |
+| Agotado | 0 |
+| En stock | 1 |
+| En stock y alineado (activar la validación de alineación) | 1 |
+| En stock y no alineado (activar validación de alineación) | 2 |
+| En stock y fuera de límites (activar la validación de alineación) | 3 |
+
+1. Con la función de verificación de alineación habilitada, coloque el objeto en el límite del área de detección. El resultado obtenido es 3. Este resultado indica que las mercancías excedieron el límite y ocuparon el espacio de almacenamiento.
+
+**![Ilustración relacionada con la determinación de los resultados de detección de la ubicación de almacenamiento](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa582c1-5052-4756-be13-e015f9c9fd86.avif)**
+
+### Proceso de implementación de detección de volumen
+
+#### Detección de volumen - calibración de parámetros externos
+
+1. Para obtener más información, consulte 6.2 Calibración de parámetros externos de instalación vertical.
+
+2. Una vez completada la calibración, asegúrese de que el eje de coordenadas Z (flecha azul) esté verticalmente hacia abajo, el eje X (flecha roja) y el eje Y (flecha verde) formen un plano paralelo al suelo y que el método de detección del algoritmo de detección de volumen sea de arriba a abajo.
+
+![Vista superior de la calibración de parámetros externos de detección de volumen](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/81e5f706-27db-4c18-87bb-3d3320387374.avif)![Vista lateral de la calibración de parámetros externos de detección de volumen](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96891baa-0237-440c-84bd-8840d0c91c86.avif)
+
+#### Detección de volumen: configuración global
+
+1. Haga clic en Detección de volumen. Después de ingresar a la interfaz de configuración de parámetros, debe concentrarse en configurar la "distancia del plano de detección" (utilizada para determinar la posición de la superficie inferior del objeto y calcular el volumen) y el tamaño mínimo XYZ.
+
+2. Verifique la configuración del avión. Si las mercancías se colocan directamente en el suelo, la distancia del plano de detección se establece en la altura del suelo;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9e91e37-7a17-4f1c-8ac5-066ef8fe859c.avif" alt="La nube de puntos del terreno coincide con el plano de detección 1." />
+</Frame>
+
+Si hay un palet y solo es necesario calcular el área de la mercancía en el palet, el plano de detección debe coincidir con la nube de puntos del palet. ![El plano de detección está en el palet.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0ed32689-0326-4afb-93c7-6880e62385ea.avif)
+
+1. Configuración mínima de XYZ. Se utiliza para establecer el límite inferior del largo, ancho y alto del objeto detectado (unidad: píxeles). Cuando cualquiera de las dimensiones de largo, ancho o centro del objeto detectado es menor que el umbral, el sistema ignorará automáticamente el objeto. ![Se pueden detectar imágenes](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d35dea57-dec2-4d30-863d-73ee462daabb.avif)![Se pueden detectar mercancías](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a596eae-f1c2-45c1-9882-4cea9f374156.avif)
+
+Después de aumentar el valor, el objeto se ignora. ![Parámetros que impiden la detección](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2014538-6ac1-440f-9238-860c2da3f04b.avif)
+
+1. Una vez completados los ajustes de configuración global, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+#### Detección de volumen - configuración de rango
+
+1. Configure el rango de detección. Para ajustar la longitud y el ancho (xy) de la detección, se recomienda cambiar primero a la vista arriba y abajo. Las siguientes son las teclas de acceso directo para cada vista.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Detección de volumen: iconos relacionados con la configuración de rango" />
+</Frame>
+
+1. Utilice las teclas de método abreviado de teclado para cambiar a la vista arriba y abajo, como se muestra en la siguiente figura. El cuadro blanco señalado por la flecha roja indica la dirección x del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, el rango de detección máximo y mínimo en la dirección x está establecido en 600 y -600.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/78cf7eed-d5ba-4969-8be3-3579a41f49a1.avif" alt="Detección de volumen: diagrama relacionado con la configuración de rango 2" />
+</Frame>
+
+1. El cuadro blanco señalado por la flecha verde indica la dirección y del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, el rango de detección máximo y mínimo en la dirección y está establecido en 480 y -580.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c1c97b6-76f9-490d-a262-0ec7de2d4e83.avif" alt="Detección de volumen: diagrama relacionado con la configuración de rango 3" />
+</Frame>
+
+1. La flecha azul apunta a la dirección z del rango de detección. Se recomienda que el plano de detección sea consistente con el valor z máximo. El rango mínimo de detección se establece según el tamaño del objeto. Si la altura del objeto excede el valor z mínimo, el algoritmo lo filtrará.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/66d82c1c-cb72-4c8e-805e-a8356b7a8103.avif" alt="Detección de volumen: diagrama relacionado con la configuración de rango 4" />
+</Frame>
+
+1. Después de configurar el área de detección, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d5aa71bc-e458-4195-835a-45bd4150ff99.avif" alt="Detección de volumen: diagrama relacionado con la configuración de rango 5" />
+</Frame>
+
+#### Ver resultados de la prueba de volumen
+
+1. Después de configurar el área de detección, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+2. Después de configurar la calibración de parámetros externos, los parámetros de detección de volumen y el área de detección de volumen, haga clic en "**Herramientas básicas**" y coloque objetos en el área de detección para ver los resultados. Actualmente no hay ningún objeto y no se mostrará ningún objeto en la barra de funciones básicas.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ca238803-1d9a-4ad8-993f-d9c37dae9ad5.avif" alt="ningún objeto" />
+</Frame>
+
+1. Después de colocar un objeto, la información sobre la longitud, el ancho y la altura del objeto actual se mostrará en la barra de visualización del estado del volumen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3c4511ff-69fa-4ea8-9918-c657aa999752.avif" alt="Detección volumétrica de un solo objeto." />
+</Frame>
+
+4. Cuando se colocan varios objetos, la barra de visualización del resultado de la detección de volumen mostrará la longitud, el ancho y la altura de varios objetos, y se mostrará el número de objetos. ![Detección de volumen de múltiples objetos.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f33c8bf-37d0-4b5b-a84a-4e1f1814eeba.avif)
+
+#### Función de disparo único de detección de volumen
+
+1. En la interfaz de configuración de detección de volumen, active el modo de activación y haga clic en el botón [**Guardar y enviar**] para activar correctamente el modo de activación.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/48d2348e-0816-4231-9f14-03a426584e4e.avif" alt="Ilustraciones relacionadas con la función de disparo único de detección de volumen" />
+</Frame>
+
+1. Haga clic en la herramienta básica y obtenga imágenes y resultados haciendo clic en el botón [**Single Trigger**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f3dfaf70-6664-4a9e-9451-a5ccf693367b.avif" alt="gatillo único" />
+</Frame>
+
+## Protocolo de comunicación
+
+El modo de disparo único incluido en la detección de volumen envía TM\_TRIGGER a través de TCP o UDP, lo que permite a la cámara ejecutar el algoritmo de detección de volumen una vez y devolver el resultado una vez.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ec9bc8-1c02-4ce3-9ed5-2333ac4d8961.avif" alt="Detección de volumen UDP TM\_TRIGGER" />
+</Frame>
+
+### comunicación TCP
+
+Los resultados están disponibles a través de comunicación TCP. A través del asistente de depuración de red, la cámara remota IP: 192.168.100.83, puerto: 14951, envía RESULT\_UPDATE para ver la información del resultado devuelto.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/13faa673-1d57-4ae0-8db9-c5258d95ae77.avif" alt="IMG\_256" />
+</Frame>
+
+### comunicación UDP
+
+Los resultados de la detección de ubicación se pueden obtener mediante comunicación UDP. A través del asistente de depuración de red, la cámara remota IP: 192.168.100.83, puerto: 14950, envía RESULT\_UPDATE para ver la información del resultado de la detección de ubicación devuelta.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76326c8d-54d2-491e-b315-b7681e6aef72.avif" alt="IMG\_256" />
+</Frame>
+
+### comunicación HTTP
+
+1. Los resultados de la detección del algoritmo se pueden obtener mediante comunicación HTTP, número de puerto: 14952.
+
+2. El sistema de capa superior (WMS) envía la señal del resultado a la visión y la visión devuelve una cadena en formato JSON.
+
+3. Procedimientos operativos
+
+Establecer encabezados primero
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d26e7a0a-afc0-4df4-bca6-c63f5e0b3c2e.avif" alt="Operación 1" />
+</Frame>
+
+Luego establezca el parámetro Cuerpo en RESULT\_UPDATE
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a833cf86-a300-4097-839e-7b233edba3f8.avif" alt="Operación 2" />
+</Frame>
+
+Haga clic en Enviar para obtener el resultado![Operación 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f9c2553-db2b-4646-b101-bf7b9c1ca543.avif)
+
+|  |  |
+| --- | --- |
+| WMS → Visión | |
+| Resultado | Significado |
+| RESULT_UPDATE | Activar señal de retorno de resultado visual |
+| Visión → WMS (Detección Humana) | |
+| Resultado | Significado |
+| propiedad intelectual | Cámara de fuente de datos IP |
+| SG | Estado de detección del cuerpo humano, 0 está vacío, 1 significa que hay alguien y 2 significa que la regla de coincidencia de cuadros es detectar objetos solo en profundidad. __object_details contiene todas las coordenadas del grupo detectado |
+| SG_DATA_TIME | Tiempo de extracción de datos de detección |
+| SG_RES_TIME | Tiempo de salida del resultado de la prueba |
+| apodo_nombre | Nombre de la cámara, configurable en cámara |
+| código_ret | Código de retorno, 0 es éxito |
+| Visión → WMS (Detección de ubicación de stock) | |
+| propiedad intelectual | Cámara de fuente de datos IP |
+| SS | Estado de detección de la ubicación de almacenamiento, 0 significa que la ubicación de almacenamiento no está ocupada, 1 significa que la ubicación de almacenamiento está ocupada, 2 significa que la ubicación de almacenamiento está ocupada y el desplazamiento del ángulo de las mercancías excede el parámetro preestablecido, 3 significa que la ubicación de almacenamiento está ocupada y fuera de límites X__object_details es la información específica de la ubicación de almacenamiento X, que contiene el tamaño de la caja de volumen del objeto ocupado real |
+| SG_DATA_TIME | Tiempo de extracción de datos de detección |
+| SG_RES_TIME | Tiempo de salida del resultado de la prueba |
+| apodo_nombre | Nombre de la cámara, configurable en cámara |
+| código_ret | Código de retorno, 0 es éxito |
+| Visión → WMS (Detección de Volumen) | |
+| propiedad intelectual | Cámara de fuente de datos IP |
+| MT | Cada elemento es un cuadro de volumen completo detectado dentro de la región |
+| SG_DATA_TIME | Tiempo de extracción de datos de detección |
+| SG_RES_TIME | Tiempo de salida del resultado de la prueba |
+| apodo_nombre | Nombre de la cámara, configurable en cámara |
+| código_ret | Código de retorno, 0 es éxito |
+
+### modbus-tcp (detección de ubicación de biblioteca)
+
+Los resultados de la detección se ordenan automáticamente según el ID de la ubicación y solo se devolverán los primeros 16 resultados de la ubicación.
+
+#### Parámetros de configuración del esclavo
+
+##### Configuración de comunicación básica
+
+1. \****Número de puerto***\*: 16502
+
+2. \****Dirección de escucha***\*: Todas las interfaces de red (0.0.0.0)
+
+3. \****Número de registros***\*: 16
+
+4. \****Registrar dirección inicial***\*: 0x100
+
+5. \****Orden de bytes***\*: modo Big-Endian (Big-Endian)
+
+##### Registrar reglas de almacenamiento
+
+|  |  |  |
+| --- | --- | --- |
+| Dirección de registro**** | Contenido de almacenamiento**** | Formato de datos**** |
+| *0x100 + ID* | Resultado de la detección de ubicación + resultado de la detección de marcador | *2 bytes (uint16_t)* |
+| *Reglas divididas* | | |
+| *Byte 0 (8 bits altos)* | Código de estado de ubicación | *0-2 (ver definición a continuación)* |
+| *Byte 1 (8 bits inferiores)* | Código de estado del marcador (aún no abierto, el contenido es consistente con el código de estado de ubicación) | *0-2 (ver definición a continuación)* |
+
+#### Definición del código de estado
+
+##### Código de estado de ubicación
+
+|  |  |  |
+| --- | --- | --- |
+| Codificación | Significado físico | Condiciones de activación |
+| *0* | Desocupado | *Sin mercancías/palets* |
+| *1* | Ocupación normal | *Los productos estándar están colocados correctamente* |
+| *2* | Ocupación anormal | *Tamaño de carga/desplazamiento de posición* |
+
+##### Código de estado del marcador
+
+|  |  |  |
+| --- | --- | --- |
+| Codificación**** | Significado físico**** | Condición de activación**** |
+| *0* | No se detectó ningún marcador | |
+| *1* | Marcador detectado | |
+| *2* | Detectar anomalías | |
+
+#### Ejemplo
+
+\****Leer el estado de la 4.ª ubicación***\*
+
+##### 1. Mensaje de solicitud del cliente
+
+maleficio
+
+1. \[01\]\[00\]\[00\]\[00\]\[06\]\[FF\]\[03\]\[01\]\[03\]\[00\]\[01\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Nombre del campo* | *Valor (HEX)* | *Longitud en bytes* | *Descripción* |
+| *Número de secuencia del mensaje* | *00 01* | *2 bytes* | *Identificador de transacción (número de secuencia incremental)* |
+| *Identificador de protocolo* | *00 00* | *2 bytes* | *Valor fijo Modbus/TCP* |
+| *Longitud de los datos* | *00 06* | *2 bytes* | *Longitud total de datos posteriores (6 bytes)* |
+| *Identificador de unidad* | *FF* | *1 byte* | *Modo de transmisión (0xFF) o dirección del dispositivo* |
+| *Código de función* | *03* | *1 byte* | *Leer registro de retención (código de función estándar)* |
+| *Registrar dirección inicial* | *01 03* | *2 bytes* | *Dirección inicial=0x100 + 4 (decimal)* |
+| *Número de registros* | *00 01* | *2 bytes* | *Leer 1 registro (2 bytes)* |
+
+##### 2. Mensaje de respuesta del dispositivo
+
+maleficio
+
+1.  \[05\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[02\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Nombre del campo* | *Valor (HEX)* | *Longitud en bytes* | *Descripción* |
+| *Número de secuencia del mensaje* | *00 05* | *2 bytes* | *Coherente con el mensaje de solicitud* |
+| *Identificador de protocolo* | *00 00* | *2 bytes* | *Valor fijo Modbus/TCP* |
+| *Longitud de los datos* | *00 02* | *2 bytes* | *Longitud total de los datos posteriores (2 bytes)* |
+| *Identificador de unidad* | *FF* | *1 byte* | *Coherente con el mensaje de solicitud* |
+| *Código de función* | *03* | *1 byte* | *Leer respuesta del registro de retención* |
+| *Longitud de los datos devueltos* | *02* | *1 byte* | *Longitud real de los datos devueltos (2 bytes)* |
+| *Datos de estado* | *00 02* | *2 bytes* | *Valor de estado de la 4ª ubicación* |
+
+### Apéndice (devuelve análisis json)
+
+#### Detección del cuerpo humano
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SG"**: {         **"1"**: **1**,// Target detected in detection box 1         **"2"**: **0**,// No target detected in detection box 2         **"__object_details"**: \[ // Each item is a JSON string that must be deserialized again; each item represents one cluster
+
+            **"{\\"rbx2d\\":584.0,\\"rby2d\\":500.0,\\"semantic_index\\":-1,\\"tlx2d\\":234.0,\\"tly2d\\":386.0,\\"traceID\\":\\"\\",\\"x_max\\":33.46769714355469,\\"x_min\\":-130.08856201171875,\\"y_max\\":28.804279327392578,\\"y_min\\":9.872406005859375,\\"z_max\\":170.76319885253906,\\"z_min\\":70.43941497802734}"**,             **"{\\"rbx2d\\":405.0,\\"rby2d\\":333.0,\\"semantic_index\\":0,\\"tlx2d\\":159.0,\\"tly2d\\":11.0,\\"traceID\\":\\"IoXSYuQ0rM34LYqL\\",\\"x_max\\":-201.1272430419922,\\"x_min\\":-395.1332702636719,\\"y_max\\":99.76918029785156,\\"y_min\\":-228.9674530029297,\\"z_max\\":611.3909912109375,\\"z_min\\":233.85450744628906}"**         \]     },     **"SG_DATA_TIME"**: **"2023_03_02_21_52_11.408"**, // Human-detection data timestamp     **"SG_RES_TIME"**: **"2023_03_02_21_52_11.689"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"\_\_object\_details": //Single explicación del elemento
+
+```json
+{     **"rbx2d"**: **405**, // x-coordinate of the lower-left corner of the 2D cluster box     **"rby2d"**: **333**, // y-coordinate of the lower-left corner of the 2D cluster box     **"semantic_index"**: **0**, // Model index when semantic data exists; otherwise -1     **"tlx2d"**: **159**, // x-coordinate of the upper-right corner of the 2D cluster box     **"tly2d"**: **11**,// y-coordinate of the upper-right corner of the 2D cluster box     **"traceID"**: **"IoXSYuQ0rM34LYqL"**,// Each detected class has a unique ID for matching the object across frames     **"x_max"**: **\-201.1272430419922**,// 3D point-cloud cluster-box coordinate     **"x_min"**: **\-395.1332702636719**,// 3D point-cloud cluster-box coordinate     **"y_max"**: **99.76918029785156**,// 3D point-cloud cluster-box coordinate     **"y_min"**: **\-228.9674530029297**,// 3D point-cloud cluster-box coordinate     **"z_max"**: **611.3909912109375**,// 3D point-cloud cluster-box coordinate     **"z_min"**: **233.85450744628906**// 3D point-cloud cluster-box coordinate }
+```
+
+#### Detección de ubicación de almacenamiento
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SS"**: { X_detail_info contains cargo data detected in storage location X         **"1"**: **1**,// Storage location 1 is occupied         **"2"**: **1**,// Storage location 2 is occupied         **"3"**: **3**,// Storage location 3 is occupied and the object extends outside it         **"1__detail__info"**: \[             **\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**         \],         **"2__detail__info"**:             **\-7**,**258**,**261**,**545**,**403**,**204**,**89**         \],         **"3__detail__info"**: \[             **114**,**73**,**37**,**92**,**42**,**75**, **\-88**         \]     },     **"SS_DATA_TIME"**: **"2023_03_02_22_13_01.286"**, // Human-detection data timestamp     **"SS_RES_TIME"**: **"2023_03_02_22_13_01.572"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"X\_\_detail\_\_info": //Single explicación, X es el ID único de la ubicación
+
+**“2\_\_detail\_\_info”**: \[             **\-7**,// Coordenada x del punto central
+
+**258**,//Center coordenada del punto y
+
+**261**,//Center punto de coordenada z
+
+**545**,//long
+
+**403**,//width
+
+**204**,//High
+
+**89** //Offset ángulo comparado con el cuadro delimitador \]
+
+**"1\_\_detail\_\_info"**: \[//This caso es el rango de detección de ubicación creado por la inspección 2D para la ubicación 1, todos los valores son -1                                                                                                      
+
+#### Detección de volumen
+
+```json
+{     **"IP"**: **"192.168.100.83"**,// Camera IP     **"TM"**: \[ // Each item is a complete volume box detected within the detection area         {             **"angle"**: **\-81.56423950195313**,             **"cx"**: **\-287**,             **"cy"**: **88**,             **"cz"**: **2887**,             **"height"**: **224**,             **"length"**: **320**,             **"type"**: **""**,             **"valid"**: **true**,             **"width"**: **174**         }     \],     **"TM_DATA_TIME"**: **"2023_03_02_21_01_31.769"**, // Human-detection data timestamp     **"TM_RES_TIME"**: **"2023_03_02_21_01_31.987"**,// Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+El objeto `TM` contiene estos campos:
+
+- `angle`: Ángulo de compensación.
+- `cx`, `cy` y `cz`: coordenadas del punto central.
+- `height`, `length` y `width`: Dimensiones del objeto.
+- `type`: Tipo semántico.
+- `valid`: Si el resultado de la detección es válido.

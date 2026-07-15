@@ -1,0 +1,35 @@
+---
+title: "Protocollo di comunicazione JSON"
+description: "Formato del messaggio JSON con socket TCP e riferimento al campo per la comunicazione tra la telecamera e un robot o un PLC."
+hidden: true
+---
+## Interfaccia
+
+- Server con presa TCP. La telecamera funge da server. La porta predefinita è `5501`.
+
+- Contenuto del messaggio: formato testo con supporto ASCII. Si consiglia JSON.
+
+## Richiesta e risposta
+
+**1. Robot (PLC) —> sistema di visione**
+
+```json
+{"action": "3D"}
+```
+
+Questa richiesta attiva un'attività di visione 3D.
+
+**2. Sistema di visione —> robot (PLC)**
+
+La telecamera restituisce il risultato del rilevamento con questi campi:
+
+| Campo | Obbligatorio | Descrizione |
+| --- | --- | --- |
+| risultato | Sì | Stato di rilevamento dei numeri interi. `0` indica che la localizzazione non è riuscita e non è disponibile alcun risultato. Qualsiasi altro valore indica il successo e specifica il numero di risultati restituiti. |
+| posizione | Sì | X, Y, Z, RX, RY e RZ rappresentano i valori per l'oggetto rilevato nel sistema di coordinate del robot. Le unità sono millimetri e gradi. `-180° ≤ RZ ≤ 180°`. Tutti i valori sono impostati su `0` quando il rilevamento fallisce. |
+
+**Esempi**
+
+| Rilevamento riuscito | `{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}` |
+| --- | --- |
+| Rilevamento non riuscito | `{"result":0,"pos":[0,0,0,0,0,0]}` |

@@ -1,0 +1,486 @@
+---
+title: "Giao thức HTTP V2"
+description: "Sử dụng điểm cuối HTTP, tham số yêu cầu và định dạng phản hồi của mô-đun bản địa hóa trực quan V2."
+hidden: true
+---
+## Truy xuất thông tin toàn cầu
+
+### Cập nhật chương trình chính
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+Yêu cầu Ví dụ:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### Đặt chiều cao của Camera
+
+URL yêu cầu `http://<ip>:9998/tool/rob/setHeightRequest` Ví dụ:
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Truy xuất thông tin toàn cầu
+
+### Nhận phiên bản chương trình
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+Ví dụ yêu cầu: bỏ qua
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### Nhận thông tin cơ bản về xe
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+Ví dụ yêu cầu: bỏ qua
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### Nhận gói bản đồ từ máy chủ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+Thông số yêu cầu:
+
+Loại nội dung: ứng dụng/json
+
+|  |  |  |
+| --- | --- | --- |
+| Bắt buộc | Thông số | Mô tả |
+| Có | Tên | Tên bản đồ |
+
+Ví dụ phản hồi:
+
+Trả về một tệp có loại nội dung: application/zip
+
+### Nhận AGVPose
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\. ** Tái định cư (Trực tuyến)**
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/relocate`
+
+Thông số yêu cầu:
+
+Loại nội dung: ứng dụng/json
+
+|  |  |  |
+| --- | --- | --- |
+| Bắt buộc | Thông số | Mô tả |
+| Có | x | Vị trí X (mét) |
+| Có | y | Vị trí Y (mét) |
+| Có | góc | – |
+| Có | ồn àoX | Ồn ào (mét) |
+| Có | ồn àoY | Ồn ào (mét) |
+| Có | ồn àoAngle | Ồn ào (mét) |
+
+Ví dụ yêu cầu: bỏ qua
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Hoạt động bản đồ
+
+### Triển khai bản đồ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+Thông số yêu cầu
+
+|  |  |  |
+| --- | --- | --- |
+| Bắt buộc | Thông số | Mô tả |
+| Có | id | Tên bản đồ |
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Áp dụng bản đồ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+Thông số yêu cầu
+
+|  |  |  |
+| --- | --- | --- |
+| Bắt buộc | Thông số | Mô tả |
+| Có | tên | Tên bản đồ |
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Bắt đầu lập bản đồ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+Thông số yêu cầu
+
+|  |  |  |
+| --- | --- | --- |
+| Bắt buộc | Thông số | Mô tả |
+| Có | tên | Tên bản đồ |
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Dừng lập bản đồ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Bắt đầu lập bản đồ gia tăng
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Yêu cầu Ví dụ:
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Dừng ánh xạ gia tăng
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Yêu cầu Ví dụ:
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Lấy danh sách bản đồ địa phương (Phần cuối) (Lấy danh sách bản đồ nền, không khuyến khích)
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### Lấy danh sách bản đồ địa phương (được khuyến nghị)
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### Tải gói bản đồ lên máy ảnh
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+Tham số yêu cầu: không có
+
+Yêu cầu Ví dụ:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Tải bản đồ
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+Tham số yêu cầu: không có
+
+Yêu cầu Ví dụ:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## Giao diện hoạt động
+
+### Khởi động lại chương trình máy ảnh
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/restart`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Khởi động lại máy ảnh
+
+URL yêu cầu
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+Tham số yêu cầu: không có
+
+Ví dụ phản hồi:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

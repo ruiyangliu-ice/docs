@@ -1,0 +1,226 @@
+---
+title: "Guida per l'utente della fotocamera S10"
+description: "Specifiche del prodotto e dettagli di progettazione selezionati per gli sviluppatori che integrano e utilizzano la fotocamera S10."
+hidden: true
+---
+## Cronologia delle revisioni
+
+| Data | Versione | Modifiche |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Versione iniziale |
+| 27/02/2025 | V1.1 | Campo visivo TOF aggiornato |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## 1. Introduzione
+
+### 1.1 Scopo e campo di applicazione
+
+Questo documento descrive le specifiche della fotocamera S10 e i dettagli di progettazione selezionati per gli sviluppatori che integrano e utilizzano il prodotto.
+
+### 1.2 Terminologia
+
+| Telecamera RGBD | Una fotocamera che produce immagini RGB e di profondità sincronizzate e allineate spazialmente |
+| --- | --- |
+| Profondità | Un flusso video simile a un flusso a colori o monocromatico, in cui ogni pixel rappresenta la sua distanza dalla telecamera |
+| FOV | Campo visivo: la gamma angolare di una scena catturata da una telecamera, compresi i campi visivi orizzontale (HFOV), verticale (VFOV) e diagonale (DFOV) |
+| Telecamera IR | Una telecamera a infrarossi; in questo prodotto cattura principalmente la banda del vicino infrarosso |
+| Fotocamera RGB | Una fotocamera a colori |
+| Fotocamera di profondità | Una fotocamera il cui modulo di profondità include in genere un proiettore di punti, una fotocamera IR e un processore di profondità; il suo modulo colore è tipicamente una telecamera RGB |
+| SoC | Sistema su chip utilizzato per l'elaborazione delle immagini, il calcolo della profondità e gli algoritmi applicativi |
+| DTOF | Tecnologia di rilevamento della distanza basata sulla misurazione del tempo di volo |
+
+### 1.3 Principio di funzionamento
+
+Questo prodotto è una fotocamera di profondità 3D DTOF con lungo raggio, buona precisione, basso costo, forte resistenza alle interferenze e dati stabili. Un modulo RGB integrato cattura immagini a colori. La fotocamera allinea internamente le immagini RGB e di profondità.
+
+## 2. Panoramica del prodotto
+
+Questa telecamera RGBD industriale compatta fornisce dati di profondità da 0,3 ma 8 m. Allinea spazialmente e temporalmente le immagini RGB e di profondità. Il suo SoC integrato fornisce risultati di profondità, intensità, RGB, nuvola di punti e rilevamento degli ostacoli. Oltre a Ethernet, due ingressi IO e due uscite IO commutano tra quattro zone di evitamento degli ostacoli e generano segnali di arresto di emergenza, rallentamento e stato sicuro.
+
+* * *
+
+### 2.1 Aspetto del prodotto
+
+![Fotocamera S10](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+
+Figura 1. Fotocamera S10
+
+### 2.2 Caratteristiche
+
+- Basso consumo energetico DTOF e dimensioni compatte
+
+- Elaborazione integrata che genera risultati di rilevamento degli ostacoli per operazioni plug-and-play
+
+- Forte adattabilità ambientale: resiste alla luce solare di 100KLUX e funziona dall'oscurità alla luce intensa, all'interno e all'esterno
+
+- Ampio intervallo di misurazione da 0,3 a 8 m
+
+* * *
+
+## 3. Specifiche
+
+### 3.1 Specifiche di base
+
+| Modello del prodotto | S10 |
+| --- | --- |
+| Principio di funzionamento | Telecamera di profondità DTOF |
+| Formato di uscita | Mappa di profondità, RGB e ampiezza |
+| Risoluzione TOF e frame rate | 240x160 @Massimo. 20 fps, tipico 15 fps |
+| Campo visivo TOF | 90°*61° |
+| Risoluzione RGB e frame rate | 1920×1080 @Massimo. 20 fps, tipico 15 fps |
+| Campo visivo RGB | 90°*70° |
+| Gamma | 0,3-8 m (@90% rif), 0,3-3 m (@5%) |
+| Precisione | 1 deviazione standard &lt;3cm a temperatura ambiente (25℃), 70% di riferimento e illuminazione &lt;50kLux |
+| Consumo energetico | ≤4 W e 28 W |
+| Laser | 940nm |
+| Dimensioni | 80 mm di larghezza × 25 mm di altezza × 37 mm di profondità |
+| Peso | ≤300g|
+| Potenza assorbita | 24V±20%|
+| Interfaccia di comunicazione | Ethernet/IO |
+| Grado di protezione | IP54|
+| Temperatura operativa | -20°C~60°C|
+| Temperatura di conservazione | -40°C~85°C|
+| Ambiente software | SDK C/C++/ROS |
+| Supporto del sistema operativo | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Raffreddamento | Passivo, nessun fan |
+
+Nota: il modello 3D definisce le dimensioni del prodotto.
+
+### 3.2 Definizioni di interfaccia
+
+Interfacce lato fotocamera:
+
+La fotocamera dispone di tre interfacce: un connettore di alimentazione DC24V, un connettore Fast Ethernet e un connettore IO a 8 pin.
+
+<Frame>
+  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Definizioni dell'interfaccia della fotocamera" />
+</Frame>
+
+Piedinatura del cavo:
+
+<Frame>
+  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Piedinatura del cavo" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Dettaglio piedinatura del cavo" />
+</Frame>
+
+| Cavo | P1 perno | Colore | Descrizione |
+| --- | --- | --- | --- |
+| Cavo Ethernet | 1| Arancione | OUT_COM2 |
+| ㅤ | 2| Giallo | USCITA_2 |
+| ㅤ | 3| Verde | OUT_COM1 |
+| ㅤ | 4| Blu | OUT_1 |
+| ㅤ | 5| Viola | IN_COM2 |
+| ㅤ | 6| Grigio | IN_2 |
+| ㅤ | 7| Marrone | IN_COM1 |
+| ㅤ | 8| Bianco | IN_1 |
+| Cavo di alimentazione | 1| Rosso | 24V+ |
+| ㅤ | G | Nero | 24V- |
+
+### 3.3 Componenti della fotocamera
+
+<Frame>
+  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Componenti della fotocamera" />
+</Frame>
+
+| VCSEL | Emettitore laser |
+| --- | --- |
+| SPAD | Diodo a valanga a fotone singolo |
+| RGB | Modulo RGB |
+| Indicatore di alimentazione | Lampeggia lentamente dopo l'accensione |
+
+## 4. Guida all'integrazione della fotocamera
+
+### 4.1 Progettazione meccanica
+
+### 4.1.1 Campo visivo della telecamera
+
+<Frame>
+  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Campo visivo della telecamera" />
+</Frame>
+
+Figura 3. Campo visivo della telecamera
+
+### 4.1.2 Dimensioni della telecamera
+
+<Frame>
+  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Dimensioni della fotocamera" />
+</Frame>
+
+### 4.2 SDK software
+
+Consulta la guida per l'utente del software host MRDVS e la guida allo sviluppo dell'SDK MRDVS.
+
+* * *
+
+## 5. Ambiente e affidabilità
+
+| Articolo | ㅤ | Specificazione |
+| --- | --- | --- |
+| Ambiente operativo | Temperatura | -20℃--60℃ |
+| ㅤ | Umidità | 0%–95% UR, senza condensa |
+| ㅤ | Illuminazione | 0KLUX--100KLUX |
+| Ambiente di archiviazione | Temperatura | -40℃--85℃ |
+| ㅤ | Umidità | 10%–95% UR, senza condensa |
+| Aumento della temperatura durante il funzionamento normale | ㅤ | Aumento della temperatura dell'involucro &lt;25℃ |
+| Valutazione ESD | ㅤ | ±4KV scarica a contatto, ±8KV scarica in aria |
+| Voto RE | ㅤ | Conforme alla norma GB 9254 CLASSE A |
+| Durata utile | ㅤ | 10 anni |
+| Certificazione ambientale | ㅤ | RoHS |
+
+* * *
+
+## 6. Avvio rapido
+
+### 6.1 Prova di connessione
+
+<Frame>
+  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Prova di connessione" />
+</Frame>
+
+1. Collegare la telecamera a un'alimentazione CC da 24 V/2 A. Un indicatore di alimentazione blu che lampeggia lentamente conferma la normale accensione.
+
+2. Collegare la fotocamera al computer con un cavo Ethernet di categoria 6.
+
+3. L'indirizzo IP della telecamera predefinito in fabbrica è 192.168.100.82.
+
+4. Impostare l'IP del computer sulla sottorete della telecamera e disattivare il firewall del computer.
+
+5. Eseguire il software host per visualizzare le immagini della telecamera.
+
+6. Contattare le vendite o il supporto tecnico di MRDVS per ottenere il software host.
+
+### 6.2 Cablaggio IO
+
+| Interfaccia | Digitare | Note |
+| --- | --- | --- |
+| IN1 | Ingresso | Ingresso discreto attivo-alto; supporta 24 V/ingresso aperto |
+| IN2 | Ingresso | Ingresso discreto attivo-alto; supporta 24 V/ingresso aperto |
+| USCITA1 | Uscita | Uscita discreta terra/aperta; supporta pull-up 24V |
+| USCITA2 | Uscita | Uscita discreta terra/aperta; supporta pull-up 24V |
+| COM | TERRA | Terra comune per uscite discrete; utilizzare IN1 con IN_COM1 |
+
+* * *
+
+## 7. Precauzioni
+
+### 7.1 Classe di sicurezza laser
+
+<Frame>
+  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Classe di sicurezza laser" />
+</Frame>
+
+* * *
+
+## 8. Risoluzione dei problemi
+
+| No. | Problema | Risoluzione |
+| --- | --- | --- |
+| 1| La fotocamera non risponde quando viene aperta | Verificare che il firewall sia disabilitato |
+| 2| Il software host rileva più indirizzi IP | Un altro dispositivo sulla LAN utilizza lo stesso IP; selezionare l'indirizzo IP richiesto |
+| 3| I dati della fotocamera sono instabili dopo l'apertura | Utilizzare un cavo Gigabit Ethernet; i dati possono inizialmente essere instabili su Fast Ethernet |
+| 4| Percorso di installazione del software | Un'installazione predefinita sull'unità C potrebbe essere influenzata dalle impostazioni dei permessi |

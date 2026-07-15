@@ -1,0 +1,1152 @@
+---
+title: "Stellen Sie MRDVS-Erkennungsalgorithmen bereit"
+description: "Installieren, konfigurieren, kalibrieren und verwenden Sie die auf MRDVS-Kameras verfügbaren Erkennungsalgorithmen."
+---
+Benutzerhandbuch zur MRDVS-Algorithmuserkennungsfunktion
+
+## 1. Einführung
+
+In diesem Artikel wird hauptsächlich die Bereitstellung und Verwendung von Meyer Micro Vision-Anwendungsalgorithmen vorgestellt.
+
+## 2. Zusammensetzung des Erkennungssystems
+
+Das System umfasst eine Kamera, eine Algorithmus-Host-Computersoftware und einen Industriecomputer.
+
+## 3. Bereitstellung der Kamera-Hardware
+
+### Kameratyp verwenden
+
+|  |  |
+| --- | --- |
+| Kameratyp | S10Pro 3D-Kamera |
+| Kamera-Benutzerhandbuch ↓ [S10Pro ToF-Kamera](/de/products/s-series/s10-overview) | |
+
+#### Unterstützung für Kameraalgorithmen
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+|  | M4pro | S10 | S10 Pro |
+| Menschliche Erkennung | √ | | |
+| Speicherorterkennung | | | √ |
+| Volumenerkennung | | √ | √ |
+
+### Radar
+
+|  |  |
+| --- | --- |
+| Radartyp | mid360 |
+
+### Kamerainstallationsmethode
+
+Die Kamera muss mit einer Halterung befestigt werden. Sie können die in der Abbildung unten gezeigte Installationsmethode und Kamerahalterung verwenden, um die Kamera zu installieren. Die folgende Abbildung zeigt das Installationsdiagramm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ed7d4ff9-ebc7-456e-9382-c1bbad17757e.avif" alt="Abbildungen zu Kamerainstallationsmethoden" />
+</Frame>
+
+Installationsdiagramm
+
+Die Personenerkennungsfunktion wird im Allgemeinen in einem geneigten (weniger als 30°) oder horizontalen Winkel installiert.
+
+### Kameraverbindung
+
+1. Die Kamera wird mit 24 V betrieben und ist über ein Netzwerkkabel der Kategorie 6e/Kategorie 7 angeschlossen. Öffnen Sie nach der Installation und Bereitstellung der Kamera die Host-Computersoftware zur Lagerorterkennung über einen Laptop, um die externen Parameter der Kamera zu kalibrieren und den Erkennungsbereich festzulegen. Der Algorithmus läuft in Echtzeit in der Kamera ab.
+
+2. Beim Einsatz mehrerer Kameras müssen diese über einen Gigabit-Switch verbunden werden. Entsprechend der im CAD geplanten Einbauhöhe wird die 3D-Vision-Kamera durch die Montagehalterung ortsfest eingebaut, um einen sicheren Halt der Kamera zu gewährleisten. Nachdem die Kamera installiert ist, schließen Sie sie an die geregelte 24-V-Gleichstromversorgung an und verbinden Sie sie über das entsprechende Netzwerkkabel mit dem Schalter oder der Hauptsteuerung.
+
+3. Nachdem die Vorbereitung abgeschlossen ist, platzieren Sie die Waren im Lager im Sichtfeld der Kamera und fahren Sie mit der Softwarebereitstellung fort.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5be1e0db-e949-477f-bfb4-5c89a0debd78.avif" alt="Bearbeiten" />
+</Frame>
+
+### Kameranetzwerkkonfiguration
+
+1. Nehmen Sie das Win10-System als Beispiel und doppelklicken Sie auf die Systemsteuerung
+
+2. Nachdem Sie die Systemsteuerung aufgerufen haben, klicken Sie auf „**Netzwerkstatus und Aufgaben anzeigen**“.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d0ad7fd5-7f9c-43fb-8c8e-fb45f83fcf98.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration" />
+</Frame>
+
+3. Rufen Sie die Benutzeroberfläche des Netzwerk- und Freigabecenters auf und klicken Sie auf „**Adaptereinstellungen ändern**“.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c7f569d-7ce6-4c16-a926-03cfd5e42d13.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 2" />
+</Frame>
+
+4. Rufen Sie die Netzwerkverbindungsschnittstelle auf und doppelklicken Sie mit der Maus, um das Ethernet auszuwählen, mit dem die Kamera verbunden ist.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a8ff254-6ffc-4a84-9cbe-19c42f984c93.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 3" />
+</Frame>
+
+5. Überprüfen Sie den Ethernet-Status (es wird empfohlen, einen Gigabit-Netzwerkanschluss zu verwenden) und klicken Sie auf die Schaltfläche „**Eigenschaften**“.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b59f551e-1741-4f24-b4ff-8b77bbf16981.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 4" />
+</Frame>
+
+6. Rufen Sie die Ethernet-Eigenschaftenoberfläche auf, suchen Sie nach „**Internet Protocol Version 4 (TCP/IPv4)**“ und doppelklicken Sie, um sie zu öffnen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b166daac-7f5c-45c6-9595-2861ff9f2633.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 5" />
+</Frame>
+
+7. Geben Sie die Schnittstelle Internet Protocol Version 4 (TCP/IPv4) ein und wählen Sie „**Folgende IP-Adresse verwenden**“, um die IP-Adresse, die Subnetzmaske und das Standard-Gateway einzugeben.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1798a3b3-d233-4cd1-90a8-77416cf0160f.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 6" />
+</Frame>
+
+8. IP-Adresseinstellung: 192.168.100.xxx Subnetzmaske: 255.255.255.0 Standard-Gateway: 192.168.100.1. Stellen Sie die IP wie unten gezeigt ein. Nachdem die Einstellung abgeschlossen ist, klicken Sie auf die Schaltfläche „OK“.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ec8d1e2-5747-4f79-8976-d3bf0256e8d1.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration 7" />
+</Frame>
+
+9. Nachdem Sie auf die Schaltfläche „OK“ geklickt haben, kehren Sie automatisch zur vorherigen Oberfläche zurück. Klicken Sie erneut auf „**OK**“, um die Netzwerkkonfiguration abzuschließen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a22760b-a0a6-44d1-b3ce-5e73bddcac75.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration 8" />
+</Frame>
+
+### Bestätigung zum Herunterfahren der Firewall
+
+1. Nachdem die Kamera fest installiert und bereitgestellt wurde, muss die Firewall des Computers ausgeschaltet werden.
+
+2. Am Beispiel des Win10-Systems doppelklicken Sie auf dem Desktop auf [**Systemsteuerung**] und klicken nach der Eingabe auf [**System und Sicherheit**].
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3354b940-7e03-4c38-a151-af6d75808642.avif" alt="Firewall-Konfiguration" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2d360745-c9b5-48a6-8139-e6cc2f673a9d.avif" alt="Firewall-Konfiguration 2" /> |
+
+1. Klicken Sie auf die Schaltfläche [**Windows Defender Firewall**], um die Firewall-Seite aufzurufen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0cff2eb6-5667-497b-bd7b-780f02c8ad68.avif" alt="Symbol zur Bestätigung des Herunterfahrens der Firewall 3" />
+</Frame>
+
+1. Klicken Sie auf die Schaltfläche [**Windows Defender-Firewall aktivieren oder deaktivieren**], um die Seite zum Ein-/Ausschalten der Firewall aufzurufen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1a7157a-348a-48ea-b574-a175a2a39356.avif" alt="Symbol zur Bestätigung des Herunterfahrens der Firewall 4" />
+</Frame>
+
+1. Wählen Sie [**Windows Defender-Firewall ausschalten**] für private und öffentliche Netzwerke und klicken Sie auf die Schaltfläche [**Bestätigen**], um die Firewall auszuschalten. Q
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1dd2137-e249-4193-a4ee-3e095b5171f7.avif" alt="Symbol zur Bestätigung des Herunterfahrens der Firewall 5" />
+</Frame>
+
+## 4. Installationsanleitung für die Kamerasoftware
+
+### Softwareinstallationsprozess
+
+- Wenn Sie die Software zum ersten Mal verwenden, können Sie den folgenden Vorgang befolgen, um den Vorgang abzuschließen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c8922d3a-2b74-4582-9b3d-119ba6be460d.avif" alt="Bild 2" />
+</Frame>
+
+### Anforderungen an die Betriebsumgebung der Algorithmus-Hostcomputersoftware
+
+Um die Anforderungen zu erfüllen, wird empfohlen, die obere Computerausrüstung zur Lagerstandorterkennung laufen zu lassen.
+
+|  |  |
+| --- | --- |
+| Betriebssystem | Windows10 und höher |
+| CPU | Empfohlener Intel® Core™ i5 der 7. Generation und höher |
+| Erinnerung | 8G und höher |
+| GPU | Intel® UHD-Grafik/Core-Display oder höher |
+
+### Installieren Sie die Kamera-Host-Software
+
+1. Laden Sie die Kamera-Host-Software aus der MRDVS-Wissensdatenbank herunter: [Software-Download](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Software-Download")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30f8b131-71f1-468d-bbe5-20ee85bf684b.avif" alt="Abbildungen zur Installation der Kamera-Host-Software" />
+</Frame>
+
+1. Doppelklicken Sie, um die Lanxin-MRDVS-Hostcomputersoftware zu installieren. Der Host-Computer muss außerhalb des Laufwerks C installiert werden.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8dcb4047-56e6-40a1-8b31-96a7222e187d.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 2" />
+</Frame>
+
+1. Nachdem Sie die zu verwendende Sprache ausgewählt haben, klicken Sie auf [**OK**], wählen Sie ein anderes Installationsverzeichnis als das Laufwerk C und klicken Sie auf [**Weiter**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f68ebcb-d10d-4601-9cb4-aa816f1e1efc.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 3" />
+</Frame>
+
+1. Aktivieren Sie [**Desktop-Verknüpfung erstellen**] und klicken Sie auf [**Weiter**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/35e66c38-ebb9-47d9-a0f5-1c2bcad9a357.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 4" />
+</Frame>
+
+1. Klicken Sie auf die Schaltfläche [**Installieren**], um mit der Installation der Software zu beginnen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c659d00-a437-4e7a-b17f-e90c008c78d0.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 5" />
+</Frame>
+
+1. Nachdem die Installation abgeschlossen ist, können Sie die Kamera-Host-Software ausführen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/62cfa35a-c531-43e9-a9f8-56b8bdf06649.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 6" />
+</Frame>
+
+### Installieren Sie die Algorithmus-Hostcomputersoftware
+
+1. Kopieren Sie die erhaltene Algorithmus-Hostcomputer-Software auf den Kamera-Hostcomputer \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cb41b49-454e-4400-8181-44dbc75bdd48.avif" alt="Abbildungen im Zusammenhang mit der Installation der Algorithmus-Hostcomputersoftware" />
+</Frame>
+
+1. Wählen Sie beim Ersetzen [**Dateien im Ziel ersetzen**] aus.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/276f9cf3-d080-4af9-800c-871e99488471.avif" alt="Abbildungen im Zusammenhang mit der Installation der Algorithmus-Hostcomputersoftware 2" />
+</Frame>
+
+1. Doppelklicken Sie, um die Software zu öffnen und auszuführen.
+
+2. In der Gerätelistenleiste links ist der Kamerastatus gelb, was bedeutet, dass die Kamera den Erkennungsalgorithmus nicht gestartet hat.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/61ad5b70-d5ee-43b1-86fa-d63010b7d237.avif" alt="Abbildungen zur Installation der Algorithmus-Hostcomputersoftware 3" />
+</Frame>
+
+### Algorithmus-PC-Software-Upgrade
+
+Um die Software des Algorithmus-Hostcomputers zu aktualisieren, muss nur die Datei „**.exe**“ ersetzt werden.
+
+### Algorithmus-Upgrade
+
+Hinweis: Bevor Sie die Algorithmus-Firmware aktualisieren, müssen Sie sicherstellen, dass es sich bei der Kamera-Firmware um die MDS-Version handelt.
+
+#### Kamera-Hostcomputer
+
+1. Um den Kameraalgorithmus zu aktualisieren, müssen Sie die Kamera-Host-Software öffnen und auf [**LxCameraViewer.exe**] doppelklicken.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7aebe7e0-a511-4443-bcc4-23df3ece2209.avif" alt="Abbildungen im Zusammenhang mit dem Kamera-Hostcomputer" />
+</Frame>
+
+1. Klicken Sie auf die Schaltfläche [**Öffnen**], um das Kamerabild anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/74ff1e45-932d-4b06-b1f3-9034f41bcbb6.avif" alt="Abbildungen zum Kamera-Hostcomputer 2" />
+</Frame>
+
+1. Klicken Sie auf Grundlegende Tools→Funktionseinstellungen→[**Firmware-Upgrade**], um den Erkennungsalgorithmus zu aktualisieren. (Bitte wenden Sie sich an den technischen Support, um den Algorithmus zu erhalten.)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1d2f22cd-74da-44b4-909a-fed4c986507e.avif" alt="Abbildungen im Zusammenhang mit Kamera-Hostcomputer 3" />
+</Frame>
+
+1. Nachdem Sie auf die Schaltfläche [**Ausführen**] geklickt haben, wählen Sie „Erkennungsalgorithmus“ und klicken Sie auf die Schaltfläche [**Öffnen**], um das Flashen des Algorithmus zu starten.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Abbildungen im Zusammenhang mit Kamera-Hostcomputer 4" />
+</Frame>
+
+#### Algorithmus-Host-Computer
+
+1. Verwenden Sie die Algorithmus-Hostcomputersoftware, um die Firmware zu aktualisieren, und Sie müssen eine Kamera auswählen. Klicken Sie zunächst in der Geräteliste links auf die Kamera, die aktualisiert werden muss, und klicken Sie dann auf [**Firmware aktualisieren**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3d76226-6572-4c82-8754-8bd0bf34a713.avif" alt="wwwwww" />
+</Frame>
+
+1. Wählen Sie „Erkennungsalgorithmus“ und klicken Sie auf die Schaltfläche [**Öffnen**], um das Flashen des Algorithmus zu starten.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Algorithmus-Host-Computer-bezogenes Diagramm 2" />
+</Frame>
+
+#### Ergebnisse aktualisieren
+
+1. Während des Algorithmus-Flashing-Vorgangs wird die Kamera neu gestartet und die Kamera-ID in der Geräteliste auf der linken Seite verschwindet. Nach der erneuten Anzeige bedeutet dies, dass das Blinken erfolgreich war.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e847d737-d14d-4e55-b756-1377aa6ef832.avif" alt="Abbildungen zu Upgrade-Ergebnissen" />
+</Frame>
+
+1. Nach Abschluss des Upgrades wird der entsprechende Kamerahintergrund in der Software des Algorithmus-Hostcomputers grün angezeigt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b43d8cd7-58e6-467f-abcc-ff8c9cc1af4e.avif" alt="Symbol für Upgrade-Ergebnis 2" />
+</Frame>
+
+## 5. Algorithmus-Host-Computer-Softwareschnittstelle
+
+### Start des Algorithmus-Host-Computerprogramms
+
+1. Doppelklicken Sie auf das Programm [**LxApplicationViewer.exe**], um die Software des Algorithmus-Hostcomputers zu starten.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4e40bb9a-d669-45ad-bf6a-557496333fda.avif" alt="Administrator" />
+</Frame>
+
+Geräteliste. Das grüne Symbol zeigt an, dass die Kamera normal angeschlossen ist. Klicken Sie, um zur Perspektive der entsprechenden Kamera zu wechseln.
+
+Informationsliste. In dieser Liste werden alle kamerabezogenen Betriebsaufzeichnungen und deren Ergebnisse angezeigt.
+
+Umschalten des Anzeigemodus. Durch Auswahl des RGB-Modus wird ein 2D-Bild angezeigt, während durch Auswahl des Punktwolkenmodus eine 3D-Punktwolke angezeigt wird.
+
+Funktionsmenü. In diesem Menü können Sie den aktuellen Anzeigealgorithmus wechseln, die Grundeinstellungen des Algorithmus anpassen, Kameraparameter konfigurieren oder die Sprache der Benutzeroberfläche ändern.
+
+Grundfunktionen. Kann zur Verwaltung der Algorithmusparameter umgeschaltet werden, normale Benutzer haben nur Anzeigeberechtigungen. Verschiedene Algorithmen weisen hier zusätzliche Parameter und Steuerungsmöglichkeiten auf. Darüber hinaus können Administratoren den aktuell ausgeführten Algorithmus ändern.
+
+Kamerabedienung. Sie können einige Vorgänge direkt an der Kamera ausführen.
+
+1. Der aktuelle Benutzer wählt den Administrator und muss kein Passwort eingeben. Klicken Sie direkt auf „Bestätigen“, um in den Administratormodus zu gelangen (die Algorithmusparameter können im Benutzermodus nicht eingestellt werden).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/34efc169-ddf1-4544-bf3a-43f7e249e6f4.avif" alt="Screenshot 2025-03-04 111733" />
+</Frame>
+
+### Grundlegende Werkzeuge
+
+Zu den grundlegenden Werkzeugen gehören hauptsächlich Benutzerwechsel, idealer Boden, externer Parameterboden, Anzeigecache, Algorithmusanzeige, exportierte Bildspeicherung und historische Wiedergabe.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7480b2d4-a30a-4a88-b067-f004930c84f8.avif" alt="2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Grundlegende Werkzeuge | Funktionale Bedeutung |
+| Benutzerwechsel | Berechtigungen wechseln, Benutzerberechtigungen: Nur Erkennungsergebnisse anzeigen. Administratorrechte: Kann Kamera, Erkennungsalgorithmusparameter usw. konfigurieren. |
+| Idealer Boden | Der Boden bezieht sich auf die horizontale Linie und kann ausgeschaltet werden. |
+| Externer Parameter Masse | Die horizontale Ebene, auf der die externen Parameter der Kamera kalibriert werden. Es kann ausgeschaltet werden. |
+| Cache anzeigen | Keine Änderung erforderlich. |
+| Anzeigealgorithmus | Der aktuell verwendete Algorithmus. |
+| Gespeicherte Bilder exportieren | Gespeicherte Bilder exportieren. |
+| Verlaufswiedergabe | Sehen Sie sich RGB- und TOF-Bildprotokolle an. |
+| Umschalten des Anwendungsalgorithmus | Wählen Sie den zu verwendenden Algorithmus aus. Normale Administratoren können höchstens einen Algorithmus gleichzeitig ausführen. Klicken Sie nach der Auswahl auf Speichern und ausstellen |
+| Anzeige der Erkennungsergebnisse | Zeigt die Erkennungsergebnisse des aktuell angezeigten Algorithmus an. |
+
+### Sprache
+
+Wechseln Sie zwischen Chinesisch und Englisch.
+
+### Statusleiste
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/50568f80-85ac-45cc-8aa6-330262048ac9.avif" alt="25909893521\_171648620291\_Screenshot 2025-03-05 134432" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Statusleiste | Funktionale Bedeutung |
+| RGB | Aktivieren Sie diese Option, um RGB-Bilder anzuzeigen |
+| Punktwolke | Sehen Sie sich nach der Überprüfung das Punktwolkenbild | an
+| Stop-Algorithmus | Nachdem Sie auf „Stoppen“ des Algorithmus geklickt haben, wird der Algorithmus erst beim nächsten Einschalten der Kamera gestartet. |
+| Firmware aktualisieren | Führen Sie ein Upgrade der Algorithmus-Firmware durch. |
+| Kamera neu starten | Kamera neu starten. |
+
+### Wiedergabe und Ansicht
+
+Bei jedem Zustandswechsel wird ein Datenrahmen gespeichert, der zum Zeitpunkt des Wechsels als Rahmen aus RGB-Bild- und Punktwolkendaten gespeichert wird. Die Wiedergabe zwischen verschiedenen Algorithmen ist nicht interoperabel. Der Zeitstandard ist die interne Systemzeit der Kamera. Bitte beurteilen Sie nicht anhand der Computersystemzeit.
+
+Klicken Sie hier, um die Wiedergabe anzuzeigen. Auf der linken Seite des Popup-Fensters werden die Wiedergabebilder angezeigt. Klicken Sie auf ein beliebiges Element, um die Wiedergabedaten des entsprechenden Datums zu öffnen. Sie können RGB-Bilder oder TOF-Daten anzeigen.
+
+**![RGB-Wiedergabe](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0537bd17-ebb2-44f8-819d-1ab86f6c5db0.avif)![Wiedergabe-TOF](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4fe3d671-26ad-4b45-9bb6-36e13bf879dd.avif)**
+
+### Globale Funktionen
+
+Bitte stellen Sie sicher, dass der Algorithmus in der Kamera aktiviert wurde und dass die Kamera nach der Konfiguration von Parametern über den Kamera-Hostcomputer unter normalen Nutzungsbedingungen ausfällt. Die automatische Aktualisierungsfunktion sollte in den folgenden Situationen aktiviert werden.
+
+(1) Wenn der Hintergrund der entsprechenden Kamera in der Geräteliste gelb angezeigt wird, deutet dies darauf hin, dass der Algorithmus während des Bildaufnahmevorgangs auf eine Blockade stößt.
+
+(2) Wenn der Hintergrund der entsprechenden Kamera in der Geräteliste grün ist, das Bild aber nicht aktualisiert wird, bedeutet dies ebenfalls, dass der Algorithmus bei der Bildaufnahme blockiert ist. Obwohl die Kommunikation normal ist, sendet das System weiterhin zwischengespeicherte Daten.
+
+## 6. Kalibrierung externer Kameraparameter
+
+### Kamerakonfiguration
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9000666e-1285-403f-941b-5cbcfd74305c.avif" alt="kappframework-SImIQI(1)(1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Kameraeinstellungen | Funktionsbedeutung |
+| Kameraname | Ändern Sie den Namen der aktuellen Kamera. Wenn mehrere Kameras vorhanden sind, können Sie dies anhand des Kameranamens beurteilen. |
+| Simulationsmodus | Interner Gebrauch, Benutzer müssen es nicht öffnen. |
+| Bildspeichermodus | Aktivieren Sie die algorithmische Bildspeicherung, um Bilddaten in der Kamera zu speichern. |
+| Aufnahmemodus | Der Aufnahmemodus ist in MDS und SDK unterteilt. Durch die Verwendung von MDS werden die Kameraberechtigungen nicht beansprucht und der Kamera-Hostcomputer kann normal geöffnet werden. Durch die Verwendung des SDK werden die Kameraberechtigungen beansprucht und der Host-Computer kann beim Ausführen des Algorithmus nicht geöffnet werden. |
+| x | Kamera kalibriert x-Position |
+| y | Die y-Position der Kamerakalibrierung |
+| z | Kamerakalibrierte Höhe z vom Boden |
+| rollen | Kamerakalibrierungswinkel |
+| Tonhöhe | Kamerakalibrierungswinkel |
+| gieren | Kamerakalibrierungswinkel |
+| Idealer Boden | Belassen Sie es einfach als Standard. |
+| Speichern und senden | Nachdem die externe Parameterkalibrierung abgeschlossen ist, klicken Sie zum Speichern auf die Schaltfläche [Speichern und senden], andernfalls werden die Parameter nicht wirksam |
+| Konfiguration von Kamera lesen | Aktuelle Konfigurationsparameter von der Kamera lesen |
+| Externe Parameterkalibrierung | Kalibrieren Sie die Höhe der Kamera vom Boden sowie die Kameraroll-, Nick- und Gierwinkel. |
+
+### Vertikale Installation der externen Parameterkalibrierung
+
+1. Klicken Sie auf die Kamerakonfiguration und wechseln Sie zur Parameterkalibrierungsoberfläche. Stellen Sie vor der Durchführung der externen Parameterkalibrierung sicher, dass x, y, z, Roll, Nick und Gier 0 sind. Wenn sie nicht 0 sind, müssen Sie alle Parameter auf 0 zurücksetzen und auf die Schaltfläche [**Speichern und Senden**] klicken. Nachdem die Parameter erfolgreich gespeichert wurden, kalibrieren Sie die externen Parameter neu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/528da252-dee3-4e31-9d54-07c406b80e8e.avif" alt="Abbildungen im Zusammenhang mit der vertikalen Installation der externen Parameterkalibrierung" />
+</Frame>
+
+1. Nachdem Sie bestätigt haben, dass alle Parameter 0 sind, klicken Sie auf die Schaltfläche [**Externe Parameterkalibrierung**]. Nachdem die Kalibrierung erfolgreich war, zeigt die Software eine Eingabeaufforderung an. Die kalibrierten Kameraparameter sehen Sie in der Parameterspalte rechts. Verschiedene Algorithmen verfügen über entsprechende Ausrichtungsschemata.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4795bbe1-801c-4fa8-82f8-3a9c5e461f95.avif" alt="Abbildungen im Zusammenhang mit der vertikalen Installation der externen Parameterkalibrierung 2" />
+</Frame>
+
+### Externe Parameterkalibrierung bei horizontaler Installation
+
+Klicken Sie auf Kamerakonfiguration, um zur Parameterkalibrierungsoberfläche zu wechseln. Bei horizontaler Installation müssen Sie die Bodenpunktwolke manuell am Koordinatensystem ausrichten. Im Allgemeinen müssen Sie nur die Rollen- und Z-Größe anpassen. Andere sind standardmäßig auf 0 gesetzt. Stellen Sie gleichzeitig sicher, dass die X-Achse (rot) und die Y-Achse (grün) mit der Bodenpunktwolke übereinstimmen und die Z-Achse (blau) senkrecht zur Bodenpunktwolke verläuft und nach oben zeigt.
+
+Klicken Sie nach Abschluss der Anpassung auf Speichern und senden. ![3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/549297ef-b224-4d08-a1fb-633301a4ed18.avif)![2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/45ad1ad0-f171-463c-b789-790f4cbec1b2.avif)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/abfab570-cb25-4850-acd9-924bd891853c.avif" alt="1" />
+</Frame>
+
+## 7. Bedeutung der Algorithmusparameter
+
+### Erkennung des menschlichen Körpers
+
+#### Globale Konfiguration der menschlichen Erkennung
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Illustrationen zur globalen Konfiguration der menschlichen Erkennung" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Globale Konfiguration der Personenerkennung | Funktionale Bedeutung |
+| Versionsnummer des Algorithmus | Aktuelle Informationen zur Algorithmusversion. |
+| Erkennungshäufigkeit | Erkennungshäufigkeit des Algorithmus. Das heißt, wie viele ms das Bild und die Ergebnisdaten aktualisiert werden müssen. |
+| Zeitbereichsfilterung | Filterparameter: Wenn der Parameterwert auf 3 eingestellt ist, erfordert das System, dass die Erkennungsergebnisse von drei aufeinanderfolgenden Malen vollständig konsistent sind, bevor sie als gültige Daten beurteilt werden. |
+| Kernelgröße | Durch Korrosion vergrößert sich die Kerngröße auf einem 2D-Bild. Große Kernel verkleinern das Ziel erheblich oder erweitern den Hintergrund, während kleine Kernel mehr Details beibehalten. Ändern Sie es nach Bedarf. |
+| Entfernungsschwelle | Wird verwendet, um zu bestimmen, ob zwei Datenpunkte „ähnlich“ sind oder „zur gleichen Kategorie gehören“. Wenn das Ergebnis unter dem Schwellenwert liegt, wird es als Übereinstimmung oder ähnlicher Typ betrachtet. |
+| Mindestpunktzahl | Die Mindestanzahl an Punktwolken, die für semantisches Clustering erforderlich sind. |
+| Unsemantische Mindestpunktzahl | Unsemantische Mindestanzahl von Punktwolken, die für das Clustering erforderlich sind. |
+| Domaingröße | Bestimmt, welche Punkte als „Nachbarpunkte“ gelten, was sich direkt auf die Granularität und Genauigkeit der Clustering-Ergebnisse auswirkt. Ändern Sie es nach Bedarf. |
+| Rotationserkennung | Je nach Einbaulage der Kamera befindet sich das vordere 0°-Logo unten, entsprechend anpassen. |
+
+#### Konfiguration des Personenerkennungsbereichs
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30812d41-81b0-48aa-8e5b-87b2d0c273b4.avif" alt="25909893521\_171648566990\_Konfigurationsparameter für die Personenerkennung (1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Konfiguration des Personenerkennungsbereichs | Funktionale Bedeutung |
+| Bereich hinzufügen | Fügen Sie einen Personenerkennungsbereich hinzu. |
+| Bereich löschen | Löschen Sie den Personenerkennungsbereich. |
+| Aktueller Rahmen | Der Rahmen wählt den aktuellen Personenerkennungsbereich aus. |
+| Mindestens X | Der Mindestwert in der X-Richtung des Personenerkennungsrahmens. |
+| Maximales X | Der Maximalwert in der X-Richtung des menschlichen Erkennungsrahmens. |
+| Minimales Y | Der Mindestwert in der Y-Richtung des Personenerkennungsrahmens. |
+| Maximales Y | Der Maximalwert in der Y-Richtung des Personenerkennungsrahmens. |
+| Minimales Z | Der Mindestwert in Z-Richtung des Personenerkennungsrahmens. |
+| Maximales Z | Der Maximalwert in Z-Richtung des Personenerkennungsrahmens. |
+| ID | Der Name des menschlichen Erkennungsrahmens. Beim Zeichnen mehrerer Personenerkennungsbereiche können diese durch Ändern der ID-Namen unterschieden werden. |
+| Ziehen Sie die Maus, um den Bereich anzupassen | Halten Sie im Anpassungsbereich die linke Taste gedrückt, um den Personenerkennungsbereich so zu ziehen, dass er in x- und y-Richtung verschoben wird. Klicken Sie mit der rechten Maustaste und halten Sie die Maustaste gedrückt, um den Personenerkennungsbereich in Z-Richtung zu verschieben. |
+
+### Speicherorterkennung
+
+#### Globale Konfiguration der Standorterkennung
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ab2707-a23e-4f52-9a27-32a5d1de9579.avif" alt="Abbildungen zur globalen Konfiguration der Speicherorterkennung" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Globale Konfiguration der Speicherorterkennung | Funktionale Bedeutung |
+| Versionsnummer des Algorithmus | Aktuelle Informationen zur Algorithmusversion. |
+| KI-Filterung | Unterstützt Semantik und kann Personen ohne Erkennung segmentieren. (Noch nicht geöffnet) |
+| Erkennungshäufigkeit | Erkennungshäufigkeit des Algorithmus. |
+| Ausrichtungswinkel | Der maximal zulässige Versatzwinkel für ein Objekt relativ zum Standort (gültig, wenn der Ausrichtungseffekt aktiviert ist). |
+| Ausrichtungseffekt | Nachdem der Ausrichtungseffekt aktiviert wurde, wird der aktuelle Winkelversatz des Objekts erkannt und festgestellt, ob dieser den gezeichneten Erkennungsbereich überschreitet. Das erkannte Objekt wird mit einem gelben Volumenfeld versehen. |
+| Zeitbereichsfilterung | Filterparameter: Wenn der Parameterwert auf 3 eingestellt ist, erfordert das System, dass die Erkennungsergebnisse von drei aufeinanderfolgenden Malen vollständig konsistent sind, bevor sie als gültige Daten beurteilt werden. |
+| Mindestpunktzahl | Wenn die Objektpunktwolke größer als die Mindestpunktzahl ist, wird davon ausgegangen, dass ein Objekt vorhanden ist. |
+
+#### Konfiguration des Speicherorterkennungsbereichs (2D RGB)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/54021f59-b55a-4174-b5bb-3efbdb872c60.avif" alt="Parameter für die 2D-Standorterstellung" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Konfiguration des Speicherort-Erkennungsbereichs | Funktionale Bedeutung |
+| Einen Standort hinzufügen | Fügen Sie einen Standorterkennungsbereich hinzu. |
+| Standort löschen | Standorterkennungsbereich löschen. |
+| Aktuelle Box | Rahmen Sie den aktuellen Standorterkennungsbereich ein. |
+| Mindestens X | Der Mindestwert in der X-Richtung des Standorterkennungsrahmens. (Einheitspixel) |
+| Maximales X | Der Maximalwert in der X-Richtung des Standorterkennungsrahmens. (Einheitspixel) |
+| Minimales Y | Minimaler Wert in der Y-Richtung des Standorterkennungsrahmens. (Einheitspixel) |
+| Maximales Y | Der Maximalwert in der Y-Richtung des Standorterkennungsrahmens. (Einheitspixel) |
+| ID | Der Name des Standorterkennungsfelds. Wenn Sie mehrere Speicherort-Erkennungsbereiche zeichnen, können Sie diese durch Ändern der ID-Namen unterscheiden. |
+
+#### Konfiguration des Speicherorterkennungsbereichs (3D-Punktwolke)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef7ad2be-87a8-4336-a4f8-870e78fef268.avif" alt="Abbildungen zur Konfiguration des Speicherort-Erkennungsbereichs (3D-Punktwolke)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Konfiguration des Speicherort-Erkennungsbereichs | Funktionale Bedeutung |
+| Einen Standort hinzufügen | Fügen Sie einen Standorterkennungsbereich hinzu. |
+| Standort löschen | Standorterkennungsbereich löschen. |
+| Aktuelle Box | Rahmen Sie den aktuellen Standorterkennungsbereich ein. |
+| Mindestens X | Der Mindestwert in der X-Richtung des Standorterkennungsrahmens. |
+| Maximales X | Der Maximalwert in der X-Richtung des Standorterkennungsrahmens. |
+| Minimales Y | Minimaler Wert in Y-Richtung des Standorterkennungsrahmens. |
+| Maximales Y | Der Maximalwert in der Y-Richtung des Standorterkennungsrahmens. |
+| Minimales Z | Der Mindestwert in Z-Richtung des Standorterkennungsrahmens. |
+| Maximales Z | Der Maximalwert in Z-Richtung des Speicherorterkennungsrahmens. |
+| ID | Der Name des Standorterkennungsfelds. Wenn Sie mehrere Speicherort-Erkennungsbereiche zeichnen, können Sie diese durch Ändern der ID-Namen unterscheiden. |
+| Ziehen Sie die Maus, um den Bereich anzupassen | Halten Sie im Anpassungsbereich die linke Taste gedrückt, um den Standorterkennungsbereich zu ziehen und ihn in x- und y-Richtung zu verschieben. Klicken Sie mit der rechten Maustaste und halten Sie die Maustaste gedrückt, um den Standorterkennungsbereich zu ziehen und ihn in Z-Richtung zu verschieben. |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ffc444e5-62c6-4098-a750-9be912ee5023.avif" alt="Abbildungen zur Konfiguration des Speicherort-Erkennungsbereichs (3D-Punktwolke) 2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Erweiterte Funktion der Standorterkennung – Kopieren des Standortrahmens | Funktionale Bedeutung |
+| Aktuellen Frame kopieren | Der aktuell ausgewählte Standorterkennungsbereich kann kopiert werden. |
+| Was Sie über Kopieren und Schwenken wissen müssen | Tipps zum Kopieren und Schwenken von Inhalten. |
+| Richtung | Die Richtung des Kopierpositionserkennungsbereichs besteht aus drei Richtungen: X, Y und Z. |
+| Abstand | Der Abstand zwischen dem Standorterkennungsbereich und dem Kopierbereich. |
+| Menge | Die Größe des Kopierpositionserkennungsbereichs. |
+| Ausführen | Nachdem Sie auf die Schaltfläche „Ausführen“ geklickt haben, kopieren Sie mehrere Prüforte mit demselben Abstand. |
+
+|  |  |
+| --- | --- |
+| Erweiterte Funktion zur Speicherorterkennung – QR-Code-Kalibrierung | Funktionale Bedeutung |
+| Was Sie über die QR-Code-Kalibrierung wissen müssen | Tipps zum Inhalt der QR-Code-Kalibrierung. |
+| X | Standortbreite. |
+| Y | Standortlänge. |
+| Z_MIN | Die Mindesttiefe des Standorts. |
+| Z_MAX | Die höchste Erkennungsposition des Lagers. |
+| Kalibrierung | Klicken Sie auf die Schaltfläche „Kalibrierung“, um den Lagerstandort für die QR-Code-Verifizierung zu kalibrieren. |
+
+### Lautstärkeerkennung
+
+#### Globale Konfiguration der Volumenerkennung
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/85a006a7-b982-48a6-a38a-e0c6029c1629.avif" alt="Abbildungen zur globalen Konfiguration der Volumenerkennung" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Globale Konfiguration der Volumenerkennung | Funktionale Bedeutung |
+| Versionsnummer des Algorithmus | Aktuelle Informationen zur Algorithmusversion. |
+| Triggermodus | Auslöseschaltertaste. Nachdem Sie den Triggermodus aktiviert haben, klicken Sie auf die Schaltfläche „Speichern und senden“, um ihn erfolgreich zu aktivieren. |
+| Aufwärtserkennung | Umkehrerkennung des Kamerakoordinatensystems. |
+| Erkennungshäufigkeit | Wie oft erkennt der Algorithmus. Das heißt, wie viele ms das Bild und die Ergebnisdaten aktualisiert werden müssen. |
+| Ebenenabstand ermitteln | Bestätigen Sie die Position der Unterseite des Objekts. Einheit: mm. |
+| Schwellenwert für Nachbaranzahl | Filterparameter, keine Änderungen erforderlich. Der Standardwert ist ausreichend. |
+| Schwellenwert für Nachbarschaftsentfernung | Filterparameter, keine Änderung erforderlich, Standardwerte sind ausreichend. |
+| Normaler Vektorfilterschwellenwert | Filterparameter für Objektkantenverrundungen, der zum Filtern der Neigungsebene der Punktwolke verwendet wird. Ist das gemessene Volumen kleiner als der tatsächliche Wert, kann der Wert auf einen größeren Wert angepasst werden. 60 wird empfohlen (im Allgemeinen ist keine Anpassung erforderlich). |
+| Normaler Vektorabstandsschwellenwert | Filterparameter, empfohlener Wert 20–30 (kompatibel mit den meisten erkannten Objekten). |
+| Mindestpunktzahl | Wenn die Objektpunktwolke größer als die Mindestpunktzahl ist, wird davon ausgegangen, dass ein Objekt vorhanden ist. |
+| Mindestens X | Die Mindestlänge des Objekts. Wenn weniger als dieser Wert gemessen wird, filtert der Algorithmus das Objekt. Einheit: mm. |
+| Minimales Y | Die Mindestbreite des Objekts. Wenn weniger als dieser Wert gemessen wird, filtert der Algorithmus das Objekt. Einheit: mm. |
+| Minimales Z | Die Mindesthöhe des Objekts. Wenn weniger als dieser Wert gemessen wird, filtert der Algorithmus das Objekt. Einheit: mm. |
+
+#### Konfiguration des Volumenerkennungsbereichs
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/60bf86ae-e1e2-45f0-b30a-b260d8aff036.avif" alt="Abbildung zur Konfiguration des Volumenerkennungsbereichs" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Konfiguration des Volumenerkennungsbereichs | Funktionale Bedeutung |
+| Mindestens X | Minimaler Wert in X-Richtung des Volumenerkennungsrahmens |
+| Maximales X | Maximalwert in X-Richtung des Volumenerkennungsrahmens |
+| Minimales Y | Minimaler Wert in Y-Richtung des Volumenerkennungsrahmens |
+| Maximales Y | Maximalwert in Y-Richtung des Volumenerkennungsrahmens |
+| Minimales Z | Minimaler Wert in Z-Richtung des Volumenerkennungsrahmens |
+| Maximales Z | Maximalwert in Z-Richtung des Volumenerkennungsrahmens |
+
+## 8. Algorithmus-Bereitstellungsprozess
+
+Hinweis: Wechseln Sie nach dem Öffnen der Algorithmus-Hostcomputersoftware zur Punktwolkenansicht, bewegen Sie die Maus in den Bildanzeigebereich und bewegen Sie das Mausrad, um die Punktwolkendaten anzuzeigen.
+
+### 8.1 Bereitstellungsprozess zur Personenerkennung
+
+#### Erkennung des menschlichen Körpers – externe Parameterkalibrierung
+
+Einzelheiten finden Sie unter 6.3 Externe Parameterkalibrierung für horizontale Installation.
+
+Stellen Sie nach Abschluss der Kalibrierung sicher, dass die X-Achse (roter Pfeil) und die Y-Achse (grüner Pfeil) mit der Bodenpunktwolke übereinstimmen und die Z-Achse (blauer Pfeil) senkrecht zur Bodenpunktwolke verläuft und nach oben zeigt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagramm zur externen Parameterkalibrierung des Speicherorts" />
+</Frame>
+
+#### Menschenerkennung – globale Einstellungen
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Personenerkennung – Symbole für globale Einstellungen" />
+</Frame>
+
+1. Klicken Sie auf „Menschenerkennung“, um die Parametereinstellungen einzugeben, hauptsächlich die globale Rotationserkennung anzupassen und andere Parameter als Standard zu belassen. Die Rotationserkennung hängt vom Installationswinkel der Kamera ab und die Drehung der Kamera im Uhrzeigersinn ist auf 0°, 90°, 180° und 270° begrenzt.
+
+2. Nachdem die globalen Konfigurationseinstellungen abgeschlossen sind, klicken Sie auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+#### Menschliche Erkennung – Regionskonfiguration
+
+1. Um den Erkennungsbereich einzustellen und die Länge und Breite (xy) der Erkennung anzupassen, empfiehlt es sich, zunächst zur oberen und unteren Ansicht zu wechseln. Im Folgenden sind die Tastenkombinationen für jede Ansicht aufgeführt. ![Menschenerkennung – Abbildungen zur regionalen Konfiguration](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif)
+
+2. Klicken Sie auf die Schaltfläche [**Erkennungsbereich hinzufügen**]. Unter der Konfiguration des Erkennungsbereichs werden die Anzahl der Erkennungsbereiche und der ID-Name des Erkennungsbereichs hinzugefügt. ![123](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d97865c8-086f-46d1-b41f-c3a63ed994ff.avif)
+
+3. Durch Ändern der maximalen XYZ-Achsengröße des erstellten Erkennungsbereichs kann die Größe eines Erkennungsbereichs direkt bestätigt werden. Wie in der folgenden Abbildung dargestellt, wird ein Erkennungsbereich von 1000\*1000\*2000 erstellt (Einheit mm). ![Schaffung eines menschlichen Erkennungsbereichs](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1d33db3-1c36-4cb6-8235-7ecbb302fe0e.avif)
+
+1. Ziehen Sie den erstellten Erkennungsbereich in den Zielerkennungsbereich, indem Sie mit der Maus im Markierungsbereich ziehen.
+
+![Der menschliche Erkennungsbereich rückt nach vorne](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7e9db737-c5b8-4532-9235-33750006cfce.avif)![Der Personenerkennungsbereich verschiebt sich zurück](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3a1abc56-d148-47ef-8c05-c510f4ef981d.avif)
+
+5. Nachdem Sie den Erkennungsbereich konfiguriert haben, klicken Sie auf die Schaltfläche [Speichern und senden], um die Parameter in der Kamera zu speichern und mit der Erkennung des aktuellen Bereichs zu beginnen.
+
+#### Ergebnisse menschlicher Tests anzeigen
+
+1. Nachdem Sie die Kalibrierung der externen Parameter, die Parameter für die Personenerkennung und den Personenerkennungsbereich eingestellt haben, klicken Sie auf „**Grundlegende Tools**“ und testen Sie, indem Sie durch den Erkennungsbereich gehen, um die Ergebnisse anzuzeigen. Im aktuellen Erkennungsbereich befindet sich niemand und in der Grundfunktionsleiste wird kein Ziel erkannt.
+
+![Die Vorderseite liegt nicht im Erkennungsrahmen (Punktwolke)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d03e2dc2-9450-4b40-a0b3-bb443a97d9b2.avif)![Die Vorderseite liegt nicht im Erkennungsrahmen (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a5cd29e-9132-46b6-8705-5d00994b9cc5.avif)
+
+1. Wenn jemand den Bereich betritt, wird das angegebene Ziel in der Statusanzeigespalte für die Personenerkennung erkannt. Unten in der Software wird das Ergebnis **Ergebnis** angezeigt. 1 steht für jemanden.
+
+![25909893521\_171673957420\_Frontperson im Erfassungsbereich (Punktwolke)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ef7d562-faa1-40a1-9224-c71063f17c46.avif)![25909893521\_171674018465\_Frontperson im Erfassungsbereich (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/508a3e95-86a5-4433-9396-bab02f0fba4b.avif)
+
+#### Protokoll zur Personenerkennung anzeigen
+
+Wenn sich der Status der Erkennung menschlicher Körper ändert, klicken Sie auf die Verlaufswiedergabe und klicken Sie links auf die Zeit, die Sie anzeigen möchten, um die Änderungen an Objekten innerhalb des effektiven Sichtfelds zu diesem Zeitpunkt anzuzeigen. Weitere Informationen finden Sie unter 5.5 Wiedergabe.
+
+#### Bestimmung der Testergebnisse des menschlichen Körpers
+
+1. Die Matching-Regel erkennt alle Objekte nur im Fall von Tiefe, und im Fall von Semantik plus Tiefe werden nur Cluster beurteilt, deren Semantik Personen sind.
+
+2. Die folgende Tabelle zeigt die Ausgabeergebnisse von Result unter verschiedenen Umständen.
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| | Niemand | Jemand | Es gibt Hindernisse | Menschen + Hindernisse |
+| nur Tiefe | 0 | 2 | 2 | 2 |
+| Semantik plus Tiefe | 0 | 1 | 0 | 1 |
+
+### Speicherorterkennung und Bereitstellungsprozess
+
+#### Speicherorterkennung – externe Parameterkalibrierung
+
+Einzelheiten finden Sie unter 6. Kalibrierung externer Kameraparameter.
+
+Stellen Sie nach der Kalibrierung sicher, dass die X-Achse (roter Pfeil) und die Y-Achse (grüner Pfeil) mit dem Boden übereinstimmen und die Z-Achse (blauer Pfeil) senkrecht zum Boden und nach oben verläuft.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Diagramm zur externen Parameterkalibrierung des Speicherorts" />
+</Frame>
+
+#### Speicherorterkennung – globale Einstellungen
+
+1. Klicken Sie auf die Standorterkennung, um zur Einstellungsseite für die Standorterkennungsparameter zu wechseln. Bei der globalen Konfiguration müssen Sie auf den Ausrichtungswinkel, den Ausrichtungseffekt und die Mindestpunktzahl achten.
+
+2. Wenn die Platzierung von Gegenständen am Lagerort einem bestimmten Winkel folgen muss, empfiehlt es sich, den Ausrichtungseffekt einzuschalten und den entsprechenden Ausrichtungswinkel einzustellen. Sobald der Objektwinkel den voreingestellten Schwellenwert überschreitet, gibt das System das entsprechende Erkennungsergebnis aus.
+
+|  |  |
+| --- | --- |
+| Status | Ergebnis |
+| Kein Objekt | 0 |
+| Es gibt ein Objekt | 1 |
+| Der Winkel eines Objekts überschreitet den Ausrichtungswinkel (Ausrichtungseffekt einschalten) | 2 |
+| Ein Objekt überschreitet den Standortauswahlbereich (Aktivieren Sie den Ausrichtungseffekt) | 3 |
+
+1. Wenn bei der Identifizierung kleiner und mittlerer Waren in einem Lager Bedenken hinsichtlich der Identifizierung oder das Risiko einer Fehleinschätzung bestehen, wird empfohlen, den Parameter „Mindestpunktmenge“ zur Überprüfung zu verwenden. Dieser Parameter gibt den Mindestschwellenwert für die Anzahl der Punktwolken an, der zum Erkennen eines Objekts erforderlich ist. Wenn ein Objekt erkannt wird, seine Punktwolkenzahl diesen Schwellenwert jedoch nicht erreicht, wird das Objekt von den Erkennungsergebnissen ausgeschlossen.
+
+2. Nachdem die globalen Konfigurationseinstellungen abgeschlossen sind, klicken Sie auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+#### Speicherorterkennung – Speicherortkonfiguration
+
+##### Standorteinstellung für den Punktwolkenmodus
+
+1. Stellen Sie den Erfassungsbereich ein. Um die Länge und Breite (xy) der Erkennung anzupassen, empfiehlt es sich, zunächst in die Auf- und Ab-Ansicht zu wechseln. Im Folgenden sind die Tastenkombinationen für jede Ansicht aufgeführt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Abbildungen zur Standorteinstellung im Punktwolkenmodus" />
+</Frame>
+
+1. Platzieren Sie die Palette im Sichtfeld und klicken Sie auf die Schaltfläche [**Standort hinzufügen**]. Unter der Standortkonfiguration werden die Anzahl der Standorte und der ID-Name des Standorts hinzugefügt. Wir können die ID ändern, die derzeit auf „Standorttest 1“ geändert ist.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427a2154-d262-4c8c-acf6-92c912f3ada1.avif" alt="Abbildungen im Zusammenhang mit der Standorteinstellung 2 im Punktwolkenmodus" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/47d79ced-617b-41cd-8a4b-aa086f289789.avif" alt="Abbildungen im Zusammenhang mit der Standorteinstellung 3 im Punktwolkenmodus" />
+</Frame>
+
+1. Nachdem Sie auf „Speicherort hinzufügen“ geklickt haben, schalten Sie die Punktwolke in die Unteransicht um, klicken Sie mit der Maus auf das Punktwolkenbild und drücken Sie die Taste [X] auf der Tastatur, um den Speicherortbereich zu zeichnen. Wenn Sie [X] drücken, wird die Schaltfläche „Speicherort hinzufügen“ grau, was bedeutet, dass der Speicherortbereich im Bildanzeigebereich gezeichnet werden kann. (Die x-Taste auf der Tastatur startet die Funktion zum Zeichnen des Lagerstandorts und der Abschnittsnummer der Lagerstandorte. Drücken Sie einmal, um mit dem Zeichnen zu beginnen, und einmal, um das Zeichnen zu beenden.)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/846b9c20-37c5-4847-b10d-82b766443aab.avif" alt="Abbildungen im Zusammenhang mit der Standorteinstellung 4 im Punktwolkenmodus" />
+</Frame>
+
+1. Zu diesem Zeitpunkt können Sie das Bild vergrößern, indem Sie das Rad bewegen, die linke Maustaste gedrückt halten und einen rechteckigen Rahmen zeichnen, der die gesamte Palette umschließt. Lassen Sie die linke Maustaste los und der aktuelle Standorterkennungsbereich wird automatisch gezeichnet. Drücken Sie die Taste [X] auf der Tastatur, um das Zeichnen des Erkennungsbereichs abzubrechen. Zu diesem Zeitpunkt können Sie den Größenbereich des Bereichs bestätigen, indem Sie das Maximum und das Minimum anpassen
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/997b81b0-165a-441c-b2e2-51ea8799ec7f.avif" alt="Abbildungen zur Standorteinstellung im Punktwolkenmodus 5" />
+</Frame>
+
+1. Verwenden Sie Tastaturkürzel, um zur unteren Ansicht zu wechseln, wie in der Abbildung unten gezeigt. Der rote Pfeil zeigt in die x-Richtung des Erfassungsbereichs. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit ist die x-Richtung etwas größer als die Fachbreite.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/98bf259d-d459-4ed7-8a73-0448576f14bc.avif" alt="Abbildungen zur Standorteinstellung im Punktwolkenmodus 6" />
+</Frame>
+
+1. Der grüne Pfeil zeigt die y-Richtung des Erfassungsbereichs an. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit ist die Y-Richtung etwas größer als die Palettenlänge.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d8990bab-9614-4f97-8561-6ae7076c7b20.avif" alt="Abbildungen zur Standorteinstellung im Punktwolkenmodus 7" />
+</Frame>
+
+1. Der blaue Pfeil zeigt auf die z-Richtung des Erfassungsbereichs. Der Wert kann durch Scrollen mit dem Mausrad geändert oder der Wert direkt eingegeben werden. Es wird empfohlen, den minimalen Z-Wert des aktuellen Erfassungsbereichs etwas höher als den Bodenabstand einzustellen, um eine fehlerhafte Bodenerkennung zu verhindern. Stellen Sie den maximalen Z-Wert auf 1500 und die maximale Höhe basierend auf der Größe des Objekts ein. Wenn die Objekthöhe den maximalen Z-Wert überschreitet, wird sie vom Algorithmus nicht erkannt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07ff02c7-8418-4913-a62e-3728b54839c5.avif" alt="Abbildungen im Zusammenhang mit der Standorteinstellung im Punktwolkenmodus 8" />
+</Frame>
+
+1. Nachdem Sie den Erkennungsbereich konfiguriert haben, klicken Sie auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern, und beginnen Sie dann mit der Erkennung, ob sich am aktuellen Lagerort Waren befinden.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4263bf6-5cd5-40f1-b0e2-696906ee4502.avif" alt="Abbildungen im Zusammenhang mit der Standorteinstellung im Punktwolkenmodus 9" />
+</Frame>
+
+##### Speicherorteinstellung für die RGB-Modus-Bibliothek
+
+1. Wechseln Sie in den RGB-Anzeigemodus, klicken Sie, um einen Speicherort hinzuzufügen, und bewegen Sie die Maus auf das RGB-Bild, ![2D-Lagerorterstellung](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/595aef48-fd89-41ce-93c9-fcd89622f141.avif)
+
+Klicken Sie mit der linken Maustaste auf den Erkennungsbereich, um einen 2D-Standorterkennungsbereich zu erstellen, und klicken Sie mit der rechten Maustaste, um den 2D-Standorterstellungsmodus zu verlassen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f38061e-4044-4ce8-ac8d-98adf248ffd8.avif" alt="2D-Standort erfolgreich erstellt" />
+</Frame>
+
+2. Wenn Sie einen Lagerort löschen müssen, wählen Sie die Box-ID aus, die im aktuellen Box gelöscht werden soll. Die entsprechende Lagerstandort-ID wird auf dem Bild angezeigt. Klicken Sie hier, um den Lagerort zu löschen. ![Erweiterung zur 2D-Standorterstellung (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f9c485c-f591-4e95-8bc6-45df833eb341.avif)
+
+3. Platzieren Sie die Maus in der Mitte des Speicherort-Erkennungsbereichs (blaue Pfeilposition), um den Erkennungsbereich zu verschieben, platzieren Sie die Maus an den vier Ecken des Speicherort-Erkennungsbereichs (rote Pfeilposition) und ziehen Sie mit der linken Maustaste, um die Größe des Erkennungsbereichs zu ändern. ![Erweiterung zur 2D-Standorterstellung (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/71096a08-65a6-45f9-b033-59d9a5ae9fa6.avif)
+
+4. Nachdem Sie den Standort bestätigt haben, müssen Sie auf [Speichern und Senden] klicken, um den Standort auf der Kamera zu speichern, bevor er wirksam wird. Bestätigen Sie, ob das Speichern erfolgreich war und prüfen Sie, ob der Standortstatus gespeichert ist. Wenn es nicht gespeichert wird, wird es nicht gespeichert. ![6cec7d56ad74e8745f624af0e0ce582c\_compress](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b3e11ff5-e79e-4141-8f4d-71c2474caa70.avif)
+
+5. Die 2D-Speicherorterkennung unterstützt nur den semantischen Modus und muss zur Erkennung mit einem semantischen Modell abgeglichen werden.
+
+#### Speicherorterkennung – erweiterte Einstellungen
+
+##### Erweiterte Funktion – Speicherort kopieren
+
+1. Klicken Sie auf [**Wichtige Informationen zum Kopieren und Schwenken**] und Sie werden aufgefordert, Informationen zum Schwenken einzugeben. Durch das Kopieren des Standorts können Benutzer den Standort während der tatsächlichen Bereitstellung auf der Grundlage von CAD-Zeichnungen entwerfen und dann einen Standortbereich zeichnen, um mehrere Kopien zu erstellen, ohne ihn erneut manuell zeichnen zu müssen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/575918bf-cf7e-428a-a302-c365284da6bc.avif" alt="Erweiterte Funktion – Standortbezogene Symbole kopieren" />
+</Frame>
+
+1. Die aktuelle Einstellung ist die X-Richtung, der Abstand beträgt 10 und die Menge beträgt 2. Klicken Sie auf die Schaltfläche „Ausführen“ und Sie werden aufgefordert, zu bestätigen, ob die Kopierübersetzung ausgeführt werden soll.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a52afac-6e72-4cfb-8acb-fa7910288287.avif" alt="Erweiterte Funktion – Standortbezogene Symbole kopieren 2" />
+</Frame>
+
+1. Nachdem Sie auf „Ja“ geklickt haben, werden zwei Behälter derselben Größe in positiver x-Richtung mit einem Abstand von 10 generiert. Im Listenfeld „Behälterstandort“ können Sie sehen, dass der generierte Behälterbereich das um (0) und (1) erhöhte Suffix aufweist, basierend auf der ursprünglichen Behälterstandort-Erkennungs-ID.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e213b2fb-9331-48e5-beda-2afb91fc4fa8.avif" alt="Erweiterte Funktion – Standortbezogene Symbole kopieren 3" />
+</Frame>
+
+1. Stellen Sie die Y-Richtung, den Abstand auf -40 und die Menge auf 3 ein. Klicken Sie auf die Schaltfläche „Ausführen“, um drei Speicherorte mit derselben Größe in negativer Y-Richtung zu generieren. Die IDs des Standortlistenfelds werden auf Basis der ursprünglichen (0) und (1) hinzugefügt (2), (3) und (4).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cc9aab42-e06f-4910-869a-fa8335d089a6.avif" alt="Erweiterte Funktion – Standortbezogene Symbole kopieren 4" />
+</Frame>
+
+1. Nachdem Sie den Speicherort kopiert haben, müssen Sie auf die Schaltfläche [**Speichern und freigeben**] klicken, um die Parameter zu speichern, andernfalls werden die Parameter nicht wirksam.
+
+##### Erweiterte Funktion – QR-Kalibrierung (QR-Code-Kalibrierung)
+
+1. Mit der QR-Kalibrierung (QR-Code) können tatsächliche Lagerbereitstellungsszenarien simuliert und die automatische Zeichnung von Lagerbereichen ohne manuelle Zeichnung fortgesetzt werden, sodass Benutzer eine bequeme Bereitstellung durchführen können. Es wird empfohlen, dass die QR-Code-Tafel mindestens 1 m x 1 m groß ist. Klicken Sie auf [**QR-Code-Kalibrierung muss bekannt sein**] und der Kalibrierungsprozess wird eingeleitet.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c2767a5-5a42-41b0-85aa-5257d6bdf3f1.avif" alt="Erweiterte Funktion – Symbole für die QR-Kalibrierung (QR-Code-Kalibrierung)." />
+</Frame>
+
+1. Platzieren Sie die QR-Code-Kalibrierungsplatte im Zielbereich, wechseln Sie zum RGB-Bild und stellen Sie sicher, dass der QR-Code im RGB-Sichtfeld sichtbar ist.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427f065c-f102-49fc-a996-dd04d2f4cece.avif" alt="Erweiterte Funktion – Symbole für die QR-Kalibrierung (QR-Code-Kalibrierung) 2" />
+</Frame>
+
+1. Nachdem sich der QR-Code in der Mitte des Sichtfelds befindet, wechseln Sie zum Punktwolkenbild und suchen Sie die Kalibrierungsleiste [**QR-Code**]. Geben Sie vorab die Standortgröße X (Standortbreite), Y (Standortlänge), Z\_min (minimale Standorttiefe), Z\_max (maximale Standorttiefe) ein.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9e83a1a-50be-4664-8f4c-9a02ffaa752e.avif" alt="Erweiterte Funktion – Symbole für die QR-Kalibrierung (QR-Code-Kalibrierung) 3" />
+</Frame>
+
+1. Klicken Sie dann auf die Schaltfläche [**Kalibrierung**], um den Lagerstandort automatisch auf der Grundlage der im QR festgelegten X-, Y- und Z-Werte zu zeichnen, die über das Konfigurationsbereichsfeld für den Lagerstandort angezeigt werden können. QR\_BOX ist das Bereichsfeld, das für den QR-Code festgelegt ist.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c0bec5-7ba4-444b-9da6-4b0e919a86ed.avif" alt="Erweiterte Funktion – Symbole für die QR-Kalibrierung (QR-Code-Kalibrierung) 4" />
+</Frame>
+
+1. Nachdem die QR-Code-Kalibrierung abgeschlossen ist, müssen Sie auf die Schaltfläche [**Speichern und Senden**] klicken, andernfalls werden die Parameter nicht wirksam.
+
+#### Überprüfen Sie die Ergebnisse der Standorterkennung
+
+1. Nachdem Sie die externe Parameterkalibrierung, die Speicherorterkennungsparameter und den Speicherorterkennungsbereich eingestellt haben, klicken Sie auf „**Grundlegende Werkzeuge**“ und platzieren Sie Objekte im Erkennungsbereich, um die Ergebnisse anzuzeigen. Derzeit ist kein Objekt vorhanden und in der Grundfunktionsleiste wird kein Objekt angezeigt. ![Zeigen Sie relevante Symbole für die Ergebnisse der Speicherorterkennung an](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/481feb15-bd76-46db-9025-f17efcef2c71.avif)
+
+2. Nach dem Platzieren der Palette wird in der Spalte zur Anzeige des Lagerbestandsstatus angezeigt, dass der aktuelle Standort auf Lager ist. Unten in der Software wird das Ergebnis angezeigt, wobei 1 angibt, dass es auf Lager ist. ![Bild im Zusammenhang mit der Anzeige der Ergebnisse der Speicherorterkennung 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5b066a5a-b7e9-4a11-9fc5-01a2e8842be2.avif)
+
+3. Nach dem Einschalten des Ausrichtungseffekts wird das Ergebnis unten in der Software angezeigt. 2 bedeutet, dass Waren vorhanden sind, aber ein Winkelversatz vorhanden ist. ![Der Standort ist nicht ausgerichtet](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95d79300-5e45-45d6-8c84-a0486a90a94b.avif)
+
+4. Nachdem die Ausrichtungsüberprüfung aktiviert wurde, wird das Ergebnis unten in der Software angezeigt. 3 bedeutet, dass Waren vorhanden sind, diese jedoch den Erfassungsbereich des Lagerorts überschreiten. Das rote Kästchen zeigt den Speicherort-Erkennungsbereich und das gelbe Kästchen das erkannte Objekt an. ![Die Standortausrichtung ist innerhalb und außerhalb der Grenzen](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1688c5-d897-4a0c-8014-e03f6eea2be9.avif)
+
+#### Sehen Sie sich das Speicherorterkennungsprotokoll an
+
+Wenn sich der Status des Speicherorts ändert, klicken Sie auf die historische Wiedergabe und klicken Sie links auf die Zeit, die Sie anzeigen möchten, um die Änderungen an Objekten innerhalb des effektiven Sichtfelds zu diesem Zeitpunkt anzuzeigen. Weitere Informationen finden Sie unter 5.5 Wiedergabe.
+
+#### Ermittlung der Ergebnisse der Speicherorterkennung
+
+1. Zeichnen Sie den Erfassungsbereich ein, um das Vorhandensein, den Versatzwinkel und den grenzüberschreitenden Status der Waren zu bestimmen.
+
+2. Beurteilen Sie den Status der Waren anhand der erhaltenen Ergebnisergebnisse.
+
+|  |  |
+| --- | --- |
+| Status | Ergebnisse |
+| Ausverkauft | 0 |
+| Auf Lager | 1 |
+| Auf Lager und ausgerichtet (Ausrichtungsvalidierung aktivieren) | 1 |
+| Auf Lager und nicht ausgerichtet (Alignment-Validierung aktivieren) | 2 |
+| Auf Lager und außerhalb der Grenzen (Alignment-Validierung aktivieren) | 3 |
+
+1. Platzieren Sie das Objekt bei aktivierter Ausrichtungsüberprüfungsfunktion an der Grenze des Erkennungsbereichs. Die Ergebnisausgabe ist 3. Dieses Ergebnis zeigt an, dass die Waren die Grenze überschritten und den Lagerraum belegt haben.
+
+**![Abbildung im Zusammenhang mit der Ermittlung der Speicherorterkennungsergebnisse](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa582c1-5052-4756-be13-e015f9c9fd86.avif)**
+
+### Bereitstellungsprozess für die Volumenerkennung
+
+#### Volumenerkennung – externe Parameterkalibrierung
+
+1. Einzelheiten finden Sie unter 6.2 Externe Parameterkalibrierung bei vertikaler Installation
+
+2. Stellen Sie nach Abschluss der Kalibrierung sicher, dass die Z-Achse (blauer Pfeil) der Koordinatenachse vertikal nach unten zeigt, die X-Achse (roter Pfeil) und die Y-Achse (grüner Pfeil) eine Ebene parallel zum Boden bilden und die Erkennungsmethode des Volumenerkennungsalgorithmus von oben nach unten erfolgt.
+
+![Draufsicht auf die externe Parameterkalibrierung der Volumenerkennung](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/81e5f706-27db-4c18-87bb-3d3320387374.avif)![Seitenansicht der externen Parameterkalibrierung der Volumenerkennung](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96891baa-0237-440c-84bd-8840d0c91c86.avif)
+
+#### Lautstärkeerkennung – globale Einstellungen
+
+1. Klicken Sie auf Volumenerkennung. Nach dem Aufrufen der Parametereinstellungsoberfläche müssen Sie sich auf die Einstellung des „Abstands der Erkennungsebene“ (zur Bestimmung der Position der unteren Oberfläche des Objekts und zur Berechnung des Volumens) und der minimalen XYZ-Größe konzentrieren.
+
+2. Überprüfen Sie die Flugzeugeinstellungen. Wenn die Ware direkt auf dem Boden platziert wird, wird der Abstand der Erfassungsebene auf die Höhe des Bodens eingestellt;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9e91e37-7a17-4f1c-8ac5-066ef8fe859c.avif" alt="Die Bodenpunktwolke fällt mit der Detektionsebene 1 zusammen" />
+</Frame>
+
+Wenn eine Palette vorhanden ist und nur die Fläche der Waren auf der Palette berechnet werden muss, muss die Erkennungsebene mit der Punktwolke der Palette übereinstimmen. ![Die Erkennungsebene befindet sich auf der Palette](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0ed32689-0326-4afb-93c7-6880e62385ea.avif)
+
+1. Minimale XYZ-Einstellungen. Wird verwendet, um die Untergrenze der Länge, Breite und Höhe des erkannten Objekts festzulegen (Einheit: Pixel). Wenn die Länge, Breite oder Mittenabmessungen eines erkannten Objekts kleiner als der Schwellenwert sind, ignoriert das System das Objekt automatisch. ![Bilder können erkannt werden](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d35dea57-dec2-4d30-863d-73ee462daabb.avif)![Waren können erkannt werden](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a596eae-f1c2-45c1-9882-4cea9f374156.avif)
+
+Nachdem Sie den Wert erhöht haben, wird das Objekt ignoriert. ![Parameter, die eine Erkennung verhindern](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2014538-6ac1-440f-9238-860c2da3f04b.avif)
+
+1. Nachdem die globalen Konfigurationseinstellungen abgeschlossen sind, klicken Sie auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+#### Lautstärkeerkennung – Bereichseinstellung
+
+1. Stellen Sie den Erfassungsbereich ein. Um die Länge und Breite (xy) der Erkennung anzupassen, empfiehlt es sich, zunächst in die Auf- und Ab-Ansicht zu wechseln. Im Folgenden sind die Tastenkombinationen für jede Ansicht aufgeführt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Lautstärkeerkennung – Symbole für die Bereichseinstellung" />
+</Frame>
+
+1. Verwenden Sie die Tastenkombinationen, um zur Auf- und Ab-Ansicht zu wechseln, wie in der Abbildung unten gezeigt. Das weiße Kästchen, auf das der rote Pfeil zeigt, zeigt die x-Richtung des Erfassungsbereichs an. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit sind der maximale und minimale Erkennungsbereich in x-Richtung auf 600 und -600 eingestellt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/78cf7eed-d5ba-4969-8be3-3579a41f49a1.avif" alt="Volumenerkennung – Diagramm zur Bereichseinstellung 2" />
+</Frame>
+
+1. Das weiße Kästchen, auf das der grüne Pfeil zeigt, zeigt die Y-Richtung des Erfassungsbereichs an. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit sind der maximale und minimale Erkennungsbereich in y-Richtung auf 480 und -580 eingestellt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c1c97b6-76f9-490d-a262-0ec7de2d4e83.avif" alt="Volumenerkennung – Diagramm zur Bereichseinstellung 3" />
+</Frame>
+
+1. Der blaue Pfeil zeigt auf die z-Richtung des Erfassungsbereichs. Es wird empfohlen, dass die Erkennungsebene mit dem maximalen Z-Wert übereinstimmt. Der minimale Erfassungsbereich wird entsprechend der Größe des Objekts eingestellt. Wenn die Höhe des Objekts den minimalen Z-Wert überschreitet, filtert der Algorithmus es.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/66d82c1c-cb72-4c8e-805e-a8356b7a8103.avif" alt="Volumenerkennung – Diagramm zur Bereichseinstellung 4" />
+</Frame>
+
+1. Klicken Sie nach der Konfiguration des Erkennungsbereichs auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d5aa71bc-e458-4195-835a-45bd4150ff99.avif" alt="Volumenerkennung – Diagramm zur Bereichseinstellung 5" />
+</Frame>
+
+#### Volumentestergebnisse anzeigen
+
+1. Klicken Sie nach der Konfiguration des Erkennungsbereichs auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+2. Klicken Sie nach dem Einstellen der externen Parameterkalibrierung, der Volumenerkennungsparameter und des Volumenerkennungsbereichs auf „**Grundlegende Werkzeuge**“ und platzieren Sie Objekte im Erkennungsbereich, um die Ergebnisse anzuzeigen. Derzeit ist kein Objekt vorhanden und in der Grundfunktionsleiste wird kein Objekt angezeigt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ca238803-1d9a-4ad8-993f-d9c37dae9ad5.avif" alt="kein Objekt" />
+</Frame>
+
+1. Nach dem Platzieren eines Objekts werden die aktuellen Informationen zu Länge, Breite und Höhe des Objekts in der Volumenstatus-Anzeigeleiste angezeigt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3c4511ff-69fa-4ea8-9918-c657aa999752.avif" alt="Volumetrische Erkennung eines einzelnen Objekts" />
+</Frame>
+
+4. Wenn mehrere Objekte platziert werden, zeigt die Ergebnisanzeigeleiste der Volumenerkennung die Länge, Breite und Höhe mehrerer Objekte sowie die Anzahl der Objekte an. ![Volumenerkennung mehrerer Objekte](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f33c8bf-37d0-4b5b-a84a-4e1f1814eeba.avif)
+
+#### Einzeltriggerfunktion zur Volumenerkennung
+
+1. Aktivieren Sie in der Einstellungsoberfläche für die Lautstärkeerkennung den Triggermodus und klicken Sie auf die Schaltfläche [**Speichern und senden**], um den Triggermodus erfolgreich zu aktivieren.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/48d2348e-0816-4231-9f14-03a426584e4e.avif" alt="Abbildungen zur Einzeltriggerfunktion zur Volumenerkennung" />
+</Frame>
+
+1. Klicken Sie auf das Basistool und erhalten Sie Bilder und Ergebnisse, indem Sie auf die Schaltfläche [**Einzelauslöser**] klicken.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f3dfaf70-6664-4a9e-9451-a5ccf693367b.avif" alt="Einzelauslöser" />
+</Frame>
+
+## Kommunikationsprotokoll
+
+Der in der Volumenerkennung enthaltene Einzeltriggermodus sendet TM\_TRIGGER über TCP oder UDP, wodurch die Kamera den Volumenerkennungsalgorithmus einmal ausführen und das Ergebnis einmal zurückgeben kann.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ec9bc8-1c02-4ce3-9ed5-2333ac4d8961.avif" alt="Volumenerkennung UDP TM\_TRIGGER" />
+</Frame>
+
+### TCP-Kommunikation
+
+Ergebnisse sind über TCP-Kommunikation verfügbar. Über den Netzwerk-Debugging-Assistenten sendet die Remote-Kamera IP: 192.168.100.83, Port: 14951 RESULT\_UPDATE, um die zurückgegebenen Ergebnisinformationen anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/13faa673-1d57-4ae0-8db9-c5258d95ae77.avif" alt="IMG\_256" />
+</Frame>
+
+### UDP-Kommunikation
+
+Die Standorterkennungsergebnisse können über UDP-Kommunikation abgerufen werden. Über den Netzwerk-Debugging-Assistenten sendet die Remote-Kamera IP: 192.168.100.83, Port: 14950 RESULT\_UPDATE, um die zurückgegebenen Ergebnisinformationen zur Standorterkennung anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76326c8d-54d2-491e-b315-b7681e6aef72.avif" alt="IMG\_256" />
+</Frame>
+
+### HTTP-Kommunikation
+
+1. Die Ergebnisse der Algorithmuserkennung können über HTTP-Kommunikation abgerufen werden, Portnummer: 14952.
+
+2. Das Oberschichtsystem (WMS) sendet das Ergebnissignal an die Vision und die Vision gibt eine Zeichenfolge im JSON-Format zurück.
+
+3. Betriebsabläufe
+
+Legen Sie zuerst die Kopfzeilen fest
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d26e7a0a-afc0-4df4-bca6-c63f5e0b3c2e.avif" alt="Betrieb 1" />
+</Frame>
+
+Setzen Sie dann den Body-Parameter auf RESULT\_UPDATE
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a833cf86-a300-4097-839e-7b233edba3f8.avif" alt="Betrieb 2" />
+</Frame>
+
+Klicken Sie auf Senden, um das Ergebnis zu erhalten![Vorgang 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f9c2553-db2b-4646-b101-bf7b9c1ca543.avif)
+
+|  |  |
+| --- | --- |
+| WMS → Vision | |
+| Ergebnis | Bedeutung |
+| RESULT_UPDATE | Visuelles Ergebnis-Rücksignal auslösen |
+| Vision → WMS (Human Detection) | |
+| Ergebnis | Bedeutung |
+| IP | Datenquelle Kamera-IP |
+| SG | Status der Erkennung menschlicher Körper, 0 ist leer, 1 bedeutet, dass jemand da ist, und 2 bedeutet, dass die Frame-Matching-Regel darin besteht, Objekte nur in der Tiefe zu erkennen. __object_details enthält alle erkannten Clusterkoordinaten |
+| SG_DATA_TIME | Extraktionszeit der Erkennungsdaten |
+| SG_RES_TIME | Ausgabezeit des Testergebnisses |
+| Spitzname | Kameraname, konfigurierbar in Kamera |
+| ret_code | Rückkehrcode, 0 ist Erfolg |
+| Vision → WMS (Lagerstandorterkennung) | |
+| IP | Datenquelle Kamera-IP |
+| SS | Status der Lagerorterkennung, 0 bedeutet, dass der Lagerort nicht belegt ist, 1 bedeutet, dass der Lagerort belegt ist, 2 bedeutet, dass der Lagerort belegt ist und der Warenwinkelversatz den voreingestellten Parameter überschreitet, 3 bedeutet, dass der Lagerort belegt ist und außerhalb der Grenzen liegt
+| SG_DATA_TIME | Extraktionszeit der Erkennungsdaten |
+| SG_RES_TIME | Ausgabezeit des Testergebnisses |
+| Spitzname | Kameraname, konfigurierbar in Kamera |
+| ret_code | Rückkehrcode, 0 ist Erfolg |
+| Vision → WMS (Volumenerkennung) | |
+| IP | Datenquelle Kamera-IP |
+| TM | Bei jedem Element handelt es sich um ein vollständiges Volumenfeld, das in der Region | erkannt wurde
+| SG_DATA_TIME | Extraktionszeit der Erkennungsdaten |
+| SG_RES_TIME | Ausgabezeit des Testergebnisses |
+| Spitzname | Kameraname, konfigurierbar in Kamera |
+| ret_code | Rückkehrcode, 0 ist Erfolg |
+
+### modbus-tcp (Bibliotheksstandorterkennung)
+
+Die Erkennungsergebnisse werden automatisch nach der Standort-ID sortiert und nur die ersten 16 Standortergebnisse werden zurückgegeben.
+
+#### Slave-Konfigurationsparameter
+
+##### Grundlegende Kommunikationskonfiguration
+
+1. \****Portnummer***\*: 16502
+
+2. \****Listening Address***\*: Alle Netzwerkschnittstellen (0.0.0.0)
+
+3. \****Anzahl der Register***\*: 16
+
+4. \****Startadresse registrieren***\*: 0x100
+
+5. \****Byte-Reihenfolge***\*: Big-Endian-Modus (Big-Endian)
+
+##### Speicherregeln registrieren
+
+|  |  |  |
+| --- | --- | --- |
+| Registrieren Sie die Adresse**** | Speicherinhalt**** | Datenformat**** |
+| *0x100 + ID* | Standorterkennungsergebnis + Markierungserkennungsergebnis | *2 Bytes (uint16_t)* |
+| *Split-Regeln* | | |
+| *Byte 0 (hohe 8 Bits)* | Standortstatuscode | *0-2 (siehe Definition unten)* |
+| *Byte 1 (untere 8 Bits)* | Markierungsstatuscode (noch nicht geöffnet, der Inhalt stimmt mit dem Standortstatuscode überein) | *0-2 (siehe Definition unten)* |
+
+#### Statuscode-Definition
+
+##### Standortstatuscode
+
+|  |  |  |
+| --- | --- | --- |
+| Kodierung | Physikalische Bedeutung | Auslösebedingungen |
+| *0* | Unbesetzt | *Keine Ware/Paletten* |
+| *1* | Normalbelegung | *Standardware wird richtig platziert* |
+| *2* | Ungewöhnliche Belegung | *Frachtgröße/Positionsversatz* |
+
+##### Markierungsstatuscode
+
+|  |  |  |
+| --- | --- | --- |
+| Kodierung**** | Physikalische Bedeutung**** | Auslösebedingung**** |
+| *0* | Keine Markierung erkannt | |
+| *1* | Marker erkannt | |
+| *2* | Anomalien erkennen | |
+
+#### Beispiel
+
+\****Lesen Sie den Status des 4. Standorts***\*
+
+##### 1. Client-Anfragenachricht
+
+verhexen
+
+1. \[01\]\[00\]\[00\]\[00\]\[06\]\[FF\]\[03\]\[01\]\[03\]\[00\]\[01\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Feldname* | *Wert (HEX)* | *Länge in Bytes* | *Beschreibung* |
+| *Nachrichtensequenznummer* | *00 01* | *2 Bytes* | *Transaktionskennung (aufsteigende Sequenznummer)* |
+| *Protokollkennung* | *00 00* | *2 Bytes* | *Modbus/TCP-Festwert* |
+| *Datenlänge* | *00 06* | *2 Bytes* | *Gesamtlänge der nachfolgenden Daten (6 Bytes)* |
+| *Einheitenkennung* | *FF* | *1 Byte* | *Broadcast-Modus (0xFF) oder Geräteadresse* |
+| *Funktionscode* | *03* | *1 Byte* | *Halteregister lesen (Standardfunktionscode)* |
+| *Startadresse registrieren* | *01 03* | *2 Bytes* | *Startadresse=0x100 + 4 (dezimal)* |
+| *Anzahl der Register* | *00 01* | *2 Bytes* | *1 Register (2 Bytes) lesen* |
+
+##### 2. Antwortnachricht des Geräts
+
+verhexen
+
+1.  \[05\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[02\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Feldname* | *Wert (HEX)* | *Länge in Bytes* | *Beschreibung* |
+| *Nachrichtensequenznummer* | *00 05* | *2 Bytes* | *Im Einklang mit der Anforderungsnachricht* |
+| *Protokollkennung* | *00 00* | *2 Bytes* | *Modbus/TCP-Festwert* |
+| *Datenlänge* | *00 02* | *2 Bytes* | *Gesamtlänge der nachfolgenden Daten (2 Bytes)* |
+| *Einheitenkennung* | *FF* | *1 Byte* | *Im Einklang mit der Anforderungsnachricht* |
+| *Funktionscode* | *03* | *1 Byte* | *Antwort des Halteregisters lesen* |
+| *Rückgabedatenlänge* | *02* | *1 Byte* | *Tatsächliche Rückgabedatenlänge (2 Bytes)* |
+| *Statusdaten* | *00 02* | *2 Bytes* | *Statuswert des 4. Standorts* |
+
+### Anhang (JSON-Analyse zurückgeben)
+
+#### Erkennung des menschlichen Körpers
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SG"**: {         **"1"**: **1**,// Target detected in detection box 1         **"2"**: **0**,// No target detected in detection box 2         **"__object_details"**: \[ // Each item is a JSON string that must be deserialized again; each item represents one cluster
+
+            **"{\\"rbx2d\\":584.0,\\"rby2d\\":500.0,\\"semantic_index\\":-1,\\"tlx2d\\":234.0,\\"tly2d\\":386.0,\\"traceID\\":\\"\\",\\"x_max\\":33.46769714355469,\\"x_min\\":-130.08856201171875,\\"y_max\\":28.804279327392578,\\"y_min\\":9.872406005859375,\\"z_max\\":170.76319885253906,\\"z_min\\":70.43941497802734}"**,             **"{\\"rbx2d\\":405.0,\\"rby2d\\":333.0,\\"semantic_index\\":0,\\"tlx2d\\":159.0,\\"tly2d\\":11.0,\\"traceID\\":\\"IoXSYuQ0rM34LYqL\\",\\"x_max\\":-201.1272430419922,\\"x_min\\":-395.1332702636719,\\"y_max\\":99.76918029785156,\\"y_min\\":-228.9674530029297,\\"z_max\\":611.3909912109375,\\"z_min\\":233.85450744628906}"**         \]     },     **"SG_DATA_TIME"**: **"2023_03_02_21_52_11.408"**, // Human-detection data timestamp     **"SG_RES_TIME"**: **"2023_03_02_21_52_11.689"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"\_\_object\_details" : //Single Elementerklärung
+
+```json
+{     **"rbx2d"**: **405**, // x-coordinate of the lower-left corner of the 2D cluster box     **"rby2d"**: **333**, // y-coordinate of the lower-left corner of the 2D cluster box     **"semantic_index"**: **0**, // Model index when semantic data exists; otherwise -1     **"tlx2d"**: **159**, // x-coordinate of the upper-right corner of the 2D cluster box     **"tly2d"**: **11**,// y-coordinate of the upper-right corner of the 2D cluster box     **"traceID"**: **"IoXSYuQ0rM34LYqL"**,// Each detected class has a unique ID for matching the object across frames     **"x_max"**: **\-201.1272430419922**,// 3D point-cloud cluster-box coordinate     **"x_min"**: **\-395.1332702636719**,// 3D point-cloud cluster-box coordinate     **"y_max"**: **99.76918029785156**,// 3D point-cloud cluster-box coordinate     **"y_min"**: **\-228.9674530029297**,// 3D point-cloud cluster-box coordinate     **"z_max"**: **611.3909912109375**,// 3D point-cloud cluster-box coordinate     **"z_min"**: **233.85450744628906**// 3D point-cloud cluster-box coordinate }
+```
+
+#### Speicherorterkennung
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SS"**: { X_detail_info contains cargo data detected in storage location X         **"1"**: **1**,// Storage location 1 is occupied         **"2"**: **1**,// Storage location 2 is occupied         **"3"**: **3**,// Storage location 3 is occupied and the object extends outside it         **"1__detail__info"**: \[             **\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**         \],         **"2__detail__info"**:             **\-7**,**258**,**261**,**545**,**403**,**204**,**89**         \],         **"3__detail__info"**: \[             **114**,**73**,**37**,**92**,**42**,**75**, **\-88**         \]     },     **"SS_DATA_TIME"**: **"2023_03_02_22_13_01.286"**, // Human-detection data timestamp     **"SS_RES_TIME"**: **"2023_03_02_22_13_01.572"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+„X\_\_detail\_\_info“: //Single Erklärung, X ist die eindeutige ID des Standorts
+
+**„2\_\_detail\_\_info“**: \[             **\-7**,// X-Koordinate des Mittelpunkts
+
+**258**,//Center Punktkoordinate y
+
+**261**,//Center Punktkoordinate z
+
+**545**,//long
+
+**403**,//width
+
+**204**,//High
+
+**89** //Offset Winkel im Vergleich zum Begrenzungsrahmen \]
+
+**"1\_\_detail\_\_info"**: \[//This case ist der Standorterkennungsbereich, der durch die 2D-Inspektion für Standort 1 erstellt wurde, die Werte sind alle -1                                                                                                      
+
+#### Lautstärkeerkennung
+
+```json
+{     **"IP"**: **"192.168.100.83"**,// Camera IP     **"TM"**: \[ // Each item is a complete volume box detected within the detection area         {             **"angle"**: **\-81.56423950195313**,             **"cx"**: **\-287**,             **"cy"**: **88**,             **"cz"**: **2887**,             **"height"**: **224**,             **"length"**: **320**,             **"type"**: **""**,             **"valid"**: **true**,             **"width"**: **174**         }     \],     **"TM_DATA_TIME"**: **"2023_03_02_21_01_31.769"**, // Human-detection data timestamp     **"TM_RES_TIME"**: **"2023_03_02_21_01_31.987"**,// Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+Das `TM`-Objekt enthält diese Felder:
+
+- `angle`: Versatzwinkel.
+- `cx`, `cy` und `cz`: Mittelpunktkoordinaten.
+- `height`, `length` und `width`: Objektabmessungen.
+- `type`: Semantischer Typ.
+- `valid`: Ob das Erkennungsergebnis gültig ist.

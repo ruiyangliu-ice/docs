@@ -1,0 +1,486 @@
+---
+title: "V2 HTTP プロトコル"
+description: "V2 ビジュアル ローカリゼーション モジュールの HTTP エンドポイント、要求パラメータ、および応答形式を使用します。"
+hidden: true
+---
+## グローバル情報を取得する
+
+### メインプログラムのアップデート
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+リクエストの例:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### カメラの高さを設定する
+
+リクエストURL `http://<ip>:9998/tool/rob/setHeightRequest` 例：
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## グローバル情報を取得する
+
+### プログラムのバージョンを取得する
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+リクエスト例：省略
+
+応答例：
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### 車両の基本情報を取得する
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+リクエスト例：省略
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### ホストからマップ パッケージを取得する
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+リクエストパラメータ:
+
+コンテンツタイプ: application/json
+
+|  |  |  |
+| --- | --- | --- |
+|必須 |パラメータ |説明 |
+|はい |名前 |マップ名 |
+
+応答例：
+
+content-type: application/zip のファイルを返します。
+
+### GetAGVPose
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+リクエストパラメータ: なし
+
+応答例：
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\。 **移転(オンライン化)**
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/relocate`
+
+リクエストパラメータ:
+
+コンテンツタイプ: application/json
+
+|  |  |  |
+| --- | --- | --- |
+|必須 |パラメータ |説明 |
+|はい | × | X 位置 (メートル) |
+|はい | y | Y 位置 (メートル) |
+|はい |角度 | – |
+|はい |うるさいX |騒音 (メートル) |
+|はい |うるさい騒音 (メートル) |
+|はい |ノイジーアングル |騒音 (メートル) |
+
+リクエスト例：省略
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## マップ操作
+
+### デプロイマップ
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+リクエストパラメータ
+
+|  |  |  |
+| --- | --- | --- |
+|必須 |パラメータ |説明 |
+|はい | ID |マップ名 |
+
+応答例:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### マップを適用する
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+リクエストパラメータ
+
+|  |  |  |
+| --- | --- | --- |
+|必須 |パラメータ |説明 |
+|はい |名前 |マップ名 |
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### マッピングの開始
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+リクエストパラメータ
+
+|  |  |  |
+| --- | --- | --- |
+|必須 |パラメータ |説明 |
+|はい |名前 |マップ名 |
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### マッピングの停止
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+リクエストパラメータ: なし
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 増分マッピングの開始
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+リクエスト例：
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 増分マッピングの停止
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+リクエスト例：
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### ローカル マップ リストの取得 (バックエンド) (バックエンド マップ リストの取得、非推奨)
+
+リクエストURL
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+リクエストパラメータ: なし
+
+応答例:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### ローカル マップ リストを取得する (推奨)
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+リクエストパラメータ: なし
+
+応答例:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### マップ パッケージをカメラにアップロード
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+リクエストパラメータ: なし
+
+リクエストの例:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### マップをダウンロード
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+リクエストパラメータ: なし
+
+リクエストの例:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+応答例：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## 操作インターフェイス
+
+### カメラプログラムを再起動します
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/restart`
+
+リクエストパラメータ: なし
+
+応答例:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### カメラを再起動します
+
+リクエストURL
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+リクエストパラメータ: なし
+
+応答例:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

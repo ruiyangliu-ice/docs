@@ -1,0 +1,161 @@
+---
+title: "Protocollo UDP V2 Pro"
+description: "Configura la comunicazione UDP V2 Pro e utilizza le strutture dei messaggi, i tipi di interfaccia e gli esempi."
+hidden: true
+---
+V2PRO supporta la modalità UDP per interagire con il client. La configurazione dell'IP del dispositivo di destinazione e della porta può essere completata nel computer host WEB. La posizione specifica è la seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="Illustrazioni relative al protocollo di comunicazione V2PRO UDP" />
+</Frame>
+
+Tra questi, portCode è il numero di porta su cui è in ascolto il dispositivo di destinazione e portName è l'IP del dispositivo di destinazione. V2 PRO ascolterà sulla porta 8001 per ricevere informazioni da altri dispositivi.
+
+## **1.1** Formato dei dati
+
+1.1.1 Adottare la modalità big-endian: prima il byte alto, per ultimo il byte basso
+
+1.1.2 Il formato del frame di comunicazione è il seguente: intestazione dati + lunghezza dati + byte di comando + contenuto dati + codice di controllo.
+
+1.1.3 Controllo: 1 byte, tutti i byte tranne l'intestazione dei dati e il byte del codice di controllo vengono sottoposti a XOR per ottenere il codice di controllo.
+
+1.1.3 Lunghezza dei dati: il campo della lunghezza viene calcolato senza byte di controllo e intestazione. Non tutti i fotogrammi hanno una lunghezza.
+
+1.1.4 Il formato della mappa consente solo la combinazione di lettere inglesi, "\_" e numeri e deve iniziare con una lettera inglese.
+
+## **1.2 V2 PRO** Informazioni ricevute
+
+UN. Riquadro informazioni contachilometri (13 byte)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0x0a |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenuto | V3_| V2_| V1_| V0_ |
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenuto | Theta3_| Theta2_| Teta 1 _ | Theta 0 _ |
+
+| Byte | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenuto | Controlla |  |  |  |
+
+Va notato che v e theta vengono trasmessi come numeri interi a quattro byte, dove l'unità di v è mm/s e l'unità dell'angolo theta è 0,01 gradi. Cioè, per 90 gradi sono necessari 9000
+
+B. Riposiziona la cornice (consegna la posa X, Y, Theta)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0x02 |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenuto | x3_| x2_ | x1_| x0_|
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenuto | y 3 _ | y 2 _ | y 1 _ | y 0 _ |
+
+| Byte | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Contenuto | Theta3_| Theta2_| Teta 1 _ | Theta 0 _ |
+
+| Byte | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Contenuto | Controlla |  |  |  |
+
+Va notato che x, ,y e theta sono tutti trasmessi in numeri interi a quattro byte, dove l'unità di xey è mm e l'unità dell'angolo theta è 0,01 gradi. Cioè, per 90 gradi sono necessari 9000
+
+C. Inizio/fine mappatura
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0x02 |
+
+| Byte | Byte4(Stato) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Contenuto | 0x01 | nome della mappa 0 _ _ | … | nome della mappa 29 _ _ |
+
+| Byte | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenuto | Controlla |  |  |  |
+
+Inserisci il numero di byte del nome della mappa da Byte5 (mappa\_nome\_0 a mappa\_nome\_29), i byte fissi sono 30 (viene utilizzata la codifica ASCII standard, sono supportati solo caratteri inglesi, numeri e caratteri di sottolineatura. Non iniziare il nome della mappa con un numero). I byte insufficienti vengono riempiti con 0x00. Allo stesso tempo, la mappa può essere costruita solo una volta (si prega di non inviare comandi di costruzione della mappa continuamente). Byte4 (Stato) Determina lo stato della mappatura. Quando è 0x00, terminerà la mappatura. Quando è 0x01, inizierà la mappatura.
+
+d.Cambia mappa
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0x0C |
+
+| Byte | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Contenuto | nome della mappa 0 _ _ | … | … | nome della mappa 29 _ _ |
+
+| Byte | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenuto | Controlla |  |  |  |
+
+I 30 BYTE che iniziano da Byte5map\_name\_0 sono i nomi delle mappe che devono essere scambiati. È necessario assicurarsi che il nome della mappa abbia completato l'attività di mappatura.
+
+## Messaggio inviato da **1.2 V2 PRO**
+
+UN. Frame di posizionamento (25 byte)
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0x01 |
+
+| Byte | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenuto | X3_| X2_ | X1_| X0_|
+
+| Byte | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenuto | Y3_| Y2_| Y1_ | Y0_ |
+
+| Byte | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Contenuto | THETA3_| THETA2_| THETA 1 _ | THETA 0 _ |
+
+| Byte | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Contenuto | TIMESTAMP 7 _ | TIMESTAMP 6 _ | TIMESTAMP 5 _ | SEGNALIBRO 4 _ |
+
+| Byte | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Contenuto | TIMESTAMP 3 _ | TIMESTAMP 2 _ | TIMESTAMP 1 _ | TIMESTAMP 0 _ |
+
+| Byte | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenuto | VERIFICA |  |  |  |
+
+Va notato che l'unità di X e Y è MM e l'unità di THETA è 0,001 radianti.
+
+Una volta che il riposizionamento ha esito positivo, V2PRO invierà sempre il frame di posizionamento.
+
+b.Frame di restituzione del risultato dell'esecuzione dell'attività
+
+Incluso il ritorno dei risultati della mappatura di inizio/fine e il ritorno dei risultati del cambio mappa. Questo tipo di telaio ha la seguente struttura:
+
+| Byte | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenuto | CA | ED | Lunghezza | 0xFF |
+
+| Byte | Id | Stato | Byte 6 |
+| --- | --- | --- | --- |
+| Contenuto | 0x01 | 0x01 | Controlla |
+
+Dove Id è il byte del tipo di attività:
+
+| 0x01: | Indica l'inizio della mappatura |
+| --- | --- |
+| 0x02: | Indica la fine della mappatura |
+| 0x03: | Indica la mappa di commutazione |
+
+Lo stato corrisponde al successo dell'attività, 0x01 significa successo e 0x00 significa fallimento.
+
+Va notato che è necessario molto tempo per terminare la mappatura, ovvero circa 1/3 del tempo effettivo di scansione della mappatura. Dopo l'emissione dell'attività lunga, lo stato verrà restituito.

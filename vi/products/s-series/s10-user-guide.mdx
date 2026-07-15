@@ -1,0 +1,226 @@
+---
+title: "Hướng dẫn sử dụng máy ảnh S10"
+description: "Thông số kỹ thuật sản phẩm và chi tiết thiết kế được chọn lọc dành cho các nhà phát triển tích hợp và sử dụng camera S10."
+hidden: true
+---
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 13/01/2025 | V1.0 | Phát hành lần đầu |
+| 27/02/2025 | V1.1 | Trường quan sát TOF được cập nhật |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## 1. Giới thiệu
+
+### 1.1 Mục đích và phạm vi
+
+Tài liệu này mô tả thông số kỹ thuật của camera S10 và các chi tiết thiết kế được chọn lọc dành cho các nhà phát triển tích hợp và sử dụng sản phẩm.
+
+### 1.2 Thuật ngữ
+
+| Máy ảnh RGBD | Một máy ảnh xuất ra hình ảnh có độ sâu và RGB được đồng bộ hóa và căn chỉnh theo không gian |
+| --- | --- |
+| Độ sâu | Luồng video tương tự như luồng màu hoặc đơn sắc, trong đó mỗi pixel biểu thị khoảng cách của nó với máy ảnh |
+| FOV | Trường nhìn: phạm vi góc của cảnh được chụp bởi máy ảnh, bao gồm các trường nhìn ngang (HFOV), dọc (VFOV) và chéo (DFOV) |
+| Camera hồng ngoại | Camera hồng ngoại; ở sản phẩm này, nó chủ yếu thu được dải hồng ngoại gần |
+| Máy ảnh RGB | Một máy ảnh màu |
+| Camera độ sâu | Máy ảnh có mô-đun độ sâu thường bao gồm máy chiếu điểm, camera hồng ngoại và bộ xử lý độ sâu; mô-đun màu của nó thường là máy ảnh RGB |
+| SoC | Hệ thống trên chip dùng để xử lý hình ảnh, tính toán độ sâu và thuật toán ứng dụng |
+| DTOF | Công nghệ cảm biến khoảng cách dựa trên phép đo thời gian bay |
+
+### 1.3 Nguyên lý hoạt động
+
+Sản phẩm này là camera chiều sâu DTOF 3D có tầm xa, độ chính xác tốt, giá thành rẻ, khả năng chống nhiễu mạnh, dữ liệu ổn định. Một mô-đun RGB tích hợp chụp ảnh màu. Máy ảnh căn chỉnh hình ảnh RGB và độ sâu bên trong.
+
+## 2. Tổng quan về sản phẩm
+
+Camera RGBD công nghiệp nhỏ gọn này cung cấp dữ liệu độ sâu từ 0,3m đến 8m. Nó căn chỉnh hình ảnh RGB và độ sâu theo không gian và thời gian. SoC tích hợp của nó mang lại kết quả về độ sâu, cường độ, RGB, đám mây điểm và phát hiện chướng ngại vật. Ngoài Ethernet, hai đầu vào IO và hai đầu ra IO chuyển đổi giữa bốn vùng tránh chướng ngại vật và xuất ra các tín hiệu dừng khẩn cấp, giảm tốc độ và trạng thái an toàn.
+
+* * *
+
+### 2.1 Hình thức sản phẩm
+
+![máy ảnh S10](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+
+Hình 1. Camera S10
+
+### 2.2 Tính năng
+
+- Tiêu thụ điện năng DTOF thấp và kích thước nhỏ gọn
+
+- Xử lý tích hợp đưa ra kết quả phát hiện chướng ngại vật cho hoạt động cắm và chạy
+
+- Khả năng thích ứng môi trường mạnh mẽ: chống lại ánh sáng mặt trời 100KLUX và hoạt động từ bóng tối đến ánh sáng mạnh, trong nhà và ngoài trời
+
+- Phạm vi đo rộng 0,3-8m
+
+* * *
+
+## 3. Thông số kỹ thuật
+
+### 3.1 Thông số cơ bản
+
+| Mẫu sản phẩm | S10 |
+| --- | --- |
+| Nguyên lý hoạt động | camera độ sâu DTOF |
+| Định dạng đầu ra | Bản đồ độ sâu & RGB & Biên độ |
+| Độ phân giải TOF và tốc độ khung hình | 240x160 @Tối đa. 20 khung hình/giây, 15 khung hình/giây điển hình |
+| Trường nhìn TOF | 90°*61° |
+| Độ phân giải RGB và tốc độ khung hình | 1920×1080 @Tối đa. 20 khung hình/giây, 15 khung hình/giây điển hình |
+| Trường nhìn RGB | 90°*70° |
+| Phạm vi | 0,3-8m (@90% giới thiệu), 0,3-3m (@5%) |
+| Độ chính xác | 1 độ lệch chuẩn &lt;3cm ở nhiệt độ phòng (25oC), ref 70% và chiếu sáng &lt;50kLux |
+| Tiêu thụ điện năng | ≤4W & 28w |
+| Laser | 940nm |
+| Kích thước | rộng 80mm × cao 25 ​​mm × sâu 37mm |
+| Cân nặng | 300g |
+| Đầu vào nguồn | 24V±20% |
+| Giao diện truyền thông | Ethernet / IO |
+| Đánh giá bảo vệ | IP54 |
+| Nhiệt độ hoạt động | -20°C~60°C |
+| Nhiệt độ bảo quản | -40°C~85°C |
+| Môi trường phần mềm | SDK C / C++ / ROS |
+| Hỗ trợ hệ điều hành | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Làm mát | Bị động, không có quạt |
+
+Lưu ý: Mô hình 3D xác định kích thước sản phẩm.
+
+### 3.2 Định nghĩa giao diện
+
+Giao diện phía camera:
+
+Camera có ba giao diện: đầu nối nguồn DC24V, đầu nối Fast Ethernet và đầu nối IO 8 chân.
+
+<Frame>
+  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Định nghĩa giao diện máy ảnh" />
+</Frame>
+
+Sơ đồ chân cáp:
+
+<Frame>
+  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Sơ đồ chân cáp" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Chi tiết sơ đồ chân cáp" />
+</Frame>
+
+| Cáp | Chân P1 | Màu sắc | Mô tả |
+| --- | --- | --- | --- |
+| Cáp Ethernet | 1 | Cam | OUT_COM2 |
+| ㅤ | 2 | Vàng | NGOÀI_2 |
+| ㅤ | 3 | Xanh | OUT_COM1 |
+| ㅤ | 4 | Màu xanh | NGOÀI_1 |
+| ㅤ | 5 | Màu tím | IN_COM2 |
+| ㅤ | 6 | Xám | IN_2 |
+| ㅤ | 7 | Nâu | IN_COM1 |
+| ㅤ | 8 | Trắng | IN_1 |
+| Cáp nguồn | 1 | Đỏ | 24V+ |
+| ㅤ | G | Đen | 24V- |
+
+### 3.3 Linh kiện máy ảnh
+
+<Frame>
+  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Linh kiện máy ảnh" />
+</Frame>
+
+| VCSEL | Máy phát laser |
+| --- | --- |
+| SPAD | Diode tuyết lở đơn photon |
+| RGB | Mô-đun RGB |
+| Chỉ báo nguồn | Nhấp nháy chậm sau khi bật nguồn |
+
+## 4. Hướng dẫn tích hợp camera
+
+### 4.1 Thiết kế cơ khí
+
+### 4.1.1 Trường nhìn của camera
+
+<Frame>
+  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Trường nhìn của camera" />
+</Frame>
+
+Hình 3. Trường nhìn của camera
+
+### 4.1.2 Kích thước camera
+
+<Frame>
+  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Kích thước máy ảnh" />
+</Frame>
+
+### 4.2 SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển MRDVS SDK.
+
+* * *
+
+## 5. Môi trường và độ tin cậy
+
+| Mục | ㅤ | Đặc điểm kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20oC--60oC |
+| ㅤ | Độ ẩm | 0%–95% RH, không ngưng tụ |
+| ㅤ | Chiếu sáng | 0KLUX--100KLUX |
+| Môi trường lưu trữ | Nhiệt độ | -40oC--85oC |
+| ㅤ | Độ ẩm | 10%–95% RH, không ngưng tụ |
+| Nhiệt độ tăng trong quá trình hoạt động bình thường | ㅤ | Tăng nhiệt độ vỏ &lt;25oC |
+| Đánh giá ESD | ㅤ | ±4KV phóng điện tiếp xúc, ±8KV xả khí |
+| Đánh giá RE | ㅤ | Tuân thủ GB 9254 LỚP A |
+| Tuổi thọ sử dụng | ㅤ | 10 năm |
+| Chứng nhận môi trường | ㅤ | RoHS |
+
+* * *
+
+## 6. Bắt đầu nhanh
+
+### 6.1 Kiểm tra kết nối
+
+<Frame>
+  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Kiểm tra kết nối" />
+</Frame>
+
+1. Kết nối máy ảnh với nguồn điện DC 24V/2A. Đèn báo nguồn màu xanh lam nhấp nháy chậm xác nhận việc bật nguồn bình thường.
+
+2. Kết nối máy ảnh với máy tính bằng cáp Ethernet Loại 6.
+
+3. Địa chỉ IP camera mặc định của nhà sản xuất là 192.168.100.82.
+
+4. Đặt IP máy tính thành mạng con của camera và tắt tường lửa máy tính.
+
+5. Chạy phần mềm máy chủ để xem hình ảnh camera.
+
+6. Liên hệ với bộ phận hỗ trợ kỹ thuật hoặc bán hàng của MRDVS để nhận phần mềm máy chủ.
+
+### 6.2 Đấu dây IO
+
+| Giao diện | Loại | Ghi chú |
+| --- | --- | --- |
+| IN1 | Đầu vào | Đầu vào rời rạc tích cực cao; hỗ trợ 24V/đầu vào mở |
+| IN2 | Đầu vào | Đầu vào rời rạc tích cực cao; hỗ trợ 24V/đầu vào mở |
+| NGOÀI1 | Đầu ra | Đầu ra rời rạc nối đất/mở; hỗ trợ kéo lên 24V |
+| NGOÀI2 | Đầu ra | Đầu ra rời rạc nối đất/mở; hỗ trợ kéo lên 24V |
+| COM | GND | Điểm chung cho các đầu ra rời rạc; sử dụng IN1 với IN_COM1 |
+
+* * *
+
+## 7. Biện pháp phòng ngừa
+
+### 7.1 Cấp độ an toàn laser
+
+<Frame>
+  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Lớp an toàn laser" />
+</Frame>
+
+* * *
+
+## 8. Khắc phục sự cố
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh rằng tường lửa đã bị tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong mạng LAN sử dụng cùng IP; chọn địa chỉ IP được yêu cầu |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet; dữ liệu ban đầu có thể không ổn định qua Fast Ethernet |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi cài đặt quyền |

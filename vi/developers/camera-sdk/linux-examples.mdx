@@ -1,0 +1,2639 @@
+---
+title: "Ví dụ về SDK Linux"
+description: "Thiết lập, xây dựng và chạy các ví dụ C, Java, ROS và ROS 2 đi kèm với SDK máy ảnh MRDVS dành cho Linux."
+hidden: true
+---
+```yaml
+version:
+  name: "V1.0"
+  revision_record:
+    - revision_date: "2024/10/12"
+      modified_by: "Lin Yu"
+```
+
+## 1. **Tổng quan**
+
+SDK máy ảnh MRDVS dành cho Linux bao gồm các ví dụ về C, máy chủ Java HTTP, ROS và ROS 2. Các ví dụ minh họa quy trình làm việc cốt lõi của SDK và các tính năng cơ bản. Điều chỉnh việc triển khai cho phù hợp với ứng dụng của bạn. Hướng dẫn này giải thích cách thiết lập môi trường cần thiết và chạy từng ví dụ, với thông tin chi tiết về ROS và ROS 2.
+
+Nên đọc Phần 1 đến Phần 3 theo thứ tự ưu tiên. Sau khi đọc theo trình tự Phần 1 đến Phần 3, bạn có thể chuyển thẳng đến các phần liên quan để đáp ứng các nhu cầu khác nhau. Mỗi chương độc lập với nhau và không ảnh hưởng đến việc đọc.
+
+Cuối cùng, bài viết này cung cấp một số phương pháp cài đặt và biện pháp phòng ngừa cho các ứng dụng và môi trường liên quan. Bạn có thể tham khảo phần phụ lục nếu cần thiết.
+
+* * *
+
+## 2. **Hệ thống và Môi trường**
+
+### 2.1 Giới thiệu hệ thống và môi trường
+
+Nên sử dụng các hệ thống Linux sau. Các phiên bản chương trình mặc định được hiển thị trong bảng dưới đây:
+
+| Phiên bản hệ thống | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
+| --- | --- | --- | --- | --- | --- |
+| Ubuntu16.04 | 3,5/Gcc-5 | 3.2.0 | 1.7.2 | Động học | Sôi nổi, bồng bềnh |
+| Ubuntu18.04 | 3,18/Gcc-7 | 4.5.1 | 1.9.1 | Giai điệu | Bảnh bao, hùng hồn, pha lê |
+| Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Thông minh | Foxy, Thiên hà |
+| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Khiêm tốn, lron |
+
+### 2.2 Kiểm tra phiên bản hệ thống và phiên bản ứng dụng
+
+#### 2.2.1 Kiểm tra phiên bản hệ thống
+
+Lệnh: uname -a
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/7c4617da-c25a-4891-94c8-a32dc762d4dd/af45f496-e312-4351-bb32-6f7ce1a6c8d1.avif" alt="Xem các biểu tượng liên quan đến phiên bản hệ thống" />
+</Frame>
+
+Số phiên bản phát hành hệ điều hành: 5.15.0
+
+- **Số phiên bản chính:** 5
+
+- **Số phiên bản:** 15 [Số lẻ là phiên bản phát triển, số chẵn là phiên bản ổn định]
+
+- **Số sửa đổi:** 0 [Số sửa đổi]
+
+- **Bản chỉnh sửa thứ N của phiên bản này:** 97
+
+- **Phiên bản kernel:** #107~20.0.4.1, thông thường phiên bản hệ thống là phiên bản kernel
+
+#### 2.2.2 Kiểm tra phiên bản Cmake
+
+Lệnh: cmake -version
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/a123bbcf-982b-47be-901f-3a1946d2fa7b/848d3c09-a031-4c4e-8a30-e455ba39d1a2.avif" alt="Xem các biểu tượng liên quan đến phiên bản Cmake" />
+</Frame>
+
+Đại diện cho phiên bản Cmake 3.16.3
+
+#### 2.2.3 Kiểm tra phiên bản Gcc
+
+Lệnh: gcc -v
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/25fb257c-a77b-416a-bd23-79b59520bb11/71d0bc17-7ded-4313-ae19-ff163e9dbecf.avif" alt="Xem các biểu tượng liên quan đến phiên bản Gcc" />
+</Frame>
+
+Số phiên bản nằm trong ô màu xanh ở góc dưới bên trái. Phiên bản ở đây là: 9.4.0
+
+#### 2.2.4 Xem phiên bản Opencv
+
+Lệnh: pkg-config --modversion opencv
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/f00cb7da-8eee-46ed-bdf5-14108c8512f1/a8de70e1-4c06-448a-852c-045bf5893670.avif" alt="Xem các biểu tượng liên quan đến phiên bản Opencv" />
+</Frame>
+
+Phiên bản ở đây là 3.2.0
+
+#### 2.2.5 Kiểm tra phiên bản Pcl
+
+Lệnh: dpkg -l libpcl-dev
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/8d01ab23-7eee-472c-9606-2ef3f9838162/d819c737-f626-4399-8f1c-884c66bebde2.avif" alt="Xem các biểu tượng liên quan đến phiên bản Pcl" />
+</Frame>
+
+Phiên bản ở đây là 1.8.1
+
+#### 2.2.6 Xem phiên bản ROS
+
+Lệnh: rosversion -d
+
+kết quả:
+
+<Frame>
+  <img src="/images/legacy/dd047dee-2748-48c7-8937-e89bebdb2d0e/e5af9a35-d242-471a-8c05-dc4ea3ac9188.avif" alt="Xem các biểu tượng liên quan đến phiên bản ROS" />
+</Frame>
+
+Phiên bản ở đây hùng hồn (phiên bản ros2 tương ứng với Ubuntu18.04)
+
+<Frame>
+  <img src="/images/legacy/e94ccc9e-723b-4e04-80e8-e1875e752eba/156381c6-eb94-4d6c-80fe-6e76ea8e9c29.avif" alt="Xem biểu tượng liên quan đến phiên bản ROS 2" />
+</Frame>
+
+Phiên bản ở đây là noetic (phiên bản ros1 tương ứng với Ubuntu20)
+
+### 2.3 Xây dựng môi trường phát triển cơ bản
+
+Bạn cần cập nhật danh sách cài đặt trước khi cài đặt:
+
+Thực thi lệnh: sudo apt update
+
+Kết quả là như sau:
+
+<Frame>
+  <img src="/images/legacy/d475670b-1c59-4ad4-ae94-b665a89fc526/4cb741b1-3e4d-4ddc-bd52-e6113d7a61e5.avif" alt="Các hình ảnh minh họa liên quan đến xây dựng môi trường phát triển cơ bản" />
+</Frame>
+
+#### 2.3.1 Cài đặt Cmake
+
+Lệnh: sudo apt cài đặt cmake
+
+<Frame>
+  <img src="/images/legacy/202276f8-045b-4cef-a63e-cab724e49d29/127c6296-a6e1-4306-ace4-41dad406c2c1.avif" alt="Cài đặt các biểu tượng liên quan đến Cmake" />
+</Frame>
+
+#### 2.3.2 Cài đặt Gcc
+
+Lệnh: sudo apt install build-essential
+
+<Frame>
+  <img src="/images/legacy/e8f4c492-c1f6-44d9-bf50-6f10676f785e/f9aa4459-2cb5-4b23-8ca3-34098497abee.avif" alt="Cài đặt các biểu tượng liên quan đến Gcc" />
+</Frame>
+
+### 2.4 Xây dựng môi trường phát triển tùy chọn
+
+#### 2.4.1 Cài đặt Opencv [có thể hiển thị hình ảnh camera]
+
+Lệnh thực thi: sudo apt-get install libopencv-dev
+
+<Frame>
+  <img src="/images/legacy/d33099da-3dd6-4b5c-a34d-98774f9c1141/5b8609fe-3de6-4066-810d-2cb2d0f3f45c.avif" alt="Cài đặt các biểu tượng liên quan đến Opencv [có thể hiển thị hình ảnh camera]" />
+</Frame>
+
+#### 2.4.2 Cài đặt Pcl [có thể hiển thị đám mây điểm]
+
+Lệnh thực thi: sudo apt-get install libpcl-dev
+
+<Frame>
+  <img src="/images/legacy/fe2ed92e-0c06-4a7a-b1c5-c8c6608b367b/095f9e66-e712-479f-8f11-5d054af0aa74.avif" alt="Cài đặt các biểu tượng liên quan đến Pcl [có thể hiển thị đám mây điểm]" />
+</Frame>
+
+* * *
+
+## 3. **Giới thiệu code mẫu và chuẩn bị chạy**
+
+### 3.1 Thực thi script cài đặt
+
+1. Giải nén file Lanxin-MRDVS và vào thư mục Lanxin-MRDVS
+
+<Frame>
+  <img src="/images/legacy/ec64ca28-3d2f-4a1e-9c22-b73eaf23b1eb/d94065bf-30a9-4dc8-bcae-633a46963134.avif" alt="Hình minh họa liên quan đến việc thực thi tập lệnh cài đặt" />
+</Frame>
+
+2. Nhấp chuột phải để mở bảng điều khiển
+
+3. Thực thi tập lệnh install.sh
+
+<Frame>
+  <img src="/images/legacy/02ce52d3-e986-469a-835d-71f328f976cd/00fc58f7-aec6-4922-8d95-83a97284b3db.avif" alt="Minh họa liên quan đến việc thực thi tập lệnh cài đặt 2" />
+</Frame>
+
+4. Nhập thư mục /opt/ để kiểm tra xem cài đặt có thành công hay không.
+
+<Frame>
+  <img src="/images/legacy/3e226372-2cc2-4f68-8cb5-cbf81484abb9/4663ae94-a3fb-45ed-a5f9-d5392851910a.avif" alt="Minh họa liên quan đến việc thực thi tập lệnh cài đặt 3" />
+</Frame>
+
+5. Nếu tìm thấy thư mục nghĩa là quá trình cài đặt thành công.
+
+6. Nếu cài đặt không thành công, bạn cần thêm nó vào thư mục opt theo cách thủ công.
+
+7. Thực thi tập lệnh set\_socket\_buffer\_size.sh
+
+<Frame>
+  <img src="/images/legacy/0becfb0a-72d4-4964-a48b-1ab500b96f2c/45ce9170-fd29-4dea-8dcb-ad206233da6b.avif" alt="Các minh họa liên quan đến việc thực thi tập lệnh cài đặt 4" />
+</Frame>
+
+8. Đến đây, script cài đặt đã được thực thi hoàn toàn!
+
+### 3.2 Giới thiệu code mẫu
+
+Nhập thư mục Mẫu. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/3dcd11f9-5cd7-49ab-8c7f-3a060e84a9b1/9200d671-9bde-4f8a-b0af-6003e1c9aa00.avif" alt="Hình ảnh minh họa liên quan đến giới thiệu code mẫu" />
+</Frame>
+
+- Thư mục C chứa code liên quan đến C và C++
+
+- Thư mục Java chứa máy chủ http để gọi gián tiếp sdk
+
+- Thư mục Ros chứa ví dụ về ros
+
+- Thư mục Ros2 chứa ví dụ về ros2
+
+Mã mẫu #### 3.2.1 C và C++
+
+Nhập thư mục C. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/e3b253f3-6743-4945-b738-b8e9b8dfc7dc/9a255d61-eadf-4076-847d-65b29fe4eace.avif" alt="Hình ảnh minh họa liên quan đến code mẫu C và C++" />
+</Frame>
+
+Chứa 9 thư mục và 1 file Cmakelist, mỗi thư mục chứa 1 file cpp
+
+Các chức năng được triển khai đại khái của mỗi cpp như sau:
+
+- application\_obstacle: Lấy dữ liệu luồng camera và kích hoạt thuật toán tránh chướng ngại vật, kết quả thuật toán đầu ra
+
+- application\_pallet: Lấy dữ liệu luồng camera và kích hoạt thuật toán pallet, kết quả thuật toán xuất ra
+
+- arm\_local\_Camera: Gọi SDK trong camera [ARM] và lấy dữ liệu luồng
+
+- frame\_callback: Sử dụng phương thức gọi lại để lấy dữ liệu luồng camera
+
+- multi\_Cameras: mở nhiều camera và lấy dữ liệu phát trực tuyến
+
+- single\_Camera: Mở một camera duy nhất và nhận dữ liệu truyền phát
+
+- single\_Camera2: Lấy dữ liệu khung thông qua cấu trúc
+
+Các mã mẫu khác nhau có thể được chọn để thử nghiệm và sửa đổi theo các nhu cầu khác nhau.
+
+#### 3.2.2 Mã mẫu Java
+
+Nhập thư mục java. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/26332b64-8f33-4ebf-bf82-ba16e30445c7/2276c2ab-ad64-46d0-942d-1bd3962e8912.avif" alt="Hình minh họa liên quan đến mã mẫu Java" />
+</Frame>
+
+Thư mục chứa 2 thư mục và một file postman.json và README
+
+- Config: Các cấu hình liên quan đến Server được lưu trữ trong thư mục
+
+- Middleware: chủ đề máy chủ
+
+- LxCamera.postman\_collection.json: file cấu hình người đưa thư
+
+- README: hướng dẫn sử dụng máy chủ ảo java
+
+#### Mã mẫu 3.2.3 ROS
+
+Nhập thư mục ros. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/8528536f-739b-4793-80a5-1f0fecf758b6/042f03ed-0332-4ac2-92b8-9efce2029e00.avif" alt="Hình ảnh minh họa liên quan đến mã mẫu ROS" />
+</Frame>
+
+- lx\_Camera\_node\_ws: Thư mục chứa driver ros chuẩn
+
+- README.EN: giải thích bằng tiếng Anh cách biên dịch một nút và tạo một nút mới
+
+Mã mẫu #### 3.2.4 ROS2
+
+Nhập thư mục ros2. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/90c830a3-78f2-44af-a51a-8f0d23bde64f/e2d32a99-ec9a-4276-bab4-ed66232c609e.avif" alt="Hình ảnh liên quan đến mã mẫu ROS2" />
+</Frame>
+
+- lx\_Camera\_node\_ws: Thư mục chứa driver ros2 chuẩn
+
+- README.EN: giải thích bằng tiếng Anh cách biên dịch một nút và tạo một nút mới
+
+Mã mẫu #### 3.2.5 ros-v1pro
+
+Nhập thư mục ros-v1pro. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/d752e5ea-2020-4da1-abe5-9856083df609/8df69cbb-cbb9-4229-ab4c-a8a1f50dd3ec.avif" alt="Hình ảnh minh họa liên quan đến code mẫu ros-v1pro" />
+</Frame>
+
+- src: Thư mục chứa driver ros chuẩn
+
+- README: giải thích cách sử dụng nút này
+
+- README.pdf: giải thích cách sử dụng nút này
+
+* * *
+
+## 4. **Biên dịch và chạy code mẫu**
+
+### 4.1 Biên dịch và chạy mã mẫu C và C++
+
+Chuyển đến thư mục C trong ví dụ:
+
+<Frame>
+  <img src="/images/legacy/9af1cca5-4fa3-4372-9f90-a6e2400ebf14/47b36fcb-bb11-46d8-a5c3-4f32d89d5e9e.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu C, C++" />
+</Frame>
+
+Mở một thiết bị đầu cuối trong thư mục C và thực hiện các lệnh sau:
+
+- xây dựng mkdir
+
+- bản dựng cd
+
+- cmake..
+
+- làm
+
+Sau khi thực hiện thành công, hãy nhập thư mục build và nó sẽ như sau:
+
+<Frame>
+  <img src="/images/legacy/c020084f-0e25-459c-894d-793d7c4c8bfc/c799b5ae-fa76-4120-a1f2-5edfcc975484.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu C, C++ 2" />
+</Frame>
+
+Tệp thực thi nằm trong thư mục bin. Vào thư mục bin sẽ như sau:
+
+<Frame>
+  <img src="/images/legacy/6cad8039-5c77-46ee-8745-5f13cbb0a379/659bdc66-bf29-4040-9967-c24e45613088.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu C, C++ 3" />
+</Frame>
+
+Ngoại trừ ví dụ về cánh tay, tất cả các ví dụ khác sẽ được biên dịch. Tên tệp thực thi giống với tên thư mục ví dụ. Bạn có thể chạy nó trực tiếp.
+
+### 4.2 quy trình chạy mẫu java
+
+Java khác với các mã mẫu khác. Nó không trực tiếp cung cấp mã nguồn. Nó cung cấp một máy chủ http và một ví dụ về người đưa thư. Nếu bạn cần điều khiển camera gián tiếp thông qua http, bạn có thể chọn ví dụ java và nhập thư mục java. Nội dung thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/9fe48416-b016-422c-971b-188cd01aab9d/e0b5c957-1b1a-4656-97d9-343beb990da4.avif" alt="Hình ảnh minh họa liên quan đến tiến trình chạy mẫu java" />
+</Frame>
+
+Quá trình chạy như sau:
+
+- Vào thư mục config và sửa đổi trường http\_sever\_host và trường http\_sever\_port trong file Configs.json:
+
+<Frame>
+  <img src="/images/legacy/1a4b7a11-8ed8-4b33-a17a-ebe21216cbff/b1502b67-9dbc-4617-b2fa-ec3f9a3213e5.avif" alt="Hình ảnh minh họa liên quan đến quá trình chạy mẫu java 2" />
+</Frame>
+
+- Vào thư mục middleware và thực thi script start.sh để kích hoạt transfer server
+
+<Frame>
+  <img src="/images/legacy/aa511cbc-a62e-4ce9-8243-5f8d3a1f15cc/98d76161-6de9-41b4-8b51-5a1be024d259.avif" alt="Hình ảnh minh họa liên quan đến tiến trình chạy mẫu java 3" />
+</Frame>
+
+- Dùng postman mở file LxCamera.postman\_collection.json để gửi dữ liệu ra port mẫu
+
+### 4.3 Biên dịch và chạy mã mẫu ROS
+
+Vào thư mục ROS, mở console và thực thi: roscore
+
+<Frame>
+  <img src="/images/legacy/17961e97-d809-43e8-81a6-91a847265fac/04993e81-2355-4753-bb64-8383cfc976f9.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu ROS" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/198c9361-7dbb-4f57-b1d3-cdc730257244/3555f417-f859-4936-9d68-34da9d387a71.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy mã mẫu ROS 2" />
+</Frame>
+
+Nhấp chuột phải để mở bảng điều khiển, nhập thư mục lx\_Camera\_node\_ws và thực thi catkin\_make
+
+<Frame>
+  <img src="/images/legacy/0f100d3a-6fcc-403a-a0d7-704f8c196cfa/2f053935-823b-4c96-a4fe-c994769bd2ba.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy mã mẫu ROS 3" />
+</Frame>
+
+Sau khi thực hiện thành công sẽ hiển thị như sau:
+
+<Frame>
+  <img src="/images/legacy/6190e63d-282a-4384-a707-708b0e31e2b2/eaf02f58-419e-4c91-bebc-dc0cc11fa4a4.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy mã mẫu ROS 4" />
+</Frame>
+
+Tại thời điểm này, việc phát triển và xây dựng trong thư mục được biên dịch và tạo:
+
+<Frame>
+  <img src="/images/legacy/aebae7ca-041d-4bf7-b06a-77b91eb62ad3/3f4f8499-2297-4ad3-8287-f6037afc7491.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy mã mẫu ROS 5" />
+</Frame>
+
+Thực thi source devel/setup.bash để định cấu hình môi trường và sử dụng roslaunch để chạy nút. Lệnh như sau:
+
+- roslaunch lx\_máy ảnh\_ros lx\_máy ảnh\_ros.launch
+
+- roslaunch lx\_máy ảnh\_ros chướng ngại vậtV2.launch
+
+- roslaunch lx\_máy ảnh\_ros chướng ngại vật.launch
+
+- roslaunch lx\_máy ảnh\_ros pallet.launch
+
+Từ trên xuống dưới là: chạy nút thông thường, chạy nút thuật toán tránh chướng ngại vật 2 nút, chạy nút thuật toán tránh chướng ngại vật, chạy nút thuật toán pallet. Mỗi nút không thể được kích hoạt cùng một lúc.
+
+### 4.4 Biên dịch và chạy mã mẫu ROS2
+
+Nhập thư mục ros2. Nội dung của thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/0cbdabe7-156c-4fb7-9996-e531e4da6fbf/86eb93f5-6cc3-4910-8a5b-a5c13ac199f4.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu ROS2" />
+</Frame>
+
+Ví dụ nút ros được biên dịch bằng colcon
+
+Trước tiên, bạn cần cài đặt các công cụ biên dịch, thực thi: Sudo apt install python3-colcon-common-extensions
+
+<Frame>
+  <img src="/images/legacy/789d5f33-560d-479e-88d1-da3800db324d/948dca59-04e6-4bff-ac53-7a4c7404faff.avif" alt="Hình minh họa liên quan đến biên dịch và chạy ROS2 code mẫu 2" />
+</Frame>
+
+Sau đó cài đặt gói phụ thuộc ros-pcl: sudo apt-get install ros-foxy\-pcl\* [Phần phông chữ màu đỏ cần được thay thế bằng phiên bản ros2 tương ứng]
+
+Sau khi cài đặt hoàn tất, hãy vào thư mục lx\_Camera\_node\_ws để biên dịch dự án và thực hiện: colcon build
+
+Tùy thuộc vào hiệu suất của máy tính, quá trình biên dịch thường mất từ ​​30 giây đến 120 giây. Sau khi biên dịch thành công sẽ hiển thị như sau:
+
+<Frame>
+  <img src="/images/legacy/c75782f3-c2df-4abb-aec7-a2757059c57e/a58d430e-9667-4e05-a8dc-1de770f223e1.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu ROS2 3" />
+</Frame>
+
+Một số cảnh báo là do vấn đề tương thích phiên bản và không cần xử lý. Sau khi biên dịch xong, nội dung của thư mục như sau:
+
+<Frame>
+  <img src="/images/legacy/3c285ed6-e1f4-4ec5-9a38-8513b6c4132f/9bb9dda9-0dc9-4eac-9ecb-55e8ffdcd4f7.avif" alt="Hình ảnh minh họa liên quan đến biên dịch và chạy code mẫu ROS2 4" />
+</Frame>
+
+Thực thi source install/setup.bash để định cấu hình môi trường và sử dụng ros2 launch để chạy nút. Lệnh như sau:
+
+- khởi chạy ros2 lx\_máy ảnh\_ros lx\_máy ảnh\_ros\_launch.py
+
+- khởi chạy ros2 lx\_máy ảnh\_ros chướng ngại vậtV2.launch.py
+
+- khởi chạy ros2 lx\_máy ảnh\_ros chướng ngại vật.launch.py
+
+- khởi chạy ros2 lx\_máy ảnh\_ros pallet.launch.py
+
+Từ trên xuống dưới là: chạy nút thông thường, chạy nút thuật toán tránh chướng ngại vật 2 nút, chạy nút thuật toán tránh chướng ngại vật, chạy nút thuật toán pallet. Mỗi nút không thể được kích hoạt cùng một lúc.
+
+### 4.5 Biên dịch và vận hành code mẫu ros-v1pro
+
+ros-v1pro là trình điều khiển ros dành riêng cho máy ảnh V1PRO. Có README.pdf trong thư mục ros-v1pro mô tả chi tiết về trình điều khiển. Tài liệu này chỉ giới thiệu ngắn gọn về nó:
+
+<Frame>
+  <img src="/images/legacy/205bd1e9-bec1-4781-8f86-51901fde8aa2/d76be474-b486-4fc0-9fd3-965cb0bd926e.avif" alt="Hình ảnh minh họa liên quan đến việc biên dịch và chạy code mẫu ros-v1pro" />
+</Frame>
+
+Nhập thư mục ros-v1pro, nhấp chuột phải để mở bảng điều khiển và sử dụng catkin\_make để biên dịch. Sau khi biên dịch xong, màn hình hiển thị như sau:
+
+<Frame>
+  <img src="/images/legacy/7f93bb50-cd8f-438c-a93a-66881fcb008e/e7f8dfa5-f705-4a4f-8950-2dbef4d120ed.avif" alt="Hình ảnh minh họa liên quan đến việc biên dịch và chạy code mẫu ros-v1pro 2" />
+</Frame>
+
+Định cấu hình môi trường: source devel/setup.bash
+
+<Frame>
+  <img src="/images/legacy/c8ac9613-e2d7-4aa1-9f88-abb0e4203656/5c035d4d-90aa-448b-8b32-5db62d3a6296.avif" alt="Hình ảnh minh họa liên quan đến việc biên dịch và chạy code mẫu ros-v1pro 3" />
+</Frame>
+
+Cuối cùng chạy nút:
+
+- roslaunch lx\_máy ảnh\_ros localization.launch
+
+- roslaunch lx\_máy ảnh\_ros maps.launch
+
+- roslaunch lx\_máy ảnh\_ros cảm biến\_sim.launch
+
+Từ trên xuống dưới: chạy nút định vị, chạy nút ánh xạ và chạy nút dữ liệu ảo. Mỗi nút không thể được kích hoạt cùng một lúc.
+
+* * *
+
+## 5. **Giải thích và mô tả code mẫu**
+
+Trong phần này, tất cả các mã và mã giả sẽ được chia thành nhiều phần. Nói chung, mọi thứ trong một phần đều thuộc cùng một tệp. Ngoại trừ các file đặc biệt có giải thích chi tiết, các file mã nguồn chỉ giải thích các module chung. Giải thích chi tiết được nhận xét trong mã.
+
+### 5.1 C và C++
+
+#### 5.1.1 CMakeLists
+
+<Frame>
+  <img src="/images/legacy/c85eb239-fd8d-4ef6-b773-381966e61fcd/3fe09247-995f-4fb5-88e0-dcdb7e432e24.avif" alt="Các biểu tượng liên quan đến CMakeLists" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c1957990-cfb7-4d9f-a48b-b862bab9fbb2/71df8717-0cdd-4e6b-b3ab-b01a9783fe16.avif" alt="Các biểu tượng liên quan đến CMakeLists 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/f96f92a5-7a6e-4fe6-9955-89f71c178a4e/1caff473-b030-4e8f-93df-e33b35beec1f.avif" alt="Các biểu tượng liên quan đến CMakeLists 3" />
+</Frame>
+
+#### ứng dụng 5.1.2\_chướng ngại vật và ứng dụng\_pallet
+
+<Frame>
+  <img src="/images/legacy/0d9aba0a-e632-49d4-a593-68a03d6bf7d6/c183341c-2720-4843-b52d-f102376f29d2.avif" alt="ứng dụng\_trở ngại và các biểu tượng liên quan đến ứng dụng\_pallet" />
+</Frame>
+
+#### 5.1.3 cánh tay\_local\_máy ảnh
+
+<Frame>
+  <img src="/images/legacy/7b3c6e54-590e-42cf-baef-da04c26705b7/a212cc86-c478-4253-a60a-2522d985f57a.avif" alt="Các biểu tượng liên quan đến arm\_local\_Camera" />
+</Frame>
+
+#### 5.1.4 khung\_gọi lại
+
+<Frame>
+  <img src="/images/legacy/dcfb097e-444d-4f01-a692-9e8891bfba41/dc01ff2f-2dc7-4281-8dec-6180c84f3eb6.avif" alt="các biểu tượng liên quan đến frame\_callback" />
+</Frame>
+
+#### 5.1.5 nhiều\_máy ảnh
+
+<Frame>
+  <img src="/images/legacy/0a1977bc-995c-4464-84fc-57336863900c/3a1a3566-bc2f-41a0-b7a7-bbd9ecd73158.avif" alt="các biểu tượng liên quan đến multi\_Cameras" />
+</Frame>
+
+#### 5.1.6 đơn\_máy ảnh
+
+<Frame>
+  <img src="/images/legacy/4aa2b8fa-c63b-4f2e-aae6-42174af778cc/7f12e999-296b-4616-b211-048442848c35.avif" alt="các biểu tượng liên quan đến đơn\_máy ảnh" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/cf5af400-d17d-477e-854f-b28faaef994e/ac88bcee-068f-484a-be28-08647bf50d40.avif" alt="biểu tượng liên quan đến single\_Camera 2" />
+</Frame>
+
+#### 5.1.7 đơn\_máy ảnh2
+
+<Frame>
+  <img src="/images/legacy/6612e917-ca5d-4ad6-94ac-459bef88bf95/88762255-edb5-40b0-b814-cbf3d3afc12d.avif" alt="các biểu tượng liên quan đến single\_Camera2" />
+</Frame>
+
+### 5.2 java
+
+Ví dụ Java chỉ cung cấp một máy chủ HTTP nên phần mô tả chỉ là phần mô tả về giao diện và định dạng thông báo. Sử dụng postman để mở file mẫu như hình dưới đây:
+
+<Frame>
+  <img src="/images/legacy/4a627533-f792-4fe1-ac64-cff92e99125d/031f79f9-c0e5-48be-8ad8-774882c69f05.avif" alt="biểu tượng liên quan đến java" />
+</Frame>
+
+Các tin nhắn đều ở chế độ đăng bài. Trước khi gửi, hãy nhớ đổi IP thành IP của máy chủ nhưng không sửa đổi URL. URL được mã hóa cứng bên trong máy chủ. Cả định dạng và nội dung thông báo phản hồi đều nằm trong phần nội dung. Giao diện được cung cấp trong ví dụ như sau:
+
+<Frame>
+  <img src="/images/legacy/1f61f9eb-bb6c-4cb3-8b99-b114595e5f8b/a69ee0c0-7f68-475c-a796-ab326d0b31c2.avif" alt="biểu tượng liên quan đến java 2" />
+</Frame>
+
+1.DcGetApiVersion: Lấy số phiên bản của SDK, không cần nhập tham số
+
+<Frame>
+  <img src="/images/legacy/50ee2ffa-b3d3-4097-8df6-b1a09b49475f/0272dea8-0fb1-4dc0-8d01-d4eeff648600.avif" alt="biểu tượng liên quan đến java 3" />
+</Frame>
+
+2.DcSetInfoOutput: Đặt đường dẫn cho đầu ra nhật ký SDK. Các thông số như sau:
+
+- log\_path: đường dẫn ra log
+
+- print\_level: cấp độ in nhật ký
+
+- Enable\_screen\_print: nhật ký có được in trên bảng điều khiển hay không
+
+3.DcLog: Xuất nhật ký ra nhật ký SDK. Mọi nội dung đầu vào sẽ được in vào nhật ký SDK.
+
+4.DcGetDeviceList: Lấy danh sách thiết bị, không cần nhập liệu, đầu vào là JSON
+
+5.DcOpenDevice: Mở thiết bị và nhập thông tin sau:
+
+<Frame>
+  <img src="/images/legacy/57bdf94d-11de-4023-a76b-4e4695b8264d/305d71b3-1c29-4041-a264-4127ae5d9000.avif" alt="biểu tượng liên quan đến java 4" />
+</Frame>
+
+- open\_mode: mở chế độ camera
+
+- param: thông số mở camera
+
+6.DcStartStream: Cho phép một camera nào đó bắt đầu đẩy dữ liệu phát trực tuyến. Các thông số đầu vào như sau:
+
+<Frame>
+  <img src="/images/legacy/5aee4343-16d5-42f5-ad24-2e190e10e42b/7fffa12c-87fd-41c5-95c3-76d08f7ec6a0.avif" alt="biểu tượng liên quan đến java 5" />
+</Frame>
+
+- Handle: Tay cầm của camera sẽ được trả về trong DcOpenDevice
+
+7.DcSetCmd: Ra lệnh cho camera, nhập như sau:
+
+<Frame>
+  <img src="/images/legacy/50500d5f-4288-4f8f-93ed-194f3c2cc03f/9b3e44b2-c0a2-4d28-b266-e5edb0f93e38.avif" alt="biểu tượng liên quan đến java 6" />
+</Frame>
+
+- Handle: tay cầm của camera cần cài đặt
+
+- cmd: số lệnh
+
+8.DcGetPtrValue: Lấy dữ liệu con trỏ (hình ảnh, thông số…), nhập như sau:
+
+- Handle: tay cầm của camera cần cài đặt
+
+- cmd: số lệnh
+
+9.DcSetIntValue: Thiết lập thông số kiểu int của camera, nhập vào như sau:
+
+<Frame>
+  <img src="/images/legacy/3ddedf1d-403d-4939-83af-bd6daaf4eda7/f13e456a-5c27-4e75-889b-c18855e7b8f6.avif" alt="biểu tượng liên quan đến java 7" />
+</Frame>
+
+- Handle: tay cầm của camera cần cài đặt
+
+- cmd: số lệnh
+
+- value: giá trị cần thiết lập
+
+10.DcGetIntValue: Lấy tham số kiểu int của thiết bị, nhập như sau:
+
+- Handle: tay cầm của camera cần cài đặt
+
+- cmd: số lệnh
+
+11. Vui lòng xem bảng bên dưới để biết các hướng dẫn liên quan khác:
+
+| Gửi | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | Nhận | `{"errCode" : 0 }` |
+| --- | --- | --- | --- |
+| Gửi | `{"open_mode" : 0, "param" : "0"<br />}` | Nhận | `{"algor_ver" : "VER_1.0.2.230315", "dev_type" : "M4 camera", "errCode" : 0,<br />"firmware_ver" : "V1.0.0.3_230315",<br />"handle" : 174539057817095, "id" : "f13141144bb1",<br />"ip" : "192.168.100.16:3956",<br />"mac" : "9e:be:0a:8a:66:07",<br />"name" :"camera_M4_192.168.100.16_3956",<br />"sn" : "9a5ed62d22b34bb1"<br />}` |
+| Gửi | `{"handle" :174539057817<br />095,<br />"cmd" : 6001<br />}` | Nhận | `{"errCode" : 0,<br />"value" :"\u0011\u0001\u0014\u0001..." }` |
+
+### 5.3 ROS1 & ROS2
+
+Trong phần mô tả ros, chúng ta sẽ không nói về mã nguồn driver mà nói về nội dung tương ứng với cấu hình trong file khởi chạy, cách điều chỉnh cấu hình cũng như cách gửi và đăng ký tin nhắn. Nút ros được cung cấp đã chứa hầu hết các chức năng, do đó không nên sửa đổi trực tiếp mã nguồn trình điều khiển. Nếu có nhu cầu đặc biệt, trước tiên bạn có thể hiểu luồng mã trong ví dụ C++, sau đó sửa đổi mã nguồn trình điều khiển.
+
+**Khi thực thi trình điều khiển ros, bạn phải đảm bảo rằng các phiên bản opencv và pcl trong đường dẫn mặc định của hệ thống là duy nhất, nếu không sẽ xảy ra lỗi khi liên kết thư viện ros, có thể gây ra lỗi biên dịch hoặc lỗi thời gian chạy.**
+
+#### 5.3.1 Mô tả tệp khởi chạy ROS1
+
+##### 5.3.1.1 Tất cả các file khởi chạy
+
+1. Có các tệp sau trong thư mục src/launch:
+
+<Frame>
+  <img src="/images/legacy/bbacec9a-738e-411b-8bc9-c6da357de38e/0e3138ad-8898-480d-8a55-6e0cecf99c30.avif" alt="Tất cả các biểu tượng liên quan đến tập tin khởi chạy" />
+</Frame>
+
+- localization.launch: Chạy file cho các nút định vị trực quan
+
+- lx\_Camera\_ros.launch: file chạy của các nút thông thường
+
+- maps.launch: file đang chạy để lập bản đồ định vị trực quan
+
+- chướng ngại vật.launch: file chạy của thuật toán tránh chướng ngại vật
+
+- chướng ngại vậtV2.launch: file chạy của thuật toán tránh chướng ngại vật V2
+
+- pallet.launch: file chạy thuật toán pallet
+
+- Sensor\_sim.launch: file chạy mô phỏng dữ liệu định vị
+
+2. Bạn có thể thực thi các chức năng khác nhau của nút bằng cách chạy các tệp khởi chạy khác nhau. **Ngoại trừ bản địa hóa, ánh xạ và cảm biến, nội dung tham số giống nhau ở tất cả các nút, nhưng cấu hình khác nhau**. Điều này sẽ được giới thiệu chi tiết ở các phần sau. Để biết phần giới thiệu chi tiết về các thông số của ba tệp khởi chạy bản địa hóa, ánh xạ và cảm biến, vui lòng xem phần giới thiệu trong nút ros-v1pro.
+
+##### 5.3.1.2 IP camera, cấu hình luồng, cấu hình chế độ làm việc, đơn vị đám mây điểm, v.v.
+
+<Frame>
+  <img src="/images/legacy/c3b4a958-5e09-48de-82e5-fbb890bdfd9d/3de2b204-1f42-489d-9e8a-94c2e872f898.avif" alt="IP camera, cấu hình luồng, cấu hình chế độ làm việc, đơn vị đám mây điểm và các biểu tượng liên quan khác" />
+</Frame>
+
+- ip: IP camera cần kết nối. Nếu là 0 thì mặc định cái đầu tiên sẽ được kết nối.
+
+- log\_path: Đường dẫn lưu trữ nhật ký SDK, cần điền đường dẫn tuyệt đối
+
+- is\_xyz: có nên đẩy dữ liệu đám mây điểm hay không
+
+- is\_deep: có đẩy dữ liệu độ sâu hay không
+
+- is\_amp: có đẩy dữ liệu bản đồ cường độ không
+
+- is\_rgb: có đẩy dữ liệu hình ảnh RGB hay không
+
+- lx\_work\_mode: chế độ làm việc
+
+- lx\_application: có bật thuật toán hay không, 0: tắt, 1: thuật toán tránh chướng ngại vật, 2: thuật toán pallet, 3: thuật toán định vị, 4: thuật toán tránh chướng ngại vật V2
+
+- lx\_tof\_unit: đơn vị đám mây điểm, 1 là mét, 0 là milimet, cần đổi thành 1 khi xem bằng rviz
+
+##### 5.3.1.3 Cấu hình tư thế camera
+
+<Frame>
+  <img src="/images/legacy/14a3684d-4237-4609-b70b-7d94fef1553c/aa3384e1-4eda-4569-b314-57539347ed31.avif" alt="Hình ảnh minh họa liên quan đến cấu hình tư thế camera" />
+</Frame>
+
+Có thể cấu hình góc quay và vectơ dịch chuyển của đám mây điểm.
+
+- X: Khoảng dịch X của camera tính từ tâm đám mây điểm
+
+- Y: Khoảng dịch chuyển Y của camera tính từ tâm đám mây điểm
+
+- Z: Lượng dịch chuyển Z của camera tính từ tâm đám mây điểm
+
+- Yaw: góc quay của đám mây điểm quanh trục Z
+
+- Roll: Góc quay của đám mây điểm quanh trục X
+
+- Pitch: Góc quay của đám mây điểm quanh trục Y
+
+##### 5.3.1.4 Có sử dụng cấu hình khởi chạy hay không
+
+<Frame>
+  <img src="/images/legacy/56fa8515-59aa-435b-83b0-61332e05c8b1/287157eb-0ab5-47c5-a5cd-8f7dd39a4659.avif" alt="Có nên sử dụng các biểu tượng liên quan đến cấu hình khởi chạy hay không" />
+</Frame>
+
+Bạn có thể chọn có sử dụng cấu hình thông số camera trong tệp khởi chạy hay không.
+
+- raw\_param: 0: sử dụng cấu hình trong camera, 1: sử dụng cấu hình trong file khởi chạy
+
+Bất kể tham số này được đặt thành 0 hay 1, tất cả các tham số trước tham số này sẽ được đặt, 0 và 1 chỉ hợp lệ cho các tham số sau tham số này.
+
+##### 5.3.1.5 Cấu hình tham số 2D
+
+<Frame>
+  <img src="/images/legacy/c8909add-b29b-46f4-9046-767b987ed002/da1b1d43-3f85-4753-aae9-e880e365df9f.avif" alt="Các biểu tượng liên quan đến cấu hình tham số 2D" />
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+
+- lx\_2d\_undistort: ​​​​chống biến dạng 2d, 0: tắt, 1: bật
+
+- lx\_2d\_undistort\_scale: Hệ số chống biến dạng 2D
+
+- lx\_2d\_auto\_exposure: Phơi sáng tự động 2D, 0: tắt, 1: bật
+
+- lx\_2d\_auto\_exposure\_value: Cường độ mục tiêu phơi sáng tự động 2D
+
+- lx\_2d\_exposure: Giá trị phơi sáng 2D
+
+- lx\_2d\_gain: tăng 2D
+
+##### 5.3.1.6 Cấu hình tham số 3D
+
+<Frame>
+  <img src="/images/legacy/7344b5e5-4aab-48d2-b3e6-778a7cd6f536/858ffe25-af33-4a1d-a834-a3c538097c0c.avif" alt="Hình minh họa liên quan đến cấu hình tham số 3D" />
+</Frame>
+
+- lx\_rgb\_to\_tof: Căn chỉnh RGB
+
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+
+- lx\_mulit\_mode: chế độ nhiều máy, có thể loại bỏ nhiễu nhiều máy, 0: tắt, 1: bật
+
+- lx\_3d\_undistort: ​​​​chống biến dạng 3d, 0: tắt, 1: bật
+
+- lx\_3d\_undistort\_scale: hệ số chống biến dạng 3D
+
+- lx\_hdr: hdr, 0: tắt, 1: bật
+
+- lx\_3d\_auto\_exposure: Phơi sáng tự động 3D, 0: tắt, 1: bật
+
+- lx\_3d\_auto\_exposure\_value: Cường độ mục tiêu phơi sáng tự động 3D
+
+- lx\_3d\_first\_exposure: Điểm cao 3D
+
+- lx\_3d\_second\_exposure: điểm thấp 3D
+
+- lx\_3d\_gain: Tăng 3D
+
+##### 5.3.1.7 Độ sâu tối đa và tối thiểu
+
+<Frame>
+  <img src="/images/legacy/fbbc4656-2050-4cf5-b591-442df08f785c/a9a3ca5e-c11e-4f8a-855c-25cb2b964b22.avif" alt="Các biểu tượng liên quan đến độ sâu tối đa và tối thiểu" />
+</Frame>
+
+- lx\_min\_deep: độ sâu tối thiểu
+
+- lx\_max\_deep: độ sâu tối đa
+
+#### 5.3.2 Mô tả tệp khởi chạy ROS2
+
+##### 5.3.2.1 Tất cả các file khởi chạy
+
+Có các tệp sau trong thư mục src/launch:
+
+<Frame>
+  <img src="/images/legacy/39cfeba3-9697-4b30-a9da-6c25d4862ec8/9a27552b-9363-4335-909c-57e2f12418cb.avif" alt="Tất cả các biểu tượng liên quan đến tập tin khởi chạy" />
+</Frame>
+
+- localization.launch.py: file chạy của nút định vị trực quan
+
+- lx\_Camera\_ros.launch.py: file chạy của nút thông thường
+
+- maps.launch.py: file đang chạy để lập bản đồ định vị trực quan
+
+- chướng ngại vật.launch.py: file chạy của thuật toán tránh chướng ngại vật
+
+- chướng ngại vậtV2.launch.py: file chạy thuật toán tránh chướng ngại vật V2
+
+- pallet.launch.py: file chạy thuật toán pallet
+
+- Sensor\_sim.launch.py: file chạy mô phỏng dữ liệu định vị
+
+Bạn có thể thực thi các chức năng khác nhau của nút bằng cách chạy các tệp khởi chạy khác nhau. **Ngoại trừ bản địa hóa, ánh xạ và cảm biến, nội dung tham số giống nhau ở tất cả các nút, nhưng cấu hình khác nhau**. Nó sẽ được giới thiệu chi tiết ở các phần sau. Để biết phần giới thiệu chi tiết về các thông số của ba tệp khởi chạy bản địa hóa, ánh xạ và cảm biến, vui lòng xem phần giới thiệu trong nút ros-v1pro.
+
+##### 5.3.2.2 IP camera, cấu hình luồng, cấu hình chế độ làm việc, đơn vị đám mây điểm, v.v.
+
+<Frame>
+  <img src="/images/legacy/ce77d606-fb78-49d8-9b5c-5ef6bd320c51/b4c285fd-b11b-486d-81e8-f8b79ff8fb7f.avif" alt="IP camera, cấu hình luồng, cấu hình chế độ làm việc, đơn vị đám mây điểm và các biểu tượng liên quan khác" />
+</Frame>
+
+- ip: IP camera cần kết nối. Nếu là 0 thì mặc định cái đầu tiên sẽ được kết nối.
+
+- log\_path: Đường dẫn lưu trữ nhật ký SDK, cần điền đường dẫn tuyệt đối
+
+- is\_xyz: có nên đẩy dữ liệu đám mây điểm hay không
+
+- is\_deep: có đẩy dữ liệu độ sâu hay không
+
+- is\_amp: có đẩy dữ liệu bản đồ cường độ không
+
+- is\_rgb: có đẩy dữ liệu hình ảnh RGB hay không
+
+- lx\_work\_mode: chế độ làm việc
+
+- lx\_application: có bật thuật toán hay không, 0: tắt, 1: thuật toán tránh chướng ngại vật, 2: thuật toán pallet, 3: thuật toán định vị, 4: thuật toán tránh chướng ngại vật V2
+
+- lx\_tof\_unit: đơn vị đám mây điểm, 1 là mét, 0 là milimet, cần đổi thành 1 khi xem bằng rviz
+
+##### 5.3.2.3 Cấu hình tư thế camera
+
+<Frame>
+  <img src="/images/legacy/7408241d-dd28-42b7-bc1d-e5998c2d692d/4824b62e-8d79-4e07-b72a-88213adfc0dc.avif" alt="Hình ảnh minh họa liên quan đến cấu hình tư thế camera" />
+</Frame>
+
+Có thể cấu hình góc quay và vectơ dịch chuyển của đám mây điểm.
+
+- X: Khoảng dịch X của camera tính từ tâm đám mây điểm
+
+- Y: Khoảng dịch chuyển Y của camera tính từ tâm đám mây điểm
+
+- Z: Lượng dịch chuyển Z của camera tính từ tâm đám mây điểm
+
+- Yaw: góc quay của đám mây điểm quanh trục Z
+
+- Roll: Góc quay của đám mây điểm quanh trục X
+
+- Pitch: Góc quay của đám mây điểm quanh trục Y
+
+##### 5.3.2.4 Có sử dụng cấu hình khởi chạy hay không
+
+<Frame>
+  <img src="/images/legacy/43fd4f62-1e51-4eff-8c1f-37c909894eec/d384fcd0-4c19-4550-8ed1-b0ba50130276.avif" alt="Có nên sử dụng các biểu tượng liên quan đến cấu hình khởi chạy hay không" />
+</Frame>
+
+Bạn có thể chọn có sử dụng cấu hình thông số camera trong tệp khởi chạy hay không.
+
+- raw\_param: 0: sử dụng cấu hình trong camera, 1: sử dụng cấu hình trong file khởi chạy
+
+Bất kể tham số này được đặt thành 0 hay 1, tất cả các tham số trước tham số này sẽ được đặt, 0 và 1 chỉ hợp lệ cho các tham số sau tham số này.
+
+##### 5.3.2.5 Cấu hình tham số 2D
+
+<Frame>
+  <img src="/images/legacy/1dd95c53-9c6d-4f68-a31c-3d3bf19325cb/09877c87-80c3-48ee-9597-724df69e46b8.avif" alt="Các biểu tượng liên quan đến cấu hình tham số 2D" />
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+
+- lx\_2d\_undistort: ​​​​chống biến dạng 2d, 0: tắt, 1: bật
+
+- lx\_2d\_undistort\_scale: Hệ số chống biến dạng 2D
+
+- lx\_2d\_auto\_exposure: Phơi sáng tự động 2D, 0: tắt, 1: bật
+
+- lx\_2d\_auto\_exposure\_value: Cường độ mục tiêu phơi sáng tự động 2D
+
+- lx\_2d\_exposure: Giá trị phơi sáng 2D
+
+- lx\_2d\_gain: tăng 2D
+
+##### 5.3.2.6 Cấu hình tham số 3D
+
+<Frame>
+  <img src="/images/legacy/ea1c2ec1-ca58-43e2-9f17-6dd55aa062f7/2550eeb4-acc3-4ce6-8b38-7c79198c632e.avif" alt="Hình minh họa liên quan đến cấu hình tham số 3D" />
+</Frame>
+
+- lx\_rgb\_to\_tof: Căn chỉnh RGB
+
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+
+- lx\_mulit\_mode: chế độ nhiều máy, có thể loại bỏ nhiễu nhiều máy, 0: tắt, 1: bật
+
+- lx\_3d\_undistort: ​​​​chống biến dạng 3d, 0: tắt, 1: bật
+
+- lx\_3d\_undistort\_scale: hệ số chống biến dạng 3D
+
+- lx\_hdr: hdr, 0: tắt, 1: bật
+
+- lx\_3d\_auto\_exposure: Phơi sáng tự động 3D, 0: tắt, 1: bật
+
+- lx\_3d\_auto\_exposure\_value: Cường độ mục tiêu phơi sáng tự động 3D
+
+- lx\_3d\_first\_exposure: Điểm cao 3D
+
+- lx\_3d\_second\_exposure: điểm thấp 3D
+
+- lx\_3d\_gain: Tăng 3D
+
+##### 5.3.2.7 Độ sâu tối đa và tối thiểu
+
+<Frame>
+  <img src="/images/legacy/533ba914-7077-416a-8ff7-ec4497dbf8ca/ef9df399-1e28-41a9-a833-757da2810424.avif" alt="Các biểu tượng liên quan đến độ sâu tối đa và tối thiểu" />
+</Frame>
+
+- lx\_min\_deep: độ sâu tối thiểu
+
+- lx\_max\_deep: độ sâu tối đa
+
+#### 5.3.3 Mô tả chủ đề độc đáo
+
+Vì các loại chủ đề duy nhất của ROS1 và ROS2 giống nhau nên ROS1 được sử dụng làm ví dụ ở đây. Có các tệp sau trong thư mục src/msg:
+
+<Frame>
+  <img src="/images/legacy/e19a12ad-8542-4cc2-9b43-58c96adad478/a1bde694-ddac-46db-91bc-d2f3f5dcf6bc.avif" alt="Hình minh họa liên quan đến mô tả chủ đề độc đáo" />
+</Frame>
+
+##### 5.3.3.1 FrameRate.msg
+
+Nút này xuất ra thông tin tốc độ khung hình. Định dạng tin nhắn như sau:
+
+<Frame>
+  <img src="/images/legacy/87f292b9-4a30-4305-99b1-9129d3251d0c/c0aa96ff-b772-4a62-9c24-721490ae37f8.avif" alt="Các biểu tượng liên quan đến FrameRate.msg" />
+</Frame>
+
+- tiêu đề: thông tin khung và dấu thời gian của dữ liệu hiện tại
+
+- độ sâu: Khi bật bản đồ độ sâu, xuất tốc độ khung hình bản đồ độ sâu
+
+- amp: Khi bật bản đồ cường độ, xuất ra tốc độ khung hình bản đồ cường độ
+
+- rgb: Khi bật rgb, xuất ra tốc độ khung hình rgb
+
+- nhiệt độ: nhiệt độ đầu ra của camera
+
+Sau khi nút bắt đầu chạy (ngoại trừ các nút liên quan đến định vị trực quan), bạn có thể đăng ký nút LxCamera\_FrameRate để nhận thông tin liên quan. Đầu ra như sau:
+
+<Frame>
+  <img src="/images/legacy/69299d83-1e9a-411e-815e-0c66637fddab/fdca1748-6538-4f4b-9c9f-4110daa63264.avif" alt="Các biểu tượng liên quan đến FrameRate.msg 2" />
+</Frame>
+
+##### 5.3.3.2 Chướng ngại vật.msg
+
+chướng ngại vật đưa ra thông tin liên quan đến kết quả thuật toán tránh chướng ngại vật. Định dạng thông báo chướng ngại vật như sau:
+
+<Frame>
+  <img src="/images/legacy/e515393a-fea8-46a8-835a-31d7a017e366/dfd6c9df-e2ed-455a-bf29-fe40fcbba1ee.avif" alt="Các biểu tượng liên quan đến Obstacle.msg" />
+</Frame>
+
+- tiêu đề: thông tin khung và dấu thời gian của dữ liệu hiện tại
+
+- trạng thái: thông tin trạng thái được trả về khi tránh chướng ngại vật
+
+0: Tránh chướng ngại vật thông thường
+
+\-1: Không có mặt đất
+
+\-2: Dữ liệu nhập chưa được đặt
+
+\-3: Không có đám mây điểm nào trong phạm vi
+
+\-4: Đám mây điểm trống sau khi lọc mặt đất
+
+\-5: Đám mây điểm trống sau khi lọc bán kính
+
+\-6: Không thu được kết quả phân đoạn nào
+
+\-99: lỗi không xác định
+
+- io\_output: Thông tin tránh chướng ngại vật được xuất ra bởi giao diện io
+
+0: bình thường
+
+1: cảnh báo
+
+2: Tắt máy
+
+- box\_number: số chướng ngại vật
+
+- box: thông tin chướng ngại vật, mảng có độ dài thay đổi, độ dài được xác định bởi box\_number
+
+Sau khi nút bắt đầu chạy (cần bật thuật toán tránh chướng ngại vật), bạn có thể đăng ký nút LxCamera\_Obstacel để nhận thông tin liên quan. Kết quả đầu ra như sau (dữ liệu trong hình là dữ liệu mô phỏng):
+
+<Frame>
+  <img src="/images/legacy/49474ef4-a3b4-46c1-853a-3ca625791f46/87fbd1ad-7855-4bfb-95cf-3f9082a746f6.avif" alt="Các biểu tượng liên quan đến Obstacle.msg 2" />
+</Frame>
+
+##### 5.3.3.3 Chướng ngại vật\_box.msg
+
+chướng ngại vật\_box xuất ra thông tin liên quan đến chướng ngại vật và định dạng thông báo chướng ngại vật\_box như sau:
+
+<Frame>
+  <img src="/images/legacy/732d6549-38d7-414f-8bc6-5e2882db6058/eeabb8c0-02ee-4976-90da-44803108622e.avif" alt="Các biểu tượng liên quan đến chướng ngại vật\_box.msg" />
+</Frame>
+
+- center: tâm khối của chướng ngại vật trong đám mây điểm
+
+- vòng quay: ma trận quay của đám mây điểm chướng ngại vật
+
+- dịch: vectơ dịch của đám mây điểm chướng ngại vật
+
+- width: chiều rộng của khung chướng ngại vật
+
+- Height: chiều cao của khung chướng ngại vật
+
+-độ sâu: độ sâu của khung chướng ngại vật
+
+Sau khi bắt đầu thao tác (cần bật thuật toán tránh chướng ngại vật), bạn có thể đăng ký nút LxCamera\_Obstacel để nhận thông tin liên quan. Đầu ra như sau:
+
+<Frame>
+  <img src="/images/legacy/001c456c-b01d-469d-8837-736f766e6bfc/aaf0d95b-c33e-4b03-b0ff-66da17c59b07.avif" alt="Biểu tượng liên quan đến chướng ngại vật\_box.msg 2" />
+</Frame>
+
+##### 5.3.3.4 Kết quả.msg
+
+Giá trị trả về thu được sau khi gửi thông báo lệnh đến dịch vụ trong nút được lưu trong Kết quả:
+
+<Frame>
+  <img src="/images/legacy/0114b485-85df-4c03-a251-13a97146f545/eeefb26d-8b9d-477d-9287-6b8e77f3c01d.avif" alt="Các biểu tượng liên quan đến Result.msg" />
+</Frame>
+
+- ret: giá trị trả về thu được khi thực thi SDK
+
+- msg: Mô tả giá trị trả về thu được khi thực thi SDK
+
+##### 5.3.3.5 Pallet.msg
+
+Pallet xuất ra các thông tin liên quan đến kết quả thuật toán pallet. Định dạng tin nhắn pallet như sau:
+
+<Frame>
+  <img src="/images/legacy/0c48fce6-71f8-4339-ba3d-ca419821fb92/5292c83c-4cff-4204-bc15-ce7b69916c2f.avif" alt="Các biểu tượng liên quan đến Pallet.msg" />
+</Frame>
+
+- tiêu đề: thông tin khung và dấu thời gian của dữ liệu hiện tại
+
+- trạng thái: thông tin trạng thái được trả về bằng nhận dạng pallet:
+
+0: Phát hiện thành công
+
+\-1: Không phát hiện thấy mặt đất
+
+\-2: Không phát hiện được chân pallet
+
+\-3: Khoảng cách giữa các pallet quá xa
+
+\-4: lỗi không xác định
+
+- x: X khoảng cách giữa khay và quang tâm của camera
+
+- y: Khoảng cách Y giữa khay và quang tâm của camera
+
+- yaw: góc theta giữa tâm khay và tâm quang của camera
+
+Sau khi nút bắt đầu chạy (cần bật thuật toán pallet), bạn có thể đăng ký nút LxCamera\_Pallet để nhận thông tin liên quan. Đầu ra như sau:
+
+<Frame>
+  <img src="/images/legacy/89bbf348-5adf-4865-abd3-92bdf33f2e56/9aca1203-534c-41a2-95f0-82aa56ccd148.avif" alt="Các biểu tượng liên quan đến Pallet.msg 2" />
+</Frame>
+
+#### 5.3.4 Mô tả dịch vụ duy nhất
+
+Vì các loại dịch vụ duy nhất của ROS1 và ROS2 giống nhau nên ROS1 được sử dụng làm ví dụ ở đây. Có các tệp sau trong thư mục src/srv:
+
+<Frame>
+  <img src="/images/legacy/f1c49f4e-3874-4d14-8fa6-db4ebb2e945e/df9cd97d-5264-4c49-a9dc-cd24541cf811.avif" alt="Hình minh họa liên quan đến mô tả dịch vụ độc đáo" />
+</Frame>
+
+Các thông báo này được sử dụng để đặt hoặc lấy các giá trị tham số nhất định của máy ảnh.
+
+Trên [---] là dữ liệu đã gửi, bên dưới [---] là dữ liệu trả về
+
+##### 5.3.4.1 LxBool.srv
+
+<Frame>
+  <img src="/images/legacy/dbe0c517-33f2-4d2a-b4d0-b4bfe383a132/6498e0b6-346a-413a-bcfa-7480e7c69fbb.avif" alt="Các biểu tượng liên quan đến LxBool.srv" />
+</Frame>
+
+- cmd: số tham số cần lấy hoặc đặt
+
+- val: giá trị được thiết lập khi thiết lập
+
+- is\_set: Có thiết lập tham số hay không. Khi nó đúng, giá trị trong val sẽ được đặt cho máy ảnh. Khi sai, giá trị của thông số này sẽ được đọc từ camera và hiển thị.
+
+- val: Giá trị thông số hiện tại của camera được trả về khi lấy hoặc cài đặt
+
+- result: giá trị và thông tin được trả về khi gọi giao diện SDK
+
+##### 5.3.4.2 LxCmd.srv
+
+<Frame>
+  <img src="/images/legacy/d9fb3489-1feb-476f-846e-a0e5a5f88e68/4c263047-9b20-4ed7-be1a-74046a141294.avif" alt="Các biểu tượng liên quan đến LxCmd.srv" />
+</Frame>
+
+- cmd: Số tham số cần lấy hoặc thiết lập. Khi nó bằng 0, tất cả các số tham số sẽ được trả về.
+
+- result: giá trị và thông tin trả về khi gọi giao diện SDK, cmd có thể có nhiều giá trị trả về
+
+##### 5.3.4.3 LxFloat.srv
+
+<Frame>
+  <img src="/images/legacy/faf8eb2e-9fb9-4a2a-a2bd-c35749ed8fe5/b757fe7d-a811-4a98-aaa4-4873384918cd.avif" alt="Các biểu tượng liên quan đến LxFloat.srv" />
+</Frame>
+
+- cmd: số tham số cần lấy hoặc đặt
+
+- val: giá trị được thiết lập khi thiết lập
+
+- is\_set: Có thiết lập tham số hay không. Khi nó đúng, giá trị trong val sẽ được đặt cho máy ảnh. Khi sai, giá trị của thông số này sẽ được đọc từ camera và hiển thị.
+
+- max\_value: giá trị tối đa có thể đặt cho tham số này
+
+- min\_value: giá trị tối thiểu có thể đặt cho tham số này
+
+- cur\_value: giá trị hiện tại của thông số này trong camera
+
+- có sẵn: thông số này có hỗ trợ cài đặt hay không
+
+- result: giá trị và thông tin được trả về khi gọi giao diện SDK
+
+##### 5.3.4.4 LxInt.srv
+
+<Frame>
+  <img src="/images/legacy/3c2e3f11-c23e-4907-901c-745f198c8cd9/55d5d286-53c4-4ddf-b970-0848e075576d.avif" alt="Các biểu tượng liên quan đến LxInt.srv" />
+</Frame>
+
+- cmd: số tham số cần lấy hoặc đặt
+
+- val: giá trị được thiết lập khi thiết lập
+
+- is\_set: Có thiết lập tham số hay không. Khi nó đúng, giá trị trong val sẽ được đặt cho máy ảnh. Khi sai, giá trị của thông số này sẽ được đọc từ camera và hiển thị.
+
+- max\_value: giá trị tối đa có thể đặt cho tham số này
+
+- min\_value: giá trị tối thiểu có thể đặt cho tham số này
+
+- cur\_value: giá trị hiện tại của thông số này trong camera
+
+- có sẵn: thông số này có hỗ trợ cài đặt hay không
+
+- result: giá trị và thông tin được trả về khi gọi giao diện SDK
+
+##### 5.3.4.5 LxString.srv
+
+<Frame>
+  <img src="/images/legacy/d660a391-2035-4c86-9b5a-83a58ba31312/565af9c2-f4b6-4474-a0db-a23e48405198.avif" alt="Các biểu tượng liên quan đến LxString.srv" />
+</Frame>
+
+- cmd: số tham số cần lấy hoặc đặt
+
+- val: giá trị được thiết lập khi thiết lập
+
+- is\_set: Có thiết lập tham số hay không. Khi nó đúng, giá trị trong val sẽ được đặt cho máy ảnh. Khi sai, giá trị của thông số này sẽ được đọc từ camera và hiển thị.
+
+- val: Giá trị thông số hiện tại của camera được trả về khi lấy hoặc cài đặt
+
+- result: giá trị và thông tin được trả về khi gọi giao diện SDK
+
+#### 5.3.5 Mô tả phương thức đăng ký chủ đề
+
+##### 5.3.5.1 Tốc độ khung hình đăng ký, thuật toán khay, dữ liệu đầu ra của thuật toán tránh chướng ngại vật
+
+**Đăng ký Tốc độ khung hình**
+
+Trong thư mục lx\_Camera\_node\_ws, nhập: bash rate.sh
+
+<Frame>
+  <img src="/images/legacy/889beb65-12b6-44ac-babb-2111ebce6b52/a6c3aa39-f7a8-4a6a-a0d3-cfcdedc76a3a.avif" alt="Minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán khay và dữ liệu đầu ra của thuật toán tránh chướng ngại vật" />
+</Frame>
+
+Sau khi hình ảnh nút lx\_Camera\_node chạy bình thường và được làm mới, bạn có thể xem thông tin sau:
+
+<Frame>
+  <img src="/images/legacy/73515490-0edb-4935-a770-88856bea0121/f492df57-13c2-4658-981b-6fb2fbb9ad43.avif" alt="Minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán pallet và dữ liệu đầu ra của thuật toán tránh chướng ngại vật 2" />
+</Frame>
+
+**Đăng ký đầu ra thuật toán pallet**
+
+Trong thư mục lx\_Camera\_node\_ws, nhập: bash pallet.sh
+
+<Frame>
+  <img src="/images/legacy/32b5bedf-7302-49ba-aa81-9d6cd2c62d2e/ae461ce5-17a2-4007-8b46-308a972fd245.avif" alt="Các minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán pallet và dữ liệu đầu ra của thuật toán tránh chướng ngại vật 3" />
+</Frame>
+
+Sau khi hình ảnh nút lx\_Camera\_node chạy bình thường và được làm mới, bạn có thể xem thông tin sau:
+
+<Frame>
+  <img src="/images/legacy/a7893ae8-bd38-46e2-9d77-6c64cfc48009/d1217eeb-52b8-46fe-964e-5bc51da4b304.avif" alt="Các minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán pallet và dữ liệu đầu ra của thuật toán tránh chướng ngại vật 4" />
+</Frame>
+
+**Đăng ký đầu ra thuật toán tránh chướng ngại vật**
+
+Trong thư mục lx\_Camera\_node\_ws, nhập: bash chướng ngại vật.sh
+
+<Frame>
+  <img src="/images/legacy/ea99334d-1368-439f-8128-1b5fa7a6d87f/2a7209bc-11fc-4048-9fd3-5c8b41c67444.avif" alt="Các minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán pallet và dữ liệu đầu ra của thuật toán tránh chướng ngại vật 5" />
+</Frame>
+
+Sau khi hình ảnh nút lx\_Camera\_node chạy bình thường và được làm mới, bạn có thể xem thông tin sau:
+
+<Frame>
+  <img src="/images/legacy/3330955d-ef4c-4c1b-b68e-b75b26dee53f/9efe49b2-75d1-42c0-b5c7-e501d99c65cd.avif" alt="Các minh họa liên quan đến tốc độ khung hình đăng ký, thuật toán khay và dữ liệu đầu ra của thuật toán tránh chướng ngại vật 6" />
+</Frame>
+
+##### 5.3.5.2 Đăng ký dữ liệu hình ảnh (ROS1)
+
+Bạn có thể xem thông tin hình ảnh đầu ra của nút thông qua công cụ hình ảnh đi kèm với ros:
+
+Lệnh nhập bảng điều khiển: rqt\_image\_view
+
+Sau khi nhập lệnh sẽ hiện ra cửa sổ sau:
+
+<Frame>
+  <img src="/images/legacy/af141870-a000-48f6-b668-d9e36f6f9b52/dd1a0bb5-d8c3-4d34-904a-c7f828cf43da.avif" alt="Minh họa liên quan đến đăng ký dữ liệu hình ảnh (ROS1)" />
+</Frame>
+
+Hộp màu đỏ có thể chọn hình ảnh trong tất cả các nút. Hình ảnh hiển thị hình ảnh rgb của camera siêu nhỏ Meyer. Bạn cũng có thể chọn bản đồ độ sâu hoặc bản đồ cường độ (với điều kiện luồng đã được bật):
+
+<Frame>
+  <img src="/images/legacy/ae848874-51cb-4e2e-b371-fa02f3bc8ac2/9ab51d8d-8fec-418c-bf87-2f1e0ef94f5f.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS1) 2" />
+</Frame>
+
+Trong hình, hộp màu đỏ đầu tiên là đầu ra thông tin RGB của nút thuật toán định vị và ba hộp còn lại là đầu ra thông tin hình ảnh của các nút thông thường. amp là bản đồ cường độ, độ sâu là bản đồ độ sâu và rgb là bản đồ rgb.
+
+Chọn các mục khác nhau để xem các hình ảnh khác nhau hoặc sử dụng rviz để xem dữ liệu hình ảnh. Nhập lệnh trên bàn điều khiển: rviz sẽ bật lên cửa sổ sau:
+
+<Frame>
+  <img src="/images/legacy/238df48e-8a1f-44bc-9ee0-9816f068f550/bdfc18e2-fd9f-413f-8a68-0b8ce120752a.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS1) 3" />
+</Frame>
+
+Sau khi nhấp vào nút Thêm ở phía dưới bên trái, một cửa sổ sẽ bật lên:
+
+<Frame>
+  <img src="/images/legacy/438605fe-3480-435d-acbd-e828d2565a11/85bf82cb-efc5-413b-8a2d-4ddcbd2162d4.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS1) 4" />
+</Frame>
+
+Chọn chủ đề hình ảnh mong muốn rồi chọn Image rồi nhấn OK ở góc dưới bên phải. Bạn có thể xem dữ liệu hình ảnh ở bên trái giao diện chính như hình dưới đây:
+
+<Frame>
+  <img src="/images/legacy/abe265f8-1e54-4166-876b-50c3eb03494d/df41a7c4-d0de-4160-9a01-81650af1d0c0.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS1) 5" />
+</Frame>
+
+##### 5.3.5.3 Đăng ký dữ liệu hình ảnh (ROS2)
+
+Bạn có thể xem thông tin image xuất ra của node thông qua công cụ image đi kèm với ros2: Nhập lệnh trên console: rqt
+
+Sau khi nhập lệnh sẽ hiện ra cửa sổ sau:
+
+<Frame>
+  <img src="/images/legacy/057d5b85-4d0d-4aec-8be9-e852bd52acf0/5c60df34-bfbf-403f-a79f-d753569dbbad.avif" alt="Minh họa liên quan đến đăng ký dữ liệu hình ảnh (ROS2)" />
+</Frame>
+
+Chọn Chế độ xem hình ảnh đầu tiên của tùy chọn thứ hai ở cuối thanh menu. Sau khi chọn sẽ hiện ra giao diện sau:
+
+<Frame>
+  <img src="/images/legacy/8dd57192-0204-49bd-84ff-c771e42df732/27352ea7-fda8-41dd-a0ab-aeffb4251a6e.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS2) 2" />
+</Frame>
+
+Hộp màu đỏ có thể chọn hình ảnh trong tất cả các nút. Hình ảnh hiển thị hình ảnh rgb của camera siêu nhỏ Meyer. Bạn cũng có thể chọn bản đồ độ sâu hoặc bản đồ cường độ (với điều kiện luồng đã được bật):
+
+<Frame>
+  <img src="/images/legacy/99011d5f-e042-4f9c-b213-794c86c9c8f1/e8f45ab4-7cac-403b-8e49-91efaabc9be6.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS2) 3" />
+</Frame>
+
+Trong hình, hộp màu đỏ đầu tiên là đầu ra thông tin RGB của nút thuật toán định vị và ba hộp còn lại là đầu ra thông tin hình ảnh của các nút thông thường. amp là bản đồ cường độ, độ sâu là bản đồ độ sâu và rgb là bản đồ rgb.
+
+Chọn các mục khác nhau để xem các hình ảnh khác nhau hoặc sử dụng rviz2 để xem dữ liệu hình ảnh. Nhập lệnh trên bàn điều khiển: rviz2 sẽ bật lên cửa sổ sau:
+
+<Frame>
+  <img src="/images/legacy/cbae4c6c-9490-4e9e-98db-ed65e6567bec/c8f44a46-6c9e-4200-b85d-74a533c1153b.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS2) 4" />
+</Frame>
+
+Sau khi nhấp vào nút Thêm ở phía dưới bên trái, một cửa sổ sẽ bật lên:
+
+<Frame>
+  <img src="/images/legacy/88e7b3df-17c0-4128-a089-cb12a3360be9/d19bdc43-8e9e-4d0c-ae7f-fed540802ea1.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS2) 5" />
+</Frame>
+
+Chọn chủ đề hình ảnh mong muốn rồi chọn Image rồi nhấn OK ở góc dưới bên phải. Bạn có thể xem dữ liệu hình ảnh ở bên trái giao diện chính như hình dưới đây:
+
+<Frame>
+  <img src="/images/legacy/620c5b94-ecb4-4c5a-bb1f-34821bc3baf1/701ff51b-b871-4559-bd3b-84bae49b2ffe.avif" alt="Sơ đồ liên quan đến dữ liệu hình ảnh đăng ký (ROS2) 6" />
+</Frame>
+
+**Một số hệ thống cần điền [mrdvs] vào [map] ở hình trên để xem hình**
+
+##### 5.3.5.4 Đăng ký dữ liệu đám mây điểm
+
+Có thể xem thông tin đám mây điểm do nút đầu ra thông qua công cụ đám mây điểm do ros hoặc ros2 cung cấp:
+
+Lệnh: rviz [ROS1], rviz2 [ROS2]
+
+Sau khi nhập lệnh sẽ hiện ra cửa sổ sau:
+
+<Frame>
+  <img src="/images/legacy/cb5ff2be-b87c-4281-ad34-bdae86a383fd/7bd8c23b-2a65-475f-8dbd-65ec6ecc1c1c.avif" alt="Các minh họa liên quan đến đăng ký dữ liệu đám mây điểm" />
+</Frame>
+
+Nhấp vào nút trong hộp màu đỏ bên dưới và hộp sau sẽ bật lên:
+
+<Frame>
+  <img src="/images/legacy/21150a54-23ca-4b59-adc3-9f553539beed/22265287-d908-4b27-ab7a-cfb4585be332.avif" alt="Minh họa liên quan đến đăng ký dữ liệu đám mây điểm 2" />
+</Frame>
+
+Chọn tab thứ hai và sẽ có một nút có tên lx\_Camera\_node. Có một chủ đề có tên LxCamera\_Cloud trong tệp node. Có một thông báo có tên PointCloud2 trong chủ đề. Sau khi chọn xong nhấn OK. Giao diện sau khi hoàn thành như sau:
+
+<Frame>
+  <img src="/images/legacy/3006e5a5-4fe7-4259-9e2a-95e1bb363845/1044f605-6247-44c3-8d8e-c3c121f4cb47.avif" alt="Các minh họa liên quan đến đăng ký dữ liệu đám mây điểm 3" />
+</Frame>
+
+(Giao diện ROS1)
+
+<Frame>
+  <img src="/images/legacy/910637d7-5dbc-4c94-81a4-50e644121e4a/1b4d9da2-af03-4f73-9fa3-1cb57b61f783.avif" alt="Các hình ảnh minh họa liên quan đến đăng ký dữ liệu đám mây điểm 4" />
+</Frame>
+
+(Giao diện ROS2)
+
+Tại thời điểm này, đám mây điểm không thể hiển thị bình thường. Điền mrdvs vào bản đồ hộp màu đỏ và xanh lá cây ở trên để xem đám mây điểm. Hiệu quả như sau:
+
+<Frame>
+  <img src="/images/legacy/2aa2b75e-e517-44ab-b4cb-e2667133cfc6/4d96f1fd-3ba9-475a-b140-dae7dc00a2b9.avif" alt="Các minh họa liên quan đến đăng ký dữ liệu đám mây điểm 5" />
+</Frame>
+
+Đơn vị đám mây điểm mặc định trong ROS là mét, vì vậy khi xem bằng rviz, bạn cần sửa đổi lx\_tof\_unit trong tệp khởi chạy thành 1 [mặc định là 1]
+
+#### 5.3.6 Mô tả phương thức giao tiếp dịch vụ
+
+Trong ROS1, tất cả các lệnh có thể được hoàn thành bằng phím Tab, nhưng trong ROS2, chỉ có thể hoàn thành các chủ đề và phần thông báo cần phải nhập thủ công.
+
+**Khi nhập dữ liệu vào ROS1, bạn có thể nhập dữ liệu ở định dạng hoàn chỉnh. Khi nhập dữ liệu vào ROS2, bạn cần nhập dữ liệu theo định dạng của file yaml.**
+
+Sau khi nút đang chạy, hãy mở một thiết bị đầu cuối trong thư mục lx\_Camera\_node\_ws, định cấu hình môi trường trong thiết bị đầu cuối và nhập lệnh: source devel/setup.bash
+
+##### 5.3.6.1 Lấy danh sách tất cả các số tham số (Lx\_Cmd)
+
+**ros1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
+
+<Frame>
+  <img src="/images/legacy/d164d829-293d-4390-abab-22d35d509cbb/db9d34a3-5184-4d47-a33d-f37e0244d9b4.avif" alt="Nhận tất cả các biểu tượng liên quan đến danh sách số tham số (Lx\_Cmd)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/5ecde466-61e9-4b4a-bf1b-8ec51c0c0169/fa7f556f-1716-4f56-b40d-e42fb5fbbbd2.avif" alt="Lấy tất cả danh sách số tham số (Lx\_Cmd) biểu tượng liên quan 2" />
+</Frame>
+
+ret là số của tham số. Thông điệp mô tả kiểu tham số và mô tả, ví dụ: 1001. Tham số này có kiểu int. Tham số này được sử dụng để lấy và sửa đổi giá trị phơi sáng đầu tiên.
+
+**ros2**
+
+Nhập vào terminal: dịch vụ ros2 gọi /LxCamera\_LxCmd lx\_Camera\_ros/srv/LxCmd 'cmd: 0'
+
+<Frame>
+  <img src="/images/legacy/8a802613-c024-4020-bc72-29b3174557ed/d78e9647-5fbc-4dfe-9778-2a0ce30882e0.avif" alt="Lấy tất cả danh sách số tham số (Lx\_Cmd) biểu tượng liên quan 3" />
+</Frame>
+
+Bạn có thể thấy đầu ra sau:
+
+<Frame>
+  <img src="/images/legacy/41eea7fc-e3d7-4346-846c-72152dc4a25a/c86dccb8-a04e-48ce-9c90-29fa38d990c1.avif" alt="Lấy tất cả danh sách tham số (Lx\_Cmd) icon liên quan 4" />
+</Frame>
+
+Vì việc xem chi tiết thông số trong ROS2 không thuận tiện nên số lượng, loại và mô tả của tất cả các thông số cũng được liệt kê trong bảng sau:
+
+| Số | Loại | Mô tả trong ROS | Mô tả chi tiết |
+| --- | --- | --- | --- |
+| 1001 | INT | FIRST_EXPOSURE | Giá trị phơi nhiễm tích phân cao mặc định |
+| 1002 | INT | SECOND_EXPOSURE | Giá trị tiếp xúc tích phân thấp mặc định |
+| 1003 | INT | THIRD_EXPOSURE | Giá trị tiếp xúc tích phân trung bình mặc định |
+| 1004 | INT | BỐN_TIẾP XÚC | Điểm thứ tư |
+| 1005 | INT | TĂNG | Đạt được |
+| 1011 | INT | MIN_DEPTH | Giá trị độ sâu tối thiểu |
+| 1012 | INT | MAX_DEPTH | Giá trị độ sâu tối đa |
+| 1013 | INT | MIN_AMPLITUDE | Giá trị cường độ tín hiệu hiệu quả tối thiểu |
+| 1014 | INT | MAX_AMPLITUDE | Giá trị cường độ tín hiệu hiệu dụng tối đa |
+| 1016 | INT | CODE_MODE | Chế độ mã hóa |
+| 1018 | INT | CÔNG VIỆC_MODE | Chế độ làm việc |
+| 1019 | INT | LINK_TỐC ĐỘ | Tốc độ mạng card mạng |
+| 1021 | INT | 3D_IMAGE_WIDTH | Độ phân giải hình ảnh 3D chiều rộng |
+| 1022 | INT | 3D_IMAGE_HEIGHT | Độ phân giải hình ảnh 3D |
+| 1023 | INT | 3D_IMAGE_OFFSET_X | Pixel bù ngang ROI |
+| 1024 | INT | 3D_IMAGE_OFFSET_Y | Pixel bù dọc ROI |
+| 1025 | INT | 3D_BINNING_MODE | hình ảnh 3D binnin |
+| 1026 | INT | 3D_DEPTH_DATA_TYPE | Định dạng dữ liệu hình ảnh độ sâu |
+| 1031 | INT | 3D_AMPLITUDE_CHANNEL | Số kênh hình ảnh cường độ 3D |
+| 1032 | INT | 3D_AMPLITUDE_GET_TYPE | Làm thế nào để có được hình ảnh cường độ |
+| 1033 | INT | 3D_AMPLITUDE_EXPOSURE | Giá trị phơi sáng thủ công 3D |
+| 1034 | INT | 3D_AMPLITUDE_INTENSITY | Chiếu sáng mục tiêu tự động 3D |
+| 1035 | INT | 3D_AMPLITUDE_DATA_TYPE | Định dạng dữ liệu hình ảnh cường độ |
+| 1036 | INT | 3D_AUTO_EXPOSURE_LEVEL | Mức độ phơi sáng tự động 3D |
+| 1041 | INT | 2D_IMAGE_WIDTH | Độ rộng độ phân giải hình ảnh 2D |
+| 1042 | INT | 2D_IMAGE_HEIGHT | Hình ảnh 2D độ phân giải cao |
+| 1043 | INT | 2D_IMAGE_OFFSET_X | Độ lệch ngang ROI hình ảnh 2D |
+| 1044 | INT | 2D_IMAGE_OFFSET_Y | Độ lệch dọc ROI hình ảnh 2D |
+| 1045 | INT | 2D_BINNING_MODE | binnin hình ảnh 2D |
+| 1046 | INT | 2D_IMAGE_KÊNH | Số kênh hình ảnh 2D |
+| 1047 | INT | 2D_IMAGE_DATA_TYPE | Định dạng dữ liệu hình ảnh 2D |
+| 1051 | INT | 2D_MANUAL_EXPOSURE | Giá trị phơi sáng 2D khi phơi sáng thủ công |
+| 1052 | INT | 2D_MANUAL_GAIN | Tăng 2D khi phơi sáng thủ công |
+| 1053 | INT | 2D_ENCODE_TYPE | Định dạng nén ảnh 2D |
+| 1054 | INT | 2D_AUTO_EXPOSURE_LEVEL | Phơi sáng tự động hình ảnh 2D, v.v. |
+| 1061 | INT | TOF_GLOBAL_OFFSET | Độ lệch dữ liệu độ sâu TOF |
+| 1062 | INT | 3D_UNDISTORT_SCALE | Hệ số chống méo ảnh TOF |
+| 1065 | INT | ALGORITHM_MODE | Đặt thuật toán ứng dụng tích hợp |
+| 1066 | INT | MODBUS_ADDR | địa chỉ modbus |
+| 1067 | INT | HEART_TIME | Thời gian nhịp tim với thiết bị |
+| 1068 | INT | GVSP_PACKET_SIZE | Kích thước gói dữ liệu gói đơn GVSP |
+| 1069 | INT | TRIGGER_MODE | Chế độ kích hoạt |
+| 1070 | INT | TÍNH TOÁN_UP | Thuật toán dịch chuyển lên xuống |
+| 1072 | INT | CÓ THỂ_BAUD_RATE | giá trị tốc độ baud của can |
+| 1073 | INT | MAX_3D_AUTO_EXPOSURE | Giới hạn phơi sáng tự động 3d |
+| 1074 | INT | CUSTOM_PARAM_GROUP | Nhóm tham số do người dùng xác định |
+| 2001 | PHỔI | LỌC_CẤP | Cấp độ lọc |
+| 2002 | PHỔI | EST_OUT_EXPOSURE | Có nên đánh giá dữ liệu phơi nhiễm quá mức hay không |
+| 2003 | PHỔI | LIGHT_INTENSITY | cường độ ánh sáng |
+| 2004 | PHỔI | 3D_DEPTH_FPS | Tốc độ khung hình hiện tại của bản đồ độ sâu |
+| 2005 | PHỔI | 3D_AMPLITUDE_FPS | Tốc độ khung hình hiện tại của bản đồ cường độ |
+| 2006 | PHỔI | 2D_IMAGE_FPS | Tốc độ khung hình hiện tại của hình ảnh RGB |
+| 2007 | PHỔI | THIẾT BỊ_NHIỆT ĐỘ | Nhiệt độ máy ảnh hiện tại |
+| 3001 | BOOL | CONNECT_STATE | Trạng thái kết nối hiện tại |
+| 3002 | BOOL | ENABLE_3D_DEPTH_STREAM | Bật/tắt luồng dữ liệu độ sâu |
+| 3003 | BOOL | ENABLE_3D_AMP_STREAM | Bật/tắt luồng dữ liệu cường độ |
+| 3006 | BOOL | ENABLE_3D_AUTO_EXPOSURE | Bật phơi sáng tự động 3D |
+| 3007 | BOOL | ENABLE_3D_UNDISTORT | Bật chống méo 3D |
+| 3008 | BOOL | ENABLE_ANTI_FLICKER | Kích hoạt chống nhấp nháy |
+| 3011 | BOOL | ENABLE_2D_STREAM | Bật/tắt luồng dữ liệu 2D |
+| 3012 | BOOL | ENABLE_2D_AUTO_EXPOSURE | Bật phơi sáng tự động 2D |
+| 3015 | BOOL | ENABLE_2D_UNDISTORT | Trình hỗ trợ chống biến dạng hình ảnh 2D |
+| 3016 | BOOL | ENABLE_2D_TO_DEPTH | Bật căn chỉnh hình ảnh 2D3D |
+| 3017 | BOOL | ENABLE_BACKGROUND_AMP | Bật cường độ ánh sáng nền |
+| 3018 | BOOL | ENABLE_MULTI_MACHINE | Bật chế độ nhiều máy |
+| 3019 | BOOL | ENABLE_MULTI_EXPOSURE_HDR | HDR |
+| 3020 | BOOL | ENABLE_SYNC_FRAME | Có bật đồng bộ hóa khung bắt buộc hay không |
+| 4001 | CHUỖI | THIẾT BỊ_VERSION | Số phiên bản thiết bị |
+| 4002 | CHUỖI | DEVICE_LOG_NAME | Tên tệp nhật ký |
+| 4003 | CHUỖI | PHẦN MỀM_NAME | Tên tập tin phần sụn |
+| 4004 | CHUỖI | LỌC_PARAMS | Thuật toán lọc tham số |
+| 4005 | CHUỖI | ALGORITHM_PARAMS | Tham số thuật toán tích hợp |
+| 4006 | CHUỖI | ALGORITHM_VERSION | Số phiên bản thuật toán tích hợp |
+| 4007 | CHUỖI | THIẾT BỊ_OS_VERSION | Số phiên bản hình ảnh hệ thống thiết bị |
+| 0 | CMD | GET_PARAM_LIST | Nhận tất cả các số tham số |
+| 1 | CMD | START_STREAM | Khởi động thiết bị |
+| 2 | CMD | STOP_STREAM | Thiết bị ngừng chảy |
+| 5001 | CMD | GET_NEW_FRAME | Cập nhật dữ liệu mới nhất hiện tại |
+| 5002 | CMD | RETURN_VERSION | Quay lại phiên bản trước |
+| 5003 | CMD | RESTART_DEVICE | Khởi động lại máy ảnh |
+| 5004 | CMD | WHITE_BALANCE | Tự động cân bằng trắng |
+| 5007 | CMD | ĐẶT LẠI_PARAM | Khôi phục thông số mặc định |
+
+**Một số thông số cần phải dừng luồng trước khi có thể thiết lập hoặc có một trình tự cài đặt. Vui lòng liên hệ với nhân viên hỗ trợ kỹ thuật nếu có nhu cầu cụ thể.**
+
+##### 5.3.6.2 Lấy tham số Int (Lx\_Int)
+
+**ROS1**
+
+Nhập vào thiết bị đầu cuối: rosservice gọi /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+giá trị: 0
+
+là\_set: sai"
+
+<Frame>
+  <img src="/images/legacy/aa54e83e-f079-4b4e-b616-bb2bb5632557/1bfd71b1-a406-4e20-9fae-0db32a5b93aa.avif" alt="Lấy các biểu tượng liên quan của tham số Int (Lx\_Int)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/bab5ad18-94b3-46c3-8b91-9c88fdaa94e5/0a3c9501-06db-4d47-81be-35331ebcdef4.avif" alt="Lấy biểu tượng liên quan của tham số Int (Lx\_Int) 2" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Những gì thu được trong hình là thời gian tích hợp cao. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **3600**, giá trị tối thiểu là **1**, giá trị hiện tại là **1010**, liệu cài đặt có được hỗ trợ hay không **được hỗ trợ**, giá trị trả về cuộc gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+<br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/6d2117ae-d6c3-4afc-b646-6dbfbb6c2f3e/bb13c4c1-0f41-459f-ae52-dbb46cb0e54a.avif" alt="Lấy biểu tượng liên quan của tham số Int (Lx\_Int) 3" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/541a0283-4507-409c-b3e1-20519ab2b5ca/55f6cd89-2619-463f-bc80-10dcb7699c26.avif" alt="Lấy biểu tượng liên quan của tham số Int (Lx\_Int) 4" />
+</Frame>
+
+Những gì thu được trong hình là thời gian tích hợp cao. Theo kết quả trả về, chúng ta có thể thấy giá trị tối đa là **3600**, giá trị tối thiểu là **1**, giá trị hiện tại là **1010**, liệu cài đặt có được hỗ trợ hay không **được hỗ trợ**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+##### 5.3.6.3 Đặt tham số Int (Lx\_Int)
+
+**ROS1**
+
+Nhập vào thiết bị đầu cuối: rosservice gọi /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+giá trị: 2000
+
+là\_set: đúng"
+
+<Frame>
+  <img src="/images/legacy/740f493c-b629-4f56-a1b2-657160e65dd1/223a551a-7aa9-44fd-a0f7-55aadbb2e7e8.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập tham số Int (Lx\_Int)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/0af02830-0186-4647-bfab-d262c1928aa9/0771f3d5-9e06-4f9f-8655-3e4fbcc44fa4.avif" alt="Hình minh họa 2 liên quan đến việc thiết lập tham số Int (Lx\_Int)" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Thời gian tích hợp cao được thiết lập trong hình. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **3600**, giá trị tối thiểu là **1**, giá trị hiện tại đã được sửa đổi thành **2000**, liệu cài đặt hỗ trợ có **được hỗ trợ** hay không, giá trị trả về cuộc gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+<br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/bda87587-abf9-41f1-baf0-1601252e740b/5d8c4cee-1e25-44fc-9b20-1418754d3846.avif" alt="Hình minh họa 3 liên quan đến việc thiết lập tham số Int (Lx\_Int)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/fc6e22e4-33fb-4021-8cbe-d3d37858b463/54820a62-ae52-4c94-bf2b-8b43b6fc8b1f.avif" alt="Minh họa 4 liên quan đến việc thiết lập tham số Int (Lx\_Int)" />
+</Frame>
+
+Những gì thu được trong hình là thời gian tích hợp cao. Theo kết quả trả về, chúng ta có thể thấy giá trị tối đa là **3600**, giá trị tối thiểu là **1**, giá trị hiện tại đã được sửa đổi thành **3000**, liệu cài đặt có được hỗ trợ hay không **được hỗ trợ**, giá trị trả về cuộc gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+##### 5.3.6.4 Lấy tham số Float (Lx\_Float)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+giá trị: 0,0
+
+là\_set: sai"
+
+<Frame>
+  <img src="/images/legacy/961244d1-9a2d-4423-a796-e34fc46bb459/c0296495-26d5-42f2-aea9-7dae69e58fd4.avif" alt="Nhận các biểu tượng liên quan của tham số Float (Lx\_Float)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/efedad09-aa95-4186-bac1-82dbcc0247c9/c07ce897-0b4c-46a0-a9b6-23c4f5551d28.avif" alt="Lấy biểu tượng liên quan của tham số Float (Lx\_Float) 2" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Những gì thu được trong hình là nhiệt độ của máy ảnh. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **120**, giá trị tối thiểu là **\-40**, giá trị hiện tại là **49,6875**, liệu cài đặt có được hỗ trợ hay không **không được hỗ trợ**, giá trị trả về cuộc gọi giao diện là **0** và thông tin giá trị trả về là **thành công**. <br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/fec32229-96f1-49df-8ad4-c32b2e2d4319/68f93c4b-2258-43b6-bbec-67bcead69e04.avif" alt="Lấy các biểu tượng liên quan của tham số Float (Lx\_Float) 3" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/dce3f459-b08e-4593-acdf-677d6fbf6944/6a4c92d8-cf4f-4e3f-91dc-205b77d50614.avif" alt="Lấy biểu tượng liên quan của tham số Float (Lx\_Float) 4" />
+</Frame>
+
+Những gì thu được trong hình là nhiệt độ của máy ảnh. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **120**, giá trị tối thiểu là **\-40**, giá trị hiện tại là **50,4375**, liệu cài đặt có được hỗ trợ hay không **không được hỗ trợ**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+##### 5.3.6.5 Đặt tham số Float (Lx\_Float)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+giá trị: 5.0
+
+là\_set: đúng"
+
+<Frame>
+  <img src="/images/legacy/fc65906a-26b1-4926-8683-0c63c4bda205/0b2816b4-3824-471e-849a-19418b4e1347.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập thông số Float (Lx\_Float)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/64b4ccc2-3a32-4290-bfe8-5f1a16b39e7b/22a193ef-c078-4d18-8089-25c043c945a1.avif" alt="Hình minh họa 2 liên quan đến việc thiết lập thông số Float (Lx\_Float)" />
+</Frame>
+
+Ô màu đỏ là giá trị trả về. Nhiệt độ máy ảnh được đặt trong ảnh. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **120**, giá trị tối thiểu là **\-40**, giá trị hiện tại là **50,9375**, liệu cài đặt có được hỗ trợ hay không **không được hỗ trợ**, giá trị trả về cuộc gọi giao diện là **\-2**, thông tin giá trị trả về **không được hỗ trợ**, giá trị được đặt ở đây là 5, giá trị hiện tại và giá trị đã đặt không nhất quán vì tham số không hỗ trợ cài đặt. <br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/ffb19412-efb4-4d85-b0f3-109070dfaf11/95302d5c-71ea-4209-a439-67bc9141f867.avif" alt="Hình minh họa 3 liên quan đến việc thiết lập thông số Float (Lx\_Float)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/5adb01fe-521c-40e2-824d-6c3877ff1fa1/f53329f3-47d0-4597-85d5-527c2877a216.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập thông số Float (Lx\_Float) 4" />
+</Frame>
+
+Nhiệt độ máy ảnh được đặt trong ảnh. Theo kết quả trả về, bạn có thể thấy giá trị tối đa là **120**, giá trị tối thiểu là **\-40**, giá trị hiện tại là **51.125**, liệu cài đặt có được hỗ trợ hay không **không được hỗ trợ**, giá trị trả về của lệnh gọi giao diện là **\-2**, thông tin giá trị trả về **không được hỗ trợ**, giá trị được đặt ở đây là 5, giá trị hiện tại và giá trị được đặt không nhất quán vì tham số không hỗ trợ cài đặt.
+
+##### 5.3.6.6 Lấy tham số Bool (Lx\_Bool)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+giá trị: sai
+
+là\_set: sai"
+
+<Frame>
+  <img src="/images/legacy/93e8afe5-8d20-4406-8b41-e31907fd216a/73dbf8cb-7bc5-4a65-9e0b-02b8b9976648.avif" alt="Lấy các biểu tượng liên quan của tham số Bool (Lx\_Bool)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/cc19e476-6351-4685-a4ed-ba55273ae753/31834fd4-610d-4c49-a59c-6ec8f5019e1c.avif" alt="Lấy biểu tượng liên quan đến tham số Bool (Lx\_Bool) 2" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Những gì thu được trong ảnh là phơi sáng tự động 2D. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **false**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+<br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/f476d582-5c88-4af1-9ef9-296993a31ae3/e29edc53-15a7-47a8-bb80-eb620f8431fd.avif" alt="Lấy biểu tượng liên quan đến tham số Bool (Lx\_Bool) 3" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/6d73a81b-e785-4f8f-a732-fa4287df78a8/a7a8dae4-f76d-4f02-a9bb-04803115741d.avif" alt="Lấy biểu tượng liên quan đến tham số Bool (Lx\_Bool) 4" />
+</Frame>
+
+Những gì thu được trong hình là phơi sáng tự động 2D. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **false**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+##### 5.3.6.7 Đặt tham số Bool (Lx\_Bool)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+giá trị: đúng
+
+là\_set: đúng"
+
+<Frame>
+  <img src="/images/legacy/607387d3-60d5-4958-af77-0abfb71facb5/f6271f66-6f11-4315-bf02-03f8733ec7aa.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập tham số Bool (Lx\_Bool)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/59b92496-6fc1-4252-ac13-96bcb071dd91/5aefcdf8-ce88-462f-9c1b-240879301714.avif" alt="Hình minh họa 2 liên quan đến việc thiết lập tham số Bool (Lx\_Bool)" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Phơi sáng tự động 2D được cài đặt trong ảnh. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **true**, giá trị trả về của lệnh gọi giao diện là **0**, thông tin giá trị trả về là **thành công** và giá trị hiện tại nhất quán với giá trị đã đặt.
+
+<br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/9748edef-61b1-4014-be36-dff20a825cee/3d3dcbae-6b6e-4332-b4c1-0833a3bf9503.avif" alt="Hình minh họa 3 liên quan đến việc thiết lập tham số Bool (Lx\_Bool)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/a57623c2-7926-4b6c-b6fe-484c6d142302/b5f7f39f-7c48-47b8-becd-3b4431189a1f.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập tham số Bool (Lx\_Bool) 4" />
+</Frame>
+
+Cài đặt trong ảnh là phơi sáng tự động 2D. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **true**, giá trị trả về của lệnh gọi giao diện là **0**, thông tin giá trị trả về là **thành công** và giá trị hiện tại nhất quán với giá trị đã đặt.
+
+##### 5.3.6.8 Lấy tham số chuỗi (Lx\_String)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+giá trị: ''
+
+là\_set: sai"
+
+<Frame>
+  <img src="/images/legacy/bbc24940-9d3d-472f-8bcc-d035c90d30fc/17570b75-4c86-4f11-a838-66755a7842dd.avif" alt="Nhận các biểu tượng liên quan của tham số Chuỗi (Lx\_String)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/6c141b40-d264-4dc1-a5ed-75df668f1be5/34c346c4-c172-4b8b-a61b-f229d3d1ebed.avif" alt="Lấy biểu tượng liên quan đến tham số Chuỗi (Lx\_String) 2" />
+</Frame>
+
+Những gì trong hộp màu đỏ là giá trị trả về. Những gì thu được trong hình là số phiên bản của thiết bị. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **V1.1.33\_231201**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+<br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/9bf79522-e2ee-4f7e-ad7e-c239fcf00be5/7eb63a63-e6fe-4988-8d11-68f008672b36.avif" alt="Lấy biểu tượng liên quan đến tham số Chuỗi (Lx\_String) 3" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/032dbc26-0ad2-435b-ad24-7b57a9553a9e/c24d4d4b-6002-4ce5-bec4-9677545dd341.avif" alt="Lấy biểu tượng liên quan của tham số String (Lx\_String) 4" />
+</Frame>
+
+Những gì thu được trong hình là số phiên bản của thiết bị. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **V1.1.33\_231201**, giá trị trả về của lệnh gọi giao diện là **0** và thông tin giá trị trả về là **thành công**.
+
+##### 5.3.6.9 Đặt tham số Chuỗi (Lx\_String)
+
+**ROS1**
+
+Nhập vào terminal: rosservice gọi /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: 'đặt:\\"123\\"'
+
+là\_set: đúng"
+
+<Frame>
+  <img src="/images/legacy/7753aa87-a255-48b1-97a6-eba2473a31fc/7224317e-c644-48bc-bf93-21c21027d0fa.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập tham số String (Lx\_String)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/6ff71fce-5a6c-469d-8304-5d6770085595/610f2d35-888a-448b-a826-d942a1c4ed59.avif" alt="Hình minh họa 2 liên quan đến việc thiết lập tham số String (Lx\_String)" />
+</Frame>
+
+Ô màu đỏ là giá trị trả về. Số phiên bản thiết bị được đặt trong hình. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **V1.1.33\_231201**, giá trị trả về của lệnh gọi giao diện là **\-2** và thông tin giá trị trả về **không được hỗ trợ**. Giá trị hiện tại và giá trị cài đặt không nhất quán vì tham số này không hỗ trợ cài đặt. <br />
+
+**ROS2**
+
+Nhập vào thiết bị đầu cuối: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/43aa6748-bd74-4e5d-845f-551543fc4260/c39e1ef9-4892-4579-8fef-d41c3622df7b.avif" alt="Hình minh họa 3 liên quan đến việc thiết lập tham số String (Lx\_String)" />
+</Frame>
+
+Bạn có thể thấy đầu ra:
+
+<Frame>
+  <img src="/images/legacy/a117648a-c042-4800-95b2-1fef0bbacc8a/41657cf8-22c9-46ce-be17-366e082c8b9a.avif" alt="Hình ảnh minh họa liên quan đến việc thiết lập tham số String (Lx\_String) 4" />
+</Frame>
+
+Số phiên bản thiết bị được đặt trong hình. Theo kết quả trả về, chúng ta có thể thấy giá trị hiện tại là **V1.1.33\_231201**, giá trị trả về của lệnh gọi giao diện là **\-2** và thông tin giá trị trả về **không được hỗ trợ**. Giá trị hiện tại không nhất quán với giá trị đã đặt vì tham số này không hỗ trợ cài đặt.
+
+**Khi đặt giá trị của loại Chuỗi, các ký tự thoát phải được thêm vào dấu ngoặc đơn và dấu ngoặc kép, ngoại trừ dấu ngoặc kép ban đầu trong ROS2 và dấu ngoặc đơn ban đầu trong ROS1. Ví dụ: nếu bạn muốn nhập chuỗi [PUT”123”], bạn phải thêm ký tự thoát để trở thành: [PUT\\”123\\”].**
+
+* * *
+
+## 6**. ROS khuyến nghị cấu hình phần cứng và sử dụng tài nguyên**
+
+### 6.1 Cấu hình phần cứng khuyến nghị
+
+Trong cấu hình phần cứng được đề xuất, việc phân tích sẽ dựa trên số lõi của CPU, mức sử dụng CPU và kích thước bộ nhớ. **Các cấu hình đưa ra ở đây đều là cấu hình được đề xuất, không phải cấu hình tối thiểu**. Nếu cấu hình phần cứng thấp hơn cấu hình được đề xuất, bạn có thể đạt được hoạt động ổn định bằng cách giảm đầu ra luồng, tắt tính toán đám mây điểm và chuyển xuống thuật toán. **Khi chạy cấu hình yêu cầu cao hơn cấu hình hiện tại có thể gây ra sự cố lõi ROS hoặc thậm chí là sự cố hệ thống Ubuntu. **Cách sử dụng chi tiết sẽ được trình bày trong phần thứ hai và thứ ba của chương này. Vui lòng chọn môi trường hoạt động và cấu hình luồng phù hợp nhất tùy theo tình huống. **Tất cả dữ liệu ở đây đều được kiểm tra trên máy ảo VM và camera kiểm tra là M4PRO.**
+
+**Ubuntu16.04**
+
+| Phiên bản ROS | CPU | Ký ức | Băng thông |
+| --- | --- | --- | --- |
+| hoa hồng | AMD64 [Quad-core] | 4G | 1000M |
+
+**Ubuntu18.04**
+
+| Phiên bản ROS | CPU | Ký ức | Băng thông |
+| --- | --- | --- | --- |
+| hoa hồng | AMD64 [Quad-core] | 4G | 1000M |
+| ros2 | AMD64 [Quad-core] | 4G | 1000M |
+
+**Ubuntu20.04**
+
+| Phiên bản ROS | CPU | Ký ức | Băng thông |
+| --- | --- | --- | --- |
+| hoa hồng | AMD64 [Quad-core] | 4G | 1000M |
+| ros2 | AMD64 [Quad-core] | 4G | 1000M |
+
+**Ubuntu22.04**
+
+| Phiên bản ROS | CPU | Ký ức | Băng thông |
+| --- | --- | --- | --- |
+| hoa hồng | AMD64 [Quad-core] | 4G | 1000M |
+
+### Chi tiết CPU 6.2
+
+Chi tiết CPU sẽ hiển thị lượng tài nguyên CPU bị nút chiếm dụng trong các điều kiện hoạt động khác nhau. Thử nghiệm dựa trên môi trường phần cứng **AMD64 [8 lõi], bộ nhớ 8G**, camera thử nghiệm là **M4PRO**, thuật toán thử nghiệm là **thuật toán khay**, **chiều rộng và chiều cao 2D là 1280\*960, còn chiều rộng và chiều cao 3D là 640\*480**, **Bật tính năng chống biến dạng 2D, tắt tính năng chống biến dạng 3D và tích hợp 110 - 3000, độ sâu 0 - 8000, tốc độ khung hình TOF 14, chế độ phát trực tuyến, làm mịn cấp 1, cấp độ nhiễu 1, cấp miền thời gian 0**, lệnh thống kê là **TOP**. Vì môi trường phần mềm thử nghiệm là **máy ảo VM** nên việc dữ liệu được máy vật lý hiển thị dao động so với dữ liệu trong tài liệu là điều bình thường. Đối với một số máy ảnh, chẳng hạn như S2, một số thuật toán được tính toán trên máy tính chủ, dẫn đến việc sử dụng một lượng lớn tài nguyên, điều này là bình thường. <br />
+
+**1. Một số danh từ được giải thích như sau:**
+
+-Luồng đơn: đề cập đến việc bật bất kỳ luồng RGB, độ sâu và cường độ nào
+
+- Luồng kép: đề cập đến việc bật bất kỳ hai luồng RGB nào, độ sâu và cường độ
+
+-Ba luồng: đề cập đến RGB, độ sâu và cường độ cả ba luồng đều được bật
+
+- Bốn luồng: nghĩa là RGB, độ sâu, cường độ và đám mây điểm đều được bật
+
+**2. Thuật toán có mối quan hệ ràng buộc với một số luồng. Mối quan hệ ràng buộc như sau:**
+
+- Để kích hoạt thuật toán pallet, độ sâu phải được kích hoạt
+
+- Để bật thuật toán tránh chướng ngại vật bạn phải bật độ sâu
+
+- Để bật thuật toán định vị bạn phải bật RGB
+
+<br />
+
+Nền màu xanh nhạt trong bảng là cấu hình đang chạy có bật đám mây điểm và nền không màu là cấu hình đang chạy không bật đám mây điểm. **Tất cả dữ liệu thử nghiệm bên dưới có thuật toán được dịch chuyển xuống theo mặc định, vì vậy đối với máy ảnh dòng S2, tất cả các giá trị thử nghiệm có thể quá nhỏ [một số thuật toán của máy ảnh dòng S2 buộc phải di chuyển lên trên].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 10,59 | 0,0~26,7 |
+| Luồng kép | 14.13 | 0,0~60,0 |
+| Tỷ lệ thứ ba | 16.56 | 0,0~37,5 |
+| Tỷ lệ thứ tư | 108,25 | 93,8~162,5 |
+| Đám mây điểm + độ sâu | 105,13 | 93,8~153,3 |
+| Thuật toán + Độ sâu | 5,44 | 0,0~43,0 |
+| Thuật toán + Độ sâu + Đám mây điểm | 104,39 | 93,8~120,0 |
+| Thuật toán + Độ sâu + RGB | 13.15 | 6,2~40,0 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 105,96 | 93,8~146,7 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 109,29 | 93,8~162,5 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 10.31 | 0,0~27,5 |
+| Luồng kép | 12.81 | 5,9~27,8 |
+| Tỷ lệ thứ ba | 16.23 | 5,9~37,5 |
+| Tỷ lệ thứ tư | 105,95 | 88,2~131,2 |
+| Đám mây điểm + độ sâu | 103,55 | 88,2~156,2 |
+| Thuật toán + Độ sâu | 56,32 | 0,0~43,8 |
+| Thuật toán + Độ sâu + Đám mây điểm | 104.07 | 78,3~43,8 |
+| Thuật toán + Độ sâu + RGB | 15.22 | 5,9~70,6 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 104,56 | 93,8~125,0 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 105,52 | 61,5~204,8 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 19.19 | 5,9~88,2 |
+| Luồng kép | 23.17 | 6,2~109,1 |
+| Tỷ lệ thứ ba | 30,59 | 9,1~125,0 |
+| Tỷ lệ thứ tư | 108,44 | 44,4~158,6 |
+| Đám mây điểm + độ sâu | 102,19 | 37,5~143,9 |
+| Thuật toán + Độ sâu | 6,44 | 0,0~26,7 |
+| Thuật toán + Độ sâu + Đám mây điểm | 104,45 | 79,2~176,5 |
+| Thuật toán + Độ sâu + RGB | 14.82 | 5,9~50,0 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 106,89 | 94,1~137,5 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 108,41 | 94,1~162,5 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 11.46 | 0,0~50,0 |
+| Luồng kép | 14.62 | 6,2~66,7 |
+| Tỷ lệ thứ ba | 18.46 | 6,2~50,0 |
+| Tỷ lệ thứ tư | 43,64 | 25,0~143,8 |
+| Đám mây điểm + độ sâu | 28.37 | 12,5~75,0 |
+| Thuật toán + Độ sâu | 6,53 | 0,0~43,8 |
+| Thuật toán + Độ sâu + Đám mây điểm | 29,28 | 13,3~100 |
+| Thuật toán+Độ sâu+RGB | 13,79 | 0,0~50,0 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 40,64 | 25,0~81,2 |
+| Thuật toán+Độ sâu+Cường độ+RGB+Đám mây điểm | 44,44 | 25,0~75,0 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 8.07 | 0,0~20,0 |
+| Luồng kép | 25/11 | 0,0~33,3 |
+| Tỷ lệ thứ ba | 16.18 | 6,2~62,5 |
+| Tỷ lệ thứ tư | 33,77 | 0,0~86,7 |
+| Đám mây điểm + độ sâu | 27h45 | 12,5~81,2 |
+| Thuật toán + Độ sâu | 6.13 | 0,0~68,8 |
+| Thuật toán + độ sâu + đám mây điểm | 31.11 | 12,5~56,2 |
+| Thuật toán+Độ sâu+RGB | 11:75 | 0,0~68,8 |
+| Thuật toán + Độ sâu + RGB + Đám mây điểm | 38.04 | 6,2~75,0 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 40,85 | 18,8~106,2 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 8.05 | 0,0~23,5 |
+| Luồng kép | 11,99 | 0,0~75,0 |
+| Tỷ lệ thứ ba | 18.08 | 0,0~100 |
+| Tỷ lệ thứ tư | 50.06 | 6,2~200 |
+| Đám mây điểm + độ sâu | 33,92 | 0,0~106,2 |
+| Thuật toán + Độ sâu | 7h70 | 0,0~43,8 |
+| Thuật toán + Độ sâu + Đám mây điểm | 36:20 | 6,2~131,2 |
+| Thuật toán + Độ sâu + RGB | 14.46 | 6,2~37,5 |
+| Thuật toán + Độ sâu + RGB + Đám mây điểm | 39.07 | 18,8~94,1 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 45,61 | 12,5~93,8 |
+
+### 6.3 Chi tiết bộ nhớ
+
+Chi tiết bộ nhớ sẽ hiển thị lượng tài nguyên bộ nhớ mà nút chiếm giữ trong các điều kiện hoạt động khác nhau. Thử nghiệm dựa trên **AMD64 [8 lõi], môi trường phần cứng 8G**, camera thử nghiệm là **M4PRO**, thuật toán thử nghiệm là **thuật toán khay**, **chiều rộng và chiều cao 2D là 1280\*960, còn chiều rộng và chiều cao 3D là 640\*480**, **Bật tính năng chống biến dạng 2D, tắt tính năng chống biến dạng 3D, điểm 110 - 3000, độ sâu 0 - 8000, tốc độ khung hình TOF 14, chế độ phát trực tuyến, làm mịn cấp 1, cấp độ nhiễu 1, cấp miền thời gian 0**, lệnh thống kê là **TOP**. Vì môi trường phần mềm thử nghiệm là **máy ảo VM** nên việc dữ liệu được máy vật lý hiển thị dao động so với dữ liệu trong tài liệu là điều bình thường. Đối với một số máy ảnh, chẳng hạn như S2, một số thuật toán được tính toán trên máy tính chủ, dẫn đến việc sử dụng một lượng lớn tài nguyên, điều này là bình thường. <br />
+
+**1. Một số danh từ được giải thích như sau:**
+
+-Luồng đơn: đề cập đến việc bật bất kỳ luồng RGB, độ sâu và cường độ nào
+
+- Luồng kép: đề cập đến việc bật bất kỳ hai luồng RGB nào, độ sâu và cường độ
+
+-Ba luồng: đề cập đến RGB, độ sâu và cường độ cả ba luồng đều được bật
+
+- Bốn luồng: nghĩa là RGB, độ sâu, cường độ và đám mây điểm đều được bật
+
+**2. Thuật toán có mối quan hệ ràng buộc với một số luồng. Mối quan hệ ràng buộc như sau:**
+
+- Để kích hoạt thuật toán pallet, độ sâu phải được kích hoạt
+
+- Để bật thuật toán tránh chướng ngại vật bạn phải bật độ sâu
+
+- Để bật thuật toán định vị bạn phải bật RGB
+
+3. Nền màu xanh nhạt trong bảng là cấu hình đang chạy có bật đám mây điểm và nền không màu là cấu hình đang chạy không bật đám mây điểm. **Tất cả dữ liệu thử nghiệm bên dưới có thuật toán được dịch chuyển xuống theo mặc định, vì vậy đối với máy ảnh dòng S2, tất cả các giá trị thử nghiệm có thể quá nhỏ [một số thuật toán của máy ảnh dòng S2 buộc phải di chuyển lên trên].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 0,60 | 0,6~0,7 |
+| Luồng kép | 0,61 | 0,6~0,8 |
+| Tỷ lệ thứ ba | 0,66 | 0,6~0,8 |
+| Tỷ lệ thứ tư | 0,79 | 0,7~0,9 |
+| Đám mây điểm + độ sâu | 0,60 | 0,5~0,7 |
+| Thuật toán + Độ sâu | 0,50 | 0,5~0,5 |
+| Thuật toán + độ sâu + đám mây điểm | 0,60 | 0,5~0,7 |
+| Thuật toán + Độ sâu + RGB | 0,62 | 0,6~0,8 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 0,71 | 0,6~0,9 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 0,79 | 0,7~0,9 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 1,01 | 1,1~1,2 |
+| Luồng kép | 1.10 | 1,1~1,2 |
+| Tỷ lệ thứ ba | 1.10 | 1,1~1,2 |
+| Tỷ lệ thứ tư | 1.19 | 1,1~1,3 |
+| Đám mây điểm + độ sâu | 1.09 | 0,9~1,2 |
+| Thuật toán + Độ sâu | 0,90 | 0,9~1,0 |
+| Thuật toán + độ sâu + đám mây điểm | 1.09 | 0,9~1,2 |
+| Thuật toán + Độ sâu + RGB | 1.10 | 1,1~1,2 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 1.19 | 1,1~1,3 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 1,20 | 1,1~1,4 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 1.19 | 1,1~1,2 |
+| Luồng kép | 1,27 | 1,1~1,3 |
+| Tỷ lệ thứ ba | 1,29 | 1,2~1,3 |
+| Tỷ lệ thứ tư | 1,57 | 1,3~1,6 |
+| Đám mây điểm + độ sâu | 1,20 | 1,1~1,3 |
+| Thuật toán + Độ sâu | 0,90 | 0,9~0,9 |
+| Thuật toán + độ sâu + đám mây điểm | 1.10 | 1,0~1,2 |
+| Thuật toán + Độ sâu + RGB | 1.10 | 1,1~1,2 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 1h30 | 1,3~1,4 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 1,41 | 1,3~1,6 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 1,21 | 1,2~1,4 |
+| Luồng kép | 1h30 | 1,3~1,4 |
+| Tỷ lệ thứ ba | 1h30 | 1,3~1,4 |
+| Tỷ lệ thứ tư | 1.33 | 1,3~1,5 |
+| Đám mây điểm + độ sâu | 1,21 | 1,2~1,4 |
+| Thuật toán + Độ sâu | 1.19 | 1,1~1,2 |
+| Thuật toán + độ sâu + đám mây điểm | 1,22 | 1,2~1,4 |
+| Thuật toán + Độ sâu + RGB | 1h30 | 1,3~1,4 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 1,32 | 1,3~1,5 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 1.33 | 1,3~1,5 |
+
+<br />
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 1,20 | 1,2~1,3 |
+| Luồng kép | 1,20 | 1,2~1,3 |
+| Tỷ lệ thứ ba | 1h30 | 1,3~1,4 |
+| Tỷ lệ thứ tư | 1,64 | 1,4~1,7 |
+| Đám mây điểm + độ sâu | 1,36 | 1,1~1,4 |
+| Thuật toán + Độ sâu | 1.10 | 1,1~1,1 |
+| Thuật toán + Độ sâu + Đám mây điểm | 1.19 | 1,1~1,3 |
+| Thuật toán + Độ sâu + RGB | 1,40 | 1,4~1,4 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 1,58 | 1,4~1,7 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 1,60 | 1,5~1,7 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Chạy cấu hình | Trung bình % | Khoảng % |
+| Luồng đơn | 1,28 | 1,1~1,3 |
+| Luồng kép | 1,29 | 1,2~1,3 |
+| Tỷ lệ thứ ba | 1,20 | 1,2~1,3 |
+| Tỷ lệ thứ tư | 1,49 | 1,4~1,6 |
+| Đám mây điểm + độ sâu | 1.11 | 1,1~1,2 |
+| Thuật toán + Độ sâu | 1,00 | 1,0~1,0 |
+| Thuật toán + Độ sâu + Đám mây điểm | 1.11 | 1,1~1,2 |
+| Thuật toán + Độ sâu + RGB | 1,20 | 1,2~1,3 |
+| Thuật toán + độ sâu + RGB + đám mây điểm | 1,55 | 1,3~1,6 |
+| Thuật toán + độ sâu + cường độ + RGB + đám mây điểm | 1,51 | 1,3~1,7 |
+
+* * *
+
+## Phụ lục:
+
+Phụ lục này cung cấp các phương pháp cài đặt cho một số công cụ. Khi sử dụng các phương pháp này, bạn cần có ít nhất một số kiến ​​thức cơ bản về Linux. Không có gì đảm bảo rằng mọi máy tính đều có thể được cài đặt thành công thông qua các phương pháp được trình bày trong phần phụ lục của tài liệu này. Môi trường của mỗi máy tính là khác nhau và các vấn đề gặp phải có thể không nhất quán. Nếu bạn gặp phải những vấn đề không có trong phụ lục này, hãy tự mình tìm kiếm giải pháp.
+
+### 1. Phương pháp cài đặt phiên bản được chỉ định của Cmake
+
+Truy cập https://cmake.org/download/ và tải xuống phiên bản CMake cần thiết. Giải nén gói đã tải xuống bằng `tar -zxvf cmake-XXX.tar.gz`. Nhập thư mục được giải nén, sau đó biên dịch và cấu hình nó:
+
+./bootstrap
+
+làm
+
+sudo thực hiện cài đặt
+
+Kiểm tra phiên bản Cmake để biết cài đặt thành công:
+
+cmake --version
+
+### 2. Phương pháp cài đặt phiên bản Opencv được chỉ định
+
+1. Tải xuống phiên bản opencv cần thiết: [Phát hành-OpenCV](https://opencv.org/releases/ "Phát hành-OpenCV")
+
+<Frame>
+  <img src="/images/legacy/d3e046da-7815-4104-b3a1-adf631bafe51/2d28d6a9-5d74-4359-81ce-05c52472893f.avif" alt="Hình minh họa liên quan đến phương pháp cài đặt phiên bản Opencv được chỉ định" />
+</Frame>
+
+2. Cấu hình môi trường, thực hiện tuần tự các lệnh sau:
+
+sudo apt-get cài đặt build-essential
+
+sudo apt-getinstallcmake gitlibgtk2.0-devpkg-config libavcodec-dev
+
+libavformat-dev libswscale-dev
+
+sudo apt-get cài đặt python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev
+
+libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+
+3. Tạo thư mục opencv mới và trích xuất mã nguồn đã tải xuống vào thư mục opencv.
+
+4. Thực hiện tuần tự các lệnh sau:
+
+1.   cd opencv
+
+2.   bản dựng mkdir && bản dựng cd
+
+3.   sudomake-DCMAKE\_BUILD\_TYPE=Release-D
+
+4.   CMAKE\_INSTALL\_PREFIX=/usr/local ..
+
+5.   sudo tạo -j4
+
+6. sudo make install và đợi quá trình cài đặt hoàn tất
+
+### 3. Phương pháp cài đặt phiên bản Pcl chỉ định
+
+1. Kiểm tra phiên bản pcl được hỗ trợ:
+
+apt-cache madison libpcl-dev
+
+2. Cài đặt phiên bản pcl được chỉ định (trong đó 1.10.0 cần được thay thế bằng số phiên bản được yêu cầu):
+
+sudo apt-get cài đặt libpcl-dev=1.10.0
+
+### 4. Cài đặt ROS
+
+**Ubuntu16.04**
+
+1. Thêm nguồn phần mềm và đặt key bí mật:
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb\_release -sc) main" >
+
+/etc/apt/sources.list.d/ros-latest.list'
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. Thêm khóa bí mật:
+
+cuộn tròn -sSL
+
+'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | Sudo apt-key thêm -
+
+3. Cập nhật nguồn:
+
+cập nhật sudo apt-get
+
+4. Cài đặt ros hoàn chỉnh:
+
+sudo apt-get cài đặt ros-kinetic-desktop-full
+
+5. Cấu hình các biến môi trường:
+
+echo "nguồn /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc
+
+6. Hoàn thiện các công cụ liên quan đến ROS:
+
+sudoaptinstallpython-rosinstallpython-rosinstall-generatorpython-wstool
+
+xây dựng thiết yếu
+
+7. Bây giờ quá trình cài đặt ROS1 đã hoàn tất, hãy chạy ví dụ đi kèm với ROS để kiểm tra xem cài đặt có đúng không:
+
+Mở terminal và nhập: roscore
+
+Mở một thiết bị đầu cuối khác và nhập: rosrun Turtlesim Turtlesim\_node
+
+Mở một thiết bị đầu cuối khác: rosrun Turtlesim Turtle\_teleop\_key
+
+Ở thiết bị đầu cuối thứ ba, bạn có thể điều khiển chú rùa nhỏ thông qua các phím mũi tên
+
+Nếu nó chạy bình thường như hình dưới thì có nghĩa là ros đã được cài đặt đúng:
+
+![Cài đặt các biểu tượng liên quan đến ROS](/images/legacy/3d11257d-8a56-4528-9adf-48a67ba0bf1a/8d373554-c663-433d-9777-a7513a35ac18.avif)<br />
+
+**Ubuntu18.04**
+
+1. Thiết lập nguồn phần mềm:
+
+sudo sh -c '. /etc/lsb-release && echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu/
+
+\`lsb\_release -cs\` chính" > /etc/apt/sources.list.d/ros-latest.list'
+
+2.Đặt khóa chung:
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+3. Cập nhật danh sách phần mềm:
+
+cập nhật sudo apt
+
+4. Cài đặt phiên bản Ubuntu18.04 của ROS1:
+
+sudo apt cài đặt ros-melodic-desktop-full
+
+5. Đặt biến môi trường:
+
+echo "nguồn /opt/ros/melodic/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc nếu là zsh:
+
+echo "nguồn /opt/ros/melodic/setup.bash" >> ~/.zshrc
+
+nguồn ~/.zshrc
+
+6. Hoàn thiện các công cụ liên quan đến ROS:
+
+sudoaptinstallpython-rosdeppython-rosinstallpython-rosinstall-generator
+
+python-wstool build-thiết yếu
+
+7. Bây giờ quá trình cài đặt ROS1 đã hoàn tất, hãy chạy ví dụ đi kèm với ROS để kiểm tra xem cài đặt có đúng không:
+
+Mở terminal và nhập: roscore
+
+Mở một thiết bị đầu cuối khác và nhập: rosrun Turtlesim Turtlesim\_node
+
+Mở một thiết bị đầu cuối khác: rosrun Turtlesim Turtle\_teleop\_key
+
+Ở thiết bị đầu cuối thứ ba, bạn có thể điều khiển chú rùa nhỏ thông qua các phím mũi tên
+
+Nếu nó chạy bình thường như hình dưới thì có nghĩa là ros đã được cài đặt đúng:
+
+<Frame>
+  <img src="/images/legacy/f26533a7-6cb6-4b2e-acc1-73b29d6be0c0/69dc44fe-daa1-4f18-b8b7-2cfa263eba56.avif" alt="Cài đặt các biểu tượng liên quan đến ROS 2" />
+</Frame>
+
+**Ubuntu20.04**
+
+1. Cấu hình khóa chung:
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. Nếu báo không thể kết nối với máy chủ hoặc hết thời gian chờ, vui lòng cập nhật danh sách nguồn phần mềm trước:
+
+cập nhật sudo apt-get
+
+nâng cấp sudo apt-get
+
+3. Sau khi cấu hình public key, cập nhật lại danh sách phần mềm:
+
+sudo apt-get cập nhật cài đặt ros:
+
+sudo apt cài đặt ros-noetic-desktop-full
+
+4. Đặt biến môi trường:
+
+echo "nguồn /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc
+
+5. Cài đặt công cụ ROS:
+
+sudo apt cài đặt python3-rosinstall python3-rosinstall-generator python3-wstool
+
+xây dựng thiết yếu
+
+6. Bây giờ quá trình cài đặt ROS1 đã hoàn tất, hãy chạy ví dụ đi kèm với ROS để kiểm tra xem cài đặt đã đúng chưa:
+
+Mở terminal và nhập: roscore
+
+Mở một thiết bị đầu cuối khác và nhập: rosrun Turtlesim Turtlesim\_node
+
+Mở một thiết bị đầu cuối khác: rosrun Turtlesim Turtle\_teleop\_key
+
+Ở thiết bị đầu cuối thứ ba, bạn có thể điều khiển chú rùa nhỏ thông qua các phím mũi tên
+
+Nếu nó chạy bình thường như hình dưới thì có nghĩa là ros đã được cài đặt đúng:
+
+<Frame>
+  <img src="/images/legacy/c8bfbdc9-0afd-492c-8cb6-b120620de403/b86be7d4-19c9-4e07-84d9-8fff9ca86784.avif" alt="Cài đặt các biểu tượng liên quan đến ROS 3" />
+</Frame>
+
+**Ubuntu22.04**
+
+Không nên cài đặt ros1 trong Ubuntu22.04. Nó không được hỗ trợ chính thức. Nếu muốn cài đặt nó, bạn sẽ gặp rất nhiều vấn đề về phụ thuộc.
+
+### 5. Cách tạo gói thử nghiệm mới trong Ros
+
+1. Tạo thư mục mới ws, tạo thư mục src mới trong thư mục ws, nhập thư mục src và thực hiện:
+
+ví dụ catkin\_create\_pkg std\_msgs rospy roscpp
+
+2. Điều này tạo ra một gói mới có tên example, phụ thuộc vào std\_msgs rospy roscpp
+
+3. Sau đó biên dịch gói mới này: catkin\_make Đây là một gói trống, sẽ không có chương trình thực thi nào, nó chỉ là một gói
+
+4. Tiếp theo, chúng ta sẽ trình bày cách tạo một gói có thể xuất ra 'Hellow world'
+
+5. Dựa vào package vừa rồi chúng ta vào thư mục src (src trong package) và tạo một main.cpp mới như hình bên dưới (chú ý đường dẫn):
+
+<Frame>
+  <img src="/images/legacy/ee08a349-2fff-4dd3-b863-f274d9c29dc3/1ae48041-e02b-4d47-a60e-2b96e1139c48.avif" alt="Minh họa cách tạo gói thử nghiệm mới trong Ros" />
+</Frame>
+
+6. Trong main.cpp, chúng ta nhập một số mã:
+
+<Frame>
+  <img src="/images/legacy/50c938eb-24b1-4e23-a5b3-b514cf345318/3a756c2e-f7c7-4638-8066-53fda788669d.avif" alt="Ros Cách tạo gói thử nghiệm mới Hình minh họa liên quan 2" />
+</Frame>
+
+7. Sau đó, chúng ta thay đổi CMakeLists.txt bên ngoài và thêm một dòng ở dưới cùng: add\_executable(example src/main.cpp)
+
+<Frame>
+  <img src="/images/legacy/a0ed2fe3-bfde-4578-827c-ac7ad8abc037/91074ddf-541e-4889-b5d4-f7abc025f022.avif" alt="Ros Cách tạo gói thử nghiệm mới Hình minh họa liên quan 3" />
+</Frame>
+
+8. Sau đó quay lại thư mục ws để biên dịch và thực hiện lệnh: catkin\_make
+
+<Frame>
+  <img src="/images/legacy/feb3446d-3ec4-43f4-9cc8-d4f1df209c32/b59894a1-17b5-4acd-9ee4-1d3fd1829e87.avif" alt="Ros Cách tạo gói thử nghiệm mới Hình minh họa liên quan 4" />
+</Frame>
+
+9. Thấy những điều này nghĩa là quá trình biên dịch đã thành công.
+
+10. Tiếp theo chúng ta cấu hình môi trường:
+
+nguồn phát triển/setup.bash
+
+<Frame>
+  <img src="/images/legacy/725e5d72-2f1d-4ebd-acf3-27579745f4c6/a8859a9f-e2a8-462f-a9c6-117a67b8407f.avif" alt="Ros Cách tạo gói thử nghiệm mới Hình minh họa liên quan 5" />
+</Frame>
+
+11. Sau đó thực hiện chương trình và bạn có thể thấy kết quả:
+
+ví dụ rosrun ví dụ
+
+<Frame>
+  <img src="/images/legacy/92b5ba9d-a46e-4a76-a64e-d3bc9f30fd85/2b3a3a35-ad76-41a0-a913-c5fdb14faf8b.avif" alt="Ros Cách tạo gói thử nghiệm mới Hình minh họa liên quan 6" />
+</Frame>
+
+### 6. Cài đặt ROS2
+
+**Ubuntu16.04**
+
+1. Thêm khóa bí mật:
+
+cập nhật sudo apt-get && sudo apt-get cài đặt cuộn tròn
+
+cong http://repo.ros2.org/repos.key | Sudo apt-key thêm -
+
+2. Thêm quyền:
+
+cập nhật sudo apt && sudo apt cài đặt cuộn gnupg2 lsb-release
+
+Curl-shttps://raw.githubusercontent.com/ros/rosdistro/master/ros.asc|sudo
+
+thêm khóa apt -
+
+3. Nếu ở bước này báo lỗi thì dùng VPN vượt tường rồi mở trình duyệt, nhập URL và sao chép nội dung, sau đó tạo ros.asc mới và sao chép nội dung vào file. Sau khi copy xong sẽ có kết quả như sau:
+
+<Frame>
+  <img src="/images/legacy/eb472a71-b8d3-4dbf-9cce-fdf92f2e45cd/fbc3fcf1-5772-4fbe-9f61-283841222501.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2" />
+</Frame>
+
+4. Sau đó thực hiện lại bước 3: sudo apt-key add ros.asc
+
+5. Tiếp tục thực hiện:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionic
+
+chính" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Cài đặt ROS2:
+
+cập nhật sudo apt
+
+sudo apt cài đặt ros-ardent-desktop
+
+7. Cấu hình các biến môi trường:
+
+nguồn /opt/ros/ardent/setup.bash
+
+8. Cài đặt gói chức năng:
+
+cập nhật sudo apt-get
+
+sudo apt-get cài đặt ros-ardent-ros1-bridge sudo apt-get cài đặt ros-ardent-turtlebot2-\*
+
+9. Thử chạy chương trình ví dụ, mở terminal và chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_cpp talker
+
+10. Mở một ngắt khác để chạy:
+
+nguồn~/.bashrc
+
+ros2 chạy demo\_nodes\_cpp talker
+
+11. Đầu ra cuối cùng sau đây chứng tỏ quá trình cài đặt thành công:
+
+<Frame>
+  <img src="/images/legacy/6300cf50-e7ee-44ca-bf76-dfc90bb2023e/5dec0721-d4fe-4663-b8bc-9af8bd5652d3.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 2" />
+</Frame>
+
+**Ubuntu18.04:**
+
+1. Thêm nguồn phần mềm
+
+cập nhật sudo apt && sudo apt cài đặt cuộn gnupg2 lsb-release
+
+cuộn tròn -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
+
+sudo apt-key thêm ros.asc
+
+2. Nếu bước này báo lỗi như sau:
+
+<Frame>
+  <img src="/images/legacy/660825ae-43a4-40e9-9ae4-183e6c0b1423/53f54e64-41ea-4342-9f85-bd68f3f6b68a.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 3" />
+</Frame>
+
+3. Sử dụng VPN để vượt tường, sau đó mở trình duyệt, nhập URL và sao chép nội dung, sau đó tạo ros.asc mới và sao chép nội dung vào file. Sau khi copy xong sẽ có kết quả như sau:
+
+<Frame>
+  <img src="/images/legacy/c8abece0-d058-4ef3-a421-6d4860d7226e/2ee8fca9-e7ed-48ef-8374-09591a96e223.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 4" />
+</Frame>
+
+4. Sau đó thực hiện lại bước 3: sudo apt-key add ros.asc
+
+5. Tiếp tục thực hiện:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionic
+
+chính" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Sau khi hoàn tất, bắt đầu tải ros2, trong đó phông chữ màu đỏ cần được thay thế bằng các phiên bản khác nhau (xem bảng trên):
+
+cập nhật sudo apt
+
+sudo apt cài đặt ros-eloquent-desktop
+
+7. Đợi quá trình cài đặt hoàn tất và tiếp tục cài đặt thư viện python. Thực thi: cài đặt sudo apt -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+Sau đó cấu hình các biến môi trường:
+
+echo "nguồn /opt/ros/eloquent/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc
+
+8. Thử chạy chương trình mẫu, mở terminal và chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_cpp talker
+
+9. Mở một ngắt khác để chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_py người nghe
+
+10. Đầu ra cuối cùng sau đây chứng tỏ quá trình cài đặt thành công:
+
+<Frame>
+  <img src="/images/legacy/c50b5dd8-70b2-4f89-b0e4-5027fe5be13b/08fe8eb2-4571-4661-afa7-4677cb4edb89.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 5" />
+</Frame>
+
+**Ubuntu20.04**
+
+1. Thêm nguồn phần mềm
+
+cập nhật sudo apt && sudo apt cài đặt cuộn gnupg2 lsb-release
+
+sudo cong -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o
+
+/usr/share/keyrings/ros-archive-keyring.gpg
+
+2. Nếu bạn gặp lỗi "không thể kết nối với cổng raw.githubusercontent.com 443 sau 13 ms: kết nối bị từ chối"
+
+<Frame>
+  <img src="/images/legacy/16d8d901-e09b-48ac-8ae9-da5d3b863635/6a891b3e-2997-42bb-9ab1-fc8a0d3d593c.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 6" />
+</Frame>
+
+sudo vi /etc/hosts
+
+3. Thêm phân tích sau
+
+185.199.108.133raw.githubusercontent.com
+
+4. Các file được thêm vào như sau:
+
+<Frame>
+  <img src="/images/legacy/7bebf4a5-5d39-4e23-b605-ec8b38e65e95/a07bee8b-6342-418b-950b-68dd9ca834ee.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 7" />
+</Frame>
+
+echo"deb\[arch=(source/etc/os-release&&echo$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+5. Tiếp tục thực hiện:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionicmain" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Sau khi hoàn tất, bắt đầu tải ros2:
+
+cập nhật sudo apt
+
+sudo apt cài đặt ros-foxy-desktop
+
+7. Đợi quá trình cài đặt hoàn tất và tiếp tục cài đặt thư viện python. Thực thi: cài đặt sudo apt -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+8. Sau đó cấu hình các biến môi trường:
+
+echo "nguồn /opt/ros/foxy/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc
+
+9. Thử chạy chương trình mẫu, mở terminal và chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_cpp talker
+
+10. Mở một ngắt khác để chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_py người nghe
+
+11. Đầu ra cuối cùng sau đây chứng tỏ quá trình cài đặt thành công:
+
+<Frame>
+  <img src="/images/legacy/a153e598-f450-4ac3-841a-36fc9776aec2/50194f24-ca34-4381-903a-2d5a177fa42b.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 8" />
+</Frame>
+
+**Ubuntu22.04**
+
+1. Thêm nguồn phần mềm
+
+cập nhật sudo apt && sudo apt cài đặt Curl gnupg lsb-release
+
+sudocurl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpgecho"deb\[arch=(source/etc/os-release&&echo$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+2. Nếu bạn gặp lỗi "không thể kết nối với cổng raw.githubusercontent.com 443 sau 13 ms: kết nối bị từ chối"
+
+<Frame>
+  <img src="/images/legacy/c5a24421-eb52-4af9-9102-33af57a00d3d/0382935f-fa16-4229-bd57-9d38b3e46e18.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 9" />
+</Frame>
+
+sudo vi /etc/hosts bổ sung thêm phân tích sau
+
+185.199.108.133raw.githubusercontent.com
+
+Các tập tin được thêm vào như sau:
+
+<Frame>
+  <img src="/images/legacy/c6c35f7f-33d7-4814-9ff6-f8a91befa7b3/296da332-90b4-4556-90f7-d919649c20db.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 10" />
+</Frame>
+
+3. Sau khi hoàn tất, bắt đầu tải ros2: sudo apt update
+
+sudo apt cài đặt ros-humble-desktop
+
+4. Đợi quá trình cài đặt hoàn tất và tiếp tục cài đặt thư viện python. Thực thi: cài đặt sudo apt -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+5. Sau đó cấu hình các biến môi trường:
+
+echo "nguồn /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+nguồn ~/.bashrc
+
+6. Thử chạy chương trình mẫu, mở terminal và chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_cpp talker
+
+7. Mở một ngắt khác để chạy:
+
+nguồn ~/.bashrc
+
+ros2 chạy demo\_nodes\_py người nghe
+
+8. Đầu ra cuối cùng sau đây chứng tỏ quá trình cài đặt thành công:
+
+<Frame>
+  <img src="/images/legacy/bc04fff4-66a4-4006-8ae5-a26fcf98c644/d77d3f8f-675c-4168-8621-182458b8f9cc.avif" alt="Cài đặt các biểu tượng liên quan đến ROS2 11" />
+</Frame>
+
+### 7. Cách tạo gói thử nghiệm mới trong Ros2
+
+1. Thực hiện lệnh:
+
+ví dụ mkdir\_ws && cd ví dụ\_ws
+
+ros2 pkg tạo --build-type ament\_cmake --node-name example\_n example\_p
+
+xây dựng colcon
+
+nguồn cài đặt/setup.bash
+
+ví dụ chạy ros2\_p example\_n
+
+2. Bạn có thể tạo một gói mới có tên example\_p và một nút có tên example\_n. Sau khi chạy nó sẽ ra: hello world example\_p package
+
+<br />
+
+* * *
+
+Chào mừng bạn đến liên hệ với chúng tôi thông qua các phương pháp sau:
+
+- Nếu bạn chưa mua sản phẩm, vui lòng [Bấm vào tôi](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Bấm vào tôi") để thêm tài khoản WeChat kỹ sư/doanh nghiệp bán hàng trước
+
+- Người dùng đã mua sản phẩm, vui lòng [bấm vào tôi](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "bấm vào tôi") để thêm doanh nghiệp hỗ trợ kỹ thuật sau bán hàng WeChat
+
+- **Trang web chính thức**: [www.mrdvs.cn](https://www.mrdvs.cn "www.mrdvs.cn")
+
+- **Trang web chính thức**: [www.mrdvs.cn](https://www.mrdvs.cn "www.mrdvs.cn")
+
+- **Mật độ**: [Cung cấp video hướng dẫn và các trường hợp ứng dụng](https://space.bilibili.com/3546755102672963 "Cung cấp video hướng dẫn và các trường hợp ứng dụng")
+
+- **Mật độ** : [Cung cấp video hướng dẫn và các trường hợp ứng dụng](https://space.bilibili.com/3546755102672963 "Cung cấp video hướng dẫn và các trường hợp ứng dụng")
+
+- **Github**: [Tải xuống SDK và mã mẫu](https://github.com/Lanxin-MRDVS/CameraSDK "Tải xuống SDK và mã mẫu")
+
+- **GitHub**: [Tải xuống SDK và mã mẫu](https://github.com/Lanxin-MRDVS/CameraSDK "Tải xuống SDK và mã mẫu")
+
+- **Email**: [dịch vụ@mrdvs.com](mailto:service@mrdvs.com "dịch vụ@mrdvs.com")
+
+- **Email**: [dịch vụ@mrdvs.com](mailto:service@mrdvs.com "dịch vụ@mrdvs.com")
+
+- ：400-025-6680
+
+- Theo dõi tài khoản công khai chính thức để nhận thông tin mới nhất:
+
+<Frame>
+  <img src="/images/legacy/b09a1037-0272-4bd7-9e1a-903fef1ae4ba/033d184a-016f-47a7-ae2d-66a7ec774555.avif" alt="Hình minh họa liên quan về cách tạo gói thử nghiệm mới trong Ros2" />
+</Frame>
+
+* * *
+
+Sử dụng tài liệu này để tìm hiểu thêm về các sản phẩm và giải pháp MRDVS.
+
+<br />

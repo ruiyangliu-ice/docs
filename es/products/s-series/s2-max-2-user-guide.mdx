@@ -1,0 +1,326 @@
+---
+title: "Guía del usuario del producto S2 Max 2.0"
+description: "1. Se actualizó la distribución de pines y se agregaron especificaciones eléctricas. 2. Se agregó el certificado de inspección al contenido del paquete."
+hidden: true
+---
+## Historial de revisiones
+
+| Fecha | Versión | Cambios |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Lanzamiento inicial |
+| 2024/05/10 | V1.0 | Parámetros de cámara actualizados |
+| 2024/06/17 | V1.1 | 1. Se actualizó la distribución de pines y se agregaron especificaciones eléctricas. 2. Se agregó el certificado de inspección al contenido del paquete. |
+| 2024/11/25 | V1.2 | Temperatura de almacenamiento de la cámara actualizada |
+
+## 1. Introducción
+
+### 1.1 Objeto y alcance
+
+Este documento describe las especificaciones de la cámara S2 Max 2.0 y detalles de diseño seleccionados para los desarrolladores que integran y utilizan el producto.
+
+### 1.2 Terminología
+
+| Cámara RGBD | Una cámara que genera imágenes RGB y de profundidad sincronizadas y alineadas espacialmente |
+| --- | --- |
+| Profundidad | Una transmisión de video similar a una transmisión en color o monocromática, donde cada píxel representa su distancia a la cámara |
+| campo de visión | Campo de visión: el rango angular de una escena capturada por una cámara, incluidos los campos de visión horizontal (HFOV), vertical (VFOV) y diagonal (DFOV) |
+| Cámara de infrarrojos | Una cámara de infrarrojos; en este producto, captura principalmente la banda del infrarrojo cercano |
+| Cámara RGB | Una cámara a color |
+| Cámara de profundidad | Una cámara cuyo módulo de profundidad normalmente incluye un proyector de puntos, una cámara de infrarrojos y un procesador de profundidad; su módulo de color suele ser una cámara RGB |
+| SoC | Sistema en un chip utilizado para procesamiento de imágenes, cálculo de profundidad y algoritmos de aplicación |
+
+### 1.3 Principio de funcionamiento
+
+Este producto mide distancia con tiempo de vuelo indirecto (iToF). La cámara emite un pulso láser y el receptor compara la forma de onda recibida con la forma de onda transmitida para calcular la diferencia de fase y el tiempo de vuelo del pulso Δt.
+
+Calcule la distancia del objetivo a la cámara con: distancia = velocidad de la luz \* Δt / 2
+
+<Frame>
+  <img src="/images/legacy/f04762f5-7261-4a17-9b69-e0b6abd03511/b327809f-9560-45a7-a951-860596bd7fc9.avif" alt="Principio de funcionamiento de iToF" />
+</Frame>
+
+* * *
+
+## 2. Descripción general del producto
+
+Esta cámara RGB-D industrial compacta integra una cámara SONY CW iToF y genera imágenes RGB de tres canales en color verdadero con datos de profundidad de 0,2 ma 5 m. Alinea espacial y temporalmente imágenes RGB y de profundidad, cambia entre cuatro zonas para evitar obstáculos y emite señales de parada de emergencia, desaceleración y estado seguro.
+
+### 2.1 Apariencia del producto
+
+<Frame>
+  <img src="/images/legacy/b8f9c970-bf1d-4fcc-843d-c1f3db33ce88/9840b66e-ff77-4f7f-aa25-23d7936996b8.avif" alt="Cámara S2 Max 2.0" />
+</Frame>
+
+### 2.2 Características
+
+- Plataforma informática TOPS 1.0 integrada que ejecuta algoritmos para evitar obstáculos sin una CPU externa
+
+- Factor de forma compacto para una integración oculta y flexible
+
+- Fuerte adaptabilidad ambiental: resiste 100 KLUX de luz solar y funciona desde la oscuridad hasta la luz brillante, en interiores y exteriores.
+
+- Amplio rango de medición de 0,2 ~ 5 m
+
+- Evitación de obstáculos, detección de contenedores y medición de volumen independientes
+
+- Salida RGB-D
+
+## 3. Especificaciones
+
+### 3.1 Especificaciones básicas
+
+| Modelo de producto | S2 Máx 2.0 |
+| --- | --- |
+| viruta | Chip Sony |
+| Formato de salida | Mapa de profundidad, RGB y amplitud |
+| Resolución TOF y velocidad de fotogramas | 320×240 (típico 12 fps) |
+| Campo de visión TOF | Típico: 81° horizontal, 61° vertical |
+| Resolución RGB y velocidad de fotogramas | 1920 × 1080 (típico 12 fps) |
+| Campo de visión RGB | Típico: 88° horizontal, 56° vertical |
+| Gama | 0,2 m ~ 5 m (@ 90 %), 0,2 ~ 2,5 m (@ 10 %) |
+| Precisión | ±3 mm+0,5 %*profundidad |
+| Consumo de energía | 6,4 W |
+| Láser | 940nm |
+| Dimensiones | 92 mm × 47 mm × 51 mm |
+| Peso | 449g |
+| Entrada de energía | 24 VCC / 2 A |
+| Interfaz de comunicación | Ethernet/IO (opcional) |
+| Clasificación de protección | IP67 |
+| Temperatura de funcionamiento | -20°C~60°C |
+| Temperatura de almacenamiento | -40°C~85°C |
+| Entorno de software | SDK de C/C++/ROS |
+| Soporte del sistema operativo | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Refrigeración | Pasivo, sin ventilador |
+| Resistencia a la luz solar | 100KLUX |
+
+**Nota: El modelo 3D define las dimensiones del producto.**
+
+* * *
+
+### 3.2 Especificaciones eléctricas
+
+Tabla 3-2. Especificaciones eléctricas del producto
+
+| Parámetro | Símbolo | Condición | Mínimo | Típico | Máximo | Unidad |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tensión de alimentación | VDD |  | 18 | 24 | 30 | V |
+| E/S digitales | EN |  | 3.3 |  | 24 | V |
+| Interfaz CAN |  |  | 0 |  | 5V | V |
+| Temperatura de funcionamiento | Ta |  | -20 |  | 60 | ℃ |
+| Humedad de funcionamiento |  |  | 20 |  | 80 | % |
+| Temperatura de almacenamiento |  |  | -40 |  | 85 | ℃ |
+| Humedad de almacenamiento |  |  | 20 |  | 80 | % |
+
+### 3.3 Interfaces del producto
+
+### 3.3.1 Interfaces del lado de la cámara
+
+La cámara tiene tres interfaces: un conector de alimentación DC24V, un conector Gigabit Ethernet y un conector de función IO/CAN.
+
+<Frame>
+  <img src="/images/legacy/e7e11524-8868-480f-ab4b-74ad6ee65346/360257fb-58ff-4da8-bb82-18e3ed2cb9d8.avif" alt="Interfaces del lado de la cámara" />
+</Frame>
+
+| Puerto | Alfiler | Señal | Descripción |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | GigabitEthernet |
+|  | 2 | MDI0_p |  |
+|  | 3 | MDI1_N |  |
+|  | 4 | MDI1_p |  |
+|  | 5 | MDI2_N |  |
+|  | 6 | MDI2_p |  |
+|  | 7 | MDI3_N |  |
+|  | 8 | MDI3_p |  |
+| Conector de función | 1 | CAN_H | CAN_H |
+|  | 2 | CAN_L | CAN_L |
+|  | 3 | Tierra | PUEDE TIERRA |
+|  | 4 | SALIDA_1 | Salida E/S 1 |
+|  | 5 | COM | Terminal E/S COM |
+|  | 6 | SALIDA_2 | Salida E/S 2 |
+|  | 7 | EN_1 | Entrada E/S 1 |
+|  | 8 | EN_2 | Entrada E/S 2 |
+| Conector de alimentación | 1 | 24+ | Conector hembra de alimentación CC, 5,5-2,1 mm |
+|  | G | 24- |  |
+
+### 3.3.2 Distribución de pines del cable
+
+<Frame>
+  <img src="/images/legacy/1fac8068-a62a-463f-8fea-b348b0817a51/b3a002b1-866c-4e53-a670-3e21563803ad.avif" alt="Distribución de cables" />
+</Frame>
+
+| Cableado | Color | Alfiler | Descripción |
+| --- | --- | --- | --- |
+| Cable de función | Naranja | CAN_H | CAN_H |
+|  | Amarillo | CAN_L | CAN_L |
+|  | Verde | Tierra | PUEDE TIERRA |
+|  | Marrón | EN_1 | Entrada E/S 1 |
+|  | Blanco | EN_2 | Entrada E/S 2 |
+|  | Púrpura | COM | Terminal E/S COM |
+|  | Azul | SALIDA_1 | Salida E/S 1 |
+|  | Gris | SALIDA_2 | Salida E/S 2 |
+| Cable de alimentación | Rojo | 24V+ | Terminal de potencia positiva |
+|  | Negro | Tierra | Terminal de potencia negativa |
+
+Nota: Algunos cables de función más antiguos utilizan colores diferentes. Siga las etiquetas del cable real.
+
+### 3.4 Componentes de la cámara
+
+<Frame>
+  <img src="/images/legacy/079e0e65-3c06-47a4-b5c4-115964d71d5a/478aa068-1207-408b-99ee-c79d1670eb4a.avif" alt="Componentes de la cámara" />
+</Frame>
+
+| No. | Componente |
+| --- | --- |
+| 1 | Indicador de potencia; parpadea lentamente después del encendido |
+| 2 | Fuente de luz de 940 nm |
+| 3 | Módulo de detección de interferencias multicámara |
+| 4 | Lente TOF |
+| 5 | Lente RGB |
+
+## 4. Guía de integración de cámaras
+
+### 4.1 Rango de detección de la cámara
+
+La Figura 4.1 muestra la región de detección del S2 Max 2.0. El ángulo de detección horizontal es de 81° y el ángulo vertical es de 61°. La distancia de detección depende de la potencia óptica. Una mayor potencia óptica y reflectividad del objetivo aumentan la zona ciega cercana y reducen la zona ciega lejana. La menor potencia óptica y la reflectividad del objetivo reducen la zona ciega cercana y aumentan la zona ciega lejana. Para objetivos con una reflectividad del 10% al 90%, el alcance del S2 Max 2.0 es de 0,2 a 5 m. Más allá de los 5 m, la baja intensidad de la señal reflejada y la interferencia de la luz ambiental provocan errores de alcance sustanciales.
+
+<Frame>
+  <img src="/images/legacy/36ec75a7-5443-41d8-9059-840623414d35/98bbffe4-ec39-4b8b-b418-64060da315ea.avif" alt="Rango de detección de la cámara" />
+</Frame>
+
+### 4.2 Dimensiones de la cámara
+
+<Frame>
+  <img src="/images/legacy/9a8db5e7-9d0f-44d4-bd26-c48fa963e143/4413a8bb-bb59-4f7c-a483-1c47015d7ed9.avif" alt="Dimensiones de la cámara" />
+</Frame>
+
+### 4.3 Sistemas de coordenadas ópticas y de origen
+
+**Sistema de coordenadas ópticas:**
+
+- El sistema de coordenadas ópticas incluye el sistema de coordenadas de la cámara (CCS) y el sistema de coordenadas mundial (WCS).
+
+- El sistema de coordenadas de la cámara es el sistema de coordenadas de imagen de profundidad 2D. Su origen es el centro óptico.
+
+- El sistema de coordenadas mundial es el sistema de coordenadas de nube de puntos 3D.
+
+- Utilice los elementos intrínsecos de la cámara para transformar las coordenadas de la imagen de profundidad en coordenadas de nube de puntos 3D. Vea los ejemplos del SDK.
+
+<Frame>
+  <img src="/images/legacy/80b1c745-7eb5-47ee-92c7-464aea3d8673/2c1d56ea-40ec-4833-9328-81c1a40bf269.avif" alt="Sistema de coordenadas ópticas" />
+</Frame>
+
+**El origen de la cámara se define de la siguiente manera:**
+
+1. El origen de la coordenada X se alinea con el eje X del producto.
+
+2. El origen de la coordenada Y se alinea con el eje Y del producto.
+
+3. El origen de la coordenada Z se encuentra en la superficie frontal de la cámara.
+
+<Frame>
+  <img src="/images/legacy/392ee590-9d85-474b-ac4c-74e431d7c6f4/c0551ed1-0be6-439d-9b08-21956fc127dd.avif" alt="Origen de la cámara" />
+</Frame>
+
+### 4.4 SDK de software
+
+Consulte la guía del usuario del software host MRDVS y la guía de desarrollo del SDK de MRDVS.
+
+## 5. Medio ambiente y confiabilidad
+
+| Artículo |  | Especificación |
+| --- | --- | --- |
+| Entorno operativo | Temperatura | -20 ℃ ~ 60 ℃ |
+|  | Humedad | 0%–95% HR, sin condensación |
+|  | Iluminación | 0KLUX~100KLUX |
+| Entorno de almacenamiento | Temperatura | -40 ℃ ~ 85 ℃ |
+|  | Humedad | 10%–95% HR, sin condensación |
+| Aumento de temperatura durante el funcionamiento normal |  | Aumento de temperatura del recinto &lt;25℃ |
+| Clasificación ESD |  | Descarga de contacto ±4KV, descarga de aire ±8KV |
+| Clasificación RE |  | Cumple con GB 9254 CLASE A |
+| Vida útil |  | Más de 3 años |
+| Certificación ambiental |  | RoHS |
+
+## 6. Inicio rápido
+
+### 6.1 Prueba de conexión
+
+<Frame>
+  <img src="/images/legacy/9fcc4978-9fad-470b-9174-652d0eeafdc3/473a4d79-b79c-4fd3-b837-e9ad281365c8.avif" alt="Prueba de conexión" />
+</Frame>
+
+1. Conecte la cámara a una fuente de alimentación de CC de 24 V/2 A. Un indicador de encendido azul que parpadea lentamente confirma el encendido normal.
+
+2. Conecte la cámara a la computadora con un cable Ethernet de categoría 6.
+
+3. La dirección IP de la cámara predeterminada de fábrica es 192.168.100.82.
+
+4. Configure la IP de la computadora en la subred de la cámara y desactive el firewall de la computadora.
+
+5. Ejecute el software host para ver las imágenes de la cámara.
+
+6. Comuníquese con el soporte técnico o de ventas de MRDVS para obtener el software host.
+
+### 6.2 Cableado de E/S
+
+| Interfaz | Tipo | Notas |
+| --- | --- | --- |
+| EN1 | Entrada | Entrada discreta activa-alta; admite 24 V/entrada abierta |
+| IN2 | Entrada | Entrada discreta activa-alta; admite 24 V/entrada abierta |
+| SALIDA1 | Salida | Salida discreta de tierra/abierto; admite dominadas de 24 V |
+| OUT2 | Salida | Salida discreta de tierra/abierto; admite dominadas de 24 V |
+| COM | Tierra | Terreno común para salidas discretas, compartido por IN y OUT |
+
+## 7. Precauciones
+
+### 7.1 Clase de seguridad láser
+
+| <img src="/images/legacy/be205c16-cf8f-4c39-9d60-55ecaeb62dd6/3cf7f1de-6b6b-41fe-8b05-58b060c26fe3.avif" alt="Seguridad láser" /> | Seguridad láser |
+| --- | --- |
+| Este producto emite un láser invisible durante su funcionamiento. Evite exponer los ojos al haz. El láser cumple con la Clase 1 y no daña a las personas durante el uso normal según lo definido por EN60825. |  |
+
+### 7.2 Funcionamiento correcto
+
+La cámara S2 Max 2.0 utiliza un suministro de 24 V CC. Conecte el cable de alimentación antes de aplicar energía y no invierta los terminales positivo y negativo. La polaridad inversa puede dañar el producto.
+
+### 7.3 Temperatura de funcionamiento
+
+Mantenga la temperatura ambiente dentro del rango de las especificaciones del producto (Tabla 2-1). Monte el producto en un componente térmicamente conductor, como un soporte metálico, para mejorar la disipación del calor y lograr un rendimiento óptimo.
+
+## 8. Solución de problemas
+
+| No. | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde cuando se abre | Verifique que el firewall esté deshabilitado |
+| 2 | El software host detecta múltiples direcciones IP | Otro dispositivo en la LAN usa la misma IP; seleccione la dirección IP requerida |
+| 3 | Los datos de la cámara son inestables después de abrirse | Utilice un cable Gigabit Ethernet; los datos pueden ser inicialmente inestables a través de Fast Ethernet |
+| 4 | Ubicación de instalación del software | Una instalación predeterminada en la unidad C puede verse afectada por la configuración de permisos |
+
+## Apéndice: Contenido del paquete
+
+<Frame>
+  <img src="/images/legacy/3f3660c4-7da6-45f1-9711-fe4305effc6e/ab208cbd-23eb-4476-a6b2-bde7700ad842.avif" alt="Cámara S2 Max 2.0" />
+</Frame>
+
+Cámara S2 Max 2.0
+
+<Frame>
+  <img src="/images/legacy/b7383fd0-ef1a-4d33-9163-2d86241b4bd1/b0dc1e5e-e73b-49f6-87eb-30d9d71e82ad.avif" alt="Cable de función de 8 pines" />
+</Frame>
+
+Cable de función de 8 pines
+
+<Frame>
+  <img src="/images/legacy/3ff48931-e15d-4ef6-91e5-7cdedcf68c7e/cef46b22-6500-46d1-aab0-c174810b0d8c.avif" alt="Dos kits impermeables de cuatro piezas" />
+</Frame>
+
+Dos kits impermeables de cuatro piezas
+
+<Frame>
+  <img src="/images/legacy/599a77ee-8d91-46b2-b779-b3f6ffbbebb7/13a6d34d-c493-442f-9351-f36d0b237350.avif" alt="Certificado de inspección" />
+</Frame>
+
+Un certificado de inspección
+
+* * *
+
+* * *

@@ -1,0 +1,326 @@
+---
+title: "Guida per l'utente del prodotto S2 Max 2.0"
+description: "1. Aggiornato il pinout e aggiunte le specifiche elettriche. 2. Aggiunto il certificato di ispezione al contenuto della confezione."
+hidden: true
+---
+## Cronologia delle revisioni
+
+| Data | Versione | Modifiche |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Versione iniziale |
+| 2024/05/10 | V1.0 | Parametri della fotocamera aggiornati |
+| 2024/06/17 | V1.1 | 1. Aggiornato il pinout e aggiunte le specifiche elettriche. 2. Aggiunto il certificato di ispezione al contenuto della confezione. |
+| 25/11/2024 | V1.2 | Temperatura di conservazione della fotocamera aggiornata |
+
+## 1. Introduzione
+
+### 1.1 Scopo e campo di applicazione
+
+Questo documento descrive le specifiche della fotocamera S2 Max 2.0 e i dettagli di progettazione selezionati per gli sviluppatori che integrano e utilizzano il prodotto.
+
+### 1.2 Terminologia
+
+| Telecamera RGBD | Una fotocamera che produce immagini RGB e di profondità sincronizzate e allineate spazialmente |
+| --- | --- |
+| Profondità | Un flusso video simile a un flusso a colori o monocromatico, in cui ogni pixel rappresenta la sua distanza dalla telecamera |
+| FOV | Campo visivo: la gamma angolare di una scena catturata da una telecamera, compresi i campi visivi orizzontale (HFOV), verticale (VFOV) e diagonale (DFOV) |
+| Telecamera IR | Una telecamera a infrarossi; in questo prodotto cattura principalmente la banda del vicino infrarosso |
+| Fotocamera RGB | Una fotocamera a colori |
+| Fotocamera di profondità | Una fotocamera il cui modulo di profondità include in genere un proiettore di punti, una fotocamera IR e un processore di profondità; il suo modulo colore è tipicamente una telecamera RGB |
+| SoC | Sistema su chip utilizzato per l'elaborazione delle immagini, il calcolo della profondità e gli algoritmi applicativi |
+
+### 1.3 Principio di funzionamento
+
+Questo prodotto misura la distanza con il tempo di volo indiretto (iToF). La fotocamera emette un impulso laser e il ricevitore confronta la forma d'onda ricevuta con quella trasmessa per calcolare la differenza di fase e il tempo di volo dell'impulso Δt.
+
+Calcola la distanza del bersaglio dalla telecamera con: distanza = velocità della luce \* Δt / 2
+
+<Frame>
+  <img src="/images/legacy/f04762f5-7261-4a17-9b69-e0b6abd03511/b327809f-9560-45a7-a951-860596bd7fc9.avif" alt="Principio di funzionamento dell'iToF" />
+</Frame>
+
+* * *
+
+## 2. Panoramica del prodotto
+
+Questa telecamera RGB-D industriale compatta integra una telecamera SONY CW iToF e produce immagini RGB a colori reali a tre canali con dati di profondità da 0,2 m a 5 m. Allinea spazialmente e temporalmente le immagini RGB e di profondità, commuta tra quattro zone di evitamento degli ostacoli ed emette segnali di arresto di emergenza, rallentamento e stato sicuro.
+
+### 2.1 Aspetto del prodotto
+
+<Frame>
+  <img src="/images/legacy/b8f9c970-bf1d-4fcc-843d-c1f3db33ce88/9840b66e-ff77-4f7f-aa25-23d7936996b8.avif" alt="Fotocamera S2 Max 2.0" />
+</Frame>
+
+### 2.2 Caratteristiche
+
+- Piattaforma di calcolo TOPS 1.0 integrata che esegue algoritmi di evitamento degli ostacoli senza CPU esterna
+
+- Fattore di forma compatto per un'integrazione flessibile e nascosta
+
+- Forte adattabilità ambientale: resiste alla luce solare di 100KLUX e funziona dall'oscurità alla luce intensa, all'interno e all'esterno
+
+- Ampio intervallo di misurazione da 0,2 a 5 m
+
+- Evitamento degli ostacoli autonomo, rilevamento del contenitore e misurazione del volume
+
+- Uscita RGB-D
+
+## 3. Specifiche
+
+### 3.1 Specifiche di base
+
+| Modello del prodotto | S2Max2.0 |
+| --- | --- |
+| Chip | Chip Sony |
+| Formato di uscita | Mappa di profondità, RGB e ampiezza |
+| Risoluzione TOF e frame rate | 320×240 (tipico 12 fps) |
+| Campo visivo TOF | Tipico: 81° orizzontale, 61° verticale |
+| Risoluzione RGB e frame rate | 1920×1080 (tipico 12 fps) |
+| Campo visivo RGB | Tipico: 88° orizzontale, 56° verticale |
+| Gamma | 0,2 m~5 m (@90%), 0,2~2,5 m (@10%) |
+| Precisione | ±3mm+0,5%*profondità |
+| Consumo energetico | 6,4 W |
+| Laser | 940nm |
+| Dimensioni | 92 mm×47 mm×51 mm |
+| Peso | 449 g |
+| Potenza assorbita | 24 V CC / 2 A |
+| Interfaccia di comunicazione | Ethernet/IO (opzionale) |
+| Grado di protezione | IP67|
+| Temperatura operativa | -20°C~60°C|
+| Temperatura di conservazione | -40°C~85°C|
+| Ambiente software | SDK C/C++/ROS |
+| Supporto del sistema operativo | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Raffreddamento | Passivo, nessun fan |
+| Resistenza alla luce solare | 100KLUX |
+
+**Nota: il modello 3D definisce le dimensioni del prodotto.**
+
+* * *
+
+### 3.2 Specifiche elettriche
+
+Tabella 3-2. Specifiche elettriche del prodotto
+
+| Parametro | Simbolo | Condizione | Minimo | Tipico | Massimo | Unità |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tensione di alimentazione | VDD |  | 18| 24| 30| V|
+| I/O digitali | NEL |  | 3.3 |  | 24| V|
+| Interfaccia CAN |  |  | 0|  | 5V| V|
+| Temperatura operativa | Ta |  | -20 |  | 60| ℃ |
+| Umidità operativa |  |  | 20|  | 80| % |
+| Temperatura di conservazione |  |  | -40 |  | 85| ℃ |
+| Umidità di stoccaggio |  |  | 20|  | 80| % |
+
+### 3.3 Interfacce del prodotto
+
+### 3.3.1 Interfacce lato fotocamera
+
+La fotocamera dispone di tre interfacce: un connettore di alimentazione DC24V, un connettore Gigabit Ethernet e un connettore per la funzione IO/CAN.
+
+<Frame>
+  <img src="/images/legacy/e7e11524-8868-480f-ab4b-74ad6ee65346/360257fb-58ff-4da8-bb82-18e3ed2cb9d8.avif" alt="Interfacce lato fotocamera" />
+</Frame>
+
+| Porto | Perno | Segnale | Descrizione |
+| --- | --- | --- | --- |
+| Ethernet | 1| MDI0_N | GigabitEthernet |
+|  | 2| MDI0_p |  |
+|  | 3| MDI1_N |  |
+|  | 4| MDI1_p |  |
+|  | 5| MDI2_N |  |
+|  | 6| MDI2_p |  |
+|  | 7| MDI3_N |  |
+|  | 8| MDI3_p |  |
+| Connettore funzione | 1| CAN_H | CAN_H |
+|  | 2| CAN_L | CAN_L |
+|  | 3| TERRA | PUÒ TERRA |
+|  | 4| OUT_1 | Uscita IO 1 |
+|  | 5| COM | Terminale IO COM |
+|  | 6| USCITA_2 | Uscita IO 2 |
+|  | 7| IN_1 | Ingresso IO 1 |
+|  | 8| IN_2 | Ingresso IO 2 |
+| Connettore di alimentazione | 1| 24+ | Connettore femmina di alimentazione CC, 5,5-2,1 mm |
+|  | G | 24- |  |
+
+### 3.3.2 Piedinatura del cavo
+
+<Frame>
+  <img src="/images/legacy/1fac8068-a62a-463f-8fea-b348b0817a51/b3a002b1-866c-4e53-a670-3e21563803ad.avif" alt="Piedinatura del cavo" />
+</Frame>
+
+| Cavo | Colore | Perno | Descrizione |
+| --- | --- | --- | --- |
+| Cavo funzionale | Arancione | CAN_H | CAN_H |
+|  | Giallo | CAN_L | CAN_L |
+|  | Verde | TERRA | PUÒ TERRA |
+|  | Marrone | IN_1 | Ingresso IO 1 |
+|  | Bianco | IN_2 | Ingresso IO 2 |
+|  | Viola | COM | Terminale IO COM |
+|  | Blu | OUT_1 | Uscita IO 1 |
+|  | Grigio | USCITA_2 | Uscita IO 2 |
+| Cavo di alimentazione | Rosso | 24V+ | Terminale di alimentazione positivo |
+|  | Nero | TERRA | Terminale di alimentazione negativo |
+
+Nota: alcuni cavi funzione meno recenti utilizzano colori diversi. Seguire le etichette sul cavo stesso.
+
+### 3.4 Componenti della fotocamera
+
+<Frame>
+  <img src="/images/legacy/079e0e65-3c06-47a4-b5c4-115964d71d5a/478aa068-1207-408b-99ee-c79d1670eb4a.avif" alt="Componenti della fotocamera" />
+</Frame>
+
+| No. | Componente |
+| --- | --- |
+| 1| Indicatore di alimentazione; lampeggia lentamente dopo l'accensione |
+| 2| Sorgente luminosa da 940 nm |
+| 3| Modulo di rilevamento interferenze multi-camera |
+| 4| Obiettivo TOF |
+| 5| Lente RGB |
+
+## 4. Guida all'integrazione della fotocamera
+
+### 4.1 Campo di rilevamento della telecamera
+
+La Figura 4.1 mostra la regione di rilevamento di S2 Max 2.0. L'angolo di rilevamento orizzontale è di 81° e l'angolo verticale è di 61°. La distanza di rilevamento dipende dalla potenza ottica. Una maggiore potenza ottica e una maggiore riflettività del target aumentano la zona cieca vicina e riducono la zona cieca lontana. Una potenza ottica e una riflettività del target inferiori riducono la zona cieca vicina e aumentano la zona cieca lontana. Per target con riflettività del 10%~90%, la portata di S2 Max 2.0 è 0,2~5 m. Oltre i 5 m, la bassa intensità del segnale riflesso e le interferenze della luce ambientale causano sostanziali errori di portata.
+
+<Frame>
+  <img src="/images/legacy/36ec75a7-5443-41d8-9059-840623414d35/98bbffe4-ec39-4b8b-b418-64060da315ea.avif" alt="Campo di rilevamento della telecamera" />
+</Frame>
+
+### 4.2 Dimensioni della fotocamera
+
+<Frame>
+  <img src="/images/legacy/9a8db5e7-9d0f-44d4-bd26-c48fa963e143/4413a8bb-bb59-4f7c-a483-1c47015d7ed9.avif" alt="Dimensioni della fotocamera" />
+</Frame>
+
+### 4.3 Sistemi di coordinate ottiche e di origine
+
+**Sistema di coordinate ottiche:**
+
+- Il sistema di coordinate ottiche include il sistema di coordinate della fotocamera (CCS) e il sistema di coordinate mondiali (WCS).
+
+- Il sistema di coordinate della fotocamera è il sistema di coordinate dell'immagine di profondità 2D. La sua origine è il centro ottico.
+
+- Il sistema di coordinate globali è il sistema di coordinate della nuvola di punti 3D.
+
+- Utilizza le caratteristiche intrinseche della fotocamera per trasformare le coordinate dell'immagine di profondità in coordinate della nuvola di punti 3D. Vedi gli esempi dell'SDK.
+
+<Frame>
+  <img src="/images/legacy/80b1c745-7eb5-47ee-92c7-464aea3d8673/2c1d56ea-40ec-4833-9328-81c1a40bf269.avif" alt="Sistema di coordinate ottiche" />
+</Frame>
+
+**L'origine della telecamera è definita come segue:**
+
+1. L'origine della coordinata X si allinea con l'asse X del prodotto.
+
+2. L'origine della coordinata Y si allinea con l'asse Y del prodotto.
+
+3. L'origine della coordinata Z si trova sulla superficie anteriore della fotocamera.
+
+<Frame>
+  <img src="/images/legacy/392ee590-9d85-474b-ac4c-74e431d7c6f4/c0551ed1-0be6-439d-9b08-21956fc127dd.avif" alt="Origine della fotocamera" />
+</Frame>
+
+### 4.4 SDK software
+
+Consulta la guida per l'utente del software host MRDVS e la guida allo sviluppo dell'SDK MRDVS.
+
+## 5. Ambiente e affidabilità
+
+| Articolo |  | Specificazione |
+| --- | --- | --- |
+| Ambiente operativo | Temperatura | -20℃~60℃ |
+|  | Umidità | 0%–95% UR, senza condensa |
+|  | Illuminazione | 0KLUX~100KLUX |
+| Ambiente di archiviazione | Temperatura | -40℃~85℃ |
+|  | Umidità | 10%–95% UR, senza condensa |
+| Aumento della temperatura durante il funzionamento normale |  | Aumento della temperatura dell'involucro &lt;25℃ |
+| Valutazione ESD |  | ±4KV scarica a contatto, ±8KV scarica in aria |
+| Voto RE |  | Conforme alla norma GB 9254 CLASSE A |
+| Durata utile |  | Più di 3 anni |
+| Certificazione ambientale |  | RoHS |
+
+## 6. Avvio rapido
+
+### 6.1 Prova di connessione
+
+<Frame>
+  <img src="/images/legacy/9fcc4978-9fad-470b-9174-652d0eeafdc3/473a4d79-b79c-4fd3-b837-e9ad281365c8.avif" alt="Prova di connessione" />
+</Frame>
+
+1. Collegare la telecamera a un'alimentazione CC da 24 V/2 A. Un indicatore di alimentazione blu che lampeggia lentamente conferma la normale accensione.
+
+2. Collegare la fotocamera al computer con un cavo Ethernet di categoria 6.
+
+3. L'indirizzo IP della telecamera predefinito in fabbrica è 192.168.100.82.
+
+4. Impostare l'IP del computer sulla sottorete della telecamera e disattivare il firewall del computer.
+
+5. Eseguire il software host per visualizzare le immagini della telecamera.
+
+6. Contattare le vendite o il supporto tecnico di MRDVS per ottenere il software host.
+
+### 6.2 Cablaggio IO
+
+| Interfaccia | Digitare | Note |
+| --- | --- | --- |
+| IN1 | Ingresso | Ingresso discreto attivo-alto; supporta 24 V/ingresso aperto |
+| IN2 | Ingresso | Ingresso discreto attivo-alto; supporta 24 V/ingresso aperto |
+| USCITA1 | Uscita | Uscita discreta terra/aperta; supporta pull-up 24V |
+| USCITA2 | Uscita | Uscita discreta terra/aperta; supporta pull-up 24V |
+| COM | TERRA | Terra comune per uscite discrete, condivisa da IN e OUT |
+
+## 7. Precauzioni
+
+### 7.1 Classe di sicurezza laser
+
+| <img src="/images/legacy/be205c16-cf8f-4c39-9d60-55ecaeb62dd6/3cf7f1de-6b6b-41fe-8b05-58b060c26fe3.avif" alt="Sicurezza laser" /> | Sicurezza laser |
+| --- | --- |
+| Questo prodotto emette un laser invisibile durante il funzionamento. Evitare di esporre gli occhi al raggio. Il laser è conforme alla Classe 1 e non danneggia le persone durante il normale utilizzo come definito dalla EN60825. |  |
+
+### 7.2 Funzionamento corretto
+
+La fotocamera S2 Max 2.0 utilizza un'alimentazione a 24 V CC. Collegare il cavo di alimentazione prima di applicare l'alimentazione e non invertire i terminali positivo e negativo. La polarità inversa può danneggiare il prodotto.
+
+### 7.3 Temperatura di esercizio
+
+Mantenere la temperatura ambiente entro l'intervallo indicato nelle specifiche del prodotto (Tabella 2-1). Montare il prodotto su un componente termicamente conduttivo come una staffa metallica per migliorare la dissipazione del calore e ottenere prestazioni ottimali.
+
+## 8. Risoluzione dei problemi
+
+| No. | Problema | Risoluzione |
+| --- | --- | --- |
+| 1| La fotocamera non risponde quando viene aperta | Verificare che il firewall sia disabilitato |
+| 2| Il software host rileva più indirizzi IP | Un altro dispositivo sulla LAN utilizza lo stesso IP; selezionare l'indirizzo IP richiesto |
+| 3| I dati della fotocamera sono instabili dopo l'apertura | Utilizzare un cavo Gigabit Ethernet; i dati possono inizialmente essere instabili su Fast Ethernet |
+| 4| Percorso di installazione del software | Un'installazione predefinita sull'unità C potrebbe essere influenzata dalle impostazioni dei permessi |
+
+## Appendice: contenuto della confezione
+
+<Frame>
+  <img src="/images/legacy/3f3660c4-7da6-45f1-9711-fe4305effc6e/ab208cbd-23eb-4476-a6b2-bde7700ad842.avif" alt="Fotocamera S2 Max 2.0" />
+</Frame>
+
+Fotocamera S2 Max 2.0
+
+<Frame>
+  <img src="/images/legacy/b7383fd0-ef1a-4d33-9163-2d86241b4bd1/b0dc1e5e-e73b-49f6-87eb-30d9d71e82ad.avif" alt="Cavo funzionale a 8 pin" />
+</Frame>
+
+Cavo funzionale a 8 pin
+
+<Frame>
+  <img src="/images/legacy/3ff48931-e15d-4ef6-91e5-7cdedcf68c7e/cef46b22-6500-46d1-aab0-c174810b0d8c.avif" alt="Due kit impermeabili in quattro pezzi" />
+</Frame>
+
+Due kit impermeabili in quattro pezzi
+
+<Frame>
+  <img src="/images/legacy/599a77ee-8d91-46b2-b779-b3f6ffbbebb7/13a6d34d-c493-442f-9351-f36d0b237350.avif" alt="Certificato di ispezione" />
+</Frame>
+
+Un certificato di ispezione
+
+* * *
+
+* * *

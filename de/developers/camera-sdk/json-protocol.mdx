@@ -1,0 +1,35 @@
+---
+title: "JSON-Kommunikationsprotokoll"
+description: "TCP-Socket-JSON-Nachrichtenformat und Feldreferenz für die Kommunikation zwischen der Kamera und einem Roboter oder einer SPS."
+hidden: true
+---
+## Schnittstelle
+
+- TCP-Socket-Server. Die Kamera fungiert als Server. Der Standardport ist `5501`.
+
+- Nachrichteninhalt: Textformat mit ASCII-Unterstützung. JSON wird empfohlen.
+
+## Anfrage und Antwort
+
+**1. Roboter (SPS) —> Bildverarbeitungssystem**
+
+```json
+{"action": "3D"}
+```
+
+Diese Anfrage löst eine 3D-Vision-Aufgabe aus.
+
+**2. Vision-System —> Roboter (SPS)**
+
+Die Kamera gibt das Erkennungsergebnis mit diesen Feldern zurück:
+
+| Feld | Erforderlich | Beschreibung |
+| --- | --- | --- |
+| Ergebnis | Ja | Status der Ganzzahlerkennung. `0` zeigt an, dass die Lokalisierung fehlgeschlagen ist und kein Ergebnis verfügbar ist. Jeder andere Wert zeigt einen Erfolg an und gibt die Anzahl der zurückgegebenen Ergebnisse an. |
+| pos | Ja | X-, Y-, Z-, RX-, RY- und RZ-Positionswerte für das erkannte Objekt im Roboterkoordinatensystem. Einheiten sind Millimeter und Grad. `-180° ≤ RZ ≤ 180°`. Alle Werte werden auf `0` gesetzt, wenn die Erkennung fehlschlägt. |
+
+**Beispiele**
+
+| Erkennung erfolgreich | `{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}` |
+| --- | --- |
+| Erkennung fehlgeschlagen | `{"result":0,"pos":[0,0,0,0,0,0]}` |

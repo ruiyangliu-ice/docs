@@ -1,0 +1,584 @@
+---
+title: "Distribuire la misurazione del volume"
+description: "Utilizza le telecamere MRDVS serie M per la misurazione del volume statico o dinamico senza un computer industriale esterno."
+hidden: true
+---
+## 1. Introduzione
+
+L'algoritmo di rilevamento del volume è sviluppato da Meyer Micro Vision (MRDVS) ed è utilizzato specificamente negli scenari di misurazione del volume. Viene utilizzato nelle telecamere della serie M sviluppate internamente nella logistica, nelle consegne espresse, nei depositi di carbone, nei magazzini e in altri scenari. L'algoritmo di rilevamento del volume viene eseguito all'interno della telecamera, eliminando la necessità di un computer industriale esterno. L'algoritmo supporta il rilevamento statico e dinamico.
+
+Il software richiede solo che l'utente calibra i parametri esterni della telecamera e disegni il campo di rilevamento, quindi può rilevare e misurare oggetti singoli/multipli. La calibrazione dei parametri esterni può ottenere automaticamente i risultati della calibrazione e supportare il rilevamento della giunzione multi-camera.
+
+Questo articolo introduce principalmente l'implementazione e l'uso della funzione di rilevamento del volume con microvisione Meyer.
+
+## 2. Scenari applicativi di rilevamento del volume
+
+### 2.1 Settore logistico
+
+1. Ottenendo informazioni come il volume e il peso delle merci, possiamo perfezionare le operazioni, che aiuteranno a migliorare le velocità di carico dei veicoli, a ridurre i costi dei veicoli, i costi di trasporto e i costi della manodopera e a ottenere una riduzione dei costi e un miglioramento dell'efficienza durante l'intero processo.
+
+2. Può rilevare rapidamente il volume e il peso delle merci/scatole e calcolare il trasporto con un clic. Insieme alla bilancia da pavimento, può anche misurare efficacemente camion e camion portacontainer per garantire che l'intero veicolo non sia sovrappeso.
+
+### 2.2 Industria espressa
+
+Quando si invia e si riceve una consegna espressa, con l'aiuto di apparecchiature intelligenti di misurazione del volume, è possibile ottenere rapidamente informazioni come il volume e il peso della merce. I dati sono collegati al sistema interno per una facile ricerca e revisione, il che non solo evita il problema della perdita di dati, ma riduce anche efficacemente gli investimenti manuali e migliora l'efficienza del lavoro.
+
+### 2.3 Industria mineraria del carbone
+
+I metodi tradizionali per misurare il volume di grandi cumuli di minerale di carbone utilizzano solitamente stazioni totali e metodi di misurazione a punto singolo RTK e richiedono l'estrazione manuale accurata dei punti caratteristici. Tuttavia, poiché i grandi cumuli di minerale di carbone sono solitamente scomodi da scalare, è estremamente difficile estrarre punti caratteristici precisi. Allo stesso tempo, il metodo di misurazione a punto singolo ha una bassa densità di dati e non può ottenere con precisione il volume dei cumuli di minerale di carbone, con conseguente efficienza operativa estremamente bassa.
+
+### 2.4 Industria dei magazzini
+
+Nella logistica, nei magazzini e anche nelle industrie industriali in generale, gli AGV trasportano merci e il volume e il peso delle merci devono essere controllati quando entrano ed escono dal magazzino.
+
+### 3. Risolvi il problema
+
+Nei settori industriali come la logistica e il magazzinaggio, ottenere il volume e la quantità degli articoli e padroneggiare l'entrata e l'uscita degli articoli sono di grande importanza per la gestione delle scorte di produzione. Tuttavia, le soluzioni tradizionali devono sempre affrontare problemi quali la mancanza di mezzi tecnici, grandi errori di misurazione, scarsa efficienza della gestione manuale e difficoltà di supervisione.
+
+Il rilevamento del volume della telecamera Meyer Micro Vision ToF presenta più vantaggi rispetto alle telecamere radar, a luce strutturata e 2D. Le telecamere Meyer Micro Vision sono semplici da implementare e richiedono solo staffe per il firmware della telecamera, cavi di alimentazione e cavi di rete. L'algoritmo viene eseguito all'interno della telecamera senza la necessità di configurazioni ridondanti di computer industriali. È più comodo da usare e ha un costo inferiore rispetto al radar.
+
+## 4. Guida alla distribuzione dell'hardware della fotocamera
+
+### 4.1 Utilizzo dei tipi di fotocamera
+
+Tipo di fotocamera: fotocamera serie M
+
+Manuale utente della fotocamera: [Fotocamera ToF serie M](/it/products/m-series/m4-overview "Fotocamera ToF serie M")
+
+<Frame>
+  <img src="/images/legacy/5dd130cc-7499-4f38-bf97-dbd56dbb0e11/a28f58f9-2432-4605-aee2-c8811c0fe221.avif" alt="Utilizza le icone relative al tipo di fotocamera" />
+</Frame>
+
+### 4.2 Metodo di installazione della telecamera
+
+La telecamera di rilevamento del volume M4 adotta un metodo di installazione fissa. La fotocamera scatta foto verso il basso e cerca di garantire che lo specchio della fotocamera sia parallelo al terreno. La figura seguente è un diagramma schematico dell'installazione.
+
+<Frame>
+  <img src="/images/legacy/03510465-d902-4781-bf31-9e5c152f5bd2/18837b64-6a77-4a60-9ce3-b8fa0647c995.avif" alt="Illustrazioni relative ai metodi di installazione della telecamera" />
+</Frame>
+
+Figura 4.1 Schema di installazione
+
+### 4.3 Collegamento della telecamera
+
+La telecamera è alimentata a 24 V e collegata tramite un cavo di rete di categoria 6e/categoria 7. Dopo aver installato e distribuito la telecamera, aprire il software del computer host di rilevamento del volume tramite un laptop per eseguire la calibrazione dei parametri esterni e l'impostazione del campo di rilevamento della telecamera. L'algoritmo verrà eseguito all'interno della fotocamera in tempo reale. Quando vengono installate più telecamere, è necessario collegarle tramite uno switch Gigabit.
+
+<Frame>
+  <img src="/images/legacy/f9ab7dc5-20d0-4693-a41f-1b6a56c4e50f/317bd48f-8fa4-4e0a-989d-6366de6f91e0.avif" alt="Icone relative alla connessione della fotocamera" />
+</Frame>
+
+## 5. Guida all'installazione del software della fotocamera
+
+### 5.1 Processo di installazione del software
+
+Quando si utilizza il software per la prima volta, è possibile seguire la seguente procedura per completare l'operazione.
+
+<Frame>
+  <img src="/images/legacy/e1da8232-f39e-4e11-a71f-86726a19262d/0cda21b0-286e-4778-a352-23fc6dd977a5.avif" alt="Illustrazioni relative al processo di installazione del software" />
+</Frame>
+
+### 5.2 Requisiti dell'ambiente operativo del computer host per il rilevamento del volume
+
+Si consiglia di eseguire l'apparecchiatura del computer host di rilevamento del volume per soddisfare i requisiti.
+
+| Sistema operativo | Windows10 e versioni successive |
+| --- | --- |
+| CPU | Intel Core i5 consigliato di settima generazione e superiore |
+| Memoria | 8G e versioni successive |
+| GPU | Display grafico/core Intel(R) UHD o superiore |
+
+### 5.3 Installare il software del computer host della fotocamera
+
+1. Scarica il software host della telecamera dalla knowledge base MRDVS: [Scaricamento del software](/it/developers/software/lxcameraviewer "Scaricamento del software")
+
+2. Fare doppio clic per installare il software del computer host Lanxin-MRDVS. Il computer host deve essere installato all'esterno dell'unità c.
+
+<Frame>
+  <img src="/images/legacy/8a1a3bb1-c6dd-434d-af79-709f37313844/cabcc88e-3d26-401e-aaeb-a01cd4a2b1d3.avif" alt="Illustrazioni relative all'installazione del software host della telecamera" />
+</Frame>
+
+3. Dopo aver selezionato la lingua da utilizzare, fare clic su [**OK**], selezionare una directory di installazione diversa dall'unità C e fare clic su [**Avanti**].
+
+<Frame>
+  <img src="/images/legacy/b4e46f8b-825a-4d64-a3ee-1d10704f7fba/348dee6d-9f34-4f8d-88fb-6c8b00c6b902.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 2" />
+</Frame>
+
+4. Selezionare [**Crea collegamento sul desktop**] e fare clic su [**Avanti**].
+
+<Frame>
+  <img src="/images/legacy/aa1145f9-d860-4751-aec1-c5e8384963ae/ce1b8ead-e096-4834-ba4c-261facc55082.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 3" />
+</Frame>
+
+5. Fare clic sul pulsante [**Installa**] per avviare l'installazione del software.
+
+<Frame>
+  <img src="/images/legacy/0694d88e-a2ac-497d-b731-0a0e71cd331a/c7a2bf1d-a332-4fab-919a-4d7cbb96b716.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 4" />
+</Frame>
+
+6. Una volta completata l'installazione, è possibile eseguire il software del computer host della fotocamera.
+
+<Frame>
+  <img src="/images/legacy/764b4e79-f161-44ca-ac5c-4000190d08d5/dac8ba59-4e9f-4a33-89b1-e60678f4605f.avif" alt="Illustrazioni relative all'installazione del software host della telecamera 5" />
+</Frame>
+
+### 5.4 Installare il software del computer host per il rilevamento del volume
+
+1. Copiare il software del computer host di rilevamento del volume ottenuto sul computer host della telecamera \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/5d8d5ae7-8e2b-4519-9d9b-3440cb83d1ee/e36c0214-2d47-413e-ba9e-aad7d6b841a2.avif" alt="Illustrazioni relative all'installazione del software del computer host di rilevamento del volume" />
+</Frame>
+
+2. Durante la sostituzione, selezionare [**Sostituisci file nella destinazione**].
+
+<Frame>
+  <img src="/images/legacy/5f862ff0-6785-435b-a335-5f6a6d4a2c8c/7cf0179a-1fde-4763-9cd6-ff223c820762.avif" alt="Illustrazioni relative all'installazione del software del computer host di rilevamento del volume 2" />
+</Frame>
+
+3. Fare doppio clic per aprire il software per eseguirlo.
+
+4. Nella barra dell'elenco dei dispositivi a sinistra, lo stato della fotocamera è [**Sconosciuto**], il che significa che la fotocamera non dispone di un algoritmo di rilevamento del volume.
+
+<Frame>
+  <img src="/images/legacy/b1e28a85-544d-4cd7-83a0-b19e5567aeac/154d1261-0517-48a5-87fb-b4d8b8771f2d.avif" alt="Illustrazioni relative all'installazione del software del computer host di rilevamento del volume 3" />
+</Frame>
+
+### 5.5 Aggiornamento del software di rilevamento del volume
+
+Per aggiornare il software di rilevamento del volume, è necessario sostituire solo il file "**.exe**".
+
+### 5.6 Aggiornamento dell'algoritmo
+
+1. Per aggiornare l'algoritmo della fotocamera, è necessario aprire il software host della fotocamera e fare doppio clic su [**LxCameraViewer**].
+
+<Frame>
+  <img src="/images/legacy/98da739f-2f77-46e6-9fc2-698a1b288371/c9790445-b910-4441-8867-78bf594deaa3.avif" alt="Illustrazioni relative all'aggiornamento dell'algoritmo" />
+</Frame>
+
+2. Fare clic sul pulsante [**Apri**] per visualizzare l'immagine della telecamera.
+
+<Frame>
+  <img src="/images/legacy/2fb54986-038d-4d1c-a52d-6e08488ca0c4/b4750100-e4b5-4111-a0d9-7fc89c344c98.avif" alt="Diagramma relativo all'aggiornamento dell'algoritmo 2" />
+</Frame>
+
+3. Fare clic su Strumenti di base → Impostazioni funzioni → [**Aggiornamento firmware**] per aggiornare l'algoritmo di rilevamento del volume. (Chiedere al personale del supporto tecnico di ottenere l'algoritmo)
+
+<Frame>
+  <img src="/images/legacy/94042d12-537e-4ecf-9bf7-096e88053035/cb352cff-1854-476a-a179-9b5c0f5b229e.avif" alt="Diagramma relativo all'aggiornamento dell'algoritmo 3" />
+</Frame>
+
+4. Dopo aver fatto clic sul pulsante [**Esegui**], selezionare "Algoritmo di rilevamento volume" e fare clic sul pulsante [**Apri**] per avviare il flashing dell'algoritmo.
+
+<Frame>
+  <img src="/images/legacy/88ed6bb9-e81b-4923-958c-af6c7d6c5179/1d8334a0-0e47-4781-8a2e-765311aaceac.avif" alt="Diagramma relativo all'aggiornamento dell'algoritmo 4" />
+</Frame>
+
+5. Durante il processo di flashing dell'algoritmo, la fotocamera si riavvierà e l'ID della fotocamera nell'elenco dei dispositivi a sinistra scomparirà. Una volta rivisualizzato, significa che il lampeggio è avvenuto con successo.
+
+<Frame>
+  <img src="/images/legacy/c7f8ce1b-993e-41a9-9918-25422fcacf16/ade34da0-16e3-40d8-9af0-542a5c13cbe5.avif" alt="Diagramma relativo all'aggiornamento dell'algoritmo 5" />
+</Frame>
+
+6. A questo punto, aprire nuovamente il software di rilevamento del volume e l'elenco dei dispositivi verrà visualizzato in verde.
+
+<Frame>
+  <img src="/images/legacy/65639621-cec1-4e58-9d25-b2c1147e6db8/7bc15af4-8e94-45ca-9181-e872410b5ccf.avif" alt="Diagramma relativo all'aggiornamento dell'algoritmo 6" />
+</Frame>
+
+## 6. Interfaccia del software di rilevamento del volume
+
+### 6.1 Avviare il programma di rilevamento del volume
+
+1. Fare doppio clic sul programma [**LxApplicationViewer.exe**] per avviare il software di rilevamento del volume. Fare clic sulla telecamera online nell'elenco dei dispositivi a sinistra per aprire l'immagine della telecamera.
+
+<Frame>
+  <img src="/images/legacy/27aad056-f103-41e3-86f9-b9d876481dc6/cb274ae3-6877-40e8-ba2b-485fe835c0ec.avif" alt="Illustrazioni relative all'avvio del programma di rilevamento del volume" />
+</Frame>
+
+2. L'utente corrente seleziona l'amministratore e non ha bisogno di inserire una password. Fare clic direttamente su OK per accedere alla modalità amministratore (le impostazioni dei parametri di rilevamento del volume non possono essere eseguite in modalità utente). La modalità amministratore avrà più opzioni di rilevamento del volume e di configurazione della fotocamera.
+
+<Frame>
+  <img src="/images/legacy/9078f3bd-2942-426e-98a8-ef4b43f40de7/29f2bf28-535d-4b1d-9aa6-03e03100d78a.avif" alt="Illustrazione relativa all'avvio del programma di rilevamento del volume 2" />
+</Frame>
+
+### 6.2 Strumenti di base
+
+Gli strumenti di base includono principalmente il cambio utente, la messa a terra ideale, la messa a terra dei parametri esterni, la visualizzazione di più caselle del volume, il pulsante di attivazione, l'esportazione e il salvataggio di immagini, la riproduzione della cronologia e lo stato del volume.
+
+<Frame>
+  <img src="/images/legacy/a23bcd50-9098-47e0-84b8-3d47b3ca2610/4cdcef72-7639-4e7f-84c8-4380fbbed27f.avif" alt="Illustrazioni relative agli strumenti di base" />
+</Frame>
+
+| Strumenti di base | Significato funzionale |
+| --- | --- |
+| Cambio utente | Cambia autorizzazioni, autorizzazioni utente: visualizza solo i risultati del rilevamento. Diritti di amministratore: può configurare la configurazione della telecamera, la configurazione dei parametri di rilevamento del volume, ecc. |
+| Terreno ideale | Il terreno si riferisce alla linea orizzontale e può essere disattivato. |
+| Parametro esterno terra | Il piano orizzontale su cui vengono calibrati i parametri esterni della fotocamera. Può essere spento. |
+| Visualizzazione della casella del volume | Quando vengono rilevati più oggetti nell'area di rilevamento, è possibile commutare diverse caselle del volume per visualizzare i risultati del rilevamento di oggetti diversi. |
+| Pulsante di attivazione | Dopo aver impostato la modalità trigger, è possibile richiamare questo pulsante trigger per ottenere immagini e risultati. |
+| Esporta immagini memorizzate | Esporta immagini memorizzate |
+| Riproduzione della cronologia | Visualizza i log delle immagini RGB e TOF. |
+| Visualizzazione dei risultati del rilevamento del volume | Visualizza i risultati del rilevamento, il numero di oggetti, la lunghezza, la larghezza e l'altezza dell'oggetto. |
+
+### 6.3 Configurazione globale
+
+Cambia la modalità di funzionamento della fotocamera.
+
+<Frame>
+  <img src="/images/legacy/bb2afbde-b2d5-43ff-8673-d4922aa726b2/0c157f74-799a-4f32-9634-cdb91fc83228.avif" alt="Icone relative alla configurazione globale" />
+</Frame>
+
+### 6.4 Rilevamento del volume
+
+<Frame>
+  <img src="/images/legacy/fbce3fe9-69bd-4c1d-9a50-08aaec8f8a8a/e1a0e9a1-7371-4ad5-93df-9d1dd625aada.avif" alt="Icone relative al rilevamento del volume" />
+</Frame>
+
+| Configurazione globale del rilevamento del volume | Significato funzionale |
+| --- | --- |
+| Numero di versione dell'algoritmo | Informazioni sulla versione attuale dell'algoritmo. |
+| Modalità di attivazione | Pulsante dell'interruttore di attivazione. Dopo aver attivato la modalità trigger, fare clic sul pulsante "Salva e invia" per attivarla correttamente. |
+| Rilevamento verso l'alto | Rilevamento inverso del sistema di coordinate della telecamera (attualmente rilevamento verso il basso, ovvero rilevamento della distanza dal piano alla superficie dell'oggetto, dopo aver attivato il rilevamento verso l'alto, rileverà la distanza dalla superficie dell'oggetto alla telecamera). |
+| Frequenza di rilevamento | La frequenza con cui l'algoritmo rileva. Cioè, quanti ms per aggiornare l'immagine + i dati dei risultati. |
+| Distanza del piano di rilevamento | Distanza del piano di rilevamento della distanza della telecamera, questa distanza è correlata all'altezza di misurazione. Unità: mm. |
+| Soglia del numero del vicino | Filtra i parametri, non sono necessarie modifiche. Il valore predefinito è sufficiente. |
+| Soglia di distanza del quartiere | Parametri di filtraggio, non è necessario modificarli, sono sufficienti i valori predefiniti. |
+| Soglia del filtro vettoriale normale | Parametro del filtro di raccordo del bordo dell'oggetto, si consiglia 60 (generalmente non è necessario regolarlo). |
+| Soglia della distanza del vettore normale | Parametro filtro, valore consigliato 20-30 (compatibile con la maggior parte degli oggetti rilevati). |
+| Numero minimo di punti | Quando la nuvola di punti dell'oggetto è maggiore del numero minimo di punti, si considera che esista un oggetto. |
+| Minimo X | La lunghezza minima dell'oggetto. Se è inferiore a questo valore, non può essere rilevato. Unità: mm. |
+| Minimo Y | La larghezza minima dell'oggetto. Se è inferiore a questo valore, non può essere rilevato. Unità: mm. |
+| Minimo Z | L'altezza minima dell'oggetto. Se è inferiore a questo valore, non può essere rilevato. Unità: mm. |
+
+<Frame>
+  <img src="/images/legacy/e9733410-8173-4d09-95e5-334ba8ae58c0/d4d05111-3551-446e-a866-37f098c13e7d.avif" alt="Diagramma relativo al rilevamento del volume 2" />
+</Frame>
+
+| Configurazione dell'area di rilevamento del volume | Significato funzionale |
+| --- | --- |
+| Minimo X | Valore minimo nella direzione X del riquadro di rilevamento del volume |
+| Massimo X | Valore massimo nella direzione X del riquadro di rilevamento del volume |
+| Minimo Y | Valore minimo nella direzione Y del riquadro di rilevamento del volume |
+| Massimo Y | Valore massimo nella direzione Y del riquadro di rilevamento del volume |
+| Minimo Z | Valore minimo nella direzione Z del riquadro di rilevamento del volume |
+| Z massimo | Valore massimo nella direzione Z del riquadro di rilevamento del volume |
+
+### 6.5 Configurazione della telecamera
+
+<Frame>
+  <img src="/images/legacy/07b96b09-95e7-4251-938f-d1e35401e1ce/95f4513b-47df-41aa-ae24-5a02749888c1.avif" alt="Icone relative alla configurazione della telecamera" />
+</Frame>
+
+| Impostazioni della fotocamera | Significato della funzione |
+| --- | --- |
+| Nome della fotocamera | Modifica il nome della telecamera corrente. Quando sono presenti più telecamere, puoi giudicare dal nome della telecamera. |
+| Modalità simulazione | Uso interno, gli utenti non hanno bisogno di aprirlo. |
+| Modalità di salvataggio delle immagini | Attiva il salvataggio algoritmico delle immagini per memorizzare i dati dell'immagine all'interno della fotocamera. |
+| Modalità di acquisizione | La modalità di acquisizione è divisa in MDS e SDK. L'utilizzo di MDS non occuperà le autorizzazioni della fotocamera e potrà aprire normalmente il computer host della fotocamera. L'utilizzo dell'SDK occuperà le autorizzazioni della fotocamera e il computer host non potrà essere aperto durante l'esecuzione dell'algoritmo. |
+| x| fotocamera calibrata x posizione |
+| sì | La posizione y della calibrazione della fotocamera |
+| z | Altezza calibrata della telecamera da terra |
+| rotolo | angolo di calibrazione della fotocamera |
+| passo | angolo di calibrazione della fotocamera |
+| imbardata | angolo di calibrazione della fotocamera |
+| Terreno ideale | Lascialo come predefinito. |
+| Salva e invia | Una volta completata la calibrazione dei parametri esterni, fare clic sul pulsante [Salva e invia] per salvare, altrimenti i parametri non avranno effetto |
+| Leggi la configurazione dalla telecamera | Leggere i parametri di configurazione correnti dalla telecamera |
+| Calibrazione parametri esterni | Calibrare l'altezza della telecamera da terra, gli angoli di rotazione, beccheggio e imbardata. |
+
+### 6.6 Lingua
+
+Passa dal cinese all'inglese.
+
+### 6.7 Barra di stato
+
+<Frame>
+  <img src="/images/legacy/3941c475-8f8f-45a1-94cc-2cf678831d53/706d6184-84a3-44cb-a6a6-6fb57cf36309.avif" alt="Icone relative alla barra di stato" />
+</Frame>
+
+| Barra di stato | Significato funzionale |
+| --- | --- |
+| RGB | Selezionare per visualizzare le immagini RGB |
+| Nuvola di punti | Dopo la verifica, visualizza l'immagine della nuvola di punti |
+| Arresta algoritmo | Dopo aver fatto clic per interrompere l'algoritmo, l'algoritmo non verrà avviato fino alla successiva accensione della fotocamera. |
+| Aggiorna firmware | Il firmware dell'algoritmo può essere aggiornato |
+| Riavvia la fotocamera | Riavvia la fotocamera. |
+
+### 7. Processo di distribuzione del rilevamento del volume
+
+Dopo aver aperto il software di rilevamento del volume, l'impostazione predefinita è l'immagine RGB. Dopo aver fatto clic per passare all'immagine della nuvola di punti, l'immagine sarà nera. È necessario spostare il mouse sull'area di visualizzazione dell'immagine, scorrere su e giù con la rotella del mouse e tenere premuto il pulsante sinistro del mouse per spostarsi, quindi verranno visualizzati i dati della nuvola di punti.
+
+<Frame>
+  <img src="/images/legacy/b2f80e70-7390-4713-9eda-f7b342eca918/38bf207d-97e3-4f22-9867-e59c1e252ef1.avif" alt="Illustrazioni relative al processo di distribuzione del rilevamento del volume" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0bea89d2-f83c-4deb-ab3c-0584a061302e/d91faf31-886e-442c-8ab5-b367a14db036.avif" alt="Illustrazioni relative al processo di distribuzione del rilevamento del volume 2" />
+</Frame>
+
+### 7.1 Configurazione della rete della telecamera
+
+Prendendo come esempio il sistema Win10, fare doppio clic sul Pannello di controllo
+
+Dopo essere entrati nel pannello di controllo, fare clic su "**Visualizza stato e attività della rete**".
+
+<Frame>
+  <img src="/images/legacy/d27495e0-56ba-43a1-84ca-eb6c209c6e94/95fb9d57-7f0c-4a1f-9376-14267dcb3f6c.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera" />
+</Frame>
+
+Accedere all'interfaccia del Centro connessioni di rete e condivisione e fare clic su "**Modifica impostazioni scheda**".
+
+<Frame>
+  <img src="/images/legacy/738c34bb-f38e-4457-826b-02ce8ef64a28/5181b10d-ae88-4a9d-9485-4deba6993533.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 2" />
+</Frame>
+
+Accedere all'interfaccia di connessione di rete, fare doppio clic con il mouse per selezionare l'Ethernet a cui è collegata la telecamera.
+
+<Frame>
+  <img src="/images/legacy/a9e4f271-a49e-45ba-9c95-507da52dd6bc/44b2f404-5ef4-4ddf-8eef-a3ae1eed10d7.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 3" />
+</Frame>
+
+Controlla lo stato Ethernet (si consiglia di utilizzare una porta di rete Gigabit) e fai clic sul pulsante "**Proprietà**".
+
+<Frame>
+  <img src="/images/legacy/f4e9e585-b466-4cfe-9073-3a51dd6f5a60/3f3596f1-39e4-4de8-8ba0-240b563ef8fb.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 4" />
+</Frame>
+
+Accedere all'interfaccia delle proprietà Ethernet, individuare "**Protocollo Internet versione 4 (TCP/IPv4)**" e fare doppio clic per aprirlo.
+
+<Frame>
+  <img src="/images/legacy/41593f67-f0f6-4fb0-a1f5-25b16aab42c9/58c00f3e-7ce4-4f9f-92a3-16fb4a3198a5.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 5" />
+</Frame>
+
+Accedere all'interfaccia del protocollo Internet versione 4 (TCP/IPv4), selezionare "**Utilizza il seguente indirizzo IP**" per scrivere l'indirizzo IP, la maschera di sottorete e il gateway predefinito.
+
+<Frame>
+  <img src="/images/legacy/f929004b-da3f-45e9-9220-2dffb173782e/9beedb39-c61d-481b-ac65-eae8966c7684.avif" alt="Diagramma relativo alla configurazione della rete della telecamera 6" />
+</Frame>
+
+Impostazione indirizzo IP: 192.168.100.xxx Maschera di sottorete: 255.255.255.0 Gateway predefinito: 192.168.100.1. Imposta l'IP come mostrato di seguito. Una volta completata l'impostazione, fare clic sul pulsante "OK".
+
+<Frame>
+  <img src="/images/legacy/d45ed4aa-13c0-463a-b0e0-8bd35ad2cd32/917ecfab-67f5-4f53-8f98-756f33624e7c.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera 7" />
+</Frame>
+
+Dopo aver fatto clic sul pulsante OK, verrà automaticamente ripristinata l'interfaccia precedente. Fare nuovamente clic su "**OK**" per completare la configurazione di rete.
+
+<Frame>
+  <img src="/images/legacy/f56eefc8-af02-4633-8c35-7da0caa84905/395584ea-e679-44f5-818b-4dc6a76389da.avif" alt="Illustrazioni relative alla configurazione di rete della telecamera 8" />
+</Frame>
+
+### 7.2 Conferma di spegnimento del firewall
+
+1. Dopo aver installato la telecamera in modo fisso, il primo passaggio della distribuzione richiede lo spegnimento del firewall del computer.
+
+2. Prendendo come esempio il sistema Win10, fare doppio clic su [**Pannello di controllo**] sul desktop e fare clic su [**Sistema e sicurezza**] dopo l'accesso.
+
+<Frame>
+  <img src="/images/legacy/10f577ff-3207-45a6-ada2-d7e2d90da11b/03de5534-1fe9-4ffe-9db7-9309b05b73f0.avif" alt="Icone relative alla conferma dell'arresto del firewall" />
+</Frame>
+
+3. Fare clic sul pulsante [**Windows Defender Firewall**] per accedere alla pagina del firewall
+
+<Frame>
+  <img src="/images/legacy/6480e38b-8e12-4d64-8c96-68612da23908/d61d5bac-33e8-4d46-ab22-1a55500a26ff.avif" alt="Icona relativa alla conferma dell'arresto del firewall 2" />
+</Frame>
+
+4. Fare clic sul pulsante [**Abilita o disattiva Windows Defender Firewall**] per accedere alla pagina di attivazione/disattivazione del firewall.
+
+5. Selezionare [**Disattiva Windows Defender Firewall**] sia per le reti private che per quelle pubbliche, quindi fare clic sul pulsante [**Conferma**] per disattivare il firewall.
+
+<Frame>
+  <img src="/images/legacy/1a7789dc-c752-4106-9316-681f5c1a4afa/d8583eab-22db-413f-9a42-76dc0908b50b.avif" alt="Icona relativa alla conferma dell'arresto del firewall 3" />
+</Frame>
+
+### 7.3 Calibrazione dei parametri esterni di rilevamento del volume
+
+1. Una volta completata la configurazione IP della telecamera e chiuso il firewall, procedere alla seconda fase della distribuzione. Aprire il software per calibrare i parametri esterni dell'algoritmo. È necessario calibrare il terreno di riferimento specifico e la deviazione dell'angolo di installazione della telecamera.
+
+2. Fare clic sulla configurazione della telecamera e passare all'interfaccia di calibrazione dei parametri. Prima di eseguire la calibrazione dei parametri esterni, assicurarsi che x, y, z, rollio, beccheggio e imbardata siano 0. Se non sono 0, è necessario riportare tutti i parametri a 0 e fare clic sul pulsante [**Salva e invia**]. Dopo che i parametri sono stati salvati con successo, ricalibrare i parametri esterni.
+
+<Frame>
+  <img src="/images/legacy/8e7ce98c-d40b-4d33-8761-2567f011af39/5b0ac758-4684-43e9-83c5-65f9fc7f1c76.avif" alt="Illustrazioni relative alla calibrazione dei parametri esterni di rilevamento del volume" />
+</Frame>
+
+3. Dopo aver confermato che i parametri sono tutti 0, fare clic sul pulsante [**Calibrazione parametri esterni**]. Una volta completata con successo la calibrazione, il software visualizzerà una finestra di messaggio. Puoi vedere i parametri della fotocamera calibrata nella colonna dei parametri a destra.
+
+<Frame>
+  <img src="/images/legacy/e6cf55ec-456a-4d76-9966-90c577dc843b/69fb9d8f-7938-4488-81c4-d817b5ac5b86.avif" alt="Illustrazione relativa alla calibrazione del parametro esterno di rilevamento del volume 2" />
+</Frame>
+
+4. Dopo aver registrato il valore dell'altezza della telecamera "z", modificare il valore z su 0 e fare clic sul pulsante [**Salva e invia**]. I parametri di calibrazione della fotocamera sono stati salvati correttamente. (Il valore z della fotocamera deve essere impostato nella distanza del piano di rilevamento durante il rilevamento del volume, quindi dopo aver registrato l'altezza di calibrazione della fotocamera, è necessario modificarlo su 0, altrimenti si verificheranno problemi con il rilevamento)
+
+<Frame>
+  <img src="/images/legacy/68e62f9a-1684-46f5-bd66-a9eba060776d/291a7bc1-f174-4321-a322-3f7ab22dd720.avif" alt="Illustrazione relativa alla calibrazione del parametro esterno di rilevamento del volume 3" />
+</Frame>
+
+5. Dopo che i parametri calibrati sono stati salvati e distribuiti, la calibrazione dei parametri esterni è completata. Il passaggio successivo consiste nell'impostare i parametri di rilevamento del volume.
+
+### 7.4 Impostazione della distanza del piano di rilevamento del volume
+
+1. Fare clic su Rilevamento volume, passare alla pagina di impostazione dei parametri di rilevamento del volume e impostare innanzitutto la "Distanza del piano di rilevamento", che è correlata al disegno dell'area di rilevamento e alla precisione del rilevamento.
+
+<Frame>
+  <img src="/images/legacy/7481f12c-1af6-4de4-bf05-2f48487bef85/a5609871-908c-45e6-a129-ff9e86dac5c6.avif" alt="Illustrazioni relative all'impostazione della distanza del piano di rilevamento del volume" />
+</Frame>
+
+2. Inserire il valore dell'altezza "z" 2709 ottenuto durante la calibrazione dei parametri esterni nella distanza del piano di rilevamento. Questa è la distanza effettiva tra la telecamera e il piano di rilevamento. Fare clic sul pulsante [**Salva e invia**] per scrivere il valore di altezza impostato sulla telecamera.
+
+<Frame>
+  <img src="/images/legacy/afb78eac-49f7-43ac-8c5d-b6963a53716b/fadaeebd-d48e-4ba2-90d9-87d9017926af.avif" alt="Illustrazione relativa all'impostazione della distanza del piano di rilevamento del volume 2" />
+</Frame>
+
+3. Spostando i dati dell'immagine della nuvola di punti, puoi vedere che l'altezza del suolo è cambiata. A questo punto è possibile configurare l'area di rilevamento del volume.
+
+<Frame>
+  <img src="/images/legacy/3cea221c-a39b-4f53-9965-41192272e8ed/3d8aeec7-d33b-48e8-a061-890a6ebed8fa.avif" alt="Illustrazioni relative all'impostazione della distanza del piano di rilevamento del volume 3" />
+</Frame>
+
+### 7.5 Impostazione dell'intervallo di rilevamento del volume
+
+1. Impostare il raggio di rilevamento. Per regolare la lunghezza e la larghezza (xy) del rilevamento, si consiglia di passare prima alla visualizzazione su e giù. Di seguito sono riportati i tasti di scelta rapida per ciascuna vista.
+
+<Frame>
+  <img src="/images/legacy/d328c397-8e2f-41ef-9f06-46ce32b2cf7f/30b799d3-964c-4adc-90cc-b0cca7ebe17a.avif" alt="Illustrazioni relative all'impostazione dell'intervallo di rilevamento del volume" />
+</Frame>
+
+2. Utilizzare i tasti di scelta rapida sulla tastiera per passare alla visualizzazione su e giù, come mostrato nella figura seguente. La casella bianca puntata dalla freccia rossa indica la direzione x del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente, l'intervallo di rilevamento massimo e minimo nella direzione x è impostato su 600 e -600.
+
+<Frame>
+  <img src="/images/legacy/e0d9e0ec-e8f1-493c-8262-3e6522ee4280/f81e0deb-e48b-4215-99cb-f49c5b0cc3ec.avif" alt="Illustrazione relativa all'impostazione dell'intervallo di rilevamento del volume 2" />
+</Frame>
+
+3. La casella bianca puntata dalla freccia verde indica la direzione y del campo di rilevamento. È possibile modificare il valore corrispondente scorrendo la rotellina del mouse per completare la regolazione della lunghezza e larghezza del campo di rilevamento. Attualmente, l'intervallo di rilevamento massimo e minimo nella direzione y è impostato su 480 e -580.
+
+<Frame>
+  <img src="/images/legacy/3bc64b36-13b3-4f5d-a14a-30ddb9509781/817b24b0-3bfc-4157-868f-43142cd956e4.avif" alt="Illustrazione relativa all'impostazione dell'intervallo di rilevamento del volume 3" />
+</Frame>
+
+4. La freccia blu punta verso la direzione z del campo di rilevamento. Il valore può essere modificato scorrendo con la rotella del mouse oppure il valore può essere immesso direttamente. Si consiglia di impostare il valore z massimo dell'intervallo di rilevamento corrente su un valore leggermente superiore alla distanza del piano di rilevamento. La distanza del piano di rilevamento corrente è 2709 e il valore z massimo è impostato su 2690. L'intervallo di rilevamento minimo viene impostato in base alle dimensioni dell'oggetto. Se l'altezza dell'oggetto supera il valore z minimo, l'algoritmo non lo rileverà.
+
+<Frame>
+  <img src="/images/legacy/68123a29-8322-4773-8b0a-67c7c388b797/17fe8b13-04c3-4f75-9e9b-1a5843af9533.avif" alt="Illustrazione relativa all'impostazione dell'intervallo di rilevamento del volume 4" />
+</Frame>
+
+5. Dopo aver configurato l'area di rilevamento, fare clic sul pulsante [**Salva e invia**] per salvare i parametri nella telecamera.
+
+<Frame>
+  <img src="/images/legacy/630b6f2b-c6fe-4a60-b3c3-d77ebff70f00/18746efa-a7b4-4e85-98fd-b16bcc470536.avif" alt="Illustrazioni relative all'impostazione dell'intervallo di rilevamento del volume 5" />
+</Frame>
+
+### 7.6 Visualizza i risultati del rilevamento del volume
+
+1. Dopo aver impostato la calibrazione dei parametri esterni, i parametri di rilevamento del volume e l'area di rilevamento del volume, fare clic su "**Strumenti di base**" e posizionare gli oggetti nell'area di rilevamento per visualizzare i risultati. Al momento non è presente alcun oggetto e nessun oggetto verrà visualizzato nella barra delle funzioni di base.
+
+<Frame>
+  <img src="/images/legacy/1d829501-eb9b-4ddf-9a4c-b8d6622ef5c8/909c8066-fa20-47ea-b78b-d97bf227cd3b.avif" alt="Visualizza le icone correlate per i risultati dei test del volume" />
+</Frame>
+
+2. Dopo aver posizionato l'oggetto corrente, le informazioni su lunghezza, larghezza e altezza dell'oggetto corrente verranno visualizzate nella barra di visualizzazione dello stato del volume.
+
+<Frame>
+  <img src="/images/legacy/c5e9a64a-ae7f-45d3-b755-901d823dd7c2/8f782245-62e5-4988-bfd1-ccea4c1d9b11.avif" alt="I risultati del test del volume visualizzano il diagramma correlato 2" />
+</Frame>
+
+3. Quando vengono posizionati più oggetti, la colonna di visualizzazione dei risultati del rilevamento del volume mostrerà la lunghezza, la larghezza e l'altezza di più oggetti e verrà visualizzato il numero di oggetti.
+
+<Frame>
+  <img src="/images/legacy/3c57003c-871a-476b-a797-242644703cf8/1f873710-e793-47b1-aaa0-13b76302c457.avif" alt="I risultati del test del volume visualizzano il diagramma correlato 3" />
+</Frame>
+
+### 7.7 Funzione di rilevamento del volume con trigger singolo
+
+1. Nell'interfaccia di impostazione del rilevamento del volume, attivare la modalità touch e fare clic sul pulsante [**Salva e invia**] per attivare correttamente la modalità trigger.
+
+<Frame>
+  <img src="/images/legacy/46b712f6-2daa-40c2-9a01-b8a18f6acc13/4bd31b14-3a53-479b-b2b1-e51ef03634ed.avif" alt="Illustrazioni relative alla funzione di trigger singolo di rilevamento del volume" />
+</Frame>
+
+2. Fare clic sullo strumento di base e ottenere immagini e risultati facendo clic sul pulsante [**Trigger singolo**].
+
+<Frame>
+  <img src="/images/legacy/29f635b6-9707-4f17-b77d-a05883ffb7fd/e40f2f1f-6fb0-49bb-ae01-53b0627846fe.avif" alt="Illustrazione relativa alla funzione di rilevamento del volume a trigger singolo 2" />
+</Frame>
+
+## 8. Protocollo di comunicazione
+
+### 8.1 Comunicazione TCP
+
+1. I risultati del rilevamento del volume possono essere ottenuti tramite la comunicazione TCP. Attraverso l'assistente per il debug di rete, l'IP della telecamera remota: 192.168.100.82, porta: 14951, invia RESULT\_UPDATE per visualizzare le informazioni sul risultato del rilevamento del volume restituito.
+
+<Frame>
+  <img src="/images/legacy/3268f158-13ec-4e80-b780-9c3dc39fc857/018ebf50-eeee-4ab6-b688-4cffbcc99987.avif" alt="Icone relative alla comunicazione TCP" />
+</Frame>
+
+### 8.2 Comunicazione UDP
+
+1. I risultati del rilevamento del volume possono essere ottenuti tramite la comunicazione UDP. Attraverso l'assistente di debug di rete, l'IP della telecamera remota: 192.168.100.82, porta: 14950, invia RESULT\_UPDATE per visualizzare le informazioni sul risultato del rilevamento del volume restituito.
+
+<Frame>
+  <img src="/images/legacy/17127c06-43af-4038-b287-8a42f8aa9ba7/905bafb7-3038-43f2-9c23-666327a4c4e0.avif" alt="Icone relative alla comunicazione UDP" />
+</Frame>
+
+### 8.3 Comunicazione HTTP
+
+1. I risultati del rilevamento del volume possono essere ottenuti tramite la comunicazione HTTP, numero di porta: 14952.
+
+2. Il sistema di livello superiore (WMS) ottiene il segnale dal risultato dell'invio visivo e il visivo restituisce una stringa in formato JSON.
+
+| WMS -> Visione | ㅤ |
+| --- | --- |
+| Risultato | Significato |
+| RISULTATO_AGGIORNAMENTO | Attiva il segnale di ritorno del risultato visivo |
+| Visione -> WMS | ㅤ |
+| Risultato | Significato |
+| IP | IP della telecamera di origine dati |
+| TM | Stato rilevamento volume |
+| angolo | Angolo dell'oggetto selezionato |
+| cx | coordinata x dell'oggetto selezionato dal fotogramma |
+| ci | coordinata y dell'oggetto selezionato nel fotogramma |
+| cz | Coordinata z dell'oggetto selezionato fotogramma |
+| altezza | altezza oggetto |
+| lunghezza | lunghezza oggetto |
+| larghezza | larghezza oggetto |
+| valido | falso se la confidenza è troppo bassa, vero altrimenti |
+| TM_DATA_TIME | Tempo di estrazione dei dati di rilevamento del volume |
+| TM_RES_TIME | Tempo di uscita del risultato del rilevamento del volume |
+| soprannome | Nome della telecamera di rilevamento del volume, configurabile nella telecamera |
+| codice_ret | Codice di ritorno, 0 è successo |
+
+**9\.Appendice**
+
+```json
+{
+
+"IP":"192.168.100.82", // Camera IP
+
+"TM":\[{
+
+"angle":-6.821981430053711, // Bounding-box angle
+
+"cx":39.98405456542969, // Bounding-box x-coordinate
+
+"cy":257.008056640625, // Bounding-box y-coordinate
+
+"cz":2400.63818359375, // Bounding-box z-coordinate
+
+"height":616.723876953125, // Object height
+
+"length":525.5135498046875, // Object length
+
+"type":"","valid":true, // false when confidence is too low
+
+"width":419.761474609375}\], // Object width
+
+"TM_DATA_TIME":"2024_11_13_16_37_47.422", // Volume-detection data timestamp
+
+"TM_RES_TIME":"2024_11_13_16_37_48.209", // Volume-detection result timestamp
+
+"nick_name":"_default_", // Volume-detection camera name
+
+"ret_code":0 // Return code; 0 indicates success
+
+}
+```

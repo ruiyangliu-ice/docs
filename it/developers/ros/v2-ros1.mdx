@@ -1,0 +1,477 @@
+---
+title: "Riferimento interfaccia V2 ROS 1"
+description: "Crea ed esegui l'SDK ROS 1 di localizzazione V2 e utilizza i suoi argomenti e servizi."
+hidden: true
+---
+## 1: Compila
+
+### 1. Assicurarsi che QT5 sia stato installato sul computer host. La compilazione richiede Core, Network e altri pacchetti funzionali in QT5.
+
+```cpp
+// Installation differs by Linux distribution. This example uses:
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+### 2. Installa il pacchetto di funzioni libzip
+
+Scarica il file sorgente (https://libzip.org/download/) dal sito Web ufficiale di libzip, quindi compilalo secondo il tutorial del sito Web ufficiale.
+
+### 3. Compilare il pacchetto di funzioni ros
+
+Compila utilizzando l'istruzione `catkin_make` nel percorso /V2-ROS-SDK-service (stesso livello di /src).
+
+## 2: Corri
+
+Prima di eseguire l'esempio ROS, se il ROS master-slave è stato implementato nella telecamera, è necessario disattivare prima le impostazioni relative al ROS master-slave, altrimenti si verificheranno eccezioni di comunicazione relative al ROS. Se nella telecamera è presente un ambiente ROS, è necessario attendere circa 20 secondi dopo l'accensione della telecamera prima di eseguire il programma di esempio ROS.
+
+Passaggi di creazione del nodo ROS:
+
+1. Immettere la directory del file di codice del programma di esempio `home/username/V2_ROS_SDK` ed eseguire il comando allo stesso livello della cartella src
+
+2. amento\_make
+
+3. sorgente devel/setup.bash
+
+## Tre: interfaccia dell'argomento ROS
+
+La classificazione in base alla funzione è la seguente:
+
+Fase di mappatura:
+
+1. Interfaccia di abilitazione della mappatura
+
+2. Ricevi l'interfaccia dello stato della mappatura
+
+3. Ricevi l'interfaccia di avanzamento della mappatura
+
+Fase di posizionamento:
+
+1. Interfaccia di trasferimento
+
+2. Ricevere l'interfaccia di stato del posizionamento
+
+2. Cambia l'interfaccia della mappa
+
+Eccezioni, configurazione dei parametri e altre interfacce:
+
+1. Impostare l'interfaccia dei parametri
+
+2. Ottenere l'interfaccia dello spazio su disco rigido attualmente utilizzata dalla fotocamera
+
+3. Ricevere il nome del modulo attualmente difettoso
+
+4. Scarica l'interfaccia della mappa dei contorni (solo contorni laser)
+
+5. Carica l'interfaccia zip del file della mappa (nuova)
+
+Prima di testare l'interfaccia, è necessario accendere il corpo della fotocamera (attendere 30 secondi per l'avvio del programma corpo) e aprire il nodo ROS SDK (vedere la sezione precedente).
+
+### Ricevi l'interfaccia di posizionamento e postura
+
+1. ROS continua a ricevere i valori di posizionamento x, y, theta inviati dalla fotocamera.
+
+2. Pubblica i valori di posizionamento x, y e quaternione (convertito da theta) nell'argomento: `LxCamera_LocationPoseResult`
+
+3. Trasmettere il valore di posizionamento e il quaternione attraverso la trasformazione TF
+
+```cpp
+rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+```
+
+### Ricevi l'interfaccia di stato del posizionamento
+
+1. ROS continua a ricevere \*\*(frequenza: 1s)\*\* lo stato di posizionamento "`true/false`" inviato dalla fotocamera, indicando se il posizionamento corrente è normale.
+
+2. ROS pubblica lo stato del posizionamento (dati di tipo `std_msgs::Bool`) al topic: `LxCamera_LocationResult`
+
+3. Puoi ottenere lo stato del posizionamento iscrivendoti a Topic (se il posizionamento attuale ha avuto successo)
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_LocationResult
+```
+
+### Riceve l'interfaccia dello spazio su disco rigido utilizzata dalla fotocamera corrente
+
+1. ROS continua a ricevere\*\*(frequenza: 2s)\*\*il rapporto di utilizzo dello spazio di archiviazione inviato dalla fotocamera.
+
+2. ROS pubblica lo stato di occupazione (dati di tipo `std_msgs::Float32`) al topic: `LxCamera_Capacity_Status`
+
+3. Puoi ottenere la proporzione dello stato occupato iscrivendoti a Topic
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+### Riceve il nome del modulo attualmente difettoso
+
+1. ROS continua a inviare nomi di moduli errati dalla telecamera.
+
+2. ROS pubblica lo stato di occupazione (dati di tipo `std_msgs::String`) al topic: `LxCamera_Module_Error`
+
+3. È possibile ottenere il nome del modulo di eccezione iscrivendosi a Topic
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Module_Error
+```
+
+### Ricevi l'interfaccia dello stato della mappatura
+
+1. Dopo aver iniziato a costruire la mappa
+
+2. ROS pubblica lo stato del posizionamento (dati di tipo `std_msgs::Bool`) al topic: `LxCamera_MappingState`
+
+3. Puoi cambiare lo stato della mappatura iscrivendoti a Topic.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_MappingState
+```
+
+#### Ricevi l'interfaccia di avanzamento della mappatura
+
+1. Dopo aver iniziato a costruire la mappa
+
+2. ROS2 pubblica lo stato del posizionamento (dati di tipo `std_msgs::Int32`) all'argomento: `LxCamera_Mapping_Progress`
+
+3. Puoi ottenere i progressi nella costruzione della mappa (0-100) iscrivendoti a Topic
+
+```bash
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
+```
+
+### Impostazione dell'interfaccia dei parametri
+
+1. L'utente pubblica un messaggio di tipo `std_msgs/String` nell'argomento: `LxCamera_SetParam`
+
+2. Il formato del messaggio è composto da 9 numeri in virgola mobile, separati da virgole inglesi ",", che rappresentano rispettivamente: `x,y,z,yaw,pitch,roll,x,y,yaw`, **I primi 6 parametri sono la posa della fotocamera e gli ultimi 3 sono la posa del lidar**.
+
+3. Una volta completata con successo la modifica, verranno impostati i parametri rilevanti in \[Laser1\] e \[Camera1\] nel file del percorso della fotocamera `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`. Esempio:
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
+```
+
+### Cambia l'interfaccia della mappa
+
+1. L'utente pubblica un messaggio di tipo `std_msgs/String` nell'argomento: `LxCamera_SwitchMap`
+
+2. Il formato del messaggio è il nome della mappa (**a condizione che la costruzione della mappa sia stata completata nella fotocamera**)
+
+3. Se la mappa visualizzata nella pagina web della telecamera è cambiata (aggiornare la pagina web), il passaggio ha avuto esito positivo.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
+```
+
+### Carica contachilometri
+
+1. L'utente pubblica dati di tipo `nav_msgs::Odometry` nell'argomento: `/sim/odom` (può essere modificato)
+
+rostopic pub /odom nav\_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame\_id: 'odom' child\_frame\_id: 'base\_link' posa: posa: posizione: x: 1.0 y: 2.0 z: 0.0 orientamento: x: 0.0 y: 0.0 z: 0.0 w: Covarianza 1.0: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] torsione: torsione: lineare: x: 0.5 y: 0.0 z: 0.0 angolare: x: 0.0 y: 0.0 z: covarianza 0,1: \[0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
+```
+
+### Scarica l'interfaccia della mappa muta
+
+1. L'utente pubblica un messaggio di tipo `std_msgs/String` nell'argomento: `LxCamera_DownloadMap`
+
+2. Il formato del messaggio è un indirizzo di salvataggio e un nome di mappa, separati da virgole ",". L'indirizzo è l'indirizzo nel computer host, utilizzando un percorso assoluto; il nome della mappa è il nome del file in formato ".zip" che ha completato la mappatura nella fotocamera.
+
+3. Dopo l'operazione, sarà presente un pacchetto compresso con il nome della mappa specificato nel percorso specificato dal computer host. Dopo la decompressione, otterrai un `PGM map file` e un `YAML configuration file`.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
+```
+
+### Carica l'interfaccia zip del file mappa (nuova)
+
+1. L'utente pubblica un messaggio di tipo `std_msgs/String` nell'argomento: `LxCamera_UploadMapZip`
+
+2. Il contenuto del messaggio è il **percorso del pacchetto compresso della mappa** che deve essere caricato, ad esempio: "/home/fr1511b/map.zip", e il pacchetto compresso scaricato dall'interfaccia di download deve essere caricato.
+
+3. Se viene trovato il file della mappa, comprimerlo e inviarlo alla fotocamera. Dopo averlo ricevuto, la fotocamera lo decomprimerà nel percorso specificato: `/home/fr1511b/hontai/map/`
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
+```
+
+### Interfaccia di trasferimento
+
+1. L'utente pubblica dati di tipo `geometry_msgs::PoseWithCovarianceStamped` nell'argomento: `LxCamera_UploadReloc`
+
+2. I dati sono la posa laser, tra cui: `x,y,yaw`
+
+3. Se la posizione del corpo visualizzata sulla pagina web della telecamera viene aggiornata alla posizione inviata, il riposizionamento ha esito positivo.
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
+header:
+  frame_id: ''
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0
+      y: 0
+      z: -0.694658
+      w: 0.71934
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+> I quaternioni hanno requisiti di vincolo durante i test e non possono essere compilati a piacimento. Puoi usare [Strumento Web](https://www.itutool.com/tools/euler-quaternion-converter "Strumento web") per convertire `Euler yaw angle` in `quaternion x/y/z/w`
+
+## Interfaccia del servizio ROS:
+
+Sebbene le quattro funzioni di mappatura, commutazione delle mappe, download delle mappe e riposizionamento siano implementate utilizzando l'argomento precedente (ROS TOPIC), supporta anche l'utilizzo dell'interfaccia del servizio (ROS SERVICE) per comunicare e fornire feedback sui risultati della risposta del servizio (se l'operazione ha avuto esito positivo). Rispetto a TOPIC si consiglia di utilizzare in via prioritaria le seguenti interfacce di servizio
+
+1. Sottoscrivere l'interfaccia del servizio tramite il comando rosservice
+
+2. Se viene restituito "true", significa che l'operazione è riuscita, mentre se viene restituito "false", significa che l'operazione non è riuscita.
+
+La classificazione in base alla funzione è la seguente:
+
+Fase di mappatura:
+
+1. Mappatura
+
+2. Uscire dalla mappatura
+
+3. Mappatura incrementale (ovvero mappatura incrementale su mappe esistenti e fusione automatica)
+
+Fase di posizionamento:
+
+1. Interfaccia di trasferimento
+
+2. Cambia mappa
+
+Altre interfacce:
+
+1. Ottieni il nome della mappa corrente
+
+2. Scarica la mappa
+
+3. Ottieni l'elenco delle mappe corrente
+
+4. Elimina la mappa
+
+5. Scarica la mappa termica
+
+### Mappatura
+
+Nome del servizio: `/lx_localization_node/LxCamera_Mapping_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
+mapname: 'test_map'"
+```
+
+### Cambia mappa
+
+Nome del servizio: `/lx_localization_node/LxCamera_SwitchMap_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
+```
+
+### Scarica la mappa
+
+Nome del servizio: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
+save_path: '/home/fr1511b/T/TEST'"
+```
+
+### Trasferimento
+
+Nome del servizio: `/lx_localization_node/LxCamera_UploadReloc_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+  header:
+    seq: 0
+    stamp:
+      secs: 0
+      nsecs: 0
+    frame_id: 'map'
+  pose:
+    pose:
+      position:
+        x: 4.5
+        y: -15.5
+        z: 0.0
+      orientation:
+        x: 0.0
+        y: 0.0
+        z: 0.694658
+        w: 0.71934
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+### Ottieni il nome della mappa corrente
+
+Nome del servizio: `/lx_localization_node/LxCamera_GetCurMapname_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool get_cur_mapname #Retrieve the current map identifier
+---
+string mapname     #Current map name
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+### Ottieni l'elenco delle mappe attuali
+
+Nome del servizio: `/lx_localization_node/LxCamera_GetMapList_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool get_map_list # Whether to retrieve the map list
+---
+string[] map_list # Map list
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
+```
+
+### Mappatura uscite (interfaccia personalizzata)
+
+Nome del servizio: `/lx_localization_node/LxCamera_ExitMapping_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool exit_mapping #Whether to exit mapping
+---
+bool state #Whether mapping exited successfully
+```
+
+Debug delle istruzioni:
+
+chiamata rosservice /lx\_localization\_node/LxCamera\_ExitMapping\_srv "exit\_mapping: true"
+
+### Elimina la mappa
+
+Nome del servizio: `/lx_localization_node/LxCamera_EraseMap_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+---
+bool result #Whether the map was deleted successfully
+```
+
+Debug delle istruzioni:
+
+rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "nomemappa: 'TEST888'"
+
+### Scarica la mappa termica
+
+Nome del servizio: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "mapname: 'TEST\_999' save\_path: '/home/fr1511b/T/TEST'"
+
+### Mappatura incrementale
+
+Nome del servizio: `/lx_localization_node/LxCamera_IncMapping_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
+mapname: 'test_map'"
+```

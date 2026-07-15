@@ -1,0 +1,1099 @@
+---
+title: "Guía del usuario de LxCameraViewer"
+description: "Instale y use la aplicación Windows LxCameraViewer con cámaras MRDVS y el SDK de cámara C o C++."
+---
+Descargue la última versión del manual en formato PDF:
+
+[Manual de usuario de LxCameraViewer.pdf](/files/legacy/eb7e3080-2d7f-4d21-9acf-fdce85d40a91/f734e513-b541-4ccd-9c4f-650b54dc966c.pdf)
+
+## 1. Descripción general
+
+LxCameraViewer es un software de computadora host de Windows desarrollado en base a los productos de cámara de desarrollo propio de Blue Core y el kit de desarrollo SDK C o C++ de cámara, en lo sucesivo denominado este software.
+
+Este software proporciona a los usuarios de cámaras funciones simples y rápidas como visualización, configuración de la cámara, configuración de algoritmos, configuración de IP, visualización de nubes de puntos, herramientas de captura de paquetes, herramientas de comunicación, configuración de firewall y otras funciones. Actualmente, este software admite la apertura y visualización de múltiples dispositivos, admite la visualización de la salida de imágenes de profundidad, imágenes de intensidad, imágenes de nubes de puntos e imágenes RGB. También admite la lectura y configuración de parámetros como funciones básicas de la cámara y configuración básica de algoritmos.
+
+A través de esta aplicación, los usuarios pueden ver y guardar datos de imágenes de alta precisión obtenidos de la cámara, configuración de la cámara y datos detallados del algoritmo, etc.
+
+## 2. Instalación
+
+### 2.1 Configuración recomendada del sistema
+
+| Elementos de configuración | Configuración recomendada |
+| --- | --- |
+| Sistema operativo | Windows10 (64 bits) Windows11 (64 bits) |
+| Memoria | 4G y superior |
+| Tarjeta de red/cable de red | Gigabit y superior |
+
+| Elementos de configuración | Configuración recomendada |
+| --- | --- |
+| Sistema operativo | Ubuntu (64 bits) |
+| Memoria | 4G y superior |
+| Tarjeta de red/cable de red | Gigabit y superior |
+
+### 2.2 Configuración de dirección IP y puerta de enlace
+
+- El método de conexión es una conexión de dirección IP fija. Si necesita modificar la IP, puede modificarla a través de este software.
+
+- La dirección IP predeterminada de la cámara es: 192.168.100.82.
+
+- La puerta de enlace predeterminada puede estar vacía.
+
+- La máscara de subred es 255.255.0.0, 255.255.255.0 en la plataforma Linux.
+
+- Configure la dirección IP de la Ethernet conectada a la cámara en la computadora host en 192.168.100.x. x representa cualquier número entre 3 y 254. La IP de la computadora host y la IP de la cámara no pueden ser iguales.
+
+- Por ejemplo, cuando la IP de la cámara es 192.168.100.12, la dirección IP de la computadora host está configurada en 192.168.100.89 y la máscara de subred es 255.255.0.0 como se muestra en la siguiente figura:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7147dc86-d32e-4afb-8575-65f404e42d47.avif" alt="Ilustración relacionada con la dirección IP y la configuración de la puerta de enlace" />
+</Frame>
+
+### 2.3 Instalación del ordenador host
+
+- Haga doble clic para abrir el paquete de instalación del ordenador host Lanxin-MRDVS-x.x.x.xxxx.exe
+
+- Haga clic para permitir que la aplicación realice cambios en el dispositivo
+
+- Seleccione el idioma que se utilizará durante la instalación (Figura 1)
+
+- Seleccione la ruta de instalación, se recomienda utilizar la ruta de instalación predeterminada (Figura 2)
+
+- Marque [Crear acceso directo en el escritorio] (Figura 3)
+
+- Una vez completada la instalación, desmarque [Ejecutar Lanxin-MRDVS] y haga clic en Finalizar (Figura 4).
+
+- Al abrir la computadora host por primera vez, debe usar derechos de administrador para abrirla. Haga clic derecho en el icono del software de escritorio y haga clic en [Ejecutar como administrador] (Figura 5)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8b8740cd-5d09-4b72-bfb0-58675ea2cda1.avif" alt="Ilustraciones relacionadas con la instalación del ordenador host." />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/33d54828-e95f-45b1-9c2c-ba58053fe1e1.avif" alt="Ilustraciones relacionadas con la instalación del ordenador host 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96ac4701-9de1-4083-a2f4-6a75ab387aeb.avif" alt="Ilustraciones relacionadas con la instalación del ordenador host 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a26f6a36-047d-46c6-95a8-d60e1335433c.avif" alt="Ilustraciones relacionadas con la instalación del ordenador host 4" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d1860fc-2d7f-4069-a405-26b39933f032.avif" alt="Ilustraciones relacionadas con la instalación del ordenador host 5" />
+</Frame>
+
+Figura 5
+
+### 2.4 Configuración del cortafuegos
+
+Para abrir la cámara, debe apagar el firewall. El proceso de configuración es como se muestra en la siguiente figura (tomando WIN10 como ejemplo):
+
+Abra este software y haga clic en el botón [Otras herramientas] arriba
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a1d2044-52c3-4094-aee5-ba2e74529e6c.avif" alt="Iconos relacionados con la configuración del firewall" />
+</Frame>
+
+Figura 1
+
+Seleccione [Herramienta de configuración de tarjeta de red] en la barra emergente de la derecha
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/347b75c7-d48d-449f-a4db-a17d48d7b801.avif" alt="Diagrama relacionado con la configuración del firewall 2" />
+</Frame>
+
+Figura 2
+
+En la herramienta de configuración de la tarjeta de red, haga clic en el botón debajo de [Abrir/Cerrar]
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14eb74a6-5be7-4aed-a5f1-d0ae5c8f149f.avif" alt="Diagrama relacionado con la configuración del firewall 3" />
+</Frame>
+
+![Icono relacionado con la configuración del firewall 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df0eba42-c3b8-4230-87ba-b4676ab32e37.avif)Figura 3
+
+Cuando se muestra la ventana emergente en la Figura 4, el firewall está activado. Cuando la ventana emergente es como se muestra en la Figura 5 y la Figura 6 aparece en la esquina inferior derecha, el firewall está desactivado.
+
+![Icono relacionado con la configuración del firewall 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/079270ad-0c8d-4a96-9ffa-096bc980f692.avif) ![Icono relacionado con la configuración del firewall 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ebbf202-28ae-4474-93df-85549c0bd78c.avif)
+
+Figura 4 Figura 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6ba5fc85-0e0f-46e4-80b0-a23e2551cf85.avif" alt="Diagrama relacionado con la configuración del firewall 7" />
+</Frame>
+
+Figura 6
+
+Si el método anterior no funciona, puede hacer clic en el botón [Página de configuración del firewall] como se muestra a continuación y esperar a que se abra la página.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b807be23-6a9f-4930-bf30-5919fa9e8349.avif" alt="Diagrama relacionado con la configuración del firewall 8" />
+</Frame>
+
+Figura 7
+
+**Es necesario desactivar el firewall**
+
+## 3. Instrucciones de uso de LxCameraViewer
+
+### 3.1 Descripción general de la interfaz del software
+
+#### 3.1.1 Descripción general de la interfaz del software (sin abrir la cámara)
+
+La interfaz inicial de este software se divide en 3 secciones principales:
+
+- Barra de lista (área azul número 1):
+
+- Lista de dispositivos
+
+- Información actual
+
+- Información del dispositivo
+
+- Barra de menú (área verde número 2):
+
+- Tres botones de la barra de herramientas derecha
+
+- Botón de cambio de idioma de la interfaz
+
+- Barra de visualización de imágenes (área roja número 4):
+
+- Visualización de nube de puntos
+
+- Visualización del mapa de profundidad
+
+- Visualización del gráfico de intensidad
+
+- Visualización de imágenes RGB
+
+- Haga doble clic en el área de la barra de menú para maximizar/minimizar, mantenga presionado el botón izquierdo del mouse y mueva el mouse para arrastrar la interfaz
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b8b763b-d8a2-4e74-ac00-1e7f5ca4fff6.avif" alt="Iconos relacionados con la descripción general de la interfaz del software (cámara no abierta)" />
+</Frame>
+
+#### 3.1.2 Descripción general de la interfaz del software (cámara encendida)
+
+Después de abrir la cámara, hay una barra de funciones adicional en el lado derecho de la interfaz (área roja número 3)
+
+- Herramientas básicas que proporcionan las siguientes funciones:
+
+- Configuración de visualización de imágenes
+
+- ajustes 2D
+
+- ajustes 3D
+
+- filtrado
+
+- Interfaz de hardware
+
+- Configuración de colección
+
+- Configuración de funciones
+
+- Aplicar algoritmos para proporcionar las siguientes funciones:
+
+- Configuración del modo de trabajo
+
+- Configuración del modo algoritmo
+
+- Visualización de la versión del algoritmo
+
+- Configuración detallada del algoritmo
+
+- Otros, que desempeñen las siguientes funciones:
+
+- Cargar nube de puntos local
+
+- Herramienta de configuración de IP
+
+- Herramienta de captura de paquetes
+
+- Herramienta de configuración de tarjeta de red.
+
+- Herramientas de comunicación
+
+- GPU habilitada
+
+- Nivel de registro
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e2f50c2a-95f2-4019-a47b-215f46aeb5b4.avif" alt="Iconos relacionados con la descripción general de la interfaz del software (cámara encendida)" />
+</Frame>
+
+### 3.2 Encendido y apagado del dispositivo
+
+#### 3.2.1 Lista de dispositivos
+
+- La lista de dispositivos se encuentra en la esquina superior izquierda de la interfaz (en el cuadro rojo en la Figura 1)
+
+- El botón [Actualizar] se encuentra al lado de la lista de dispositivos (en el cuadro rojo en la Figura 2)
+
+- El botón para contraer/expandir la lista de dispositivos se encuentra a la derecha del botón de actualización (cuadro verde en la Figura 2). Después del colapso, vea la Figura 3.
+
+- Se mostrarán tres propiedades en la barra de lista de dispositivos:
+
+- Si la cámara está encendida (en el cuadro rojo de la Figura 2, el dispositivo uno está encendido, pero el dispositivo dos no está encendido)
+
+- ID de la cámara (dentro del cuadro amarillo en la Figura 2)
+
+- IP de la cámara, pase el mouse sobre la ID de la cámara para ver (en el cuadro rojo en la Figura 4 se muestra la IP de la segunda cámara)
+
+- La lista de dispositivos establece un botón para cada cámara encontrada. Haga clic en el texto [Activado] o [Cerrar] para encender o apagar la cámara (en el cuadro azul en la Figura 2). El botón también mostrará la información del estado actual de la cámara (Figura 5)
+
+- La fuente de la cámara seleccionada en la barra de lista de dispositivos es azul y la fuente de otras cámaras es blanca (como se muestra en la Figura 6, la segunda cámara está seleccionada pero no abierta, y la primera cámara está abierta pero no seleccionada)
+
+- Se pueden abrir varios dispositivos en la lista de dispositivos al mismo tiempo (como se muestra en la Figura 7), pero debe prestar atención a si el ancho de banda de la red es suficiente. Haga clic en la ID de la cámara para cambiar y ver diferentes cámaras.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8cfcca2f-d122-4354-a8cf-5efa532028c2.avif" alt="Iconos relacionados con la lista de dispositivos" />
+</Frame>
+
+Figura 1
+
+![Icono relacionado con la lista de dispositivos 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/720170de-c154-457f-b05e-50ad20a1a722.avif) ![Icono relacionado con la lista de dispositivos 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76d9c825-e6ea-4d68-bd83-d6e550f8ea75.avif)
+
+Figura 2 Figura 3
+
+![Icono relacionado con la lista de dispositivos 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6fceb9c-d6e4-4051-a48f-3336850ecd35.avif) ![Icono relacionado con la lista de dispositivos 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c9a2fd72-e489-4e66-ab3b-805c320d1e96.avif)
+
+Figura 4 Figura 5
+
+![Icono relacionado con la lista de dispositivos 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3794ca81-4a2e-4eef-95b2-113facaeefd2.avif) ![Icono relacionado con la lista de dispositivos 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1964dd45-e345-45af-9348-04b1ba499c94.avif)
+
+Figura 6 Figura 7
+
+### 3.3 Información de la aplicación
+
+- La lista de dispositivos se encuentra en el medio del lado izquierdo de la interfaz (en el cuadro rojo en la Figura 1)
+
+- La lista de dispositivos mostrará la siguiente información:
+
+- Toda la información sobre la cámara (cuadro rojo en la Figura 2)
+
+- Operación del software (cuadro verde en la Figura 2)
+
+- Resultados de la operación (cuadro azul en la Figura 2)
+
+- Resultados de adquisición de flujo (cuadro de color rojo en la Figura 4)
+
+- Cuando el texto es demasiado largo, puede arrastrar la barra de desplazamiento azul a continuación para ver el texto completo (como se muestra en la Figura 3, hay una barra de desplazamiento azul adicional en la parte inferior)
+
+- La información actual muestra hasta 25 información relacionada, que se puede desplazar con la rueda del mouse. La información antigua se sobrescribirá.
+
+- Haga clic en el botón Contraer para contraer la información actual (en el cuadro amarillo en la Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f399ea28-827f-487f-85b7-7e9897b3a32a.avif" alt="Iconos relacionados con la información de la aplicación" />
+</Frame>
+
+Figura 1
+
+![Imagen relacionada con la información de la aplicación 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/150dd70b-5072-4fd8-957f-a0d198ed3155.avif) ![Imagen relacionada con la información de la aplicación 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95953500-0432-4510-b0ac-e20b95894bb5.avif) ![Imagen relacionada con la información de la aplicación 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/223211b0-34d8-4b8a-a775-2cf65b18db6c.avif)
+
+Figura 2 Figura 3 Figura 4
+
+### 3.4 Información del dispositivo
+
+- La información del dispositivo se encuentra en la esquina inferior izquierda de la interfaz (en el cuadro rojo en la Figura 1)
+
+- La información del dispositivo muestra información relevante sobre el dispositivo seleccionado actualmente en la lista de dispositivos. La información es la siguiente:
+
+- Número de serie: identificador único del dispositivo
+
+- ID de cámara: el identificador único del dispositivo. Puede utilizar SKD para abrir el dispositivo según la ID de la cámara.
+
+- Dirección IP: dirección IP del dispositivo
+
+- Dirección física: dirección MAC del dispositivo
+
+- Versión de software: versión de software integrada en el dispositivo
+
+- Versión del algoritmo: versión del algoritmo incorporado en el dispositivo (se muestra después de abrir la cámara)
+
+- Velocidad de red de la tarjeta de red: Cuando el dispositivo no está encendido, se desconecta. Una vez encendido, el cable de red de la tarjeta de red determina si es de 100 Mbit o Gigabit.
+
+- Tipo de cámara: modelo de dispositivo
+
+- Versión espejo: versión espejo incorporada del dispositivo (se muestra después de abrir la cámara)
+
+- Haga clic en el botón plegar para plegar la información del dispositivo (en el cuadro amarillo en la Figura 2)
+
+- Haga clic derecho en un elemento en la información del dispositivo para copiar la información (como se muestra en la Figura 3, copie la información de velocidad de la tarjeta de red)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9652a7cc-2a78-4f7a-94cb-35a679b171a5.avif" alt="Iconos relacionados con la información del dispositivo" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2b1e261-dd83-4d61-82da-e82008fefa83.avif" alt="Icono relacionado con información del dispositivo 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9a413f8-5329-4057-92b2-3da999a09560.avif" alt="Icono relacionado con información del dispositivo 3" />
+</Frame>
+
+Figura 3
+
+### 3.5 Imagen y datos y guardado
+
+#### 3.5.1 Vista previa
+
+- El área central de la imagen y los datos de la imagen y el software de operación relacionado con la imagen (dentro del cuadro rojo en la Figura 1)
+
+- [Iniciar/Detener flujo] [Guardar único] [Mapa de profundidad] [Mapa de intensidad] [RGB] [Nube de puntos] es el control de operación de la imagen
+
+- Las tres imágenes del medio son imágenes de profundidad, imágenes de intensidad, imágenes de nube de puntos e imágenes RGB obtenidas del dispositivo.
+
+- La fuente blanca en la parte inferior son datos de la cámara y la imagen (como se muestra en la Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fa05fb01-9d59-4202-992c-e770002d078d.avif" alt="Vista previa de iconos relacionados" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/007f900d-d780-4883-b875-b6370bbd87a7.avif" alt="Icono relacionado con vista previa 2" />
+</Frame>
+
+Figura 2
+
+#### 3.5.2 Control de imagen (flujo)
+
+- Botón [Iniciar/detener flujo]: haga clic para iniciar o detener el flujo del dispositivo
+
+- Botón [Guardar único]: guarda la imagen de los datos de la transmisión que se han activado
+
+- Por ejemplo, la Figura 2 solo guarda la imagen de profundidad y la imagen de nube de puntos. La imagen RGB y la imagen de intensidad no están activadas, por lo que no se guardan.
+
+- El sufijo para los archivos de mapas de profundidad y mapas de intensidad es .pgm, el sufijo para los archivos de imágenes RGB es .png y el sufijo para los archivos de imágenes de nubes de puntos es .pcd
+
+- La imagen de profundidad guardada, la imagen de intensidad y la imagen de nube de puntos son las imágenes originales sin agregar colores falsos.
+
+- Puedes hacer clic varias veces para guardar continuamente, pero puedes guardar hasta tres veces seguidas.
+
+- Casilla de verificación [Mapa de profundidad]: si se muestra (activa) el mapa de profundidad
+
+- Casilla de verificación [Gráfico de intensidad]: si se muestra (activa) el gráfico de intensidad
+
+- Casilla de verificación [Nube de puntos]: si se muestra (activa) la imagen de la nube de puntos
+
+- Casilla de verificación [RGB]: si se activa la imagen RGB
+
+- Después de desmarcar el mapa de intensidad/RGB, el dispositivo dejará de recopilar imágenes del mapa de intensidad/RGB, pero el dispositivo solo dejará de recopilar datos de profundidad cuando el mapa de profundidad y el mapa de nube de puntos estén apagados al mismo tiempo.
+
+- En la Figura 2, el dispositivo comienza a transmitir y muestra imágenes de profundidad, imágenes de nubes de puntos, imágenes RGB e imágenes de intensidad.
+
+- En la Figura 3, el dispositivo deja de fluir y no se ve ningún tipo de imagen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/10bcfd4f-2447-44fb-9229-60922e39b3a3.avif" alt="Iconos relacionados con el control de imagen (flujo)" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0732a8cf-e7fa-4a4d-bc1e-27e92d99234d.avif" alt="Diagrama relacionado con el control de imagen (flujo) 2" />
+</Frame>
+
+Figura 3
+
+#### 3.5.3 Datos de imagen
+
+- Mostrar la temperatura de la cámara (cuadro rojo en la Figura 4)
+
+- Muestra la velocidad de fotogramas del mapa de profundidad cuando el mapa de profundidad está marcado (cuadro verde en la Figura 4)
+
+- Muestra la velocidad de fotogramas del mapa de intensidad cuando el mapa de intensidad está marcado (cuadro azul en la Figura 4)
+
+- Muestra la velocidad de fotogramas de la imagen RGB cuando la imagen RGB está marcada (cuadro de color rojo en la Figura 4)
+
+- Cuando se marca la imagen RGB, se muestra el valor del píxel seleccionado en la imagen RGB (cuadro negro en la Figura 4)
+
+- Cuando se marca el mapa de profundidad, se muestra el valor del píxel seleccionado en el mapa de profundidad (cuadro amarillo en la Figura 4)
+
+- Cuando se marca el mapa de intensidad, se muestra el valor del píxel seleccionado en el mapa de intensidad (cuadro naranja en la Figura 4)
+
+- Cuando se marca el mapa de nube de puntos, se muestra el valor de la nube de puntos correspondiente al píxel seleccionado en el mapa de profundidad (cuadro morado en la Figura 4)
+
+- Cuando no se selecciona ningún píxel, el píxel (0,0) se selecciona de forma predeterminada.
+
+- Cuando la velocidad de cuadros es mayor a 12, el color de fondo es verde, si es mayor a 6 y menor a 12, es naranja, y si es menor a 6, es rojo.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/066e6c1a-c11a-463d-9173-f8d8a0c9df32.avif" alt="Iconos relacionados con datos de imagen" />
+</Frame>
+
+Figura 4
+
+#### 3.5.4 Visualización de imágenes
+
+- Puedes elegir diferentes métodos de visualización:
+
+- Pantalla única: Cuando se marca una de las cuatro imágenes, se mostrará una sola pantalla (como se muestra en la Figura 5)
+
+- Pantalla dual: cuando se marcan dos de las cuatro imágenes, se mostrará una pantalla dual (como se muestra en la Figura 6)
+
+- Tres imágenes: cuando se marcan tres de las cuatro imágenes, se mostrarán tres imágenes (como se muestra en la Figura 7)
+
+- Pantalla cuádruple: cuando se marcan las cuatro imágenes, se mostrarán cuatro pantallas (como se muestra en la Figura 8)
+
+- Al mover el mouse sobre la imagen, puede usar la rueda del mouse para acercar o alejar con el mouse como centro, mantener presionado el botón izquierdo del mouse y arrastrar (compare las imágenes RGB en la Figura 5 y la Figura 6)
+
+- Haga clic izquierdo en la imagen para seleccionar píxeles y las teclas de flecha pueden mover los píxeles seleccionados (Figura 6)
+
+![Imagen relacionada con la visualización de imágenes.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/038be00d-997d-47ea-8c6e-3da9cb2f5737.avif)![Imagen relacionada con la visualización de imágenes 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a3715e8b-c3fa-417a-bccd-c819ea029b5a.avif)
+
+Figura 5 Figura 6
+
+![Imagen relacionada con la visualización de imágenes 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/320369a9-49ff-4524-8019-622ada69f7c5.avif)![Imagen relacionada con la visualización de imágenes 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08a8e2a6-a3ee-4d1b-8b6c-a2c30d3d60f2.avif)
+
+Figura 7 Figura 8
+
+#### 3.5.5 Operación de imagen de nube de puntos
+
+- Mantenga presionado el botón izquierdo en la imagen de la nube de puntos y arrastre para rotar la perspectiva de la cámara
+
+- Mantenga presionado el centro del mouse y arrastre para mover el foco
+
+- Mantenga presionado el botón derecho del mouse y arrastre el mouse hacia arriba o hacia abajo, o use la rueda del mouse para acercar o alejar la nube de puntos.
+
+- Las operaciones de las teclas de acceso directo de imágenes de nubes de puntos son las siguientes:
+
+|  |  |
+| --- | --- |
+| Teclas de acceso directo | Funciones |
+| W | Modelo de visualización de cuadrícula, presione S para cambiar |
+| R | Restablecer vista de cámara |
+| S | Modelo de visualización de superficie, presione W para cambiar |
+| P | Oculte todos los segmentos de línea, superficies y mallas, presione W, S para restaurar |
+| U | Llamar a función definida por el usuario (no válida) |
+| O | Elimina el efecto ojo de pez, presiona nuevamente para restaurar |
+| F | Acérquese a la posición del mouse y establezca la posición del mouse como centro de rotación |
+| GRAMO | Mostrar barra de escala y escala, presione nuevamente para ocultar |
+|
+| METRO | Muestre el cuadro delimitador de la nube de puntos, presione nuevamente para mostrar la nube de puntos |
+| Un | Reducir el espesor de la nube de puntos a un mínimo de 1 |
+| D | Aumenta el grosor de la nube de puntos, hasta 6 |
+| mi | Volver a la perspectiva inicial |
+| [ | Utilice el punto central medio como enfoque para pasar a la vista frontal, no compatible con el modo para evitar obstáculos |
+| ] | Utilice el punto central medio como enfoque para pasar a la perspectiva trasera, no compatible con el modo para evitar obstáculos |
+| ; | Utilice el punto central medio como enfoque para moverse a la perspectiva del lado izquierdo, no compatible con el modo para evitar obstáculos |
+| ' | Utilice el punto central medio como enfoque para moverse a la perspectiva correcta, no compatible con el modo para evitar obstáculos |
+| . | Utilice el punto central medio como enfoque para cambiar a la vista superior, que no se admite en el modo para evitar obstáculos |
+| / | Utilice el punto central medio como enfoque para girar a la vista hacia arriba, que no es compatible con el modo para evitar obstáculos |
+
+### 3.6 Barra de menú
+
+- La barra de menú incluye [Funciones Básicas] [Algoritmo de Aplicación] [Otros] [Idioma] (Figura 1)
+
+- Haga clic en [Funciones básicas] para mostrar como se muestra en la Figura 2
+
+- Haga clic en [Aplicar algoritmo] para mostrar como se muestra en la Figura 3.
+
+- Haga clic en [Otras herramientas] para mostrar como se muestra en la Figura 4
+
+- Haga clic en [Idioma] para mostrar como se muestra en la Figura 5.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e35d1c41-3e31-4595-92e6-4168ccb63928.avif" alt="Iconos relacionados con la barra de menú" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d0d806a-9d20-4881-b74d-f5f6261d6b6c.avif" alt="Iconos relacionados con la barra de menú 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec624ff5-e5e5-4399-8f0a-122fa54b23de.avif" alt="Iconos relacionados con la barra de menú 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d18452fe-8cbe-4826-95f9-3429617c8b1d.avif" alt="Iconos relacionados con la barra de menú 4" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6bb109ee-e3fc-4d19-8013-65a21fda8286.avif" alt="Iconos relacionados con la barra de menú 5" />
+</Frame>
+
+Figura 5
+
+### 3.7 Barra de funciones
+
+#### 3.7.1 Función de visualización
+
+- Contraer la columna derecha (cuadro rojo en la Figura 1)
+
+- Expandir todo y contraer todo (en el cuadro azul de la Figura 1, el superíndice significa contraer todo, el subíndice significa expandir todo)
+
+- Haga clic en el nombre de la función para mostrar la información de configuración correspondiente en el SDK (en el cuadro azul en la parte inferior de la Figura 1)
+
+- Por ejemplo, en la imagen, se hace clic en antidistorsión en la configuración 2D (texto en el cuadro verde), y la interfaz API y el valor de enumeración al llamar a esta función se muestran en el cuadro azul.
+
+- Estado expandido y estado colapsado (2D en la Figura 1 está configurado en el estado expandido, otros están configurados en el estado colapsado)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08dceb49-92e5-4dba-8ea9-422242ae540a.avif" alt="Mostrar iconos relacionados con funciones" />
+</Frame>
+
+Figura 1
+
+#### 3.7.2 Herramientas básicas
+
+- Haga clic en [Herramientas básicas] en la barra de menú para ver las configuraciones relevantes de las herramientas básicas en el lado derecho de la interfaz (Figura 1)
+
+- Las herramientas básicas incluyen [Configuración de visualización de imagen] [Configuración 2D] [Configuración 3D] [Filtrado] [Interfaz de hardware] [Configuración de adquisición] [Configuración de funciones] (Figura 2)
+
+- El nombre de la función y el valor de enumeración correspondiente a la interfaz se muestran en el cuadro azul a continuación (Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1634ffda-c43e-49ce-a3c1-6d327b4c1397.avif" alt="Ilustraciones relacionadas con herramientas básicas." />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1bdfe8e-e7d0-47fa-8171-1f9b73c84073.avif" alt="Ilustraciones relacionadas con herramientas básicas 2." />
+</Frame>
+
+Figura 2
+
+##### 3.7.2.1 Configuración de visualización de imágenes
+
+- [Mostrar modelo de cámara] Mostrar (Figura 4) o no mostrar (Figura 5) el modelo de cámara en la imagen de nube de puntos
+
+- [Mostrar colores falsos] Muestra colores de profundidad en nubes de puntos y muestra colores RGB después de activar la alineación RGB
+
+- [Estabilidad de la nube de puntos] Activar puede estabilizar la visualización de la nube de puntos cuando la nube de puntos desaparece debido a razones de adaptación en algunas computadoras.
+
+- [Sincronización de imagen fuerte] Modifique la profundidad mínima del mapa de profundidad y el mapa de nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+- [Mantener cuadros de interferencia] Modifique la profundidad máxima del mapa de profundidad y el mapa de nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+- [Profundidad mínima] Modifique la profundidad mínima del mapa de profundidad y el mapa de nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+- [Profundidad máxima] Modifique la profundidad máxima del mapa de profundidad y el mapa de nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+- [Intensidad mínima] Modifique la intensidad mínima del mapa de profundidad y la imagen de la nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+- [Intensidad máxima] Modifique la intensidad máxima del mapa de profundidad y la imagen de la nube de puntos que se muestran en la interfaz, y la salida de la cámara permanece sin cambios.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3631db86-23a0-4ed3-a73a-1748d1a97727.avif" alt="Iconos relacionados con la configuración de visualización de imágenes" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe564767-2b53-4033-b8b7-d50612a5f49b.avif" alt="Ilustraciones relacionadas con la configuración de visualización de imágenes 2" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2adbbdfb-2ddf-4b3d-a201-00feab5b6348.avif" alt="Ilustraciones relacionadas con la configuración de visualización de imágenes 3" />
+</Frame>
+
+Figura 5
+
+##### 3.7.2.2 Configuración 2D
+
+- [Ancho RGB] Ancho de píxeles de la imagen RGB, determinado por el modelo del dispositivo y no se puede configurar
+
+- [Altura RGB] Altura de píxeles de la imagen RGB, determinada por el modelo del dispositivo y no se puede configurar
+
+- [Agrupación de píxeles] Presione 1\*1 o 2\*2 o N\*N para sumar los valores de píxeles en la matriz y divida por 2\*2 o N\*N para obtener la imagen agrupada (el tamaño de la imagen se convierte en el tamaño original dividido por el tamaño de píxel agrupado horizontal y verticalmente);
+
+- [Antidistorsión] Llame a los parámetros de distorsión en los parámetros internos para eliminar la distorsión de la imagen en la pantalla de la interfaz
+
+- [Coeficiente antidistorsión] Ajuste el coeficiente de distorsión para mejorar o debilitar la distorsión de la imagen blindada.
+
+- [Exposición automática] Enciende o apaga la cámara para configurar automáticamente el valor de exposición RGB
+
+- [Exposición] Exposición manual, se puede configurar cuando la exposición automática está desactivada
+
+- [Ganancia] Ganancia manual, se puede configurar cuando la exposición automática está desactivada
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6dbead-0b0e-475a-b5a1-389f486de155.avif" alt="Iconos relacionados con la configuración 2D" />
+</Frame>
+
+Figura 6
+
+##### 3.7.2.3 Configuración 3D
+
+- [Ancho 3D] El ancho de la imagen de la nube de puntos está determinado por el modelo del dispositivo y no se puede configurar.
+
+- [Altura 3D] La altura de la imagen de la nube de puntos está determinada por el modelo del dispositivo y no se puede configurar.
+
+- [Agrupación de píxeles] Presione 1\*1 o 2\*2 o N\*N para agregar los valores de píxeles en la matriz y dividir por 2\*2 o N\*N para obtener la imagen de agrupación, que se puede modificar después de detener el flujo (el tamaño de la imagen pasa a ser el tamaño original y se divide por el tamaño de píxel de agrupación horizontal y verticalmente)
+
+- [Alineación RGB] Alinea el mapa de profundidad, el mapa de intensidad, la nube de puntos y la imagen RGB. Después de la alineación, el mapa de profundidad y el mapa de intensidad tendrán el mismo ancho y alto que la imagen RGB. Los datos de la nube de puntos aumentarán y podrán modificarse después de detener el flujo.
+
+- [Modo multicámara] Activarlo cuando se utilizan varias cámaras al mismo tiempo puede eliminar la interferencia de otras cámaras y se puede modificar después de detener el flujo.
+
+- [Sensibilidad del algoritmo multimáquina] Los parámetros integrados del dispositivo están determinados por el modelo del dispositivo y no se pueden configurar.
+
+- [Antidistorsión] Llame a los parámetros de distorsión en los parámetros internos para eliminar la distorsión de la imagen en la pantalla de la interfaz
+
+- [Coeficiente antidistorsión] Ajuste el coeficiente de distorsión para mejorar o debilitar la distorsión de la imagen blindada.
+
+- [Modo de frecuencia] Los parámetros integrados del dispositivo están determinados por el modelo del dispositivo (la frecuencia de algunas cámaras es fija y no se puede configurar)
+
+- [Activar HDR] Activar la activación de HDR puede mejorar la claridad de la imagen en escenas con fuertes cambios de luz y oscuridad.
+
+- [Exposición automática] Cuando se enciende, el dispositivo ajusta automáticamente los parámetros de exposición según la intensidad de la luz ambiental.
+
+- [Intensidad objetivo] Umbral de intensidad al adquirir imágenes de profundidad (no se puede configurar)
+
+- [Límite superior de exposición automática] Establece el límite superior de exposición automática
+
+- [Límite inferior de exposición automática] Establece el límite inferior para la exposición automática (no se puede configurar)
+
+- [Ganancia] puede aumentar el valor de intensidad en múltiplos (no se puede configurar)
+
+- [x] La coordenada x de la esquina superior izquierda del conjunto del área ROI, que se puede modificar después de detener el flujo.
+
+- [y] Establezca la coordenada y de la esquina superior izquierda del área ROI, que se puede modificar después de detener el flujo.
+
+- [Alta integración] Alto tiempo de integración (aumentarlo permite que la cámara mida más distancia)
+
+- [Baja integración] Tiempo de integración bajo (controla principalmente la medición de distancia a una distancia más cercana, generalmente no es necesario cambiarlo)
+
+- [x offset] valor de compensación en la dirección del ancho, que se puede modificar después de detener el flujo
+
+- [y offset] El valor de compensación en la dirección alta, que se puede modificar después de detener el flujo.
+
+- [Ancho] El ancho del área ROI establecida, que se puede modificar después de detener el flujo.
+
+- [Alto] La altura del área ROI establecida, que se puede modificar después de detener el flujo.
+
+- [Velocidad de cuadros 3D] Establezca la velocidad de cuadros de la nube de puntos dentro del rango de velocidad de cuadros del dispositivo
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b1dcad39-ddcd-4db3-9940-9a6776a8e5ef.avif" alt="Iconos relacionados con la configuración 3D" />
+</Frame>
+
+Figura 7
+
+##### 3.7.2.4 Configuración de filtro
+
+- [Profundidad mínima] El límite inferior del color falso o la distancia del mapa de profundidad. Por debajo de este valor, el color falso se muestra como negro y se establece a la fuerza en cero.
+
+- [Profundidad máxima] El límite superior del color o la distancia falsos del mapa de profundidad. Por encima de este valor, el color falso se muestra como negro y se establece a la fuerza en cero.
+
+- [Umbral de señal baja] El límite inferior del valor de intensidad. Por debajo de este valor, los píxeles correspondientes en el mapa de profundidad se establecen a la fuerza en cero (no es efectivo para el mapa de intensidad)
+
+- [Umbral de señal alta] El límite superior del valor de intensidad. Si es mayor que este valor, los píxeles correspondientes en el mapa de profundidad se establecen a la fuerza en cero (no tiene efecto en el mapa de intensidad)
+
+- [Medición de señal pequeña] Configure el nivel de detección de señal pequeña. Cuanto mayor sea el nivel, más fácil será de detectar.
+
+- [Modo de filtro] Establecer el nivel de protección del filtro
+
+- [Nivel de suavizado] Controla la intensidad de suavizado del filtrado espacial, conservando los detalles de los bordes del objeto mientras suaviza el ruido.
+
+- [Nivel de ruido] Establece el umbral para el filtrado de ruido (cuanto mayor sea el valor, más ruido)
+
+- [Nivel temporal] Controle la intensidad del filtrado temporal y utilice datos históricos de cuadros múltiples para mejorar la continuidad de los datos de profundidad.
+
+- Nota: Establecer el nivel de suavizado, el nivel de ruido y el nivel de dominio de tiempo en 0 significa desactivar el filtrado.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6178fcc4-ee41-41dd-b01e-42b877764fd9.avif" alt="Ilustraciones relacionadas con la configuración del filtro" />
+</Frame>
+
+Figura 8
+
+##### 3.7.2.5 Interfaz de hardware
+
+- [Modo de salida IO] Puede configurar el formato de salida de la interfaz IO
+
+- [Modo de control de usuario IO] Los parámetros integrados del dispositivo definen la interfaz IO y no se pueden modificar.
+
+- [Velocidad de baudios CAN] El valor predeterminado es 250000. La velocidad de baudios debe ser consistente cuando se comunica con otros dispositivos a través de CAN.
+
+- [Tipo de protocolo CAN] El valor predeterminado es el tipo de protocolo oficial MRDVS, que se puede modificar a kcrobots
+
+- [Dirección CAN] Dirección de inicio de comunicación CAN, el valor predeterminado es 18
+
+- [Dirección MODBUS] Dirección de inicio de comunicación MODBUS, el valor predeterminado es 23
+
+- [Obtener estado de IO] Obtener el estado de retorno de la interfaz IO actual
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6a48416-31fc-41c0-869f-d745b3c54c99.avif" alt="Diagrama de interfaz de hardware" />
+</Frame>
+
+Figura 9
+
+##### 3.7.2.6 Configuración de colección
+
+- [Sincronización de cuadros] Controle las condiciones ambientales de cada tipo de captura de imagen para que sea consistente al guardar imágenes
+
+- [Modo de disparo] Controla el modo de flujo para que sea continuo, pasivo o activo
+
+- [Método para guardar la nube de puntos]
+
+- Regular (nube de puntos desordenada): el número de nubes de puntos permanece sin cambios, ancho = ancho \ * alto, alto = 1, como se muestra en la Figura 3
+
+- Nube de puntos ordenada: el número de nubes de puntos permanece sin cambios, ancho = ancho TOF, alto = alto TOF, como se muestra en la Figura 4
+
+- [Formato de guardado de nube de puntos] Establezca el formato de datos para guardar nubes de puntos
+
+- BINARIO: Guardar en formato binario
+
+- ASCII: guardar en formato de código ascii, es decir, guardar en modo texto
+
+- [Unidad de valor de nube de puntos] Establezca la unidad de medida de los datos en la imagen de la nube de puntos.
+
+- [Comenzar a guardar imágenes] Guarda continuamente el tipo de imágenes seleccionadas actualmente
+
+- [Abrir ruta de guardado] Abra la ruta para guardar imágenes con la función [Guardado único]
+
+Nota: Para una imagen de 640\*480, el tiempo de guardado en ascii es de aproximadamente 6,6 segundos y el tiempo de guardado en binario es de aproximadamente 32 ms. La velocidad de guardado binario es 206 veces mayor que la de ascii. Se recomienda guardar en formato binario.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/571ef290-056a-4f5a-8c4a-cee7c35fd78c.avif" alt="Iconos relacionados con la configuración de la colección" />
+</Frame>
+
+Figura 10
+
+##### 3.7.2.7 Configuración de funciones
+
+- [Seleccionar configuración] Puede seleccionar la configuración de parámetros de la cámara que se ha establecido
+
+- [Guardar configuración] Guarda manualmente la configuración de parámetros actual de la cámara.
+
+- [Cargar configuración] Aplicar la configuración de parámetros de cámara ya establecida a la cámara actual
+
+- [Exportar configuración a archivo] Empaquete la configuración de parámetros de la cámara actual en un archivo de formato json y expórtelo
+
+- [Cargar configuración desde archivo] Importe el archivo json con la configuración de parámetros de la cámara a la cámara actual y aplique la configuración
+
+- [ID definido por el usuario] Personaliza el ID de la configuración de parámetros actual
+
+- [Algoritmo subir] Migra el algoritmo integrado actual a la plataforma superior para ejecutarlo
+
+- [Obtener parámetros internos] Ver la configuración de parámetros integrada de la cámara
+
+- [Restaurar configuración de fábrica] Restaura la cámara a su estado de fábrica. Esta operación olvidará todas las configuraciones establecidas, incluidas, entre otras, la cámara IP. La cámara se apagará automáticamente y será necesario volver a encenderla manualmente.
+
+- [Actualización de firmware] Actualiza el firmware de la cámara. Después de hacer clic, aparecerá un cuadro de diálogo de selección de archivos. Seleccione el archivo con el sufijo .bin.
+
+- [Reiniciar cámara] Reinicia la cámara. La cámara no se apagará automáticamente, pero entrará en el estado de reconexión. No realice otras operaciones al volver a conectarse.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/18de7052-ce07-4e34-8108-d51560225d1e.avif" alt="Iconos relacionados con la configuración de funciones" />
+</Frame>
+
+Figura 11
+
+#### 3.7.3 Algoritmo de aplicación
+
+- Haga clic en [Aplicar algoritmo] en la barra de menú para ver las configuraciones relevantes del algoritmo de aplicación en el lado derecho de la interfaz (Figura 1)
+
+- [Modo de trabajo] Puede configurar la cámara para que continúe generando resultados del algoritmo incluso cuando esté desconectada de la computadora host.
+
+- [Algoritmo de aplicación] Seleccione el algoritmo de aplicación que desea habilitar:
+
+- [Cerrar] (Imagen 2)
+
+- [Algoritmo para evitar obstáculos 2.0] (Figura 3)
+
+- [Posicionamiento y expansión de pallets] (Figura 4)
+
+- [Versión del algoritmo] muestra el número de versión del algoritmo seleccionado actualmente
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb61c0f8-1d50-40eb-abe4-45d837a52c48.avif" alt="Ilustraciones relacionadas con algoritmos de aplicación." />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d876d359-e0a8-404d-8287-5871e2c4ce18.avif" alt="Diagrama relacionado con el algoritmo de aplicación 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a21b97d3-250e-4c14-b41e-68c62e02919a.avif" alt="Diagrama relacionado con el algoritmo de aplicación 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f7fb3525-ef8a-4a2e-9bb2-ca68a77a5a9d.avif" alt="Diagrama relacionado con el algoritmo de aplicación 4" />
+</Frame>
+
+Figura 4
+
+##### 3.7.3.1 Algoritmo para evitar obstáculos
+
+- Configure el algoritmo de la aplicación como algoritmo para evitar obstáculos y se mostrarán las configuraciones relacionadas con la evitación de obstáculos.
+
+- [Mostrar carrocería] Puede apagar o encender el modelo de automóvil que muestra la posición de la carrocería en la imagen de la nube de puntos.
+
+- [Índice de evitación de obstáculos] La evitación de obstáculos puede tener múltiples configuraciones, configuradas a través de esta opción
+
+- [Camera Angle Roll (eje x)] Parámetro externo de la cámara, ángulo de giro, la cámara predeterminada es 180
+
+- [Paso del ángulo de la cámara (eje y)] El parámetro externo de la cámara, ángulo de paso, instalación vertical predeterminada, es 90
+
+- [Ángulo de cámara Yaw (eje z)] Parámetro externo de la cámara, ángulo de rumbo, el valor predeterminado es 90
+
+- [Posición de la cámara (distancia x)] Parámetro externo de la cámara, la distancia entre la dirección x y el origen, unidad: metros.
+
+- [Posición de la cámara (ancho y)] Parámetro externo de la cámara, la distancia entre la dirección y y el origen, si está instalada en el medio, es 0. Unidad: Metro.
+
+- [Posición de la cámara (altura z)] El parámetro externo de la cámara, la distancia entre la dirección z y el origen, puede entenderse como la altura de la cámara desde el suelo, unidad: metros.
+
+- [Distancia de alerta temprana (x lejos)] Rango para evitar obstáculos, la distancia desde el centro del automóvil en la dirección x. Los obstáculos más allá de esta distancia se consideran seguros; la distancia entre la distancia de alerta temprana y la distancia de alarma se considera desaceleración de alerta temprana y la interfaz muestra un área amarilla. Unidad: metro.
+
+- [Distancia de alarma (centro x)] Rango para evitar obstáculos, la distancia desde el centro del automóvil en la dirección x. Los obstáculos por debajo de esta distancia se consideran paradas de alarma y la interfaz muestra un área roja; la distancia entre la distancia de preadvertencia y la distancia de alarma se considera una desaceleración de advertencia temprana y la interfaz muestra un área amarilla. Unidad: metro.
+
+- [Distancia de blindaje (cerca de x)] Rango de evitación de obstáculos, la distancia en la dirección x desde el centro del automóvil. Se ignorarán los obstáculos dentro de esta distancia. Unidad: metro.
+
+- [Rango para evitar obstáculos a la izquierda (y izquierda)] Rango para evitar obstáculos, la distancia desde el lado izquierdo de la dirección y hasta el centro del automóvil. Unidad: metro.
+
+- [Rango para evitar obstáculos a la derecha (y derecha)] Rango para evitar obstáculos, la distancia desde el lado derecho de la dirección y hasta el centro del automóvil. Unidad: metro.
+
+- [Altura para evitar obstáculos inferior (z inferior)] No se procesará el rango para evitar obstáculos, la altura desde el suelo, por debajo de esta altura. Si el valor es demasiado pequeño, pueden producirse falsas alarmas debido a errores de alcance; si la configuración es demasiado grande, es posible que se filtren obstáculos grandes en el suelo, lo que provocará falsas alarmas. Unidad: metro.
+
+- [Altura superior para evitar obstáculos (z superior)] No se procesará el rango para evitar obstáculos, la altura desde el suelo, superior a esta altura. Unidad: Metro.
+
+- [Salida para evitar obstáculos] Salida de resultados para evitar obstáculos
+
+- [Restablecer parámetros externos de la cámara] Restaura todos los parámetros que no se han escrito en la cámara
+
+- [Establecer parámetros externos] Escribe todos los parámetros en la cámara
+
+- Para obtener configuraciones detalladas para evitar obstáculos, consulte la documentación para evitar obstáculos.
+
+##### 3.7.3.3 Posicionamiento de paletas
+
+- Configure el algoritmo de la aplicación para el posicionamiento de paletas y se mostrarán las configuraciones relacionadas con la evitación de obstáculos.
+
+- [Nombre del proyecto] Nombre la configuración del parámetro de reconocimiento de paleta actual
+
+- [Configuración Rápida] Varias configuraciones proporcionadas por la cámara por defecto
+
+- [Camera Angle Roll (eje x)] El ángulo de inclinación de la cámara en relación con el eje X
+
+- [Inclinación del ángulo de la cámara (eje y)] El ángulo de inclinación de la cámara en relación con el eje Y
+
+- [Camera Angle Yaw (eje z)] El ángulo de inclinación de la cámara en relación con el eje Z
+
+- [Posición de la cámara (distancia x)] La distancia relativa entre el centro óptico de la cámara y el centro de rotación del montacargas en la dirección X
+
+- [Posición de la cámara (ancho y)] La distancia relativa entre el centro óptico de la cámara y el centro de rotación del montacargas en la dirección Y
+
+- [Posición de la cámara (altura z)] La distancia relativa entre el centro óptico de la cámara y el centro de rotación del montacargas en la dirección Z
+
+- [Altura del suelo] La distancia desde el centro óptico de la cámara al suelo.
+
+- [Ancho máximo de patas del palet] Debe ser compatible con el ancho máximo de patas del palet en el tipo de palet.
+
+- [Ancho mínimo de patas de palet] Debe ser compatible con el ancho mínimo de patas de palet en el tipo de palet.
+
+- [Distancia desde la bandeja] La distancia desde el centro óptico de la cámara hasta la bandeja una vez completada la inserción.
+
+- [Método de instalación] Configure según la dirección fija de la cámara, el valor predeterminado es la instalación formal (0)
+
+- [Valor Z mínimo] Identifique la distancia de profundidad más cercana del palet
+
+- [Valor Z máximo] Identifique la distancia de profundidad más lejana del palet
+
+- [Valor X mínimo] Identifique el límite lateral del palet (el límite izquierdo con la cámara como centro)
+
+- [Valor X máximo] Identificar el límite lateral del palet (el límite derecho con la cámara centrada)
+
+- [Salida del algoritmo de paleta] muestra los resultados del algoritmo de paleta
+
+- [Instrucciones de calibración] Calibre automáticamente cuando el suelo sea plano y no haya obstrucciones delante del palet. El palet es de tamaño estándar.
+
+- [Restaurar parámetros predeterminados] Restaura todos los parámetros a los valores predeterminados de fábrica
+
+- [Leer parámetros externos de la cámara] Lea todos los parámetros de la cámara, todos los parámetros no enviados se sobrescribirán
+
+- [Enviar parámetros] Escribe todos los parámetros a la cámara.
+
+- Para obtener configuraciones detalladas de detección de palés, consulte la documentación de la función de detección de palés.
+
+#### 3.7.4 Otras herramientas
+
+- [Cargar nube de puntos local] Puede abrir archivos de nube de puntos en formato .pcl, .png y verlos. Consulte la descripción de la herramienta para obtener más detalles.
+
+- [Herramienta de configuración de IP] Puede configurar la IP, la máscara de subred y la puerta de enlace de la cámara.
+
+- La [Herramienta de captura de paquetes] se puede utilizar para capturar datos de paquetes de tarjetas de red; consulte la descripción de la herramienta para obtener más detalles.
+
+- [Herramienta de configuración de tarjeta de red] admite la configuración de tarjetas de red y firewalls; consulte la descripción de la herramienta para obtener más detalles
+
+- [Herramienta de comunicación] Admite comunicación TCP, UDP, MODBUS, FTP; consulte la descripción de la herramienta para obtener más detalles
+
+- [Habilitar GPU] Permite el uso de cálculos de GPU para procesar gráficos
+
+- [Nivel de registro] Controla el nivel de detalle de la información de impresión de registros
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b8797c14-d930-417a-a6bd-85d45c22adbd.avif" alt="Iconos relacionados con otras herramientas" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/51669a0b-c3c1-4878-98e0-e436ceed6807.avif" alt="Iconos relacionados con otras herramientas 2" />
+</Frame>
+
+Figura 2
+
+## 4. Accede al sistema de cámaras.
+
+- Conéctese vía ssh a la dirección IP de la cámara, puerto 22
+
+- Tome MobaXterm como ejemplo, asumiendo que la IP de la cámara es 192.168.100.15 (Figura 1, Figura 2)
+
+- Nombre de usuario: usuario, contraseña: usuario. Después de iniciar sesión correctamente, verá la interfaz como se muestra en la Figura 3.
+
+- El sistema viene con la configuración como se muestra en la siguiente tabla.
+
+|  |  |
+| --- | --- |
+| Configuración incorporada | Número de versión |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Nota: No modifique la configuración integrada del sistema a voluntad, ya que puede provocar que el sistema falle**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/611909af-41f3-4eab-a4b0-74221d61b2f4.avif" alt="4. Acceda a los íconos relacionados con el sistema de cámara" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6198bda7-f6e3-4a6c-a8e8-8782066d5fbf.avif" alt="4. Ilustraciones relacionadas con el acceso al sistema de cámara 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/40ff82ed-4595-4753-842c-48c471c5fbf9.avif" alt="4. Ilustraciones relacionadas con el acceso al sistema de cámara 3" />
+</Frame>
+
+Figura 3
+
+## Descripción de la herramienta
+
+### 5.1 Herramienta de configuración de IP
+
+- Después de abrir la [Herramienta de configuración IP], como se muestra en la Figura 1
+
+- Haga doble clic en la información después de la dirección MAC para copiar, haga doble clic en la información después de la dirección IP, la máscara de subred y la puerta de enlace para escribir, haga clic en otras opciones para cancelar la modificación y presione Entrar para confirmar la modificación, como se muestra en la Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db8cd5ed-0942-4a8d-9719-a2401e268c52.avif" alt="Interfaz de configuración de red IPv4 de Windows" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4eca7e7e-b50d-43ac-ae67-ca82cd2062e3.avif" alt="Interfaz de configuración de red IPv4 de Windows 2" />
+</Frame>
+
+Figura 2
+
+### 5.2 Herramientas de comunicación
+
+- Abra [Herramientas de comunicación] como se muestra en la Figura 1.
+
+- Las herramientas de comunicación admiten TCP, UDP, FTP, Modbus TCP, Modbus RTU, CAN (linux)
+
+- Las herramientas de comunicación admiten la apertura múltiple de diferentes pestañas.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3f776879-9244-4d03-be34-a4b1ed20fffa.avif" alt="Ilustraciones relacionadas con herramientas de comunicación." />
+</Frame>
+
+Figura 1
+
+### 5.3 Herramienta de configuración de la tarjeta de red
+
+- Después de abrir la [Herramienta de nube de puntos local], como se muestra en la Figura 1
+
+- La herramienta de configuración de la tarjeta de red puede configurar el firewall
+
+- Después de seleccionar la tarjeta de red, puede abrir las propiedades de la tarjeta de red y la interfaz de configuración que viene con Windows.
+
+-Soporte para abrir la página de configuración del firewall.
+
+- Admite la apertura del administrador de tareas.
+
+-Soporte para abrir el Centro de conexión de red.
+
+- El idioma sigue automáticamente este software.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76495e2c-d92d-4f17-b2f8-21d1bb7b9072.avif" alt="Ilustraciones relacionadas con la herramienta de configuración de la tarjeta de red." />
+</Frame>
+
+Figura 1
+
+## Preguntas frecuentes y soluciones
+
+|  |  |
+| --- | --- |
+| Descripción del problema | Solución |
+| No puedo encontrar la cámara | * Compruebe si la alimentación de la cámara está conectada. Después de encender la alimentación, la luz azul en el frente de la cámara siempre está encendida * Verifique si la dirección IP y la máscara de subred son correctas * Verifique si la computadora host tiene prohibido acceder a la red |
+| Se puede abrir la cámara pero falla el streaming | Compruebe si la computadora host se ha abierto con derechos de administrador |
+| Retraso de imagen | Compruebe si la tarjeta de red, el cable de red y el conmutador son Gigabit. Después de activar la alineación RGB, la red 100M experimentará un cierto grado de retraso |
+| La cámara se vuelve a conectar con frecuencia | Después de restaurar la configuración de fábrica, actualizar el firmware o cuando la cámara se enciende por primera vez en una red de 100 M, la cámara se ajustará/reiniciará sola durante aproximadamente 30 segundos. Dentro de 30 segundos, la computadora host seguirá intentando conectarse a la cámara hasta que la cámara esté estable |
+| Sin datos de profundidad, datos de nube de puntos | * Verifique si la cámara está bloqueada * Verifique si el objeto está dentro del rango de disparo de la cámara * Verifique si los valores de profundidad máximo/mínimo son correctos * Verifique si los parámetros del filtro son correctos |
+| La nube de puntos desaparece y en la interfaz solo se ve el marco blanco | Haga clic en la imagen de la nube de puntos con el mouse y presione la tecla 'm' para activar la estabilización de la nube de puntos |
+| La visualización de la nube de puntos es anormal | Compruebe si se ha utilizado la tecla de acceso directo de la nube de puntos y active la estabilidad de la nube de puntos |
+| La nube de puntos no se muestra después de abrir la cámara en Linux | Utilice el mouse para presionar y arrastrar la imagen de la nube de puntos para mostrar |
+| Visualización de la aplicación: error al cargar VTK, no se mostrará la nube de puntos, verifique la configuración de la tarjeta gráfica y el controlador de la tarjeta gráfica | * Verifique si la configuración de la tarjeta gráfica es demasiado baja * Verifique si el controlador de la tarjeta gráfica se está ejecutando normalmente * La visualización de nube de puntos requiere una tarjeta gráfica con memoria de visualización de video independiente y su controlador |
+
+## Ayuda
+
+### 7.1 Acerca de
+
+Haga clic en [Acerca de] en la esquina superior derecha, o en la información actual cuando se inicia el software por primera vez, puede ver el número de versión del software, el número de versión del SDK y otra información relacionada. Haga clic en el botón [Abrir documento de ayuda] para abrir este documento, como se muestra en la siguiente figura:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c3d926d9-7023-4d79-83d6-1a51ce88ad55.avif" alt="Acerca de los iconos relacionados" />
+</Frame>
+
+### 7.2 Manual de usuario
+
+Haga clic derecho en el acceso directo de este software → abra la ubicación del archivo → regrese al directorio superior → puede ver todos los documentos relacionados en Documento, como se muestra en la siguiente figura:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cbee533-fab9-4664-8a6b-0b6ea4bb2a34.avif" alt="Iconos relacionados con el manual de usuario" />
+</Frame>

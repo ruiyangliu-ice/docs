@@ -1,0 +1,162 @@
+---
+title: "Guía solo de localización V2"
+description: "Utilice la interfaz web de localización V2 únicamente para mapeo, localización y administración de mapas."
+hidden: true
+---
+## Descripción de la interfaz
+
+Barra de menú roja: haga clic para ingresar los detalles de operación de la función correspondiente, como inicio de mapeo, reubicación, administración de mapas, etc.
+
+Cuadro azul: visible usando el mapa de contorno 2D cargado y el ícono de visualización de posicionamiento del automóvil
+
+Cuadro verde: muestra la imagen RGB en tiempo real de la cámara de vista superior
+
+Cuadro amarillo: visualización en tiempo real de la intensidad de la señal de reubicación (verde: excelente intensidad, azul: buena intensidad, rojo: mala intensidad); visualización en tiempo real de las coordenadas de posición actuales del automóvil, la velocidad de movimiento actual del automóvil y las coordenadas de posición del mouse
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="Iconos relacionados con la descripción de la interfaz" />
+</Frame>
+
+Figura 1 Descripción de la interfaz
+
+## 1. Comience a construir el mapa
+
+Haga clic en el botón **Comenzar a construir mapa** en la interfaz web, como se muestra en la siguiente figura:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="1. Ilustraciones relacionadas con cómo empezar a construir un mapa." />
+</Frame>
+
+Ingrese el nombre del mapa (el nombre del mapa consta de letras, números y guiones bajos, y no puede comenzar con números), como se muestra en la siguiente figura:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="1. Ilustraciones relacionadas con el inicio del mapeo 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="1. Ilustraciones relacionadas con el inicio del mapeo 3" />
+</Frame>
+
+Esta es la página para empezar a mapear
+
+Luego mueva el AGV para escanear el mapa en el área de operaciones. Una vez completado el escaneo, haga clic en la barra de menú para finalizar la construcción del mapa. Espere pacientemente (el tiempo de espera está relacionado con el tamaño del área de escaneo).
+
+Cuando el mapeo se realiza correctamente, los datos del mapeo se pueden ver en el elemento de administración del mapa.
+
+mapeo incremental
+
+Función: agregar nuevas áreas de mapa basadas en mapas existentes, como expansión de mapa y complementar puntos ciegos
+
+Requisito previo: al crear mapas incrementales, debe asegurarse de que la página web haya completado la reubicación y de que haya cambiado al mapa que debe agregarse.
+
+(Por el momento, se emite una solicitud HTTP manual)
+
+Dirección [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
+
+Parámetro Json
+
+```json
+{
+
+    "cmd":905, // 904 starts incremental mapping; 905 stops incremental mapping
+
+    "attach":{
+
+        "sub_command":0,
+
+        "param":""
+
+}
+
+}
+```
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="1. Ilustraciones relacionadas con el inicio del mapeo 4" />
+</Frame>
+
+Una vez completado el mapeo incremental, el área recién registrada se agregará directamente al mapa original y solo necesitará reiniciar la reubicación.
+
+## 2. Gestión de mapas
+
+![2. Ilustraciones relacionadas con la gestión de mapas.](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif) Figura 2 Diagrama esquemático de gestión de mapas
+
+Una vez completada la creación del mapa, haga clic en **Administración de mapas** en la barra de menú. Puede ver el nombre del mapa que acaba de crear en la lista de mapas del host. Haga clic en el botón Aplicar para cambiar al mapa. De manera similar, si hay varios mapas regionales para cambiar, también deberá usar la función de administración de mapas para cambiar. Haga clic en el botón Eliminar para eliminar el mapa correspondiente; **Aplicar mapa:** Después de hacer clic en Aplicar, asegúrese de reiniciar el host antes de que el mapa se aplique y surta efecto; de lo contrario, la reubicación no será posible.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="2. Ilustraciones relacionadas con la gestión de mapas 2" />
+</Frame>
+
+Figura 3 Diagrama esquemático del mapa de aplicación.
+
+## 3. Reubicación
+
+Después de hacer clic en la reubicación, puede arrastrar el mouse para obtener la postura de reubicación aproximada según el mensaje coincidente de la nube de puntos láser y el mapa de contorno láser para la reubicación;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="3. Íconos relacionados con la reubicación" />
+</Frame>
+
+Figura 4 Diagrama esquemático de la función de reubicación.
+
+Una vez que la reubicación se realiza correctamente, la excepción **tiempo de espera de posicionamiento** desaparece.
+
+Reubicación del código QR
+
+Al crear un mapa, puede optar por pegar el código Apritag en algunas ubicaciones para su reubicación. Cuando el código QR completo aparezca en la perspectiva del dispositivo, identificará automáticamente en qué mapa y ubicación se encuentra el código, cambiará automáticamente el mapa y se reubicará.
+
+Sitio web de generación de códigos QR [https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="3. Iconos relacionados con la reubicación 2" />
+</Frame>
+
+Solo asegúrese de que no se repita el Tag ID en el área donde se encuentra un dispositivo. TagFamily está arreglado como se muestra arriba.
+
+## 4. Configuración y visualización de parámetros
+
+Ver y configurar los parámetros externos del láser y la cámara en los parámetros de posicionamiento del chasis y los valores de calibración del sensor de la configuración del robot.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="4. Configuración de parámetros y visualización de iconos relacionados." />
+</Frame>
+
+Figura 5 Configuración de parámetros
+
+## 5. Función de exportación de registros
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="5. Ilustraciones relacionadas con la función de exportación de registros." />
+</Frame>
+
+Figura 6 Función de importación y exportación de registros
+
+Como se muestra en la figura anterior, puede filtrar los registros correspondientes según el intervalo de tiempo, el tipo de módulo y otras opciones. El siguiente registro es el registro de recuperación correspondiente, que se puede exportar después de la selección.
+
+## 7. Actualización de firmware
+
+Ver paquete local: importe el firmware local que debe actualizarse (chasis, actuador, firmware de la cámara).
+
+Restaurar paquete: registre la versión del firmware antes de la última actualización. Si necesita regresar, simplemente haga clic en él.
+
+![7. Íconos relacionados con la actualización de firmware](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif) Figura 7 Actualización de firmware
+
+Actualización del firmware del host de la cámara
+
+Puede utilizar una computadora host normal para actualizar el firmware. Este método de actualización no se puede revertir y es necesario actualizar con precaución. ![7. Iconos relacionados con la actualización de firmware 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
+
+## 8. Detenga y reinicie la aplicación principal.
+
+Haga clic en el control apropiado. Antes de conectar LxCameraViewer a la cámara, detenga la aplicación principal del robot. De lo contrario, el robot conserva el control de la cámara e impide que LxCameraViewer se conecte. ![Controles principales de la aplicación](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
+
+Figura 8 Funciones de ontología
+
+9. Consulta de versión
+
+Haga clic para consultar la versión de la ontología y la versión del front-end.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="7. Iconos relacionados con la actualización de firmware 4" />
+</Frame>
+
+Figura 9 Consulta de versión

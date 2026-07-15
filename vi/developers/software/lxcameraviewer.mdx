@@ -1,0 +1,1099 @@
+---
+title: "Hướng dẫn sử dụng LxCameraViewer"
+description: "Cài đặt và sử dụng ứng dụng Windows LxCameraViewer với máy ảnh MRDVS và SDK máy ảnh C hoặc C++."
+---
+Tải xuống phiên bản mới nhất của phiên bản PDF thủ công:
+
+[Hướng dẫn sử dụng LxCameraViewer.pdf](/files/legacy/eb7e3080-2d7f-4d21-9acf-fdce85d40a91/f734e513-b541-4ccd-9c4f-650b54dc966c.pdf)
+
+## 1. Tổng quan
+
+LxCameraViewer là phần mềm máy tính chủ Windows được phát triển dựa trên các sản phẩm máy ảnh tự phát triển của Blue Core và bộ công cụ phát triển SDK C hoặc C++ của máy ảnh, sau đây gọi là phần mềm này.
+
+Phần mềm này cung cấp cho người dùng camera các chức năng đơn giản và nhanh chóng như xem, cài đặt camera, cài đặt thuật toán, cấu hình IP, xem đám mây điểm, công cụ chụp gói, công cụ liên lạc, cấu hình tường lửa và các chức năng khác. Hiện tại, phần mềm này hỗ trợ mở và xem nhiều thiết bị, hỗ trợ xem đầu ra hình ảnh độ sâu, hình ảnh cường độ, hình ảnh đám mây điểm và hình ảnh RGB. Nó cũng hỗ trợ đọc và cài đặt các thông số như chức năng cơ bản của camera và cấu hình cơ bản của thuật toán.
+
+Thông qua ứng dụng này, người dùng có thể xem và lưu dữ liệu hình ảnh có độ chính xác cao thu được từ camera, cấu hình camera và dữ liệu chi tiết thuật toán, v.v.
+
+## 2. Cài đặt
+
+### 2.1 Cấu hình hệ thống khuyến nghị
+
+| Mục cấu hình | Cấu hình đề xuất |
+| --- | --- |
+| Hệ điều hành | Windows10 (64-bit) Windows11 (64-bit) |
+| Ký ức | 4G trở lên |
+| Card mạng/cáp mạng | Gigabit trở lên |
+
+| Mục cấu hình | Cấu hình đề xuất |
+| --- | --- |
+| Hệ điều hành | Ubuntu (64-bit) |
+| Ký ức | 4G trở lên |
+| Card mạng/cáp mạng | Gigabit trở lên |
+
+### 2.2 Địa chỉ IP và cấu hình cổng
+
+- Phương thức kết nối là kết nối địa chỉ IP cố định. Nếu bạn cần sửa đổi IP, bạn có thể sửa đổi nó thông qua phần mềm này.
+
+- Địa chỉ IP mặc định của camera là: 192.168.100.82.
+
+- Cổng mặc định có thể trống.
+
+- Subnet Mask là 255.255.0.0, 255.255.255.0 trên nền tảng Linux
+
+- Đặt địa chỉ IP của Ethernet kết nối với camera trên máy tính chủ thành 192.168.100.x. x đại diện cho bất kỳ số nào từ 3 đến 254. IP máy tính chủ và IP camera không được giống nhau.
+
+- Ví dụ: IP camera là 192.168.100.12 thì địa chỉ IP của máy chủ đặt là 192.168.100.89 và subnetmask là 255.255.0.0 như hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7147dc86-d32e-4afb-8575-65f404e42d47.avif" alt="Hình minh họa liên quan đến địa chỉ IP và cấu hình cổng" />
+</Frame>
+
+### 2.3 Cài đặt máy chủ
+
+- Click đúp để mở gói cài đặt máy chủ Lanxin-MRDVS-x.x.x.xxxx.exe
+
+- Bấm để cho phép ứng dụng thực hiện thay đổi trên thiết bị
+
+- Lựa chọn ngôn ngữ sử dụng trong quá trình cài đặt (Hình 1)
+
+- Chọn đường dẫn cài đặt, nên sử dụng đường dẫn cài đặt mặc định (Hình 2)
+
+- Tích vào [Tạo lối tắt trên màn hình] (Hình 3)
+
+- Sau khi cài đặt xong bỏ chọn [Run Lanxin-MRDVS] và nhấn Finish (Hình 4)
+
+- Khi mở máy chủ lần đầu tiên, bạn cần sử dụng quyền quản trị viên để mở. Nhấp chuột phải vào biểu tượng phần mềm trên màn hình và nhấp vào [Run as Administrator] (Hình 5)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8b8740cd-5d09-4b72-bfb0-58675ea2cda1.avif" alt="Hình ảnh minh họa liên quan đến việc cài đặt máy chủ" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/33d54828-e95f-45b1-9c2c-ba58053fe1e1.avif" alt="Các hình ảnh minh họa liên quan đến cài đặt máy chủ 2" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96ac4701-9de1-4083-a2f4-6a75ab387aeb.avif" alt="Các hình ảnh minh họa liên quan đến cài đặt máy tính chủ 3" />
+</Frame>
+
+Hình 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a26f6a36-047d-46c6-95a8-d60e1335433c.avif" alt="Các hình ảnh minh họa liên quan đến cài đặt máy chủ 4" />
+</Frame>
+
+Hình 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d1860fc-2d7f-4069-a405-26b39933f032.avif" alt="Các hình ảnh minh họa liên quan đến cài đặt máy chủ 5" />
+</Frame>
+
+Hình 5
+
+### 2.4 Cấu hình tường lửa
+
+Để mở camera, bạn cần tắt tường lửa. Quá trình cài đặt như hình bên dưới (lấy WIN10 làm ví dụ):
+
+Mở phần mềm này và nhấp vào nút [Công cụ khác] ở trên
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a1d2044-52c3-4094-aee5-ba2e74529e6c.avif" alt="Các biểu tượng liên quan đến cấu hình tường lửa" />
+</Frame>
+
+Hình 1
+
+Chọn [Công cụ cấu hình card mạng] trong thanh bật lên bên phải
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/347b75c7-d48d-449f-a4db-a17d48d7b801.avif" alt="Sơ đồ liên quan đến cấu hình tường lửa 2" />
+</Frame>
+
+Hình 2
+
+Trong công cụ cấu hình card mạng, nhấp vào nút bên dưới [Mở/Đóng]
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14eb74a6-5be7-4aed-a5f1-d0ae5c8f149f.avif" alt="Sơ đồ liên quan đến cấu hình tường lửa 3" />
+</Frame>
+
+![Biểu tượng liên quan đến cấu hình tường lửa 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df0eba42-c3b8-4230-87ba-b4676ab32e37.avif)Hình 3
+
+Khi cửa sổ bật lên hiển thị trong Hình 4, tường lửa đã được bật. Khi cửa sổ bật lên như trong Hình 5 và Hình 6 bật lên ở góc dưới bên phải thì tường lửa đã tắt.
+
+![Biểu tượng liên quan đến cấu hình tường lửa 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/079270ad-0c8d-4a96-9ffa-096bc980f692.avif) ![Biểu tượng liên quan đến cấu hình tường lửa 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ebbf202-28ae-4474-93df-85549c0bd78c.avif)
+
+Hình 4 Hình 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6ba5fc85-0e0f-46e4-80b0-a23e2551cf85.avif" alt="Sơ đồ liên quan đến cấu hình tường lửa 7" />
+</Frame>
+
+Hình 6
+
+Nếu phương pháp trên không hiệu quả, bạn có thể nhấp vào nút [Trang cấu hình tường lửa] như hiển thị bên dưới và đợi trang mở.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b807be23-6a9f-4930-bf30-5919fa9e8349.avif" alt="Sơ đồ liên quan đến cấu hình tường lửa 8" />
+</Frame>
+
+Hình 7
+
+**Tường lửa cần được tắt**
+
+## 3. Hướng dẫn sử dụng LxCameraViewer
+
+### 3.1 Tổng quan về giao diện phần mềm
+
+#### 3.1.1 Tổng quan về giao diện phần mềm (không cần mở camera)
+
+Giao diện ban đầu của phần mềm này được chia thành 3 phần chính:
+
+- Thanh danh sách (vùng màu xanh số 1):
+
+- Danh sách thiết bị
+
+- Thông tin hiện tại
+
+- Thông tin thiết bị
+
+- Thanh menu (vùng xanh số 2):
+
+- Ba nút thanh công cụ bên phải
+
+- Nút chuyển đổi ngôn ngữ giao diện
+
+- Thanh hiển thị hình ảnh (số 4 vùng màu đỏ):
+
+- Hiển thị đám mây điểm
+
+- Hiển thị bản đồ độ sâu
+
+- Hiển thị biểu đồ cường độ
+
+- Hiển thị hình ảnh RGB
+
+- Click đúp vào khu vực thanh menu để phóng to/thu nhỏ, giữ chuột trái và di chuyển chuột để kéo giao diện
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b8b763b-d8a2-4e74-ac00-1e7f5ca4fff6.avif" alt="Tổng quan về giao diện phần mềm (chưa mở camera) các biểu tượng liên quan" />
+</Frame>
+
+#### 3.1.2 Tổng quan về giao diện phần mềm (đã bật camera)
+
+Sau khi mở camera sẽ có thêm thanh chức năng bên phải giao diện (khu vực rouge số 3)
+
+- Công cụ cơ bản cung cấp các chức năng sau:
+
+- Cài đặt hiển thị hình ảnh
+
+- Cài đặt 2D
+
+- Cài đặt 3D
+
+- lọc
+
+- Giao diện phần cứng
+
+- Cài đặt bộ sưu tập
+
+- Cài đặt chức năng
+
+- Áp dụng thuật toán để cung cấp các hàm sau:
+
+- Cài đặt chế độ làm việc
+
+- Cài đặt chế độ thuật toán
+
+- Hiển thị phiên bản thuật toán
+
+- Cài đặt chi tiết thuật toán
+
+- Khác, cung cấp các chức năng sau:
+
+- Tải đám mây điểm cục bộ
+
+- Công cụ cấu hình IP
+
+- Công cụ chụp gói
+
+- Công cụ cấu hình card mạng
+
+- Công cụ truyền thông
+
+- Đã bật GPU
+
+- Cấp độ nhật ký
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e2f50c2a-95f2-4019-a47b-215f46aeb5b4.avif" alt="Tổng quan giao diện phần mềm (đã bật camera) các biểu tượng liên quan" />
+</Frame>
+
+### 3.2 Bật tắt máy
+
+#### 3.2.1 Danh sách thiết bị
+
+- Danh sách thiết bị nằm ở góc trên bên trái giao diện (trong ô màu đỏ ở hình 1)
+
+- Nút [Refresh] nằm cạnh danh sách thiết bị (trong ô màu đỏ ở Hình 2)
+
+- Nút thu gọn/mở rộng danh sách thiết bị nằm ở bên phải nút làm mới (ô màu xanh trong Hình 2). Sau khi sụp đổ, xem Hình 3.
+
+- Ba thuộc tính sẽ được hiển thị trên thanh danh sách thiết bị:
+
+- Camera đã được bật chưa (trong ô rouge ở Hình 2, thiết bị 1 đã bật nhưng thiết bị 2 chưa bật)
+
+- ID Camera (trong ô màu vàng ở hình 2)
+
+- IP Camera, rê chuột vào ID camera để xem (ở ô màu đỏ hình 4 là IP của camera thứ 2)
+
+- Danh sách thiết bị đặt một nút cho mỗi camera được tìm thấy. Bấm vào dòng chữ [Bật] hoặc [Đóng] để bật hoặc tắt camera (trong hộp màu xanh lam trong Hình 2). Nút này cũng sẽ hiển thị thông tin trạng thái hiện tại của camera (Hình 5)
+
+- Phông chữ của camera được chọn trên thanh danh sách thiết bị là màu xanh, còn phông chữ của các camera khác là màu trắng (như hình 6, camera thứ 2 chọn nhưng không mở được, camera thứ 1 mở ra nhưng không chọn)
+
+- Có thể mở nhiều thiết bị trong danh sách thiết bị cùng lúc (như hình 7) nhưng cần chú ý băng thông mạng có đủ hay không. Bấm vào ID camera để chuyển sang xem các camera khác nhau.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8cfcca2f-d122-4354-a8cf-5efa532028c2.avif" alt="Các biểu tượng liên quan đến danh sách thiết bị" />
+</Frame>
+
+Hình 1
+
+![Biểu tượng liên quan đến danh sách thiết bị 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/720170de-c154-457f-b05e-50ad20a1a722.avif) ![Biểu tượng liên quan đến danh sách thiết bị 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76d9c825-e6ea-4d68-bd83-d6e550f8ea75.avif)
+
+Hình 2 Hình 3
+
+![Biểu tượng liên quan đến danh sách thiết bị 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6fceb9c-d6e4-4051-a48f-3336850ecd35.avif) ![Biểu tượng liên quan đến danh sách thiết bị 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c9a2fd72-e489-4e66-ab3b-805c320d1e96.avif)
+
+Hình 4 Hình 5
+
+![Biểu tượng liên quan đến danh sách thiết bị 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3794ca81-4a2e-4eef-95b2-113facaeefd2.avif) ![Biểu tượng liên quan đến danh sách thiết bị 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1964dd45-e345-45af-9348-04b1ba499c94.avif)
+
+Hình 6 Hình 7
+
+### 3.3 Thông tin ứng dụng
+
+- Danh sách thiết bị nằm ở giữa bên trái giao diện (trong ô màu đỏ trong hình 1)
+
+- Danh sách thiết bị sẽ hiển thị các thông tin sau:
+
+- Toàn bộ thông tin về camera (ô màu đỏ ở hình 2)
+
+- Vận hành phần mềm (ô xanh ở hình 2)
+
+- Kết quả thao tác (ô màu xanh ở hình 2)
+
+- Kết quả thu thập dòng chảy (ô màu rouge trong Hình 4)
+
+- Khi văn bản quá dài, bạn có thể kéo thanh cuộn màu xanh bên dưới để xem toàn bộ văn bản (như hình 3 có thêm thanh cuộn màu xanh ở phía dưới)
+
+- Thông tin hiện tại hiển thị tối đa 25 thông tin liên quan, có thể cuộn bằng con lăn chuột. Thông tin cũ sẽ bị ghi đè.
+
+- Nhấn nút Collapse để thu gọn thông tin hiện tại (trong ô màu vàng ở Hình 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f399ea28-827f-487f-85b7-7e9897b3a32a.avif" alt="Các biểu tượng liên quan đến thông tin ứng dụng" />
+</Frame>
+
+Hình 1
+
+![Hình ảnh liên quan đến thông tin ứng tuyển 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/150dd70b-5072-4fd8-957f-a0d198ed3155.avif) ![Hình ảnh liên quan đến thông tin ứng dụng 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95953500-0432-4510-b0ac-e20b95894bb5.avif) ![Hình ảnh liên quan đến thông tin ứng dụng 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/223211b0-34d8-4b8a-a775-2cf65b18db6c.avif)
+
+Hình 2 Hình 3 Hình 4
+
+### 3.4 Thông tin thiết bị
+
+- Thông tin thiết bị nằm ở góc dưới bên trái giao diện (trong ô màu đỏ ở hình 1)
+
+- Thông tin thiết bị hiển thị thông tin liên quan về thiết bị hiện được chọn trong danh sách thiết bị. Thông tin như sau:
+
+- Serial number: mã định danh duy nhất của thiết bị
+
+- ID camera: Mã định danh duy nhất của thiết bị. Bạn có thể sử dụng SKD để mở thiết bị theo ID camera.
+
+- IP address: Địa chỉ IP của thiết bị
+
+- Địa chỉ vật lý: Địa chỉ MAC của thiết bị
+
+- Phiên bản phần mềm: phiên bản phần mềm tích hợp trên thiết bị
+
+- Phiên bản thuật toán: phiên bản thuật toán tích hợp trên thiết bị (hiển thị sau khi mở camera)
+
+- Tốc độ mạng card mạng: Khi chưa bật máy sẽ bị ngắt kết nối. Sau khi được bật, cáp mạng card mạng sẽ xác định xem đó là 100 Mbit hay Gigabit.
+
+- Loại camera: model thiết bị
+
+- Phiên bản Mirror: Phiên bản Mirror tích hợp trên thiết bị (hiển thị sau khi mở camera)
+
+- Bấm vào nút gập để gập thông tin thiết bị (ở ô màu vàng ở hình 2)
+
+- Click chuột phải vào một mục trong thông tin thiết bị để copy thông tin (như hình 3 copy thông tin tốc độ card mạng)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9652a7cc-2a78-4f7a-94cb-35a679b171a5.avif" alt="Các biểu tượng liên quan đến thông tin thiết bị" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2b1e261-dd83-4d61-82da-e82008fefa83.avif" alt="Biểu tượng liên quan đến thông tin thiết bị 2" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9a413f8-5329-4057-92b2-3da999a09560.avif" alt="Biểu tượng liên quan đến thông tin thiết bị 3" />
+</Frame>
+
+Hình 3
+
+### 3.5 Hình ảnh, dữ liệu và lưu trữ
+
+#### 3.5.1 Xem trước
+
+- Khu vực giữa hình ảnh, dữ liệu hình ảnh và các phần mềm thao tác liên quan đến hình ảnh (bên trong ô màu đỏ ở Hình 1)
+
+- [Bắt đầu/Dừng luồng] [Lưu một lần] [Bản đồ độ sâu] [Bản đồ cường độ] [RGB] [Đám mây điểm] là điều khiển hoạt động hình ảnh
+
+- Ba hình ảnh ở giữa là hình ảnh độ sâu, hình ảnh cường độ, hình ảnh đám mây điểm và hình ảnh RGB thu được từ thiết bị.
+
+- Chữ màu trắng phía dưới là dữ liệu camera và hình ảnh (như hình 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fa05fb01-9d59-4202-992c-e770002d078d.avif" alt="Xem trước các biểu tượng liên quan" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/007f900d-d780-4883-b875-b6370bbd87a7.avif" alt="Xem trước biểu tượng liên quan 2" />
+</Frame>
+
+Hình 2
+
+#### 3.5.2 Kiểm soát (luồng) hình ảnh
+
+- Nút [Bắt đầu/dừng luồng]: Nhấp để bắt đầu hoặc dừng luồng của thiết bị
+
+- Nút [Single Save]: Lưu lại hình ảnh dữ liệu luồng đã được bật
+
+- Ví dụ Hình 2 chỉ lưu ảnh độ sâu và ảnh đám mây điểm. Ảnh RGB và ảnh cường độ không được bật nên không được lưu.
+
+- Hậu tố cho file bản đồ độ sâu và bản đồ cường độ là .pgm, hậu tố cho file ảnh RGB là .png, hậu tố cho file ảnh đám mây điểm là .pcd
+
+- Ảnh độ sâu, ảnh cường độ và ảnh đám mây điểm được lưu là ảnh gốc không thêm sai màu.
+
+- Bạn có thể nhấn nhiều lần để lưu liên tục nhưng có thể lưu tối đa 3 lần liên tiếp.
+
+- Hộp kiểm [Bản đồ độ sâu]: có hiển thị (bật) bản đồ độ sâu hay không
+
+- Hộp kiểm [Biểu đồ cường độ]: có hiển thị (bật) biểu đồ cường độ hay không
+
+- Ô chọn [Point Cloud]: có hiển thị (bật) hình ảnh đám mây điểm hay không
+
+- Ô đánh dấu [RGB]: có bật hình ảnh RGB hay không
+
+- Sau khi bỏ chọn bản đồ cường độ/RGB, thiết bị sẽ ngừng thu thập hình ảnh bản đồ cường độ/RGB nhưng thiết bị chỉ dừng thu thập dữ liệu độ sâu khi tắt đồng thời bản đồ độ sâu và bản đồ đám mây điểm.
+
+- Trong Hình 2, thiết bị bắt đầu truyền phát và hiển thị hình ảnh độ sâu, hình ảnh đám mây điểm, hình ảnh RGB và hình ảnh cường độ.
+
+- Trong Hình 3, thiết bị ngừng chảy và không nhìn thấy loại hình ảnh nào.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/10bcfd4f-2447-44fb-9229-60922e39b3a3.avif" alt="Các biểu tượng liên quan đến điều khiển (luồng) hình ảnh" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0732a8cf-e7fa-4a4d-bc1e-27e92d99234d.avif" alt="Sơ đồ liên quan đến điều khiển (luồng) hình ảnh 2" />
+</Frame>
+
+Hình 3
+
+#### 3.5.3 Dữ liệu hình ảnh
+
+- Hiển thị nhiệt độ camera (ô màu đỏ ở hình 4)
+
+- Hiển thị tốc độ khung hình bản đồ độ sâu khi bản đồ độ sâu được đánh dấu (ô màu xanh trong Hình 4)
+
+- Hiển thị tốc độ khung bản đồ cường độ khi bản đồ cường độ được chọn (ô màu xanh trong Hình 4)
+
+- Hiển thị tốc độ khung hình RGB khi đánh dấu hình ảnh RGB (ô màu rouge trong Hình 4)
+
+- Khi kiểm tra ảnh RGB, giá trị của pixel đã chọn trong ảnh RGB được hiển thị (hộp đen trong Hình 4)
+
+- Khi kiểm tra bản đồ độ sâu, giá trị của pixel đã chọn trong bản đồ độ sâu được hiển thị (ô màu vàng trong Hình 4)
+
+- Khi kiểm tra bản đồ cường độ, giá trị của điểm ảnh đã chọn trong bản đồ cường độ được hiển thị (ô màu cam trong Hình 4)
+
+- Khi đánh dấu vào bản đồ đám mây điểm, giá trị đám mây điểm tương ứng với pixel được chọn trong bản đồ độ sâu sẽ hiển thị (ô màu tím trong Hình 4)
+
+- Khi không chọn pixel nào thì pixel (0,0) được chọn theo mặc định
+
+- Khi tốc độ khung hình cao hơn 12 thì màu nền là xanh lục, nếu lớn hơn 6 và nhỏ hơn 12 thì có màu cam, nhỏ hơn 6 thì có màu đỏ.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/066e6c1a-c11a-463d-9173-f8d8a0c9df32.avif" alt="Biểu tượng liên quan đến dữ liệu hình ảnh" />
+</Frame>
+
+Hình 4
+
+#### 3.5.4 Hiển thị hình ảnh
+
+- Bạn có thể lựa chọn các cách hiển thị khác nhau:
+
+- Màn hình đơn: Khi chọn một trong 4 ảnh sẽ hiển thị một màn hình đơn (như hình 5)
+
+- Màn hình kép: Khi chọn 2 trong 4 ảnh sẽ hiển thị một màn hình kép (như hình 6)
+
+- Three pictures: Khi đánh dấu 3 trong 4 ảnh sẽ hiển thị 3 ảnh (như hình 7)
+
+- Màn hình Quad: Khi chọn cả 4 ảnh sẽ hiển thị 4 màn hình (như hình 8)
+
+- Khi di chuyển chuột lên ảnh có thể dùng con lăn chuột để phóng to hoặc thu nhỏ với chuột làm tâm, giữ chuột trái và kéo (so sánh ảnh RGB trong Hình 5 và Hình 6)
+
+- Nhấn chuột trái vào ảnh để chọn pixel, phím mũi tên có thể di chuyển các pixel đã chọn (Hình 6)
+
+![Hình ảnh liên quan đến hiển thị hình ảnh](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/038be00d-997d-47ea-8c6e-3da9cb2f5737.avif)![Hình ảnh liên quan đến hiển thị hình ảnh 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a3715e8b-c3fa-417a-bccd-c819ea029b5a.avif)
+
+Hình 5 Hình 6
+
+![Hình ảnh liên quan đến hiển thị hình ảnh 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/320369a9-49ff-4524-8019-622ada69f7c5.avif)![Hình ảnh liên quan đến hiển thị hình ảnh 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08a8e2a6-a3ee-4d1b-8b6c-a2c30d3d60f2.avif)
+
+Hình 7 Hình 8
+
+#### 3.5.5 Thao tác hình ảnh đám mây điểm
+
+- Nhấn và giữ nút trái trên hình ảnh đám mây điểm và kéo để xoay góc nhìn camera
+
+- Nhấn giữ giữa chuột và kéo để di chuyển tiêu điểm
+
+- Giữ chuột phải và kéo chuột lên hoặc xuống hoặc sử dụng bánh xe chuột để phóng to hoặc thu nhỏ đám mây điểm
+
+- Thao tác phím tắt ảnh đám mây điểm như sau:
+
+|  |  |
+| --- | --- |
+| Phím tắt | Chức năng |
+| W | Mô hình hiển thị dạng lưới, nhấn S để chuyển |
+| R | Đặt lại chế độ xem camera |
+| S | Model hiển thị bề mặt, nhấn W để chuyển |
+| P | Ẩn tất cả các đoạn đường, bề mặt và mắt lưới, nhấn W, S để khôi phục |
+| Bạn | Gọi hàm do người dùng xác định (không hợp lệ) |
+| Ồ | Loại bỏ hiệu ứng mắt cá, nhấn lại để khôi phục |
+| F | Phóng to vị trí chuột và đặt vị trí chuột làm tâm xoay |
+| G | Hiển thị thanh tỷ lệ và tỷ lệ, nhấn lại để ẩn |
+|
+| M | Hiển thị hộp giới hạn đám mây điểm, nhấn lại để hiển thị đám mây điểm |
+| A | Giảm độ dày của đám mây điểm xuống tối thiểu là 1 |
+| D | Tăng độ dày của đám mây điểm, lên tới 6 |
+| E | Quay lại góc nhìn ban đầu |
+| [ | Lấy điểm trung tâm làm tiêu điểm để di chuyển về phía trước, không được hỗ trợ ở chế độ tránh chướng ngại vật |
+| ] | Lấy điểm trung tâm làm tiêu điểm để di chuyển về phía sau, không được hỗ trợ ở chế độ tránh chướng ngại vật |
+| ; | Sử dụng điểm trung tâm làm tiêu điểm để di chuyển sang góc nhìn bên trái, không được hỗ trợ trong chế độ tránh chướng ngại vật |
+| ‘ | Lấy điểm trung tâm làm tiêu điểm để di chuyển đến góc nhìn phù hợp, không được hỗ trợ ở chế độ tránh chướng ngại vật |
+| . | Sử dụng điểm trung tâm làm tiêu điểm để chuyển sang chế độ xem từ trên xuống, chế độ này không được hỗ trợ trong chế độ tránh chướng ngại vật |
+| / | Sử dụng điểm trung tâm làm tiêu điểm để chuyển sang chế độ xem hướng lên trên, chế độ này không được hỗ trợ trong chế độ tránh chướng ngại vật |
+
+### 3.6 Thanh menu
+
+- Thanh menu bao gồm [Chức năng cơ bản] [Thuật toán ứng dụng] [Khác] [Ngôn ngữ] (Hình 1)
+
+- Bấm vào [Chức năng cơ bản] để hiển thị như hình 2
+
+- Click [Apply Algorithm] để hiển thị như hình 3
+
+- Click [Other Tools] để hiển thị như hình 4
+
+- Click vào [Language] để hiển thị như hình 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e35d1c41-3e31-4595-92e6-4168ccb63928.avif" alt="Các biểu tượng liên quan đến thanh menu" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d0d806a-9d20-4881-b74d-f5f6261d6b6c.avif" alt="Các biểu tượng liên quan đến thanh menu 2" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec624ff5-e5e5-4399-8f0a-122fa54b23de.avif" alt="Các biểu tượng liên quan đến thanh menu 3" />
+</Frame>
+
+Hình 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d18452fe-8cbe-4826-95f9-3429617c8b1d.avif" alt="Các biểu tượng liên quan đến thanh menu 4" />
+</Frame>
+
+Hình 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6bb109ee-e3fc-4d19-8013-65a21fda8286.avif" alt="Các biểu tượng liên quan đến thanh menu 5" />
+</Frame>
+
+Hình 5
+
+### 3.7 Thanh chức năng
+
+#### 3.7.1 Chức năng hiển thị
+
+- Thu gọn cột bên phải (ô màu đỏ ở hình 1)
+
+- Mở rộng tất cả và thu gọn tất cả (trong ô màu xanh ở Hình 1, chỉ số trên có nghĩa là thu gọn tất cả, chỉ số dưới có nghĩa là mở rộng tất cả)
+
+- Click vào tên hàm để hiển thị thông tin cài đặt tương ứng trong SDK (trong ô màu xanh cuối hình 1)
+
+- Ví dụ: trong hình, nhấp vào tính năng chống biến dạng trong cài đặt 2D (văn bản trong hộp màu xanh lá cây), giao diện API và giá trị liệt kê khi gọi chức năng này được hiển thị trong hộp màu xanh lam.
+
+- Trạng thái mở rộng và trạng thái thu gọn (2D trên Hình 1 đặt ở trạng thái mở rộng, các trạng thái khác đặt ở trạng thái thu gọn)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08dceb49-92e5-4dba-8ea9-422242ae540a.avif" alt="Hiển thị các biểu tượng liên quan đến chức năng" />
+</Frame>
+
+Hình 1
+
+#### 3.7.2 Các công cụ cơ bản
+
+- Nhấp vào [Công cụ cơ bản] trên thanh menu để xem các cài đặt liên quan của các công cụ cơ bản ở bên phải giao diện (Hình 1)
+
+- Các công cụ cơ bản bao gồm [Cài đặt hiển thị hình ảnh] [Cài đặt 2D] [Cài đặt 3D] [Lọc] [Giao diện phần cứng] [Cài đặt thu ảnh] [Cài đặt chức năng] (Hình 2)
+
+- Tên hàm và giá trị liệt kê tương ứng với giao diện được hiển thị trong ô màu xanh bên dưới (Hình 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1634ffda-c43e-49ce-a3c1-6d327b4c1397.avif" alt="Các hình ảnh minh họa liên quan đến công cụ cơ bản" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1bdfe8e-e7d0-47fa-8171-1f9b73c84073.avif" alt="Các hình ảnh minh họa liên quan đến công cụ cơ bản 2" />
+</Frame>
+
+Hình 2
+
+##### 3.7.2.1 Cài đặt hiển thị hình ảnh
+
+- [Hiển thị model camera] Hiển thị (Hình 4) hoặc không hiển thị (Hình 5) model camera trên ảnh đám mây điểm
+
+- [Hiển thị màu sai] Hiển thị màu sâu trên các đám mây điểm và hiển thị màu RGB sau khi bật căn chỉnh RGB
+
+- [Tính ổn định của đám mây điểm] Việc bật có thể ổn định hiển thị đám mây điểm khi đám mây điểm biến mất do lý do thích ứng trên một số máy tính.
+
+- [Đồng bộ hóa hình ảnh mạnh mẽ] Sửa đổi độ sâu tối thiểu của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện và đầu ra của camera không thay đổi.
+
+- [Giữ khung nhiễu] Sửa đổi độ sâu tối đa của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện và đầu ra camera không thay đổi.
+
+- [Độ sâu tối thiểu] Sửa đổi độ sâu tối thiểu của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện và đầu ra của camera không thay đổi.
+
+- [Độ sâu tối đa] Sửa đổi độ sâu tối đa của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện và đầu ra của camera không thay đổi.
+
+- [Cường độ tối thiểu] Sửa đổi cường độ tối thiểu của bản đồ độ sâu và hình ảnh đám mây điểm hiển thị trên giao diện và đầu ra của camera không thay đổi.
+
+- [Cường độ tối đa] Sửa đổi cường độ tối đa của bản đồ độ sâu và hình ảnh đám mây điểm hiển thị trên giao diện và đầu ra của camera không thay đổi.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3631db86-23a0-4ed3-a73a-1748d1a97727.avif" alt="Các biểu tượng liên quan đến cài đặt hiển thị hình ảnh" />
+</Frame>
+
+Hình 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe564767-2b53-4033-b8b7-d50612a5f49b.avif" alt="Hình minh họa liên quan đến cài đặt hiển thị hình ảnh 2" />
+</Frame>
+
+Hình 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2adbbdfb-2ddf-4b3d-a201-00feab5b6348.avif" alt="Hình minh họa liên quan đến cài đặt hiển thị hình ảnh 3" />
+</Frame>
+
+Hình 5
+
+##### 3.7.2.2 Cài đặt 2D
+
+- [Độ rộng RGB] Chiều rộng pixel hình ảnh RGB, được xác định bởi kiểu thiết bị và không thể đặt
+
+- [Chiều cao RGB] Chiều cao pixel hình ảnh RGB, được xác định bởi kiểu thiết bị và không thể đặt
+
+- [Pixel binning] Nhấn 1\*1 hoặc 2\*2 hoặc N\*N để thêm các giá trị pixel trong ma trận và chia cho 2\*2 hoặc N\*N để thu được hình ảnh binning (kích thước hình ảnh trở thành kích thước ban đầu chia cho kích thước pixel binning theo chiều ngang và chiều dọc);
+
+- [Chống méo] Gọi thông số biến dạng trong tham số bên trong để loại bỏ hiện tượng méo hình trong giao diện hiển thị
+
+- [Hệ số chống biến dạng] Điều chỉnh hệ số biến dạng để tăng cường hoặc làm suy yếu độ biến dạng của hình ảnh được che chắn
+
+- [Tự động phơi sáng] Bật hoặc tắt máy ảnh để tự động đặt giá trị phơi sáng RGB
+
+- [Phơi sáng] Phơi sáng thủ công, có thể được đặt khi tắt phơi sáng tự động
+
+- [Gain] Gain thủ công, có thể được đặt khi tắt phơi sáng tự động
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6dbead-0b0e-475a-b5a1-389f486de155.avif" alt="Các biểu tượng liên quan đến cài đặt 2D" />
+</Frame>
+
+Hình 6
+
+##### 3.7.2.3 Cài đặt 3D
+
+- [Chiều rộng 3D] Chiều rộng của hình ảnh đám mây điểm được xác định bởi kiểu thiết bị và không thể đặt được.
+
+- [Chiều cao 3D] Chiều cao của hình ảnh đám mây điểm được xác định bởi kiểu máy của thiết bị và không thể đặt được.
+
+- [Pixel binning] Nhấn 1\*1 hoặc 2\*2 hoặc N\*N để thêm các giá trị pixel trong ma trận và chia cho 2\*2 hoặc N\*N để lấy hình ảnh binning, có thể sửa đổi sau khi dừng luồng (kích thước hình ảnh trở thành kích thước ban đầu và được chia cho kích thước pixel binning theo chiều ngang và chiều dọc)
+
+- [Căn chỉnh RGB] Căn chỉnh bản đồ độ sâu, bản đồ cường độ, đám mây điểm và hình ảnh RGB. Sau khi căn chỉnh, bản đồ độ sâu và bản đồ cường độ sẽ có cùng chiều rộng và chiều cao với hình ảnh RGB. Dữ liệu đám mây điểm sẽ tăng lên và có thể được sửa đổi sau khi dừng luồng.
+
+- [Chế độ nhiều camera] Bật khi sử dụng nhiều camera cùng lúc có thể loại bỏ nhiễu từ các camera khác và có thể sửa đổi sau khi dừng luồng.
+
+- [Độ nhạy thuật toán nhiều máy] Các thông số tích hợp của thiết bị được xác định bởi kiểu máy của thiết bị và không thể đặt được.
+
+- [Chống méo] Gọi thông số biến dạng trong tham số bên trong để loại bỏ hiện tượng méo hình trong giao diện hiển thị
+
+- [Hệ số chống biến dạng] Điều chỉnh hệ số biến dạng để tăng cường hoặc làm suy yếu độ biến dạng của hình ảnh được che chắn
+
+- [Chế độ tần số] Các thông số tích hợp của thiết bị được xác định theo model thiết bị (tần số của một số camera là cố định và không thể đặt được)
+
+- [Bật HDR] Bật HDR có thể cải thiện độ rõ của hình ảnh trong những cảnh có sự thay đổi mạnh về ánh sáng và bóng tối.
+
+- [Tự động phơi sáng] Khi bật, thiết bị sẽ tự động điều chỉnh các thông số phơi sáng theo cường độ ánh sáng xung quanh.
+
+- [Cường độ mục tiêu] Ngưỡng cường độ khi thu được hình ảnh có chiều sâu (không thể đặt)
+
+- [Giới hạn trên của phơi sáng tự động] Đặt giới hạn trên của phơi sáng tự động
+
+- [Giới hạn dưới phơi sáng tự động] Đặt giới hạn dưới cho phơi sáng tự động (không thể đặt)
+
+- [Gain] có thể tăng giá trị cường độ lên gấp bội (không thể đặt)
+
+- [x] Tọa độ x của góc trên bên trái của bộ vùng ROI, có thể được sửa đổi sau khi dừng luồng.
+
+- [y] Đặt tọa độ y của góc trên bên trái của vùng ROI, có thể sửa đổi tọa độ này sau khi dừng luồng.
+
+- [Tích hợp cao] Thời gian tích hợp cao (tăng nó cho phép camera đo khoảng cách xa hơn)
+
+- [Tích hợp thấp] Thời gian tích hợp thấp (chủ yếu kiểm soát việc đo khoảng cách ở khoảng cách gần hơn, nhìn chung không cần thay đổi)
+
+- Giá trị offset [x offset] theo hướng chiều rộng, có thể được sửa đổi sau khi dừng luồng
+
+- [y offset] Giá trị offset theo hướng cao, có thể được sửa đổi sau khi dừng luồng.
+
+- [Chiều rộng] Chiều rộng của vùng ROI đã đặt, có thể sửa đổi sau khi dừng luồng.
+
+- [Cao] Chiều cao của vùng ROI được thiết lập, có thể được sửa đổi sau khi dừng luồng.
+
+- [Tốc độ khung hình 3D] Đặt tốc độ khung hình đám mây điểm trong phạm vi tốc độ khung hình của thiết bị
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b1dcad39-ddcd-4db3-9940-9a6776a8e5ef.avif" alt="Các biểu tượng liên quan đến cài đặt 3D" />
+</Frame>
+
+Hình 7
+
+##### 3.7.2.4 Cài đặt bộ lọc
+
+- [Độ sâu tối thiểu] Giới hạn dưới của màu sai hoặc khoảng cách của bản đồ độ sâu. Dưới giá trị này, màu sai được hiển thị là màu đen và buộc phải đặt về 0.
+
+- [Độ sâu tối đa] Giới hạn trên của màu sai hoặc khoảng cách của bản đồ độ sâu. Trên giá trị này, màu sai được hiển thị là màu đen và buộc phải đặt về 0.
+
+- [Ngưỡng tín hiệu thấp] Giới hạn dưới của giá trị cường độ. Dưới giá trị này, các pixel tương ứng trong bản đồ độ sâu bị buộc phải đặt về 0 (không hiệu quả đối với bản đồ cường độ)
+
+- [Ngưỡng tín hiệu cao] Giới hạn trên của giá trị cường độ. Nếu nó cao hơn giá trị này, các pixel tương ứng trong bản đồ độ sâu sẽ buộc phải đặt về 0 (không có hiệu lực trên bản đồ cường độ)
+
+- [Đo tín hiệu nhỏ] Đặt mức phát hiện tín hiệu nhỏ. Cấp độ càng cao thì càng dễ bị phát hiện.
+
+- [Chế độ lọc] Đặt mức che chắn bộ lọc
+
+- [Mức độ làm mịn] Kiểm soát cường độ làm mịn của quá trình lọc không gian, giữ lại các chi tiết cạnh đối tượng trong khi làm mịn tiếng ồn
+
+- [Noise Level] Đặt ngưỡng lọc nhiễu (giá trị càng lớn thì càng nhiễu)
+
+- [Mức tạm thời] Kiểm soát cường độ lọc theo thời gian và sử dụng dữ liệu đa khung lịch sử để cải thiện tính liên tục của dữ liệu độ sâu
+
+- Lưu ý: Đặt mức làm mịn, mức nhiễu và mức miền thời gian về 0 nghĩa là tắt tính năng lọc.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6178fcc4-ee41-41dd-b01e-42b877764fd9.avif" alt="Hình minh họa liên quan đến cài đặt bộ lọc" />
+</Frame>
+
+Hình 8
+
+##### 3.7.2.5 Giao diện phần cứng
+
+- [Chế độ đầu ra IO] Bạn có thể đặt định dạng đầu ra giao diện IO
+
+- [Chế độ điều khiển người dùng IO] Các tham số tích hợp của thiết bị xác định giao diện IO và không thể sửa đổi.
+
+- [Tốc độ truyền CAN] Giá trị mặc định là 250000. Tốc độ truyền phải nhất quán khi giao tiếp với các thiết bị khác qua CAN.
+
+- [Loại giao thức CAN] Mặc định là loại giao thức chính thức MRDVS, có thể được sửa đổi thành kcrobots
+
+- [Địa chỉ CAN] Địa chỉ bắt đầu giao tiếp CAN, mặc định là 18
+
+- [Địa chỉ MODBUS] Địa chỉ bắt đầu giao tiếp MODBUS, mặc định là 23
+
+- [Nhận trạng thái IO] Nhận trạng thái trả về giao diện IO hiện tại
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6a48416-31fc-41c0-869f-d745b3c54c99.avif" alt="Sơ đồ giao diện phần cứng" />
+</Frame>
+
+Hình 9
+
+##### 3.7.2.6 Cài đặt bộ sưu tập
+
+- [Đồng bộ khung hình] Kiểm soát điều kiện môi trường của từng kiểu chụp ảnh để nhất quán khi lưu ảnh
+
+- [Chế độ kích hoạt] Điều khiển chế độ dòng chảy liên tục, thụ động hoặc chủ động
+
+- [Phương pháp lưu đám mây điểm]
+
+- Regular (unordered point cloud): Số lượng đám mây điểm không đổi, width = width\*height, Height = 1, như hình 3
+
+- Đám mây điểm có thứ tự: Số lượng đám mây điểm không đổi, width = chiều rộng TOF, chiều cao = chiều cao TOF, như hình 4
+
+- [Định dạng lưu đám mây điểm] Đặt định dạng dữ liệu để lưu đám mây điểm
+
+- BINARY: Lưu dưới dạng nhị phân
+
+- ASCII: Lưu ở dạng mã ascii, tức là lưu ở chế độ văn bản
+
+- [Đơn vị giá trị đám mây điểm] Đặt đơn vị đo của dữ liệu trong ảnh đám mây điểm.
+
+- [Bắt đầu lưu ảnh] Lưu liên tục loại ảnh hiện được chọn
+
+- [Mở đường dẫn lưu] Mở đường dẫn lưu ảnh bằng chức năng [Lưu đơn]
+
+Lưu ý: Đối với hình ảnh 640\*480, thời gian lưu ascii là khoảng 6,6 giây và thời gian lưu nhị phân là khoảng 32 mili giây. Tốc độ lưu nhị phân gấp 206 lần so với ascii. Nên lưu ở định dạng nhị phân.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/571ef290-056a-4f5a-8c4a-cee7c35fd78c.avif" alt="Các biểu tượng liên quan đến cài đặt bộ sưu tập" />
+</Frame>
+
+Hình 10
+
+##### 3.7.2.7 Cài đặt chức năng
+
+- [Chọn cấu hình] Bạn có thể chọn cấu hình thông số camera đã được đặt
+
+- [Save Configuration] Lưu thủ công cấu hình tham số hiện tại của máy ảnh
+
+- [Tải cấu hình] Áp dụng cấu hình thông số camera đã đặt cho camera hiện tại
+
+- [Xuất cấu hình ra tệp] Đóng gói cấu hình thông số camera hiện tại thành tệp định dạng json và xuất nó
+
+- [Tải cấu hình từ tệp] Nhập tệp json có cấu hình tham số camera vào camera hiện tại và áp dụng cấu hình
+
+- [ID do người dùng xác định] Tùy chỉnh ID của cấu hình tham số hiện tại
+
+- [Thuật toán di chuyển lên] Di chuyển thuật toán tích hợp hiện tại sang nền tảng phía trên để chạy
+
+- [Nhận thông số bên trong] Xem cấu hình thông số tích hợp của camera
+
+- [Khôi phục cài đặt gốc] Khôi phục máy ảnh về trạng thái xuất xưởng. Thao tác này sẽ quên tất cả các cấu hình đã thiết lập, bao gồm nhưng không giới hạn IP camera. Máy ảnh sẽ tự động tắt và cần được bật lại theo cách thủ công.
+
+- [Nâng cấp chương trình cơ sở] Nâng cấp chương trình cơ sở của máy ảnh. Sau khi nhấp vào, hộp thoại chọn tập tin sẽ bật lên. Chọn tệp có hậu tố .bin.
+
+- [Khởi động lại máy ảnh] Khởi động lại máy ảnh. Camera sẽ không tự động tắt mà sẽ chuyển sang trạng thái kết nối lại. Vui lòng không thực hiện các thao tác khác khi kết nối lại.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/18de7052-ce07-4e34-8108-d51560225d1e.avif" alt="Các biểu tượng liên quan đến cài đặt chức năng" />
+</Frame>
+
+Hình 11
+
+#### 3.7.3 Thuật toán ứng dụng
+
+- Nhấp vào [Áp dụng thuật toán] trên thanh menu để xem các cài đặt liên quan của thuật toán ứng dụng ở bên phải giao diện (Hình 1)
+
+- [Chế độ làm việc] Bạn có thể đặt máy ảnh tiếp tục xuất kết quả thuật toán ngay cả khi máy ảnh bị ngắt kết nối khỏi máy tính chủ.
+
+- [Thuật toán ứng dụng] Chọn thuật toán ứng dụng sẽ được bật:
+
+- [Đóng] (Hình 2)
+
+- [Thuật toán tránh chướng ngại vật 2.0] (Hình 3)
+
+- [Định vị và mở rộng Pallet] (Hình 4)
+
+- [Phiên bản thuật toán] hiển thị số phiên bản của thuật toán đang được chọn
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb61c0f8-1d50-40eb-abe4-45d837a52c48.avif" alt="Minh họa liên quan đến thuật toán ứng dụng" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d876d359-e0a8-404d-8287-5871e2c4ce18.avif" alt="Sơ đồ liên quan đến thuật toán ứng dụng 2" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a21b97d3-250e-4c14-b41e-68c62e02919a.avif" alt="Sơ đồ liên quan đến thuật toán ứng dụng 3" />
+</Frame>
+
+Hình 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f7fb3525-ef8a-4a2e-9bb2-ca68a77a5a9d.avif" alt="Sơ đồ liên quan đến thuật toán ứng dụng 4" />
+</Frame>
+
+Hình 4
+
+##### 3.7.3.1 Thuật toán tránh chướng ngại vật
+
+- Đặt thuật toán ứng dụng thành thuật toán tránh chướng ngại vật và các cấu hình liên quan đến tránh chướng ngại vật sẽ được hiển thị.
+
+- [Hiển thị thân xe] Bạn có thể tắt hoặc bật mẫu ô tô hiển thị vị trí thân xe trong hình ảnh đám mây điểm.
+
+- [Chỉ số tránh chướng ngại vật] Tránh chướng ngại vật có thể có nhiều cấu hình, được đặt thông qua tùy chọn này
+
+- [Camera Angle Roll (x-axis)] Thông số bên ngoài của camera, góc cuộn, camera mặc định là 180
+
+- [Góc nhìn của camera (trục y)] Thông số bên ngoài của camera, góc nghiêng, cài đặt dọc mặc định, là 90
+
+- [Camera góc Yaw (z-axis)] Thông số bên ngoài của camera, tiêu đề góc ngáp, mặc định là 90
+
+- [Vị trí camera (khoảng cách x)] Thông số bên ngoài của camera, khoảng cách giữa hướng x và gốc, đơn vị: mét.
+
+- [Vị trí camera (chiều rộng y)] Thông số bên ngoài của camera, khoảng cách giữa hướng y và gốc, nếu lắp ở giữa thì bằng 0. Đơn vị: Meter.
+
+- [Vị trí camera (chiều cao z)] Thông số bên ngoài của camera, khoảng cách giữa hướng z và gốc tọa độ, có thể hiểu là độ cao của camera so với mặt đất, đơn vị: mét.
+
+- [Khoảng cách cảnh báo sớm (x xa)] Phạm vi tránh chướng ngại vật, khoảng cách từ tâm xe theo hướng x. Chướng ngại vật vượt quá khoảng cách này được coi là an toàn; khoảng cách giữa khoảng cách cảnh báo sớm và khoảng cách cảnh báo được coi là giảm tốc cảnh báo sớm và giao diện hiển thị vùng màu vàng. Đơn vị: mét.
+
+- [Khoảng cách báo động (x tâm)] Phạm vi tránh chướng ngại vật, khoảng cách từ tâm xe theo hướng x. Chướng ngại vật dưới khoảng cách này được coi là điểm dừng báo động và giao diện hiển thị vùng màu đỏ; khoảng cách giữa khoảng cách cảnh báo trước và khoảng cách cảnh báo được coi là sự giảm tốc cảnh báo sớm và giao diện hiển thị vùng màu vàng. Đơn vị: mét.
+
+- [Khoảng cách che chắn (gần x)] Phạm vi tránh chướng ngại vật, khoảng cách theo hướng x tính từ tâm xe. Những chướng ngại vật trong khoảng cách này sẽ bị bỏ qua. Đơn vị: mét.
+
+- [Phạm vi tránh chướng ngại vật bên trái (y left)] Phạm vi tránh chướng ngại vật, khoảng cách từ phía bên trái phương y đến tâm xe. Đơn vị: mét.
+
+- [Phạm vi tránh chướng ngại vật bên phải (y right)] Phạm vi tránh chướng ngại vật, khoảng cách từ phía bên phải phương y đến tâm xe. Đơn vị: mét.
+
+- [Chiều cao tránh chướng ngại vật thấp hơn (z thấp hơn)] Phạm vi tránh chướng ngại vật, độ cao tính từ mặt đất, dưới độ cao này sẽ không được xử lý. Nếu cài đặt quá nhỏ, có thể xảy ra cảnh báo sai do lỗi phạm vi; nếu cài đặt quá lớn, các chướng ngại vật lớn trên mặt đất có thể bị lọc ra, dẫn đến cảnh báo sai. Đơn vị: mét.
+
+- [Độ cao tránh chướng ngại vật phía trên (z phía trên)] Phạm vi tránh chướng ngại vật, độ cao tính từ mặt đất, cao hơn độ cao này sẽ không được xử lý. Đơn vị: Máy đo.
+
+- [Đầu ra tránh chướng ngại vật] Kết quả tránh chướng ngại vật đầu ra
+
+- [Đặt lại các thông số bên ngoài của camera] Khôi phục tất cả các thông số chưa được ghi vào camera
+
+- [Đặt thông số bên ngoài] Ghi tất cả thông số vào camera
+
+- Để biết cài đặt chi tiết về tránh chướng ngại vật, vui lòng xem tài liệu tránh chướng ngại vật.
+
+##### 3.7.3.3 Định vị pallet
+
+- Đặt thuật toán ứng dụng để định vị pallet và các cấu hình liên quan đến tránh chướng ngại vật sẽ được hiển thị.
+
+- [Tên dự án] Đặt tên cho cấu hình tham số nhận dạng pallet hiện tại
+
+- [Cấu hình nhanh] Một số cấu hình được máy ảnh cung cấp theo mặc định
+
+- [Cuộn góc máy ảnh (trục x)] Góc nghiêng của máy ảnh so với trục X
+
+- [Góc máy ảnh Khoảng cách (trục y)] Góc nghiêng của máy ảnh so với trục Y
+
+- [Camera Angle Yaw (trục z)] Góc nghiêng của camera so với trục Z
+
+- [Vị trí camera (khoảng cách x)] Khoảng cách tương đối giữa tâm quang học camera và tâm quay xe nâng theo hướng X
+
+- [Vị trí camera (chiều rộng y)] Khoảng cách tương đối giữa tâm quang học camera và tâm quay xe nâng theo hướng Y
+
+- [Vị trí camera (chiều cao z)] Khoảng cách tương đối giữa tâm quang học camera và tâm quay xe nâng theo phương Z
+
+- [Chiều cao mặt đất] Khoảng cách từ quang tâm của camera đến mặt đất
+
+- [Chiều rộng chân pallet tối đa] Phải tương thích với chiều rộng tối đa của chân pallet trong loại pallet
+
+- [Chiều rộng chân pallet tối thiểu] Phải tương thích với chiều rộng tối thiểu của chân pallet trong loại pallet
+
+- [Khoảng cách từ khay] Khoảng cách từ tâm quang của máy ảnh đến khay sau khi lắp xong
+
+- [Phương pháp cài đặt] Đặt theo hướng cố định của camera, mặc định là cài đặt chính thức (0)
+
+- [Giá trị Z tối thiểu] Xác định khoảng cách độ sâu gần nhất của pallet
+
+- [Giá trị Z tối đa] Xác định khoảng cách độ sâu xa nhất của pallet
+
+- [Giá trị X tối thiểu] Xác định ranh giới bên của pallet (ranh trái với camera là trung tâm)
+
+- [Giá trị X tối đa] Xác định ranh giới bên của pallet (ranh bên phải với camera ở giữa)
+
+- [Đầu ra thuật toán Pallet] hiển thị kết quả của thuật toán pallet
+
+- [Hướng dẫn hiệu chỉnh] Tự động hiệu chỉnh khi mặt đất bằng phẳng và không có vật cản phía trước pallet. Pallet có kích thước tiêu chuẩn.
+
+- [Khôi phục các tham số mặc định] Khôi phục tất cả các tham số về mặc định của nhà sản xuất
+
+- [Đọc thông số bên ngoài từ camera] Đọc tất cả thông số từ camera, tất cả thông số chưa gửi sẽ bị ghi đè
+
+- [Gửi thông số] Ghi đầy đủ thông số ra camera
+
+- Để biết cài đặt chi tiết về phát hiện pallet, vui lòng tham khảo tài liệu về chức năng phát hiện pallet.
+
+#### 3.7.4 Các công cụ khác
+
+- [Tải đám mây điểm cục bộ] Bạn có thể mở các tệp đám mây điểm ở định dạng .pcl, .png và xem chúng. Vui lòng tham khảo mô tả công cụ để biết chi tiết.
+
+- [Công cụ cấu hình IP] Bạn có thể định cấu hình IP, mặt nạ mạng con và cổng của máy ảnh
+
+- [Packet Capture Tool] có thể được sử dụng để thu thập dữ liệu gói card mạng, vui lòng xem mô tả công cụ để biết chi tiết
+
+- [Network Card Configuration Tool] hỗ trợ thiết lập card mạng và tường lửa, chi tiết vui lòng xem mô tả công cụ
+
+- [Công cụ giao tiếp] Hỗ trợ giao tiếp TCP, UDP, MODBUS, FTP, vui lòng tham khảo mô tả công cụ để biết chi tiết
+
+- [Bật GPU] Cho phép sử dụng tính toán gpu để xử lý đồ họa
+
+- [Mức nhật ký] Kiểm soát mức độ chi tiết của thông tin in nhật ký
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b8797c14-d930-417a-a6bd-85d45c22adbd.avif" alt="Các biểu tượng liên quan đến công cụ khác" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/51669a0b-c3c1-4878-98e0-e436ceed6807.avif" alt="Các biểu tượng liên quan đến công cụ khác 2" />
+</Frame>
+
+Hình 2
+
+## 4. Truy cập hệ thống camera
+
+- Kết nối qua ssh tới địa chỉ IP của camera, port 22
+
+- Lấy MobaXterm làm ví dụ, giả sử IP camera là 192.168.100.15 (Hình 1, Hình 2)
+
+- Tên người dùng: người dùng, mật khẩu: người dùng. Sau khi đăng nhập thành công bạn sẽ thấy giao diện như hình 3.
+
+- Hệ thống có cấu hình như bảng bên dưới
+
+|  |  |
+| --- | --- |
+| Cấu hình tích hợp | Số phiên bản |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| Pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Lưu ý: Vui lòng không tùy ý sửa đổi cấu hình tích hợp của hệ thống vì có thể khiến hệ thống gặp sự cố**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/611909af-41f3-4eab-a4b0-74221d61b2f4.avif" alt="4. Truy cập các biểu tượng liên quan đến hệ thống camera" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6198bda7-f6e3-4a6c-a8e8-8782066d5fbf.avif" alt="4. Hình ảnh minh họa liên quan đến việc truy cập hệ thống camera 2" />
+</Frame>
+
+Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/40ff82ed-4595-4753-842c-48c471c5fbf9.avif" alt="4. Hình ảnh minh họa liên quan đến việc truy cập hệ thống camera 3" />
+</Frame>
+
+Hình 3
+
+## Mô tả công cụ
+
+### Công cụ cấu hình IP 5.1
+
+- Sau khi mở [Công cụ cấu hình IP], như trong Hình 1
+
+- Bấm đúp vào thông tin sau địa chỉ MAC để sao chép, bấm đúp vào thông tin sau địa chỉ IP, mặt nạ mạng con và cổng để ghi, bấm các tùy chọn khác để hủy sửa đổi và nhấn Enter để xác nhận sửa đổi, như trong Hình 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db8cd5ed-0942-4a8d-9719-a2401e268c52.avif" alt="Giao diện cài đặt mạng Windows IPv4" />
+</Frame>
+
+Hình 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4eca7e7e-b50d-43ac-ae67-ca82cd2062e3.avif" alt="Giao diện cài đặt mạng Windows IPv4 2" />
+</Frame>
+
+Hình 2
+
+### 5.2 Công cụ giao tiếp
+
+- Mở [Công cụ giao tiếp] như hình 1
+
+- Công cụ truyền thông hỗ trợ TCP, UDP, FTP, Modbus TCP, Modbus RTU, CAN (linux)
+
+- Công cụ giao tiếp hỗ trợ mở nhiều tab khác nhau
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3f776879-9244-4d03-be34-a4b1ed20fffa.avif" alt="Các minh họa liên quan đến công cụ truyền thông" />
+</Frame>
+
+Hình 1
+
+### 5.3 Công cụ cấu hình card mạng
+
+- Sau khi mở [Local Point Cloud Tool], như trong Hình 1
+
+- Công cụ cấu hình card mạng có thể thiết lập tường lửa
+
+- Sau khi chọn card mạng, bạn có thể mở thuộc tính card mạng và giao diện cấu hình đi kèm với Windows.
+
+-Hỗ trợ mở trang cấu hình tường lửa
+
+- Hỗ trợ mở trình quản lý tác vụ
+
+-Hỗ trợ mở Network Connection Center
+
+- Ngôn ngữ tự động theo phần mềm này
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76495e2c-d92d-4f17-b2f8-21d1bb7b9072.avif" alt="Những hình ảnh minh họa liên quan đến công cụ cấu hình card mạng" />
+</Frame>
+
+Hình 1
+
+## Câu hỏi và giải pháp thường gặp
+
+|  |  |
+| --- | --- |
+| Mô tả vấn đề | Giải pháp |
+| Không thể tìm thấy máy ảnh | * Kiểm tra xem nguồn máy ảnh đã được kết nối chưa. Sau khi bật nguồn, đèn xanh phía trước camera luôn sáng * Kiểm tra xem địa chỉ IP và mặt nạ mạng con có chính xác không * Kiểm tra xem máy chủ có bị cấm truy cập mạng không |
+| Có thể mở camera nhưng phát trực tuyến không thành công | Vui lòng kiểm tra xem máy chủ đã được mở bằng quyền quản trị chưa |
+| Độ trễ hình ảnh | Kiểm tra xem card mạng, cáp mạng và switch có phải là Gigabit hay không. Sau khi bật căn chỉnh RGB, mạng 100M sẽ có độ trễ nhất định |
+| Camera thường xuyên kết nối lại | Sau khi khôi phục cài đặt gốc, nâng cấp chương trình cơ sở hoặc khi bật máy ảnh lần đầu tiên trong mạng 100M, máy ảnh sẽ tự điều chỉnh/khởi động lại trong khoảng 30 giây. Trong vòng 30 giây, máy chủ sẽ tiếp tục cố gắng kết nối với camera cho đến khi camera ổn định |
+| Không có dữ liệu chuyên sâu, dữ liệu đám mây điểm | * Kiểm tra xem camera có bị chặn không * Kiểm tra xem vật thể có nằm trong phạm vi chụp của camera không * Kiểm tra xem các giá trị độ sâu tối đa/tối thiểu có chính xác không * Kiểm tra xem các thông số bộ lọc có đúng không |
+| Đám mây điểm biến mất và chỉ có thể nhìn thấy khung màu trắng trên giao diện | Nhấp chuột vào hình ảnh đám mây điểm và nhấn phím 'm' để bật tính năng ổn định đám mây điểm |
+| Hiển thị đám mây điểm là bất thường | Kiểm tra xem phím tắt đám mây điểm đã được vận hành chưa và bật tính ổn định của đám mây điểm |
+| Đám mây điểm không hiển thị sau khi mở camera trong Linux | Hãy dùng chuột nhấn và kéo hình ảnh đám mây điểm để hiển thị |
+| Hiển thị ứng dụng: Tải VTK không thành công, đám mây điểm sẽ không hiển thị, vui lòng kiểm tra cấu hình card đồ họa và driver card đồ họa | * Kiểm tra xem cấu hình card đồ họa có quá thấp không * Kiểm tra xem trình điều khiển card đồ họa có chạy bình thường không * Màn hình đám mây điểm yêu cầu card đồ họa có bộ nhớ hiển thị video độc lập và trình điều khiển của nó |
+
+## Giúp đỡ
+
+### 7.1 Giới thiệu
+
+Nhấp vào [Giới thiệu] ở góc trên bên phải hoặc trong thông tin hiện tại khi phần mềm khởi động lần đầu, bạn có thể xem số phiên bản phần mềm, số phiên bản SDK và các thông tin liên quan khác. Nhấp vào nút [Mở tài liệu trợ giúp] để mở tài liệu này, như minh họa trong hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c3d926d9-7023-4d79-83d6-1a51ce88ad55.avif" alt="Về các biểu tượng liên quan" />
+</Frame>
+
+### 7.2 Hướng dẫn sử dụng
+
+Nhấp chuột phải vào lối tắt của phần mềm này → mở vị trí tệp → quay lại thư mục phía trên → bạn có thể xem tất cả các tài liệu liên quan trong Tài liệu, như trong hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cbee533-fab9-4664-8a6b-0b6ea4bb2a34.avif" alt="Các biểu tượng liên quan đến hướng dẫn sử dụng" />
+</Frame>

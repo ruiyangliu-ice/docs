@@ -1,0 +1,548 @@
+---
+title: "Implementa l'evitamento degli ostacoli visivi 3D"
+description: "Distribuisci e configura le telecamere ToF MRDVS serie S per evitare gli ostacoli 3D in tempo reale."
+---
+## 1. Panoramica
+
+L'elusione degli ostacoli visivi si basa sulle telecamere della serie S e sulle telecamere RGBD sviluppate internamente da Meyer Micro Vision basate sul principio TOF. Integra l'apprendimento profondo e gli algoritmi di visione 3D tradizionali per creare un sistema di evitamento degli ostacoli adatto a scene ricche, accurato, in tempo reale, configurabile su una sola macchina, collaborativo su più macchine e dotato di un certo grado di iniziativa e prevedibilità.
+
+Il sistema ha le seguenti caratteristiche: rilevamento dinamico in tempo reale, rilevamento adattivo del terreno, tracciamento dinamico dei bersagli di rilevamento, supporta più uscite di segnale, supporta la commutazione di modalità multiple, può supportare 5 modalità e supporta il lavoro collaborativo su più macchine.
+
+## 2. Installazione e selezione della telecamera
+
+### 2.1 Ridurre la resistenza antimicrobica
+
+Come mostrato nella figura seguente, la telecamera del veicolo in agguato è installata relativamente in basso. Si consiglia di utilizzare la telecamera della serie S10, installata sulla superficie anteriore del veicolo in agguato nella direzione del movimento. Nel progettare la struttura prestare attenzione ad evitare interferenze con il campo visivo.
+
+<Frame>
+  <img src="/images/legacy/2113c3b1-8f9d-41f4-ba4f-41d0f64ffc71/d803278d-67a2-4a78-a7ca-72e86b149803.avif" alt="Figura 2.1 Auto in agguato" />
+</Frame>
+
+### 2.2 Carrello elevatore
+
+Come mostrato nella Figura 2.2, la telecamera del carrello elevatore intelligente è installata relativamente in alto. Si consiglia di utilizzare la telecamera della serie S10, installata sulla telecamera del montante del carrello elevatore con un angolo di 30°-55° verso il basso, in modo che il bordo del campo visivo della telecamera si trovi proprio sulla superficie anteriore del carrello elevatore. Si consiglia che l'altezza di installazione della telecamera non sia superiore a 2 m.
+
+<Frame>
+  <img src="/images/legacy/df29f779-2887-4494-8cd5-66a35fcbb05f/4d1053b7-cf49-4285-9a5e-232eef95b067.avif" alt="Figura 2.2 Carrello elevatore" />
+</Frame>
+
+## 3. Impostazioni di connessione della fotocamera
+
+1. Prima di collegare la fotocamera, è necessario effettuare le seguenti impostazioni. L'IP di fabbrica della telecamera è 192.168.100.82. Prima di connettersi, è necessario impostare l'IP della porta della rete locale sullo stesso segmento di rete, come mostrato nella Figura 3.1.
+
+<Frame>
+  <img src="/images/legacy/616df060-87e3-4812-8831-66b833e1f280/9aa43694-2c5f-456e-9552-c344b873acb4.avif" alt="Figura 3.1 Impostazioni IP chiuse" />
+</Frame>
+
+2. Disattivare il firewall, come mostrato nella Figura 3.2.
+
+<Frame>
+  <img src="/images/legacy/ccd4abae-1a00-4de4-b597-418920f24dca/99c52d00-ab91-4390-a1d5-ab1ef334f411.avif" alt="Figura 3.2 Firewall chiuso" />
+</Frame>
+
+3. Se è necessario modificare l'IP della telecamera, è possibile aprire il software per PC "**LxCameraViewer**", fare clic su "**Altri strumenti**", relativo alla rete → Strumento di configurazione IP → fare clic sull'indirizzo IP da modificare, premere Invio e fare clic per confermare la modifica. Una volta completata la modifica, la fotocamera si riavvierà e si ricollegherà automaticamente.
+
+<Frame>
+  <img src="/images/legacy/320b027b-2988-458f-9900-cbef3a254247/a3701254-2b0f-48f9-a359-fff2f50a84b3.avif" alt="Illustrazioni relative alle impostazioni di connessione della fotocamera 3" />
+</Frame>
+
+4. Puoi verificare se l'IP è stato modificato con successo tramite la barra di stato nell'angolo in basso a sinistra. Se ti trovi su un segmento di rete diverso, devi modificare l'IP locale prima di riconnetterti alla telecamera.
+
+<Frame>
+  <img src="/images/legacy/26fef8c4-ff64-4fcc-a9b3-974d68c3a90d/d0d23fb7-fe18-4d75-9c7c-ff87020690d9.avif" alt="Illustrazioni relative alle impostazioni di connessione della fotocamera 4" />
+</Frame>
+
+5. Aprire il software del computer host preinstallato LxCameraViewer. Il software del computer host recupera automaticamente la telecamera nel segmento di rete corrente. Facendo clic per aprire la fotocamera si apriranno automaticamente la mappa di profondità e l'immagine della nuvola di punti, come mostrato nella Figura 3.3.
+
+<Frame>
+  <img src="/images/legacy/5565c511-bef1-4ae7-a803-6e2cd4b2ea1a/772be638-3857-41bc-9055-f88086a49b5d.avif" alt="Figura 3.3 Visualizzazione del software sul PC" />
+</Frame>
+
+6. Dopo aver aperto la fotocamera, espandere le impostazioni 3D e le impostazioni del filtro per regolare i parametri della fotocamera. I parametri di configurazione consigliati per le applicazioni per evitare gli ostacoli sono **esposizione alta 650, esposizione bassa 200, impostazioni del filtro e soglie del segnale basso consigliate su 10-20 (la serie S10 deve solo impostare il livello di abbagliamento su 1 e non è necessario impostare l'esposizione, la soglia del segnale basso, ecc.)**. Per altre configurazioni di installazione e parametri per modelli non convenzionali, si consiglia di comunicare con il personale di supporto tecnico di Meyer Micro Vision.
+
+<Frame>
+  <img src="/images/legacy/e8dd9101-6ed2-4bc7-b001-24186895e11f/056ee982-803d-4f8f-85bc-383de72655a2.avif" alt="Illustrazioni relative alle impostazioni di connessione della fotocamera 6" />
+</Frame>
+
+## 4. Configurazione dei parametri per evitare gli ostacoli
+
+1. Dopo aver completato le impostazioni dei parametri della fotocamera sopra, fare clic sul pulsante Applica algoritmo. La voce di impostazione dell'algoritmo apparirà nella barra di stato a destra. Impostarlo sulla modalità normalmente aperta in base all'applicazione. L'algoritmo dell'applicazione della fotocamera S10 deve selezionare [Algoritmo di evitamento degli ostacoli]. Per le altre fotocamere, è necessario selezionare [Algoritmo di evitamento ostacoli 2.0] e il numero di versione dell'algoritmo viene visualizzato di seguito. La fotocamera dell'S10 non supporta l'uso di tipi di aree per evitare gli ostacoli a forma di settore, che potrebbero causare deviazioni nei risultati di evitamento degli ostacoli.
+
+<Frame>
+  <img src="/images/legacy/4777637e-6cfe-456f-9ca7-fc2d4b4146f7/46274569-4a2d-429a-a270-1f561e8b2a63.avif" alt="Illustrazioni relative alla configurazione dei parametri per evitare gli ostacoli" />
+</Frame>
+
+2. L'area rettangolare per evitare gli ostacoli e l'area per evitare gli ostacoli a forma di ventaglio sono mostrate nella Figura 4.1.
+
+<Frame>
+  <img src="/images/legacy/75f84757-7045-4504-9742-e49c74d38889/f6daa1cb-71af-46bf-b501-0cb503ff01ea.avif" alt="Diagramma relativo alla configurazione dei parametri per evitare gli ostacoli 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a01278e9-15ec-436b-a9ed-62dedce4db2e/856adc1f-bbde-47e2-a750-33e72a921d54.avif" alt="Diagramma relativo alla configurazione dei parametri per evitare gli ostacoli 3" />
+</Frame>
+
+Figura 4.1 Area per evitare ostacoli rettangolare e area per evitare ostacoli a forma di ventaglio
+
+3. Come mostrato nella Figura 4.2, i parametri per evitare gli ostacoli sono suddivisi in parametri esterni di installazione della telecamera e parametri di configurazione dell'area per evitare ostacoli. Una volta completata la configurazione dei parametri esterni della telecamera e le impostazioni, le altre quattro aree di configurazione vengono automaticamente aggiornate ai parametri esterni correnti.
+
+Tra questi, la telecamera S2/S2 Max2.0 può commutare tra quattro set di configurazione 0, configurazione 1, configurazione 2 e configurazione 3 dell'area per evitare ostacoli tramite IO.
+
+È possibile commutare fino a 20 gruppi di aree per evitare ostacoli tramite SDK / UDP / RS485, che possono essere commutati in base allo scenario operativo dell'auto. Ad esempio, quando l'auto si sposta su un canale stretto, può essere commutata su una configurazione di canale stretto e quando l'auto si sposta su un canale ampio, può essere commutata su una configurazione di canale ampio.
+
+<Frame>
+  <img src="/images/legacy/e45aed16-cda9-48cd-91b0-eb9b14dd4996/381adb42-b038-401f-a1a3-e6d438b64c5f.avif" alt="Diagramma relativo alla configurazione dei parametri per evitare gli ostacoli 4" />
+</Frame>
+
+## 5. Impostazioni dei parametri esterni
+
+### 5.1 Descrizione dei parametri
+
+| Voce parametro | Valore del parametro | Descrizione |
+| --- | --- | --- |
+| Funzione di evitamento degli ostacoli | | Cambia diversi parametri per evitare gli ostacoli impostando diverse modalità |
+| Angolo di ripresa Roll (asse x) | 180| Parametri esterni della fotocamera, angolo di inclinazione e rotazione, la fotocamera predefinita è 180 |
+| Angolo della telecamera Pitch (asse y) | 90| Parametro esterno della telecamera, inclinazione dell'angolo di rollio, l'impostazione predefinita è l'installazione verticale, che è 90 |
+| Angolo della telecamera Imbardata (asse z) | 90| Parametri esterni della fotocamera, angolo di rotta e imbardata, il valore predefinito è 90 |
+| Posizione della telecamera (distanza x) | 430| La distanza tra la parte anteriore e posteriore della fotocamera nella direzione X e la distanza anteriore e posteriore dell'AMR nella vista, unità: mm. |
+| Posizione della telecamera (larghezza y) | 0| La distanza sinistra e destra della telecamera nella direzione y dall'AMR nella vista. Se installato al centro, è 0. Unità: mm. |
+| Posizione della telecamera (altezza z) | 120| Il parametro dell'altezza di installazione della telecamera è l'altezza della telecamera da terra. Unità: mm. |
+
+### 5.2 Impostazioni dei parametri
+
+Ad esempio, quando la fotocamera è installata sulla superficie anteriore dell'AGV, chiudere le altre immagini e utilizzare solo le immagini della nuvola di punti per eseguire il debug dei parametri della fotocamera. Dare priorità all'altezza di installazione della telecamera. Dopo aver regolato con precisione l'angolo di rollio RX, regolare l'angolo di rollio su orizzontale, quindi regolare l'angolo di beccheggio RY. Dopo aver regolato l'effetto su quello mostrato nella figura seguente, fare clic su "**Invia parametri**" e i parametri esterni di installazione della telecamera verranno sincronizzati con altre configurazioni.
+
+<Frame>
+  <img src="/images/legacy/da147810-37df-42ef-a56c-582790c66e41/b89815fa-fd77-452d-a8f8-3ec9180d9544.avif" alt="Illustrazioni relative alle impostazioni dei parametri" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/b8f949cb-62e8-414d-98a9-c44a463f5b67/9e6574f0-4eb3-4fd1-9d33-af87ca067cbc.avif" alt="Illustrazioni relative all'impostazione dei parametri 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6aa95f32-ffd6-495d-aaf4-b1b0319edf07/0a556ebd-5ebb-45ea-841e-f4710776ecd9.avif" alt="Illustrazioni relative all'impostazione dei parametri 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6d8661c4-f56b-4480-8fdc-6ba45f4b87b9/956d5953-d011-481a-99b8-2199658fa193.avif" alt="Illustrazioni relative all'impostazione dei parametri 4" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5ec21f8c-bffe-4026-be4a-823625c1b39f/2454e37b-650e-413e-8849-9776ed708b75.avif" alt="Illustrazioni relative all'impostazione dei parametri 5" />
+</Frame>
+
+## 6. Impostazione dell'area per evitare gli ostacoli
+
+### 6.1 Riferimento parametri di zona
+
+<Frame>
+  <img src="/images/legacy/cbe6b898-926a-43a4-9e5e-8fb984fcba7d/34531a14-4faa-488d-bc64-7ac0102eac10.avif" alt="Illustrazioni relative alle descrizioni dei parametri regionali" />
+</Frame>
+
+| Nome del parametro | Valore | Definizione dei parametri |
+| --- | --- | --- |
+| Distanza di preallarme (x lontano) | 2000| Gamma di evitamento degli ostacoli, la distanza dal centro dell'auto nell'Unità: mm |
+| Distanza allarme (x centro) | 1500| Gamma di evitamento degli ostacoli, la distanza dal centro dell'auto nell'Unità: mm. |
+| Distanza di schermatura (x vicino) | 600| Campo di schermatura, la direzione x è inferiore alla distanza di schermatura x (vicino), è un'area cieca e non è possibile evitare ostacoli in quest'area. Unità: mm. |
+| Campo di evitamento dell'ostacolo a sinistra (y sinistra) | -810 | Intervallo di evitamento degli ostacoli, la distanza dal lato sinistro della direzione y al centro dell'auto. Unità: mm. |
+| Campo di evitamento degli ostacoli a destra (y destra) | 1270| Intervallo di evitamento degli ostacoli, la distanza dal lato destro della direzione y al centro dell'auto. Unità: mm. |
+| Campo di evitamento degli ostacoli (sotto z) | 10| Raggio di evitamento degli ostacoli, altezza da terra. Al di sotto di tale altezza non verrà eseguita alcuna lavorazione. Se l'impostazione è troppo piccola, potrebbero verificarsi falsi allarmi dovuti a errori di portata; se l'impostazione è troppo grande, gli ostacoli di grandi dimensioni sul terreno potrebbero essere filtrati, generando falsi allarmi. Unità: mm. |
+| Altezza per evitare gli ostacoli (z su) | 1500| Non verranno elaborati il ​​raggio di evitamento degli ostacoli, l'altezza da terra, le altezze superiori a questo. Unità: mm. |
+
+### 6.2 Impostazione della zona per evitare gli ostacoli
+
+1. L'attuale applicazione per evitare gli ostacoli dispone di 20 gruppi di aree di evitamento degli ostacoli integrate. Gli utenti possono configurare l'area per evitare gli ostacoli dopo aver completato la configurazione dei parametri della telecamera. Quando l'AMR si sposta su diversi intervalli di evitamento degli ostacoli, cambiare l'area di configurazione per controllare l'intervallo di evitamento degli ostacoli (IO: è possibile commutare quattro gruppi di aree di evitamento ostacoli 0, 1, 2 e 3 e 20 gruppi possono essere commutati per UDP, 485, API e CAN).
+
+- Distanza di preavviso (X lontano): indica la distanza di preavviso (decelerazione) per evitare gli ostacoli della telecamera pari a 2300, ovvero distanza di preavviso 2300 - posizione della telecamera 430 = 1870 mm, come mostrato nella Figura 6.1.
+
+- Distanza di allarme (in
+
+- Distanza di schermatura (X vicino): Indica l'intervallo di schermatura della telecamera, ovvero distanza di schermatura 450-posizione telecamera 430=20mm, come mostrato in Figura 6.1.
+
+<Frame>
+  <img src="/images/legacy/4519dd9a-acbb-4e8e-84e6-8161d406964b/c6a73f89-55f2-4dba-837f-215c8e7422e1.avif" alt="Illustrazioni relative alle impostazioni dell'area per evitare gli ostacoli" />
+</Frame>
+
+Figura 6.1 Immagine della distanza di avviso
+
+- Portata per evitare gli ostacoli a sinistra (y sinistra): indica che la telecamera rileva ostacoli entro un raggio di -500 mm a sinistra della telecamera per evitare gli ostacoli, come mostrato nella Figura 6.2.
+
+- Portata evitamento ostacoli sinistra (yright): indica che la telecamera rileva ostacoli entro un raggio di 500 mm a destra della telecamera evita ostacoli, come mostrato in Figura 6.2.
+
+<Frame>
+  <img src="/images/legacy/66455b6e-2c49-4387-bae4-d1e60d4364ec/0c081553-64f1-482a-b982-1145ad687df4.avif" alt="Illustrazioni relative all'impostazione dell'area per evitare gli ostacoli 2" />
+</Frame>
+
+Figura 6.2 Immagine del raggio di evitamento degli ostacoli
+
+- Altezza di evitamento ostacoli (Z sotto): Indica il rilevamento di ostacoli entro 10 mm sotto terra all'altezza di installazione, come mostrato in Figura 6.3.
+
+- Altezza di evitamento degli ostacoli (Z in alto): indica che la telecamera rileva ostacoli entro un raggio di 500 mm dal suolo, come mostrato nella Figura 6.3.
+
+<Frame>
+  <img src="/images/legacy/bb805708-d45d-41d9-8f5e-8197b63c6b0d/8ea1a9c6-e585-4567-b8da-ac4708637026.avif" alt="Illustrazioni relative all'impostazione dell'area per evitare gli ostacoli 3" />
+</Frame>
+
+Figura 6.3 Immagine dell'altezza per evitare gli ostacoli
+
+2. Uscita per evitare gli ostacoli:
+
+- Indica normale e senza ostacoli
+
+- Indica che sono stati rilevati ostacoli nell'area di attenzione (all'interno del riquadro giallo)
+
+- Indica che sono stati rilevati ostacoli nella zona di allarme (all'interno del riquadro rosso)
+
+3. Dopo aver utilizzato il computer host per configurare i parametri in base al processo di cui sopra, è possibile andare al percorso di installazione del software \\Strumenti\\params\\ e all'ID della telecamera corrente\\avoidance.json per eseguire il backup del file evitance.json e sincronizzare rapidamente i parametri di evitamento degli ostacoli per diverse telecamere: Dopo aver acceso la telecamera, eseguire "Carica configurazione da file", selezionare il file evitamento.json di cui è stato eseguito il backup e attendere il completamento dell'impostazione.
+
+<Frame>
+  <img src="/images/legacy/5d0604b8-8852-49f2-b3b4-cc268f47f6d6/74e7e96b-e2cb-4c66-85ac-13083d78e2c7.avif" alt="Illustrazioni relative all'impostazione dell'area per evitare gli ostacoli 4" />
+</Frame>
+
+## 7. Metodo di comunicazione
+
+1. Prima di comprendere o utilizzare vari metodi di comunicazione, **è necessario utilizzare il computer host fornito per configurare i contenuti dei parametri di evitamento degli ostacoli uno per uno** prima di poter utilizzare **metodi di comunicazione non API** per cambiare diversi parametri di evitamento degli ostacoli. **Nota:**
+
+**① Alcuni protocolli di comunicazione sono esclusivi per un determinato modello, ad esempio la comunicazione RS485 è esclusiva per M4Pro; **
+
+② Quando si utilizza, ma non si limita al, metodo API per ottenere risultati per evitare gli ostacoli, si consiglia di verificare innanzitutto se la configurazione per evitare gli ostacoli è stata commutata correttamente, ovvero interrogare prima il numero dell'area di configurazione per evitare gli ostacoli corrente;
+
+③ Utilizzare i metodi di comunicazione UDP e CAN per evitare gli ostacoli per controllare l'area per evitare gli ostacoli. Per i dettagli, vedere l'introduzione dettagliata di ciascun metodo di comunicazione.
+
+<Frame>
+  <img src="/images/legacy/db6c3d37-ba35-439f-9cb2-a844323e0d93/668b983c-c6a4-492d-a676-f4de871c62b1.avif" alt="Illustrazioni relative ai metodi di comunicazione" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/eaa2b8fd-e8aa-419d-87d3-4f3fe27bac32/044bd51a-61c8-4a52-af64-dc9cba9d38cd.avif" alt="Illustrazioni relative ai metodi di comunicazione 2" />
+</Frame>
+
+2. Tutti i parametri relativi all'elusione degli ostacoli di S2 Max/S10 pro possono essere impostati tramite il computer host e l'API da noi fornita, ma per altri metodi di comunicazione (IO / UDP / CAN / 485), è possibile modificare solo l'indice del parametro per l'elusione degli ostacoli. I parametri relativi all'evitamento degli ostacoli di S10 possono essere impostati tramite il computer host da noi fornito, ma tutti i metodi di comunicazione sono limitati alla modifica dell'indice del parametro di evitamento degli ostacoli.
+
+| Tipo di fotocamera | Metodi di comunicazione supportati dal modulo per evitare gli ostacoli |
+| --- | --- |
+| S2 | API、UDP、IO |
+| S2Max | API、UDP、CAN |
+| S2Max V2.0 | API、UDP、IO、CAN |
+| M4Pro | API、UDP、RS485 |
+| M4| API、UDP、CAN |
+| M4Mega | API、UDP、IO、CAN |
+
+| Tipo di fotocamera | Modifica indice parametro evitamento ostacoli | Le impostazioni dettagliate dei parametri per evitare gli ostacoli supportano la modifica |
+| --- | --- | --- |
+| S2 | Tutti i metodi di comunicazione possono essere modificati | Può essere modificato solo utilizzando il computer host che forniamo |
+| S2 Max, S2 Max2.0, M4, M4Pro, M4 Mega | Tutti i metodi di comunicazione possono essere modificati | È possibile modificare solo il computer host e l'API |
+
+**Nota: l'indice del parametro evitamento ostacoli** si riferisce all'indice del gruppo di parametri della configurazione 0, 1, 2, ecc.; **Parametri dettagliati per evitare gli ostacoli** si riferisce a tutti i parametri tranne quelli per evitare gli ostacoli, come l'angolo della telecamera, la distanza di avviso, ecc.
+
+| Priorità | Metodo di comunicazione | Oggetto |
+| --- | --- | --- |
+| 1| Comunicazione IO | I parametri hanno effetto immediato e non possono essere modificati in altro modo. Se vengono lasciati mobili o non supportano la comunicazione IO, verranno utilizzati i parametri predefiniti o quelli temporanei. |
+| 2| Impostazioni API e computer host | I parametri predefiniti sono impostati e non vengono influenzati dalle interruzioni di corrente. |
+| 2| Altri (come 485, ecc.) | Le impostazioni sono parametri temporanei. Questo parametro verrà modificato in caso di interruzione di corrente o altre comunicazioni. Può essere salvato come parametro predefinito tramite le istruzioni |
+
+3. Per la modifica dei parametri di evitamento degli ostacoli, la telecamera seguirà rigorosamente la logica della priorità.
+
+4. La differenza più grande tra i parametri temporanei e quelli predefiniti è se vengono salvati dopo lo spegnimento. Il parametro utilizzato dipende dal metodo di comunicazione utilizzato l'ultima volta.
+
+5. Durante la comunicazione IO (IO non è sospeso), i parametri correnti non possono essere modificati utilizzando il metodo di comunicazione con priorità 2, ma è possibile modificare i parametri predefiniti e i parametri temporanei. Quando la comunicazione IO è disconnessa (IO è sospeso), i parametri predefiniti specifici o i parametri temporanei vengono utilizzati in base all'ultimo metodo di impostazione. L'ultima volta che vengono utilizzate le impostazioni 485 o UDP, vengono utilizzati i parametri temporanei. L'ultima volta che vengono utilizzate le chiamate API o le impostazioni del computer host, vengono utilizzati i parametri predefiniti. La logica è la seguente:
+
+<Frame>
+  <img src="/images/legacy/9de2e18d-de3f-4a0a-b783-6cc5c8208344/8bf4f672-a74b-4a6b-9746-55438829cada.avif" alt="Illustrazioni relative ai metodi di comunicazione 3" />
+</Frame>
+
+6. Per la fotocamera S10, sono necessari 200~300 ms per cambiare i parametri fino al completamento del caricamento. Pertanto, S2 esegue un'operazione di filtraggio sull'operazione di commutazione dei parametri e l'ultima impostazione entro 250 ms verrà ignorata. Che si tratti di S10 o S2Max/S10pro, non è consigliabile cambiare i parametri troppo frequentemente, poiché ciò aumenterà l'utilizzo delle risorse della fotocamera e ridurrà la frequenza dei fotogrammi dell'immagine. Poiché la frequenza di aggiornamento dei risultati per evitare gli ostacoli è correlata alla frequenza dei fotogrammi, verrà ridotta anche la frequenza di aggiornamento dei risultati per evitare gli ostacoli. La frequenza di aggiornamento del risultato dell'elusione degli ostacoli è uguale alla frequenza dei fotogrammi dell'immagine.
+
+### 7.1 Metodo di chiamata API
+
+Il metodo di chiamata API può supportare C++, C#, JAVA, ROS1, ROS2 e altri ambienti Windows, Linux, Arm e altri ambienti. Dopo aver installato l'SDK dell'ambiente Windows sul software del computer host, i file SDK e i codici dei programmi di esempio si trovano tutti nel percorso di installazione (ad esempio: D:\\Programmi\\Lanxin-MRDVS). L'SDK dell'ambiente Linux può essere scaricato dal relativo supporto tecnico fornito da Meier Microvision o dal sito ufficiale. Non è consigliabile utilizzare questo metodo per modificare i parametri per le fotocamere S10. Si consiglia di utilizzare UDP o IO per cambiare i parametri.
+
+- La cartella Documenti contiene la documentazione sull'SDK e sull'utilizzo del computer host.
+
+- La cartella FirmWare è la directory in cui è archiviato il pacchetto firmware della fotocamera.
+
+- La cartella Sample è la directory in cui è archiviato il codice sorgente del codice campione, che può essere selezionato in base all'ambiente di sviluppo.
+
+- La cartella SDK è la directory in cui sono archiviati i file della libreria SDK. È possibile configurare le variabili di ambiente in base all'ambiente di sviluppo.
+
+- L'applicazione per evitare gli ostacoli può parametrizzare il programma in codice sorgente dell'API per evitare gli ostacoli di C/application\_obstacled nella directory Sampl.
+
+### 7.2 Metodo di comunicazione 485
+
+1. La comunicazione 485 supporta solo le telecamere M4 pro, utilizzando il protocollo di trasmissione Modbus RTU. Quella che segue è la definizione del cablaggio della telecamera:
+
+| Porto | Perno | Segnale | Descrizione | Osservazioni |
+| --- | --- | --- | --- | --- |
+| Definizione presa | 1| TERRA | Massa del segnale | Blu |
+| | 2| 485_A | RS485_A | Grigio |
+| | 3| 485_B | RS485_B | Bianco |
+| | 4| VIN + | Terminale positivo di ingresso alimentazione 24 V | Marrone |
+| | 5| VIN - | Terminale negativo ingresso alimentazione 24 V | Nero |
+
+2. Il metodo di debug 485 è il seguente:
+
+- Quando ci si connette tramite RS485, nell'assistente al debug, la velocità di trasmissione è impostata su 9600.
+
+- Utilizzare il computer host per verificare l'indirizzo Modbus corrente, leggere i due indirizzi di registro a partire dall'indirizzo 108 (0x6C) del registro di ingresso (0x04) e il valore del registro restituito è il risultato attuale di evitamento dell'ostacolo.
+
+<Frame>
+  <img src="/images/legacy/97dd2a2a-4b90-419b-bef8-8e4504a30720/2f79d722-9523-4a5e-904b-da95fbb4ca5b.avif" alt="485 icone relative al metodo di comunicazione" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f3ee28c-ea54-426e-8bd5-bbae25de955c/e5bfac8e-14fb-4540-91b2-d72de1aa86fc.avif" alt="Illustrazioni relative al metodo di comunicazione 485 2" />
+</Frame>
+
+- Se è necessario modificare i parametri di evitamento dell'ostacolo è possibile scrivere l'indirizzo 106 (0x6A) di un unico registro di salvataggio (0x06).
+
+<Frame>
+  <img src="/images/legacy/65d76022-f5da-4827-b160-8c597f7c0a5f/c64c76ff-8c7a-442d-8fa2-2cacba78affb.avif" alt="Illustrazioni relative al metodo di comunicazione 485 3" />
+</Frame>
+
+### 7.3 Metodo di comunicazione UDP
+
+Significato del campo tipo funzione evitamento ostacoli:
+
+| Numero | Direzione di trasmissione | Messaggio | Risultato dell'evitamento degli ostacoli |
+| --- | --- | --- | --- |
+| 1| Fotocamera->Corpo | ACED0410XX000000 | Senza barriere, XX rappresenta gli attuali parametri per evitare gli ostacoli |
+| 2| | ACED0410XX000001 | Decelerazione di preallarme |
+| 3| | ACED0410XX000002 | Arresto allarme |
+| 4| Corpo principale->Fotocamera | ACED040000000000 | Stabilisci connessione UDP |
+| 5| | ACED041A00000000 | Parametro evitamento ostacoli 0 |
+| 6| | ACED041A00000001 | Parametro evitamento ostacoli 1 |
+| 7| | ACED041A00000002 | Parametro 2 | per evitare gli ostacoli
+| 8| | ACED041A00000003 | Parametro 3 | per evitare gli ostacoli
+| 9| | ... | (e così via fino al parametro 19) |
+| 10| Corpo->Fotocamera | ACED041B00000000 | Imposta i parametri correnti come parametri predefiniti |
+| 11| Fotocamera->Corpo | ACED041B00000001 | Parametri predefiniti impostati correttamente |
+
+1. Quando ci si connette tramite UDP, utilizzare l'assistente debug di rete per testare la connessione di comunicazione con la telecamera e selezionare la trasmissione e la ricezione esadecimali per la ricezione e l'invio dei dati. Si consiglia di utilizzare il comando n°4 per la prima comunicazione. Dopo aver stabilito una connessione UDP, i risultati per evitare gli ostacoli verranno inviati automaticamente. La frequenza di invio è correlata alla frequenza dei fotogrammi dell'immagine corrente. Dopo aver modificato i parametri è possibile verificare se la modifica è andata a buon fine tramite il messaggio inviato dalla fotocamera al corpo. Il XX nel messaggio numerato 1 è il parametro corrente.
+
+2. I parametri impostati da DP saranno efficaci fino al riavvio della telecamera, a meno che l'alimentazione non venga interrotta o modificata utilizzando altri metodi di comunicazione. Se si desidera che abbia effetto anche dopo un'interruzione di corrente, è possibile utilizzare il messaggio numero 10 per salvarlo come parametro predefinito. La funzione di salvataggio dei parametri predefiniti è una funzione unica della comunicazione UDP, CAN, 485.
+
+3. Impostare l'indirizzo host locale e la porta host locale, fare clic per aprire; l'host remoto è la telecamera, inserire la porta IP della telecamera: 192.168.100.12:6688, se l'IP della telecamera è cambiato, sarà: IP telecamera:6688; Prendere il parametro corrente 19 e modificarlo nel parametro 0 come esempio. Fare clic per inviare i dati numero 5. Il segno dell'impostazione corretta è che il quinto byte viene modificato da 0x13 (parametro 19) a 0x00 (parametro 0), come mostrato di seguito.
+
+<Frame>
+  <img src="/images/legacy/e8a8533b-6b41-4853-bfc7-9217abd0524d/d75adea6-f4e9-4d89-adf3-2772681f0406.avif" alt="Illustrazioni relative al metodo di comunicazione UDP" />
+</Frame>
+
+### 7.4 Metodo di comunicazione TCP
+
+Significato del campo tipo funzione evitamento ostacoli:
+
+| Numero | Direzione di trasmissione | Messaggio | Risultato dell'evitamento degli ostacoli |
+| --- | --- | --- | --- |
+| 1| Fotocamera->Corpo | ACED0410XX000000 | Senza barriere, XX rappresenta gli attuali parametri per evitare gli ostacoli |
+| 2| | ACED0410XX000001 | Decelerazione di preallarme |
+| 3| | ACED0410XX000002 | Arresto allarme |
+| 4| Corpo->Fotocamera | ACED041A00000000 | Parametro evitamento ostacoli 0 |
+| 5| | ACED041A00000001 | Parametro evitamento ostacoli 1 |
+| 6| | ACED041A00000002 | Parametro 2 | per evitare gli ostacoli
+| 7| | ACED041A00000003 | Parametro 3 | per evitare gli ostacoli
+| 8| | ... | (e così via fino al parametro 19) |
+| 9| Corpo->Fotocamera | ACED041B00000000 | Imposta i parametri correnti come parametri predefiniti |
+| 10| Fotocamera->Corpo | ACED041B00000001 | Parametri predefiniti impostati correttamente |
+
+1. Quando ci si connette tramite TCP, utilizzare l'assistente debug di rete per testare la connessione di comunicazione con la telecamera e selezionare la trasmissione e la ricezione esadecimali per la ricezione e l'invio dei dati. Una volta stabilita la connessione TCP, i risultati relativi all'elusione degli ostacoli verranno inviati automaticamente e la frequenza di invio è correlata alla frequenza dei fotogrammi dell'immagine corrente. Dopo aver modificato i parametri è possibile verificare se la modifica è andata a buon fine tramite il messaggio inviato dalla fotocamera al corpo. Il XX nel messaggio numerato 1 è il parametro corrente.
+
+2. I parametri impostati da TCP saranno efficaci fino al riavvio della telecamera, a meno che l'alimentazione non venga interrotta o modificata utilizzando altri metodi di comunicazione. Se si desidera che abbia effetto anche dopo un'interruzione di corrente, è possibile utilizzare il messaggio numero 10 per salvarlo come parametro predefinito. La funzione di salvataggio dei parametri predefiniti è una funzione esclusiva della comunicazione TCP e non è supportata da CAN o 485.
+
+3. La fotocamera può essere testata con l'assistente. Selezionare TCP Client per il protocollo, selezionare l'ip della telecamera per l'ip e selezionare 6688 per la porta. Prima di utilizzare la comunicazione TCP, è necessario verificare se l'area per evitare gli ostacoli attualmente utilizzata è stata impostata sul computer host.
+
+<Frame>
+  <img src="/images/legacy/b1e7b075-b88e-4547-9e9e-813399cee1de/426d1e53-dda3-4ea0-80fb-5ad61ee30884.avif" alt="Illustrazioni relative al metodo di comunicazione TCP" />
+</Frame>
+
+### 7.5 Metodo di comunicazione CAN
+
+1. La comunicazione CAN supporta solo le telecamere S2-MAX. Il protocollo di comunicazione utilizza CanOpen. Il protocollo CanOpen è un protocollo a livello di applicazione in esecuzione sul bus CAN standard. La sua modalità di comunicazione è anche la modalità di comunicazione "master-slave" comunemente utilizzata nei protocolli di comunicazione industriale. Cioè ci sarà una stazione master + più stazioni slave nella rete. Le stazioni slave non comunicheranno direttamente tra loro. Tutte le comunicazioni avvengono tra la stazione master e le stazioni slave. La stazione master è anche chiamata "client" e la stazione slave è anche chiamata "server".
+
+2. Il metodo di comunicazione sottostante utilizza il formato frame standard CAN, ovvero l'ID CAN è di 11 bit (0x000~7FF) e i dati sono di 8 byte.
+
+3. La convenzione di utilizzo dell'ID CAN: divide l'ID a 11 bit in un codice funzione a 4 bit e un ID nodo a 7 bit e l'ID CAN è anche chiamato ID COB:
+
+<Frame>
+  <img src="/images/legacy/6b14ef30-ae22-4eb0-bdd0-ff371a395ef5/2b8174cc-315e-4622-af5e-c288fd5a391c.avif" alt="Illustrazioni relative al metodo di comunicazione CAN" />
+</Frame>
+
+4. Velocità di trasmissione Can: l'impostazione predefinita è 250K, che può essere configurata in base all'applicazione.
+
+5. Numero di nodo: il valore predefinito è 0x212, che può essere configurato in base all'applicazione.
+
+6. Il messaggio di comunicazione SDO è un formato di protocollo di base in CanOpen. I dati da 8 byte nel messaggio CAN sono definiti dal protocollo di comunicazione come il seguente formato:
+
+<Frame>
+  <img src="/images/legacy/2097250b-a7c5-43f8-8dac-53940a7ccb01/662148d5-54f3-469a-bb77-2d22e7d96075.avif" alt="Illustrazioni relative al metodo di comunicazione CAN 2" />
+</Frame>
+
+**Protocollo di comunicazione del modulo evita ostacoli:**
+
+1. Il formato del messaggio inviato dall'ontologia al dispositivo.
+
+<Frame>
+  <img src="/images/legacy/109df244-17e5-4c9b-9900-298a5c5dfcd3/4a23ea06-77c9-4dea-9862-34bd67b013a0.avif" alt="Illustrazioni relative al metodo di comunicazione CAN 3" />
+</Frame>
+
+- Messaggio di riferimento: 40 00 00 00 0B 00 00 00, 0B: MODECTRL, che significa impostare i parametri per evitare gli ostacoli sull'area 11.
+
+2. Il formato del messaggio inviato dal dispositivo al corpo principale.
+
+<Frame>
+  <img src="/images/legacy/e43f7fa2-780a-4885-b98d-1f8b412a1198/4ebef067-087d-46ab-811b-49ff027bb6b4.avif" alt="Illustrazioni relative al metodo di comunicazione CAN 4" />
+</Frame>
+
+- Caratteri di riferimento: 43 00 00 00 0B 00 00 02, 0B: MODECTRL, indica che il parametro attuale per evitare l'ostacolo è l'area 11; 02: risultato, che indica il risultato attuale di evitamento dell'ostacolo.
+
+**3. Nota: come mostrato nella figura seguente, l'impostazione dei parametri per evitare gli ostacoli non ha effetto immediato. **
+
+<Frame>
+  <img src="/images/legacy/c102285c-5b45-4762-87fd-713da40e2468/bd1a716a-80e2-437e-92d2-2acbfb00a2d5.avif" alt="Illustrazioni relative al metodo di comunicazione CAN 5" />
+</Frame>
+
+## 7.5 Metodo di comunicazione IO
+
+### 7.5.1 Tabella di corrispondenza dello stato degli ingressi IO e dei parametri per evitare gli ostacoli
+
+| Stato ingresso1 | Stato ingresso2 | Osservazioni |
+| --- | --- | --- |
+| Alto livello | Alto livello | Parametro 2 | per evitare gli ostacoli
+| Alto livello | Basso livello | Parametro evitamento ostacoli 1 |
+| Basso livello | Alto livello | Parametro evitamento ostacoli 0 |
+| Basso livello | Basso livello | Utilizza parametri predefiniti o parametri temporanei per evitare gli ostacoli |
+
+- Nota: quando l'ingresso IO viene lasciato flottante, il livello è basso e la tensione consigliata per il livello alto è 5~25 V.
+
+- Nota: Per la logica di utilizzo dei parametri di default o dei parametri temporanei si rimanda alla prefazione del Capitolo 7 (Modalità di Comunicazione). In poche parole, quando la fotocamera è accesa e non utilizza altri metodi di comunicazione (eccetto API) per configurare i parametri di evitamento degli ostacoli, verranno utilizzati i parametri predefiniti. Altrimenti verranno utilizzati parametri temporanei.
+
+### 7.5.2 Tabella di corrispondenza dello stato delle uscite IO e dei parametri per evitare gli ostacoli
+
+### Lo stato IO è push-pull
+
+| Stato uscita 1 | Stato uscita2 | Osservazioni |
+| --- | --- | --- |
+| 24 V | 24 V | Accessibile |
+| 24 V | 0 V | Segnale di rallentamento |
+| 0 V | 24 V | Segnale di arresto di emergenza |
+| 0 V | 0 V | Evitamento ostacoli, inizializzazione, eccezione non abilitata |
+
+- Nota: quando la prevenzione degli ostacoli è attivata ma gli IO di uscita sono tutti messi a terra, assicurarsi che i parametri correnti di prevenzione degli ostacoli siano stati impostati dal computer host.
+
+<Frame>
+  <img src="/images/legacy/fae16d2e-4221-46a3-a426-1b504d07a04a/c3a59086-bee5-4c6a-91d2-46a71152a6a1.avif" alt="Lo stato IO è rappresentato dalle icone relative al push-pull" />
+</Frame>
+
+**Lo stato IO è open-drain**
+
+| Stato uscita 1 | Stato uscita2 | Osservazioni |
+| --- | --- | --- |
+| Sospeso | Sospeso | Accessibile |
+| Galleggiante | 0 V | Segnale di rallentamento |
+| 0 V | Galleggiante | Segnale di arresto di emergenza |
+| 0 V | 0 V | Evitamento ostacoli, inizializzazione, eccezione non abilitata |
+
+### 7.5.3 Metodo di cablaggio I/O della telecamera S2
+
+I dettagli del cavo esterno con l'etichetta di potenza sono mostrati nella tabella seguente:
+
+| Nome dell'etichetta | Colore | Osservazioni |
+| --- | --- | --- |
+| IN1 | Arancione | Linea del segnale di ingresso della funzione I/O 1+ |
+| IN_COM1 | Giallo | Linea del segnale di ingresso della funzione I/O 1- |
+| IN2 | Verde | Linea segnale ingresso funzione I/O 2+ |
+| OUT_1 | Viola | Linea del segnale di uscita della funzione I/O 1+ |
+| OUT_COM1 | Grigio | Linea del segnale di uscita della funzione I/O 1- |
+| IN_COM2 | Blu | Linea del segnale di ingresso della funzione I/O 2- |
+| USCITA_2 | Marrone | Linea del segnale di uscita della funzione I/O 2+ |
+| OUT_COM2 | Bianco | Linea del segnale di uscita della funzione I/O 2- |
+
+### 7.5.4 Metodo di cablaggio I/O della telecamera S10 e del computer industriale
+
+Si noti che il 24V- della telecamera deve essere collegato alla terra di alimentazione del computer industriale e IN\_G e OUT\_G devono essere collegati alla terra del segnale del computer industriale. I clienti possono modificare il metodo di collegamento a terra comune in base alla situazione reale. Se il computer industriale non dispone di terra di alimentazione e aree di segnale, è possibile collegare la telecamera 24V-, IN\_G e OUT\_G al GND del computer industriale.
+
+### 7.5.4.1 Terminale di ingresso IN\_metodo di cablaggio
+
+1. La figura seguente mostra il metodo di cablaggio tra l'uscita di tipo PNP del computer industriale e il terminale di ingresso della telecamera S10 (di seguito abbreviato come IN\_\*, \* rappresenta 1 e 2):
+
+<Frame>
+  <img src="/images/legacy/db796979-a48a-4e8f-a439-41163142b7eb/3a6e88b9-58b3-4afc-be18-a86b38d69f44.avif" alt="Illustrazioni relative al metodo di cablaggio del terminale di ingresso IN\_" />
+</Frame>
+
+2. La figura seguente mostra il metodo di cablaggio tra l'uscita NPN del computer industriale e il terminale di ingresso della telecamera S10:
+
+<Frame>
+  <img src="/images/legacy/87186c64-88c9-4afc-a17e-de2ab83ab740/993feed3-fbc4-4587-8f21-29d85d3570ff.avif" alt="Schema relativo al metodo di cablaggio del terminale di ingresso IN\_ 2" />
+</Frame>
+
+3. Poiché i circuiti di uscita dei computer industriali di diversi produttori sono diversi, è necessario valutare se è necessario aggiungere una resistenza pull-up e il suo valore di resistenza in base alla situazione reale.
+
+4. È necessario eseguire il test secondo i seguenti passaggi:
+
+- Utilizzare un multimetro per misurare l'impedenza dell'uscita del computer industriale a 24 V. Se è &lt;50 kΩ, non è necessaria alcuna resistenza pull-up. Se è ≥50 kΩ, aggiungere una resistenza di pull-up. Utilizzare un resistore a film metallico a foro passante con resistenza da 10 kΩ e potenza ≥ 1 W. È possibile utilizzare un altro resistore per test temporanei, ma l'uso a lungo termine può influire sull'affidabilità. La resistenza non deve essere inferiore a 3 kΩ e non è necessario collegare l'uscita direttamente a 24 V.
+
+- Dopo aver confermato la connessione, tirare in alto il terminale di uscita del computer industriale e utilizzare un multimetro per misurare la tensione tra il terminale di uscita e la terra. Se la tensione è ≤ 2 V, scollegare il circuito della telecamera e verificare se il computer industriale può aumentare la tensione; se la tensione è > 2 V, abbassare nuovamente il terminale di uscita per verificare se c'è un cambiamento nell'ingresso della telecamera S2. Se c'è un cambiamento, significa che può essere utilizzato normalmente; se non ci sono cambiamenti, abbassare il terminale di uscita del computer industriale e misurare la tensione tra il terminale di uscita e la terra. Se la tensione è maggiore di 1 V, significa che la forza di pull-up è troppo forte ed è difficile abbassarla. È necessario aumentare la resistenza del resistore pull-up e quindi misurare se si verificano cambiamenti nell'ingresso della telecamera S2 dopo averla abbassata. Se la tensione è inferiore a 1 V, scollegare il computer industriale, collegare l'IN\_\* della telecamera a 24 V e GND tramite il resistore e verificare se c'è un cambiamento nell'ingresso della telecamera. Se c'è una variazione verificare se il collegamento tra il computer industriale e la telecamera è corretto; se non ci sono modifiche, contattare il supporto tecnico per risolvere il problema.
+
+5. L'albero logico è quello mostrato di seguito:
+
+<Frame>
+  <img src="/images/legacy/dbde924e-e206-4ed7-a609-b954a60a36cc/b727aee2-58b2-4a2b-bf87-a34d4fa94a63.avif" alt="Schema relativo al metodo di cablaggio del terminale di ingresso IN\_ 3" />
+</Frame>
+
+### 7.5.4.2 Terminale di uscita Out\_metodo di cablaggio
+
+1. All'interno della fotocamera sono presenti due tipi di f e pnp.
+
+2. La figura seguente mostra il metodo di cablaggio tra il terminale di ingresso del computer industriale e il terminale di uscita della telecamera S2 (di seguito abbreviato come OUT\_\*, \* rappresenta 1 e 2):
+
+<Frame>
+  <img src="/images/legacy/4b34864c-b203-45de-add7-422469d59886/a9234957-e7a1-4eb7-9307-0e93c76c25e4.avif" alt="Illustrazioni relative al terminale di uscita Out\_metodo di cablaggio" />
+</Frame>
+
+## 8. Domande frequenti
+
+### 8.1 Oggetti neri
+
+A causa del principio TOF, le telecamere della serie S sono influenzate dalla riflettività della tavolozza nera. Con una riflettività del 5% del pallet nero, la fotocamera S2max può essere utilizzata per ottenere immagini entro un raggio di 2 m. Durante il debug, l'effetto immagine del pallet nero può essere ottimizzato anche attraverso l'elevato tempo di integrazione e la bassa soglia del segnale del software del computer host. Se è presente un braccio della forcella nero nella scena per evitare gli ostacoli, si consiglia all'utente di aggiungere una maggiore riflettività alla punta della forcella per facilitare l'evitamento degli ostacoli, ad esempio spruzzando una piccola sezione davanti alla punta della forcella con una superficie verniciata di altri colori.
+
+### 8.2 Oggetti a terra bassa
+
+Gli oggetti a terra non possono evitare gli ostacoli. Nelle applicazioni per evitare gli ostacoli, generalmente utilizziamo il terreno come base per la configurazione dei parametri esterni. Se non è possibile evitare gli ostacoli quando si incontrano ostacoli bassi sul terreno, è possibile fare riferimento alle seguenti soluzioni:
+
+- L'immagine della nuvola di punti del computer host mostra che non è selezionato alcun ostacolo. È necessario confermare se l'altezza per evitare l'ostacolo (in basso) è un valore positivo. Se è un valore positivo, si consiglia di impostarlo temporaneamente a 0 per determinare se l'ostacolo può essere rilevato. Se ancora non viene rilevato, si consiglia di regolare l'altezza di installazione della telecamera.
+
+- L'immagine della nuvola di punti del computer host può selezionare l'oggetto ostacolo ma l'output del risultato per evitare l'ostacolo è 0. Questo fenomeno potrebbe essere causato dalla configurazione errata dell'altezza di installazione della telecamera. Si consiglia all'utente di regolare l'altezza di installazione della telecamera.
+
+### 8.3 I parametri per evitare gli ostacoli non hanno effetto
+
+- Non è stato fatto clic su Installazione completata durante la configurazione dei parametri.
+
+- La modifica di parametri non validi ha causato il fallimento dell'impostazione.
+
+- La connessione della fotocamera è instabile e disconnessa, causando la mancata consegna dei parametri.
+
+### 8.4 Interferenze sulla struttura dell'impianto
+
+- Durante l'installazione, intorno alla telecamera sono presenti strutture che bloccano il campo visivo della telecamera, causando dati anomali.
+
+- Durante la progettazione strutturale, il design della telecamera interferisce con la vista posteriore, causando dati anomali della telecamera.
+
+- La pellicola protettiva sullo specchio della fotocamera non è stata rimossa, con conseguenti dati della fotocamera anomali.
+
+- Sullo specchio della fotocamera è installato un altro vetro protettivo che causa anomalie nei dati.
+
+Non esitare a contattarci attraverso i seguenti metodi:
+
+- Se non hai acquistato un prodotto, [contatta il nostro team di prevendita su WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Contatta le prevendite")
+
+- Se hai acquistato un prodotto, [contattare il supporto tecnico su WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Contattare il supporto tecnico")
+
+- **Sito ufficiale**: [www.mrdvs.cn](https://www.mrdvs.cn/ "www.mrdvs.cn")
+
+- **Bilibili**: [Video tutorial ed esempi di applicazione](https://space.bilibili.com/3546755102672963 "Video tutorial ed esempi di applicazione")
+
+- **GitHub**: [Scarica l'SDK e il codice di esempio](https://github.com/Lanxin-MRDVS/CameraSDK "Scarica l'SDK e il codice di esempio")
+
+- **E-mail**: [service@mrdvs.com](mailto:service@mrdvs.com "service@mrdvs.com")
+
+- ：400-025-6680

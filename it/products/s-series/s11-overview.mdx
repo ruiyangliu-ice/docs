@@ -1,0 +1,255 @@
+---
+title: "Telecamera S11 dToF RGBD"
+description: "Specifiche, interfacce, progettazione meccanica e istruzioni per l'uso della fotocamera S11 dToF RGB-D."
+---
+Per il documento completo, scaricare il manuale del prodotto dal [Centro download](/it/resources/downloads/specifications-and-user-guides "Centro download").
+
+## 1 Panoramica del prodotto
+
+### 1.1 Introduzione
+
+MRDVS S11 è una fotocamera RGB-D a stato solido basata sulla tecnologia dToF per robot mobili, con versioni Ethernet e USB. La sua portata esterna tipica è di 0,1-5 m\[1\], con una precisione di rilevamento fino a 1 cm. Fornisce in modo sincrono dati di profondità, immagini RGB e immagini IR per evitare ostacoli, percezione spaziale e modellazione. Un modulo MIPI personalizzato ha le stesse specifiche prestazionali ma diversi requisiti di comunicazione, dimensioni e alimentazione.
+
+Nota \[1\]: la portata massima in ambienti interni è 10 m.
+
+<Frame>
+  <img src="/images/legacy/958d7f8b-32a7-43d5-a347-0e0daf9c522a/cfa8d3dc-62ff-4008-ae47-9661f344d9c7.avif" alt="Fotocamera S11" />
+</Frame>
+
+### 1.2 Caratteristiche
+
+- Rilevamento della profondità dToF: calcola la distanza dal tempo di andata e ritorno di un segnale laser. Rispetto a iToF, offre una maggiore precisione (≤1 cm), una portata effettiva più ampia (0,1-10 m) e una maggiore resistenza alla luce ambientale esterna.
+
+- Uscita dati sincronizzata: emette immagini di profondità, RGB e ampiezza IR senza ritardo di acquisizione.
+
+- Design a stato solido: non contiene parti mobili. La fotocamera 90×25×25 mm pesa circa 130 g con Ethernet o 90 g con USB e resiste alle vibrazioni. È inoltre disponibile un modulo MIPI personalizzato da 33×18×13 mm.
+
+### 1.3 Applicazioni
+
+1. Robot di pulizia per il rilevamento degli ostacoli sul pavimento
+
+2. Robot mobili industriali (AGV/AMR)
+
+3. Robot di servizio per la guida e la consegna al dettaglio
+
+4. Robot domestici per la percezione dell'ambiente
+
+5. Robot speciali per ambienti freddi o umidi
+
+<Frame>
+  <img src="/images/legacy/f3bc1aeb-552d-4cba-87e3-b0f54613d1ab/fedb1f84-cfd2-434f-bbcc-f77482551b2e.avif" alt="Applicazione del robot di pulizia" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/8eec16dd-ef83-4db8-bbdc-4d4fca5c6583/19b38065-602a-41c0-8921-f280f56a4550.avif" alt="Applicazione robot mobile industriale" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5167363b-13a9-4049-94f6-2f4fb74bca31/4db4841d-3b5d-45e1-98fa-cb45e367de1e.avif" alt="Applicazione robot di servizio" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/75d26716-a460-4969-9e30-4436ca56d441/708321ba-1cd8-479c-a72f-2db184a673eb.avif" alt="Applicazione robotica per scopi speciali" />
+</Frame>
+
+### Specifiche
+
+| Fotocamera S11 | Ethernet | USB | MIPI |
+| --- | --- | --- | --- |
+| Ambiente | Interno/esterno | Interno/esterno | Interno/esterno |
+| Tecnologia di profondità | dToF | dToF | dToF |
+| Lunghezza d'onda del laser | 940nm | 940nm | 940nm |
+| Gamma di profondità | 0,1-5 m all'aperto, riflettività <br />10%-90% | 0,1-5 m all'aperto, riflettività <br />10%-90% | 0,1-5 m all'aperto,<br />10%-90% di riflettività |
+| Precisione di portata | 1 cm| 1 cm| 1 cm|
+| Dati in uscita | Immagini di profondità (nuvola di punti)/RGB/IR (ampiezza) | Profondità (nuvola di punti)/RGB/IR (ampiezza) immagini | Profondità (nuvola di punti)/RGB/IR (ampiezza) immagini |
+| Risoluzione profondità/frequenza fotogrammi | 240×96 @max. 20 fps/10 fps tipico | 240×96 @max. 20 fps/10 fps tipico | 240×96 @max. 20 fps/10 fps tipico |
+| Profondità FOV | 136°×56° | 136°×56° | 136°×56° |
+| Risoluzione/frequenza fotogrammi RGB | 1280×1080 @max. 20 fps/10 fps tipico | 1280×1080 @max. 20 fps/10 fps tipico | N/A |
+| FOV RGB | 120°×110°±3° | 120°×110°±3° | N/D |
+| Allineamento RGBD | Supportato | Supportato | N/D |
+| Interfaccia dati | Ethernet | USB | MIPI |
+| Temperatura operativa | -20℃~60℃ | -20℃~60℃ | N/A |
+| Temperatura di conservazione | -20℃~70℃ | -20℃~70℃ | N/A |
+| Sincronizzazione dell'ora | PTP | PTP | N/D |
+| Grado di protezione | IP54| N/D | N/D |
+| Sicurezza degli occhi | CLASSE I | CLASSE I | CLASSE I |
+| Dimensioni | 90×25×25mm | 90×25×25mm | 33×18×13mm |
+| Peso | Circa 130 g | Circa 90 g | &lt;10g |
+| Consumo energetico | < 4W average,<br />13W picco | < 4W average,<br />30W di picco | ≤2W di media,<br />8W di picco |
+| Potenza assorbita | 12 V ~ 24 V CC | USB 3.0 da 5 V | 3,3 V/5 V CC |
+| Ambiente software | C/C++/ROS SDK | C/C++/ROS SDK | C/C++/ROS SDK |
+| Supporto di sistema | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS |
+| Resistenza alla luce ambientale | 100 kLux | 100Klux | 100 kLux |
+
+## 3 Progettazione meccanica
+
+<Frame>
+  <img src="/images/legacy/94accd48-6237-45e3-91c3-f1fda82f45f8/a7e9439d-0b98-4283-a3b8-b3ec843cadbc.avif" alt="Dimensioni Ethernet S11" />
+</Frame>
+
+Dimensioni Ethernet S11
+
+<Frame>
+  <img src="/images/legacy/ac90042c-202c-47e2-8194-838fdd1ecc8c/c793856e-0c27-4797-a05b-b410a1673bc5.avif" alt="Dimensioni USB S11" />
+</Frame>
+
+Dimensioni USB S11
+
+<Frame>
+  <img src="/images/legacy/46907574-b827-4f0b-8e31-b48a56c0b916/a6a5216a-3534-4c63-bde1-8726bc1f742f.avif" alt="Modulo S11 MIPI a 140 gradi" />
+</Frame>
+
+S11 MIPI 140°
+
+## 4 Guida all'integrazione della fotocamera
+
+### 4.1 Campo di rilevamento della telecamera
+
+<Frame>
+  <img src="/images/legacy/57895a39-84d3-4ffc-9213-d5a6ff5a30e8/32c5e22d-646a-4942-be2e-fea2917c797b.avif" alt="Campo di rilevamento della telecamera" />
+</Frame>
+
+Campo visivo 140°×56° serie S11
+
+### 4.2 Importanti precauzioni di installazione
+
+#### 4.2.1 Installazione consigliata
+
+Mantenere l'area illustrata completamente libera da oggetti durante l'installazione della telecamera per la visione 3D. Un oggetto in quest'area interferisce con i dati della nuvola di punti e può causare rumore nell'immagine, false fermate ed errori nei dati.
+
+<Frame>
+  <img src="/images/legacy/73e05d6f-add8-455c-94fa-2a7a356f554e/0449536b-6ccf-4cc7-9ba9-f3c0d66dee1e.avif" alt="Installazione consigliata" />
+</Frame>
+
+#### 4.2.2 Cause degli errori della fotocamera
+
+Un ambiente di installazione non idoneo può interferire con le misurazioni del tempo di volo e della triangolazione e causare errori operativi:
+
+1. Installazione hardware non corretta: ostruzione fisica e ritaglio del FOV
+
+I bordi o le nervature dell'involucro possono entrare nel FOV specificato. Anche l'installazione decentrata o un'apertura troppo piccola possono limitare la visuale e far sì che il sensore rilevi l'involucro come bersaglio. I sintomi includono punti ciechi fissi, false misurazioni a corto raggio e un FOV compresso, che possono causare ostacoli mancati e percorsi errati.
+
+2. Interferenza ottica: diafonia e riflessioni dell'infrarosso in campo vicino
+
+Questo guasto comune si verifica quando uno spazio di installazione ristretto provoca riflessioni anomale degli infrarossi e diafonia:
+
+Innanzitutto, le riflessioni provenienti dalle pareti interne causano interferenze multipercorso. La luce infrarossa si riflette più volte dalle pareti dell'involucro prima di raggiungere il ricevitore, modificando il tempo misurato e distorcendo la distanza calcolata.
+
+In secondo luogo, le superfici altamente riflettenti causano cedimenti locali. Materiali lisci e luminosi come metallo lucido e specchi creano riflessi speculari, causando segnali mancanti o sovraesposizione saturata.
+
+In terzo luogo, i forti riflessi provenienti dalle strutture vicine causano la contaminazione dell'abbagliamento. Quando una struttura luminosa e liscia si trova a meno di 10 cm dal sensore, forti riflessi saturano il ricevitore. L'abbagliamento interrompe la fase di una fotocamera iToF e impedisce il calcolo del tempo di volo. Questa interferenza distorce i dati, accelera l'invecchiamento del ricevitore e influisce sulle funzioni principali.
+
+3. Interferenza ottica: finestre ottiche
+
+Il materiale e la pulizia del vetro protettivo o di altre finestre ottiche davanti al sensore possono causare tre tipi di interferenze:
+
+Innanzitutto, i riflessi multipli causano artefatti nell'immagine. I riflessi provenienti da entrambe le superfici della finestra si mescolano con il segnale valido, causando immagini fantasma e pixel volanti nell'immagine di profondità e duplicando nuvole di punti LiDAR.
+
+In secondo luogo, la contaminazione e la nebbia riducono il rapporto segnale-rumore. Gli spazi sigillati possono consentire alla finestra di appannarsi o raccogliere polvere, impedendo al sensore di identificare segnali validi.
+
+In terzo luogo, i materiali incompatibili attenuano il segnale. I segnali potrebbero non passare attraverso il normale vetro o acrilico, causando la completa perdita di dati. L'interferenza della finestra aumenta l'errore di misurazione, può danneggiare la lente e aumentare i costi di manutenzione. Il vetro ad alta trasmissione può migliorare le prestazioni.
+
+4. Altri fattori indiretti
+
+Innanzitutto, lo stress di installazione: le clip troppo strette possono deformare l'obiettivo o spostare l'asse ottico, causando errori di distanza ToF.
+
+In secondo luogo, l’interferenza termica: una scarsa dissipazione del calore in uno spazio sigillato aumenta la temperatura del sensore e deforma la finestra, causando una deriva della portata e possibili guasti a lungo termine.
+
+### 4.3 SDK
+
+Consulta la guida per l'utente del software host MRDVS e la guida allo sviluppo dell'SDK.
+
+### 4.4 Ambiente e affidabilità
+
+| Articolo |  | Specificazione |
+| --- | --- | --- |
+| Ambiente operativo | Temperatura | -20℃--60℃ |
+| Illuminazione | 0KLUX--100KLUX |  |
+| Ambiente di archiviazione | Temperatura | -40℃--70℃ |
+| Umidità | Max 90% umidità relativa |  |
+| Aumento della temperatura durante il funzionamento normale |  | Aumento della temperatura dell'involucro &lt;25℃ |
+| Valutazione ESD |  | ±4KV scarica a contatto, ±8KV scarica in aria |
+| Voto RE |  | Conforme alla norma GB 9254 CLASSE A |
+| Durata utile |  | 3 anni |
+| Certificazione ambientale |  | RoHS |
+
+## 5 Avvio rapido
+
+### 5.1 Prova di connessione
+
+<Frame>
+  <img src="/images/legacy/45ef596f-1507-4062-bb8f-480af2742ac6/b2df4d53-b802-4387-b1ca-b8e45f0a5ac5.avif" alt="Prova di connessione" />
+</Frame>
+
+#### 5.1.1 Alimentare la fotocamera
+
+1. Collegare un'estremità del cavo CC alla fotocamera e l'altra estremità a un adattatore CC da 24 V/2 A.
+
+2. Un indicatore di alimentazione blu che lampeggia lentamente conferma la normale accensione.
+
+3. Se l'indicatore è spento o presenta anomalie, ad esempio è rosso fisso, controllare il connettore di alimentazione e l'adattatore.
+
+#### 5.1.2 Configurare la rete
+
+1. Collegare la fotocamera direttamente al computer con un cavo Ethernet di categoria 6.
+
+2. L'indirizzo IP della telecamera predefinito in fabbrica è 192.168.100.82.
+
+3. Impostare l'IP del computer sulla stessa sottorete e disabilitare il firewall.
+
+#### 5.1.3 Eseguire il software
+
+1. Eseguire il software host, acquisire le immagini della telecamera e verificare che siano chiare e stabili.
+
+2. Vedere la sezione 5.3 o la guida per l'utente di LxCameraViewer.
+
+3. Contattare le vendite o il supporto tecnico di MRDVS per ulteriore assistenza.
+
+### 5.2 Panoramica dell'interfaccia
+
+LxCameraViewer apre e visualizza più dispositivi. Visualizza profondità, intensità, nuvola di punti e immagini RGB e configura i parametri di base della fotocamera e dell'algoritmo. È possibile visualizzare e salvare i dati dell'immagine, la configurazione della fotocamera e i dettagli dell'algoritmo.
+
+L'interfaccia iniziale dispone di un elenco di dispositivi (area blu 1), barra dei menu (area verde 2) e visualizzazione di immagini (area rossa 4). Fare doppio clic sulla barra dei menu per ingrandirla o ridurla a icona. Trascina l'interfaccia con il pulsante sinistro del mouse.
+
+<Frame>
+  <img src="/images/legacy/aece6251-f13b-4919-9246-e02a6f5a5308/a70d39dd-1006-4527-9dc8-c75198c2a986.avif" alt="Interfaccia prima di aprire una fotocamera" />
+</Frame>
+
+Interfaccia prima di aprire una fotocamera
+
+Dopo aver aperto una fotocamera, sulla destra viene visualizzato un pannello delle funzioni (area 3). Utilizza **Strumenti di base**, **Algoritmi applicativi** e **Altro** in alto. Gli strumenti di base includono la visualizzazione delle immagini, le impostazioni 2D, le impostazioni 3D e il filtraggio.
+
+<Frame>
+  <img src="/images/legacy/7a1d437e-3a64-4a89-be9c-a7e1cdbebf94/2667b6e5-8fbf-4e8e-943c-55019cd885f1.avif" alt="Interfaccia con una fotocamera aperta" />
+</Frame>
+
+Interfaccia con una fotocamera aperta
+
+L'elenco dei dispositivi è in alto a sinistra. Fare clic su **Apri** o **Chiudi** per controllare la telecamera. L'area al centro sinistra mostra le informazioni sulla telecamera, le operazioni del software, i risultati e i risultati dello streaming. L'area in basso a sinistra mostra le informazioni per il dispositivo selezionato.
+
+Fare clic su **Cattura** per avviare o interrompere l'acquisizione dell'immagine. Il pulsante rimane disabilitato fino al termine dell'operazione. Fare clic su **Salva fotogramma** per salvare le immagini dai flussi attivi. Selezionare **Profondità**, **Intensità**, **RGB** o **Nuvola di punti** per aprire le visualizzazioni richieste.
+
+Per i dettagli, consultare la guida utente di LxCameraViewer.
+
+## 6 Risoluzione dei problemi
+
+| No. | Problema | Risoluzione |
+| --- | --- | --- |
+| 1| La fotocamera non risponde quando viene aperta | Disabilitare il firewall in modo che non blocchi la comunicazione con la telecamera |
+| 2| Il software host rileva più indirizzi IP | Risolvere il conflitto di indirizzi LAN e selezionare l'indirizzo IP corretto |
+| 3| Il flusso della telecamera è instabile | Utilizzare un cavo Gigabit Ethernet; Fast Ethernet può causare instabilità iniziale |
+| 4| Percorso di installazione del software | Utilizzare una directory con autorizzazioni di lettura e scrittura adeguate invece del percorso predefinito dell'unità C |
+
+## 7 Precauzioni
+
+<Frame>
+  <img src="/images/legacy/c02ee1e1-3bf8-4ed6-9c4c-7013b74a1c30/8e6fe3fb-d466-4347-be43-b9139e15f0b3.avif" alt="Precauzioni per la fotocamera" />
+</Frame>
+
+### Casi di studio
+
+[Come i carrelli elevatori autonomi dell'azienda F completano in sicurezza più di 500 attività ogni giorno](/it/solutions/warehouse/cases/unmanned-forklift-500-tasks "Caso di studio del carrello elevatore autonomo")
+
+[Evitamento degli ostacoli AMR sotto la guida](/it/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Evitamento degli ostacoli AMR sotto la guida")
+
+[Evitamento degli ostacoli 3D per un robot umanoide su ruote](/it/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Evitamento degli ostacoli con robot umanoide su ruote")

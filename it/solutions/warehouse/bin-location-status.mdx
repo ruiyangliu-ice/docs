@@ -1,0 +1,89 @@
+---
+title: "Rilevamento dello stato della posizione del contenitore"
+description: "Rileva le posizioni dei magazzini occupati e vuoti in tempo reale in modo che il WMS possa impartire istruzioni precise e sicure agli AGV."
+---
+## Introduzione di base
+
+La sfida: nella maggior parte dei magazzini in cui sono stati applicati gli AGV, gli articoli vengono ancora impilati manualmente. Ciò farà sì che il sistema WMS non sia in grado di valutare in tempo reale l'effettiva occupazione di ciascuna posizione del magazzino, con conseguenti informazioni imprecise fornite dal WMS agli AGV. Se il magazzino occupato non può essere identificato in tempo, l'AGV può ricevere istruzioni errate, che non solo riducono l'efficienza operativa, ma entrano facilmente in collisione con altre merci o attrezzature. Nei casi più gravi, potrebbe persino causare un incidente di sicurezza e mettere a repentaglio la sicurezza del personale e delle attrezzature.
+
+Nasce così il sistema di identificazione dello stato del magazzino. Attraverso funzioni come il posizionamento automatico, la sincronizzazione dei dati in tempo reale e il controllo preciso dell'inventario, il sistema ottimizza l'allocazione delle risorse di magazzino, riduce gli errori umani e migliora l'efficienza operativa.
+
+<Frame>
+  <img src="/images/legacy/b8e92a99-9044-4228-bc87-0ff0f64ad6df/a1c8f0e7-3d9f-42e2-b250-12b1f8c64152.avif" alt="Illustrazioni relative all'introduzione dello sfondo" />
+</Frame>
+
+* * *
+
+**Due punti critici comuni dei sensori di riconoscimento dello stato della posizione di archiviazione:**
+
+- Le informazioni sulla posizione di archiviazione trasmesse dal lidar a punto singolo non sono sufficientemente precise e possono facilmente causare incidenti di impilamento.
+
+Alcuni magazzini utilizzano il lidar a punto singolo per il rilevamento della posizione di stoccaggio, ma questo radar può emettere solo un raggio laser alla volta per formare un punto sulla superficie di un oggetto. Potrebbe ignorare gli spazi tra cartoni o pallet, portando a un'errata identificazione dello stato della posizione di stoccaggio, causando così incidenti di impilamento.
+
+- Il metodo di calibrazione delle telecamere RGB puro è unico e sussiste il rischio di valutazioni errate e informazioni mancanti.
+
+Esistono i seguenti svantaggi quando si utilizzano telecamere RGB per determinare lo stato della posizione:
+
+- Quando si utilizza il deep learning per rilevare obiettivi, gli oggetti esterni al set di addestramento che entrano nel magazzino possono causare falsi rilevamenti e fornire informazioni errate.
+
+- La mancanza di informazioni sull'altezza del carico rende difficile organizzare le attività di impilamento.
+
+- Le telecamere fisheye ultra grandangolari presentano problemi di distorsione dei bordi nella determinazione della posizione del magazzino, che incidono sulla precisione dell'addestramento e della previsione del modello e aumentano i costi del server.
+
+* * *
+
+## Panoramica della soluzione
+
+Meyer Micro Vision utilizza una **telecamera RGB-D** per fornire dati tridimensionali e informazioni sui colori delle ubicazioni dei magazzini e identificare automaticamente la presenza, le specifiche di posizionamento e l'occupazione anomala delle merci. Può anche distinguere le categorie di carico attraverso il sistema di intelligenza artificiale intelligente di visione 3D e inviarlo al sistema di dispacciamento per ottenere un'ispezione intelligente in entrata e in uscita. La fotocamera ha una potenza di calcolo integrata e non richiede un computer industriale esterno. Allo stesso tempo, Meyer Micro Vision fornisce soluzioni software e hardware integrate per l'identificazione dello stato del magazzino, nonché formazione e guida all'implementazione di modelli professionali e altri servizi di supporto.
+
+<Frame>
+  <img src="/images/legacy/cc79bcea-1ede-422f-a072-54e7f48bc49e/a76fdfe2-3848-47e4-a0fc-e97d97879d7c.avif" alt="Grafica relativa alla panoramica della soluzione" />
+</Frame>
+
+## Vantaggi principali
+
+- Monitoraggio completo: identifica con precisione lo stato della posizione di archiviazione attraverso la raccolta di dati tridimensionali e informazioni sul colore, combinata con la tecnologia AI.
+
+- Implementazione semplice: l'algoritmo di riconoscimento dello stato della posizione di archiviazione è posizionato sul lato della telecamera per ridurre i costi di implementazione e manutenzione.
+
+- Comunicazione flessibile: supporta TCP/IP, UDP, HTTP e altri metodi di comunicazione e riporta i dati al sistema di controllo in formato JSON in tempo reale.
+
+- Migliorare l'efficienza: la trasmissione in tempo reale delle informazioni sull'ubicazione del magazzino aiuta il sistema di spedizione ad assegnare le attività in modo rapido e accurato.
+
+## Dimostrazione della scena
+
+<Frame>
+  <img src="/images/legacy/c1a3c8e5-f742-49c5-b9dd-ef5ce1ceb6c7/607dc6a7-6055-4434-a416-9e8914631393.avif" alt="Illustrazioni relative alla dimostrazione della scena" />
+</Frame>
+
+Dimostrazione dello scenario di riconoscimento dello stato della posizione di archiviazione
+
+## Descrizione del lavoro
+
+> **Suggerimenti per la selezione della fotocamera: S10Pro**
+
+> **Metodo di installazione della telecamera**
+
+Installazione fissa: quando la telecamera è installata su una colonna o su un soffitto, si consiglia di installarla direttamente sopra il luogo di stoccaggio da monitorare.
+
+<Frame>
+  <img src="/images/legacy/13530b5b-265b-4977-b960-e3987b55083e/a9108d02-119f-4e4d-a995-d99ef3400339.avif" alt="Illustrazioni relative alle istruzioni di lavoro" />
+</Frame>
+
+> **Flusso di lavoro specifico**
+
+Passaggio 1: il sistema di controllo di livello superiore invia istruzioni sulle attività e la telecamera per la visione 3D raccoglie immagini e ottiene con precisione lo stato del magazzino specificato;
+
+Passaggio 2: i risultati del rilevamento della posizione di archiviazione vengono segnalati al sistema di livello superiore tramite JSON per assistere il sistema di dispacciamento nella realizzazione di una gestione intelligente in entrata e in uscita.
+
+Metodo di comunicazione: TCP, UDP, HTTP
+
+> **Note sulla distribuzione**
+
+Ambiente di applicazione: è necessario evitare ambienti difficili con forte polvere e condensa;
+
+Requisiti di installazione: garantire la rigidità e la stabilità della staffa di montaggio della telecamera;
+
+[Guida alla distribuzione del rilevamento dello stato delle ubicazioni](/it/developers/deployment/algorithm-detection "Guida alla distribuzione del rilevamento dello stato delle ubicazioni")
+
+* * *

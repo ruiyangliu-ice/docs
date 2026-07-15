@@ -1,0 +1,56 @@
+---
+title: "Nghiên cứu điển hình: Phát hiện trạng thái vị trí thùng trong kho tự động"
+sidebarTitle: "Library location status identification"
+description: "Xem cách phát hiện trạng thái vị trí thùng rác theo thời gian thực giúp duy trì độ chính xác của hướng dẫn AGV trong kho bằng cách xử lý hỗn hợp thủ công và tự động."
+---
+## Bối cảnh dự án
+
+<Frame>
+  <img src="/images/external/c60631c163bf9220037d5aed.avif" alt="Kho trưng bày" />
+</Frame>
+
+Một nhà kho tự động ở Nam Trung Quốc đã triển khai nhiều AGV để tối ưu hóa quy trình xử lý hàng hóa. Tuy nhiên, trong quá trình vận hành hàng ngày của kho, chắc chắn không thể tránh khỏi việc xử lý hàng hóa thủ công khiến thông tin trạng thái chiếm dụng vị trí lưu trữ mà hệ thống thu được được cập nhật không kịp thời. Độ trễ thông tin có thể khiến AGV nhận sai hướng dẫn vận hành, không chỉ làm giảm hiệu quả vận hành mà còn có thể gây ra rủi ro về an toàn.
+
+Để giải quyết vấn đề này, dự án sử dụng hệ thống phát hiện trạng thái vị trí thùng rác để giám sát mọi vị trí và gửi thông tin trạng thái hiện tại đến WMS trong thời gian thực. Điều này cho phép **quản lý kỹ thuật số các vị trí thùng** và giúp AGV chọn và đặt hàng hóa hiệu quả, đáng tin cậy và an toàn hơn.
+
+## Giải pháp
+
+### Lựa chọn cảm biến nhận dạng trạng thái vị trí lưu trữ
+
+**+Lidar một điểm:** Lidar một điểm chỉ có thể phát ra một chùm tia laser tại một thời điểm để tạo thành một điểm trên bề mặt của vật thể. Phương pháp phân loại này có thể dễ dàng bỏ qua các khoảng trống giữa thùng carton hoặc pallet, sau đó xác định vị trí kho hiện tại là thiếu hàng hoặc trống, gây ra tai nạn khi xếp chồng.
+
+**+Camera RGB:** Khi phát hiện khu vực mục tiêu thông qua học sâu, khi một đối tượng ngoài bộ huấn luyện đi vào kho, nó có thể gây ra phát hiện sai và đưa ra thông tin xác định vị trí kho sai. Ngoài ra, khi đánh giá các vị trí kho có yêu cầu xếp hàng, thông tin do camera RGB đưa ra thiếu thông tin về chiều cao hàng hóa, gây khó khăn cho việc sắp xếp công việc xếp hàng.
+
+**$Camera Meier Micro Vision RGB-D:** Có thể cung cấp dữ liệu ba chiều và thông tin màu sắc của các vị trí kho hàng nhờ khả năng tính toán tích hợp và không cần máy tính công nghiệp bên ngoài.
+
+Đồng thời, Myer Micro Vision cung cấp giải pháp tích hợp phần cứng và phần mềm nhận dạng trạng thái vị trí kho cũng như hướng dẫn triển khai và đào tạo mô hình chuyên nghiệp cũng như hỗ trợ dịch vụ khác. Xét rằng toàn bộ giải pháp có hiệu quả về mặt chi phí và dễ triển khai, hàng trăm cảm biến đã được triển khai khắp kho để thực hiện giám sát toàn diện theo thời gian thực về trạng thái vị trí kho.
+
+### Giới thiệu chi tiết kế hoạch
+
+Giải pháp nhận dạng trạng thái vị trí kho trực quan 3D của Meyer Micro Vision được phát triển dựa trên camera RGB-D giúp nhận dạng vị trí kho chính xác bằng cách thu thập dữ liệu đám mây điểm 3D và dữ liệu RGB của vị trí kho. Nó giám sát trạng thái lấp đầy và thông tin chiều cao hàng hóa của từng vị trí kho trong thời gian thực, cung cấp hỗ trợ dữ liệu chi tiết cho robot di động, thực hiện quản lý kỹ thuật số các vị trí kho và đảm bảo hoạt động đón và đặt chính xác. Thuật toán nhận dạng vị trí lưu trữ được tích hợp vào camera, loại bỏ nhu cầu thêm các đơn vị tính toán bên ngoài, giảm độ phức tạp khi triển khai và giảm chi phí dự án.
+
+**·Giám sát toàn diện:** Xác định chính xác trạng thái vị trí lưu trữ thông qua thu thập dữ liệu ba chiều và thông tin màu sắc, kết hợp với công nghệ AI.
+
+**· Triển khai dễ dàng:** Thuật toán nhận dạng trạng thái vị trí lưu trữ được đặt ở phía camera để giảm chi phí triển khai và bảo trì.
+
+**·Giao tiếp linh hoạt:** Hỗ trợ nhiều phương thức giao tiếp như TCP/IP, UDP, HTTP, v.v. và báo cáo dữ liệu về hệ thống điều khiển ở định dạng JSON theo thời gian thực.
+
+**·Nâng cao hiệu quả:** Truyền thông tin vị trí kho theo thời gian thực nhằm hỗ trợ hệ thống điều độ phân bổ nhiệm vụ nhanh chóng và chính xác.
+
+### Hình ảnh thực tế lắp đặt tận nơi
+
+<Frame>
+  <img src="/images/legacy/2205f92a-9651-4428-92f9-3dc89c626c4d/4666c929-7170-41d0-bb44-319bf524af8d.avif" alt="Hình ảnh minh họa liên quan đến ảnh chụp thực tế lắp đặt tận nơi" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/4732a9df-998e-43d3-8c33-bb513dbae5b7/d676b314-f2e6-42a6-a1ae-7a2efe7d0ab9.avif" alt="Hình ảnh minh họa liên quan đến ảnh chụp thực tế lắp đặt tận nơi 2" />
+</Frame>
+
+## Hiển thị hiệu ứng
+
+Là chuyên gia về robot di động và các giải pháp trực quan tự động hóa kho bãi hậu cần, Myer Micro Vision không chỉ cung cấp các giải pháp công nghệ hình ảnh tích hợp phần mềm và phần cứng mà còn cung cấp dịch vụ hỗ trợ đầy đủ. Nó cam kết giúp các đối tác cải thiện mức độ tự động hóa hậu cần và đạt được quản lý kho bãi ổn định hơn, an toàn hơn và thông minh hơn.
+
+<Frame>
+  <img src="/images/legacy/fa40f906-8e87-498d-937b-34023ee6d188/312bce43-1a15-443e-8d8f-d9ce466d3b13.avif" alt="Các biểu tượng liên quan đến hiển thị hiệu ứng" />
+</Frame>

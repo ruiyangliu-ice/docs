@@ -1,0 +1,255 @@
+---
+title: "Cámara S11 dToF RGBD"
+description: "Especificaciones, interfaces, diseño mecánico e instrucciones de funcionamiento de la cámara S11 dToF RGB-D."
+---
+Para obtener el documento completo, descargue el manual del producto desde el [Centro de descargas](/es/resources/downloads/specifications-and-user-guides "Centro de descargas").
+
+## 1 Descripción general del producto
+
+### 1.1 Introducción
+
+La MRDVS S11 es una cámara RGB-D de estado sólido basada en tecnología dToF para robots móviles, con versiones Ethernet y USB. Su alcance típico en exteriores es de 0,1 a 5 m\[1\], con una precisión de alcance de hasta 1 cm. Genera sincrónicamente datos de profundidad, imágenes RGB e imágenes IR para evitar obstáculos, percepción espacial y modelado. Un módulo MIPI personalizado tiene las mismas especificaciones de rendimiento pero diferentes requisitos de comunicación, dimensiones y energía.
+
+Nota \[1\]: El alcance máximo en interiores es de 10 m.
+
+<Frame>
+  <img src="/images/legacy/958d7f8b-32a7-43d5-a347-0e0daf9c522a/cfa8d3dc-62ff-4008-ae47-9661f344d9c7.avif" alt="cámara s11" />
+</Frame>
+
+### 1.2 Características
+
+- Detección de profundidad dToF: calcula la distancia a partir del tiempo de ida y vuelta de una señal láser. En comparación con iToF, proporciona una mayor precisión (≤1 cm), un rango efectivo más amplio (0,1-10 m) y una mayor resistencia a la luz ambiental exterior.
+
+- Salida de datos sincronizada: genera imágenes de profundidad, RGB y amplitud IR sin retraso en la adquisición.
+
+- Diseño de estado sólido: No contiene piezas móviles. La cámara de 90×25×25 mm pesa aproximadamente 130 g con Ethernet o 90 g con USB y resiste las vibraciones. También está disponible un módulo MIPI personalizado de 33×18×13 mm.
+
+### 1.3 Aplicaciones
+
+1. Robots de limpieza para detección de obstáculos en el suelo
+
+2. Robots móviles industriales (AGV/AMR)
+
+3. Robots de servicio para orientación y entrega al por menor.
+
+4. Robots domésticos para la percepción del entorno.
+
+5. Robots especiales para ambientes fríos o húmedos.
+
+<Frame>
+  <img src="/images/legacy/f3bc1aeb-552d-4cba-87e3-b0f54613d1ab/fedb1f84-cfd2-434f-bbcc-f77482551b2e.avif" alt="Aplicación del robot de limpieza" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/8eec16dd-ef83-4db8-bbdc-4d4fca5c6583/19b38065-602a-41c0-8921-f280f56a4550.avif" alt="Aplicación de robot móvil industrial" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5167363b-13a9-4049-94f6-2f4fb74bca31/4db4841d-3b5d-45e1-98fa-cb45e367de1e.avif" alt="Aplicación de robot de servicio" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/75d26716-a460-4969-9e30-4436ca56d441/708321ba-1cd8-479c-a72f-2db184a673eb.avif" alt="Aplicación de robot de propósito especial" />
+</Frame>
+
+### Especificaciones
+
+| Cámara S11 | Ethernet | USB | MIPI |
+| --- | --- | --- | --- |
+| Medio ambiente | Interior/exterior | Interior/exterior | Interior/exterior |
+| Tecnología de profundidad | dToF | dToF | dToF |
+| Longitud de onda del láser | 940nm | 940nm | 940nm |
+| Rango de profundidad | 0,1-5 m en exteriores, <br />10%-90% de reflectividad | 0,1-5 m en exteriores, <br />10%-90% de reflectividad | 0,1-5 m en exteriores, <br />10%-90% de reflectividad |
+| Precisión de alcance | 1cm | 1cm | 1cm |
+| Datos de salida | Imágenes de profundidad (nube de puntos) /RGB/IR (amplitud) | Imágenes de profundidad (nube de puntos)/RGB/IR (amplitud) | Imágenes de profundidad (nube de puntos)/RGB/IR (amplitud) |
+| Resolución de profundidad/velocidad de fotogramas | 240×96 @máx. 20 fps/10 fps típico | 240×96 @máx. 20 fps/10 fps típico | 240×96 @máx. 20 fps/10 fps típico |
+| Campo de visión de profundidad | 136°×56° | 136°×56° | 136°×56° |
+| Resolución RGB/velocidad de fotogramas | 1280×1080 @máx. 20 fps/10 fps típico | 1280×1080 @máx. 20 fps/10 fps típico | N/A |
+| Campo de visión RGB | 120°×110°±3° | 120°×110°±3° | N/A |
+| Alineación RGBD | Apoyado | Apoyado | N/A |
+| Interfaz de datos | Ethernet | USB | MIPI |
+| Temperatura de funcionamiento | -20 ℃ ~ 60 ℃ | -20 ℃ ~ 60 ℃ | N/A |
+| Temperatura de almacenamiento | -20 ℃ ~ 70 ℃ | -20 ℃ ~ 70 ℃ | N/A |
+| Sincronización horaria | PTP | PTP | N/A |
+| Clasificación de protección | IP54 | N/A | N/A |
+| Seguridad ocular | CLASE I | CLASE I | CLASE I |
+| Dimensiones | 90×25×25mm | 90×25×25mm | 33×18×13 mm |
+| Peso | Aproximadamente 130 g | Aproximadamente 90 g | &lt;10g |
+| Consumo de energía | < 4W average,<br />pico de 13W | < 4W average,<br />pico de 30W | ≤2W promedio,<br />8W pico |
+| Entrada de energía | 12 V ~ 24 V CC | 5VUSB3.0 | 3,3 V/5 V CC |
+| Entorno de software | C/C++/ROS SDK | C/C++/ROS SDK | C/C++/ROS SDK |
+| Soporte del sistema | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS | Windows 7+, Linux, Arm Linux/ROS |
+| Resistencia a la luz ambiental | 100 klux | 100 Klux | 100 klux |
+
+## 3 Diseño mecánico
+
+<Frame>
+  <img src="/images/legacy/94accd48-6237-45e3-91c3-f1fda82f45f8/a7e9439d-0b98-4283-a3b8-b3ec843cadbc.avif" alt="Dimensiones de Ethernet S11" />
+</Frame>
+
+Dimensiones de Ethernet S11
+
+<Frame>
+  <img src="/images/legacy/ac90042c-202c-47e2-8194-838fdd1ecc8c/c793856e-0c27-4797-a05b-b410a1673bc5.avif" alt="Dimensiones del USB S11" />
+</Frame>
+
+Dimensiones del USB S11
+
+<Frame>
+  <img src="/images/legacy/46907574-b827-4f0b-8e31-b48a56c0b916/a6a5216a-3534-4c63-bde1-8726bc1f742f.avif" alt="Módulo S11 MIPI de 140 grados" />
+</Frame>
+
+S11 MIPI 140°
+
+## 4 Guía de integración de cámaras
+
+### 4.1 Rango de detección de la cámara
+
+<Frame>
+  <img src="/images/legacy/57895a39-84d3-4ffc-9213-d5a6ff5a30e8/32c5e22d-646a-4942-be2e-fea2917c797b.avif" alt="Rango de detección de la cámara" />
+</Frame>
+
+Serie S11 Campo de visión de 140°×56°
+
+### 4.2 Precauciones importantes de instalación
+
+#### 4.2.1 Instalación recomendada
+
+Mantenga el área libre ilustrada completamente libre de objetos al instalar la cámara de visión 3D. Un objeto en esta área interfiere con los datos de la nube de puntos y puede provocar ruido en la imagen, paradas falsas y errores en los datos.
+
+<Frame>
+  <img src="/images/legacy/73e05d6f-add8-455c-94fa-2a7a356f554e/0449536b-6ccf-4cc7-9ba9-f3c0d66dee1e.avif" alt="Instalación recomendada" />
+</Frame>
+
+#### 4.2.2 Causas de errores de la cámara
+
+Un entorno de instalación inadecuado puede interferir con las mediciones de tiempo de vuelo y triangulación y provocar errores operativos:
+
+1. Instalación inadecuada del hardware: obstrucción física y recorte del campo de visión
+
+Los bordes o nervaduras del recinto pueden entrar en el campo de visión especificado. La instalación descentrada o una abertura demasiado pequeña también pueden recortar la vista y hacer que el sensor detecte el gabinete como objetivo. Los síntomas incluyen puntos ciegos fijos, mediciones falsas de corto alcance y un campo de visión comprimido, lo que puede provocar obstáculos perdidos y caminos incorrectos.
+
+2. Interferencia óptica: diafonía y reflexiones infrarrojas de campo cercano
+
+Esta falla común ocurre cuando un espacio de instalación confinado provoca reflexiones infrarrojas anormales y diafonía:
+
+En primer lugar, los reflejos de las paredes interiores provocan interferencias por trayectos múltiples. La luz infrarroja se refleja en las paredes del recinto varias veces antes de llegar al receptor, cambiando el tiempo medido y distorsionando la distancia calculada.
+
+En segundo lugar, las superficies altamente reflectantes provocan fallos locales. Los materiales lisos y brillantes, como el metal pulido y los espejos, crean reflejos especulares, provocando señales faltantes o sobreexposición saturada.
+
+En tercer lugar, los fuertes reflejos de las estructuras cercanas provocan contaminación por deslumbramiento. Cuando una estructura brillante y suave está a menos de 10 cm del sensor, fuertes reflejos saturan el receptor. El deslumbramiento interrumpe la fase de una cámara iToF e impide el cálculo del tiempo de vuelo. Esta interferencia distorsiona los datos, acelera el envejecimiento del receptor y afecta las funciones básicas.
+
+3. Interferencia óptica: ventanas ópticas
+
+El material y la limpieza del cristal protector u otras ventanas ópticas situadas delante del sensor pueden provocar tres tipos de interferencias:
+
+En primer lugar, múltiples reflejos provocan artefactos en la imagen. Los reflejos de ambas superficies de la ventana se mezclan con la señal válida, lo que provoca imágenes fantasma y píxeles voladores en la imagen de profundidad y nubes de puntos LiDAR duplicadas.
+
+En segundo lugar, la contaminación y la niebla reducen la relación señal-ruido. Los espacios sellados pueden permitir que la ventana se empañe o acumule polvo, lo que impide que el sensor identifique señales válidas.
+
+En tercer lugar, los materiales incompatibles atenúan la señal. Es posible que las señales no atraviesen el vidrio o el acrílico ordinarios, lo que provocaría una pérdida total de datos. La interferencia de las ventanas aumenta el error de medición, puede dañar la lente y aumenta los costos de mantenimiento. El vidrio de alta transmisión puede mejorar el rendimiento.
+
+4. Otros factores indirectos
+
+Primero, el estrés de la instalación: los clips demasiado apretados pueden deformar la lente o desplazar el eje óptico, provocando errores de distancia ToF.
+
+En segundo lugar, la interferencia térmica: una mala disipación de calor en un espacio sellado eleva la temperatura del sensor y deforma la ventana, lo que provoca una desviación del alcance y posibles fallas a largo plazo.
+
+### 4.3 SDK
+
+Consulte la guía del usuario del software host MRDVS y la guía de desarrollo del SDK.
+
+### 4.4 Medio ambiente y confiabilidad
+
+| Artículo |  | Especificación |
+| --- | --- | --- |
+| Entorno operativo | Temperatura | -20℃--60℃ |
+| Iluminación | 0KLUX--100KLUX |  |
+| Entorno de almacenamiento | Temperatura | -40℃--70℃ |
+| Humedad | Máx. 90 % de humedad relativa |  |
+| Aumento de temperatura durante el funcionamiento normal |  | Aumento de temperatura del recinto &lt;25℃ |
+| Clasificación ESD |  | Descarga de contacto ±4KV, descarga de aire ±8KV |
+| Clasificación RE |  | Cumple con GB 9254 CLASE A |
+| Vida útil |  | 3 años |
+| Certificación ambiental |  | RoHS |
+
+## 5 Inicio rápido
+
+### 5.1 Prueba de conexión
+
+<Frame>
+  <img src="/images/legacy/45ef596f-1507-4062-bb8f-480af2742ac6/b2df4d53-b802-4387-b1ca-b8e45f0a5ac5.avif" alt="Prueba de conexión" />
+</Frame>
+
+#### 5.1.1 Encienda la cámara
+
+1. Conecte un extremo del cable de CC a la cámara y el otro a un adaptador de CC de 24 V/2 A.
+
+2. Un indicador de encendido azul que parpadea lentamente confirma el encendido normal.
+
+3. Si el indicador está apagado o es anormal, como rojo fijo, verifique el conector de alimentación y el adaptador.
+
+#### 5.1.2 Configurar la red
+
+1. Conecte la cámara directamente a la computadora con un cable Ethernet de categoría 6.
+
+2. La dirección IP de la cámara predeterminada de fábrica es 192.168.100.82.
+
+3. Configure la IP de la computadora en la misma subred y desactive el firewall.
+
+#### 5.1.3 Ejecutar el software
+
+1. Ejecute el software host, adquiera imágenes de la cámara y verifique que sean claras y estables.
+
+2. Consulte la sección 5.3 o la guía del usuario de LxCameraViewer.
+
+3. Comuníquese con el soporte técnico o de ventas de MRDVS para obtener más ayuda.
+
+### 5.2 Descripción general de la interfaz
+
+LxCameraViewer abre y muestra múltiples dispositivos. Muestra profundidad, intensidad, nube de puntos e imágenes RGB y configura parámetros básicos de cámara y algoritmo. Puede ver y guardar datos de imágenes, configuración de la cámara y detalles del algoritmo.
+
+La interfaz inicial tiene una lista de dispositivos (área azul 1), una barra de menú (área verde 2) y una visualización de imágenes (área roja 4). Haga doble clic en la barra de menú para maximizarla o minimizarla. Arrastra la interfaz con el botón izquierdo del ratón.
+
+<Frame>
+  <img src="/images/legacy/aece6251-f13b-4919-9246-e02a6f5a5308/a70d39dd-1006-4527-9dc8-c75198c2a986.avif" alt="Interfaz antes de abrir una cámara" />
+</Frame>
+
+Interfaz antes de abrir una cámara
+
+Después de abrir una cámara, aparece un panel de funciones a la derecha (área 3). Utilice **Herramientas básicas**, **Algoritmos de aplicación** y **Otros** en la parte superior. Las herramientas básicas incluyen visualización de imágenes, configuraciones 2D, configuraciones 3D y filtrado.
+
+<Frame>
+  <img src="/images/legacy/7a1d437e-3a64-4a89-be9c-a7e1cdbebf94/2667b6e5-8fbf-4e8e-943c-55019cd885f1.avif" alt="Interfaz con una cámara abierta." />
+</Frame>
+
+Interfaz con una cámara abierta.
+
+La lista de dispositivos está en la parte superior izquierda. Haga clic en **Abrir** o **Cerrar** para controlar la cámara. El área central izquierda muestra información de la cámara, operaciones de software, resultados y resultados de la transmisión. El área inferior izquierda muestra información del dispositivo seleccionado.
+
+Haga clic en **Capturar** para iniciar o detener la adquisición de imágenes. El botón permanece desactivado hasta que finaliza la operación. Haga clic en **Guardar fotograma** para guardar imágenes de transmisiones activas. Seleccione **Profundidad**, **Intensidad**, **RGB** o **Nube de puntos** para abrir las vistas requeridas.
+
+Para obtener más información, consulte la guía del usuario de LxCameraViewer.
+
+## 6 Solución de problemas
+
+| No. | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde cuando se abre | Deshabilite el firewall para que no bloquee la comunicación de la cámara |
+| 2 | El software host detecta múltiples direcciones IP | Resuelva el conflicto de direcciones LAN y seleccione la dirección IP correcta |
+| 3 | La transmisión de la cámara es inestable | Utilice un cable Gigabit Ethernet; Fast Ethernet puede causar inestabilidad inicial |
+| 4 | Ubicación de instalación del software | Utilice un directorio con permisos de lectura y escritura adecuados en lugar de la ubicación predeterminada de la unidad C |
+
+## 7 Precauciones
+
+<Frame>
+  <img src="/images/legacy/c02ee1e1-3bf8-4ed6-9c4c-7013b74a1c30/8e6fe3fb-d466-4347-be43-b9139e15f0b3.avif" alt="Precauciones con la cámara" />
+</Frame>
+
+### Estudios de caso
+
+[Cómo los montacargas autónomos de la Compañía F completan de forma segura más de 500 tareas cada día](/es/solutions/warehouse/cases/unmanned-forklift-500-tasks "Estudio de caso de carretilla elevadora autónoma")
+
+[Evitación de obstáculos AMR mientras se conduce](/es/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Evitación de obstáculos AMR mientras se conduce")
+
+[Evitación de obstáculos en 3D para un robot humanoide con ruedas](/es/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Evitación de obstáculos del robot humanoide con ruedas")

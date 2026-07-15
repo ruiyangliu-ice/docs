@@ -1,0 +1,89 @@
+---
+title: "Phát hiện trạng thái vị trí thùng rác"
+description: "Phát hiện các vị trí kho bị chiếm dụng và trống trong thời gian thực để WMS có thể đưa ra hướng dẫn chính xác, an toàn cho AGV."
+---
+## Giới thiệu bối cảnh
+
+Thách thức: Ở hầu hết các kho hàng đã áp dụng AGV, các mặt hàng vẫn được xếp chồng lên nhau theo cách thủ công. Điều này sẽ khiến hệ thống WMS không thể đánh giá tình trạng chiếm dụng thực tế của từng vị trí kho theo thời gian thực, dẫn đến thông tin WMS cung cấp cho AGV không chính xác. Nếu không thể xác định kịp thời kho bị chiếm dụng, AGV có thể nhận được hướng dẫn sai, điều này không chỉ làm giảm hiệu quả vận hành mà còn dễ va chạm với hàng hóa hoặc thiết bị khác. Trong trường hợp nghiêm trọng, nó thậm chí có thể gây ra tai nạn an toàn và gây nguy hiểm cho sự an toàn của nhân viên và thiết bị.
+
+Vì vậy, hệ thống nhận dạng trạng thái kho hàng ra đời. Thông qua các chức năng như định vị tự động, đồng bộ hóa dữ liệu theo thời gian thực và kiểm soát hàng tồn kho chính xác, hệ thống sẽ tối ưu hóa việc phân bổ tài nguyên kho, giảm sai sót của con người và cải thiện hiệu quả hoạt động.
+
+<Frame>
+  <img src="/images/legacy/b8e92a99-9044-4228-bc87-0ff0f64ad6df/a1c8f0e7-3d9f-42e2-b250-12b1f8c64152.avif" alt="Các hình ảnh minh họa liên quan đến giới thiệu nền" />
+</Frame>
+
+* * *
+
+**Hai điểm hạn chế phổ biến của cảm biến nhận dạng trạng thái vị trí lưu trữ:**
+
+- Thông tin vị trí lưu trữ được truyền bởi lidar một điểm không đủ chính xác và dễ gây ra tai nạn xếp chồng.
+
+Một số nhà kho sử dụng lidar một điểm để phát hiện vị trí lưu trữ, nhưng radar tầm xa này chỉ có thể phát ra một chùm tia laser mỗi lần để tạo thành một điểm trên bề mặt của vật thể. Nó có thể bỏ qua các khoảng trống giữa thùng carton hoặc pallet, dẫn đến xác định sai trạng thái vị trí lưu trữ, từ đó gây ra tai nạn khi xếp chồng.
+
+- Phương pháp hiệu chỉnh của camera RGB thuần túy là duy nhất và có nguy cơ đánh giá sai và thiếu thông tin.
+
+Có những nhược điểm sau khi sử dụng camera RGB để xác định trạng thái vị trí:
+
+- Khi sử dụng deep learning để phát hiện mục tiêu, các đối tượng ngoài bộ huấn luyện đi vào kho có thể gây ra phát hiện sai và đưa ra thông tin sai.
+
+- Thiếu thông tin về chiều cao hàng hóa gây khó khăn cho việc sắp xếp công việc xếp hàng.
+
+- Camera mắt cá góc siêu rộng gặp vấn đề méo mép trong việc xác định vị trí kho hàng, ảnh hưởng đến độ chính xác của việc huấn luyện và dự đoán mô hình, đồng thời làm tăng chi phí máy chủ.
+
+* * *
+
+## Tổng quan về giải pháp
+
+Meyer Micro Vision sử dụng **máy ảnh RGB-D** để cung cấp dữ liệu ba chiều và thông tin màu sắc về các vị trí kho, đồng thời tự động xác định sự hiện diện, thông số kỹ thuật của vị trí và tình trạng chiếm chỗ bất thường của hàng hóa. Nó cũng có thể phân biệt các danh mục hàng hóa thông qua hệ thống AI thông minh tầm nhìn 3D và xuất dữ liệu đó đến hệ thống điều phối để thực hiện kiểm tra xuất nhập cảnh thông minh. Máy ảnh này có khả năng tính toán tích hợp và không cần máy tính công nghiệp bên ngoài. Đồng thời, Meyer Micro Vision cung cấp các giải pháp phần mềm và phần cứng tích hợp để xác định trạng thái kho hàng, cũng như hướng dẫn triển khai và đào tạo mô hình chuyên nghiệp cũng như hỗ trợ dịch vụ khác.
+
+<Frame>
+  <img src="/images/legacy/cc79bcea-1ede-422f-a072-54e7f48bc49e/a76fdfe2-3848-47e4-a0fc-e97d97879d7c.avif" alt="Tổng quan về giải pháp đồ họa liên quan" />
+</Frame>
+
+## Ưu điểm cốt lõi
+
+- Giám sát toàn diện: Xác định chính xác trạng thái vị trí lưu trữ thông qua thu thập dữ liệu ba chiều và thông tin màu sắc, kết hợp với công nghệ AI.
+
+- Triển khai đơn giản: Thuật toán nhận dạng trạng thái vị trí lưu trữ được đặt ở phía camera giúp giảm chi phí triển khai và bảo trì.
+
+- Giao tiếp linh hoạt: hỗ trợ TCP/IP, UDP, HTTP và các phương thức giao tiếp khác, đồng thời báo cáo dữ liệu về hệ thống điều khiển ở định dạng JSON theo thời gian thực.
+
+- Nâng cao hiệu quả: Truyền tải thông tin vị trí kho theo thời gian thực giúp hệ thống điều độ phân bổ nhiệm vụ nhanh chóng và chính xác.
+
+## Trình diễn cảnh
+
+<Frame>
+  <img src="/images/legacy/c1a3c8e5-f742-49c5-b9dd-ef5ce1ceb6c7/607dc6a7-6055-4434-a416-9e8914631393.avif" alt="Các hình ảnh minh họa liên quan đến cảnh trình diễn" />
+</Frame>
+
+Trình diễn kịch bản nhận dạng trạng thái vị trí lưu trữ
+
+## Mô tả công việc
+
+> **Gợi ý lựa chọn máy ảnh: S10Pro**
+
+> **Phương pháp lắp đặt camera**
+
+Lắp đặt cố định: Khi lắp đặt camera trên cột hoặc trần nhà, nên lắp đặt ngay phía trên vị trí lưu trữ cần giám sát.
+
+<Frame>
+  <img src="/images/legacy/13530b5b-265b-4977-b960-e3987b55083e/a9108d02-119f-4e4d-a995-d99ef3400339.avif" alt="Hình ảnh minh họa liên quan đến hướng dẫn công việc" />
+</Frame>
+
+> **Quy trình làm việc cụ thể**
+
+Bước 1: Hệ thống điều khiển cấp trên gửi hướng dẫn nhiệm vụ và camera quan sát 3D thu thập hình ảnh và thu được chính xác trạng thái kho hàng được chỉ định;
+
+Bước 2: Kết quả phát hiện vị trí lưu trữ được báo cáo cho hệ thống lớp trên thông qua JSON để hỗ trợ hệ thống điều độ thực hiện quản lý xuất nhập thông minh.
+
+Phương thức giao tiếp: TCP, UDP, HTTP
+
+> **Ghi chú triển khai**
+
+Môi trường ứng dụng: Cần tránh môi trường khắc nghiệt, có nhiều bụi và ngưng tụ;
+
+Yêu cầu lắp đặt: Đảm bảo độ cứng và ổn định của giá đỡ camera;
+
+[Hướng dẫn triển khai phát hiện trạng thái vị trí thùng rác](/vi/developers/deployment/algorithm-detection "Hướng dẫn triển khai phát hiện trạng thái vị trí thùng rác")
+
+* * *

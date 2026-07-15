@@ -1,0 +1,1152 @@
+---
+title: "Triển khai thuật toán phát hiện MRDVS"
+description: "Cài đặt, định cấu hình, hiệu chỉnh và sử dụng các thuật toán phát hiện có sẵn trên camera MRDVS."
+---
+Hướng dẫn sử dụng chức năng phát hiện thuật toán MRDVS
+
+## 1. Giới thiệu
+
+Bài viết này chủ yếu giới thiệu việc triển khai và sử dụng các thuật toán ứng dụng Meyer Micro Vision.
+
+## 2. Thành phần hệ thống phát hiện
+
+Hệ thống này bao gồm một camera, phần mềm máy tính chủ thuật toán và một máy tính công nghiệp.
+
+## 3. Triển khai phần cứng camera
+
+### Sử dụng loại máy ảnh
+
+|  |  |
+| --- | --- |
+| Loại máy ảnh | Camera 3D S10Pro |
+| Hướng dẫn sử dụng máy ảnh ↓ [Camera ToF S10Pro](/vi/products/s-series/s10-overview) | |
+
+#### Hỗ trợ thuật toán máy ảnh
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+|  | M4pro | S10 | S10 Pro |
+| Phát hiện con người | √ | | |
+| Phát hiện vị trí lưu trữ | | | √ |
+| Phát hiện khối lượng | | √ | √ |
+
+### Rađa
+
+|  |  |
+| --- | --- |
+| Loại radar | giữa360 |
+
+### Phương pháp lắp đặt camera
+
+Máy ảnh cần được cố định bằng giá đỡ. Bạn có thể sử dụng phương pháp lắp đặt và giá đỡ camera như trong hình bên dưới để lắp đặt camera. Hình dưới đây cho thấy sơ đồ cài đặt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ed7d4ff9-ebc7-456e-9382-c1bbad17757e.avif" alt="Hình ảnh minh họa liên quan đến phương pháp lắp đặt camera" />
+</Frame>
+
+Sơ đồ lắp đặt
+
+Chức năng phát hiện con người thường được cài đặt ở góc nghiêng (nhỏ hơn 30°) hoặc góc ngang.
+
+### Kết nối máy ảnh
+
+1. Camera được cấp nguồn 24V và được kết nối thông qua cáp mạng Loại 6e/Loại 7. Sau khi camera được cài đặt và triển khai, hãy mở phần mềm máy tính chủ phát hiện vị trí kho hàng thông qua máy tính xách tay để hiệu chỉnh các thông số bên ngoài của camera và đặt phạm vi phát hiện. Thuật toán chạy bên trong camera theo thời gian thực.
+
+2. Khi triển khai nhiều camera, chúng cần được kết nối thông qua bộ chuyển mạch Gigabit. Theo chiều cao lắp đặt được lên kế hoạch trong CAD, camera quan sát 3D được lắp đặt ở vị trí cố định thông qua giá đỡ để đảm bảo camera được cố định chắc chắn. Sau khi lắp đặt camera, hãy kết nối camera với nguồn điện DC quy định 24V và sử dụng cáp mạng tương ứng để kết nối camera với công tắc hoặc điều khiển chính.
+
+3. Sau khi chuẩn bị xong, đặt hàng hóa vào kho trong tầm quan sát của camera và tiến hành triển khai phần mềm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5be1e0db-e949-477f-bfb4-5c89a0debd78.avif" alt="Biên tập" />
+</Frame>
+
+### Cấu hình mạng camera
+
+1. Lấy hệ thống Win10 làm ví dụ, nhấp đúp vào bảng điều khiển
+
+2. Sau khi vào bảng điều khiển, nhấp vào "**Xem trạng thái và tác vụ mạng**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d0ad7fd5-7f9c-43fb-8c8e-fb45f83fcf98.avif" alt="Hình ảnh minh họa liên quan đến cấu hình mạng camera" />
+</Frame>
+
+3. Vào giao diện Trung tâm Mạng và Chia sẻ và nhấp vào "**Thay đổi cài đặt bộ điều hợp**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c7f569d-7ce6-4c16-a926-03cfd5e42d13.avif" alt="Sơ đồ liên quan cấu hình mạng camera 2" />
+</Frame>
+
+4. Vào giao diện kết nối mạng, nhấp đúp chuột để chọn Ethernet mà camera được kết nối.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a8ff254-6ffc-4a84-9cbe-19c42f984c93.avif" alt="Sơ đồ liên quan cấu hình mạng camera 3" />
+</Frame>
+
+5. Kiểm tra trạng thái Ethernet (nên sử dụng cổng mạng Gigabit) và nhấp vào nút "**Properties**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b59f551e-1741-4f24-b4ff-8b77bbf16981.avif" alt="Sơ đồ liên quan cấu hình mạng camera 4" />
+</Frame>
+
+6. Nhập giao diện thuộc tính Ethernet, tìm "**Internet Protocol Version 4 (TCP/IPv4)**" và nhấp đúp để mở.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b166daac-7f5c-45c6-9595-2861ff9f2633.avif" alt="Sơ đồ liên quan cấu hình mạng camera 5" />
+</Frame>
+
+7. Nhập giao diện Giao thức Internet phiên bản 4 (TCP/IPv4), chọn “**Sử dụng địa chỉ IP sau**” để ghi địa chỉ IP, mặt nạ mạng con và cổng mặc định.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1798a3b3-d233-4cd1-90a8-77416cf0160f.avif" alt="Sơ đồ liên quan đến cấu hình mạng camera 6" />
+</Frame>
+
+8. Cài đặt địa chỉ IP: 192.168.100.xxx Mặt nạ mạng con: 255.255.255.0 Cổng mặc định: 192.168.100.1. Đặt IP như hình bên dưới. Sau khi cài đặt hoàn tất, nhấp vào nút "OK".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ec8d1e2-5747-4f79-8976-d3bf0256e8d1.avif" alt="Các hình ảnh minh họa liên quan đến cấu hình mạng camera 7" />
+</Frame>
+
+9. Sau khi nhấn nút OK sẽ tự động quay về giao diện trước đó. Nhấp vào "**OK**" lần nữa để hoàn tất cấu hình mạng.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a22760b-a0a6-44d1-b3ce-5e73bddcac75.avif" alt="Các hình ảnh minh họa liên quan đến cấu hình mạng camera 8" />
+</Frame>
+
+### Xác nhận tắt tường lửa
+
+1. Sau khi camera được cài đặt và triển khai cố định, cần tắt tường lửa của máy tính.
+
+2. Lấy hệ thống Win10 làm ví dụ, nhấp đúp vào [**Control Panel**] trên màn hình nền và nhấp vào [**System and Security**] sau khi nhập.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3354b940-7e03-4c38-a151-af6d75808642.avif" alt="Cấu hình tường lửa" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2d360745-c9b5-48a6-8139-e6cc2f673a9d.avif" alt="Cấu hình tường lửa 2" /> |
+
+1. Nhấp vào nút [**Tường lửa của Bộ bảo vệ Windows**] để vào trang tường lửa.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0cff2eb6-5667-497b-bd7b-780f02c8ad68.avif" alt="Biểu tượng liên quan đến xác nhận tắt tường lửa 3" />
+</Frame>
+
+1. Nhấp vào nút [**Bật hoặc tắt Tường lửa của Bộ bảo vệ Windows**] để vào trang bật/tắt tường lửa.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1a7157a-348a-48ea-b574-a175a2a39356.avif" alt="Biểu tượng liên quan đến xác nhận tắt tường lửa 4" />
+</Frame>
+
+1. Chọn [**Tắt Tường lửa của Bộ bảo vệ Windows**] cho cả mạng riêng và mạng công cộng, rồi nhấp vào nút [**Xác nhận**] để tắt tường lửa. q
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1dd2137-e249-4193-a4ee-3e095b5171f7.avif" alt="Biểu tượng liên quan đến xác nhận tắt tường lửa 5" />
+</Frame>
+
+## 4. Hướng dẫn cài đặt phần mềm camera
+
+### Quá trình cài đặt phần mềm
+
+- Khi sử dụng phần mềm lần đầu tiên, bạn có thể thực hiện theo quy trình sau để hoàn tất thao tác.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c8922d3a-2b74-4582-9b3d-119ba6be460d.avif" alt="Hình 2" />
+</Frame>
+
+### Thuật toán máy tính chủ yêu cầu môi trường vận hành phần mềm
+
+Nên chạy thiết bị máy tính phía trên để phát hiện vị trí kho để đáp ứng yêu cầu.
+
+|  |  |
+| --- | --- |
+| Hệ điều hành | Windows10 trở lên |
+| CPU | Đề xuất Intel® Core™ i5 thế hệ thứ 7 trở lên |
+| Ký ức | 8G trở lên |
+| GPU | Màn hình lõi/đồ họa Intel® UHD trở lên |
+
+### Cài đặt phần mềm máy chủ camera
+
+1. Tải xuống phần mềm máy chủ camera từ cơ sở kiến ​​thức MRDVS: [Tải xuống phần mềm](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Tải xuống phần mềm")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30f8b131-71f1-468d-bbe5-20ee85bf684b.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera" />
+</Frame>
+
+1. Nhấp đúp để cài đặt phần mềm máy tính chủ Lanxin-MRDVS. Máy chủ cần được cài đặt bên ngoài ổ c.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8dcb4047-56e6-40a1-8b31-96a7222e187d.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 2" />
+</Frame>
+
+1. Sau khi chọn ngôn ngữ sử dụng, nhấp vào [**OK**], chọn thư mục cài đặt không phải ổ C và nhấp vào [**Next**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f68ebcb-d10d-4601-9cb4-aa816f1e1efc.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 3" />
+</Frame>
+
+1. Chọn [**Tạo lối tắt trên màn hình**] và nhấp vào [**Tiếp theo**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/35e66c38-ebb9-47d9-a0f5-1c2bcad9a357.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 4" />
+</Frame>
+
+1. Bấm vào nút [**Install**] để bắt đầu cài đặt phần mềm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c659d00-a437-4e7a-b17f-e90c008c78d0.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 5" />
+</Frame>
+
+1. Sau khi cài đặt hoàn tất, bạn có thể chạy phần mềm máy chủ camera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/62cfa35a-c531-43e9-a9f8-56b8bdf06649.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 6" />
+</Frame>
+
+### Cài đặt thuật toán phần mềm máy chủ
+
+1. Sao chép phần mềm máy tính chủ thuật toán thu được vào máy tính chủ camera \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cb41b49-454e-4400-8181-44dbc75bdd48.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy tính chủ thuật toán" />
+</Frame>
+
+1. Khi thay thế, chọn [**Thay thế tệp trong mục tiêu**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/276f9cf3-d080-4af9-800c-871e99488471.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thuật toán phần mềm máy tính chủ 2" />
+</Frame>
+
+1. Click đúp để mở phần mềm và chạy.
+
+2. Trong thanh danh sách thiết bị ở bên trái, trạng thái camera có màu vàng nghĩa là camera chưa khởi động thuật toán phát hiện.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/61ad5b70-d5ee-43b1-86fa-d63010b7d237.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thuật toán phần mềm máy tính chủ 3" />
+</Frame>
+
+### Nâng cấp phần mềm máy tính theo thuật toán
+
+Để nâng cấp phần mềm máy tính chủ thuật toán, chỉ cần thay thế tệp "**.exe**".
+
+### Nâng cấp thuật toán
+
+Lưu ý: Trước khi nâng cấp firmware thuật toán, bạn cần đảm bảo rằng firmware máy ảnh là phiên bản MDS.
+
+#### Máy chủ lưu trữ camera
+
+1. Để nâng cấp thuật toán camera, bạn cần mở phần mềm máy chủ camera và nhấp đúp vào [**LxCameraViewer.exe**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7aebe7e0-a511-4443-bcc4-23df3ece2209.avif" alt="Các hình ảnh minh họa liên quan đến máy chủ camera" />
+</Frame>
+
+1. Nhấp vào nút [**Open**] để xem hình ảnh camera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/74ff1e45-932d-4b06-b1f3-9034f41bcbb6.avif" alt="Các hình ảnh minh họa liên quan đến camera máy tính chủ 2" />
+</Frame>
+
+1. Nhấp vào Công cụ cơ bản→Cài đặt chức năng→[**Nâng cấp chương trình cơ sở**] để flash thuật toán phát hiện. (Vui lòng liên hệ nhân viên hỗ trợ kỹ thuật để lấy thuật toán)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1d2f22cd-74da-44b4-909a-fed4c986507e.avif" alt="Các hình ảnh minh họa liên quan đến camera máy tính chủ 3" />
+</Frame>
+
+1. Sau khi nhấp vào nút [**Execute**], chọn "Thuật toán phát hiện" và nhấp vào nút [**Open**] để bắt đầu nhấp nháy thuật toán.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Các hình ảnh minh họa liên quan đến camera máy tính chủ 4" />
+</Frame>
+
+#### Máy tính chủ có thuật toán
+
+1. Sử dụng thuật toán phần mềm máy tính chủ để nâng cấp chương trình cơ sở và bạn cần chọn máy ảnh. Đầu tiên hãy nhấp vào camera cần nâng cấp trong danh sách thiết bị ở bên trái, sau đó nhấp vào [**Nâng cấp chương trình cơ sở**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3d76226-6572-4c82-8754-8bd0bf34a713.avif" alt="wwwww" />
+</Frame>
+
+1. Chọn "Thuật toán phát hiện" và nhấp vào nút [**Mở**] để bắt đầu nhấp nháy thuật toán.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Sơ đồ liên quan đến thuật toán máy tính chủ 2" />
+</Frame>
+
+#### Kết quả nâng cấp
+
+1. Trong quá trình nhấp nháy thuật toán, camera sẽ khởi động lại và ID camera trong danh sách thiết bị bên trái sẽ biến mất. Sau khi nó hiển thị lại có nghĩa là flash thành công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e847d737-d14d-4e55-b756-1377aa6ef832.avif" alt="Hình minh họa liên quan đến kết quả nâng cấp" />
+</Frame>
+
+1. Sau khi nâng cấp hoàn tất, nền camera tương ứng sẽ hiển thị màu xanh lục trên phần mềm máy tính chủ thuật toán.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b43d8cd7-58e6-467f-abcc-ff8c9cc1af4e.avif" alt="Biểu tượng liên quan đến kết quả nâng cấp 2" />
+</Frame>
+
+## 5. Giao diện phần mềm máy chủ thuật toán
+
+### Thuật toán khởi động chương trình máy tính chủ
+
+1. Nhấp đúp vào chương trình [**LxApplicationViewer.exe**] để khởi động phần mềm máy tính chủ thuật toán.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4e40bb9a-d669-45ad-bf6a-557496333fda.avif" alt="Quản trị viên" />
+</Frame>
+
+Danh sách thiết bị. Biểu tượng màu xanh lá cây cho biết máy ảnh được kết nối bình thường. Bấm để chuyển sang góc nhìn của camera tương ứng.
+
+Danh sách thông tin. Danh sách này sẽ hiển thị tất cả các bản ghi hoạt động liên quan đến camera và kết quả của chúng.
+
+Chuyển đổi chế độ hiển thị. Chọn chế độ RGB sẽ hiển thị hình ảnh 2D, trong khi chọn chế độ đám mây điểm sẽ hiển thị đám mây điểm 3D.
+
+Thực đơn chức năng. Trong menu này, bạn có thể chuyển đổi thuật toán hiển thị hiện tại, điều chỉnh các cài đặt cơ bản của thuật toán, định cấu hình các thông số camera hoặc thay đổi ngôn ngữ giao diện.
+
+Các chức năng cơ bản. Có thể chuyển sang quản lý thông số thuật toán, người dùng thông thường chỉ có quyền xem. Các thuật toán khác nhau sẽ hiển thị các tham số và tùy chọn điều khiển bổ sung tại đây. Ngoài ra, quản trị viên có thể chuyển đổi thuật toán hiện đang thực thi.
+
+Hoạt động của máy ảnh. Bạn có thể thực hiện một số thao tác trực tiếp trên máy ảnh.
+
+1. Người dùng hiện tại chọn quản trị viên và không cần nhập mật khẩu. Nhấp vào Xác nhận trực tiếp để vào chế độ quản trị viên (không thể đặt tham số thuật toán ở chế độ người dùng).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/34efc169-ddf1-4544-bf3a-43f7e249e6f4.avif" alt="Ảnh chụp màn hình 2025-03-04 111733" />
+</Frame>
+
+### Công cụ cơ bản
+
+Các công cụ cơ bản chủ yếu bao gồm chuyển đổi người dùng, mặt đất lý tưởng, mặt đất tham số bên ngoài, bộ đệm hiển thị, hiển thị thuật toán, lưu trữ hình ảnh đã xuất và phát lại lịch sử.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7480b2d4-a30a-4a88-b067-f004930c84f8.avif" alt="2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Công cụ cơ bản | Ý nghĩa chức năng |
+| Chuyển đổi người dùng | Chuyển quyền, quyền người dùng: chỉ xem kết quả phát hiện. Quyền quản trị viên: có thể cấu hình camera, thông số thuật toán phát hiện, v.v. |
+| Mảnh Đất Lý Tưởng | Mặt đất đề cập đến đường ngang và có thể tắt. |
+| Mặt đất tham số bên ngoài | Mặt phẳng nằm ngang nơi các thông số bên ngoài của máy ảnh được hiệu chỉnh. Nó có thể được tắt. |
+| Hiển thị bộ đệm | Không cần sửa đổi. |
+| Thuật toán hiển thị | Thuật toán hiện đang được sử dụng. |
+| Xuất hình ảnh được lưu trữ | Xuất hình ảnh được lưu trữ. |
+| Phát lại lịch sử | Xem nhật ký hình ảnh RGB và TOF. |
+| Chuyển đổi thuật toán ứng dụng | Chọn thuật toán sẽ được sử dụng. Quản trị viên thông thường có thể thực hiện nhiều nhất một thuật toán cùng một lúc. Sau khi chọn xong nhấn Lưu và phát hành |
+| Hiển thị kết quả phát hiện | Hiển thị kết quả phát hiện của thuật toán hiện đang hiển thị. |
+
+### Ngôn ngữ
+
+Chuyển đổi giữa tiếng Trung và tiếng Anh.
+
+### Thanh trạng thái
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/50568f80-85ac-45cc-8aa6-330262048ac9.avif" alt="25909893521\_171648620291\_Ảnh chụp màn hình 2025-03-05 134432" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Thanh trạng thái | Ý nghĩa chức năng |
+| RGB | Kiểm tra để xem hình ảnh RGB |
+| Đám mây điểm | Sau khi kiểm tra, xem hình ảnh đám mây điểm |
+| Dừng thuật toán | Sau khi nhấp để dừng thuật toán, thuật toán sẽ không được bắt đầu cho đến lần bật máy ảnh tiếp theo. |
+| Nâng cấp chương trình cơ sở | Thực hiện nâng cấp firmware thuật toán. |
+| Khởi động lại máy ảnh | Khởi động lại máy ảnh. |
+
+### Phát lại và xem
+
+Mỗi lần chuyển trạng thái, một khung dữ liệu sẽ được lưu, khung này được lưu dưới dạng khung hình ảnh RGB và dữ liệu đám mây điểm tại thời điểm chuyển đổi. Việc phát lại giữa các thuật toán khác nhau không thể tương tác được. Tiêu chuẩn thời gian là thời gian hệ thống nội bộ của máy ảnh. Vui lòng không phán xét dựa trên thời gian của hệ thống máy tính.
+
+Nhấn vào đây để xem phát lại. Phía bên trái của cửa sổ bật lên hiển thị các hình ảnh phát lại. Bấm vào bất kỳ mục nào để mở dữ liệu phát lại của ngày tương ứng. Bạn có thể xem ảnh RGB hoặc dữ liệu TOF.
+
+**![Phát lại RGB](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0537bd17-ebb2-44f8-819d-1ab86f6c5db0.avif)![TOF phát lại](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4fe3d671-26ad-4b45-9bb6-36e13bf879dd.avif)**
+
+### Hàm toàn cục
+
+Vui lòng đảm bảo rằng thuật toán đã được kích hoạt trong máy ảnh và máy ảnh bị lỗi sau khi định cấu hình các thông số thông qua máy tính chủ của máy ảnh trong điều kiện sử dụng bình thường. Tính năng tự động làm mới phải được bật trong các trường hợp sau.
+
+(1) Nếu nền của camera tương ứng trong danh sách thiết bị hiển thị màu vàng, điều này cho biết thuật toán gặp phải sự tắc nghẽn trong quá trình thu nhận hình ảnh.
+
+(2) Nếu nền của camera tương ứng trong danh sách thiết bị có màu xanh lục nhưng hình ảnh không được cập nhật, điều này cũng có nghĩa là thuật toán bị chặn trong quá trình thu nhận hình ảnh. Mặc dù kết nối vẫn bình thường nhưng hệ thống vẫn tiếp tục gửi dữ liệu được lưu trong bộ nhớ đệm.
+
+## 6. Hiệu chỉnh thông số bên ngoài camera
+
+### Cấu hình máy ảnh
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9000666e-1285-403f-941b-5cbcfd74305c.avif" alt="kappframework-SImIQI(1)(1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cài đặt máy ảnh | Ý nghĩa chức năng |
+| Tên máy ảnh | Sửa đổi tên của máy ảnh hiện tại. Khi có nhiều camera, bạn có thể đánh giá theo tên camera. |
+| Chế độ mô phỏng | Sử dụng nội bộ, người dùng không cần phải mở nó. |
+| Chế độ lưu ảnh | Bật tính năng lưu ảnh thuật toán để lưu trữ dữ liệu hình ảnh bên trong camera. |
+| Chế độ chụp | Chế độ chụp được chia thành MDS và SDK. Việc sử dụng MDS sẽ không chiếm quyền sử dụng camera và có thể mở máy chủ camera một cách bình thường. Việc sử dụng SDK sẽ chiếm quyền của máy ảnh và không thể mở được máy chủ khi chạy thuật toán. |
+| x | camera đã hiệu chỉnh vị trí x |
+| y | Vị trí y của hiệu chỉnh máy ảnh |
+| z | Camera hiệu chỉnh chiều cao z tính từ mặt đất |
+| cuộn | góc hiệu chỉnh camera |
+| sân | góc hiệu chỉnh camera |
+| ôi | góc hiệu chỉnh camera |
+| Mảnh đất lý tưởng | Cứ để nó như mặc định. |
+| Lưu và gửi | Sau khi hiệu chỉnh thông số bên ngoài hoàn tất, hãy nhấp vào nút [Save and send] để lưu, nếu không các thông số sẽ không có hiệu lực |
+| Đọc cấu hình từ camera | Đọc thông số cấu hình hiện tại từ camera |
+| Hiệu chuẩn tham số bên ngoài | Hiệu chỉnh độ cao của máy ảnh từ mặt đất, cuộn camera, góc nghiêng và góc ngáp. |
+
+### Cài đặt dọc hiệu chỉnh các thông số bên ngoài
+
+1. Bấm vào cấu hình camera và chuyển sang giao diện hiệu chỉnh thông số. Trước khi thực hiện hiệu chỉnh tham số bên ngoài, hãy đảm bảo rằng x, y, z, roll, pitch và yaw bằng 0. Nếu chúng khác 0, bạn cần đưa tất cả các tham số về 0 và nhấp vào nút [**Save and Send**]. Sau khi các thông số được lưu thành công, hãy hiệu chỉnh lại các thông số bên ngoài.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/528da252-dee3-4e31-9d54-07c406b80e8e.avif" alt="Hình ảnh minh họa liên quan đến lắp đặt hiệu chỉnh thông số bên ngoài theo chiều dọc" />
+</Frame>
+
+1. Sau khi xác nhận rằng tất cả các tham số đều bằng 0, hãy nhấp vào nút [**Hiệu chỉnh tham số bên ngoài**]. Sau khi hiệu chuẩn thành công, phần mềm sẽ hiện ra hộp thoại nhắc nhở. Bạn có thể xem thông số camera đã hiệu chỉnh ở cột thông số bên phải. Các thuật toán khác nhau sẽ có sơ đồ căn chỉnh tương ứng.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4795bbe1-801c-4fa8-82f8-3a9c5e461f95.avif" alt="Hình ảnh minh họa liên quan đến lắp đặt hiệu chỉnh thông số bên ngoài theo chiều dọc 2" />
+</Frame>
+
+### Hiệu chỉnh tham số bên ngoài cài đặt ngang
+
+Nhấn vào cấu hình camera để chuyển sang giao diện hiệu chỉnh thông số. Khi cài đặt theo chiều ngang, bạn cần căn chỉnh thủ công đám mây điểm mặt đất theo hệ tọa độ. Nói chung, bạn chỉ cần điều chỉnh cuộn và kích thước Z. Những cái khác được đặt thành 0 theo mặc định. Đồng thời, đảm bảo rằng trục X (màu đỏ) và trục Y (màu xanh lá cây) trùng với đám mây điểm mặt đất và trục Z (màu xanh) vuông góc với đám mây điểm mặt đất và hướng lên trên.
+
+Sau khi điều chỉnh xong nhấn Lưu và Gửi. ![3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/549297ef-b224-4d08-a1fb-633301a4ed18.avif)![2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/45ad1ad0-f171-463c-b789-790f4cbec1b2.avif)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/abfab570-cb25-4850-acd9-924bd891853c.avif" alt="1" />
+</Frame>
+
+## 7. Ý nghĩa các tham số thuật toán
+
+### Phát hiện cơ thể người
+
+#### Cấu hình toàn cầu phát hiện con người
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Minh họa liên quan đến cấu hình toàn cầu của phát hiện con người" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình toàn cầu phát hiện con người | Ý nghĩa chức năng |
+| Số phiên bản thuật toán | Thông tin phiên bản thuật toán hiện tại. |
+| Tần số phát hiện | Tần số phát hiện thuật toán. Tức là cần bao nhiêu ms để làm mới dữ liệu hình ảnh + kết quả. |
+| Lọc miền thời gian | Tham số bộ lọc, khi giá trị tham số được đặt thành 3, hệ thống yêu cầu kết quả phát hiện của ba lần liên tiếp phải hoàn toàn nhất quán trước khi được đánh giá là dữ liệu hợp lệ. |
+| Kích thước hạt nhân | Ăn mòn mở rộng kích thước hạt nhân trên hình ảnh 2D. Hạt nhân lớn sẽ thu nhỏ đáng kể mục tiêu hoặc mở rộng nền, trong khi hạt nhân nhỏ sẽ giữ lại nhiều chi tiết hơn. Thay đổi khi cần thiết. |
+| Ngưỡng khoảng cách | Được sử dụng để xác định xem hai điểm dữ liệu là "tương tự" hay "thuộc cùng một danh mục". Nếu kết quả nhỏ hơn ngưỡng, nó được coi là kết quả trùng khớp hoặc loại tương tự. |
+| Số điểm tối thiểu | Số lượng đám mây điểm tối thiểu cần thiết cho việc phân cụm ngữ nghĩa. |
+| Số điểm tối thiểu vô nghĩa | Số lượng đám mây điểm tối thiểu không có nghĩa cần thiết để phân cụm. |
+| Kích thước tên miền | Xác định những điểm nào được coi là "điểm lân cận", ảnh hưởng trực tiếp đến độ chi tiết và độ chính xác của kết quả phân cụm. Sửa đổi khi cần thiết. |
+| Phát hiện xoay | Tùy theo vị trí lắp đặt camera mà logo 0° phía trước nằm ở phía dưới, hãy điều chỉnh cho phù hợp. |
+
+#### Cấu hình khu vực phát hiện con người
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30812d41-81b0-48aa-8e5b-87b2d0c273b4.avif" alt="25909893521\_171648566990\_Thông số cấu hình phát hiện con người (1)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình khu vực phát hiện con người | Ý nghĩa chức năng |
+| Thêm khu vực | Thêm khu vực phát hiện con người. |
+| Xóa khu vực | Xóa khu vực phát hiện con người. |
+| Khung hiện tại | Frame chọn khu vực phát hiện con người hiện tại. |
+| Tối thiểu X | Giá trị tối thiểu theo hướng X của khung phát hiện con người. |
+| Tối đa X | Giá trị tối đa theo hướng X của khung phát hiện con người. |
+| Tối thiểu Y | Giá trị tối thiểu theo hướng Y của khung phát hiện con người. |
+| Tối đa Y | Giá trị tối đa theo hướng Y của khung phát hiện con người. |
+| Z tối thiểu | Giá trị tối thiểu theo hướng Z của khung phát hiện con người. |
+| Z tối đa | Giá trị tối đa theo hướng Z của khung phát hiện con người. |
+| ID | Tên của khung phát hiện con người. Khi vẽ nhiều khu vực phát hiện con người, chúng có thể được phân biệt bằng cách sửa đổi tên ID. |
+| Kéo chuột để điều chỉnh vùng | Trong vùng điều chỉnh, nhấn và giữ nút bên trái để kéo vùng phát hiện con người để dịch theo hướng x và y. Nhấp chuột phải và giữ để kéo vùng phát hiện con người để di chuyển theo hướng z. |
+
+### Phát hiện vị trí lưu trữ
+
+#### Cấu hình toàn cầu của phát hiện vị trí
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ab2707-a23e-4f52-9a27-32a5d1de9579.avif" alt="Hình minh họa liên quan đến cấu hình toàn cầu của phát hiện vị trí lưu trữ" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình toàn cầu phát hiện vị trí lưu trữ | Ý nghĩa chức năng |
+| Số phiên bản thuật toán | Thông tin phiên bản thuật toán hiện tại. |
+| Lọc AI | Hỗ trợ ngữ nghĩa và có thể phân đoạn mọi người mà không bị phát hiện. (Chưa mở) |
+| Tần số phát hiện | Tần số phát hiện thuật toán. |
+| Góc căn chỉnh | Góc lệch tối đa được phép đối với một đối tượng so với vị trí (có hiệu lực khi bật hiệu ứng căn chỉnh). |
+| Hiệu ứng căn chỉnh | Sau khi bật hiệu ứng căn chỉnh, độ lệch góc của đối tượng hiện tại và liệu nó có vượt quá vùng phát hiện đã vẽ hay không sẽ được phát hiện. Đối tượng được phát hiện sẽ có hộp âm lượng màu vàng. |
+| Lọc miền thời gian | Tham số bộ lọc, khi giá trị tham số được đặt thành 3, hệ thống yêu cầu kết quả phát hiện của ba lần liên tiếp phải hoàn toàn nhất quán trước khi được đánh giá là dữ liệu hợp lệ. |
+| Số điểm tối thiểu | Khi đám mây điểm đối tượng lớn hơn số điểm tối thiểu thì được coi là có một đối tượng. |
+
+#### Cấu hình khu vực phát hiện vị trí lưu trữ (2D RGB)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/54021f59-b55a-4174-b5bb-3efbdb872c60.avif" alt="Thông số tạo vị trí 2D" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình khu vực phát hiện vị trí lưu trữ | Ý nghĩa chức năng |
+| Thêm địa điểm | Thêm khu vực phát hiện vị trí. |
+| Xóa vị trí | Xóa khu vực phát hiện vị trí. |
+| Hộp hiện tại | Đóng khung khu vực phát hiện vị trí hiện tại. |
+| Tối thiểu X | Giá trị tối thiểu theo hướng X của khung phát hiện vị trí. (pixel đơn vị) |
+| Tối đa X | Giá trị tối đa theo hướng X của khung phát hiện vị trí. (pixel đơn vị) |
+| Tối thiểu Y | Giá trị tối thiểu theo hướng Y của khung phát hiện vị trí. (pixel đơn vị) |
+| Tối đa Y | Giá trị tối đa theo hướng Y của khung phát hiện vị trí. (pixel đơn vị) |
+| ID | Tên của hộp phát hiện vị trí. Khi vẽ nhiều vùng phát hiện vị trí lưu trữ, bạn có thể phân biệt chúng bằng cách sửa đổi tên ID. |
+
+#### Cấu hình khu vực phát hiện vị trí lưu trữ (đám mây điểm 3D)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef7ad2be-87a8-4336-a4f8-870e78fef268.avif" alt="Hình minh họa liên quan đến cấu hình khu vực phát hiện vị trí lưu trữ (đám mây điểm 3D)" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình khu vực phát hiện vị trí lưu trữ | Ý nghĩa chức năng |
+| Thêm địa điểm | Thêm khu vực phát hiện vị trí. |
+| Xóa vị trí | Xóa khu vực phát hiện vị trí. |
+| Hộp hiện tại | Đóng khung khu vực phát hiện vị trí hiện tại. |
+| Tối thiểu X | Giá trị tối thiểu theo hướng X của khung phát hiện vị trí. |
+| Tối đa X | Giá trị tối đa theo hướng X của khung phát hiện vị trí. |
+| Tối thiểu Y | Giá trị tối thiểu theo hướng Y của khung phát hiện vị trí. |
+| Tối đa Y | Giá trị tối đa theo hướng Y của khung phát hiện vị trí. |
+| Z tối thiểu | Giá trị tối thiểu theo hướng Z của khung phát hiện vị trí. |
+| Z tối đa | Giá trị tối đa theo hướng Z của khung phát hiện vị trí lưu trữ. |
+| ID | Tên của hộp phát hiện vị trí. Khi vẽ nhiều vùng phát hiện vị trí lưu trữ, bạn có thể phân biệt chúng bằng cách sửa đổi tên ID. |
+| Kéo chuột để điều chỉnh vùng | Trong vùng điều chỉnh, nhấn và giữ nút bên trái để kéo vùng phát hiện vị trí để dịch theo hướng x và y. Nhấp chuột phải và giữ để kéo vùng phát hiện vị trí để di chuyển theo hướng z. |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ffc444e5-62c6-4098-a750-9be912ee5023.avif" alt="Hình minh họa liên quan đến cấu hình vùng phát hiện vị trí lưu trữ (đám mây điểm 3D) 2" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Chức năng phát hiện vị trí nâng cao - sao chép khung vị trí | Ý nghĩa chức năng |
+| Sao chép khung hình hiện tại | Có thể sao chép khu vực phát hiện vị trí hiện được chọn. |
+| Những điều bạn cần biết về sao chép và xoay | Mẹo về sao chép và xoay nội dung. |
+| Hướng | Hướng của vùng phát hiện vị trí sao chép có 3 hướng X, Y, Z. |
+| Khoảng cách | Khoảng cách giữa vùng phát hiện vị trí và vùng sao chép. |
+| Số lượng | Số lượng vùng phát hiện vị trí sao chép. |
+| Thực thi | Sau khi nhấp vào nút Thực thi, sao chép nhiều vị trí kiểm tra có cùng khoảng cách. |
+
+|  |  |
+| --- | --- |
+| Chức năng nâng cao phát hiện vị trí lưu trữ - Hiệu chỉnh mã QR | Ý nghĩa chức năng |
+| Những điều bạn cần biết về hiệu chỉnh mã QR | Mẹo nội dung hiệu chỉnh mã QR. |
+| X | Chiều rộng vị trí. |
+| Y | Chiều dài vị trí |
+| Z_MIN | Độ sâu tối thiểu của vị trí. |
+| Z_MAX | Vị trí phát hiện cao nhất của kho. |
+| Hiệu chuẩn | Nhấp vào nút hiệu chỉnh để hiệu chỉnh vị trí kho để xác minh mã QR. |
+
+### Phát hiện âm lượng
+
+#### Cấu hình toàn cầu phát hiện khối lượng
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/85a006a7-b982-48a6-a38a-e0c6029c1629.avif" alt="Minh họa liên quan đến cấu hình toàn cầu của phát hiện khối lượng" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình toàn cầu phát hiện khối lượng | Ý nghĩa chức năng |
+| Số phiên bản thuật toán | Thông tin phiên bản thuật toán hiện tại. |
+| Chế độ kích hoạt | Nút chuyển đổi kích hoạt. Sau khi bật chế độ kích hoạt, nhấp vào nút "Lưu và gửi" để bật thành công. |
+| Phát hiện hướng lên | Hệ thống tọa độ camera phát hiện đảo ngược. |
+| Tần số phát hiện | Tần suất thuật toán phát hiện. Tức là cần bao nhiêu ms để làm mới dữ liệu hình ảnh + kết quả. |
+| Phát hiện khoảng cách máy bay | Xác nhận vị trí của bề mặt dưới của vật thể. Đơn vị: mm. |
+| Ngưỡng số hàng xóm | Lọc thông số, không cần thay đổi. Giá trị mặc định là đủ. |
+| Ngưỡng khoảng cách lân cận | Lọc thông số, không cần thay đổi, giá trị mặc định là đủ. |
+| Ngưỡng bộ lọc vector thông thường | Tham số bộ lọc cạnh đối tượng, được sử dụng để lọc mặt phẳng nghiêng của đám mây điểm. Nếu thể tích đo được nhỏ hơn giá trị thực tế thì giá trị có thể được điều chỉnh thành giá trị lớn hơn. Khuyến nghị là 60 (nói chung không cần điều chỉnh). |
+| Ngưỡng khoảng cách vector chuẩn | Tham số bộ lọc, giá trị khuyến nghị 20-30 (tương thích với hầu hết các đối tượng được phát hiện). |
+| Số điểm tối thiểu | Khi đám mây điểm đối tượng lớn hơn số điểm tối thiểu thì được coi là có một đối tượng. |
+| Tối thiểu X | Chiều dài tối thiểu của đối tượng Nếu đo được nhỏ hơn giá trị này, thuật toán sẽ lọc đối tượng. Đơn vị: mm. |
+| Tối thiểu Y | Chiều rộng tối thiểu của đối tượng. Nếu đo được nhỏ hơn giá trị này, thuật toán sẽ lọc đối tượng. Đơn vị: mm. |
+| Z tối thiểu | Chiều cao tối thiểu của vật thể. Nếu đo được nhỏ hơn giá trị này, thuật toán sẽ lọc đối tượng. Đơn vị: mm. |
+
+#### Cấu hình vùng phát hiện ổ đĩa
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/60bf86ae-e1e2-45f0-b30a-b260d8aff036.avif" alt="Hình minh họa liên quan đến cấu hình khu vực phát hiện khối lượng" />
+</Frame>
+
+|  |  |
+| --- | --- |
+| Cấu hình khu vực phát hiện khối lượng | Ý nghĩa chức năng |
+| Tối thiểu X | Giá trị tối thiểu theo hướng X của khung phát hiện âm lượng |
+| Tối đa X | Giá trị tối đa theo hướng X của khung phát hiện âm lượng |
+| Tối thiểu Y | Giá trị tối thiểu theo hướng Y của khung phát hiện âm lượng |
+| Tối đa Y | Giá trị tối đa theo hướng Y của khung phát hiện âm lượng |
+| Z tối thiểu | Giá trị tối thiểu theo hướng Z của khung phát hiện âm lượng |
+| Z tối đa | Giá trị tối đa theo hướng Z của khung phát hiện âm lượng |
+
+## 8. Quy trình triển khai thuật toán
+
+Lưu ý: Sau khi mở phần mềm máy chủ thuật toán, chuyển sang chế độ xem đám mây điểm, di chuyển chuột đến vùng hiển thị hình ảnh và trượt con lăn chuột để hiển thị dữ liệu đám mây điểm.
+
+### 8.1 Quy trình triển khai phát hiện con người
+
+#### Phát hiện cơ thể người - hiệu chỉnh thông số bên ngoài
+
+Để biết chi tiết, xem phần 6.3 Hiệu chỉnh tham số bên ngoài cho lắp đặt theo chiều ngang.
+
+Sau khi hoàn tất hiệu chỉnh, hãy đảm bảo rằng trục X (mũi tên màu đỏ) và trục Y (mũi tên màu xanh lá cây) trùng với đám mây điểm mặt đất và trục Z (mũi tên màu xanh) vuông góc với đám mây điểm mặt đất và hướng lên trên.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Sơ đồ hiệu chuẩn thông số bên ngoài vị trí lưu trữ" />
+</Frame>
+
+#### Phát hiện con người - cài đặt chung
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Phát hiện con người - các biểu tượng liên quan đến cài đặt chung" />
+</Frame>
+
+1. Nhấp vào Phát hiện con người để nhập cài đặt tham số, chủ yếu điều chỉnh phát hiện xoay toàn cục và để các tham số khác làm mặc định. Phát hiện xoay có liên quan đến góc lắp đặt camera và góc xoay theo chiều kim đồng hồ của camera được giới hạn ở 0°, 90°, 180° và 270°.
+
+2. Sau khi hoàn tất cài đặt cấu hình chung, hãy nhấp vào nút [**Save and Send**] để lưu các thông số vào máy ảnh.
+
+#### Phát hiện con người—Cấu hình khu vực
+
+1. Để đặt phạm vi phát hiện và điều chỉnh chiều dài và chiều rộng (xy) của phát hiện, trước tiên nên chuyển sang chế độ xem trên và dưới. Sau đây là các phím tắt cho mỗi chế độ xem. ![Phát hiện con người—Minh họa liên quan đến cấu hình khu vực](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif)
+
+2. Nhấp vào nút [**Thêm khu vực phát hiện**]. Trong cấu hình vùng phát hiện, số lượng vùng phát hiện và tên ID của vùng phát hiện sẽ được thêm vào. ![123](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d97865c8-086f-46d1-b41f-c3a63ed994ff.avif)
+
+3. Việc sửa đổi kích thước trục XYZ tối đa của vùng phát hiện đã tạo có thể trực tiếp xác nhận kích thước của vùng phát hiện. Như minh họa trong hình bên dưới, vùng phát hiện 1000\*1000\*2000 được tạo (đơn vị mm). ![Tạo khu vực phát hiện con người](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1d33db3-1c36-4cb6-8235-7ecbb302fe0e.avif)
+
+1. Kéo vùng phát hiện đã tạo vào vùng phát hiện mục tiêu bằng cách kéo chuột vào vùng đánh dấu.
+
+![Khu vực phát hiện con người di chuyển về phía trước](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7e9db737-c5b8-4532-9235-33750006cfce.avif)![Khu vực phát hiện con người di chuyển trở lại](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3a1abc56-d148-47ef-8c05-c510f4ef981d.avif)
+
+5. Sau khi định cấu hình khu vực phát hiện, nhấp vào nút [Save and Send] để lưu các thông số vào camera và bắt đầu phát hiện khu vực hiện tại.
+
+#### Xem kết quả thử nghiệm trên người
+
+1. Sau khi cài đặt hiệu chỉnh thông số bên ngoài, thông số phát hiện con người và khu vực phát hiện con người, hãy nhấp vào "**Công cụ cơ bản**" và kiểm tra bằng cách đi bộ xung quanh khu vực phát hiện để xem kết quả. Không có ai trong khu vực phát hiện hiện tại và không phát hiện thấy mục tiêu nào trên thanh chức năng cơ bản.
+
+![Mặt trước không nằm trong khung phát hiện (đám mây điểm)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d03e2dc2-9450-4b40-a0b3-bb443a97d9b2.avif)![Mặt trước không nằm trong khung phát hiện (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a5cd29e-9132-46b6-8705-5d00994b9cc5.avif)
+
+1. Khi ai đó đi vào khu vực, mục tiêu được chỉ định sẽ được phát hiện trong cột hiển thị trạng thái phát hiện con người. Ở cuối phần mềm sẽ hiển thị kết quả **Result**. 1 đại diện cho ai đó
+
+![25909893521\_171673957420\_Người đi trước trong khu vực phát hiện (đám mây điểm)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ef7d562-faa1-40a1-9224-c71063f17c46.avif)![25909893521\_171674018465\_Người phía trước trong khu vực phát hiện (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/508a3e95-86a5-4433-9396-bab02f0fba4b.avif)
+
+#### Xem nhật ký phát hiện con người
+
+Khi trạng thái phát hiện cơ thể con người thay đổi, hãy nhấp vào phát lại lịch sử và nhấp vào thời gian bạn muốn xem ở bên trái để xem những thay đổi của các đối tượng trong trường quan sát hiệu quả tại thời điểm đó. Xem phát lại 5.5 để biết chi tiết.
+
+#### Xác định kết quả xét nghiệm cơ thể người
+
+1. Quy tắc so khớp sẽ phát hiện tất cả các đối tượng chỉ trong trường hợp có độ sâu và trong trường hợp có ngữ nghĩa cộng với độ sâu, chỉ các cụm có ngữ nghĩa là con người mới được đánh giá.
+
+2. Bảng sau đây hiển thị kết quả đầu ra của Kết quả trong các trường hợp khác nhau.
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| | Không có ai | Ai đó | Có trở ngại | Người + chướng ngại vật |
+| chỉ độ sâu | 0 | 2 | 2 | 2 |
+| Ngữ nghĩa cộng với chiều sâu | 0 | 1 | 0 | 1 |
+
+### Quá trình phát hiện và triển khai vị trí lưu trữ
+
+#### Phát hiện vị trí lưu trữ - hiệu chỉnh tham số bên ngoài
+
+Để biết chi tiết, xem phần 6. Hiệu chỉnh thông số bên ngoài của máy ảnh.
+
+Sau khi hiệu chỉnh, đảm bảo rằng trục X (mũi tên màu đỏ) và trục Y (mũi tên màu xanh lá cây) trùng với mặt đất và trục Z (mũi tên màu xanh) vuông góc với mặt đất và hướng lên trên.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Sơ đồ hiệu chuẩn thông số bên ngoài vị trí lưu trữ" />
+</Frame>
+
+#### Phát hiện vị trí lưu trữ - cài đặt chung
+
+1. Nhấp vào phát hiện vị trí để chuyển sang trang cài đặt tham số phát hiện vị trí. Trong cấu hình chung, bạn cần chú ý đến góc căn chỉnh, hiệu ứng căn chỉnh và số điểm tối thiểu.
+
+2. Nếu việc sắp xếp các vật phẩm trong vị trí lưu trữ cần tuân theo một góc cụ thể thì nên bật hiệu ứng căn chỉnh và đặt góc căn chỉnh tương ứng. Khi góc đối tượng vượt quá ngưỡng đặt trước, hệ thống sẽ đưa ra kết quả phát hiện tương ứng.
+
+|  |  |
+| --- | --- |
+| Trạng thái | Kết quả |
+| Không có đối tượng | 0 |
+| Có một đối tượng | 1 |
+| Góc của đối tượng vượt quá góc căn chỉnh (bật hiệu ứng căn chỉnh) | 2 |
+| Một đối tượng vượt quá phạm vi lựa chọn vị trí (bật hiệu ứng căn chỉnh) | 3 |
+
+1. Khi xác định hàng hóa vừa và nhỏ trong kho, nếu có lo ngại về nhận dạng hoặc có nguy cơ đánh giá sai thì nên sử dụng tham số "số lượng điểm tối thiểu" để sàng lọc. Tham số này chỉ định ngưỡng số lượng đám mây điểm tối thiểu cần thiết để nhận dạng một đối tượng. Khi một đối tượng được phát hiện nhưng số đám mây điểm của nó không đạt đến ngưỡng này thì đối tượng đó sẽ bị loại khỏi kết quả nhận dạng.
+
+2. Sau khi hoàn tất cài đặt cấu hình chung, hãy nhấp vào nút [**Save and Send**] để lưu các thông số vào máy ảnh.
+
+#### Phát hiện vị trí lưu trữ - cấu hình vị trí lưu trữ
+
+##### Cài đặt vị trí chế độ đám mây điểm
+
+1. Đặt phạm vi phát hiện. Để điều chỉnh độ dài và chiều rộng (xy) của phát hiện, trước tiên nên chuyển sang chế độ xem lên và xuống. Sau đây là các phím tắt cho mỗi chế độ xem.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Hình minh họa liên quan đến cài đặt vị trí ở chế độ đám mây điểm" />
+</Frame>
+
+1. Đặt pallet vào trường xem và nhấp vào nút [**Thêm vị trí**]. Trong cấu hình vị trí, số lượng vị trí và tên ID của vị trí sẽ được thêm vào. Chúng tôi có thể sửa đổi ID hiện được sửa đổi thành "Kiểm tra vị trí 1".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427a2154-d262-4c8c-acf6-92c912f3ada1.avif" alt="Các minh họa liên quan đến cài đặt vị trí chế độ đám mây điểm 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/47d79ced-617b-41cd-8a4b-aa086f289789.avif" alt="Hình minh họa liên quan đến cài đặt vị trí chế độ đám mây điểm 3" />
+</Frame>
+
+1. Sau khi nhấp vào "Thêm vị trí lưu trữ", chuyển đám mây điểm sang chế độ xem dưới cùng, nhấp chuột vào hình ảnh đám mây điểm và nhấn phím [X] trên bàn phím để vẽ vùng vị trí lưu trữ. Khi nhấn [X], nút "Thêm vị trí lưu trữ" sẽ chuyển sang màu xám, nghĩa là vùng vị trí lưu trữ có thể được vẽ trong vùng hiển thị hình ảnh. (Phím x trên bàn phím khởi động chức năng vẽ vị trí kho và số khu vực vị trí kho. Nhấn một lần để bắt đầu vẽ, nhấn một lần để kết thúc vẽ.)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/846b9c20-37c5-4847-b10d-82b766443aab.avif" alt="Hình minh họa liên quan đến cài đặt vị trí chế độ đám mây điểm 4" />
+</Frame>
+
+1. Lúc này, bạn có thể phóng to hình ảnh bằng cách trượt bánh xe, giữ chuột trái và vẽ khung hình chữ nhật bao bọc toàn bộ pallet. Nhả nút chuột trái và vùng phát hiện vị trí hiện tại sẽ tự động được vẽ. Nhấn nút [X] trên bàn phím để hủy việc vẽ vùng phát hiện. Tại thời điểm này, bạn có thể xác nhận phạm vi kích thước của khu vực bằng cách điều chỉnh mức tối đa và tối thiểu
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/997b81b0-165a-441c-b2e2-51ea8799ec7f.avif" alt="Hình minh họa liên quan đến cài đặt vị trí ở chế độ đám mây điểm 5" />
+</Frame>
+
+1. Sử dụng phím tắt để chuyển sang chế độ xem phía dưới, như minh họa trong hình bên dưới. Mũi tên màu đỏ chỉ hướng x của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại hướng x lớn hơn một chút so với chiều rộng khay.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/98bf259d-d459-4ed7-8a73-0448576f14bc.avif" alt="Hình minh họa liên quan đến cài đặt vị trí ở chế độ đám mây điểm 6" />
+</Frame>
+
+1. Mũi tên màu xanh lá cây chỉ hướng y của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại hướng y lớn hơn một chút so với chiều dài pallet.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d8990bab-9614-4f97-8561-6ae7076c7b20.avif" alt="Hình minh họa liên quan đến cài đặt vị trí ở chế độ đám mây điểm 7" />
+</Frame>
+
+1. Mũi tên màu xanh chỉ hướng z của phạm vi phát hiện. Giá trị có thể được sửa đổi bằng cách cuộn bằng con lăn chuột hoặc giá trị có thể được nhập trực tiếp. Nên đặt giá trị z tối thiểu của phạm vi phát hiện hiện tại cao hơn một chút so với khoảng cách mặt đất để tránh bị phát hiện nhầm mặt đất. Đặt z tối đa thành 1500 và chiều cao tối đa dựa trên kích thước của đối tượng. Nếu chiều cao của đối tượng vượt quá giá trị z tối đa thì thuật toán sẽ không phát hiện được.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07ff02c7-8418-4913-a62e-3728b54839c5.avif" alt="Hình minh họa liên quan đến cài đặt vị trí chế độ đám mây điểm 8" />
+</Frame>
+
+1. Sau khi định cấu hình khu vực phát hiện, hãy nhấp vào nút [**Save and Send**] để lưu các thông số vào camera, sau đó bắt đầu phát hiện xem có hàng hóa ở vị trí kho hiện tại hay không.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4263bf6-5cd5-40f1-b0e2-696906ee4502.avif" alt="Hình minh họa liên quan đến cài đặt vị trí chế độ đám mây điểm 9" />
+</Frame>
+
+##### Cài đặt vị trí thư viện chế độ RGB
+
+1. Chuyển sang chế độ hiển thị RGB, nhấp để thêm vị trí lưu trữ và di chuyển chuột đến hình ảnh RGB, ![Tạo vị trí lưu trữ 2D](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/595aef48-fd89-41ce-93c9-fcd89622f141.avif)
+
+Nhấp chuột trái vào vùng phát hiện để tạo vùng phát hiện vị trí 2D và nhấp chuột phải để thoát chế độ tạo vị trí 2D.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f38061e-4044-4ce8-ac8d-98adf248ffd8.avif" alt="Đã tạo thành công vị trí 2D" />
+</Frame>
+
+2. Nếu bạn cần xóa vị trí kho hàng, hãy chọn ID hộp cần xóa trong hộp hiện tại. ID vị trí kho tương ứng sẽ được hiển thị trên hình ảnh. Bấm để xóa vị trí kho. ![Tiện ích mở rộng tạo vị trí 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f9c485c-f591-4e95-8bc6-45df833eb341.avif)
+
+3. Đặt chuột vào giữa vùng phát hiện vị trí lưu trữ (vị trí mũi tên màu xanh) để kéo vùng phát hiện để di chuyển, đặt chuột đến bốn góc của vùng phát hiện vị trí lưu trữ (vị trí mũi tên màu đỏ) và kéo bằng nút chuột trái để sửa đổi kích thước của vùng phát hiện. ![Tiện ích mở rộng tạo vị trí 2D (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/71096a08-65a6-45f9-b033-59d9a5ae9fa6.avif)
+
+4. Sau khi xác nhận vị trí, bạn cần nhấp vào [Save and Send] để lưu vị trí vào camera trước khi nó có hiệu lực. Xác nhận xem việc lưu có thành công hay không và kiểm tra xem trạng thái vị trí có được lưu hay không. Nếu không lưu thì sẽ không được lưu. ![6cec7d56ad74e8745f624af0e0ce582c\_compress](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b3e11ff5-e79e-4141-8f4d-71c2474caa70.avif)
+
+5. Phát hiện vị trí lưu trữ 2D chỉ hỗ trợ chế độ ngữ nghĩa và cần phải khớp với mô hình ngữ nghĩa để phát hiện.
+
+#### Phát hiện vị trí lưu trữ - cài đặt nâng cao
+
+##### Chức năng nâng cao - sao chép vị trí
+
+1. Nhấp vào [**Những điều cần biết về Sao chép và Xoay**] và bạn sẽ được nhắc nhở với thông tin liên quan đến xoay. Sao chép vị trí cho phép người dùng thiết kế vị trí dựa trên bản vẽ CAD trong quá trình triển khai thực tế, sau đó vẽ một vùng vị trí để tạo nhiều bản sao mà không cần phải vẽ lại theo cách thủ công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/575918bf-cf7e-428a-a302-c365284da6bc.avif" alt="Chức năng nâng cao - sao chép các biểu tượng liên quan đến vị trí" />
+</Frame>
+
+1. Cài đặt hiện tại là hướng X, khoảng cách là 10 và số lượng là 2. Nhấp vào nút Thực thi và bạn sẽ được nhắc xác nhận xem có thực hiện bản dịch sao chép hay không.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a52afac-6e72-4cfb-8acb-fa7910288287.avif" alt="Chức năng nâng cao - sao chép các biểu tượng liên quan đến vị trí 2" />
+</Frame>
+
+1. Sau khi nhấp vào có, hai thùng có cùng kích thước sẽ được tạo theo hướng x dương với khoảng cách là 10. Trong hộp danh sách vị trí thùng, bạn có thể thấy vùng thùng được tạo có hậu tố tăng thêm (0) và (1) dựa trên ID phát hiện vị trí thùng ban đầu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e213b2fb-9331-48e5-beda-2afb91fc4fa8.avif" alt="Chức năng nâng cao - sao chép các biểu tượng liên quan đến vị trí 3" />
+</Frame>
+
+1. Đặt thành hướng Y, khoảng cách thành -40 và số lượng thành 3. Nhấp vào nút thực thi để tạo 3 vị trí lưu trữ có cùng kích thước theo hướng y âm. ID của hộp danh sách vị trí được thêm vào (2), (3) và (4) trên cơ sở (0) và (1) ban đầu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cc9aab42-e06f-4910-869a-fa8335d089a6.avif" alt="Chức năng nâng cao - sao chép các biểu tượng liên quan đến vị trí 4" />
+</Frame>
+
+1. Sau khi sao chép vị trí, bạn cần nhấp vào nút [**Save and Release**] để lưu tham số, nếu không tham số sẽ không có hiệu lực.
+
+##### Chức năng nâng cao - Hiệu chỉnh QR (Hiệu chỉnh mã QR)
+
+1. Hiệu chuẩn QR (QR code) có thể mô phỏng các kịch bản triển khai kho thực tế và tiếp tục vẽ tự động các khu vực kho mà không cần vẽ thủ công, cho phép người dùng triển khai thuận tiện. Bảng mã QR được khuyến nghị nên có kích thước từ 1m × 1m trở lên. Nhấp vào [**Những điều cần biết về hiệu chỉnh mã QR**] và quá trình hiệu chỉnh sẽ được nhắc.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c2767a5-5a42-41b0-85aa-5257d6bdf3f1.avif" alt="Chức năng nâng cao - các biểu tượng liên quan đến hiệu chỉnh QR (hiệu chỉnh mã QR)" />
+</Frame>
+
+1. Đặt tấm hiệu chỉnh mã QR vào vùng mục tiêu, chuyển sang hình ảnh RGB và đảm bảo rằng mã QR có thể được nhìn thấy trong trường xem RGB.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427f065c-f102-49fc-a996-dd04d2f4cece.avif" alt="Chức năng nâng cao - Các biểu tượng liên quan đến hiệu chỉnh QR (hiệu chỉnh mã QR) 2" />
+</Frame>
+
+1. Sau khi mã QR nằm ở giữa trường nhìn, hãy chuyển sang hình ảnh đám mây điểm và tìm thanh hiệu chỉnh [**QR Code**]. Nhập trước kích thước vị trí X (chiều rộng vị trí), Y (độ dài vị trí), Z\_min (độ sâu vị trí tối thiểu), Z\_max (độ sâu tối đa của vị trí),
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9e83a1a-50be-4664-8f4c-9a02ffaa752e.avif" alt="Chức năng nâng cao - các biểu tượng liên quan đến hiệu chỉnh QR (hiệu chỉnh mã QR) 3" />
+</Frame>
+
+1. Sau đó nhấp vào nút [**Calibration**] để tự động vẽ vị trí kho dựa trên bộ X, Y và Z trong QR, có thể xem qua hộp khu vực cấu hình vị trí kho. QR\_BOX là ô vùng được đặt cho mã QR.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c0bec5-7ba4-444b-9da6-4b0e919a86ed.avif" alt="Chức năng nâng cao - Các biểu tượng liên quan đến hiệu chỉnh QR (hiệu chỉnh mã QR) 4" />
+</Frame>
+
+1. Sau khi hoàn tất hiệu chỉnh Mã QR, bạn cần nhấp vào nút [**Save and Send**], nếu không các thông số sẽ không có hiệu lực.
+
+#### Kiểm tra kết quả phát hiện vị trí
+
+1. Sau khi cài đặt hiệu chuẩn tham số bên ngoài, tham số phát hiện vị trí lưu trữ và vùng phát hiện vị trí lưu trữ, hãy nhấp vào "**Công cụ cơ bản**" và đặt các đối tượng vào khu vực phát hiện để xem kết quả. Hiện tại không có đối tượng nào và sẽ không có đối tượng nào được hiển thị trên thanh chức năng cơ bản. ![Xem các biểu tượng liên quan để biết kết quả phát hiện vị trí lưu trữ](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/481feb15-bd76-46db-9025-f17efcef2c71.avif)
+
+2. Sau khi đặt pallet, cột hiển thị trạng thái tồn kho sẽ hiển thị vị trí hiện tại còn hàng. Ở phía dưới cùng của phần mềm sẽ hiển thị Kết quả, với 1 là còn hàng. ![Hình ảnh liên quan đến xem kết quả phát hiện vị trí lưu trữ 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5b066a5a-b7e9-4a11-9fc5-01a2e8842be2.avif)
+
+3. Sau khi bật hiệu ứng căn chỉnh, kết quả Kết quả sẽ hiển thị ở phía dưới phần mềm. 2 nghĩa là có hàng nhưng có góc lệch. ![Vị trí không được căn chỉnh](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95d79300-5e45-45d6-8c84-a0486a90a94b.avif)
+
+4. Sau khi bật xác minh căn chỉnh, kết quả Kết quả sẽ hiển thị ở cuối phần mềm. 3 nghĩa là có hàng nhưng vượt quá diện tích phát hiện vị trí lưu trữ. Hộp màu đỏ biểu thị khu vực phát hiện vị trí lưu trữ và hộp màu vàng biểu thị đối tượng được phát hiện. ![Căn chỉnh vị trí nằm ngoài giới hạn](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1688c5-d897-4a0c-8014-e03f6eea2be9.avif)
+
+#### Xem nhật ký phát hiện vị trí lưu trữ
+
+Khi trạng thái của vị trí lưu trữ thay đổi, hãy nhấp vào phát lại lịch sử và nhấp vào thời gian bạn muốn xem ở bên trái để xem những thay đổi của các đối tượng trong trường xem hiệu quả tại thời điểm đó. Xem phát lại 5.5 để biết chi tiết.
+
+#### Xác định kết quả phát hiện vị trí lưu trữ
+
+1. Vẽ vùng phát hiện để xác định sự tồn tại, góc lệch và trạng thái xuyên biên giới của hàng hóa.
+
+2. Đánh giá tình trạng hàng hóa thông qua kết quả Kết quả thu được.
+
+|  |  |
+| --- | --- |
+| Trạng thái | Kết quả |
+| Hết hàng | 0 |
+| Còn hàng | 1 |
+| Còn hàng và căn chỉnh (bật xác thực căn chỉnh) | 1 |
+| Còn hàng và chưa căn chỉnh (bật xác thực căn chỉnh) | 2 |
+| Còn hàng và hết hạn (bật xác thực căn chỉnh) | 3 |
+
+1. Khi chức năng xác minh căn chỉnh được bật, hãy đặt đối tượng ở ranh giới của khu vực phát hiện. Kết quả trả về là 3. Kết quả này cho thấy hàng hóa đã vượt quá ranh giới và chiếm dụng không gian lưu trữ.
+
+**![Hình minh họa liên quan đến việc xác định kết quả phát hiện vị trí lưu trữ](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa582c1-5052-4756-be13-e015f9c9fd86.avif)**
+
+### Quá trình triển khai phát hiện khối lượng
+
+#### Phát hiện thể tích - hiệu chỉnh thông số bên ngoài
+
+1. Để biết chi tiết, xem phần 6.2 Hiệu chỉnh thông số bên ngoài lắp đặt dọc
+
+2. Sau khi hiệu chuẩn hoàn tất, hãy đảm bảo rằng trục tọa độ Z (mũi tên màu xanh) thẳng đứng hướng xuống dưới, trục X (mũi tên đỏ) và trục Y (mũi tên xanh) tạo thành một mặt phẳng song song với mặt đất và phương pháp phát hiện thuật toán phát hiện âm lượng là từ trên xuống dưới.
+
+![Mặt trên của hiệu chuẩn thông số bên ngoài phát hiện khối lượng](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/81e5f706-27db-4c18-87bb-3d3320387374.avif)![Mặt bên của hiệu chỉnh tham số bên ngoài phát hiện khối lượng](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96891baa-0237-440c-84bd-8840d0c91c86.avif)
+
+#### Phát hiện âm lượng - cài đặt chung
+
+1. Nhấp vào Phát hiện âm lượng. Sau khi vào giao diện cài đặt tham số, bạn cần tập trung vào việc thiết lập "khoảng cách mặt phẳng phát hiện" (dùng để xác định vị trí bề mặt dưới của đối tượng và tính toán âm lượng) và kích thước XYZ tối thiểu.
+
+2. Kiểm tra cài đặt mặt phẳng. Nếu hàng hóa được đặt trực tiếp trên mặt đất, khoảng cách mặt phẳng phát hiện được đặt theo chiều cao của mặt đất;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9e91e37-7a17-4f1c-8ac5-066ef8fe859c.avif" alt="Đám mây điểm mặt đất trùng với mặt phẳng phát hiện 1" />
+</Frame>
+
+Nếu có một pallet và chỉ cần tính diện tích của hàng hóa trên pallet thì mặt phẳng phát hiện cần trùng với đám mây điểm pallet. ![Mặt phẳng phát hiện nằm trên pallet](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0ed32689-0326-4afb-93c7-6880e62385ea.avif)
+
+1. Cài đặt XYZ tối thiểu. Được sử dụng để đặt giới hạn dưới của chiều dài, chiều rộng và chiều cao của đối tượng được phát hiện (đơn vị: pixel). Khi bất kỳ kích thước chiều dài, chiều rộng hoặc tâm nào của đối tượng được phát hiện nhỏ hơn ngưỡng, hệ thống sẽ tự động bỏ qua đối tượng đó. ![Hình ảnh có thể được phát hiện](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d35dea57-dec2-4d30-863d-73ee462daabb.avif)![Hàng hóa có thể được phát hiện](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a596eae-f1c2-45c1-9882-4cea9f374156.avif)
+
+Sau khi bạn tăng giá trị, đối tượng sẽ bị bỏ qua. ![Các thông số ngăn cản việc phát hiện](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2014538-6ac1-440f-9238-860c2da3f04b.avif)
+
+1. Sau khi hoàn tất cài đặt cấu hình chung, hãy nhấp vào nút [**Save and Send**] để lưu các thông số vào máy ảnh.
+
+#### Phát hiện âm lượng - cài đặt phạm vi
+
+1. Đặt phạm vi phát hiện. Để điều chỉnh độ dài và chiều rộng (xy) của phát hiện, trước tiên nên chuyển sang chế độ xem lên và xuống. Sau đây là các phím tắt cho mỗi chế độ xem.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Phát hiện âm lượng - các biểu tượng liên quan đến cài đặt phạm vi" />
+</Frame>
+
+1. Sử dụng phím tắt để chuyển sang chế độ xem lên và xuống như minh họa trong hình bên dưới. Hộp màu trắng được chỉ bằng mũi tên màu đỏ cho biết hướng x của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại, phạm vi phát hiện tối đa và tối thiểu theo hướng x được đặt thành 600 và -600.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/78cf7eed-d5ba-4969-8be3-3579a41f49a1.avif" alt="Phát hiện âm lượng - sơ đồ liên quan đến cài đặt phạm vi 2" />
+</Frame>
+
+1. Hộp màu trắng được chỉ bằng mũi tên màu xanh lục cho biết hướng y của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại, phạm vi phát hiện tối đa và tối thiểu theo hướng y được đặt thành 480 và -580.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c1c97b6-76f9-490d-a262-0ec7de2d4e83.avif" alt="Phát hiện âm lượng - sơ đồ liên quan đến cài đặt phạm vi 3" />
+</Frame>
+
+1. Mũi tên màu xanh chỉ hướng z của phạm vi phát hiện. Khuyến nghị rằng mặt phẳng phát hiện phải phù hợp với giá trị z tối đa. Phạm vi phát hiện tối thiểu được đặt theo kích thước của đối tượng. Nếu chiều cao của đối tượng vượt quá giá trị z tối thiểu, thuật toán sẽ lọc nó.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/66d82c1c-cb72-4c8e-805e-a8356b7a8103.avif" alt="Phát hiện âm lượng - sơ đồ liên quan đến cài đặt phạm vi 4" />
+</Frame>
+
+1. Sau khi định cấu hình vùng phát hiện, nhấp vào nút [**Save and Send**] để lưu các thông số vào camera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d5aa71bc-e458-4195-835a-45bd4150ff99.avif" alt="Phát hiện âm lượng - sơ đồ liên quan đến cài đặt phạm vi 5" />
+</Frame>
+
+#### Xem kết quả kiểm tra khối lượng
+
+1. Sau khi định cấu hình vùng phát hiện, nhấp vào nút [**Save and Send**] để lưu các thông số vào camera.
+
+2. Sau khi cài đặt hiệu chuẩn tham số bên ngoài, tham số phát hiện âm lượng và vùng phát hiện âm lượng, hãy nhấp vào "**Công cụ cơ bản**" và đặt các đối tượng vào vùng phát hiện để xem kết quả. Hiện tại không có đối tượng nào và sẽ không có đối tượng nào được hiển thị trên thanh chức năng cơ bản.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ca238803-1d9a-4ad8-993f-d9c37dae9ad5.avif" alt="không có đối tượng" />
+</Frame>
+
+1. Sau khi đặt một đối tượng, thông tin về chiều dài, chiều rộng và chiều cao của đối tượng hiện tại sẽ được hiển thị trên thanh hiển thị trạng thái âm lượng.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3c4511ff-69fa-4ea8-9918-c657aa999752.avif" alt="Phát hiện thể tích của một vật thể" />
+</Frame>
+
+4. Khi đặt nhiều đối tượng, thanh hiển thị kết quả phát hiện âm lượng sẽ hiển thị chiều dài, chiều rộng và chiều cao của nhiều đối tượng và số lượng đối tượng sẽ được hiển thị. ![Phát hiện khối lượng của nhiều đối tượng](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f33c8bf-37d0-4b5b-a84a-4e1f1814eeba.avif)
+
+#### Chức năng kích hoạt đơn phát hiện âm lượng
+
+1. Trong giao diện cài đặt phát hiện âm lượng, hãy bật chế độ kích hoạt và nhấp vào nút [**Save and Send**] để bật chế độ kích hoạt thành công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/48d2348e-0816-4231-9f14-03a426584e4e.avif" alt="Hình minh họa liên quan đến chức năng kích hoạt đơn phát hiện khối lượng" />
+</Frame>
+
+1. Nhấp vào công cụ cơ bản và nhận hình ảnh cũng như kết quả bằng cách nhấp vào nút [**Single Trigger**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f3dfaf70-6664-4a9e-9451-a5ccf693367b.avif" alt="kích hoạt duy nhất" />
+</Frame>
+
+## Giao thức truyền thông
+
+Chế độ kích hoạt duy nhất có trong tính năng phát hiện âm lượng sẽ gửi TM\_TRIGGER qua TCP hoặc UDP, cho phép máy ảnh thực thi thuật toán phát hiện âm lượng một lần và trả về kết quả một lần.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ec9bc8-1c02-4ce3-9ed5-2333ac4d8961.avif" alt="Phát hiện khối lượng UDP TM\_TRIGGER" />
+</Frame>
+
+### Giao tiếp TCP
+
+Kết quả có sẵn thông qua giao tiếp TCP. Thông qua trợ lý gỡ lỗi mạng, IP camera từ xa: 192.168.100.83, cổng: 14951, gửi RESULT\_UPDATE để xem thông tin kết quả trả về.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/13faa673-1d57-4ae0-8db9-c5258d95ae77.avif" alt="IMG\_256" />
+</Frame>
+
+### Giao tiếp UDP
+
+Kết quả phát hiện vị trí có thể thu được thông qua giao tiếp UDP. Thông qua trợ lý gỡ lỗi mạng, IP camera từ xa: 192.168.100.83, cổng: 14950, gửi RESULT\_UPDATE để xem thông tin kết quả phát hiện vị trí được trả về.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76326c8d-54d2-491e-b315-b7681e6aef72.avif" alt="IMG\_256" />
+</Frame>
+
+### Giao tiếp HTTP
+
+1. Kết quả phát hiện thuật toán có thể thu được thông qua giao tiếp HTTP, số cổng: 14952.
+
+2. Hệ thống lớp trên (WMS) gửi tín hiệu kết quả đến tầm nhìn và tầm nhìn trả về một chuỗi ở định dạng JSON.
+
+3. Quy trình vận hành
+
+Đặt tiêu đề đầu tiên
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d26e7a0a-afc0-4df4-bca6-c63f5e0b3c2e.avif" alt="Hoạt động 1" />
+</Frame>
+
+Sau đó đặt tham số Nội dung thành RESULT\_UPDATE
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a833cf86-a300-4097-839e-7b233edba3f8.avif" alt="Hoạt động 2" />
+</Frame>
+
+Bấm Gửi để nhận kết quả![Hoạt động 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f9c2553-db2b-4646-b101-bf7b9c1ca543.avif)
+
+|  |  |
+| --- | --- |
+| WMS → Tầm nhìn | |
+| Kết quả | Ý nghĩa |
+| KẾT QUẢ_CẬP NHẬT | Kích hoạt tín hiệu trả về kết quả trực quan |
+| Tầm nhìn → WMS (Phát hiện con người) | |
+| Kết quả | Ý nghĩa |
+| IP | Nguồn dữ liệu camera IP |
+| SG | Trạng thái phát hiện cơ thể con người, 0 trống, 1 nghĩa là có ai đó và 2 nghĩa là quy tắc khớp khung là chỉ phát hiện vật thể ở độ sâu. __object_details chứa tất cả tọa độ cụm được phát hiện |
+| SG_DATA_TIME | Thời gian trích xuất dữ liệu phát hiện |
+| SG_RES_TIME | Thời gian xuất kết quả xét nghiệm |
+| biệt danh | Tên camera, cấu hình trong camera |
+| ret_code | Mã trả về, 0 là thành công |
+| Tầm nhìn → WMS (Phát hiện vị trí hàng tồn kho) | |
+| IP | Nguồn dữ liệu camera IP |
+| SS | Trạng thái phát hiện vị trí lưu trữ, 0 nghĩa là vị trí lưu trữ không bị chiếm dụng, 1 nghĩa là vị trí lưu trữ bị chiếm dụng, 2 nghĩa là vị trí lưu trữ bị chiếm dụng và độ lệch góc hàng hóa vượt quá tham số đặt trước, 3 nghĩa là vị trí lưu trữ bị chiếm dụng và nằm ngoài giới hạn X__object_details là thông tin cụ thể của vị trí lưu trữ X, chứa kích thước hộp tập của đối tượng bị chiếm giữ thực tế |
+| SG_DATA_TIME | Thời gian trích xuất dữ liệu phát hiện |
+| SG_RES_TIME | Thời gian xuất kết quả xét nghiệm |
+| biệt danh | Tên camera, cấu hình trong camera |
+| ret_code | Mã trả về, 0 là thành công |
+| Tầm nhìn → WMS (Phát hiện âm lượng) | |
+| IP | Nguồn dữ liệu camera IP |
+| TM | Mỗi mục là một hộp âm lượng hoàn chỉnh được phát hiện trong khu vực |
+| SG_DATA_TIME | Thời gian trích xuất dữ liệu phát hiện |
+| SG_RES_TIME | Thời gian xuất kết quả xét nghiệm |
+| biệt danh | Tên camera, cấu hình trong camera |
+| ret_code | Mã trả về, 0 là thành công |
+
+### modbus-tcp (phát hiện vị trí thư viện)
+
+Kết quả phát hiện được tự động sắp xếp theo ID vị trí và chỉ trả về 16 kết quả vị trí đầu tiên.
+
+#### Tham số cấu hình Slave
+
+##### Cấu hình giao tiếp cơ bản
+
+1. \****Số cổng***\*: 16502
+
+2. \****Địa chỉ nghe***\*: Tất cả các giao diện mạng (0.0.0.0)
+
+3. \****Số lượng thanh ghi***\*: 16
+
+4. \****Đăng ký địa chỉ bắt đầu***\*: 0x100
+
+5. \****Thứ tự byte***\*: Chế độ Big-Endian (Big-Endian)
+
+##### Đăng ký quy tắc lưu trữ
+
+|  |  |  |
+| --- | --- | --- |
+| Đăng ký địa chỉ***** | Nội dung lưu trữ**** | Định dạng dữ liệu **** |
+| *0x100 + ID* | Kết quả phát hiện vị trí + kết quả phát hiện điểm đánh dấu | *2 byte (uint16_t)* |
+| *Quy tắc phân chia* | | |
+| *Byte 0 (8 bit cao)* | Mã trạng thái vị trí | *0-2 (xem định nghĩa bên dưới)* |
+| *Byte 1 (8 bit thấp hơn)* | Mã trạng thái điểm đánh dấu (chưa mở, nội dung phù hợp với mã trạng thái vị trí) | *0-2 (xem định nghĩa bên dưới)* |
+
+#### Định nghĩa mã trạng thái
+
+##### Mã trạng thái vị trí
+
+|  |  |  |
+| --- | --- | --- |
+| Mã hóa | Ý nghĩa vật lý | Điều kiện kích hoạt |
+| *0* | Nhà trống | *Không có hàng hóa/pallet* |
+| *1* | Công suất phòng bình thường | *Hàng chuẩn được đặt đúng vị trí* |
+| *2* | Công suất sử dụng bất thường | *Kích thước hàng hóa/bù lệch vị trí* |
+
+##### Mã trạng thái điểm đánh dấu
+
+|  |  |  |
+| --- | --- | --- |
+| Mã hóa **** | Ý nghĩa vật lý**** | Điều kiện kích hoạt**** |
+| *0* | Không phát hiện thấy điểm đánh dấu | |
+| *1* | Đã phát hiện điểm đánh dấu | |
+| *2* | Phát hiện sự bất thường | |
+
+#### Ví dụ
+
+\****Đọc trạng thái của vị trí thứ 4***\*
+
+##### 1. Tin nhắn yêu cầu của khách hàng
+
+thập lục phân
+
+1. \[01\]\[00\]\[00\]\[00\]\[06\]\[FF\]\[03\]\[01\]\[03\]\[00\]\[01\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Tên trường* | *Giá trị (HEX)* | *Độ dài tính bằng byte* | *Mô tả* |
+| *Số thứ tự tin nhắn* | *00 01* | *2 byte* | *Mã định danh giao dịch (số thứ tự tăng dần)* |
+| *Mã định danh giao thức* | *00 00* | *2 byte* | *Giá trị cố định Modbus/TCP* |
+| *Độ dài dữ liệu* | *00 06* | *2 byte* | *Tổng chiều dài dữ liệu tiếp theo (6 byte)* |
+| *Mã định danh đơn vị* | *FF* | *1 byte* | *Chế độ phát sóng (0xFF) hoặc địa chỉ thiết bị* |
+| *Mã chức năng* | *03* | *1 byte* | *Đọc thanh ghi giữ (mã chức năng tiêu chuẩn)* |
+| *Đăng ký địa chỉ bắt đầu* | *01 03* | *2 byte* | *Địa chỉ bắt đầu=0x100 + 4 (thập phân)* |
+| *Số lượng đăng ký* | *00 01* | *2 byte* | *Đọc 1 thanh ghi (2 byte)* |
+
+##### 2. Tin nhắn phản hồi của thiết bị
+
+thập lục phân
+
+1.  \[05\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[02\]
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| *Tên trường* | *Giá trị (HEX)* | *Độ dài tính bằng byte* | *Mô tả* |
+| *Số thứ tự tin nhắn* | *00 05* | *2 byte* | * Phù hợp với thông điệp yêu cầu * |
+| *Mã định danh giao thức* | *00 00* | *2 byte* | *Giá trị cố định Modbus/TCP* |
+| *Độ dài dữ liệu* | *00 02* | *2 byte* | *Tổng chiều dài của dữ liệu tiếp theo (2 byte)* |
+| *Mã định danh đơn vị* | *FF* | *1 byte* | * Phù hợp với thông điệp yêu cầu * |
+| *Mã chức năng* | *03* | *1 byte* | *Đọc phản hồi đăng ký giữ* |
+| *Trả về độ dài dữ liệu* | *02* | *1 byte* | *Độ dài dữ liệu trả về thực tế (2 byte)* |
+| *Dữ liệu trạng thái* | *00 02* | *2 byte* | *Giá trị trạng thái của vị trí thứ 4* |
+
+### Phụ lục (trả về phân tích cú pháp json)
+
+#### Phát hiện cơ thể người
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SG"**: {         **"1"**: **1**,// Target detected in detection box 1         **"2"**: **0**,// No target detected in detection box 2         **"__object_details"**: \[ // Each item is a JSON string that must be deserialized again; each item represents one cluster
+
+            **"{\\"rbx2d\\":584.0,\\"rby2d\\":500.0,\\"semantic_index\\":-1,\\"tlx2d\\":234.0,\\"tly2d\\":386.0,\\"traceID\\":\\"\\",\\"x_max\\":33.46769714355469,\\"x_min\\":-130.08856201171875,\\"y_max\\":28.804279327392578,\\"y_min\\":9.872406005859375,\\"z_max\\":170.76319885253906,\\"z_min\\":70.43941497802734}"**,             **"{\\"rbx2d\\":405.0,\\"rby2d\\":333.0,\\"semantic_index\\":0,\\"tlx2d\\":159.0,\\"tly2d\\":11.0,\\"traceID\\":\\"IoXSYuQ0rM34LYqL\\",\\"x_max\\":-201.1272430419922,\\"x_min\\":-395.1332702636719,\\"y_max\\":99.76918029785156,\\"y_min\\":-228.9674530029297,\\"z_max\\":611.3909912109375,\\"z_min\\":233.85450744628906}"**         \]     },     **"SG_DATA_TIME"**: **"2023_03_02_21_52_11.408"**, // Human-detection data timestamp     **"SG_RES_TIME"**: **"2023_03_02_21_52_11.689"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"\_\_object\_details" : Giải thích về mục //Single
+
+```json
+{     **"rbx2d"**: **405**, // x-coordinate of the lower-left corner of the 2D cluster box     **"rby2d"**: **333**, // y-coordinate of the lower-left corner of the 2D cluster box     **"semantic_index"**: **0**, // Model index when semantic data exists; otherwise -1     **"tlx2d"**: **159**, // x-coordinate of the upper-right corner of the 2D cluster box     **"tly2d"**: **11**,// y-coordinate of the upper-right corner of the 2D cluster box     **"traceID"**: **"IoXSYuQ0rM34LYqL"**,// Each detected class has a unique ID for matching the object across frames     **"x_max"**: **\-201.1272430419922**,// 3D point-cloud cluster-box coordinate     **"x_min"**: **\-395.1332702636719**,// 3D point-cloud cluster-box coordinate     **"y_max"**: **99.76918029785156**,// 3D point-cloud cluster-box coordinate     **"y_min"**: **\-228.9674530029297**,// 3D point-cloud cluster-box coordinate     **"z_max"**: **611.3909912109375**,// 3D point-cloud cluster-box coordinate     **"z_min"**: **233.85450744628906**// 3D point-cloud cluster-box coordinate }
+```
+
+#### Phát hiện vị trí lưu trữ
+
+```json
+{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SS"**: { X_detail_info contains cargo data detected in storage location X         **"1"**: **1**,// Storage location 1 is occupied         **"2"**: **1**,// Storage location 2 is occupied         **"3"**: **3**,// Storage location 3 is occupied and the object extends outside it         **"1__detail__info"**: \[             **\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**         \],         **"2__detail__info"**:             **\-7**,**258**,**261**,**545**,**403**,**204**,**89**         \],         **"3__detail__info"**: \[             **114**,**73**,**37**,**92**,**42**,**75**, **\-88**         \]     },     **"SS_DATA_TIME"**: **"2023_03_02_22_13_01.286"**, // Human-detection data timestamp     **"SS_RES_TIME"**: **"2023_03_02_22_13_01.572"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+"X\_\_detail\_\_info": Giải thích //Single, X là ID duy nhất của vị trí
+
+**“2\_\_detail\_\_info”**: \[             **\-7**,// Tọa độ x điểm trung tâm
+
+**258**,//Center tọa độ điểm y
+
+**261**,//Center tọa độ điểm z
+
+**545**,//long
+
+**403**,//width
+
+**204**,//High
+
+**89** Góc //Offset so với hộp giới hạn \]
+
+**"1\_\_detail\_\_info"**: \[Trường hợp //This là phạm vi phát hiện vị trí được tạo bằng kiểm tra 2D cho vị trí 1, các giá trị đều là -1                                                                                                      
+
+#### Phát hiện âm lượng
+
+```json
+{     **"IP"**: **"192.168.100.83"**,// Camera IP     **"TM"**: \[ // Each item is a complete volume box detected within the detection area         {             **"angle"**: **\-81.56423950195313**,             **"cx"**: **\-287**,             **"cy"**: **88**,             **"cz"**: **2887**,             **"height"**: **224**,             **"length"**: **320**,             **"type"**: **""**,             **"valid"**: **true**,             **"width"**: **174**         }     \],     **"TM_DATA_TIME"**: **"2023_03_02_21_01_31.769"**, // Human-detection data timestamp     **"TM_RES_TIME"**: **"2023_03_02_21_01_31.987"**,// Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+```
+
+Đối tượng `TM` chứa các trường sau:
+
+- `angle`: Góc lệch.
+- `cx`, `cy`, `cz`: Tọa độ điểm trung tâm.
+- `height`, `length`, `width`: Kích thước đối tượng.
+- `type`: Kiểu ngữ nghĩa.
+- `valid`: Kết quả phát hiện có hợp lệ hay không.

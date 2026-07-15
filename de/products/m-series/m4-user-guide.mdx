@@ -1,0 +1,446 @@
+---
+title: "Benutzerhandbuch für das M4-Produkt"
+description: "Spezifikationen, Funktionen und Bedienungsanleitung für die MRDVS M4-Kamera."
+hidden: true
+---
+## Revisionsverlauf
+
+| Datum | Version | Ändern |
+| --- | --- | --- |
+| 21.08.2023 | V0.1 | Erstdokument |
+| 09.10.2023 | V1.0 | Erste offizielle Veröffentlichung |
+| 25.03.2024 | V1.1 | Das Kamerakoordinatensystem wurde aktualisiert |
+| 10.05.2024 | V1.2 | Korrigierte Kameraparameter |
+| 17.06.2024 | V1.3 | Schrauben aus der Verpackung entfernt und Konformitätsbescheinigung beigefügt |
+| 25.11.2024 | V1.4 | Die Lagertemperatur der Kamera wurde aktualisiert |
+
+## 1. Produktübersicht
+
+Dieses Handbuch beschreibt die von Zhejiang MRDVS Technology Co., Ltd. entwickelte M4-Kamera, einschließlich ihrer Spezifikationen, Funktionen und Bedienungsanleitungen.
+
+Zur M4-Produktfamilie gehören die Kameras M4 Lite und M4. Diese ToF-Produkte verwenden eine Gigabit-Ethernet-Kommunikationsschnittstelle und eine 24-VDC-Stromversorgung.
+
+![Übersicht über die M4-Kamera](/images/legacy/e882097c-c641-4cc8-8d4a-1e3856985f4c/1752f961-5a67-4a8a-b7d1-3bd19dae0f11.avif) 
+
+Abbildung 1.1. M4-Kamera
+
+### 1.1 Produktmerkmale
+
+- Integrierte 1Tops-Rechenkapazität für den Betrieb ohne externe CPU
+
+- RGB-D-Unterstützung
+
+- Eigenständige Hindernisvermeidung, Andocken, Lokalisierung, Soft-Package-Erfassung, Lagerorterkennung und Volumenmessung
+
+- Gigabit-Ethernet-Anschluss
+
+### 1.2 Nutzungsbedingungen
+
+**Beachten Sie bei der Verwendung folgende Anforderungen:**
+
+- Entfernen Sie keine Etiketten vom Produkt.
+
+- Zerlegen Sie das Produkt nicht. Bei der Demontage kann es beschädigt werden.
+
+- Benutzen Sie das Produkt nicht in starken Magnetfeldern.
+
+- Verwenden Sie das Produkt nicht bei intensiver Sonneneinstrahlung über 100 KLUX.
+
+- Um das Gehäuse zu reinigen, wischen Sie es mit einem weichen, fusselfreien Tuch ab, das leicht mit gereinigtem Wasser oder Alkohol angefeuchtet ist.
+
+- Bewahren Sie die Originalverpackung auf und verwenden Sie diese nach Möglichkeit beim Transport.
+
+* * *
+
+## 2. Produktspezifikationen
+
+### 2.1 Prinzip der Distanzmessung
+
+Die M4-Kamera verwendet Time-of-Flight (ToF)-Ranging. Es misst die Zeit zwischen der Aussendung von Licht und dem Empfang der Reflexion von einem Objekt, um den Abstand zwischen Objekt und Kamera zu berechnen.
+
+Die M4-Kamera erfasst die Tiefe direkt und liefert hochwertige Tiefeninformationen mit minimalen Rechenressourcen und erstellt Tiefenszenen mit einer hohen Bildrate. Wie LiDAR können ToF-Kameras gepulstes ToF (P\_ToF) oder kontinuierliches moduliertes ToF (CW\_ToF) verwenden. P\_ToF sendet normalerweise unsichtbare Lichtimpulse aus und berechnet aus ihrer Umlaufzeit die Entfernung. CW\_ToF sendet moduliertes Dauerlicht aus und berechnet die Entfernung aus der Phasendifferenz zwischen dem emittierten und dem zurückgegebenen Licht.
+
+<Frame>
+  <img src="/images/legacy/3289fee8-05fb-49c4-9f70-51d129ed2b82/c4624d45-655c-42f3-ab52-9572815d3c0f.avif" alt="Prinzip der ToF-Entfernungsmessung" />
+</Frame>
+
+Abbildung 2.1. Erkennungsprinzip
+
+### 2.2 Spezifikationen
+
+Tabelle 2-1. Produktspezifikationen
+
+| Kamera | Modell | Eagle-M4 |
+| --- | --- | --- |
+| Leistung | Sensor | Sony-Sensor |
+| ㅤ | Messmethode | Flugzeit |
+| ㅤ | Betriebswellenlänge | 940nm |
+| ㅤ | TOF-Auflösung und Bildrate | 640×480 (typisch 12fps) |
+| ㅤ | TOF-Sichtfeld | 81°×61° |
+| ㅤ | RGB-Auflösung und Bildrate | 1920×1080 (typisch 12fps) |
+| ㅤ | RGB-Sichtfeld | 88°×56° |
+| ㅤ | Messbereich | 0,3 ~ 5 m (90 % Reflexionsvermögen); 0,3~2,5 m (10 % Reflexionsvermögen) |
+| ㅤ | Messgenauigkeit | ±4mm+0,25%×Tiefe |
+| Elektrik | Kommunikationsschnittstelle | Ethernet / CAN |
+| ㅤ | Stromanschluss | Industrieller 5-poliger Rundsteckverbinder |
+| ㅤ | Stromversorgung | 24V DC / 2A |
+| ㅤ | Durchschnittlicher Stromverbrauch | 6,2w |
+| Mechanisch | Abmessungen | 88mm×47mm×47mm |
+| ㅤ | Gewicht | 333g |
+| ㅤ | Schutzart | IP42 |
+| ㅤ | Betriebstemperatur | -20℃~60℃ |
+| ㅤ | Lagertemperatur | -40℃~85℃ |
+| ㅤ | Luftfeuchtigkeit | 10 % ~ 90 % relative Luftfeuchtigkeit, nicht kondensierend |
+| Andere | Immunität gegen Umgebungslicht | Unterstützt Sonnenlicht bis zu 100 Klux |
+| ㅤ | Übergang vom Schatten zum Licht | Weniger als 1 cm Abweichung über eine Schatten-Licht-Grenze von 100 Klux |
+| ㅤ | Softwareumgebung | C / C++ / ROS SDK |
+| ㅤ | Unterstützte Betriebssysteme | Windows7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Kühlung | Passiv |
+
+Hinweis: Die Produktabmessungen finden Sie im 3D-Modell.
+
+* * *
+
+## 3. Produkteigenschaften
+
+### 3.1 Elektrische Eigenschaften
+
+Tabelle 3-1. Elektrische Eigenschaften
+
+| Parameter | Symbol | Zustand | Minimum | Typisch | Maximal | Einheit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Versorgungsspannung | VDD | ㅤ | 22 | 24 | 26 | V |
+| KANN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
+| Betriebstemperatur | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Betriebsfeuchtigkeit | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Lagerfeuchtigkeit | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Lagertemperatur | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### 3.2 Ausgangseigenschaften
+
+Standardmäßig gibt die M4-Kamera ein Tiefenbild (Abbildung 3.1), Signalintensitätsdaten pro Pixel (Abbildung 3.2) und eine aus den Tiefendaten generierte Punktwolke aus (Abbildung 3.3). Bei dem abgebildeten Objekt handelt es sich um ein Aluminiumprofil.
+
+<Frame>
+  <img src="/images/legacy/98a0d957-899a-4396-b52c-6514e96d92fe/a2ec4c6a-dd58-480a-989f-16edfbe0c99b.avif" alt="M4-Tiefenbild" />
+</Frame>
+
+Abbildung 3.1. Tiefenbild
+
+<Frame>
+  <img src="/images/legacy/ee713554-5bd5-4257-beaa-d8ab6da93d8e/f6c8d300-2364-4eb9-b9da-b9333447847a.avif" alt="M4-Amplitudenbild" />
+</Frame>
+
+Abbildung 3.2. Amplitudenbild
+
+<Frame>
+  <img src="/images/legacy/38dc4294-3a75-47ed-8488-faf814cd31e6/0ebad3dc-a9b8-4533-be18-5e6a47980056.avif" alt="M4-Punktwolke" />
+</Frame>
+
+Abbildung 3.3. Punktwolke
+
+Die Kamera nutzt Inter-Frame High Dynamic Range (HDR), um den Messbereich zu erweitern. Der Sensor gibt zwei Tiefenrahmen mit unterschiedlichen Integrationszeiten und Kalibrierungsparametern aus. Für jedes Pixel wählt die Host-Anwendung den Frame mit der höheren Intensität aus und kombiniert die Ergebnisse in der endgültigen Ausgabe, wodurch die Tiefengenauigkeit über alle Messbereiche hinweg verbessert wird.
+
+### 3.3 Erfassungsbereich
+
+Abbildung 3.4 zeigt den M4-Erfassungsbereich. Das horizontale Sichtfeld der Kamera beträgt 81° und das vertikale Sichtfeld 61°. Die Erkennungsentfernung hängt von der optischen Leistung ab. Eine höhere optische Leistung und ein höheres Zielreflexionsvermögen vergrößern die nahe Blindzone, verringern jedoch die ferne Blindzone. Eine geringere optische Leistung und ein geringeres Zielreflexionsvermögen verringern die nahe Blindzone, vergrößern jedoch die ferne Blindzone. Für Objekte mit einem Reflexionsvermögen von 10 % bis 90 % beträgt der M4-Messbereich 0,3 bis 5 m. Über 5 m hinaus sind schwach reflektierte Signale anfälliger für Umgebungslicht und erzeugen größere Fehler.
+
+<Frame>
+  <img src="/images/legacy/17a0ffaf-b0ce-4197-9f5a-d6ac58691c07/88013e12-3729-449d-8b3b-be9650f7cee9.avif" alt="Erfassungsbereich M4" />
+</Frame>
+
+Abbildung 3.4. Sichtfeld
+
+### 3.4 Reflektivitätsreferenz
+
+Die Reflexionswerte in diesem Handbuch werden anhand einer weißen Kodak-Standardkarte gemessen. Referenzwerte für andere Materialien finden Sie unten.
+
+Tabelle 3-2. Materielles Reflexionsvermögen
+
+| Nein. | Material | Reflexionsvermögen |
+| --- | --- | --- |
+| 1 | Schwarzer Gummi | 22 % |
+| 2 | Schwarze Keramiktasse | 34 % |
+| 3 | Schwarze Plastikfolie | 42 % |
+| 4 | Zeitung | 45 % |
+| 5 | Schwarzes Tuch | 78 % |
+| 6 | Undurchsichtige Plastikflasche | 85 % |
+| 7 | Glatte Holzplatte | 90 % |
+| 8 | Whitepaper | 90 % |
+| 9 | Weiße Standardkarte von Kodak | 100 % |
+| 10 | Klares Glas | 140 % |
+| 11 | Glänzende, helle Metalloberfläche | 150 % |
+
+### 3.5 Abmessungen
+
+![Abmessungen der M4-Kamera](/images/legacy/2131068b-74a3-4dd0-81ed-3bc6b1f276f6/5ffef1e3-d926-4a27-99b9-67900c649cbb.avif) 
+
+Abbildung 3.5. Abmessungen der M4-Kamera
+
+### 3.6 Optische Koordinatensysteme und Ursprung
+
+**Optische Koordinatensysteme:**
+
+- Zu den optischen Koordinatensystemen gehören das Kamerakoordinatensystem (CCS) und das Weltkoordinatensystem (WCS).
+
+- Das Kamerakoordinatensystem ist das zweidimensionale Tiefenbildkoordinatensystem. Sein Ursprung ist das optische Zentrum.
+
+- Das Weltkoordinatensystem ist das dreidimensionale Punktwolken-Koordinatensystem.
+
+- Verwenden Sie die Kamerafunktionen, um Tiefenbildkoordinaten in 3D-Punktwolkenkoordinaten umzuwandeln. Sehen Sie sich die SDK-Beispiele an.
+
+![Optische Koordinatensysteme](/images/legacy/2b1ceda8-96d3-4528-9be2-8907e278902e/136ce0a6-06b9-4547-b0e1-47ca16411476.avif) 
+
+Abbildung 3.6. Optische Koordinatensysteme
+
+**Der Kameraursprung ist wie folgt definiert:**
+
+1. Der X-Koordinatenursprung wird an der X-Achse des Produkts ausgerichtet.
+
+2. Der Y-Koordinatenursprung wird an der Y-Achse des Produkts ausgerichtet.
+
+3. Der Z-Koordinatenursprung liegt auf der Vorderseite der Kamera.
+
+<Frame>
+  <img src="/images/legacy/27f142a4-c8c6-47a3-a1d1-9ebcb6d0985c/4bcd8379-f3cf-413c-944b-11dab5b7be0e.avif" alt="Herkunft der M4-Kamera" />
+</Frame>
+
+Abbildung 3.7. Kameraursprung
+
+### 3.7 Produktschnittstellen
+
+Der 5-Pin-Anschluss der M4-Kamera ist unten definiert (**Hinweis: 35 mm am Kabelausgang für Installation und Biegeradius reservieren**):
+
+<Frame>
+  <img src="/images/legacy/e3768139-e985-478c-a56f-13794906a332/85376ece-edd6-491e-b7e6-5751bd795e6d.avif" alt="M4-Produktschnittstelle" />
+</Frame>
+
+Tabelle 3-3. Pin-Definitionen
+
+| Hafen | Pin | Signal | Beschreibung | Drahtfarbe |
+| --- | --- | --- | --- | --- |
+| Sockel | 1 | Fahrgestellnummer+ | 24V positiver Stromeingang | Braun |
+| ㅤ | 2 | CAN_L | CAN_L | Weiß |
+| ㅤ | 3 | GND | Signalmasse | Blau |
+| ㅤ | 4 | VIN- | 24V negativer Stromeingang | Schwarz |
+| ㅤ | 5 | CAN_H | CAN_H | Grau |
+
+### 3.8 Empfohlene Installation
+
+**Verwenden Sie eine der folgenden drei Installationsmethoden.**
+
+**Installation 1:** Weder die rechte Wand noch der Boden sind sichtbar. Platzieren Sie die Kamera in einer Ecke, sodass sich nur die Wand vor Ihnen im Sichtfeld befindet. Diese Konfiguration bietet eine gute Entfernungsleistung.
+
+<Frame>
+  <img src="/images/legacy/6806648a-d6bc-41d8-a05d-1c23c738dc8f/d81b28b5-e542-49ec-a34a-612b66db9ae8.avif" alt="Empfohlene M4-Installation 1" />
+</Frame>
+
+Abbildung 3.8. Installation 1
+
+**Installation 2:** Die rechte Wand ist sichtbar, der Boden jedoch nicht. Platzieren Sie die Kamera in einer Ecke, mindestens 20 cm von der rechten Wand entfernt, gemessen im Abstand `d`. Mit dieser Konfiguration kann eine Entfernungsgenauigkeit von ±15 mm erreicht werden.
+
+<Frame>
+  <img src="/images/legacy/89fb5992-0cb3-46f9-a87c-61f41c200000/96fb3d1f-641a-4648-a6b8-962e048d6e24.avif" alt="Empfohlene M4-Installation 2" />
+</Frame>
+
+Abbildung 3.9. Installation 2
+
+**Installation 3:** Der Boden ist sichtbar, die rechte Wand jedoch nicht. Installieren Sie die Kamera in einer empfohlenen Höhe `h` von 10 cm bis 30 cm über dem Boden.
+
+![Empfohlene M4-Installation 3](/images/legacy/54ebe892-3931-4c37-8dc6-242b6375953d/59a6a5ec-d690-433a-8cf7-3e8dea8d3885.avif) 
+
+Abbildung 3.10. Installation 3
+
+Wenn sich die Kamera in Bodennähe befindet, wird der Boden in der Nähe überbelichtet und wirkt sich auf andere Bereiche aus. Streulicht und Mehrwegereflexionen wirken sich auch auf bodennahe Messungen aus, wie in Abbildung 3.11 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/4570e829-60cd-4286-8abf-adf94fdfcd1a/a8f1d126-36a5-4dd6-b1a3-12158015dbad.avif" alt="Bodennahe Mehrwegeeffekte" />
+</Frame>
+
+Abbildung 3.11. Bodennahe Mehrwegeeffekte
+
+In der Abbildungsoptik erscheint Streulicht hauptsächlich als Geisterbilder und Streulicht, wie in Abbildung 3.12 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/f52499f5-7382-47b6-b2d4-324439f78720/63645530-5c2c-4a4e-8402-04ab0cf92f2e.avif" alt="Geisterbilder und Streulicht durch Streulicht" />
+</Frame>
+
+Abbildung 3.12. Geisterbilder und Streulicht
+
+**Installieren Sie das Produkt nicht dort, wo sowohl die rechte Wand als auch der Boden sichtbar sind**, wie unten gezeigt. Streulicht vom Boden und Mehrwegreflexionen von der Wand können Messungen auf komplexe Weise beeinflussen.
+
+<Frame>
+  <img src="/images/legacy/caef3f77-bd1f-4194-91ed-cfb345686f8b/7976d1f7-959b-4672-b236-8795695b4dcd.avif" alt="Nicht unterstützte M4-Installation" />
+</Frame>
+
+Abbildung 3.13. Nicht unterstützte Installation
+
+* * *
+
+## 4. Genauigkeit und Präzision
+
+### 4.1 Genauigkeit
+
+Durch die Kalibrierung werden feste Abweichungen zwischen Sensormessungen und tatsächlichen Werten durch gegenseitige Zuordnung beseitigt. Um eine M4-Kamera zu kalibrieren, montieren Sie sie auf einer Schiene und richten Sie sie auf eine weiße Wand. Ordnen Sie den Messwert jedes Pixels dem Abstand zwischen der Kamera und dem entsprechenden Wandbereich zu und korrigieren Sie dann die Messungen mit dieser Zuordnung, wie in Abbildung 4.1 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/f56d3e54-eb77-4bdb-9576-65f9aeb7a628/67a4d596-b169-43c0-93b0-dfa2ef85c421.avif" alt="M4-Kalibrierungsaufbau" />
+</Frame>
+
+Abbildung 4.1. Kalibrierung
+
+Da der M4 eine aktive Entfernungsmessung verwendet, beeinflussen viele Faktoren seine Genauigkeit. Eine unsachgemäße Installation kann zu Mehrwegeeffekten führen und Messungen verfälschen.
+
+Dies macht sich besonders bemerkbar, wenn ein Ziel mit geringem Reflexionsvermögen neben einem stark reflektierenden Objekt gemessen wird. Im Idealfall folgt Licht dem blauen Weg. Auch von einer Wand reflektiertes Licht kann das Ziel erreichen und entlang des grünen Pfades zur Kamera zurückkehren. Licht, das direkt vom benachbarten Objekt mit hohem Reflexionsvermögen reflektiert wird, kann entlang des roten Pfads in die Kamera gelangen. Optische Mängel verwandeln dieses Licht in Blendung, die die Entfernungsmessung beeinträchtigt, wie in Abbildung 4.2 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/be0eb189-bf98-4c78-b2dc-3a4e8a356124/04671b63-d54f-4cac-8774-4afb08cccbc2.avif" alt="M4 Installations- und Reflexionspfade" />
+</Frame>
+
+Abbildung 4.2. Kamerainstallation
+
+### 4.2 Präzision
+
+Präzision bezieht sich typischerweise auf die Einzelpunktvariation (1-σ). Als optoelektronisches Messgerät wird der M4 von der ADC-Wandlung, dem Signal-Rausch-Verhältnis und dem Systemrauschen beeinflusst. Abbildung 4.3 zeigt den Zusammenhang zwischen Messgenauigkeit und Signalintensität.
+
+<Frame>
+  <img src="/images/legacy/16312574-c0be-48c1-81b8-0cfc40ff06ae/74264eea-5a19-48a4-8520-84410a78262c.avif" alt="Messgenauigkeit und Signalintensität" />
+</Frame>
+
+Abbildung 4.3. Messgenauigkeit und Signalintensität
+
+Der M4 wandelt optoelektronische Analogsignale in digitale Daten um. Bei der ADC-Wandlung wird der Analogwert auf den kleinsten Auflösungsschritt gerundet, wodurch Rauschen entsteht. Ein 1,1-V-Signal kann als 1 V dargestellt werden, was einen Fehler von 10 % erzeugt. Ein 10,1-V-Signal kann zu 10 V werden, und ein 100,1-V-Signal kann zu 100 V werden, was jeweils einen Fehler von etwa 1 % erzeugt. Die ADC-Umwandlung führt daher bei niedrigen Signalpegeln zu mehr Rauschen und Fehlern. Das Signal-Rausch-Verhältnis einer ToF-Kamera folgt im Allgemeinen SNR∝1/√t, wobei `t` die Integrationszeit ist. Mit zunehmender Integrationszeit erhöht sich die Signalintensität.
+
+* * *
+
+## 5. Interferenz mit mehreren Kameras
+
+### 5.1 Parallelinterferenz
+
+Wenn zwei Kameras parallel installiert sind, kann jede sowohl ihre eigene reflektierte Beleuchtung als auch die Beleuchtung der anderen Kamera empfangen, was die Tiefendaten beeinträchtigen kann. Parallele Interferenzen erhöhen den Messfehler, wenn zwei M4-Kameras in die gleiche Richtung zeigen.
+
+<Frame>
+  <img src="/images/legacy/af686e8c-9957-4707-a2e4-1454fccc29b5/36fa2e7f-5002-4f7d-941c-841fa869060d.avif" alt="Parallele Kamerainterferenz" />
+</Frame>
+
+Um Parallelinterferenzen zu vermeiden, installieren Sie die Kameras schräg zur Horizontalen. Wenn sie in einem Winkel von 0° zur horizontalen Ebene installiert werden müssen, wenden Sie sich für eine kundenspezifische Konfiguration an MRDVS.
+
+* * *
+
+## 6. Softwareübersicht
+
+### 6.1 SDK
+
+Verwenden Sie das SDK, um die Kamera zu initialisieren und zu starten, Daten abzurufen und die Kamera zu schließen. Für andere Plattformen als Linux oder Windows portieren Sie die Anwendung unter Bezugnahme auf den SDK-Quellcode.
+
+Tabelle 6-1. SDK-Details
+
+| Betriebssystem | Linux&Windows |
+| --- | --- |
+| Programmiersprache | C/C++ |
+| Datenformat | 16-Bit-Kurzschluss ohne Vorzeichen |
+| Integration | Gemeinsam genutzte Bibliothek (.so), Dynamic-Link-Bibliothek (.dll) oder integrierter SDK-Quellcode |
+
+### 6.2 SDK-Ausgabereihenfolge
+
+![SDK-Ausgabereihenfolge](/images/legacy/c475e8c8-74c3-4950-bec1-a5ba15f8d9cf/4bcb3dbe-c3e6-47a5-a08f-00691b16a489.avif) 
+
+Abbildung 6.1. SDK-Ausgabereihenfolge
+
+Das SDK gibt jeweils einen Frame mit Tiefen- und Amplitudendaten in der konfigurierten Auflösung aus. Jeder Frame wird als eindimensionales Array gespeichert, beginnend beim Pixel oben links und dann von links nach rechts und dann von oben nach unten. Abbildung 6.1 zeigt die Ausgabe entlang der x-Achse, gefolgt von der y-Achse, was folgende Reihenfolge ergibt:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Jedes Tiefenbildpixel ist ein 16-Bit-Kurzschluss ohne Vorzeichen, der den Abstand vom gemessenen Objekt zur Kameraebene darstellt.
+
+Jedes Amplitudenbildpixel ist ein 16-Bit-Kurzschluss ohne Vorzeichen, der die Intensität des zurückgegebenen Signals darstellt.
+
+### 6.3 IP-Adresse
+
+Die Standard-IP-Adresse der M4-Kamera lautet 192.168.100.82. Um die IP-Adresse zu ändern oder DHCP zu aktivieren, verwenden Sie die von MRDVS bereitgestellte Demoanwendung.
+
+### 6.4 Demoanwendung
+
+### 6.4.1 IP-Konfiguration
+
+Schließen Sie das Netzkabel an und verbinden Sie dann die Kamera mit einem Ethernet-Kabel mit dem Computer. Da die werkseitige IP-Adresse der Kamera 192.168.100.82 lautet, stellen Sie den Computer auf das Subnetz 192.168.100.x, ausgenommen 100.82, mit der Subnetzmaske 255.255.255.0 ein. Öffnen Sie **Einstellungen** → **Ethernet** → **Adapteroptionen ändern**. Klicken Sie mit der rechten Maustaste auf **Ethernet**, wählen Sie **Eigenschaften** und dann **Internet Protocol Version 4 (TCP/IPv4)**. Stellen Sie beispielsweise die IP-Adresse auf 192.168.100.20 und die Subnetzmaske auf 255.255.255.0 ein.
+
+### 6.4.2 Öffnen Sie die Anwendung
+
+Laden Sie die Software herunter, installieren Sie sie und doppelklicken Sie dann auf das LxCameraViwer-Demosymbol. Die Host-Anwendung wird geöffnet, sucht nach einer Kamera, öffnet sie und startet die Erfassung automatisch, wenn eine Kamera angeschlossen ist.
+
+**Hinweis: Beim ersten Start müssen Sie bei manchen Systemen die Anwendung durch die Firewall zulassen.**
+
+Die Anwendung umfasst grundlegende Steuerelemente, Bildauswahl, Kamerakonfiguration und Kamerainformationen. Zu den Kamerainformationen gehören IP-Adresse, ID, MAC-Adresse, Seriennummer sowie Software- und Algorithmusversionen. Aktivieren Sie das Kontrollkästchen Tiefe, Amplitude, RGB oder Punktwolke, um diese Ansicht im mittleren Bereich anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/1b245f57-ab6e-4a00-bfd0-810d28877644/afbf32b7-d850-487a-b003-d739ab1ce912.avif" alt="LxCameraViewer-Bildanzeige" />
+</Frame>
+
+Abbildung 6.2. Bildanzeige
+
+### 6.4.3 Bilder speichern
+
+Wählen Sie **Speichern**, um die ausgewählten Bilder im Ordner `./data` im Installationsverzeichnis zu speichern. Das Terminal druckt auch den Pfad aus, zum Beispiel: `save path= ./data/<camera-ID>`.
+
+Nach dem Speichern identifiziert `_a` ein Amplitudenbild, `_d` ein Tiefenbild und `_r` ein RGB-Bild (MONO). `.pcd` identifiziert eine Punktwolke. Tiefen- und Amplitudenbilder verwenden das PGM-Format, RGB-Bilder verwenden PNG und Punktwolken verwenden PCD.
+
+![Gespeicherte Bilddateien](/images/legacy/16abb878-910c-4b62-b84c-c1100c0eead4/0d8b3485-3661-425c-83e6-2dd524c8c4e6.avif) 
+
+Abbildung 6.3. Gespeicherte Bilder
+
+### 6.4.4 IP-Adresse ändern
+
+Geben Sie die erforderliche IP-Adresse ein, z. B. 192.168.10.199. Geben Sie die Subnetzmaske 255.255.255.0 und das Gateway 192.168.10.1 ein. Das Gateway muss sich im selben Subnetz befinden wie die erforderliche IP-Adresse; Setzen Sie das letzte Oktett auf 1. Bestätigen Sie die Änderung und schalten Sie die Kamera dann aus und wieder ein.
+
+<Frame>
+  <img src="/images/legacy/aa5ef83b-5b0b-488f-a9b3-1ac04d897693/0578871e-db36-4ee3-abd1-33795a4860fe.avif" alt="Ändern Sie die IP-Adresse der Kamera" />
+</Frame>
+
+* * *
+
+## 7. Hauptmerkmale
+
+### 7.1 Entfernungsbereich
+
+Die M4-Kamera misst zwischen 0,3 und 5 m. Wenden Sie sich an MRDVS, wenn Sie ein individuelles Sortiment benötigen.
+
+### 7.2 Filtern
+
+Das MRDVS SDK stellt diese Filter bereit:
+
+- Medianfilter
+
+- Modusfilter
+
+- Entfernung fliegender Pixel
+
+* * *
+
+## 8. Vorsichtsmaßnahmen
+
+### 8.1 Laserschutzklasse
+
+<Frame>
+  <img src="/images/legacy/aa5dd98d-81a2-4326-b01a-00a4dc283a09/fd423fe0-ef94-4b72-82e0-304cd18f5f49.avif" alt="Laserschutzklasse" />
+</Frame>
+
+### 8.2 Korrekter Betrieb
+
+Die M4-Kamera verwendet eine 24-V-DC-Stromversorgung. Schließen Sie das Netzkabel an, bevor Sie Strom anlegen. Vertauschen Sie die Plus- und Minuspole nicht, da dies zu Schäden am Produkt führen kann.
+
+### 8.3 Betriebstemperatur
+
+Halten Sie die Umgebungstemperatur innerhalb des in Tabelle 2-1 angegebenen Bereichs. Montieren Sie das Produkt auf einer wärmeleitenden Komponente, z. B. einer Metallhalterung, um die Wärmeableitung zu verbessern und eine optimale Leistung zu erzielen.
+
+* * *
+
+## 9. FAQ
+
+Tabelle 9-1. Häufig gestellte Fragen
+
+| Nein. | Problem | Auflösung |
+| --- | --- | --- |
+| 1 | Die Kamera reagiert nicht beim Öffnen | Bestätigen Sie, dass die Firewall deaktiviert ist. |
+| 2 | Die Hostanwendung erkennt mehrere IP-Adressen | Im LAN ist eine doppelte IP-Adresse vorhanden. Wählen Sie die gewünschte IP-Adresse aus. |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernet-Kabel. Über ein 100-Mbps-Kabel können die Daten zunächst instabil sein. |
+| 4 | Software-Installationsort | Für die Installation am Standardspeicherort auf Laufwerk C sind möglicherweise Berechtigungsänderungen erforderlich. |

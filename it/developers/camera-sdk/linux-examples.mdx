@@ -1,0 +1,2639 @@
+---
+title: "Esempi di SDK Linux"
+description: "Configura, crea ed esegui gli esempi C, Java, ROS e ROS 2 inclusi con MRDVS Camera SDK per Linux."
+hidden: true
+---
+```yaml
+version:
+  name: "V1.0"
+  revision_record:
+    - revision_date: "2024/10/12"
+      modified_by: "Lin Yu"
+```
+
+## 1. **Panoramica**
+
+MRDVS Camera SDK per Linux include esempi C, Java HTTP server, ROS e ROS 2. Gli esempi dimostrano i flussi di lavoro principali dell'SDK e le funzionalità di base. Adatta l'implementazione alla tua applicazione. Questa guida spiega come configurare l'ambiente richiesto ed eseguire ogni esempio, con una copertura dettagliata di ROS e ROS 2.
+
+Si consiglia di leggere le Parti da 1 a 3 in ordine di priorità. Dopo aver letto le parti da 1 a 3 in sequenza, puoi passare direttamente alle parti pertinenti per soddisfare le diverse esigenze. Ogni capitolo è indipendente l'uno dall'altro e non pregiudica la lettura.
+
+Infine, questo articolo fornisce alcuni metodi di installazione e precauzioni per le applicazioni e gli ambienti correlati. Se necessario è possibile fare riferimento all'appendice.
+
+* * *
+
+## 2. **Sistema e ambiente**
+
+### 2.1 Introduzione al sistema e all'ambiente
+
+Si consiglia di utilizzare i seguenti sistemi Linux. Le versioni predefinite del programma sono mostrate nella tabella seguente:
+
+| Versione del sistema | Cmake/Gcc | Opencv | PCl | Ros | Ros2 |
+| --- | --- | --- | --- | --- | --- |
+| Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Cinetico | Ardente, Rimbalzante |
+| Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodico | Audace、Eloquente、Cristallo |
+| Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetico | Foxy、Galattico |
+| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Umile、lron |
+
+### 2.2 Controllare la versione del sistema e la versione dell'applicazione
+
+#### 2.2.1 Controllare la versione del sistema
+
+Comando: uname -a
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/7c4617da-c25a-4891-94c8-a32dc762d4dd/af45f496-e312-4351-bb32-6f7ce1a6c8d1.avif" alt="Visualizza le icone relative alla versione del sistema" />
+</Frame>
+
+Numero di versione della versione del sistema operativo: 5.15.0
+
+- **Numero della versione principale:** 5
+
+- **Numero di versione:** 15 [I numeri dispari sono versioni di sviluppo, i numeri pari sono versioni stabili]
+
+- **Numero di revisione:** 0 [Numero di modifiche]
+
+- **Ennesima revisione di questa versione:** 97
+
+- **Versione del kernel:** #107~20.0.4.1, solitamente la versione del sistema è la versione del kernel
+
+#### 2.2.2 Controllare la versione di Cmake
+
+Comando: cmake -version
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/a123bbcf-982b-47be-901f-3a1946d2fa7b/848d3c09-a031-4c4e-8a30-e455ba39d1a2.avif" alt="Visualizza le icone relative alla versione di Cmake" />
+</Frame>
+
+Rappresenta la versione di Cmake 3.16.3
+
+#### 2.2.3 Controlla la versione di Gcc
+
+Comando: gcc -v
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/25fb257c-a77b-416a-bd23-79b59520bb11/71d0bc17-7ded-4313-ae19-ff163e9dbecf.avif" alt="Visualizza le icone relative alla versione di Gcc" />
+</Frame>
+
+Il numero di versione si trova nella casella blu nell'angolo in basso a sinistra. La versione qui è: 9.4.0
+
+#### 2.2.4 Visualizza la versione di Opencv
+
+Comando: pkg-config --modversion opencv
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/f00cb7da-8eee-46ed-bdf5-14108c8512f1/a8de70e1-4c06-448a-852c-045bf5893670.avif" alt="Visualizza le icone relative alla versione di Opencv" />
+</Frame>
+
+La versione qui è 3.2.0
+
+#### 2.2.5 Controlla la versione Pcl
+
+Comando: dpkg -l libpcl-dev
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/8d01ab23-7eee-472c-9606-2ef3f9838162/d819c737-f626-4399-8f1c-884c66bebde2.avif" alt="Visualizza le icone relative alla versione Pcl" />
+</Frame>
+
+La versione qui è 1.8.1
+
+#### 2.2.6 Visualizza la versione ROS
+
+Comando: rosversion -d
+
+risultato:
+
+<Frame>
+  <img src="/images/legacy/dd047dee-2748-48c7-8937-e89bebdb2d0e/e5af9a35-d242-471a-8c05-dc4ea3ac9188.avif" alt="Visualizza le icone relative alla versione ROS" />
+</Frame>
+
+La versione qui è eloquente (la versione ros2 corrispondente a Ubuntu18.04)
+
+<Frame>
+  <img src="/images/legacy/e94ccc9e-723b-4e04-80e8-e1875e752eba/156381c6-eb94-4d6c-80fe-6e76ea8e9c29.avif" alt="Visualizza l'icona relativa alla versione ROS 2" />
+</Frame>
+
+La versione qui è noetica (la versione ros1 corrispondente a Ubuntu20)
+
+### 2.3 Costruire un ambiente di sviluppo di base
+
+È necessario aggiornare l'elenco di installazione prima dell'installazione:
+
+Esegui il comando: sudo apt update
+
+Il risultato è il seguente:
+
+<Frame>
+  <img src="/images/legacy/d475670b-1c59-4ad4-ae94-b665a89fc526/4cb741b1-3e4d-4ddc-bd52-e6113d7a61e5.avif" alt="Illustrazioni relative alla creazione di un ambiente di sviluppo di base" />
+</Frame>
+
+#### 2.3.1 Installa Cmake
+
+Comando: sudo apt install cmake
+
+<Frame>
+  <img src="/images/legacy/202276f8-045b-4cef-a63e-cab724e49d29/127c6296-a6e1-4306-ace4-41dad406c2c1.avif" alt="Icone relative all'installazione di Cmake" />
+</Frame>
+
+#### 2.3.2 Installa Gcc
+
+Comando: sudo apt install build-essential
+
+<Frame>
+  <img src="/images/legacy/e8f4c492-c1f6-44d9-bf50-6f10676f785e/f9aa4459-2cb5-4b23-8ca3-34098497abee.avif" alt="Installa le icone relative a Gcc" />
+</Frame>
+
+### 2.4 Costruire un ambiente di sviluppo opzionale
+
+#### 2.4.1 Installa Opencv [può visualizzare le immagini della fotocamera]
+
+Esegui il comando: sudo apt-get install libopencv-dev
+
+<Frame>
+  <img src="/images/legacy/d33099da-3dd6-4b5c-a34d-98774f9c1141/5b8609fe-3de6-4066-810d-2cb2d0f3f45c.avif" alt="Installa le icone relative a Opencv [può visualizzare le immagini della fotocamera]." />
+</Frame>
+
+#### 2.4.2 Installa Pcl [può visualizzare la nuvola di punti]
+
+Esegui il comando: sudo apt-get install libpcl-dev
+
+<Frame>
+  <img src="/images/legacy/fe2ed92e-0c06-4a7a-b1c5-c8c6608b367b/095f9e66-e712-479f-8f11-5d054af0aa74.avif" alt="Installare le icone relative a Pcl [può visualizzare la nuvola di punti]." />
+</Frame>
+
+* * *
+
+## 3. **Introduzione al codice di esempio e preparazione per l'esecuzione**
+
+### 3.1 Eseguire lo script di installazione
+
+1. Decomprimi il file Lanxin-MRDVS ed entra nella cartella Lanxin-MRDVS
+
+<Frame>
+  <img src="/images/legacy/ec64ca28-3d2f-4a1e-9c22-b73eaf23b1eb/d94065bf-30a9-4dc8-bcae-633a46963134.avif" alt="Illustrazioni relative all'esecuzione dello script di installazione" />
+</Frame>
+
+2. Fare clic con il tasto destro per aprire la console
+
+3. Eseguire lo script install.sh
+
+<Frame>
+  <img src="/images/legacy/02ce52d3-e986-469a-835d-71f328f976cd/00fc58f7-aec6-4922-8d95-83a97284b3db.avif" alt="Illustrazione relativa all'esecuzione dello script di installazione 2" />
+</Frame>
+
+4. Entra nella directory /opt/ per verificare se l'installazione ha avuto successo.
+
+<Frame>
+  <img src="/images/legacy/3e226372-2cc2-4f68-8cb5-cbf81484abb9/4663ae94-a3fb-45ed-a5f9-d5392851910a.avif" alt="Illustrazione relativa all'esecuzione dello script di installazione 3" />
+</Frame>
+
+5. Se la cartella viene trovata, l'installazione è riuscita.
+
+6. Se l'installazione fallisce, è necessario aggiungerla manualmente alla directory opt.
+
+7. Eseguire lo script set\_socket\_buffer\_size.sh
+
+<Frame>
+  <img src="/images/legacy/0becfb0a-72d4-4964-a48b-1ab500b96f2c/45ce9170-fd29-4dea-8dcb-ad206233da6b.avif" alt="Illustrazioni relative all'esecuzione dello script di installazione 4" />
+</Frame>
+
+8. A questo punto lo script di installazione è stato completamente eseguito!
+
+### 3.2 Introduzione al codice di esempio
+
+Accedere alla directory dei campioni. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/3dcd11f9-5cd7-49ab-8c7f-3a060e84a9b1/9200d671-9bde-4f8a-b0af-6003e1c9aa00.avif" alt="Illustrazioni relative all'introduzione del codice di esempio" />
+</Frame>
+
+- La cartella C contiene il codice relativo a C e C++
+
+- La cartella Java contiene un server http per chiamare indirettamente l'sdk
+
+- La cartella Ros contiene un esempio di ros
+
+- La cartella Ros2 contiene un esempio di ros2
+
+#### 3.2.1 Codice di esempio C e C++
+
+Accedi alla directory C. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/e3b253f3-6743-4945-b738-b8e9b8dfc7dc/9a255d61-eadf-4076-847d-65b29fe4eace.avif" alt="Illustrazioni relative al codice di esempio C e C++" />
+</Frame>
+
+Contiene 9 cartelle e 1 file Cmakelist, ogni cartella contiene un file cpp
+
+Le funzioni approssimativamente implementate di ciascun cpp sono le seguenti:
+
+- application\_obstacle: ottiene i dati del flusso della telecamera e abilita l'algoritmo per evitare gli ostacoli, i risultati dell'algoritmo di output
+
+- application\_pallet: ottiene i dati del flusso della telecamera e abilita l'algoritmo pallet, i risultati dell'algoritmo di output
+
+- arm\_local\_camera: chiama l'SDK nella fotocamera [ARM] e ottieni i dati del flusso
+
+- frame\_callback: utilizza il metodo di callback per ottenere i dati del flusso della telecamera
+
+- multi\_cameras: apri più telecamere e ottieni dati in streaming
+
+- single\_camera: apri una singola telecamera e ottieni dati in streaming
+
+- single\_camera2: ottieni i dati del frame attraverso la struttura
+
+È possibile selezionare diversi codici campione per test e modifiche in base alle diverse esigenze.
+
+#### 3.2.2 Codice di esempio Java
+
+Immettere la directory Java. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/26332b64-8f33-4ebf-bf82-ba16e30445c7/2276c2ab-ad64-46d0-942d-1bd3962e8912.avif" alt="Illustrazioni relative al codice di esempio Java" />
+</Frame>
+
+La directory contiene 2 cartelle e un file postman.json e README
+
+- Config: le configurazioni relative al server sono archiviate nella cartella
+
+- Middleware: tema del server
+
+- LxCamera.postman\_collection.json: file di configurazione del postino
+
+- README: tutorial sull'utilizzo del server virtuale Java
+
+#### 3.2.3 Codice di esempio ROS
+
+Accedi alla directory ros. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/8528536f-739b-4793-80a5-1f0fecf758b6/042f03ed-0332-4ac2-92b8-9efce2029e00.avif" alt="Illustrazioni relative al codice di esempio ROS" />
+</Frame>
+
+- lx\_camera\_node\_ws: la cartella contiene un driver ros standard
+
+- README.EN: spiega in inglese come compilare un nodo e creare un nuovo nodo
+
+#### 3.2.4 Codice di esempio ROS2
+
+Accedi alla directory ros2. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/90c830a3-78f2-44af-a51a-8f0d23bde64f/e2d32a99-ec9a-4276-bab4-ed66232c609e.avif" alt="Immagini relative al codice di esempio ROS2" />
+</Frame>
+
+- lx\_camera\_node\_ws: la cartella contiene un driver ros2 standard
+
+- README.EN: spiega in inglese come compilare un nodo e creare un nuovo nodo
+
+#### Codice di esempio 3.2.5 ros-v1pro
+
+Inserisci la directory ros-v1pro. Il contenuto della directory è il seguente:
+
+<Frame>
+  <img src="/images/legacy/d752e5ea-2020-4da1-abe5-9856083df609/8df69cbb-cbb9-4229-ab4c-a8a1f50dd3ec.avif" alt="Illustrazioni relative al codice di esempio ros-v1pro" />
+</Frame>
+
+- src: la cartella contiene un driver ros standard
+
+- README: spiega come utilizzare questo nodo
+
+- README.pdf: spiega come utilizzare questo nodo
+
+* * *
+
+## 4. **Compilazione ed esecuzione del codice di esempio**
+
+### 4.1 Compilazione ed esecuzione di codice di esempio C e C++
+
+Vai alla cartella C nell'esempio:
+
+<Frame>
+  <img src="/images/legacy/9af1cca5-4fa3-4372-9f90-a6e2400ebf14/47b36fcb-bb11-46d8-a5c3-4f32d89d5e9e.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione di codice di esempio C e C++" />
+</Frame>
+
+Apri un terminale nella cartella C ed esegui i seguenti comandi:
+
+- build mkdir
+
+-costruzione del cd
+
+- fai..
+
+- Fare
+
+Dopo l'esecuzione riuscita, inserisci la cartella di build e dovrebbe essere la seguente:
+
+<Frame>
+  <img src="/images/legacy/c020084f-0e25-459c-894d-793d7c4c8bfc/c799b5ae-fa76-4120-a1f2-5edfcc975484.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio C e C++ 2" />
+</Frame>
+
+Il file eseguibile si trova nella directory bin. L'accesso alla directory bin dovrebbe essere il seguente:
+
+<Frame>
+  <img src="/images/legacy/6cad8039-5c77-46ee-8745-5f13cbb0a379/659bdc66-bf29-4040-9967-c24e45613088.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio C e C++ 3" />
+</Frame>
+
+Ad eccezione dell'esempio del braccio, verranno compilati tutti gli altri esempi. Il nome del file eseguibile è lo stesso del nome della cartella di esempio. Puoi eseguirlo direttamente.
+
+### Processo in esecuzione dell'esempio Java 4.2
+
+Java è diverso dagli altri codici di esempio. Non fornisce direttamente il codice sorgente. Fornisce un server http e un esempio di postino. Se è necessario controllare la telecamera indirettamente tramite http, è possibile selezionare l'esempio Java e accedere alla cartella Java. Il contenuto della cartella è il seguente:
+
+<Frame>
+  <img src="/images/legacy/9fe48416-b016-422c-971b-188cd01aab9d/e0b5c957-1b1a-4656-97d9-343beb990da4.avif" alt="Illustrazioni relative al processo di esecuzione dell'esempio Java" />
+</Frame>
+
+Il processo in esecuzione è il seguente:
+
+- Entra nella cartella config e modifica il campo http\_sever\_host e http\_sever\_port nel file Configs.json:
+
+<Frame>
+  <img src="/images/legacy/1a4b7a11-8ed8-4b33-a17a-ebe21216cbff/b1502b67-9dbc-4617-b2fa-ec3f9a3213e5.avif" alt="Illustrazioni relative al processo di esecuzione dell'esempio Java 2" />
+</Frame>
+
+- Accedere alla cartella del middleware ed eseguire lo script start.sh per abilitare il server di trasferimento
+
+<Frame>
+  <img src="/images/legacy/aa511cbc-a62e-4ce9-8243-5f8d3a1f15cc/98d76161-6de9-41b4-8b51-5a1be024d259.avif" alt="Illustrazioni relative al processo di esecuzione dell'esempio Java 3" />
+</Frame>
+
+- Utilizza postino per aprire il file LxCamera.postman\_collection.json per inviare i dati alla porta di esempio
+
+### 4.3 Compilazione ed esecuzione del codice di esempio ROS
+
+Entra nella cartella ROS, apri una console ed esegui: roscore
+
+<Frame>
+  <img src="/images/legacy/17961e97-d809-43e8-81a6-91a847265fac/04993e81-2355-4753-bb64-8383cfc976f9.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/198c9361-7dbb-4f57-b1d3-cdc730257244/3555f417-f859-4936-9d68-34da9d387a71.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS 2" />
+</Frame>
+
+Fare clic con il tasto destro per aprire una console, entrare nella cartella lx\_camera\_node\_ws ed eseguire catkin\_make
+
+<Frame>
+  <img src="/images/legacy/0f100d3a-6fcc-403a-a0d7-704f8c196cfa/2f053935-823b-4c96-a4fe-c994769bd2ba.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS 3" />
+</Frame>
+
+Dopo l'esecuzione riuscita, verrà visualizzato quanto segue:
+
+<Frame>
+  <img src="/images/legacy/6190e63d-282a-4384-a707-708b0e31e2b2/eaf02f58-419e-4c91-bebc-dc0cc11fa4a4.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS 4" />
+</Frame>
+
+In questo momento devonol e build vengono compilati e generati nella cartella:
+
+<Frame>
+  <img src="/images/legacy/aebae7ca-041d-4bf7-b06a-77b91eb62ad3/3f4f8499-2297-4ad3-8287-f6037afc7491.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS 5" />
+</Frame>
+
+Esegui source devel/setup.bash per configurare l'ambiente e utilizzare roslaunch per eseguire il nodo. Il comando è il seguente:
+
+- roslaunch lx\_camera\_ros lx\_camera\_ros.launch
+
+- roslaunch lx\_camera\_ros ostacoloV2.launch
+
+- roslaunch lx\_camera\_ros ostacolo.launch
+
+- roslaunch lx\_camera\_ros pallet.launch
+
+Dall'alto verso il basso, sono: esecuzione di nodi ordinari, esecuzione di nodi con algoritmo di evitamento ostacoli 2, esecuzione di nodi con algoritmo di evitamento ostacoli, esecuzione di nodi con algoritmo di pallet. Non è possibile abilitare ogni nodo contemporaneamente.
+
+### 4.4 Compilazione ed esecuzione del codice di esempio ROS2
+
+Entra nella cartella ros2. Il contenuto della cartella è il seguente:
+
+<Frame>
+  <img src="/images/legacy/0cbdabe7-156c-4fb7-9996-e531e4da6fbf/86eb93f5-6cc3-4910-8a5b-a5c13ac199f4.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS2" />
+</Frame>
+
+Il nodo ros di esempio viene compilato utilizzando colcon
+
+Per prima cosa devi installare gli strumenti di compilazione, eseguire: sudo apt install python3-colcon-common-extensions
+
+<Frame>
+  <img src="/images/legacy/789d5f33-560d-479e-88d1-da3800db324d/948dca59-04e6-4bff-ac53-7a4c7404faff.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS2 2" />
+</Frame>
+
+Quindi installa il pacchetto di dipendenze ros-pcl: sudo apt-get install ros-foxy\-pcl\* [La parte del carattere rosso deve essere sostituita con la versione ros2 corrispondente]
+
+Una volta completata l'installazione, entrare nella directory lx\_camera\_node\_ws per compilare il progetto ed eseguire: colcon build
+
+A seconda delle prestazioni del computer, la compilazione richiede solitamente da 30 secondi a 120 secondi. Una volta completata con successo la compilazione, verrà visualizzato come segue:
+
+<Frame>
+  <img src="/images/legacy/c75782f3-c2df-4abb-aec7-a2757059c57e/a58d430e-9667-4e05-a8dc-1de770f223e1.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS2 3" />
+</Frame>
+
+Alcuni avvisi sono dovuti a problemi di compatibilità della versione e non necessitano di essere elaborati. Al termine della compilazione il contenuto della cartella sarà il seguente:
+
+<Frame>
+  <img src="/images/legacy/3c285ed6-e1f4-4ec5-9a38-8513b6c4132f/9bb9dda9-0dc9-4eac-9ecb-55e8ffdcd4f7.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ROS2 4" />
+</Frame>
+
+Esegui source install/setup.bash per configurare l'ambiente e utilizzare ros2 launch per eseguire il nodo. Il comando è il seguente:
+
+- ros2 launch lx\_camera\_ros lx\_camera\_ros\_launch.py
+
+- lancio ros2 lx\_camera\_ros ostacoloV2.launch.py
+
+- lancio ros2 lx\_camera\_ros ostacolo.launch.py
+
+- ros2 launch lx\_camera\_ros pallet.launch.py
+
+Dall'alto verso il basso, sono: esecuzione di nodi ordinari, esecuzione di nodi con algoritmo di evitamento ostacoli 2, esecuzione di nodi con algoritmo di evitamento ostacoli, esecuzione di nodi con algoritmo di pallet. Non è possibile abilitare ogni nodo contemporaneamente.
+
+### 4.5 Compilazione e funzionamento del codice di esempio ros-v1pro
+
+ros-v1pro è un driver ros dedicato per la fotocamera V1PRO. C'è un README.pdf nella cartella ros-v1pro che descrive il driver in dettaglio. Questo documento ne fornisce solo una breve introduzione:
+
+<Frame>
+  <img src="/images/legacy/205bd1e9-bec1-4781-8f86-51901fde8aa2/d76be474-b486-4fc0-9fd3-965cb0bd926e.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ros-v1pro" />
+</Frame>
+
+Entra nella cartella ros-v1pro, fai clic con il tasto destro per aprire la console e usa catkin\_make per compilare. Una volta completata la compilazione, il display è il seguente:
+
+<Frame>
+  <img src="/images/legacy/7f93bb50-cd8f-438c-a93a-66881fcb008e/e7f8dfa5-f705-4a4f-8950-2dbef4d120ed.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ros-v1pro 2" />
+</Frame>
+
+Configura l'ambiente: source devel/setup.bash
+
+<Frame>
+  <img src="/images/legacy/c8ac9613-e2d7-4aa1-9f88-abb0e4203656/5c035d4d-90aa-448b-8b32-5db62d3a6296.avif" alt="Illustrazioni relative alla compilazione e all'esecuzione del codice di esempio ros-v1pro 3" />
+</Frame>
+
+Infine esegui il nodo:
+
+- roslaunch lx\_camera\_ros localizzazione.launch
+
+- roslaunch lx\_camera\_ros mapping.launch
+
+- roslaunch lx\_camera\_sensore ros\_sim.launch
+
+Dall'alto al basso: esegui il nodo di posizionamento, esegui il nodo di mappatura ed esegui il nodo dei dati virtuali. Non è possibile abilitare ogni nodo contemporaneamente.
+
+* * *
+
+## 5. **Spiegazione e descrizione del codice di esempio**
+
+In questa sezione, tutti i codici e gli pseudocodici saranno divisi in più parti. In generale, tutto in una sezione appartiene allo stesso file. Ad eccezione dei file speciali con spiegazioni dettagliate, i file del codice sorgente spiegano solo i moduli generali. Spiegazioni dettagliate sono commentate nel codice.
+
+### 5.1 C e C++
+
+#### 5.1.1 CMakeList
+
+<Frame>
+  <img src="/images/legacy/c85eb239-fd8d-4ef6-b773-381966e61fcd/3fe09247-995f-4fb5-88e0-dcdb7e432e24.avif" alt="Icone correlate a CMakeLists" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c1957990-cfb7-4d9f-a48b-b862bab9fbb2/71df8717-0cdd-4e6b-b3ab-b01a9783fe16.avif" alt="Icone correlate a CMakeLists 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/f96f92a5-7a6e-4fe6-9955-89f71c178a4e/1caff473-b030-4e8f-93df-e33b35beec1f.avif" alt="Icone relative a CMakeLists 3" />
+</Frame>
+
+#### 5.1.2 applicazione\_ostacolo e applicazione\_pallet
+
+<Frame>
+  <img src="/images/legacy/0d9aba0a-e632-49d4-a593-68a03d6bf7d6/c183341c-2720-4843-b52d-f102376f29d2.avif" alt="icone relative ad applicazione\_ostacolo e applicazione\_pallet" />
+</Frame>
+
+#### 5.1.3 inserimento\_locale\_telecamera
+
+<Frame>
+  <img src="/images/legacy/7b3c6e54-590e-42cf-baef-da04c26705b7/a212cc86-c478-4253-a60a-2522d985f57a.avif" alt="icone relative a braccio\_locale\_telecamera" />
+</Frame>
+
+#### 5.1.4 frame\_callback
+
+<Frame>
+  <img src="/images/legacy/dcfb097e-444d-4f01-a692-9e8891bfba41/dc01ff2f-2dc7-4281-8dec-6180c84f3eb6.avif" alt="icone relative a frame\_callback" />
+</Frame>
+
+#### 5.1.5 multi\_telecamere
+
+<Frame>
+  <img src="/images/legacy/0a1977bc-995c-4464-84fc-57336863900c/3a1a3566-bc2f-41a0-b7a7-bbd9ecd73158.avif" alt="icone relative a più\_telecamere" />
+</Frame>
+
+#### 5.1.6 singola\_fotocamera
+
+<Frame>
+  <img src="/images/legacy/4aa2b8fa-c63b-4f2e-aae6-42174af778cc/7f12e999-296b-4616-b211-048442848c35.avif" alt="icone relative a singola\_telecamera" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/cf5af400-d17d-477e-854f-b28faaef994e/ac88bcee-068f-484a-be28-08647bf50d40.avif" alt="icona relativa a singola\_telecamera 2" />
+</Frame>
+
+#### 5.1.7 singola\_camera2
+
+<Frame>
+  <img src="/images/legacy/6612e917-ca5d-4ad6-94ac-459bef88bf95/88762255-edb5-40b0-b814-cbf3d3afc12d.avif" alt="icone relative a singola\_camera2" />
+</Frame>
+
+### 5.2 Java
+
+L'esempio Java fornisce solo un server HTTP, quindi la descrizione è solo una descrizione dell'interfaccia e del formato del messaggio. Utilizzare postino per aprire il file di esempio come mostrato di seguito:
+
+<Frame>
+  <img src="/images/legacy/4a627533-f792-4fe1-ac64-cff92e99125d/031f79f9-c0e5-48be-8ad8-774882c69f05.avif" alt="icone relative a Java" />
+</Frame>
+
+I messaggi sono tutti in modalità post. Prima di inviare, ricordati di cambiare l'IP con l'IP del server, ma non modificare l'URL. L'URL è codificato internamente nel server. Il formato e il contenuto del messaggio di risposta si trovano entrambi nel corpo. L'interfaccia fornita nell'esempio è la seguente:
+
+<Frame>
+  <img src="/images/legacy/1f61f9eb-bb6c-4cb3-8b99-b114595e5f8b/a69ee0c0-7f68-475c-a796-ab326d0b31c2.avif" alt="icone relative a Java 2" />
+</Frame>
+
+1.DcGetApiVersion: ottieni il numero di versione dell'SDK, senza input di parametri
+
+<Frame>
+  <img src="/images/legacy/50ee2ffa-b3d3-4097-8df6-b1a09b49475f/0272dea8-0fb1-4dc0-8d01-d4eeff648600.avif" alt="icone relative a Java 3" />
+</Frame>
+
+2.DcSetInfoOutput: imposta il percorso per l'output del registro SDK. I parametri sono i seguenti:
+
+- log\_path: percorso dell'output del log
+
+- print\_level: livello di stampa del log
+
+- abilita\_screen\_print: se il log viene stampato sulla console
+
+3.DcLog: invia il registro al registro SDK. Qualsiasi contenuto di input verrà stampato nel registro SDK.
+
+4.DcGetDeviceList: ottieni l'elenco dei dispositivi, nessun input, l'input è JSON
+
+5.DcOpenDevice: aprire il dispositivo e inserire quanto segue:
+
+<Frame>
+  <img src="/images/legacy/57bdf94d-11de-4023-a76b-4e4695b8264d/305d71b3-1c29-4041-a264-4127ae5d9000.avif" alt="icone relative a Java 4" />
+</Frame>
+
+- open\_mode: apre la modalità fotocamera
+
+- param: parametri per l'apertura della fotocamera
+
+6.DcStartStream: consente a una determinata telecamera di iniziare a inviare dati in streaming. I parametri di input sono i seguenti:
+
+<Frame>
+  <img src="/images/legacy/5aee4343-16d5-42f5-ad24-2e190e10e42b/7fffa12c-87fd-41c5-95c3-76d08f7ec6a0.avif" alt="icone relative a Java 5" />
+</Frame>
+
+- handle: l'handle della telecamera, che verrà restituito in DcOpenDevice
+
+7.DcSetCmd: invia comandi alla telecamera, inserisci come segue:
+
+<Frame>
+  <img src="/images/legacy/50500d5f-4288-4f8f-93ed-194f3c2cc03f/9b3e44b2-c0a2-4d28-b266-e5edb0f93e38.avif" alt="icone relative a Java 6" />
+</Frame>
+
+- maniglia: la maniglia della telecamera da impostare
+
+- cmd: numero del comando
+
+8.DcGetPtrValue: ottieni i dati del puntatore (immagine, parametri, ecc.), inserisci come segue:
+
+- maniglia: la maniglia della telecamera da impostare
+
+- cmd: numero del comando
+
+9.DcSetIntValue: imposta i parametri del tipo int della telecamera, inserisci come segue:
+
+<Frame>
+  <img src="/images/legacy/3ddedf1d-403d-4939-83af-bd6daaf4eda7/f13e456a-5c27-4e75-889b-c18855e7b8f6.avif" alt="icone relative a Java 7" />
+</Frame>
+
+- maniglia: la maniglia della telecamera da impostare
+
+- cmd: numero del comando
+
+- valore: il valore da impostare
+
+10.DcGetIntValue: ottieni il parametro di tipo int del dispositivo, inserisci come segue:
+
+- maniglia: la maniglia della telecamera da impostare
+
+- cmd: numero del comando
+
+11. Per altre istruzioni pertinenti, consultare la tabella seguente:
+
+| Invia | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | Ricevi | `{"errCode" : 0 }` |
+| --- | --- | --- | --- |
+| Invia | `{"open_mode" : 0, "param" : "0"<br />}` | Ricevi | `{"algor_ver" : "VER_1.0.2.230315", "dev_type" : "M4 camera", "errCode" : 0,<br />"firmware_ver" : "V1.0.0.3_230315",<br />"handle" : 174539057817095, "id" : "f13141144bb1",<br />"ip" : "192.168.100.16:3956",<br />"mac" : "9e:be:0a:8a:66:07",<br />"name" :"camera_M4_192.168.100.16_3956",<br />"sn" : "9a5ed62d22b34bb1"<br />}` |
+| Invia | `{"handle" :174539057817<br />095,<br />"cmd" : 6001<br />}` | Ricevi | `{"errCode" : 0,<br />"value" :"\u0011\u0001\u0014\u0001..." }` |
+
+### 5.3 ROS1 e ROS2
+
+Nella descrizione del ros non parleremo del codice sorgente del driver, ma del contenuto corrispondente alla configurazione nel file di avvio, di come regolare la configurazione e di come inviare e iscriversi ai messaggi. Il nodo ros fornito contiene già la maggior parte delle funzioni, quindi non è consigliabile modificare direttamente il codice sorgente del driver. Se hai esigenze particolari, puoi prima comprendere il flusso del codice nell'esempio C++ e poi modificare il codice sorgente del driver.
+
+**Quando si esegue il driver ros, è necessario assicurarsi che le versioni di opencv e pcl nel percorso predefinito del sistema siano univoche, altrimenti si verificherà un errore durante il collegamento della libreria ros, che potrebbe causare errori di compilazione o arresti anomali del runtime.**
+
+#### 5.3.1 Descrizione del file di lancio di ROS1
+
+##### 5.3.1.1 Tutti i file di avvio
+
+1. Nella cartella src/launch sono presenti i seguenti file:
+
+<Frame>
+  <img src="/images/legacy/bbacec9a-738e-411b-8bc9-c6da357de38e/0e3138ad-8898-480d-8a55-6e0cecf99c30.avif" alt="Tutte le icone relative ai file di avvio" />
+</Frame>
+
+- localization.launch: esegui il file per i nodi di posizionamento visivo
+
+- lx\_camera\_ros.launch: file in esecuzione dei nodi ordinari
+
+- mapping.launch: file in esecuzione per la mappatura del posizionamento visivo
+
+- ostacolo.launch: file in esecuzione dell'algoritmo per evitare gli ostacoli
+
+- ostacoloV2.launch: file in esecuzione dell'algoritmo per evitare gli ostacoli V2
+
+- pallet.launch: file di esecuzione dell'algoritmo pallet
+
+- sensor\_sim.launch: file in esecuzione per la simulazione dei dati di posizionamento
+
+2. È possibile eseguire diverse funzioni del nodo eseguendo diversi file di avvio. **Ad eccezione di localizzazione, mappatura e sensore, i contenuti dei parametri sono gli stessi in tutti i nodi, ma la configurazione è diversa**. Questo verrà introdotto in dettaglio nelle sezioni seguenti. Per un'introduzione dettagliata ai parametri dei tre file di lancio di localizzazione, mappatura e sensore, vedere l'introduzione nel nodo ros-v1pro.
+
+##### 5.3.1.2 IP della telecamera, configurazione del flusso, configurazione della modalità di lavoro, unità nuvola di punti, ecc.
+
+<Frame>
+  <img src="/images/legacy/c3b4a958-5e09-48de-82e5-fbb890bdfd9d/3de2b204-1f42-489d-9e8a-94c2e872f898.avif" alt="IP della telecamera, configurazione del flusso, configurazione della modalità di lavoro, unità nuvola di punti e altre icone correlate" />
+</Frame>
+
+- ip: l'IP della telecamera da connettere. Se è 0, il primo sarà connesso per impostazione predefinita.
+
+- log\_path: percorso di archiviazione del log dell'SDK, è necessario compilare il percorso assoluto
+
+- is\_xyz: se inviare i dati della nuvola di punti
+
+- è\_profondità: se inviare i dati di profondità
+
+- is\_amp: se inviare i dati della mappa di intensità
+
+- is\_rgb: se inviare i dati dell'immagine RGB
+
+- lx\_work\_mode: modalità di lavoro
+
+- lx\_applicazione: se abilitare l'algoritmo, 0: off, 1: algoritmo per evitare ostacoli, 2: algoritmo pallet, 3: algoritmo di posizionamento, 4: algoritmo per evitare ostacoli V2
+
+- lx\_tof\_unit: unità della nuvola di punti, 1 è metro, 0 è millimetro, deve essere modificato in 1 durante la visualizzazione con rviz
+
+##### 5.3.1.3 Configurazione della posa della telecamera
+
+<Frame>
+  <img src="/images/legacy/14a3684d-4237-4609-b70b-7d94fef1553c/aa3384e1-4eda-4569-b314-57539347ed31.avif" alt="Illustrazioni relative alla configurazione della posa della fotocamera" />
+</Frame>
+
+È possibile configurare l'angolo di rotazione e il vettore di traslazione della nuvola di punti.
+
+- X: quantità di traslazione X della telecamera dal centro della nuvola di punti
+
+- Y: quantità di traslazione Y della telecamera dal centro della nuvola di punti
+
+- Z: quantità di traslazione Z della telecamera dal centro della nuvola di punti
+
+- Yaw: l'angolo di rotazione della nuvola di punti attorno all'asse Z
+
+- Rollio: l'angolo di rotazione della nuvola di punti attorno all'asse X
+
+- Pitch: l'angolo di rotazione della nuvola di punti attorno all'asse Y
+
+##### 5.3.1.4 Se utilizzare la configurazione di avvio
+
+<Frame>
+  <img src="/images/legacy/56fa8515-59aa-435b-83b0-61332e05c8b1/287157eb-0ab5-47c5-a5cd-8f7dd39a4659.avif" alt="Se utilizzare le icone relative alla configurazione di avvio" />
+</Frame>
+
+Puoi scegliere se utilizzare la configurazione dei parametri della fotocamera nel file di avvio.
+
+- raw\_param: 0: usa la configurazione nella fotocamera, 1: usa la configurazione nel file di avvio
+
+Indipendentemente dal fatto che questo parametro sia impostato su 0 o 1, verranno impostati tutti i parametri prima di questo parametro, 0 e 1 sono validi solo per i parametri dopo questo parametro.
+
+##### 5.3.1.5 Configurazione parametri 2D
+
+<Frame>
+  <img src="/images/legacy/c8909add-b29b-46f4-9046-767b987ed002/da1b1d43-3f85-4753-aae9-e880e365df9f.avif" alt="Icone relative alla configurazione dei parametri 2D" />
+</Frame>
+
+- lx\_2d\_binning:0:1x1,1:2x2,2:4x4
+
+- lx\_2d\_undistort: ​​anti-distorsione 2d, 0: spento, 1: acceso
+
+- lx\_2d\_undistort\_scale: coefficiente anti-distorsione 2D
+
+- lx\_2d\_auto\_exposure: esposizione automatica 2D, 0: disattivata, 1: attivata
+
+- lx\_2d\_auto\_exposure\_value: intensità target dell'esposizione automatica 2D
+
+- lx\_2d\_exposure: valore dell'esposizione 2D
+
+- lx\_2d\_gain: guadagno 2D
+
+##### 5.3.1.6 Configurazione dei parametri 3D
+
+<Frame>
+  <img src="/images/legacy/7344b5e5-4aab-48d2-b3e6-778a7cd6f536/858ffe25-af33-4a1d-a834-a3c538097c0c.avif" alt="Illustrazioni relative alla configurazione dei parametri 3D" />
+</Frame>
+
+- lx\_rgb\_to\_tof: allineamento RGB
+
+- lx\_3d\_binning:0:1x1,1:2x2,2:4x4
+
+- lx\_mulit\_mode: modalità multi-macchina, che può eliminare le interferenze tra più macchine, 0: disattivato, 1: attivato
+
+- lx\_3d\_undistort: ​​anti-distorsione 3d, 0: disattivato, 1: attivato
+
+- lx\_3d\_undistort\_scale: coefficiente anti-distorsione 3D
+
+- lx\_hdr: hdr, 0: spento, 1: acceso
+
+- lx\_3d\_auto\_exposure: esposizione automatica 3D, 0: disattivata, 1: attivata
+
+- lx\_3d\_auto\_exposure\_value: intensità target dell'esposizione automatica 3D
+
+- lx\_3d\_first\_exposure: punti alti 3D
+
+- lx\_3d\_second\_exposure: punti bassi 3D
+
+- lx\_3d\_gain: guadagno 3D
+
+##### 5.3.1.7 Profondità massima e minima
+
+<Frame>
+  <img src="/images/legacy/fbbc4656-2050-4cf5-b591-442df08f785c/a9a3ca5e-c11e-4f8a-855c-25cb2b964b22.avif" alt="Icone relative alla profondità massima e minima" />
+</Frame>
+
+- lx\_min\_profondità: profondità minima
+
+- lx\_max\_profondità: profondità massima
+
+#### 5.3.2 Descrizione del file di lancio di ROS2
+
+##### 5.3.2.1 Tutti i file di avvio
+
+Nella cartella src/launch sono presenti i seguenti file:
+
+<Frame>
+  <img src="/images/legacy/39cfeba3-9697-4b30-a9da-6c25d4862ec8/9a27552b-9363-4335-909c-57e2f12418cb.avif" alt="Tutte le icone relative ai file di avvio" />
+</Frame>
+
+- localization.launch.py: file in esecuzione del nodo di posizionamento visivo
+
+- lx\_camera\_ros.launch.py: file in esecuzione del nodo ordinario
+
+- mapping.launch.py: file in esecuzione per la mappatura del posizionamento visivo
+
+- ostacolo.launch.py: file in esecuzione dell'algoritmo per evitare gli ostacoli
+
+- ostacoloV2.launch.py: file in esecuzione dell'algoritmo per evitare gli ostacoli V2
+
+- pallet.launch.py: file di esecuzione dell'algoritmo pallet
+
+- sensor\_sim.launch.py: file in esecuzione per la simulazione dei dati di posizionamento
+
+È possibile eseguire diverse funzioni del nodo eseguendo diversi file di avvio. **Ad eccezione di localizzazione, mappatura e sensore, il contenuto dei parametri è lo stesso in tutti i nodi, ma la configurazione è diversa**. Verrà introdotto in dettaglio nelle sezioni seguenti. Per un'introduzione dettagliata ai parametri dei tre file di lancio di localizzazione, mappatura e sensore, vedere l'introduzione nel nodo ros-v1pro.
+
+##### 5.3.2.2 IP della telecamera, configurazione del flusso, configurazione della modalità di lavoro, unità nuvola di punti, ecc.
+
+<Frame>
+  <img src="/images/legacy/ce77d606-fb78-49d8-9b5c-5ef6bd320c51/b4c285fd-b11b-486d-81e8-f8b79ff8fb7f.avif" alt="IP della telecamera, configurazione del flusso, configurazione della modalità di lavoro, unità nuvola di punti e altre icone correlate" />
+</Frame>
+
+- ip: l'IP della telecamera da connettere. Se è 0, il primo sarà connesso per impostazione predefinita.
+
+- log\_path: percorso di archiviazione del log dell'SDK, è necessario compilare il percorso assoluto
+
+- is\_xyz: se inviare i dati della nuvola di punti
+
+- è\_profondità: se inviare i dati di profondità
+
+- is\_amp: se inviare i dati della mappa di intensità
+
+- is\_rgb: se inviare i dati dell'immagine RGB
+
+- lx\_work\_mode: modalità di lavoro
+
+- lx\_applicazione: se abilitare l'algoritmo, 0: off, 1: algoritmo per evitare ostacoli, 2: algoritmo pallet, 3: algoritmo di posizionamento, 4: algoritmo per evitare ostacoli V2
+
+- lx\_tof\_unit: unità della nuvola di punti, 1 è metro, 0 è millimetro, deve essere modificato in 1 durante la visualizzazione con rviz
+
+##### 5.3.2.3 Configurazione della posa della telecamera
+
+<Frame>
+  <img src="/images/legacy/7408241d-dd28-42b7-bc1d-e5998c2d692d/4824b62e-8d79-4e07-b72a-88213adfc0dc.avif" alt="Illustrazioni relative alla configurazione della posa della fotocamera" />
+</Frame>
+
+È possibile configurare l'angolo di rotazione e il vettore di traslazione della nuvola di punti.
+
+- X: quantità di traslazione X della telecamera dal centro della nuvola di punti
+
+- Y: quantità di traslazione Y della telecamera dal centro della nuvola di punti
+
+- Z: quantità di traslazione Z della telecamera dal centro della nuvola di punti
+
+- Yaw: l'angolo di rotazione della nuvola di punti attorno all'asse Z
+
+- Rollio: l'angolo di rotazione della nuvola di punti attorno all'asse X
+
+- Pitch: l'angolo di rotazione della nuvola di punti attorno all'asse Y
+
+##### 5.3.2.4 Se utilizzare la configurazione di avvio
+
+<Frame>
+  <img src="/images/legacy/43fd4f62-1e51-4eff-8c1f-37c909894eec/d384fcd0-4c19-4550-8ed1-b0ba50130276.avif" alt="Se utilizzare le icone relative alla configurazione di avvio" />
+</Frame>
+
+Puoi scegliere se utilizzare la configurazione dei parametri della fotocamera nel file di avvio.
+
+- raw\_param: 0: usa la configurazione nella fotocamera, 1: usa la configurazione nel file di avvio
+
+Indipendentemente dal fatto che questo parametro sia impostato su 0 o 1, verranno impostati tutti i parametri prima di questo parametro, 0 e 1 sono validi solo per i parametri dopo questo parametro.
+
+##### 5.3.2.5 Configurazione parametri 2D
+
+<Frame>
+  <img src="/images/legacy/1dd95c53-9c6d-4f68-a31c-3d3bf19325cb/09877c87-80c3-48ee-9597-724df69e46b8.avif" alt="Icone relative alla configurazione dei parametri 2D" />
+</Frame>
+
+- lx\_2d\_binning:0:1x1,1:2x2,2:4x4
+
+- lx\_2d\_undistort: ​​anti-distorsione 2d, 0: spento, 1: acceso
+
+- lx\_2d\_undistort\_scale: coefficiente anti-distorsione 2D
+
+- lx\_2d\_auto\_exposure: esposizione automatica 2D, 0: disattivata, 1: attivata
+
+- lx\_2d\_auto\_exposure\_value: intensità target dell'esposizione automatica 2D
+
+- lx\_2d\_exposure: valore dell'esposizione 2D
+
+- lx\_2d\_gain: guadagno 2D
+
+##### 5.3.2.6 Configurazione dei parametri 3D
+
+<Frame>
+  <img src="/images/legacy/ea1c2ec1-ca58-43e2-9f17-6dd55aa062f7/2550eeb4-acc3-4ce6-8b38-7c79198c632e.avif" alt="Illustrazioni relative alla configurazione dei parametri 3D" />
+</Frame>
+
+- lx\_rgb\_to\_tof: allineamento RGB
+
+- lx\_3d\_binning:0:1x1,1:2x2,2:4x4
+
+- lx\_mulit\_mode: modalità multi-macchina, che può eliminare le interferenze tra più macchine, 0: disattivato, 1: attivato
+
+- lx\_3d\_undistort: ​​anti-distorsione 3d, 0: disattivato, 1: attivato
+
+- lx\_3d\_undistort\_scale: coefficiente anti-distorsione 3D
+
+- lx\_hdr: hdr, 0: spento, 1: acceso
+
+- lx\_3d\_auto\_exposure: esposizione automatica 3D, 0: disattivata, 1: attivata
+
+- lx\_3d\_auto\_exposure\_value: intensità target dell'esposizione automatica 3D
+
+- lx\_3d\_first\_exposure: punti alti 3D
+
+- lx\_3d\_second\_exposure: punti bassi 3D
+
+- lx\_3d\_gain: guadagno 3D
+
+##### 5.3.2.7 Profondità massima e minima
+
+<Frame>
+  <img src="/images/legacy/533ba914-7077-416a-8ff7-ec4497dbf8ca/ef9df399-1e28-41a9-a833-757da2810424.avif" alt="Icone relative alla profondità massima e minima" />
+</Frame>
+
+- lx\_min\_profondità: profondità minima
+
+- lx\_max\_profondità: profondità massima
+
+#### 5.3.3 Descrizione univoca del tema
+
+Poiché i tipi di argomento univoci di ROS1 e ROS2 sono gli stessi, ROS1 viene utilizzato qui come esempio. Nella cartella src/msg sono presenti i seguenti file:
+
+<Frame>
+  <img src="/images/legacy/e19a12ad-8542-4cc2-9b43-58c96adad478/a1bde694-ddac-46db-91bc-d2f3f5dcf6bc.avif" alt="Illustrazioni relative a descrizioni di temi unici" />
+</Frame>
+
+##### 5.3.3.1 FrameRate.msg
+
+Questo nodo emette informazioni sulla frequenza dei fotogrammi. Il formato del messaggio è il seguente:
+
+<Frame>
+  <img src="/images/legacy/87f292b9-4a30-4305-99b1-9129d3251d0c/c0aa96ff-b772-4a62-9c24-721490ae37f8.avif" alt="Icone relative a FrameRate.msg" />
+</Frame>
+
+- header: informazioni sul frame e timestamp dei dati correnti
+
+- profondità: quando la mappa di profondità è attivata, trasmette il frame rate della mappa di profondità
+
+- amp: quando la mappa di intensità è attivata, emette il frame rate della mappa di intensità
+
+- RGB: quando RGB è attivo, viene emesso il frame rate RGB
+
+- temperatura: temperatura in uscita dalla telecamera
+
+Dopo che il nodo inizia a funzionare (ad eccezione dei nodi relativi al posizionamento visivo), è possibile iscriversi al nodo LxCamera\_FrameRate per ottenere informazioni rilevanti. L'output è il seguente:
+
+<Frame>
+  <img src="/images/legacy/69299d83-1e9a-411e-815e-0c66637fddab/fdca1748-6538-4f4b-9c9f-4110daa63264.avif" alt="Icone relative a FrameRate.msg 2" />
+</Frame>
+
+##### 5.3.3.2 Ostacolo.msg
+
+l'ostacolo emette informazioni relative ai risultati dell'algoritmo di evitamento dell'ostacolo. Il formato del messaggio di ostacolo è il seguente:
+
+<Frame>
+  <img src="/images/legacy/e515393a-fea8-46a8-835a-31d7a017e366/dfd6c9df-e2ed-455a-bf29-fe40fcbba1ee.avif" alt="Icone relative a Obstacle.msg" />
+</Frame>
+
+- header: informazioni sul frame e timestamp dei dati correnti
+
+- stato: informazioni sullo stato restituite dall'elusione degli ostacoli
+
+0: Evitamento normale degli ostacoli
+
+\-1: nessun terreno impostato
+
+\-2: Ingresso non impostato
+
+\-3: Nessuna nuvola di punti nell'intervallo
+
+\-4: la nuvola di punti è vuota dopo aver filtrato il terreno
+
+\-5: la nuvola di punti è vuota dopo il filtraggio del raggio
+
+\-6: non è stato ottenuto alcun risultato di segmentazione
+
+\-99: errore non definito
+
+- io\_output: informazioni sull'evitamento degli ostacoli emesse dall'interfaccia io
+
+0: normale
+
+1: avvertimento
+
+2: Spegnimento
+
+- casella\_numero: numero di ostacoli
+
+- box: informazioni sull'ostacolo, array di lunghezza variabile, la lunghezza è determinata da box\_number
+
+Dopo che il nodo inizia a funzionare (l'algoritmo per evitare gli ostacoli deve essere attivato), è possibile iscriversi al nodo LxCamera\_Obstacel per ottenere informazioni rilevanti. L'output è il seguente (i dati nell'immagine sono dati simulati):
+
+<Frame>
+  <img src="/images/legacy/49474ef4-a3b4-46c1-853a-3ca625791f46/87fbd1ad-7855-4bfb-95cf-3f9082a746f6.avif" alt="Icone relative a Obstacle.msg 2" />
+</Frame>
+
+##### 5.3.3.3 Ostacolo\_box.msg
+
+ostacolo\_box restituisce informazioni relative all'ostacolo e il formato del messaggio ostacolo\_box è il seguente:
+
+<Frame>
+  <img src="/images/legacy/732d6549-38d7-414f-8bc6-5e2882db6058/eeabb8c0-02ee-4976-90da-44803108622e.avif" alt="Icone relative a Ostacolo\_box.msg" />
+</Frame>
+
+- centro: il centro di massa dell'ostacolo nella nuvola di punti
+
+- rotazione: matrice di rotazione della nuvola di punti ostacolo
+
+- traslazione: vettore di traslazione della nuvola di punti ostacolo
+
+- larghezza: larghezza del telaio dell'ostacolo
+
+- altezza: altezza del telaio dell'ostacolo
+
+- profondità: la profondità del telaio dell'ostacolo
+
+Dopo aver avviato l'operazione (l'algoritmo per evitare gli ostacoli deve essere attivato), è possibile iscriversi al nodo LxCamera\_Obstacel per ottenere le informazioni rilevanti. L'output è il seguente:
+
+<Frame>
+  <img src="/images/legacy/001c456c-b01d-469d-8837-736f766e6bfc/aaf0d95b-c33e-4b03-b0ff-66da17c59b07.avif" alt="Icona relativa all'ostacolo\_box.msg 2" />
+</Frame>
+
+##### 5.3.3.4 Risultato.msg
+
+Il valore restituito ottenuto dopo aver inviato il messaggio di comando al servizio nel nodo è archiviato in Risultato:
+
+<Frame>
+  <img src="/images/legacy/0114b485-85df-4c03-a251-13a97146f545/eeefb26d-8b9d-477d-9287-6b8e77f3c01d.avif" alt="Icone correlate a Result.msg" />
+</Frame>
+
+- ret: il valore restituito ottenuto eseguendo l'SDK
+
+- msg: descrizione del valore restituito ottenuto eseguendo l'SDK
+
+##### 5.3.3.5 Pallet.msg
+
+Il pallet restituisce informazioni relative ai risultati dell'algoritmo del pallet. Il formato del messaggio pallet è il seguente:
+
+<Frame>
+  <img src="/images/legacy/0c48fce6-71f8-4339-ba3d-ca419821fb92/5292c83c-4cff-4204-bc15-ce7b69916c2f.avif" alt="Icone relative a Pallet.msg" />
+</Frame>
+
+- header: informazioni sul frame e timestamp dei dati correnti
+
+- stato: informazioni sullo stato restituite dal riconoscimento del pallet:
+
+0: rilevamento riuscito
+
+\-1: nessun terreno rilevato
+
+\-2: Gambe del pallet non rilevate
+
+\-3: La distanza tra i pallet è eccessiva
+
+\-4: errore sconosciuto
+
+- x: distanza X tra il vassoio e il centro ottico della fotocamera
+
+- y: distanza Y tra il vassoio e il centro ottico della fotocamera
+
+- imbardata: angolo theta tra il centro del vassoio e il centro ottico della fotocamera
+
+Dopo che il nodo inizia a funzionare (l'algoritmo pallet deve essere attivato), è possibile iscriversi al nodo LxCamera\_Pallet per ottenere informazioni rilevanti. L'output è il seguente:
+
+<Frame>
+  <img src="/images/legacy/89bbf348-5adf-4865-abd3-92bdf33f2e56/9aca1203-534c-41a2-95f0-82aa56ccd148.avif" alt="Icone relative a Pallet.msg 2" />
+</Frame>
+
+#### 5.3.4 Descrizione univoca del servizio
+
+Poiché i tipi di servizio univoci di ROS1 e ROS2 sono gli stessi, qui viene utilizzato ROS1 come esempio. Nella cartella src/srv sono presenti i seguenti file:
+
+<Frame>
+  <img src="/images/legacy/f1c49f4e-3874-4d14-8fa6-db4ebb2e945e/df9cd97d-5264-4c49-a9dc-cd24541cf811.avif" alt="Illustrazioni relative a descrizioni di servizi univoci" />
+</Frame>
+
+Questi messaggi vengono utilizzati per impostare o ottenere determinati valori dei parametri della fotocamera.
+
+Sopra [---] ci sono i dati inviati, sotto [---] ci sono i dati restituiti
+
+##### 5.3.4.1 LxBool.srv
+
+<Frame>
+  <img src="/images/legacy/dbe0c517-33f2-4d2a-b4d0-b4bfe383a132/6498e0b6-346a-413a-bcfa-7480e7c69fbb.avif" alt="Icone correlate a LxBool.srv" />
+</Frame>
+
+- cmd: il numero del parametro che deve essere ottenuto o impostato
+
+- val: il valore impostato in fase di impostazione
+
+- is\_set: se impostare il parametro. Quando è vero, il valore in val verrà impostato sulla fotocamera. Quando è falso, il valore di questo parametro verrà letto dalla telecamera e visualizzato.
+
+- val: il valore del parametro corrente della fotocamera restituito quando lo si ottiene o lo si imposta
+
+- risultato: il valore e le informazioni restituite chiamando l'interfaccia SDK
+
+##### 5.3.4.2 LxCmd.srv
+
+<Frame>
+  <img src="/images/legacy/d9fb3489-1feb-476f-846e-a0e5a5f88e68/4c263047-9b20-4ed7-be1a-74046a141294.avif" alt="Icone relative a LxCmd.srv" />
+</Frame>
+
+- cmd: il numero del parametro che deve essere ottenuto o impostato. Quando è 0, verranno restituiti tutti i numeri di parametro.
+
+- risultato: il valore e le informazioni restituiti chiamando l'interfaccia SDK, cmd può avere più valori restituiti
+
+##### 5.3.4.3 LxFloat.srv
+
+<Frame>
+  <img src="/images/legacy/faf8eb2e-9fb9-4a2a-a2bd-c35749ed8fe5/b757fe7d-a811-4a98-aaa4-4873384918cd.avif" alt="Icone relative a LxFloat.srv" />
+</Frame>
+
+- cmd: il numero del parametro che deve essere ottenuto o impostato
+
+- val: il valore impostato in fase di impostazione
+
+- is\_set: se impostare il parametro. Quando è vero, il valore in val verrà impostato sulla fotocamera. Quando è falso, il valore di questo parametro verrà letto dalla telecamera e visualizzato.
+
+- max\_value: il valore massimo impostabile per questo parametro
+
+- min\_value: il valore minimo impostabile per questo parametro
+
+- cur\_value: il valore corrente di questo parametro nella fotocamera
+
+- disponibile: se questo parametro supporta l'impostazione
+
+- risultato: il valore e le informazioni restituite chiamando l'interfaccia SDK
+
+##### 5.3.4.4 LxInt.srv
+
+<Frame>
+  <img src="/images/legacy/3c2e3f11-c23e-4907-901c-745f198c8cd9/55d5d286-53c4-4ddf-b970-0848e075576d.avif" alt="Icone relative a LxInt.srv" />
+</Frame>
+
+- cmd: il numero del parametro che deve essere ottenuto o impostato
+
+- val: il valore impostato in fase di impostazione
+
+- is\_set: se impostare il parametro. Quando è vero, il valore in val verrà impostato sulla fotocamera. Quando è falso, il valore di questo parametro verrà letto dalla telecamera e visualizzato.
+
+- max\_value: il valore massimo impostabile per questo parametro
+
+- min\_value: il valore minimo impostabile per questo parametro
+
+- cur\_value: il valore corrente di questo parametro nella fotocamera
+
+- disponibile: se questo parametro supporta l'impostazione
+
+- risultato: il valore e le informazioni restituite chiamando l'interfaccia SDK
+
+##### 5.3.4.5 LxString.srv
+
+<Frame>
+  <img src="/images/legacy/d660a391-2035-4c86-9b5a-83a58ba31312/565af9c2-f4b6-4474-a0db-a23e48405198.avif" alt="Icone relative a LxString.srv" />
+</Frame>
+
+- cmd: il numero del parametro che deve essere ottenuto o impostato
+
+- val: il valore impostato in fase di impostazione
+
+- is\_set: se impostare il parametro. Quando è vero, il valore in val verrà impostato sulla fotocamera. Quando è falso, il valore di questo parametro verrà letto dalla telecamera e visualizzato.
+
+- val: il valore del parametro corrente della fotocamera restituito quando lo si ottiene o lo si imposta
+
+- risultato: il valore e le informazioni restituite chiamando l'interfaccia SDK
+
+#### 5.3.5 Descrizione delle modalità di iscrizione agli argomenti
+
+##### 5.3.5.1 Frequenza fotogrammi dell'abbonamento, algoritmo del vassoio, dati di output dell'algoritmo per evitare gli ostacoli
+
+**Frame rate Abbonati**
+
+Nella directory lx\_camera\_node\_ws, inserisci: bash rate.sh
+
+<Frame>
+  <img src="/images/legacy/889beb65-12b6-44ac-babb-2111ebce6b52/a6c3aa39-f7a8-4a6a-a0d3-cfcdedc76a3a.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo del vassoio e ai dati di output dell'algoritmo per evitare gli ostacoli" />
+</Frame>
+
+Dopo che l'immagine del nodo lx\_camera\_node viene eseguita normalmente e viene aggiornata, è possibile visualizzare le seguenti informazioni:
+
+<Frame>
+  <img src="/images/legacy/73515490-0edb-4935-a770-88856bea0121/f492df57-13c2-4658-981b-6fb2fbb9ad43.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo pallet e ai dati di output dell'algoritmo per evitare gli ostacoli 2" />
+</Frame>
+
+**Iscriviti all'output dell'algoritmo dei pallet**
+
+Nella directory lx\_camera\_node\_ws, inserisci: bash pallet.sh
+
+<Frame>
+  <img src="/images/legacy/32b5bedf-7302-49ba-aa81-9d6cd2c62d2e/ae461ce5-17a2-4007-8b46-308a972fd245.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo pallet e ai dati di output dell'algoritmo per evitare gli ostacoli 3" />
+</Frame>
+
+Dopo che l'immagine del nodo lx\_camera\_node viene eseguita normalmente e viene aggiornata, è possibile visualizzare le seguenti informazioni:
+
+<Frame>
+  <img src="/images/legacy/a7893ae8-bd38-46e2-9d77-6c64cfc48009/d1217eeb-52b8-46fe-964e-5bc51da4b304.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo pallet e ai dati di output dell'algoritmo per evitare gli ostacoli 4" />
+</Frame>
+
+**Iscriviti all'output dell'algoritmo per evitare gli ostacoli**
+
+Nella directory lx\_camera\_node\_ws, inserisci: bash ostacolo.sh
+
+<Frame>
+  <img src="/images/legacy/ea99334d-1368-439f-8128-1b5fa7a6d87f/2a7209bc-11fc-4048-9fd3-5c8b41c67444.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo pallet e ai dati di output dell'algoritmo per evitare gli ostacoli 5" />
+</Frame>
+
+Dopo che l'immagine del nodo lx\_camera\_node viene eseguita normalmente e viene aggiornata, è possibile visualizzare le seguenti informazioni:
+
+<Frame>
+  <img src="/images/legacy/3330955d-ef4c-4c1b-b68e-b75b26dee53f/9efe49b2-75d1-42c0-b5c7-e501d99c65cd.avif" alt="Illustrazioni relative al frame rate dell'abbonamento, all'algoritmo del vassoio e ai dati di output dell'algoritmo per evitare gli ostacoli 6" />
+</Frame>
+
+##### 5.3.5.2 Sottoscrizione ai dati immagine (ROS1)
+
+Puoi visualizzare le informazioni sull'immagine generate dal nodo tramite lo strumento immagine fornito con ros:
+
+Comando di input della console: rqt\_image\_view
+
+Dopo aver inserito il comando verrà visualizzata la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/af141870-a000-48f6-b668-d9e36f6f9b52/dd1a0bb5-d8c3-4d34-904a-c7f828cf43da.avif" alt="Illustrazioni relative alla sottoscrizione dei dati immagine (ROS1)" />
+</Frame>
+
+La casella rossa può selezionare le immagini in tutti i nodi. L'immagine mostra l'immagine rgb della microtelecamera Meyer. Puoi anche selezionare la mappa di profondità o la mappa di intensità (a condizione che lo streaming sia attivo):
+
+<Frame>
+  <img src="/images/legacy/ae848874-51cb-4e2e-b371-fa02f3bc8ac2/9ab51d8d-8fec-418c-bf87-2f1e0ef94f5f.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS1) 2" />
+</Frame>
+
+Nella figura, il primo riquadro rosso rappresenta le informazioni RGB emesse dal nodo dell'algoritmo di posizionamento, mentre i restanti tre sono le informazioni sull'immagine emesse dai nodi ordinari. amp è la mappa di intensità, profondità è la mappa di profondità e rgb è la mappa rgb.
+
+Seleziona elementi diversi per visualizzare immagini diverse o utilizza rviz per visualizzare i dati dell'immagine. Inserisci il comando sulla console: rviz farà apparire la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/238df48e-8a1f-44bc-9ee0-9816f068f550/bdfc18e2-fd9f-413f-8a68-0b8ce120752a.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS1) 3" />
+</Frame>
+
+Dopo aver cliccato sul pulsante Aggiungi in basso a sinistra, verrà visualizzata una finestra pop-up:
+
+<Frame>
+  <img src="/images/legacy/438605fe-3480-435d-acbd-e828d2565a11/85bf82cb-efc5-413b-8a2d-4ddcbd2162d4.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS1) 4" />
+</Frame>
+
+Seleziona l'argomento dell'immagine desiderato, seleziona Immagine e fai clic su OK nell'angolo in basso a destra. Puoi vedere i dati dell'immagine sul lato sinistro dell'interfaccia principale, come mostrato di seguito:
+
+<Frame>
+  <img src="/images/legacy/abe265f8-1e54-4166-876b-50c3eb03494d/df41a7c4-d0de-4160-9a01-81650af1d0c0.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS1) 5" />
+</Frame>
+
+##### 5.3.5.3 Sottoscrizione ai dati immagine (ROS2)
+
+È possibile visualizzare le informazioni sull'immagine generate dal nodo tramite lo strumento immagine fornito con ros2: Immettere il comando sulla console: rqt
+
+Dopo aver inserito il comando verrà visualizzata la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/057d5b85-4d0d-4aec-8be9-e852bd52acf0/5c60df34-bfbf-403f-a79f-d753569dbbad.avif" alt="Illustrazioni relative alla sottoscrizione dei dati immagine (ROS2)" />
+</Frame>
+
+Seleziona la prima visualizzazione immagine della seconda opzione nella parte inferiore della barra dei menu. Dopo la selezione, verrà visualizzata la seguente interfaccia:
+
+<Frame>
+  <img src="/images/legacy/8dd57192-0204-49bd-84ff-c771e42df732/27352ea7-fda8-41dd-a0ab-aeffb4251a6e.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS2) 2" />
+</Frame>
+
+La casella rossa può selezionare le immagini in tutti i nodi. L'immagine mostra l'immagine rgb della microtelecamera Meyer. Puoi anche selezionare la mappa di profondità o la mappa di intensità (a condizione che lo streaming sia attivo):
+
+<Frame>
+  <img src="/images/legacy/99011d5f-e042-4f9c-b213-794c86c9c8f1/e8f45ab4-7cac-403b-8e49-91efaabc9be6.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS2) 3" />
+</Frame>
+
+Nella figura, il primo riquadro rosso rappresenta le informazioni RGB emesse dal nodo dell'algoritmo di posizionamento, mentre i restanti tre sono le informazioni sull'immagine emesse dai nodi ordinari. amp è la mappa di intensità, profondità è la mappa di profondità e rgb è la mappa rgb.
+
+Seleziona elementi diversi per visualizzare immagini diverse o utilizza rviz2 per visualizzare i dati dell'immagine. Inserisci il comando sulla console: rviz2 farà apparire la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/cbae4c6c-9490-4e9e-98db-ed65e6567bec/c8f44a46-6c9e-4200-b85d-74a533c1153b.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS2) 4" />
+</Frame>
+
+Dopo aver cliccato sul pulsante Aggiungi in basso a sinistra, verrà visualizzata una finestra pop-up:
+
+<Frame>
+  <img src="/images/legacy/88e7b3df-17c0-4128-a089-cb12a3360be9/d19bdc43-8e9e-4d0c-ae7f-fed540802ea1.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS2) 5" />
+</Frame>
+
+Seleziona l'argomento dell'immagine desiderato, seleziona Immagine e fai clic su OK nell'angolo in basso a destra. Puoi vedere i dati dell'immagine sul lato sinistro dell'interfaccia principale, come mostrato di seguito:
+
+<Frame>
+  <img src="/images/legacy/620c5b94-ecb4-4c5a-bb1f-34821bc3baf1/701ff51b-b871-4559-bd3b-84bae49b2ffe.avif" alt="Diagramma relativo ai dati immagine di sottoscrizione (ROS2) 6" />
+</Frame>
+
+**Alcuni sistemi devono compilare [mrdvs] nella [mappa] nell'immagine sopra per vedere l'immagine**
+
+##### 5.3.5.4 Iscriviti ai dati della nuvola di punti
+
+Le informazioni sulla nuvola di punti restituite dal nodo possono essere visualizzate tramite lo strumento nuvola di punti fornito da ros o ros2:
+
+Comando: rviz[ROS1], rviz2[ROS2]
+
+Dopo aver inserito il comando verrà visualizzata la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/cb5ff2be-b87c-4281-ad34-bdae86a383fd/7bd8c23b-2a65-475f-8dbd-65ec6ecc1c1c.avif" alt="Illustrazioni relative alla sottoscrizione dei dati della nuvola di punti" />
+</Frame>
+
+Fare clic sul pulsante nella casella rossa in basso e verrà visualizzata la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/21150a54-23ca-4b59-adc3-9f553539beed/22265287-d908-4b27-ab7a-cfb4585be332.avif" alt="Illustrazione relativa alla sottoscrizione dei dati della nuvola di punti 2" />
+</Frame>
+
+Seleziona la seconda scheda e ci sarà un nodo denominato lx\_camera\_node. C'è un argomento denominato LxCamera\_Cloud nel nodo. Nell'argomento è presente un messaggio denominato PointCloud2. Dopo aver selezionato, fare clic su OK. L'interfaccia dopo il completamento è la seguente:
+
+<Frame>
+  <img src="/images/legacy/3006e5a5-4fe7-4259-9e2a-95e1bb363845/1044f605-6247-44c3-8d8e-c3c121f4cb47.avif" alt="Illustrazioni relative alla sottoscrizione dei dati della nuvola di punti 3" />
+</Frame>
+
+(Interfaccia ROS1)
+
+<Frame>
+  <img src="/images/legacy/910637d7-5dbc-4c94-81a4-50e644121e4a/1b4d9da2-af03-4f73-9fa3-1cb57b61f783.avif" alt="Illustrazioni relative alla sottoscrizione dei dati della nuvola di punti 4" />
+</Frame>
+
+(interfaccia ROS2)
+
+In questo momento, la nuvola di punti non può essere visualizzata normalmente. Compila mrdvs nella mappa con riquadro rosso e verde sopra per vedere la nuvola di punti. L'effetto è il seguente:
+
+<Frame>
+  <img src="/images/legacy/2aa2b75e-e517-44ab-b4cb-e2667133cfc6/4d96f1fd-3ba9-475a-b140-dae7dc00a2b9.avif" alt="Illustrazioni relative alla sottoscrizione dei dati della nuvola di punti 5" />
+</Frame>
+
+L'unità predefinita della nuvola di punti in ROS è metri, quindi quando si visualizza utilizzando rviz, è necessario modificare lx\_tof\_unit nel file di avvio su 1 [il valore predefinito è 1]
+
+#### 5.3.6 Descrizione delle modalità di comunicazione del servizio
+
+In ROS1, tutti i comandi possono essere completati utilizzando il tasto Tab, ma in ROS2 è possibile completare solo gli argomenti e la parte del messaggio deve essere inserita manualmente.
+
+**Quando si inseriscono i dati in ROS1, è possibile inserirli nel formato di completamento. Quando si inseriscono dati in ROS2, è necessario inserirli nel formato del file yaml.**
+
+Dopo che il nodo è in esecuzione, apri un terminale nella cartella lx\_camera\_node\_ws, configura l'ambiente nel terminale e inserisci il comando: source devel/setup.bash
+
+##### 5.3.6.1 Ottieni l'elenco di tutti i numeri dei parametri (Lx\_Cmd)
+
+**ros1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
+
+<Frame>
+  <img src="/images/legacy/d164d829-293d-4390-abab-22d35d509cbb/db9d34a3-5184-4d47-a33d-f37e0244d9b4.avif" alt="Ottieni tutte le icone relative all'elenco dei numeri dei parametri (Lx\_Cmd)." />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/5ecde466-61e9-4b4a-bf1b-8ec51c0c0169/fa7f556f-1716-4f56-b40d-e42fb5fbbbd2.avif" alt="Ottieni l'icona relativa all'elenco di tutti i numeri dei parametri (Lx\_Cmd) 2" />
+</Frame>
+
+ret è il numero del parametro. Il messaggio descrive il tipo e la descrizione del parametro, ad esempio: 1001. Questo parametro è di tipo int. Il parametro viene utilizzato per ottenere e modificare il primo valore di esposizione.
+
+**ros2**
+
+Digitare nel terminale: ros2 service call /LxCamera\_LxCmd lx\_camera\_ros/srv/LxCmd 'cmd: 0'
+
+<Frame>
+  <img src="/images/legacy/8a802613-c024-4020-bc72-29b3174557ed/d78e9647-5fbc-4dfe-9778-2a0ce30882e0.avif" alt="Ottieni l'icona relativa all'elenco dei numeri dei parametri (Lx\_Cmd) 3" />
+</Frame>
+
+Puoi vedere il seguente output:
+
+<Frame>
+  <img src="/images/legacy/41eea7fc-e3d7-4346-846c-72152dc4a25a/c86dccb8-a04e-48ce-9c90-29fa38d990c1.avif" alt="Ottieni l'icona relativa all'elenco dei numeri di tutti i parametri (Lx\_Cmd) 4" />
+</Frame>
+
+Poiché non è conveniente visualizzare i dettagli dei parametri in ROS2, i numeri, i tipi e le descrizioni di tutti i parametri sono elencati anche nella tabella seguente:
+
+| Numero | Digitare | Descrizione in ROS | Descrizione dettagliata |
+| --- | --- | --- | --- |
+| 1001 | INT | PRIMA_ESPOSIZIONE | Valore di esposizione integrale alto predefinito |
+| 1002| INT | SECONDA_ESPOSIZIONE | Valore di esposizione integrale basso predefinito |
+| 1003| INT | TERZA_ESPOSIZIONE | Valore di esposizione integrale medio predefinito |
+| 1004| INT | QUARTA_ESPOSIZIONE | Il quarto punto |
+| 1005| INT | GUADAGNO | Guadagno |
+| 1011| INT | PROFONDITÀ_MIN | Valore minimo di profondità |
+| 1012| INT | PROFONDITÀ_MAX | Valore massimo di profondità |
+| 1013| INT | MIN_AMPLITUDINE | Valore minimo di potenza effettiva del segnale |
+| 1014| INT | MAX_AMPLITUDINE | Valore massimo effettivo dell'intensità del segnale |
+| 1016| INT | CODICE_MODO | Modalità di codifica |
+| 1018| INT | MODALITÀ_LAVORO | Modalità di lavoro |
+| 1019| INT | LINK_SPEED | Velocità di rete della scheda di rete |
+| 1021| INT | LARGHEZZA_IMMAGINE_3D | Larghezza risoluzione immagine 3D |
+| 1022| INT | 3D_IMAGE_HEIGHT | Altezza risoluzione immagine 3D |
+| 1023| INT | 3D_IMAGE_OFFSET_X | Pixel di offset orizzontale della ROI |
+| 1024| INT | 3D_IMAGE_OFFSET_Y | Pixel di offset verticale ROI |
+| 1025| INT | 3D_BINNING_MODE | Immagine 3D binnin |
+| 1026| INT | 3D_PROFONDITÀ_DATA_TYPE | Formato dati immagine profondità |
+| 1031| INT | 3D_AMPLITUDINE_CANALE | Numero del canale dell'immagine di intensità 3D |
+| 1032| INT | 3D_AMPLITUDE_GET_TYPE | Come ottenere l'immagine dell'intensità |
+| 1033| INT | 3D_AMPLITUDINE_ESPOSIZIONE | Valore di esposizione manuale 3D |
+| 1034| INT | 3D_AMPLITUDINE_INTENSITÀ | Illuminazione automatica del bersaglio 3D |
+| 1035| INT | 3D_AMPLITUDE_DATA_TYPE | Formato dati immagine intensità |
+| 1036| INT | 3D_AUTO_ESPOSIZIONE_LIVELLO | Livello di esposizione automatica 3D |
+| 1041| INT | 2D_IMMAGINE_LARGHEZZA | Larghezza risoluzione immagine 2D |
+| 1042| INT | 2D_IMAGE_HEIGHT | Immagine 2D ad alta risoluzione |
+| 1043| INT | 2D_IMAGE_OFFSET_X | Offset orizzontale ROI immagine 2D |
+| 1044| INT | 2D_IMAGE_OFFSET_Y | Offset verticale ROI immagine 2D |
+| 1045| INT | 2D_BINNING_MODE | Immagine 2D binnin |
+| 1046| INT | 2D_IMAGE_CHANNEL | Numero di canali di immagini 2D |
+| 1047| INT | 2D_IMAGE_DATA_TYPE | Formato dati immagine 2D |
+| 1051| INT | 2D_ESPOSIZIONE_MANUALE | Valore dell'esposizione 2D durante l'esposizione manuale |
+| 1052| INT | 2D_MANUALE_GAIN | Guadagno 2D durante l'esposizione manuale |
+| 1053| INT | 2D_ENCODE_TYPE | Formato di compressione immagini 2D |
+| 1054| INT | 2D_AUTO_ESPOSIZIONE_LIVELLO | Esposizione automatica di immagini 2D, ecc. |
+| 1061| INT | TOF_GLOBAL_OFFSET | Offset dei dati di profondità TOF |
+| 1062| INT | 3D_UNDISTORT_SCALE | Coefficiente anti-distorsione dell'immagine TOF |
+| 1065| INT | ALGORITMO_MODE | Imposta l'algoritmo dell'applicazione integrato |
+| 1066| INT | MODBUS_ADDR | indirizzo modbus |
+| 1067| INT | CUORE_ORA | Tempo di battito cardiaco con il dispositivo |
+| 1068| INT | GVSP_PACKET_SIZE | Dimensione del pacchetto dati a pacchetto singolo GVSP |
+| 1069| INT | MODALITÀ_TRIGGER | Modalità di attivazione |
+| 1070| INT | CALCOLA_UP | L'algoritmo si sposta su e giù |
+| 1072| INT | CAN_BAUD_RATE | valore della velocità di trasmissione di can |
+| 1073| INT | MAX_3D_AUTO_ESPOSIZIONE | Limite di esposizione automatica 3D |
+| 1074| INT | CUSTOM_PARAM_GROUP | Gruppo di parametri definiti dall'utente |
+| 2001 | GALLEGGIANTE | FILTRO_LIVELLO | Livello filtro |
+| 2002| GALLEGGIANTE | EST_OUT_EXPOSURE | Se valutare i dati di sovraesposizione |
+| 2003| GALLEGGIANTE | INTENSITÀ_LUCE | intensità luminosa |
+| 2004| GALLEGGIANTE | 3D_DEPTH_FPS | Frequenza fotogrammi corrente della mappa di profondità |
+| 2005| GALLEGGIANTE | 3D_AMPLITUDE_FPS | Frequenza fotogrammi corrente della mappa dell'intensità |
+| 2006| GALLEGGIANTE | 2D_IMAGE_FPS | Frequenza fotogrammi corrente dell'immagine RGB |
+| 2007| GALLEGGIANTE | DISPOSITIVO_TEMPERATURA | Temperatura attuale della fotocamera |
+| 3001| BOOL | CONNETTI_STATO | Stato attuale della connessione |
+| 3002| BOOL | ENABLE_3D_DEPTH_STREAM | Attiva/disattiva il flusso di dati di profondità |
+| 3003| BOOL | ENABLE_3D_AMP_STREAM | Attiva/disattiva il flusso di dati sull'intensità |
+| 3006| BOOL | ABILITA_3D_AUTO_ESPOSIZIONE | Abilitazione dell'esposizione automatica 3D |
+| 3007| BOOL | ENABLE_3D_UNDISTORT | Abilitazione anti-distorsione 3D |
+| 3008| BOOL | ABILITA_ANTI_SFLICKER | Abilita anti-sfarfallio |
+| 3011| BOOL | ENABLE_2D_STREAM | Attiva/disattiva il flusso di dati 2D |
+| 3012| BOOL | ABILITA_2D_ESPOSIZIONE_AUTO | Abilitazione esposizione automatica 2D |
+| 3015| BOOL | ENABLE_2D_UNDISTORT | Abilitatore anti-distorsione delle immagini 2D |
+| 3016| BOOL | ENABLE_2D_TO_DEPTH | Abilita l'allineamento delle immagini 2D3D |
+| 3017| BOOL | ENABLE_BACKGROUND_AMP | Abilitazione dell'intensità della luce di sfondo |
+| 3018| BOOL | ENABLE_MULTI_MACHINE | Abilitazione modalità multi-macchina |
+| 3019| BOOL | ENABLE_MULTI_EXPOSURE_HDR | HDR |
+| 3020| BOOL | ENABLE_SYNC_FRAME | Se abilitare la sincronizzazione forzata dei frame |
+| 4001| STRINGA | DISPOSITIVO_VERSIONE | Numero di versione del dispositivo |
+| 4002| STRINGA | DEVICE_LOG_NAME | Nome del file di registro |
+| 4003| STRINGA | FIRMWARE_NAME | Nome file firmware |
+| 4004| STRINGA | FILTER_PARAMS | Parametri dell'algoritmo di filtro |
+| 4005| STRINGA | ALGORITMO_PARAM | Parametri dell'algoritmo integrati |
+| 4006| STRINGA | ALGORITMO_VERSIONE | Numero di versione dell'algoritmo integrato |
+| 4007| STRINGA | DEVICE_OS_VERSION | Numero di versione dell'immagine del sistema del dispositivo |
+| 0| CMD | GET_PARAM_LIST | Ottieni tutti i numeri dei parametri |
+| 1| CMD | START_STREAM | Avvio del dispositivo |
+| 2| CMD | STOP_STREAM | L'attrezzatura smette di fluire |
+| 5001| CMD | GET_NEW_FRAME | Aggiorna i dati più recenti attuali |
+| 5002| CMD | RETURN_VERSION | Torna alla versione precedente |
+| 5003| CMD | RESTART_DEVICE | Riavvia la fotocamera |
+| 5004| CMD | BILANCIO_BIANCO | Bilanciamento automatico del bianco |
+| 5007| CMD | RESET_PARAM | Ripristina parametri predefiniti |
+
+**Alcuni parametri devono interrompere il flusso prima di poter essere impostati oppure esiste una sequenza di impostazioni. Si prega di contattare il personale di supporto tecnico per esigenze specifiche.**
+
+##### 5.3.6.2 Parametro Get Int (Lx\_Int)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+valore: 0
+
+è\_set: falso"
+
+<Frame>
+  <img src="/images/legacy/aa54e83e-f079-4b4e-b616-bb2bb5632557/1bfd71b1-a406-4e20-9fae-0db32a5b93aa.avif" alt="Ottieni le icone correlate dei parametri Int (Lx\_Int)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/bab5ad18-94b3-46c3-8b91-9c88fdaa94e5/0a3c9501-06db-4d47-81be-35331ebcdef4.avif" alt="Ottieni l'icona relativa al parametro Int (Lx\_Int) 2" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Ciò che si ottiene in figura è l'elevato tempo di integrazione. In base al risultato restituito, puoi vedere che il valore massimo è **3600**, il valore minimo è **1**, il valore corrente è **1010**, se l'impostazione è supportata è **supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **successo**.
+
+<br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/6d2117ae-d6c3-4afc-b646-6dbfbb6c2f3e/bb13c4c1-0f41-459f-ae52-dbb46cb0e54a.avif" alt="Ottieni l'icona relativa al parametro Int (Lx\_Int) 3" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/541a0283-4507-409c-b3e1-20519ab2b5ca/55f6cd89-2619-463f-bc80-10dcb7699c26.avif" alt="Ottieni l'icona relativa al parametro Int (Lx\_Int) 4" />
+</Frame>
+
+Ciò che si ottiene in figura è l'elevato tempo di integrazione. In base ai risultati restituiti, possiamo vedere che il valore massimo è **3600**, il valore minimo è **1**, il valore corrente è **1010**, se l'impostazione è supportata è **supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+##### 5.3.6.3 Impostazione parametri Int (Lx\_Int)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+valore: 2000
+
+è\_set: vero"
+
+<Frame>
+  <img src="/images/legacy/740f493c-b629-4f56-a1b2-657160e65dd1/223a551a-7aa9-44fd-a0f7-55aadbb2e7e8.avif" alt="Illustrazioni relative all'impostazione dei parametri Int (Lx\_Int)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/0af02830-0186-4647-bfab-d262c1928aa9/0771f3d5-9e06-4f9f-8655-3e4fbcc44fa4.avif" alt="Illustrazione 2 relativa all'impostazione dei parametri Int (Lx\_Int)" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Il tempo di integrazione elevato è impostato nella figura. In base al risultato restituito, puoi vedere che il valore massimo è **3600**, il valore minimo è **1**, il valore corrente è stato modificato in **2000**, se l'impostazione di supporto è **supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+<br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/bda87587-abf9-41f1-baf0-1601252e740b/5d8c4cee-1e25-44fc-9b20-1418754d3846.avif" alt="Illustrazione 3 relativa all'impostazione dei parametri Int (Lx\_Int)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/fc6e22e4-33fb-4021-8cbe-d3d37858b463/54820a62-ae52-4c94-bf2b-8b43b6fc8b1f.avif" alt="Illustrazione 4 relativa all'impostazione dei parametri Int (Lx\_Int)" />
+</Frame>
+
+Ciò che si ottiene in figura è l'elevato tempo di integrazione. In base ai risultati restituiti, possiamo vedere che il valore massimo è **3600**, il valore minimo è **1**, il valore corrente è stato modificato in **3000**, se l'impostazione è supportata è **supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+##### 5.3.6.4 Ottieni parametri Float (Lx\_Float)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+valore: 0,0
+
+è\_set: falso"
+
+<Frame>
+  <img src="/images/legacy/961244d1-9a2d-4423-a796-e34fc46bb459/c0296495-26d5-42f2-aea9-7dae69e58fd4.avif" alt="Ottieni le icone correlate dei parametri Float (Lx\_Float)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/efedad09-aa95-4186-bac1-82dbcc0247c9/c07ce897-0b4c-46a0-a9b6-23c4f5551d28.avif" alt="Ottieni l'icona relativa al parametro Float (Lx\_Float) 2" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Ciò che si ottiene nella foto è la temperatura della fotocamera. In base al risultato restituito, puoi vedere che il valore massimo è **120**, il valore minimo è **\-40**, il valore corrente è **49.6875**, se l'impostazione è supportata è **non supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**. <br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/fec32229-96f1-49df-8ad4-c32b2e2d4319/68f93c4b-2258-43b6-bbec-67bcead69e04.avif" alt="Ottenere le icone correlate dei parametri Float (Lx\_Float) 3" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/dce3f459-b08e-4593-acdf-677d6fbf6944/6a4c92d8-cf4f-4e3f-91dc-205b77d50614.avif" alt="Ottieni l'icona relativa al parametro Float (Lx\_Float) 4" />
+</Frame>
+
+Ciò che si ottiene nella foto è la temperatura della fotocamera. In base ai risultati restituiti, puoi vedere che il valore massimo è **120**, il valore minimo è **\-40**, il valore corrente è **50.4375**, se l'impostazione è supportata è **non supportata**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+##### 5.3.6.5 Impostazione parametri Float (Lx\_Float)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+valore: 5.0
+
+è\_set: vero"
+
+<Frame>
+  <img src="/images/legacy/fc65906a-26b1-4926-8683-0c63c4bda205/0b2816b4-3824-471e-849a-19418b4e1347.avif" alt="Illustrazioni relative all'impostazione dei parametri Float (Lx\_Float)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/64b4ccc2-3a32-4290-bfe8-5f1a16b39e7b/22a193ef-c078-4d18-8089-25c043c945a1.avif" alt="Illustrazione 2 relativa all'impostazione dei parametri Float (Lx\_Float)" />
+</Frame>
+
+La casella rossa è il valore restituito. La temperatura della fotocamera è impostata nell'immagine. In base al risultato restituito, puoi vedere che il valore massimo è **120**, il valore minimo è **\-40**, il valore corrente è **50.9375**, se l'impostazione è supportata è **non supportata**, il valore restituito dalla chiamata all'interfaccia è **\-2**, le informazioni sul valore restituito sono **non supportate**, il valore impostato qui è 5, il valore corrente e il valore impostato non sono coerenti perché il parametro non supporta l'impostazione. <br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/ffb19412-efb4-4d85-b0f3-109070dfaf11/95302d5c-71ea-4209-a439-67bc9141f867.avif" alt="Illustrazione 3 relativa all'impostazione dei parametri Float (Lx\_Float)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/5adb01fe-521c-40e2-824d-6c3877ff1fa1/f53329f3-47d0-4597-85d5-527c2877a216.avif" alt="Illustrazioni relative all'impostazione dei parametri Float (Lx\_Float) 4" />
+</Frame>
+
+La temperatura della fotocamera è impostata nell'immagine. In base ai risultati restituiti, puoi vedere che il valore massimo è **120**, il valore minimo è **\-40**, il valore corrente è **51.125**, se l'impostazione è supportata è **non supportata**, il valore restituito della chiamata all'interfaccia è **\-2**, le informazioni sul valore restituito sono **non supportate**, il valore impostato qui è 5, il valore corrente e il valore impostato non sono coerenti perché il parametro non supporta l'impostazione.
+
+##### 5.3.6.6 Ottieni parametri Bool (Lx\_Bool)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: falso
+
+è\_set: falso"
+
+<Frame>
+  <img src="/images/legacy/93e8afe5-8d20-4406-8b41-e31907fd216a/73dbf8cb-7bc5-4a65-9e0b-02b8b9976648.avif" alt="Ottieni le icone correlate dei parametri Bool (Lx\_Bool)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/cc19e476-6351-4685-a4ed-ba55273ae753/31834fd4-610d-4c49-a59c-6ec8f5019e1c.avif" alt="Ottieni l'icona relativa al parametro Bool (Lx\_Bool) 2" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Ciò che si ottiene nella foto è l'esposizione automatica 2D. In base al risultato restituito, possiamo vedere che il valore corrente è **false**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+<br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/f476d582-5c88-4af1-9ef9-296993a31ae3/e29edc53-15a7-47a8-bb80-eb620f8431fd.avif" alt="Ottieni l'icona relativa al parametro Bool (Lx\_Bool) 3" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/6d73a81b-e785-4f8f-a732-fa4287df78a8/a7a8dae4-f76d-4f02-a9bb-04803115741d.avif" alt="Ottieni l'icona relativa al parametro Bool (Lx\_Bool) 4" />
+</Frame>
+
+Ciò che si ottiene in figura è l'esposizione automatica 2D. In base al risultato restituito, possiamo vedere che il valore corrente è **false**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+##### 5.3.6.7 Impostazione parametri Bool (Lx\_Bool)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: vero
+
+è\_set: vero"
+
+<Frame>
+  <img src="/images/legacy/607387d3-60d5-4958-af77-0abfb71facb5/f6271f66-6f11-4315-bf02-03f8733ec7aa.avif" alt="Illustrazioni relative all'impostazione dei parametri Bool (Lx\_Bool)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/59b92496-6fc1-4252-ac13-96bcb071dd91/5aefcdf8-ce88-462f-9c1b-240879301714.avif" alt="Illustrazione 2 relativa all'impostazione dei parametri Bool (Lx\_Bool)" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Nell'immagine è impostata l'esposizione automatica 2D. In base al risultato restituito, possiamo vedere che il valore corrente è **true**, il valore restituito della chiamata all'interfaccia è **0**, le informazioni sul valore restituito sono **success** e il valore corrente è coerente con il valore impostato.
+
+<br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/9748edef-61b1-4014-be36-dff20a825cee/3d3dcbae-6b6e-4332-b4c1-0833a3bf9503.avif" alt="Illustrazione 3 relativa all'impostazione dei parametri Bool (Lx\_Bool)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/a57623c2-7926-4b6c-b6fe-484c6d142302/b5f7f39f-7c48-47b8-becd-3b4431189a1f.avif" alt="Illustrazioni relative all'impostazione dei parametri Bool (Lx\_Bool) 4" />
+</Frame>
+
+L'impostazione nell'immagine è l'esposizione automatica 2D. In base al risultato restituito, possiamo vedere che il valore corrente è **true**, il valore restituito della chiamata all'interfaccia è **0**, le informazioni sul valore restituito sono **success** e il valore corrente è coerente con il valore impostato.
+
+##### 5.3.6.8 Ottieni parametro String (Lx\_String)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: ''
+
+è\_set: falso"
+
+<Frame>
+  <img src="/images/legacy/bbc24940-9d3d-472f-8bcc-d035c90d30fc/17570b75-4c86-4f11-a838-66755a7842dd.avif" alt="Ottieni le icone correlate dei parametri String (Lx\_String)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/6c141b40-d264-4dc1-a5ed-75df668f1be5/34c346c4-c172-4b8b-a61b-f229d3d1ebed.avif" alt="Ottenere l'icona relativa al parametro String (Lx\_String) 2" />
+</Frame>
+
+Quello che c'è nella casella rossa è il valore restituito. Ciò che si ottiene in figura è il numero di versione del dispositivo. In base al risultato restituito, possiamo vedere che il valore corrente è **V1.1.33\_231201**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+<br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
+
+<Frame>
+  <img src="/images/legacy/9bf79522-e2ee-4f7e-ad7e-c239fcf00be5/7eb63a63-e6fe-4988-8d11-68f008672b36.avif" alt="Ottieni l'icona relativa al parametro String (Lx\_String) 3" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/032dbc26-0ad2-435b-ad24-7b57a9553a9e/c24d4d4b-6002-4ce5-bec4-9677545dd341.avif" alt="Ottieni l'icona correlata del parametro String (Lx\_String) 4" />
+</Frame>
+
+Ciò che si ottiene in figura è il numero di versione del dispositivo. In base al risultato restituito, possiamo vedere che il valore corrente è **V1.1.33\_231201**, il valore restituito della chiamata all'interfaccia è **0** e le informazioni sul valore restituito sono **success**.
+
+##### 5.3.6.9 Impostazione parametri stringa (Lx\_String)
+
+**ROS1**
+
+Digitare nel terminale: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: 'metti:\\"123\\"'
+
+è\_set: vero"
+
+<Frame>
+  <img src="/images/legacy/7753aa87-a255-48b1-97a6-eba2473a31fc/7224317e-c644-48bc-bf93-21c21027d0fa.avif" alt="Illustrazioni relative all'impostazione dei parametri String (Lx\_String)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/6ff71fce-5a6c-469d-8304-5d6770085595/610f2d35-888a-448b-a826-d942a1c4ed59.avif" alt="Illustrazione 2 relativa all'impostazione dei parametri String (Lx\_String)" />
+</Frame>
+
+La casella rossa è il valore restituito. Il numero di versione del dispositivo è impostato in figura. In base al risultato restituito, possiamo vedere che il valore corrente è **V1.1.33\_231201**, il valore restituito della chiamata all'interfaccia è **\-2** e le informazioni sul valore restituito sono **non supportate**. Il valore corrente e il valore impostato non sono coerenti perché questo parametro non supporta l'impostazione. <br />
+
+**ROS2**
+
+Inserisci nel terminale: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
+
+<Frame>
+  <img src="/images/legacy/43aa6748-bd74-4e5d-845f-551543fc4260/c39e1ef9-4892-4579-8fef-d41c3622df7b.avif" alt="Illustrazione 3 relativa all'impostazione dei parametri String (Lx\_String)" />
+</Frame>
+
+Puoi vedere l'output:
+
+<Frame>
+  <img src="/images/legacy/a117648a-c042-4800-95b2-1fef0bbacc8a/41657cf8-22c9-46ce-be17-366e082c8b9a.avif" alt="Illustrazioni relative all'impostazione dei parametri String (Lx\_String) 4" />
+</Frame>
+
+Il numero di versione del dispositivo è impostato in figura. In base al risultato restituito, possiamo vedere che il valore corrente è **V1.1.33\_231201**, il valore restituito della chiamata all'interfaccia è **\-2** e le informazioni sul valore restituito sono **non supportate**. Il valore corrente non è coerente con il valore impostato perché questo parametro non supporta l'impostazione.
+
+**Quando si imposta un valore di tipo String, i caratteri di escape devono essere aggiunti alle virgolette singole e doppie, ad eccezione delle virgolette doppie iniziali in ROS2 e delle virgolette singole iniziali in ROS1. Ad esempio, se desideri inserire la stringa [PUT”123”], devi aggiungere i caratteri di escape per diventare: [PUT\\”123\\”].**
+
+* * *
+
+## 6**. Configurazione hardware consigliata da ROS e utilizzo delle risorse**
+
+### 6.1 Configurazione hardware consigliata
+
+Nella configurazione hardware consigliata, l'analisi sarà basata sul numero di core della CPU, sull'utilizzo della CPU e sulla dimensione della memoria. **Le configurazioni qui fornite sono tutte configurazioni consigliate, non le configurazioni minime**. Se la configurazione hardware è inferiore a quella consigliata, è possibile ottenere un funzionamento stabile riducendo l'output del flusso, disattivando il cloud computing di punti e spostando verso il basso l'algoritmo. **Quando si esegue la configurazione richiesta a un livello superiore rispetto a quella esistente, potrebbe causare un arresto anomalo del core ROS o addirittura un arresto anomalo del sistema Ubuntu. **L'utilizzo dettagliato verrà fornito nella seconda e terza sezione di questo capitolo. Scegliere l'ambiente operativo e la configurazione del flusso più appropriati in base alla situazione. **Tutti i dati qui sono testati sulla macchina virtuale VM e la fotocamera di prova è M4PRO.**
+
+**Ubuntu16.04**
+
+| Versione ROS | CPU | Memoria | Larghezza di banda |
+| --- | --- | --- | --- |
+| ros | AMD64 [Quadcore] | 4G| 1000 milioni |
+
+**Ubuntu18.04**
+
+| Versione ROS | CPU | Memoria | Larghezza di banda |
+| --- | --- | --- | --- |
+| ros | AMD64 [Quadcore] | 4G| 1000 milioni |
+| ros2 | AMD64 [Quadcore] | 4G| 1000 milioni |
+
+**Ubuntu20.04**
+
+| Versione ROS | CPU | Memoria | Larghezza di banda |
+| --- | --- | --- | --- |
+| ros | AMD64 [Quadcore] | 4G| 1000 milioni |
+| ros2 | AMD64 [Quadcore] | 4G| 1000 milioni |
+
+**Ubuntu22.04**
+
+| Versione ROS | CPU | Memoria | Larghezza di banda |
+| --- | --- | --- | --- |
+| ros | AMD64 [Quadcore] | 4G| 1000 milioni |
+
+### 6.2 Dettagli sulla CPU
+
+I dettagli della CPU mostreranno la quantità di risorse CPU occupate dal nodo in diverse condizioni operative. Il test si basa sull'ambiente hardware **AMD64 [8 core], memoria 8G**, la fotocamera del test è **M4PRO**, l'algoritmo del test è **algoritmo vassoio**, **larghezza e altezza 2D sono 1280\*960 e larghezza e altezza 3D sono 640\*480**, **anti-distorsione 2D attivo, anti-distorsione 3D disattivato e integrazione 110 - 3000, profondità 0 - 8000, frequenza fotogrammi TOF 14, modalità streaming, livello di livellamento 1, livello di rumore 1, livello dominio temporale 0**, il comando statistico è **TOP**. Poiché l'ambiente software di test è la **macchina virtuale VM**, è normale che i dati visualizzati dalla macchina fisica fluttuino rispetto a quelli nel documento. Per alcune fotocamere, come la S2, alcuni algoritmi vengono calcolati sul computer host, il che comporta un elevato utilizzo delle risorse, il che è normale. <br />
+
+**1. Alcuni nomi sono spiegati come segue:**
+
+-Stream singolo: si riferisce all'attivazione di qualsiasi flusso di RGB, profondità e intensità
+
+- Doppio flusso: si riferisce all'attivazione di due flussi qualsiasi di RGB, profondità e intensità
+
+-Tre flussi: si riferisce a RGB, profondità e intensità, tutti e tre i flussi sono attivati
+
+- Quattro flussi: significa che RGB, profondità, intensità e nuvola di punti sono tutti attivati
+
+**2. L'algoritmo ha una relazione vincolante con alcuni flussi. Il rapporto vincolante è il seguente:**
+
+- Per abilitare l'algoritmo pallet, è necessario abilitare la profondità
+
+- Per attivare l'algoritmo per evitare gli ostacoli, è necessario attivare la profondità
+
+- Per attivare l'algoritmo di posizionamento, è necessario attivare RGB
+
+<br />
+
+Lo sfondo azzurro nella tabella è la configurazione in esecuzione con la nuvola di punti abilitata, mentre lo sfondo incolore è la configurazione in esecuzione senza nuvola di punti abilitata. **Tutti i dati dei test riportati di seguito hanno l'algoritmo spostato verso il basso per impostazione predefinita, quindi per le fotocamere della serie S2, tutti i valori dei test potrebbero essere troppo piccoli [alcuni algoritmi delle fotocamere della serie S2 sono costretti a spostarsi verso l'alto].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 10:59| 0,0~26,7 |
+| Doppio flusso | 14.13 | 0,0~60,0 |
+| Terza categoria | 16:56| 0,0~37,5 |
+| Quarto tasso | 108,25| 93,8~162,5 |
+| Nuvola di punti + profondità | 105.13 | 93,8~153,3 |
+| Algoritmo + Profondità | 5.44| 0.0~43.0 |
+| Algoritmo + Profondità + Nuvola di punti | 104.39| 93,8~120,0 |
+| Algoritmo + Profondità + RGB | 13:15| 6.2~40.0 |
+| Algoritmo + profondità + RGB + nuvola di punti | 105,96| 93,8~146,7 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 109,29 | 93,8~162,5 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 10:31| 0,0~27,5 |
+| Doppio flusso | 12.81| 5.9~27.8 |
+| Terza categoria | 16.23| 5.9~37.5 |
+| Quarto tasso | 105,95| 88.2~131.2 |
+| Nuvola di punti + profondità | 103,55| 88.2~156.2 |
+| Algoritmo + Profondità | 56.32| 0,0~43,8 |
+| Algoritmo + Profondità + Nuvola di punti | 104.07| 78.3~43.8 |
+| Algoritmo + Profondità + RGB | 15.22| 5.9~70.6 |
+| Algoritmo + profondità + RGB + nuvola di punti | 104.56| 93,8~125,0 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 105,52| 61,5~204,8 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 19.19| 5.9~88.2 |
+| Doppio flusso | 23:17 | 6.2~109.1 |
+| Terza categoria | 30:59| 9.1~125.0 |
+| Quarto tasso | 108,44 | 44.4~158.6 |
+| Nuvola di punti + profondità | 102.19 | 37,5~143,9 |
+| Algoritmo + Profondità | 6.44| 0,0~26,7 |
+| Algoritmo + Profondità + Nuvola di punti | 104,45| 79,2~176,5 |
+| Algoritmo + Profondità + RGB | 14.82| 5.9~50.0 |
+| Algoritmo + profondità + RGB + nuvola di punti | 106,89 | 94,1~137,5 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 108.41| 94,1~162,5 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 11:46| 0,0~50,0 |
+| Doppio flusso | 14.62| 6.2~66.7 |
+| Terza categoria | 18.46| 6.2~50.0 |
+| Quarto tasso | 43.64| 25.0~143.8 |
+| Nuvola di punti + profondità | 28:37 | 12,5~75,0 |
+| Algoritmo + Profondità | 6,53 | 0,0~43,8 |
+| Algoritmo + Profondità + Nuvola di punti | 29.28 | 13.3~100 |
+| Algoritmo+Profondità+RGB | 13:79 | 0,0~50,0 |
+| Algoritmo + profondità + RGB + nuvola di punti | 40.64| 25.0~81.2 |
+| Algoritmo+Profondità+Intensità+RGB+Nuvola di punti | 44.44| 25.0~75.0 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 8.07| 0.0~20.0 |
+| Doppio flusso | 11:25| 0,0~33,3 |
+| Terza categoria | 16.18| 6.2~62.5 |
+| Quarto tasso | 33,77 | 0,0~86,7 |
+| Nuvola di punti + profondità | 27:45| 12.5~81.2 |
+| Algoritmo + Profondità | 6.13| 0,0~68,8 |
+| Algoritmo + profondità + nuvola di punti | 31.11 | 12,5~56,2 |
+| Algoritmo+Profondità+RGB | 11:75 | 0,0~68,8 |
+| Algoritmo + Profondità + RGB + Nuvola di punti | 38.04| 6.2~75.0 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 40,85| 18.8~106.2 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 8.05| 0,0~23,5 |
+| Doppio flusso | 11:99 | 0,0~75,0 |
+| Terza categoria | 18.08| 0,0~100 |
+| Quarto tasso | 50.06| 6.2~200 |
+| Nuvola di punti + profondità | 33,92 | 0,0~106,2 |
+| Algoritmo + Profondità | 7,70| 0,0~43,8 |
+| Algoritmo + Profondità + Nuvola di punti | 36.20| 6.2~131.2 |
+| Algoritmo + Profondità + RGB | 14.46| 6.2~37.5 |
+| Algoritmo + Profondità + RGB + Nuvola di punti | 39.07| 18.8~94.1 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 45.61| 12,5~93,8 |
+
+### 6.3 Dettagli della memoria
+
+I dettagli della memoria mostreranno la quantità di risorse di memoria occupate dal nodo in diverse condizioni operative. Il test si basa sull'ambiente hardware **AMD64 [8 core], memoria 8G**, la fotocamera del test è **M4PRO**, l'algoritmo del test è **algoritmo vassoio**, **larghezza e altezza 2D sono 1280\*960 e larghezza e altezza 3D sono 640\*480**, **anti-distorsione 2D attivo, anti-distorsione 3D disattivato, punti 110 - 3000, profondità 0 - 8000, frequenza fotogrammi TOF 14, modalità streaming, livello di livellamento 1, livello di rumore 1, livello dominio temporale 0**, il comando statistico è **TOP**. Poiché l'ambiente software di test è la **macchina virtuale VM**, è normale che i dati visualizzati dalla macchina fisica fluttuino rispetto a quelli nel documento. Per alcune fotocamere, come la S2, alcuni algoritmi vengono calcolati sul computer host, il che comporta un elevato utilizzo delle risorse, il che è normale. <br />
+
+**1. Alcuni nomi sono spiegati come segue:**
+
+-Stream singolo: si riferisce all'attivazione di qualsiasi flusso di RGB, profondità e intensità
+
+- Doppio flusso: si riferisce all'attivazione di due flussi qualsiasi di RGB, profondità e intensità
+
+-Tre flussi: si riferisce a RGB, profondità e intensità, tutti e tre i flussi sono attivati
+
+- Quattro flussi: significa che RGB, profondità, intensità e nuvola di punti sono tutti attivati
+
+**2. L'algoritmo ha una relazione vincolante con alcuni flussi. Il rapporto vincolante è il seguente:**
+
+- Per abilitare l'algoritmo pallet, è necessario abilitare la profondità
+
+- Per attivare l'algoritmo per evitare gli ostacoli, è necessario attivare la profondità
+
+- Per attivare l'algoritmo di posizionamento, è necessario attivare RGB
+
+3. Lo sfondo azzurro nella tabella è la configurazione in esecuzione con la nuvola di punti abilitata, mentre lo sfondo incolore è la configurazione in esecuzione senza nuvola di punti abilitata. **Tutti i dati dei test riportati di seguito hanno l'algoritmo spostato verso il basso per impostazione predefinita, quindi per le fotocamere della serie S2, tutti i valori dei test potrebbero essere troppo piccoli [alcuni algoritmi delle fotocamere della serie S2 sono costretti a spostarsi verso l'alto].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 0,60| 0,6~0,7 |
+| Doppio flusso | 0,61 | 0,6~0,8 |
+| Terza categoria | 0,66| 0,6~0,8 |
+| Quarto tasso | 0,79 | 0,7~0,9 |
+| Nuvola di punti + profondità | 0,60| 0,5~0,7 |
+| Algoritmo + Profondità | 0,50| 0,5~0,5 |
+| Algoritmo + profondità + nuvola di punti | 0,60| 0,5~0,7 |
+| Algoritmo + Profondità + RGB | 0,62| 0,6~0,8 |
+| Algoritmo + profondità + RGB + nuvola di punti | 0,71 | 0,6~0,9 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 0,79 | 0,7~0,9 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 1.01 | 1.1~1.2 |
+| Doppio flusso | 1.10 | 1.1~1.2 |
+| Terza categoria | 1.10 | 1.1~1.2 |
+| Quarto tasso | 1.19 | 1.1~1.3 |
+| Nuvola di punti + profondità | 1.09 | 0,9~1,2 |
+| Algoritmo + Profondità | 0,90| 0,9~1,0 |
+| Algoritmo + profondità + nuvola di punti | 1.09 | 0,9~1,2 |
+| Algoritmo + Profondità + RGB | 1.10| 1.1~1.2 |
+| Algoritmo + profondità + RGB + nuvola di punti | 1.19 | 1.1~1.3 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 1.20| 1.1~1.4 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 1.19 | 1.1~1.2 |
+| Doppio flusso | 1.27 | 1.1~1.3 |
+| Terza categoria | 1.29 | 1.2~1.3 |
+| Quarto tasso | 1,57 | 1.3~1.6 |
+| Nuvola di punti + profondità | 1.20| 1.1~1.3 |
+| Algoritmo + Profondità | 0,90| 0,9~0,9 |
+| Algoritmo + profondità + nuvola di punti | 1.10 | 1.0~1.2 |
+| Algoritmo + Profondità + RGB | 1.10| 1.1~1.2 |
+| Algoritmo + profondità + RGB + nuvola di punti | 1.30| 1.3~1.4 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 1.41| 1.3~1.6 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 1.21 | 1.2~1.4 |
+| Doppio flusso | 1.30| 1.3~1.4 |
+| Terza categoria | 1.30| 1.3~1.4 |
+| Quarto tasso | 1.33| 1.3~1.5 |
+| Nuvola di punti + profondità | 1.21 | 1.2~1.4 |
+| Algoritmo + Profondità | 1.19 | 1.1~1.2 |
+| Algoritmo + profondità + nuvola di punti | 1.22 | 1.2~1.4 |
+| Algoritmo + Profondità + RGB | 1.30| 1.3~1.4 |
+| Algoritmo + profondità + RGB + nuvola di punti | 1.32 | 1.3~1.5 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 1.33| 1.3~1.5 |
+
+<br />
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 1.20| 1.2~1.3 |
+| Doppio flusso | 1.20| 1.2~1.3 |
+| Terza categoria | 1.30| 1.3~1.4 |
+| Quarto tasso | 1,64 | 1.4~1.7 |
+| Nuvola di punti + profondità | 1.36| 1.1~1.4 |
+| Algoritmo + Profondità | 1.10 | 1.1~1.1 |
+| Algoritmo + Profondità + Nuvola di punti | 1.19 | 1.1~1.3 |
+| Algoritmo + Profondità + RGB | 1,40| 1.4~1.4 |
+| Algoritmo + profondità + RGB + nuvola di punti | 1,58| 1.4~1.7 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 1,60| 1,5~1,7 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| Esegui Configurazione | Media % | Intervallo % |
+| Flusso singolo | 1.28 | 1.1~1.3 |
+| Doppio flusso | 1.29 | 1.2~1.3 |
+| Terza categoria | 1.20| 1.2~1.3 |
+| Quarto tasso | 1.49| 1.4~1.6 |
+| Nuvola di punti + profondità | 1.11 | 1.1~1.2 |
+| Algoritmo + Profondità | 1.00| 1.0~1.0 |
+| Algoritmo + Profondità + Nuvola di punti | 1.11 | 1.1~1.2 |
+| Algoritmo + Profondità + RGB | 1.20| 1.2~1.3 |
+| Algoritmo + profondità + RGB + nuvola di punti | 1,55| 1.3~1.6 |
+| Algoritmo + profondità + intensità + RGB + nuvola di punti | 1,51 | 1.3~1.7 |
+
+* * *
+
+## Appendice:
+
+Questa appendice fornisce i metodi di installazione per alcuni strumenti. Quando si utilizzano questi metodi, è necessario avere almeno una conoscenza di base di Linux. Non vi è alcuna garanzia che ogni computer possa essere installato con successo tramite i metodi indicati nell'appendice di questo documento. L'ambiente di ciascun computer è diverso e i problemi riscontrati potrebbero non essere coerenti. Se si riscontrano problemi non mostrati in questa appendice, cercare personalmente le soluzioni.
+
+### 1. Cmake ha specificato il metodo di installazione della versione
+
+Vai su https://cmake.org/download/ e scarica la versione CMake richiesta. Estrai il pacchetto scaricato con `tar -zxvf cmake-XXX.tar.gz`. Inserisci la directory estratta, quindi compilala e configurala:
+
+./bootstrap
+
+Fare
+
+sudo make install
+
+Controlla la versione di Cmake per vedere se l'installazione ha avuto successo:
+
+cmake --version
+
+### 2. Metodo di installazione della versione specificato da Opencv
+
+1. Scarica la versione richiesta di opencv: [Rilasci-OpenCV](https://opencv.org/releases/ "Rilasci-OpenCV")
+
+<Frame>
+  <img src="/images/legacy/d3e046da-7815-4104-b3a1-adf631bafe51/2d28d6a9-5d74-4359-81ce-05c52472893f.avif" alt="Illustrazioni relative al metodo di installazione della versione specificata di Opencv" />
+</Frame>
+
+2. Configurazione dell'ambiente, eseguire in sequenza i seguenti comandi:
+
+sudo apt-get install build-essential
+
+sudo apt-getinstallcmake gitlibgtk2.0-devpkg-config libavcodec-dev
+
+libavformat-dev libswscale-dev
+
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev
+
+libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+
+3. Crea una nuova cartella opencv ed estrai il codice sorgente scaricato nella cartella opencv.
+
+4. Esegui i seguenti comandi in sequenza:
+
+1.   cd opencv
+
+2.   mkdir build && cd build
+
+3.   sudocmake-DCMAKE\_BUILD\_TYPE=Release-D
+
+4.   CMAKE\_INSTALL\_PREFIX=/usr/local ..
+
+5.   sudo make -j4
+
+6. sudo make install e attendere il completamento dell'installazione
+
+### 3. Metodo di installazione della versione specificata da Pcl
+
+1. Controlla la versione pcl supportata:
+
+apt-cache madison libpcl-dev
+
+2. Installare la versione pcl specificata (dove 1.10.0 deve essere sostituito con il numero di versione richiesto):
+
+sudo apt-get install libpcl-dev=1.10.0
+
+### 4. Installa ROS
+
+**Ubuntu16.04**
+
+1. Aggiungi la sorgente del software e imposta la chiave segreta:
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb\_release -sc) main" >
+
+/etc/apt/sources.list.d/ros-latest.list'
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. Aggiungi chiave segreta:
+
+ricciolo -sSL
+
+'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -
+
+3. Fonte aggiornamento:
+
+sudo apt-get update
+
+4. Installa il ros completo:
+
+sudo apt-get install ros-cinetica-desktop-full
+
+5. Configura le variabili di ambiente:
+
+echo "fonte /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+
+fonte ~/.bashrc
+
+6. Strumenti completi relativi al ROS:
+
+sudoaptinstallpython-rosinstallpython-rosinstall-generatorpython-wstool
+
+costruire-essenziale
+
+7. Ora che l'installazione di ROS1 è completa, esegui l'esempio fornito con ROS per verificare se l'installazione è corretta:
+
+Apri un terminale e inserisci: roscore
+
+Apri un altro terminale e inserisci: rosrun Turtlesim Turtlesim\_node
+
+Apri un altro terminale: rosrun Turtlesim Turtle\_teleop\_key
+
+Nel terzo terminale potrai controllare la piccola tartaruga tramite i tasti freccia
+
+Se funziona normalmente come mostrato di seguito, significa che ros è stato installato correttamente:
+
+![Icone relative all'installazione ROS](/images/legacy/3d11257d-8a56-4528-9adf-48a67ba0bf1a/8d373554-c663-433d-9777-a7513a35ac18.avif)<br />
+
+**Ubuntu18.04**
+
+1. Configurare l'origine del software:
+
+sudo sh -c '. /etc/lsb-release && echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu/
+
+\`lsb\_release -cs\` principale" > /etc/apt/sources.list.d/ros-latest.list'
+
+2.Impostare la chiave pubblica:
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+3. Aggiorna l'elenco dei software:
+
+aggiornamento sudo apt
+
+4. Installa la versione Ubuntu18.04 di ROS1:
+
+sudo apt install ros-melodic-desktop-full
+
+5. Imposta le variabili di ambiente:
+
+echo "fonte /opt/ros/melodic/setup.bash" >> ~/.bashrc
+
+source ~/.bashrc se è zsh:
+
+echo "fonte /opt/ros/melodic/setup.bash" >> ~/.zshrc
+
+fonte ~/.zshrc
+
+6. Strumenti completi relativi al ROS:
+
+sudoaptinstallpython-rosdeppython-rosinstallpython-rosinstall-generator
+
+python-wstool build-essenziale
+
+7. Ora che l'installazione di ROS1 è completa, esegui l'esempio fornito con ROS per verificare se l'installazione è corretta:
+
+Apri un terminale e inserisci: roscore
+
+Apri un altro terminale e inserisci: rosrun Turtlesim Turtlesim\_node
+
+Apri un altro terminale: rosrun Turtlesim Turtle\_teleop\_key
+
+Nel terzo terminale potrai controllare la piccola tartaruga tramite i tasti freccia
+
+Se funziona normalmente come mostrato di seguito, significa che ros è stato installato correttamente:
+
+<Frame>
+  <img src="/images/legacy/f26533a7-6cb6-4b2e-acc1-73b29d6be0c0/69dc44fe-daa1-4f18-b8b7-2cfa263eba56.avif" alt="Icone relative al ROS di installazione 2" />
+</Frame>
+
+**Ubuntu20.04**
+
+1. Configura la chiave pubblica:
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. Se mostra che non è possibile connettersi al server o va in timeout, aggiornare prima l'elenco delle fonti del software:
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+3. Dopo aver configurato la chiave pubblica, aggiornare nuovamente l'elenco dei software:
+
+sudo apt-get update installa ros:
+
+sudo apt install ros-noetic-desktop-full
+
+4. Imposta le variabili di ambiente:
+
+echo "fonte /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
+fonte ~/.bashrc
+
+5. Installa gli strumenti ROS:
+
+sudo apt installa python3-rosinstall python3-rosinstall-generator python3-wstool
+
+costruire-essenziale
+
+6. Ora che l'installazione di ROS1 è completa, esegui l'esempio fornito con ROS per verificare se l'installazione è corretta:
+
+Apri un terminale e inserisci: roscore
+
+Apri un altro terminale e inserisci: rosrun Turtlesim Turtlesim\_node
+
+Apri un altro terminale: rosrun Turtlesim Turtle\_teleop\_key
+
+Nel terzo terminale potrai controllare la piccola tartaruga tramite i tasti freccia
+
+Se funziona normalmente come mostrato di seguito, significa che ros è stato installato correttamente:
+
+<Frame>
+  <img src="/images/legacy/c8bfbdc9-0afd-492c-8cb6-b120620de403/b86be7d4-19c9-4e07-84d9-8fff9ca86784.avif" alt="Icone relative al ROS di installazione 3" />
+</Frame>
+
+**Ubuntu22.04**
+
+Non è consigliabile installare ros1 in Ubuntu22.04. Non è ufficialmente supportato. Se vuoi installarlo, incontrerai molti problemi di dipendenza.
+
+### 5. Come creare un nuovo pacchetto di test in Ros
+
+1. Crea una nuova cartella ws, crea una nuova cartella src nella cartella ws, entra nella cartella src ed esegui:
+
+catkin\_create\_pkg esempio std\_msgs rospy roscpp
+
+2. Questo crea un nuovo pacchetto chiamato example, che dipende da std\_msgs rospy roscpp
+
+3. Quindi compila questo nuovo pacchetto: catkin\_make Questo è un pacchetto vuoto, non ci sarà alcun programma eseguibile, è solo un pacchetto
+
+4. Successivamente, dimostreremo come creare un pacchetto in grado di restituire "Hellow world"
+
+5. Basandosi sul pacchetto poc'anzi, entriamo nella cartella src (src nel pacchetto) e creiamo un nuovo main.cpp, come mostrato di seguito (presta attenzione al percorso):
+
+<Frame>
+  <img src="/images/legacy/ee08a349-2fff-4dd3-b863-f274d9c29dc3/1ae48041-e02b-4d47-a60e-2b96e1139c48.avif" alt="Illustrazione di come creare un nuovo pacchetto di test in Ros" />
+</Frame>
+
+6. In main.cpp inseriamo alcuni codici:
+
+<Frame>
+  <img src="/images/legacy/50c938eb-24b1-4e23-a5b3-b514cf345318/3a756c2e-f7c7-4638-8066-53fda788669d.avif" alt="Ros Come creare un nuovo pacchetto di test Illustrazione correlata 2" />
+</Frame>
+
+7. Quindi modifichiamo il CMakeLists.txt esterno e aggiungiamo una riga in basso: add\_executable(example src/main.cpp)
+
+<Frame>
+  <img src="/images/legacy/a0ed2fe3-bfde-4578-827c-ac7ad8abc037/91074ddf-541e-4889-b5d4-f7abc025f022.avif" alt="Ros Come creare un nuovo pacchetto di test Illustrazione correlata 3" />
+</Frame>
+
+8. Quindi torna alla directory ws per compilare ed eseguire il comando: catkin\_make
+
+<Frame>
+  <img src="/images/legacy/feb3446d-3ec4-43f4-9cc8-d4f1df209c32/b59894a1-17b5-4acd-9ee4-1d3fd1829e87.avif" alt="Ros Come creare un nuovo pacchetto di test Illustrazione correlata 4" />
+</Frame>
+
+9. Vederli significa che la compilazione è avvenuta con successo.
+
+10. Successivamente configuriamo l'ambiente:
+
+sorgente devel/setup.bash
+
+<Frame>
+  <img src="/images/legacy/725e5d72-2f1d-4ebd-acf3-27579745f4c6/a8859a9f-e2a8-462f-a9c6-117a67b8407f.avif" alt="Ros Come creare un nuovo pacchetto di test Illustrazioni correlate 5" />
+</Frame>
+
+11. Quindi esegui il programma e puoi vedere l'output:
+
+esempio di esempio di rosrun
+
+<Frame>
+  <img src="/images/legacy/92b5ba9d-a46e-4a76-a64e-d3bc9f30fd85/2b3a3a35-ad76-41a0-a913-c5fdb14faf8b.avif" alt="Ros Come creare un nuovo pacchetto di test Illustrazioni correlate 6" />
+</Frame>
+
+### 6. Installa ROS2
+
+**Ubuntu16.04**
+
+1. Aggiungi chiave segreta:
+
+sudo apt-get update && sudo apt-get install curl
+
+arricciatura http://repo.ros2.org/repos.key | sudo apt-key add -
+
+2. Aggiungi autorizzazioni:
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+curl-shttps://raw.githubusercontent.com/ros/rosdistro/master/ros.asc|sudo
+
+aggiunta chiave apt -
+
+3. Se in questo passaggio viene segnalato un errore, utilizzare la VPN per aggirare il muro, quindi aprire il browser, inserire l'URL e copiare il contenuto, quindi creare un nuovo ros.asc e copiare il contenuto nel file. Una volta completata la copia, quanto segue è quanto segue:
+
+<Frame>
+  <img src="/images/legacy/eb472a71-b8d3-4dbf-9cce-fdf92f2e45cd/fbc3fcf1-5772-4fbe-9f61-283841222501.avif" alt="Icone relative all'installazione di ROS2" />
+</Frame>
+
+4. Quindi rieseguire il passaggio 3: sudo apt-key add ros.asc
+
+5. Continua l'esecuzione:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionico
+
+principale" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Installa ROS2:
+
+aggiornamento sudo apt
+
+sudo apt installa ros-ardent-desktop
+
+7. Configurare le variabili di ambiente:
+
+fonte /opt/ros/ardent/setup.bash
+
+8. Installare il pacchetto di funzioni:
+
+sudo apt-get update
+
+sudo apt-get install ros-ardent-ros1-bridge sudo apt-get install ros-ardent-turtlebot2-\*
+
+9. Prova a eseguire il programma di esempio, apri un terminale ed esegui:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_cpp talker
+
+10. Apri un altro interrupt da eseguire:
+
+fonte~/.bashrc
+
+ros2 esegue demo\_nodes\_cpp talker
+
+11. Il seguente output del terminale dimostra che l'installazione è riuscita:
+
+<Frame>
+  <img src="/images/legacy/6300cf50-e7ee-44ca-bf76-dfc90bb2023e/5dec0721-d4fe-4663-b8bc-9af8bd5652d3.avif" alt="Installazione icone relative a ROS2 2" />
+</Frame>
+
+**Ubuntu 18.04：**
+
+1. Aggiungi la fonte del software
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+arricciatura -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
+
+sudo apt-key aggiungi ros.asc
+
+2. Se questo passaggio segnala un errore come segue:
+
+<Frame>
+  <img src="/images/legacy/660825ae-43a4-40e9-9ae4-183e6c0b1423/53f54e64-41ea-4342-9f85-bd68f3f6b68a.avif" alt="Installazione icone relative a ROS2 3" />
+</Frame>
+
+3. Utilizza la VPN per aggirare il muro, quindi apri il browser, inserisci l'URL e copia il contenuto, quindi crea un nuovo ros.asc e copia il contenuto nel file. Una volta completata la copia, risulta quanto segue:
+
+<Frame>
+  <img src="/images/legacy/c8abece0-d058-4ef3-a421-6d4860d7226e/2ee8fca9-e7ed-48ef-8374-09591a96e223.avif" alt="Icone relative all'installazione di ROS2 4" />
+</Frame>
+
+4. Quindi rieseguire il passaggio 3: sudo apt-key add ros.asc
+
+5. Continua l'esecuzione:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionico
+
+principale" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Al termine, avviare il download di ros2, in cui i caratteri rossi devono essere sostituiti con versioni diverse (vedere la tabella sopra):
+
+aggiornamento sudo apt
+
+sudo apt installa ros-eloquent-desktop
+
+7. Attendi il completamento dell'installazione e continua a installare la libreria Python. Esegui: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+Quindi configura le variabili d'ambiente:
+
+echo "fonte /opt/ros/eloquent/setup.bash" >> ~/.bashrc
+
+fonte ~/.bashrc
+
+8. Prova a eseguire il programma di esempio, apri un terminale ed esegui:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_cpp talker
+
+9. Apri un altro interrupt da eseguire:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_py listener
+
+10. Il seguente output del terminale dimostra che l'installazione è riuscita:
+
+<Frame>
+  <img src="/images/legacy/c50b5dd8-70b2-4f89-b0e4-5027fe5be13b/08fe8eb2-4571-4661-afa7-4677cb4edb89.avif" alt="Installazione icone relative a ROS2 5" />
+</Frame>
+
+**Ubuntu20.04**
+
+1. Aggiungi la fonte del software
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o
+
+/usr/share/keyrings/ros-archive-keyring.gpg
+
+2. Se riscontri l'errore "Impossibile connettersi alla porta 443 di raw.githubusercontent.com dopo 13 ms: connessione rifiutata"
+
+<Frame>
+  <img src="/images/legacy/16d8d901-e09b-48ac-8ae9-da5d3b863635/6a891b3e-2997-42bb-9ab1-fc8a0d3d593c.avif" alt="Installazione icone relative a ROS2 6" />
+</Frame>
+
+sudo vi/etc/hosts
+
+3. Aggiungi la seguente analisi
+
+185.199.108.133raw.githubusercontent.com
+
+4. I file aggiunti sono i seguenti:
+
+<Frame>
+  <img src="/images/legacy/7bebf4a5-5d39-4e23-b605-ec8b38e65e95/a07bee8b-6342-418b-950b-68dd9ca834ee.avif" alt="Installazione icone relative a ROS2 7" />
+</Frame>
+
+echo"deb\[arch=(source/etc/os-release&&echo$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+5. Continua l'esecuzione:
+
+sudo sh -c 'echo "deb \[arch=amd64\] http://packages.ros.org/ros2/ubuntu bionicmain" > /etc/apt/sources.list.d/ros2-latest.list'
+
+6. Al termine, avvia il download di ros2:
+
+aggiornamento sudo apt
+
+sudo apt installa ros-foxy-desktop
+
+7. Attendi il completamento dell'installazione e continua a installare la libreria Python. Esegui: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+8. Quindi configurare le variabili di ambiente:
+
+echo "fonte /opt/ros/foxy/setup.bash" >> ~/.bashrc
+
+fonte ~/.bashrc
+
+9. Prova a eseguire il programma di esempio, apri un terminale ed esegui:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_cpp talker
+
+10. Apri un altro interrupt da eseguire:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_py listener
+
+11. Il seguente output del terminale dimostra che l'installazione è riuscita:
+
+<Frame>
+  <img src="/images/legacy/a153e598-f450-4ac3-841a-36fc9776aec2/50194f24-ca34-4381-903a-2d5a177fa42b.avif" alt="Installazione icone relative a ROS2 8" />
+</Frame>
+
+**Ubuntu22.04**
+
+1. Aggiungi la fonte del software
+
+sudo apt update && sudo apt install curl gnupg lsb-release
+
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpgecho"deb\[arch=(source/etc/os-release&&echo$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+2. Se riscontri l'errore "Impossibile connettersi alla porta 443 di raw.githubusercontent.com dopo 13 ms: connessione rifiutata"
+
+<Frame>
+  <img src="/images/legacy/c5a24421-eb52-4af9-9102-33af57a00d3d/0382935f-fa16-4229-bd57-9d38b3e46e18.avif" alt="Installazione icone relative a ROS2 9" />
+</Frame>
+
+sudo vi /etc/hosts aggiunge la seguente analisi
+
+185.199.108.133raw.githubusercontent.com
+
+I file aggiunti sono i seguenti:
+
+<Frame>
+  <img src="/images/legacy/c6c35f7f-33d7-4814-9ff6-f8a91befa7b3/296da332-90b4-4556-90f7-d919649c20db.avif" alt="Installazione icone relative a ROS2 10" />
+</Frame>
+
+3. Al termine, avvia il download di ros2: sudo apt update
+
+sudo apt installa ros-humble-desktop
+
+4. Attendi il completamento dell'installazione e continua a installare la libreria Python. Esegui: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+5. Quindi configurare le variabili di ambiente:
+
+echo "fonte /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+fonte ~/.bashrc
+
+6. Prova a eseguire il programma di esempio, apri un terminale ed esegui:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_cpp talker
+
+7. Apri un altro interrupt da eseguire:
+
+fonte ~/.bashrc
+
+ros2 esegue demo\_nodes\_py listener
+
+8. Il seguente output del terminale dimostra che l'installazione è riuscita:
+
+<Frame>
+  <img src="/images/legacy/bc04fff4-66a4-4006-8ae5-a26fcf98c644/d77d3f8f-675c-4168-8621-182458b8f9cc.avif" alt="Installazione icone relative a ROS2 11" />
+</Frame>
+
+### 7. Come creare un nuovo pacchetto di test in Ros2
+
+1. Esegui il comando:
+
+Esempio mkdir\_ws && Esempio cd\_ws
+
+ros2 pkg create --build-type ament\_cmake --node-name example\_n example\_p
+
+costruzione del colcon
+
+sorgente install/setup.bash
+
+ros2 esegui esempio\_p esempio\_n
+
+2. È possibile creare un nuovo pacchetto denominato esempio\_p e un nodo denominato esempio\_n. Dopo l'esecuzione, verrà restituito: ciao mondo esempio\_p pacchetto
+
+<br />
+
+* * *
+
+Non esitare a contattarci attraverso i seguenti metodi:
+
+- Se non hai ancora acquistato il prodotto, [Cliccami](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Cliccami") per aggiungere un account WeChat di tecnico pre-vendita/impresa di vendita
+
+- Utenti che hanno acquistato prodotti, si prega di [cliccami](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "cliccami") per aggiungere il supporto tecnico post-vendita aziendale WeChat
+
+- **Sito ufficiale**: [www.mrdvs.cn](https://www.mrdvs.cn "www.mrdvs.cn")
+
+- **Sito ufficiale**: [www.mrdvs.cn](https://www.mrdvs.cn "www.mrdvs.cn")
+
+- **Bilibili**: [Fornire tutorial video e casi applicativi](https://space.bilibili.com/3546755102672963 "Fornire tutorial video e casi applicativi")
+
+- **Bilibili** : [Fornisce tutorial video e casi applicativi](https://space.bilibili.com/3546755102672963 "Fornisce tutorial video e casi applicativi")
+
+- **Github**: [Scarica SDK e codice di esempio](https://github.com/Lanxin-MRDVS/CameraSDK "Scarica SDK e codice di esempio")
+
+- **GitHub**: [Scarica SDK e codice di esempio](https://github.com/Lanxin-MRDVS/CameraSDK "Scarica SDK e codice di esempio")
+
+- **E-mail**: [service@mrdvs.com](mailto:service@mrdvs.com "service@mrdvs.com")
+
+- **E-mail**: [service@mrdvs.com](mailto:service@mrdvs.com "service@mrdvs.com")
+
+- ：400-025-6680
+
+- Segui l'account pubblico ufficiale per ottenere le informazioni più recenti:
+
+<Frame>
+  <img src="/images/legacy/b09a1037-0272-4bd7-9e1a-903fef1ae4ba/033d184a-016f-47a7-ae2d-66a7ec774555.avif" alt="Illustrazioni correlate su come creare un nuovo pacchetto di test in Ros2" />
+</Frame>
+
+* * *
+
+Utilizza questa documentazione per saperne di più sui prodotti e sulle soluzioni MRDVS.
+
+<br />

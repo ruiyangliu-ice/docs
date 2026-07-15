@@ -1,0 +1,477 @@
+---
+title: "Ссылка на интерфейс V2 ROS 1"
+description: "Создайте и запустите пакет SDK локализации V2 ROS 1, а также используйте его разделы и службы."
+hidden: true
+---
+## 1: Компилировать
+
+### 1. Убедитесь, что QT5 установлен на главном компьютере. Для компиляции требуются Core, Network и другие функциональные пакеты в QT5.
+
+```cpp
+// Installation differs by Linux distribution. This example uses:
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+### 2. Установите функциональный пакет libzip
+
+Загрузите исходный файл (https://libzip.org/download/) с официального сайта libzip, а затем скомпилируйте его в соответствии с руководством на официальном сайте.
+
+### 3. Скомпилируйте пакет функций ros
+
+Скомпилируйте, используя инструкцию `catkin_make` в пути /V2-ROS-SDK-service (тот же уровень, что и /src).).
+
+## 2: Бежать
+
+Перед запуском примера ROS, если в камере развернут главный-подчиненный ROS, необходимо сначала отключить настройки, связанные с главным-подчиненным ROS, в противном случае возникнут исключения связи, связанные с ROS. Если в камере установлена ​​среда ROS, вам необходимо подождать около 20 секунд после включения камеры, прежде чем запускать пример программы ROS.
+
+Этапы создания узла ROS:
+
+1. Войдите в каталог файла программного кода примера `home/username/V2_ROS_SDK` и запустите команду на том же уровне, что и папка src.
+
+2. серёжка\_make
+
+3. исходный код devel/setup.bash
+
+## Третий: интерфейс темы ROS
+
+Классификация по функциям следующая:
+
+Этап картирования:
+
+1. Интерфейс включения картографии
+
+2. Интерфейс получения статуса сопоставления
+
+3. Получение интерфейса прогресса сопоставления
+
+Этап позиционирования:
+
+1. Интерфейс перемещения
+
+2. Получение интерфейса статуса позиционирования
+
+2. Интерфейс переключения карты
+
+Исключения, настройка параметров и другие интерфейсы:
+
+1. Настройка интерфейса параметров
+
+2. Получите интерфейс пространства на жестком диске, используемый камерой в данный момент.
+
+3. Получите текущее имя неисправного модуля.
+
+4. Загрузите интерфейс контурной карты (только лазерный контур)
+
+5. ZIP-интерфейс загрузки файла карты (новый)
+
+Перед тестированием интерфейса необходимо включить корпус камеры (подождать 30 секунд запуска программы тела) и открыть узел ROS SDK (см. предыдущий раздел).
+
+### Получение интерфейса позиционирования и осанки
+
+1. ROS продолжает получать значения позиционирования x, y, theta, отправленные с камеры.
+
+2. Опубликуйте значения позиционирования x, y и кватерниона (преобразованные из тета) в тему: `LxCamera_LocationPoseResult`.
+
+3. Передача значения позиционирования и кватерниона посредством преобразования TF.
+
+```cpp
+rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+```
+
+### Получение интерфейса статуса позиционирования
+
+1. ROS продолжает получать \*\*(частота: 1 с)\*\* статус позиционирования «`true/false`», отправленный с камеры, указывающий, является ли текущее позиционирование нормальным.
+
+2. ROS публикует статус позиционирования (данные типа `std_msgs::Bool`) в теме: `LxCamera_LocationResult`.
+
+3. Статус позиционирования можно получить подписавшись на тему (успешно ли текущее позиционирование)
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_LocationResult
+```
+
+### Получите интерфейс пространства на жестком диске, используемый текущей камерой.
+
+1. ROS продолжает получать\*\*(частота: 2 с)\*\*коэффициент использования дискового пространства, отправленный с камеры.
+
+2. ROS публикует статус занятости (данные типа `std_msgs::Float32`) в теме: `LxCamera_Capacity_Status`.
+
+3. Вы можете получить долю занятого статуса, подписавшись на тему.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+### Получить текущее имя неисправного модуля
+
+1. ROS продолжает отправлять с камеры неправильные имена модулей.
+
+2. ROS публикует статус занятости (данные типа `std_msgs::String`) в теме: `LxCamera_Module_Error`.
+
+3. Вы можете получить название модуля исключений, подписавшись на тему.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Module_Error
+```
+
+### Интерфейс получения статуса сопоставления
+
+1. После начала построения карты
+
+2. ROS публикует статус позиционирования (данные типа `std_msgs::Bool`) в теме: `LxCamera_MappingState`.
+
+3. Вы можете переключить статус сопоставления, подписавшись на тему.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_MappingState
+```
+
+#### Интерфейс выполнения сопоставления получения
+
+1. После начала построения карты
+
+2. ROS2 публикует статус позиционирования (данные типа `std_msgs::Int32`) в теме: `LxCamera_Mapping_Progress`.
+
+3. Прогресс построения карты (0-100) вы можете узнать, подписавшись на тему.
+
+```bash
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
+```
+
+### Интерфейс настройки параметров
+
+1. Пользователь публикует сообщение типа `std_msgs/String` в теме: `LxCamera_SetParam`.
+
+2. Формат сообщения — 9 чисел с плавающей запятой, разделенных английскими запятыми «,», которые соответственно обозначают: `x,y,z,yaw,pitch,roll,x,y,yaw`, **Первые 6 параметров — это поза камеры, а последние 3 — поза лидара**.
+
+3. После успешного изменения соответствующие параметры в \[Laser1\] и \[Camera1\] в файле пути камеры `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` будут установлены. Пример:
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
+```
+
+### Интерфейс карты переключения
+
+1. Пользователь публикует сообщение типа `std_msgs/String` в теме: `LxCamera_SwitchMap`.
+
+2. Формат сообщения — название карты (**при условии, что построение карты завершено в камере**)
+
+3. Если карта, отображаемая на веб-странице камеры, изменилась (обновите веб-страницу), переключение выполнено успешно.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
+```
+
+### Загрузить одометр
+
+1. Пользователь публикует данные типа `nav_msgs::Odometry` в теме: `/sim/odom` (можно изменить)
+
+rostopic pub /odom nav\_msgs/Odometry "header: seq: 0 штамп: секунды: 0 нс: 0 кадр\_id: 'odom' child\_frame\_id: 'base\_link' поза: поза: позиция: x: 1.0 y: 2.0 z: 0.0 ориентация: x: 0.0 y: 0.0 z: 0,0 w: 1,0 ковариация: \[0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] скручивание: скручивание: линейное: x: 0,5 y: 0,0 z: 0,0 угловое: x: 0,0 y: 0,0 z: 0,1 ковариация: \[0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
+```
+
+### Загрузить интерфейс контурной карты
+
+1. Пользователь публикует сообщение типа `std_msgs/String` в теме: `LxCamera_DownloadMap`.
+
+2. Формат сообщения — адрес сохранения и имя карты, разделенные запятыми «,». Адрес — это адрес на главном компьютере, использующий абсолютный путь; имя карты — это имя файла в формате «.zip», отображение которого в камере завершено.
+
+3. После успеха по пути, указанному вашим хост-компьютером, появится сжатый пакет с указанным именем карты. После распаковки вы получите `PGM map file` и `YAML configuration file`.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
+```
+
+### ZIP-интерфейс загрузки файла карты (новый)
+
+1. Пользователь публикует сообщение типа `std_msgs/String` в теме: `LxCamera_UploadMapZip`.
+
+2. Содержимое сообщения — это **путь к сжатому пакету карты**, который необходимо загрузить, например: «/home/fr1511b/map.zip», и необходимо загрузить сжатый пакет, загруженный из интерфейса загрузки.
+
+3. Если файл карты найден, упакуйте его и отправьте в камеру. После его получения камера распакует его по указанному пути: `/home/fr1511b/hontai/map/`.
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
+```
+
+### Интерфейс перемещения
+
+1. Пользователь публикует данные типа `geometry_msgs::PoseWithCovarianceStamped` в теме: `LxCamera_UploadReloc`.
+
+2. Данные представляют собой лазерную позу, в том числе: `x,y,yaw`.
+
+3. Если положение тела, отображаемое на веб-странице камеры, обновится до отправленного положения, перемещение будет успешным.
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
+header:
+  frame_id: ''
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0
+      y: 0
+      z: -0.694658
+      w: 0.71934
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+> К кватернионам предъявляются требования к ограничениям во время тестирования, и их нельзя заполнить по желанию. Вы можете использовать [Веб-инструмент](https://www.itutool.com/tools/euler-quaternion-converter "Веб-инструмент") для преобразования `Euler yaw angle` в `quaternion x/y/z/w`.
+
+## Интерфейс службы ROS:
+
+Хотя четыре функции сопоставления, переключения карт, загрузки карт и перемещения реализованы с использованием вышеуказанной темы (ROS TOPIC), он также поддерживает использование интерфейса службы (ROS SERVICE) для передачи и обратной связи о результатах ответа службы (успешно ли операция). По сравнению с TOPIC в приоритете рекомендуется использовать следующие сервисные интерфейсы
+
+1. Подписаться на интерфейс сервиса через команду rosservice.
+
+2. Если возвращается «истина», это означает, что операция прошла успешно, а если возвращается «ложь», это означает, что операция не удалась.
+
+Классификация по функциям следующая:
+
+Этап картирования:
+
+1. Картирование
+
+2. Выход из картографии
+
+3. Инкрементальное картографирование (то есть инкрементное картографирование существующих карт и автоматическое объединение)
+
+Этап позиционирования:
+
+1. Интерфейс перемещения
+
+2. Переключение карт
+
+Другие интерфейсы:
+
+1. Получите текущее название карты.
+
+2. Загрузите карту
+
+3. Получите текущий список карт.
+
+4. Удалить карту
+
+5. Загрузите тепловую карту
+
+### Картирование
+
+Имя службы: `/lx_localization_node/LxCamera_Mapping_srv`
+
+Определение формата услуги:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
+mapname: 'test_map'"
+```
+
+### Переключить карту
+
+Имя службы: `/lx_localization_node/LxCamera_SwitchMap_srv`
+
+Определение формата услуги:
+
+```cpp
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
+```
+
+### Скачать карту
+
+Имя службы: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Определение формата услуги:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
+save_path: '/home/fr1511b/T/TEST'"
+```
+
+### Переезд
+
+Имя службы: `/lx_localization_node/LxCamera_UploadReloc_srv`
+
+Определение формата услуги:
+
+```cpp
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+  header:
+    seq: 0
+    stamp:
+      secs: 0
+      nsecs: 0
+    frame_id: 'map'
+  pose:
+    pose:
+      position:
+        x: 4.5
+        y: -15.5
+        z: 0.0
+      orientation:
+        x: 0.0
+        y: 0.0
+        z: 0.694658
+        w: 0.71934
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+### Получить текущее название карты
+
+Имя службы: `/lx_localization_node/LxCamera_GetCurMapname_srv`
+
+Определение формата услуги:
+
+```cpp
+bool get_cur_mapname #Retrieve the current map identifier
+---
+string mapname     #Current map name
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+### Получить текущий список карт
+
+Имя службы: `/lx_localization_node/LxCamera_GetMapList_srv`
+
+Определение формата услуги:
+
+```cpp
+bool get_map_list # Whether to retrieve the map list
+---
+string[] map_list # Map list
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
+```
+
+### Отображение выхода (индивидуальный интерфейс)
+
+Имя службы: `/lx_localization_node/LxCamera_ExitMapping_srv`
+
+Определение формата услуги:
+
+```cpp
+bool exit_mapping #Whether to exit mapping
+---
+bool state #Whether mapping exited successfully
+```
+
+Отладка инструкций:
+
+вызов rosservice /lx\_localization\_node/LxCamera\_ExitMapping\_srv "exit\_mapping: true"
+
+### Удалить карту
+
+Имя службы: `/lx_localization_node/LxCamera_EraseMap_srv`
+
+Определение формата услуги:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+---
+bool result #Whether the map was deleted successfully
+```
+
+Отладка инструкций:
+
+вызов россервиса /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "имя карты: 'TEST888'"
+
+### Загрузить тепловую карту
+
+Имя службы: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Определение формата услуги:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+Отладка инструкций:
+
+вызов rosservice /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "имя_карты: 'TEST\_999' save\_path: '/home/fr1511b/T/TEST'"
+
+### Инкрементальное сопоставление
+
+Имя службы: `/lx_localization_node/LxCamera_IncMapping_srv`
+
+Определение формата услуги:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Отладка инструкций:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
+mapname: 'test_map'"
+```

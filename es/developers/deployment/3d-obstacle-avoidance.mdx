@@ -1,0 +1,548 @@
+---
+title: "Implemente la evitación de obstáculos visual en 3D"
+description: "Implemente y configure cámaras ToF MRDVS Serie S para evitar obstáculos en 3D en tiempo real."
+---
+## 1. Descripción general
+
+La evitación visual de obstáculos se basa en las cámaras de la serie S y las cámaras RGBD de desarrollo propio de Meyer Micro Vision basadas en el principio TOF. Integra aprendizaje profundo y algoritmos tradicionales de visión 3D para crear un sistema para evitar obstáculos que es adecuado para escenas ricas, preciso, en tiempo real, configurable por una sola máquina, colaborativo entre varias máquinas y tiene un cierto grado de iniciativa y previsibilidad.
+
+El sistema tiene las siguientes características: detección dinámica en tiempo real, detección terrestre adaptativa, seguimiento dinámico de objetivos de detección, admite múltiples salidas de señal, admite conmutación de múltiples modos, puede admitir 5 modos y admite trabajo colaborativo con varias máquinas.
+
+## 2. Instalación y selección de cámaras.
+
+### 2.1 Anular AMR
+
+Como se muestra en la figura siguiente, la cámara del vehículo que acecha está instalada relativamente baja. Se recomienda utilizar la cámara de la serie S10, que se instala en la superficie delantera del vehículo que está al acecho en la dirección del movimiento. Al diseñar la estructura, preste atención a evitar interferencias con el campo de visión.
+
+<Frame>
+  <img src="/images/legacy/2113c3b1-8f9d-41f4-ba4f-41d0f64ffc71/d803278d-67a2-4a78-a7ca-72e86b149803.avif" alt="Figura 2.1 Coche al acecho" />
+</Frame>
+
+### 2.2 Carretilla elevadora
+
+Como se muestra en la Figura 2.2, la cámara inteligente para montacargas está instalada relativamente alta. Se recomienda utilizar la cámara de la serie S10, que se instala en la cámara del mástil del montacargas en un ángulo de 30°-55° hacia abajo, de modo que el borde del campo de visión de la cámara quede justo en la superficie frontal del montacargas. Se recomienda que la altura de instalación de la cámara no sea superior a 2 m.
+
+<Frame>
+  <img src="/images/legacy/df29f779-2887-4494-8cd5-66a35fcbb05f/4d1053b7-cf49-4285-9a5e-232eef95b067.avif" alt="Figura 2.2 Montacargas" />
+</Frame>
+
+## 3. Configuración de conexión de la cámara
+
+1. Antes de conectar la cámara, debe realizar los siguientes ajustes. La IP de fábrica de la cámara es 192.168.100.82. Antes de conectarse, debe configurar la IP del puerto de la red local en el mismo segmento de red, como se muestra en la Figura 3.1.
+
+<Frame>
+  <img src="/images/legacy/616df060-87e3-4812-8831-66b833e1f280/9aa43694-2c5f-456e-9552-c344b873acb4.avif" alt="Figura 3.1 Configuración de IP cerrada" />
+</Frame>
+
+2. Desactive el firewall, como se muestra en la Figura 3.2.
+
+<Frame>
+  <img src="/images/legacy/ccd4abae-1a00-4de4-b597-418920f24dca/99c52d00-ab91-4390-a1d5-ab1ef334f411.avif" alt="Figura 3.2 Cortafuegos cerrado" />
+</Frame>
+
+3. Si necesita modificar la IP de la cámara, puede abrir el software para PC "**LxCameraViewer**", hacer clic en "**Otras herramientas**", relacionado con la red → herramienta de configuración de IP → hacer clic en la dirección IP para modificar, presionar Enter y hacer clic para confirmar la modificación. Una vez completada la modificación, la cámara se reiniciará y se volverá a conectar automáticamente.
+
+<Frame>
+  <img src="/images/legacy/320b027b-2988-458f-9900-cbef3a254247/a3701254-2b0f-48f9-a359-fff2f50a84b3.avif" alt="Ilustraciones relacionadas con la configuración de conexión de la cámara 3" />
+</Frame>
+
+4. Puede verificar si la IP se ha modificado correctamente a través de la barra de estado en la esquina inferior izquierda. Si se encuentra en un segmento de red diferente, deberá modificar la IP local antes de volver a conectarse a la cámara.
+
+<Frame>
+  <img src="/images/legacy/26fef8c4-ff64-4fcc-a9b3-974d68c3a90d/d0d23fb7-fe18-4d75-9c7c-ff87020690d9.avif" alt="Ilustraciones relacionadas con la configuración de conexión de la cámara 4" />
+</Frame>
+
+5. Abra el software de la computadora host preinstalado LxCameraViewer. El software de la computadora host recupera automáticamente la cámara en el segmento de red actual. Al hacer clic para abrir la cámara, se abrirá automáticamente el mapa de profundidad y la imagen de la nube de puntos, como se muestra en la Figura 3.3.
+
+<Frame>
+  <img src="/images/legacy/5565c511-bef1-4ae7-a803-6e2cd4b2ea1a/772be638-3857-41bc-9055-f88086a49b5d.avif" alt="Figura 3.3 Pantalla del software de PC" />
+</Frame>
+
+6. Después de abrir la cámara, expanda la configuración 3D y la configuración del filtro para ajustar los parámetros de la cámara. Los parámetros de configuración recomendados para aplicaciones de evitación de obstáculos son **alta exposición 650, baja exposición 200, ajustes de filtro y umbrales de señal baja que se recomienda establecer en 10-20 (la serie S10 solo necesita configurar el nivel de deslumbramiento en 1, y no es necesario configurar la exposición, el umbral de señal baja, etc.)**. Para otras configuraciones de instalación y parámetros para modelos no convencionales, se recomienda comunicarse con el personal de soporte técnico de Meyer Micro Vision.
+
+<Frame>
+  <img src="/images/legacy/e8dd9101-6ed2-4bc7-b001-24186895e11f/056ee982-803d-4f8f-85bc-383de72655a2.avif" alt="Ilustraciones relacionadas con la configuración de conexión de la cámara 6" />
+</Frame>
+
+## 4. Configuración de parámetros para evitar obstáculos
+
+1. Después de completar la configuración de los parámetros de la cámara anterior, haga clic en el botón Aplicar algoritmo. El elemento de configuración del algoritmo aparecerá en la barra de estado de la derecha. Configúrelo en el modo normalmente abierto según la aplicación. El algoritmo de la aplicación de la cámara S10 debe seleccionar [Algoritmo para evitar obstáculos]. Para otras cámaras, debe seleccionar [Algoritmo para evitar obstáculos 2.0] y el número de versión del algoritmo se muestra a continuación. La cámara S10 no admite el uso de tipos de áreas para evitar obstáculos en forma de sector, lo que puede causar desviaciones en los resultados de evitación de obstáculos.
+
+<Frame>
+  <img src="/images/legacy/4777637e-6cfe-456f-9ca7-fc2d4b4146f7/46274569-4a2d-429a-a270-1f561e8b2a63.avif" alt="Ilustraciones relacionadas con la configuración de parámetros para evitar obstáculos" />
+</Frame>
+
+2. El área para evitar obstáculos rectangular y el área para evitar obstáculos en forma de abanico se muestran en la Figura 4.1.
+
+<Frame>
+  <img src="/images/legacy/75f84757-7045-4504-9742-e49c74d38889/f6daa1cb-71af-46bf-b501-0cb503ff01ea.avif" alt="Diagrama relacionado con la configuración de parámetros para evitar obstáculos 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a01278e9-15ec-436b-a9ed-62dedce4db2e/856adc1f-bbde-47e2-a750-33e72a921d54.avif" alt="Diagrama relacionado con la configuración de parámetros para evitar obstáculos 3" />
+</Frame>
+
+Figura 4.1 Área para evitar obstáculos rectangular y área para evitar obstáculos en forma de abanico
+
+3. Como se muestra en la Figura 4.2, los parámetros para evitar obstáculos se dividen en los parámetros externos de instalación de la cámara y los parámetros de configuración del área para evitar obstáculos. Una vez completada la configuración de los parámetros externos de la cámara y los ajustes, las otras cuatro áreas de configuración se actualizan automáticamente a los parámetros externos actuales.
+
+Entre ellos, la cámara S2/S2 Max2.0 puede cambiar entre cuatro conjuntos de configuración 0, configuración 1, configuración 2 y configuración 3 del área para evitar obstáculos a través de IO.
+
+Se pueden cambiar hasta 20 grupos de áreas para evitar obstáculos a través de SDK/UDP/RS485, que se pueden cambiar según el escenario de operación del automóvil. Por ejemplo, cuando el automóvil se mueve a un canal estrecho, se puede cambiar a una configuración de canal estrecho, y cuando el automóvil se mueve a un canal ancho, se puede cambiar a una configuración de canal ancho.
+
+<Frame>
+  <img src="/images/legacy/e45aed16-cda9-48cd-91b0-eb9b14dd4996/381adb42-b038-401f-a1a3-e6d438b64c5f.avif" alt="Diagrama relacionado con la configuración de parámetros para evitar obstáculos 4" />
+</Frame>
+
+## 5. Configuración de parámetros externos
+
+### 5.1 Descripción del parámetro
+
+| Elemento de parámetro | Valor del parámetro | Descripción |
+| --- | --- | --- |
+| Función para evitar obstáculos | | Cambie diferentes parámetros para evitar obstáculos configurando diferentes modos |
+| Ángulo de cámara Roll (eje x) | 180 | Parámetros externos de la cámara, ángulo de inclinación y balanceo, la cámara predeterminada es 180 |
+| Ángulo de cámara Paso (eje y) | 90 | Parámetro externo de la cámara, ángulo de inclinación, el valor predeterminado es la instalación vertical, que es 90 |
+| Ángulo de cámara Yaw (eje z) | 90 | Parámetros externos de la cámara, ángulo de orientación, el valor predeterminado es 90 |
+| Posición de la cámara (distancia x) | 430 | La distancia entre la parte delantera y trasera de la cámara en la dirección X y la distancia delantera y trasera del AMR en la vista, unidad: mm. |
+| Posición de la cámara (ancho y) | 0 | La distancia izquierda y derecha de la cámara en la dirección y desde el AMR en la vista. Si se instala en el medio, es 0. Unidad: mm. |
+| Posición de la cámara (altura z) | 120 | El parámetro de altura de instalación de la cámara es la altura de la cámara desde el suelo. Unidad: mm. |
+
+### 5.2 Configuración de parámetros
+
+Por ejemplo, cuando la cámara está instalada en la superficie frontal del AGV, cierre otras imágenes y utilice únicamente imágenes de nubes de puntos para depurar los parámetros de la cámara. Priorice la altura de instalación de la cámara. Después de ajustar el ángulo de balanceo RX, ajuste el ángulo de balanceo a horizontal y luego ajuste el ángulo de inclinación RY. Después de ajustar el efecto al efecto que se muestra en la figura siguiente, haga clic en "**Enviar parámetros**" y los parámetros externos de instalación de la cámara se sincronizarán con otras configuraciones.
+
+<Frame>
+  <img src="/images/legacy/da147810-37df-42ef-a56c-582790c66e41/b89815fa-fd77-452d-a8f8-3ec9180d9544.avif" alt="Ilustraciones relacionadas con la configuración de parámetros" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/b8f949cb-62e8-414d-98a9-c44a463f5b67/9e6574f0-4eb3-4fd1-9d33-af87ca067cbc.avif" alt="Ilustraciones relacionadas con la configuración de parámetros 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6aa95f32-ffd6-495d-aaf4-b1b0319edf07/0a556ebd-5ebb-45ea-841e-f4710776ecd9.avif" alt="Ilustraciones relacionadas con la configuración de parámetros 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6d8661c4-f56b-4480-8fdc-6ba45f4b87b9/956d5953-d011-481a-99b8-2199658fa193.avif" alt="Ilustraciones relacionadas con la configuración de parámetros 4" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5ec21f8c-bffe-4026-be4a-823625c1b39f/2454e37b-650e-413e-8849-9776ed708b75.avif" alt="Ilustraciones relacionadas con la configuración de parámetros 5" />
+</Frame>
+
+## 6. Configuración del área para evitar obstáculos
+
+### 6.1 Referencia de parámetros de zona
+
+<Frame>
+  <img src="/images/legacy/cbe6b898-926a-43a4-9e5e-8fb984fcba7d/34531a14-4faa-488d-bc64-7ac0102eac10.avif" alt="Ilustraciones relacionadas con descripciones de parámetros regionales" />
+</Frame>
+
+| Nombre del parámetro | Valor | Definición de parámetro |
+| --- | --- | --- |
+| Distancia de alerta temprana (x lejos) | 2000 | Rango para evitar obstáculos, la distancia desde el centro del automóvil en la Unidad: mm |
+| Distancia de alarma (x medio) | 1500 | Rango de evitación de obstáculos, la distancia desde el centro del automóvil en la Unidad: mm. |
+| Distancia de blindaje (x cerca) | 600 | Rango de blindaje, la dirección x es menor que la distancia de blindaje x (cerca), es un área ciega y no se pueden evitar obstáculos en esta área. Unidad: mm. |
+| Rango para evitar obstáculos a la izquierda (y izquierda) | -810 | Rango para evitar obstáculos, la distancia desde el lado izquierdo de la dirección y hasta el centro del automóvil. Unidad: mm. |
+| Rango para evitar obstáculos a la derecha (y derecha) | 1270 | Rango para evitar obstáculos, la distancia desde el lado derecho de la dirección y hasta el centro del automóvil. Unidad: mm. |
+| Rango de evitación de obstáculos (bajo z) | 10 | Rango de evitación de obstáculos, altura desde el suelo. No se realizará ningún procesamiento por debajo de esta altura. Si el valor es demasiado pequeño, pueden producirse falsas alarmas debido a errores de alcance; si la configuración es demasiado grande, es posible que se filtren obstáculos grandes en el suelo, lo que provocará falsas alarmas. Unidad: mm. |
+| Altura para evitar obstáculos (z arriba) | 1500 | No se procesarán el rango de evitación de obstáculos, la altura desde el suelo, las alturas superiores a esta. Unidad: mm. |
+
+### 6.2 Configuración del área para evitar obstáculos
+
+1. La aplicación para evitar obstáculos actual tiene 20 grupos de áreas para evitar obstáculos integradas. Los usuarios pueden configurar el área para evitar obstáculos después de completar la configuración de los parámetros de la cámara. Cuando el AMR se mueve a diferentes rangos para evitar obstáculos, cambie el área de configuración para controlar el rango para evitar obstáculos (IO: se pueden cambiar cuatro grupos de áreas para evitar obstáculos 0, 1, 2 y 3, y se pueden cambiar 20 grupos para UDP, 485, API y CAN).
+
+- Distancia de alerta temprana (X lejos): indica el rango de evitación de obstáculos de alerta temprana (desaceleración) de la cámara de 2300, es decir, distancia de alerta temprana 2300 - posición de la cámara 430 = 1870 mm, como se muestra en la Figura 6.1.
+
+- Distancia de alarma (en
+
+- Distancia de blindaje (X cerca): Indica el rango de blindaje de la cámara, es decir, distancia de blindaje 450-posición de la cámara 430=20 mm, como se muestra en la Figura 6.1.
+
+<Frame>
+  <img src="/images/legacy/4519dd9a-acbb-4e8e-84e6-8161d406964b/c6a73f89-55f2-4dba-837f-215c8e7422e1.avif" alt="Ilustraciones relacionadas con la configuración del área para evitar obstáculos." />
+</Frame>
+
+Figura 6.1 Imagen de la distancia de advertencia
+
+- Rango para evitar obstáculos a la izquierda (y izquierda): Indica que la cámara detecta obstáculos dentro de un rango de -500 mm a la izquierda de la cámara para evitar obstáculos, como se muestra en la Figura 6.2.
+
+- Rango para evitar obstáculos a la izquierda (yright): indica que la cámara detecta obstáculos dentro de un rango de 500 mm a la derecha de la cámara para evitar obstáculos, como se muestra en la Figura 6.2.
+
+<Frame>
+  <img src="/images/legacy/66455b6e-2c49-4387-bae4-d1e60d4364ec/0c081553-64f1-482a-b982-1145ad687df4.avif" alt="Ilustraciones relacionadas con la configuración 2 del área para evitar obstáculos" />
+</Frame>
+
+Figura 6.2 Imagen del rango para evitar obstáculos
+
+- Altura para evitar obstáculos (Z abajo): Indica la detección de obstáculos dentro de los 10 mm por debajo del suelo a la altura de instalación, como se muestra en la Figura 6.3.
+
+- Altura para evitar obstáculos (Z superior): Indica que la cámara detecta obstáculos dentro de un rango de 500 mm sobre el suelo, como se muestra en la Figura 6.3.
+
+<Frame>
+  <img src="/images/legacy/bb805708-d45d-41d9-8f5e-8197b63c6b0d/8ea1a9c6-e585-4567-b8da-ac4708637026.avif" alt="Ilustraciones relacionadas con la configuración 3 del área para evitar obstáculos" />
+</Frame>
+
+Figura 6.3 Imagen de altura para evitar obstáculos
+
+2. Salida para evitar obstáculos:
+
+- Indica normal y sin obstáculos.
+
+- Indica que se detectan obstáculos en el área de advertencia (dentro del cuadro amarillo)
+
+- Indica que se detectan obstáculos en el área de alarma (dentro del cuadro rojo)
+
+3. Después de usar la computadora host para configurar los parámetros de acuerdo con el proceso anterior, puede ir a la ruta de instalación del software \\Tools\\params\\ y al ID de la cámara actual\\avoidance.json para hacer una copia de seguridad del archivo evitarance.json y sincronizar rápidamente los parámetros para evitar obstáculos para diferentes cámaras: Después de encender la cámara, ejecute "Cargar configuración desde archivo", seleccione el archivo evitación.json respaldado y espere a que se complete la configuración.
+
+<Frame>
+  <img src="/images/legacy/5d0604b8-8852-49f2-b3b4-cc268f47f6d6/74e7e96b-e2cb-4c66-85ac-13083d78e2c7.avif" alt="Ilustraciones relacionadas con la configuración 4 del área para evitar obstáculos" />
+</Frame>
+
+## 7. Método de comunicación
+
+1. Antes de comprender o utilizar varios métodos de comunicación, **debe usar la computadora host que proporcionamos para configurar el contenido de los parámetros para evitar obstáculos uno por uno** antes de poder usar **métodos de comunicación que no sean API** para cambiar diferentes parámetros para evitar obstáculos. **Nota:**
+
+**① Algunos protocolos de comunicación son exclusivos de un determinado modelo, como la comunicación RS485 es exclusiva de M4Pro; **
+
+② Cuando se utiliza, entre otros, el método API para obtener resultados para evitar obstáculos, se recomienda confirmar primero si la configuración para evitar obstáculos se cambió correctamente, es decir, primero consultar el número del área de configuración para evitar obstáculos actual;
+
+③ Utilice los métodos de comunicación para evitar obstáculos UDP y CAN para verificar el área para evitar obstáculos. Para obtener más información, consulte la introducción detallada de cada método de comunicación.
+
+<Frame>
+  <img src="/images/legacy/db6c3d37-ba35-439f-9cb2-a844323e0d93/668b983c-c6a4-492d-a676-f4de871c62b1.avif" alt="Ilustraciones relacionadas con los métodos de comunicación." />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/eaa2b8fd-e8aa-419d-87d3-4f3fe27bac32/044bd51a-61c8-4a52-af64-dc9cba9d38cd.avif" alt="Ilustraciones relacionadas con los métodos de comunicación 2." />
+</Frame>
+
+2. Todos los parámetros relacionados con la evitación de obstáculos del S2 Max/S10 pro se pueden configurar a través de la computadora host y la API que proporcionamos, pero para otros métodos de comunicación (IO / UDP / CAN / 485), solo se puede modificar el índice del parámetro para evitar obstáculos. Los parámetros relacionados con la evitación de obstáculos del S10 se pueden configurar a través de la computadora host que proporcionamos, pero todos los métodos de comunicación se limitan a modificar el índice de parámetros para evitar obstáculos.
+
+| Tipo de cámara | Métodos de comunicación del módulo para evitar obstáculos admitidos |
+| --- | --- |
+| T2 | API、UDP、IO |
+| S2Máx | API, UDP, CAN |
+| S2Max V2.0 | API、UDP、IO、CAN |
+| M4Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API、UDP、IO、CAN |
+
+| Tipo de cámara | Modificación del índice de parámetros para evitar obstáculos | La configuración detallada de los parámetros para evitar obstáculos admite la modificación |
+| --- | --- | --- |
+| T2 | Todos los métodos de comunicación se pueden modificar | Solo se puede modificar utilizando la computadora host que proporcionamos |
+| S2 Max, S2 Max2.0, M4, M4Pro, M4 Mega | Todos los métodos de comunicación se pueden modificar | Solo se pueden modificar la computadora host y la API |
+
+**Nota: el índice de parámetros para evitar obstáculos** se refiere al índice del grupo de parámetros de configuración 0, 1, 2, etc.; **Parámetros detallados para evitar obstáculos** se refiere a todos los parámetros excepto los parámetros para evitar obstáculos, como el ángulo de la cámara, la distancia de advertencia, etc.
+
+| Prioridad | Método de comunicación | Objeto |
+| --- | --- | --- |
+| 1 | comunicación IO | Los parámetros entran en vigor inmediatamente y no pueden ser alterados por otros medios. Si se dejan flotantes o no admiten comunicación IO, se utilizarán los parámetros predeterminados o los parámetros temporales. |
+| 2 | Configuración de API y computadora host | Los parámetros predeterminados están configurados y no se ven afectados por cortes de energía. |
+| 2 | Otros (como 485, etc.) | Las configuraciones son parámetros temporales. Este parámetro se modificará si hay un corte de energía u otras comunicaciones. Se puede guardar como parámetros predeterminados mediante instrucciones, |
+
+3. Para la modificación de los parámetros de evitación de obstáculos, la cámara seguirá estrictamente la lógica de prioridad.
+
+4. La mayor diferencia entre los parámetros temporales y los parámetros predeterminados es si se guardan después del apagado. El parámetro que se utiliza depende del método de comunicación que se utilizó la última vez.
+
+5. Durante la comunicación IO (IO no está suspendida), los parámetros actuales no se pueden modificar utilizando el método de comunicación de prioridad 2, pero se pueden modificar los parámetros predeterminados y los parámetros temporales. Cuando se desconecta la comunicación IO (se suspende IO), los parámetros predeterminados específicos o los parámetros temporales se utilizan de acuerdo con el último método de configuración. La última vez que se utilizan las configuraciones 485 o UDP, se utilizan parámetros temporales. La última vez que se utilizan llamadas API o la configuración del ordenador host, se utilizan los parámetros predeterminados. La lógica es la siguiente:
+
+<Frame>
+  <img src="/images/legacy/9de2e18d-de3f-4a0a-b783-6cc5c8208344/8bf4f672-a74b-4a6b-9746-55438829cada.avif" alt="Ilustraciones relacionadas con los métodos de comunicación 3." />
+</Frame>
+
+6. Para la cámara S10, se necesitan entre 200 y 300 ms para cambiar los parámetros hasta que se complete la carga. Por lo tanto, S2 realiza una operación de filtrado en la operación del parámetro de conmutación y se ignorará la última configuración dentro de 250 ms. Ya sea S10 o S2Max/S10pro, no se recomienda cambiar los parámetros con demasiada frecuencia, ya que esto aumentará el uso de recursos de la cámara y reducirá la velocidad de fotogramas de la imagen. Debido a que la frecuencia de actualización de los resultados de evasión de obstáculos está relacionada con la velocidad de fotogramas, también hará que se reduzca la frecuencia de actualización de los resultados de evasión de obstáculos. La frecuencia de actualización del resultado para evitar obstáculos es igual a la frecuencia de cuadros de la imagen.
+
+### 7.1 Método de llamada API
+
+El método de llamada API puede admitir C ++, C #, JAVA, ROS1, ROS2 y otros entornos de Windows, Linux, arm y otros entornos. Una vez instalado el SDK del entorno de Windows en el software de la computadora host, los archivos SDK y los códigos de programa de muestra se encuentran en la ruta de instalación (por ejemplo: D:\\Program Files\\Lanxin-MRDVS). El SDK del entorno Linux se puede descargar desde el soporte técnico correspondiente proporcionado por Meier Microvision o desde el sitio web oficial. No se recomienda utilizar este método para cambiar los parámetros de las cámaras S10. Se recomienda utilizar UDP o IO para cambiar los parámetros.
+
+- La carpeta Documento contiene documentación sobre el SDK y el uso de la computadora host.
+
+- La carpeta FirmWare es el directorio donde se almacena el paquete de firmware de la cámara.
+
+- La carpeta de muestra es el directorio donde se almacena el código fuente del código de muestra, que se puede seleccionar según el entorno de desarrollo.
+
+- La carpeta SDK es el directorio donde se almacenan los archivos de la biblioteca SDK. Puede configurar variables de entorno según el entorno de desarrollo.
+
+- La aplicación para evitar obstáculos puede parametrizar el programa de código fuente API para evitar obstáculos de C/application\_obstacled en el directorio Sampl.
+
+### 7.2 485 método de comunicación
+
+1. La comunicación 485 solo admite cámaras M4 pro, utilizando el protocolo de transmisión Modbus RTU. La siguiente es la definición del arnés de cableado de la cámara:
+
+| Puerto | Alfiler | Señal | Descripción | Observaciones |
+| --- | --- | --- | --- | --- |
+| Definición socket | 1 | Tierra | Tierra de señal | Azul |
+| | 2 | 485_A | RS485_A | Gris |
+| | 3 | 485_B | RS485_B | Blanco |
+| | 4 | Número de bastidor + | Terminal positivo de entrada de alimentación de 24 V | Marrón |
+| | 5 | Número de bastidor - | Terminal negativo de entrada de alimentación de 24 V | Negro |
+
+2. El método de depuración 485 es el siguiente:
+
+- Cuando se conecta a través de RS485, en el asistente de depuración, la velocidad en baudios se establece en 9600.
+
+- Utilice la computadora host para verificar la dirección Modbus actual, lea las dos direcciones de registro a partir de la dirección 108 (0x6C) del registro de entrada (0x04) y el valor del registro retroalimentado es el resultado actual de evitación de obstáculos.
+
+<Frame>
+  <img src="/images/legacy/97dd2a2a-4b90-419b-bef8-8e4504a30720/2f79d722-9523-4a5e-904b-da95fbb4ca5b.avif" alt="485 iconos relacionados con métodos de comunicación" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f3ee28c-ea54-426e-8bd5-bbae25de955c/e5bfac8e-14fb-4540-91b2-d72de1aa86fc.avif" alt="Ilustraciones relacionadas con el método de comunicación 485 2" />
+</Frame>
+
+- Si necesita modificar los parámetros para evitar obstáculos, puede escribir la dirección 106 (0x6A) de un único registro de guardado (0x06).
+
+<Frame>
+  <img src="/images/legacy/65d76022-f5da-4827-b160-8c597f7c0a5f/c64c76ff-8c7a-442d-8fa2-2cacba78affb.avif" alt="Ilustraciones relacionadas con el método de comunicación 485 3" />
+</Frame>
+
+### 7.3 Método de comunicación UDP
+
+Significado del campo del tipo de función para evitar obstáculos:
+
+| Número | Dirección de transmisión | Mensaje | Resultado de evitación de obstáculos |
+| --- | --- | --- | --- |
+| 1 | Cámara->Cuerpo | ACED0410XX000000 | Sin barreras, XX representa los parámetros actuales para evitar obstáculos |
+| 2 | | ACED0410XX000001 | Desaceleración de la alerta temprana |
+| 3 | | ACED0410XX000002 | Parada de alarma |
+| 4 | Cuerpo principal->Cámara | ACED040000000000 | Establecer conexión UDP |
+| 5 | | ACED041A00000000 | Parámetro para evitar obstáculos 0 |
+| 6 | | ACED041A00000001 | Parámetro 1 para evitar obstáculos |
+| 7 | | ACED041A00000002 | Parámetro 2 para evitar obstáculos |
+| 8 | | ACED041A00000003 | Parámetro 3 para evitar obstáculos |
+| 9 | | ... | (y así sucesivamente hasta el parámetro 19) |
+| 10 | Cuerpo->Cámara | ACED041B00000000 | Establecer los parámetros actuales como parámetros predeterminados |
+| 11 | Cámara->Cuerpo | ACED041B00000001 | Parámetros predeterminados establecidos correctamente |
+
+1. Cuando se conecte a través de UDP, utilice el asistente de depuración de red para probar la conexión de comunicación con la cámara y seleccione transmisión y recepción hexadecimal para recibir y enviar datos. Se recomienda utilizar el comando N°4 para la primera comunicación. Después de establecer una conexión UDP, los resultados para evitar obstáculos se enviarán automáticamente. La frecuencia de envío está relacionada con la velocidad de cuadros de la imagen actual. Después de modificar los parámetros, puede confirmar si la modificación se realizó correctamente a través del mensaje enviado por la cámara al cuerpo. El XX en el mensaje numerado 1 es el parámetro actual.
+
+2. Los parámetros establecidos por DP serán efectivos hasta que se reinicie la cámara, a menos que se corte la alimentación o se modifique utilizando otros métodos de comunicación. Si desea que siga teniendo efecto después de un corte de energía, puede usar el mensaje número 10 para guardarlo como parámetros predeterminados. La función de guardar como parámetros predeterminados es una función única de la comunicación UDP, CAN, 485.
+
+3. Configure la dirección del host local y el puerto del host local, haga clic para abrir; el host remoto es la cámara, complete el puerto IP de la cámara: 192.168.100.12:6688, si la IP de la cámara ha cambiado, será: IP de la cámara:6688; Tome el parámetro actual 19 y modifíquelo al parámetro 0 como ejemplo. Haga clic para enviar los datos número 5. La señal de configuración exitosa es que el quinto byte se cambia de 0x13 (parámetro 19) a 0x00 (parámetro 0), como se muestra a continuación.
+
+<Frame>
+  <img src="/images/legacy/e8a8533b-6b41-4853-bfc7-9217abd0524d/d75adea6-f4e9-4d89-adf3-2772681f0406.avif" alt="Ilustraciones relacionadas con el método de comunicación UDP" />
+</Frame>
+
+### 7.4 Método de comunicación TCP
+
+Significado del campo del tipo de función para evitar obstáculos:
+
+| Número | Dirección de transmisión | Mensaje | Resultado de evitación de obstáculos |
+| --- | --- | --- | --- |
+| 1 | Cámara->Cuerpo | ACED0410XX000000 | Sin barreras, XX representa los parámetros actuales para evitar obstáculos |
+| 2 | | ACED0410XX000001 | Desaceleración de la alerta temprana |
+| 3 | | ACED0410XX000002 | Parada de alarma |
+| 4 | Cuerpo->Cámara | ACED041A00000000 | Parámetro para evitar obstáculos 0 |
+| 5 | | ACED041A00000001 | Parámetro 1 para evitar obstáculos |
+| 6 | | ACED041A00000002 | Parámetro 2 para evitar obstáculos |
+| 7 | | ACED041A00000003 | Parámetro 3 para evitar obstáculos |
+| 8 | | ... | (y así sucesivamente hasta el parámetro 19) |
+| 9 | Cuerpo->Cámara | ACED041B00000000 | Establecer los parámetros actuales como parámetros predeterminados |
+| 10 | Cámara->Cuerpo | ACED041B00000001 | Parámetros predeterminados establecidos correctamente |
+
+1. Cuando se conecte a través de TCP, utilice el asistente de depuración de red para probar la conexión de comunicación con la cámara y seleccione transmisión y recepción hexadecimal para recibir y enviar datos. Una vez establecida la conexión TCP, los resultados para evitar obstáculos se enviarán automáticamente y la frecuencia de envío está relacionada con la velocidad de fotogramas de la imagen actual. Después de modificar los parámetros, puede confirmar si la modificación se realizó correctamente a través del mensaje enviado por la cámara al cuerpo. El XX en el mensaje numerado 1 es el parámetro actual.
+
+2. Los parámetros establecidos por TCP serán efectivos hasta que se reinicie la cámara, a menos que se corte la alimentación o se modifique utilizando otros métodos de comunicación. Si desea que siga teniendo efecto después de un corte de energía, puede usar el mensaje número 10 para guardarlo como parámetros predeterminados. La función de guardar como parámetros predeterminados es una función única de la comunicación TCP y no es compatible con CAN ni 485.
+
+3. La cámara se puede probar con el asistente. Seleccione Cliente TCP para el protocolo, seleccione la IP de la cámara para la IP y seleccione 6688 para el puerto. Antes de utilizar la comunicación TCP, debe confirmar si el área para evitar obstáculos utilizada actualmente se ha configurado en la computadora host.
+
+<Frame>
+  <img src="/images/legacy/b1e7b075-b88e-4547-9e9e-813399cee1de/426d1e53-dda3-4ea0-80fb-5ad61ee30884.avif" alt="Ilustraciones relacionadas con el método de comunicación TCP" />
+</Frame>
+
+### 7.5 Método de comunicación CAN
+
+1. La comunicación CAN solo admite cámaras S2-MAX. El protocolo de comunicación utiliza CanOpen. El protocolo CanOpen es un protocolo de capa de aplicación que se ejecuta en el bus CAN estándar. Su modo de comunicación es también el modo de comunicación "maestro-esclavo" comúnmente utilizado en los protocolos de comunicación industriales. Es decir, habrá una estación maestra + múltiples estaciones esclavas en la red. Las estaciones esclavas no se comunicarán directamente entre sí. Todas las comunicaciones se realizan entre la estación maestra y las estaciones esclavas. La estación maestra también se denomina "cliente" y la estación esclava también se denomina "servidor".
+
+2. El método de comunicación subyacente utiliza el formato de trama estándar CAN, es decir, el ID CAN es de 11 bits (0x000 ~ 7FF) y los datos son 8 bytes.
+
+3. La convención de uso de CAN ID: divida la ID de 11 bits en un código de función de 4 bits y una ID de nodo de 7 bits, y la ID de CAN también se denomina ID de COB:
+
+<Frame>
+  <img src="/images/legacy/6b14ef30-ae22-4eb0-bdd0-ff371a395ef5/2b8174cc-315e-4622-af5e-c288fd5a391c.avif" alt="Ilustraciones relacionadas con el método de comunicación CAN" />
+</Frame>
+
+4. Velocidad de transmisión en baudios: el valor predeterminado es 250 K, que se puede configurar según la aplicación.
+
+5. Número de nodo: el valor predeterminado es 0x212, que se puede configurar según la aplicación.
+
+6. El mensaje de comunicación SDO es un formato de protocolo básico en CanOpen. Los datos de 8 bytes en el mensaje CAN están definidos por el protocolo de comunicación con el siguiente formato:
+
+<Frame>
+  <img src="/images/legacy/2097250b-a7c5-43f8-8dac-53940a7ccb01/662148d5-54f3-469a-bb77-2d22e7d96075.avif" alt="Ilustraciones relacionadas con el método de comunicación CAN 2" />
+</Frame>
+
+**Protocolo de comunicación del módulo para evitar obstáculos:**
+
+1. El formato del mensaje enviado por la ontología al dispositivo.
+
+<Frame>
+  <img src="/images/legacy/109df244-17e5-4c9b-9900-298a5c5dfcd3/4a23ea06-77c9-4dea-9862-34bd67b013a0.avif" alt="Ilustraciones relacionadas con el método de comunicación CAN 3" />
+</Frame>
+
+- Mensaje de referencia: 40 00 00 00 0B 00 00 00, 0B: MODECTRL, que significa configurar los parámetros de evitación de obstáculos al área 11.
+
+2. El formato del mensaje enviado por el dispositivo al cuerpo principal.
+
+<Frame>
+  <img src="/images/legacy/e43f7fa2-780a-4885-b98d-1f8b412a1198/4ebef067-087d-46ab-811b-49ff027bb6b4.avif" alt="Ilustraciones relacionadas con el método de comunicación CAN 4" />
+</Frame>
+
+- Caracteres de referencia: 43 00 00 00 0B 00 00 02, 0B: MODECTRL, que indica que el parámetro actual para evitar obstáculos es el área 11; 02: resultado, que indica el resultado actual para evitar obstáculos.
+
+**3. Nota: Como se muestra en la figura siguiente, la configuración de los parámetros para evitar obstáculos no surte efecto inmediatamente. **
+
+<Frame>
+  <img src="/images/legacy/c102285c-5b45-4762-87fd-713da40e2468/bd1a716a-80e2-437e-92d2-2acbfb00a2d5.avif" alt="Ilustraciones relacionadas con el método de comunicación CAN 5" />
+</Frame>
+
+## 7.5 Método de comunicación IO
+
+### 7.5.1 Tabla de correspondencia de parámetros de evitación de obstáculos y estado de entrada IO
+
+| Estado de entrada1 | Estado de entrada2 | Observaciones |
+| --- | --- | --- |
+| Alto nivel | Alto nivel | Parámetro 2 para evitar obstáculos |
+| Alto nivel | Nivel bajo | Parámetro 1 para evitar obstáculos |
+| Nivel bajo | Alto nivel | Parámetro para evitar obstáculos 0 |
+| Nivel bajo | Nivel bajo | Utilice parámetros predeterminados o parámetros temporales para evitar obstáculos |
+
+- Nota: Cuando la entrada IO se deja flotante, es de nivel bajo y el voltaje recomendado para nivel alto es de 5~25V.
+
+- Nota: Para conocer la lógica del uso de parámetros predeterminados o parámetros temporales, consulte el prefacio del Capítulo 7 (Métodos de comunicación). En pocas palabras, cuando la cámara está encendida y no utiliza otros métodos de comunicación (excepto API) para configurar los parámetros para evitar obstáculos, se utilizarán los parámetros predeterminados. De lo contrario, se utilizarán parámetros temporales.
+
+### 7.5.2 Tabla de correspondencia de parámetros de evitación de obstáculos y estado de salida IO
+
+### El estado de IO es push-pull
+
+| Estado de salida 1 | Estado de salida 2 | Observaciones |
+| --- | --- | --- |
+| 24V | 24V | Accesible |
+| 24V | 0V | Señal de desaceleración |
+| 0V | 24V | Señal de parada de emergencia |
+| 0V | 0V | Evitación de obstáculos, inicialización, excepción no habilitada |
+
+- Nota: Cuando la evitación de obstáculos está activada pero todas las E/S de salida están conectadas a tierra, asegúrese de que la computadora host haya configurado los parámetros actuales para evitar obstáculos.
+
+<Frame>
+  <img src="/images/legacy/fae16d2e-4221-46a3-a426-1b504d07a04a/c3a59086-bee5-4c6a-91d2-46a71152a6a1.avif" alt="El estado de IO son iconos relacionados con push-pull" />
+</Frame>
+
+**El estado de IO es de drenaje abierto**
+
+| Estado de salida 1 | Estado de salida 2 | Observaciones |
+| --- | --- | --- |
+| Suspendido | Suspendido | Accesible |
+| Flotante | 0V | Señal de desaceleración |
+| 0V | Flotante | Señal de parada de emergencia |
+| 0V | 0V | Evitación de obstáculos, inicialización, excepción no habilitada |
+
+### 7.5.3 Método de cableado de E/S de la cámara S2
+
+El detalle del cable externo con la etiqueta de alimentación se muestra en la siguiente tabla:
+
+| Nombre de la etiqueta | Color | Observaciones |
+| --- | --- | --- |
+| EN1 | Naranja | Línea de señal de entrada de función de E/S 1+ |
+| IN_COM1 | Amarillo | Línea de señal de entrada de función de E/S 1- |
+| IN2 | Verde | Línea de señal de entrada de función de E/S 2+ |
+| SALIDA_1 | Púrpura | Línea de señal de salida de función de E/S 1+ |
+| OUT_COM1 | Gris | Línea de señal de salida de función de E/S 1- |
+| IN_COM2 | Azul | Línea de señal de entrada de función de E/S 2- |
+| SALIDA_2 | Marrón | Línea de señal de salida de función de E/S 2+ |
+| OUT_COM2 | Blanco | Línea de señal de salida de función de E/S 2- |
+
+### 7.5.4 Método de cableado de E/S de computadora industrial y cámara S10
+
+Tenga en cuenta que la cámara de 24 V debe conectarse a la tierra de alimentación de la computadora industrial, y IN\_G y OUT\_G deben conectarse a la tierra de señal de la computadora industrial. Los clientes pueden modificar el método de conexión a tierra común según la situación real. Si la computadora industrial no tiene áreas de señal y tierra de alimentación, puede conectar la cámara 24V-, IN\_G y OUT\_G al GND de la computadora industrial.
+
+### 7.5.4.1 Terminal de entrada IN\_método de cableado
+
+1. La siguiente figura muestra el método de cableado entre la salida tipo PNP de la computadora industrial y el terminal de entrada de la cámara S10 (en adelante abreviado como IN\_\*, \* representa 1 y 2):
+
+<Frame>
+  <img src="/images/legacy/db796979-a48a-4e8f-a439-41163142b7eb/3a6e88b9-58b3-4afc-be18-a86b38d69f44.avif" alt="Ilustraciones relacionadas con el método de cableado del terminal de entrada IN\_" />
+</Frame>
+
+2. La siguiente figura muestra el método de cableado entre la salida NPN de la computadora industrial y el terminal de entrada de la cámara S10:
+
+<Frame>
+  <img src="/images/legacy/87186c64-88c9-4afc-a17e-de2ab83ab740/993feed3-fbc4-4587-8f21-29d85d3570ff.avif" alt="Diagrama relevante del terminal de entrada IN\_ método de cableado 2" />
+</Frame>
+
+3. Dado que los diseños de circuitos de salida de las computadoras industriales de diferentes fabricantes son diferentes, es necesario juzgar si es necesario agregar una resistencia pull-up y su valor de resistencia según la situación real.
+
+4. Debe realizar la prueba de acuerdo con los siguientes pasos:
+
+- Utilice un multímetro para medir la impedancia de la salida de la computadora industrial a 24 V. Si es &lt;50 kΩ, no se necesita ninguna resistencia pull-up. Si es ≥50 kΩ, agregue una resistencia pull-up. Utilice una resistencia de película metálica de orificio pasante con una resistencia de 10 kΩ y una potencia ≥1 W. Puede utilizar otra resistencia para pruebas temporales, pero el uso prolongado puede afectar la confiabilidad. La resistencia no debe ser inferior a 3 kΩ y no se debe conectar la salida directamente a 24 V.
+
+- Después de confirmar la conexión, suba el terminal de salida de la computadora industrial y use un multímetro para medir el voltaje entre el terminal de salida y tierra. Si el voltaje es ≤ 2 V, desconecte el circuito de la cámara y verifique si la computadora industrial puede elevar el voltaje; Si el voltaje es > 2 V, baje nuevamente el terminal de salida para verificar si hay un cambio en la entrada de la cámara S2. Si hay un cambio, significa que se puede utilizar normalmente; Si no hay cambios, baje el terminal de salida de la computadora industrial y mida el voltaje entre el terminal de salida y tierra. Si el voltaje es superior a 1 V, significa que la fuerza de extracción es demasiado fuerte y es difícil bajarla. Debe aumentar la resistencia de la resistencia pull-up y luego medir si hay algún cambio en la entrada de la cámara S2 después de bajarla. Si el voltaje es inferior a 1 V, desconecte la computadora industrial, conecte la cámara IN\_\* a 24 V y GND a través de la resistencia y verifique si hay un cambio en la entrada de la cámara. Si hay algún cambio, verifique si la conexión entre la computadora industrial y la cámara es correcta; Si no hay cambios, comuníquese con el soporte técnico para solucionar el problema.
+
+5. El árbol lógico se muestra a continuación:
+
+<Frame>
+  <img src="/images/legacy/dbde924e-e206-4ed7-a609-b954a60a36cc/b727aee2-58b2-4a2b-bf87-a34d4fa94a63.avif" alt="Diagrama relevante del terminal de entrada IN\_ método de cableado 3" />
+</Frame>
+
+### 7.5.4.2 Terminal de salida Método de cableado de salida
+
+1. Hay dos tipos de f y pnp dentro de la cámara.
+
+2. La siguiente figura muestra el método de cableado entre el terminal de entrada de la computadora industrial y el terminal de salida de la cámara S2 (en adelante abreviado como OUT\_\*, \* representa 1 y 2):
+
+<Frame>
+  <img src="/images/legacy/4b34864c-b203-45de-add7-422469d59886/a9234957-e7a1-4eb7-9307-0e93c76c25e4.avif" alt="Ilustraciones relacionadas con el método de cableado Out\_ del terminal de salida" />
+</Frame>
+
+## 8. Preguntas frecuentes
+
+### 8.1 Objetos negros
+
+Debido al principio TOF, las cámaras de la serie S se ven afectadas por la reflectividad de la paleta negra. Con una reflectividad del 5 % de la paleta negra, la cámara S2max se puede utilizar para lograr imágenes dentro de un rango de 2 m. Durante la depuración, el efecto de imagen de la paleta negra también se puede optimizar mediante el alto tiempo de integración y el bajo umbral de señal del software del ordenador host. Si hay un brazo de horquilla negro en la escena para evitar obstáculos, se recomienda que el usuario agregue una mayor reflectividad a la punta de la horquilla para ayudar a evitar obstáculos, como rociar una pequeña sección delante de la punta de la horquilla con una superficie de pintura de otros colores.
+
+### 8.2 Objetos de terreno bajo
+
+Los objetos en el suelo no pueden evitar los obstáculos. En aplicaciones para evitar obstáculos, generalmente utilizamos el suelo como base para la configuración de parámetros externos. Si no se pueden evitar obstáculos al encontrar obstáculos bajos en el suelo, puede consultar las siguientes soluciones:
+
+- La imagen de la nube de puntos del ordenador host muestra que no se ha seleccionado ningún obstáculo. Debe confirmar si la altura para evitar obstáculos (abajo) es un valor positivo. Si es un valor positivo, se recomienda configurarlo temporalmente en 0 para determinar si se puede detectar el obstáculo. Si aún no se puede detectar, se recomienda ajustar la altura de instalación de la cámara.
+
+- La imagen de la nube de puntos de la computadora host puede seleccionar el objeto obstáculo pero el resultado para evitar obstáculos es 0. Este fenómeno puede deberse a una configuración incorrecta de la altura de instalación de la cámara. Se recomienda que el usuario ajuste la altura de instalación de la cámara.
+
+### 8.3 Los parámetros para evitar obstáculos no tienen efecto
+
+- No hice clic en Configuración completa al configurar los parámetros.
+
+- La modificación de parámetros ilegales provocó que la configuración fallara.
+
+- La conexión de la cámara es inestable y está desconectada, lo que provoca que falle la entrega de parámetros.
+
+### 8.4 Interferencia en la estructura de instalación
+
+- Durante la instalación, hay estructuras alrededor de la cámara que bloquean el campo de visión de la cámara, lo que genera datos anormales en la cámara.
+
+- Durante el diseño estructural, el diseño de la cámara interfiere con la vista trasera, provocando datos anormales en la cámara.
+
+- La película protectora del espejo de la cámara no se ha quitado, lo que genera datos anormales en la cámara.
+
+- Hay otro cristal protector instalado en el espejo de la cámara, lo que provoca anomalías en los datos.
+
+Bienvenido a contactarnos a través de los siguientes métodos:
+
+- Si no has comprado un producto, [póngase en contacto con nuestro equipo de preventa en WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Contacto preventa")
+
+- Si has comprado un producto, [póngase en contacto con el soporte técnico en WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Póngase en contacto con el soporte técnico")
+
+- **Sitio web oficial**: [www.mrdvs.cn](https://www.mrdvs.cn/ "www.mrdvs.cn")
+
+- **Bilibili**: [Vídeo tutoriales y ejemplos de aplicación.](https://space.bilibili.com/3546755102672963 "Vídeo tutoriales y ejemplos de aplicación.")
+
+- **GitHub**: [Descargue el SDK y el código de muestra](https://github.com/Lanxin-MRDVS/CameraSDK "Descargue el SDK y el código de muestra")
+
+- **Correo electrónico**: [servicio@mrdvs.com](mailto:service@mrdvs.com "servicio@mrdvs.com")
+
+- ：400-025-6680

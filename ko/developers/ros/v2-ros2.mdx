@@ -1,0 +1,454 @@
+---
+title: "V2 ROS 2 인터페이스 참조"
+description: "V2 현지화 ROS 2 SDK를 빌드 및 실행하고 해당 주제와 서비스를 사용하세요."
+hidden: true
+---
+## lx\_camera\_ros 인터페이스 설명의 ROS2 버전
+
+### 컴파일
+
+#### 1. 호스트 컴퓨터에 Qt5가 설치되어 있는지 확인하세요. 컴파일에는 Qt5의 Core, Network 및 기타 기능 패키지가 필요합니다.
+
+```bash
+// Installation differs by Linux distribution. This example uses:
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+#### 2. libzip 함수 패키지 설치
+
+libzip 공식 웹사이트에서 소스 파일(https://libzip.org/download/)을 다운로드한 후 공식 웹사이트 튜토리얼에 따라 컴파일합니다.
+
+#### 3. ros 함수 패키지 컴파일
+
+/lx\_camera\_ros에서 ./build.sh 실행 (ROS2 버전에 적용 가능)
+
+### 달리다
+
+yaml 구성 파일에 대한 모든 변경 사항을 적용하려면 다시 컴파일해야 합니다.
+
+./start.sh 실행
+
+* * *
+
+### ROS2 주제 인터페이스
+
+인터페이스를 테스트하기 전에 카메라 본체의 전원을 켜고(본체 프로그램이 시작될 때까지 30초 대기) ROS2 SDK 노드를 시작해야 합니다(이전 섹션 참조).
+
+#### 포지셔닝 및 자세 인터페이스 수신
+
+1. ROS2는 카메라에서 전송된 위치 값 x, y, theta를 계속해서 수신합니다.
+
+2. 위치 지정 값 x, y 및 쿼터니언(세타에서 변환됨)을 주제: `LxCamera_LocationPoseResult`에 게시합니다.
+
+3. TF 변환을 통해 포지셔닝 값과 쿼터니언을 브로드캐스팅합니다.
+
+```cpp
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### 위치 확인 상태 인터페이스 수신
+
+1. ROS2는 카메라에서 전송된 포지셔닝 상태 "`true/false`"를 계속 수신(주파수: 1s)하여 현재 포지셔닝이 정상인지 여부를 나타냅니다.
+
+2. ROS2는 위치 확인 상태(`std_msgs::msg::Bool` 유형의 데이터)를 주제: `LxCamera_LocationResult`에 게시합니다.
+
+3. Topic을 구독하시면 포지셔닝 상태를 알 수 있습니다. (현재 포지셔닝 성공 여부)
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### 현재 카메라가 사용하는 공간 인터페이스를 수신합니다.
+
+1. ROS2는 카메라에서 전송된 저장 공간 사용 비율을 지속적으로(주파수: 2s) 수신합니다.
+
+2. ROS2는 점유 상태(`std_msgs::msg::Float32` 유형의 데이터)를 주제: `LxCamera_Capacity_Status`에 게시합니다.
+
+3. 토픽을 구독하면 점유 상태 비율을 얻을 수 있습니다.
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### 현재 결함이 있는 모듈의 이름을 받습니다.
+
+1. ROS2가 카메라에서 잘못된 모듈 이름을 계속 전송합니다.
+
+2. ROS2는 점유 상태(`std_msgs::msg::String` 유형 데이터)를 주제: `LxCamera_Module_Error`에 게시합니다.
+
+3. Topic을 구독하면 예외 모듈 이름을 얻을 수 있습니다.
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### 매핑 진행 인터페이스 수신
+
+1. 지도 제작을 시작한 후
+
+2. ROS2는 위치 확인 상태(`std_msgs::msg::Int32` 유형의 데이터)를 주제: `LxCamera_Mapping_Progress`에 게시합니다.
+
+3. Topic을 구독하면 지도 구축 진행 상황(0~100)을 확인할 수 있습니다.
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### 매핑 상태 인터페이스 수신
+
+1. 지도 제작을 시작한 후
+
+2. ROS2는 매핑 진행 상태(`std_msgs::msg::Bool` 유형의 데이터)를 주제: `LxCamera_MappingState`에 게시합니다.
+
+3. 토픽을 구독하면 매핑 상태를 전환할 수 있습니다.
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### 매개변수 인터페이스 설정
+
+1. 사용자는 `std_msgs::msg::String` 유형의 메시지를 주제: `LxCamera_SetParam`에 게시합니다.
+
+2. 메시지 형식은 영어 쉼표 ","로 구분된 9개의 부동 소수점 숫자입니다. 이는 각각 다음을 나타냅니다. `x,y,z,yaw,pitch,roll,x,y,yaw`, **처음 6개 매개변수는 카메라의 자세이고 마지막 3개는 LiDAR의 자세입니다**.
+
+3. 수정이 성공한 후 카메라 경로 `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` 파일의 \[Laser1\] 및 \[Camera1\]에 관련 매개변수가 설정됩니다.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### 스위치 맵 인터페이스
+
+1. 사용자는 `std_msgs::msg::String` 유형의 메시지를 주제: `LxCamera_SwitchMap`에 게시합니다.
+
+2. 메시지 형식은 문자열이며 지도 이름을 나타내는 하나의 필드를 포함합니다(지도가 카메라에서 생성된 경우).
+
+3. 카메라 웹 페이지에 표시된 지도가 변경된 경우(웹 페이지 새로 고침) 전환이 성공한 것입니다.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### 지도 인터페이스 다운로드
+
+1. 사용자는 `std_msgs::msg::String` 유형의 메시지를 주제: `LxCamera_DownloadMap`에 게시합니다.
+
+2. 메시지 형식은 문자열이며 두 개의 필드를 포함합니다. save\_path는 저장 주소(절대 경로를 사용하는 호스트 컴퓨터의 주소)를 나타내고, mapname은 맵 이름(카메라에서 매핑이 완료된 ".zip" 형식의 파일 이름)을 나타냅니다.
+
+3. 성공하면 호스트 컴퓨터에서 지정한 경로 아래에 지정된 맵 이름을 가진 압축 패키지가 있게 됩니다. 압축을 풀면 `PGM map file` 및 `YAML configuration file`를 얻게 됩니다.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### 주행거리계 인터페이스 업로드
+
+1. 사용자는 `nav_msgs::msg::Odometry` 유형 데이터를 주제: `/sim/odom`(수정 가능)에 게시합니다.
+
+```bash wrap
+// Enter the lx_camera_ros2_ws directory //Open a terminal source install/setup.bash ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### 재배치 인터페이스
+
+1. 사용자는 `geometry_msgs::msg::PoseWithCovarianceStamped` 유형의 데이터를 주제: `LxCamera_UploadReloc`에 게시합니다.
+
+2. 데이터는 `x,y,yaw`를 포함한 레이저 포즈입니다.
+
+3. 카메라 웹 페이지에 표시된 신체 위치가 전송된 위치로 업데이트되면 재배치에 성공한 것입니다.
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0]
+  }
+}"
+```
+
+> 쿼터니언에는 테스트 중에 제약 조건이 있으며 마음대로 채울 수 없습니다. [웹 도구](https://www.itutool.com/tools/euler-quaternion-converter "웹 도구")를 사용하여 `Euler yaw angle`를 `quaternion x/y/z/w`로 변환할 수 있습니다.
+
+#### 메시지 유형 접두사
+
+호스트 컴퓨터는 UDP를 사용하여 카메라와 통신합니다. 통신을 통해 전송된 메시지의 처음 4바이트는 다양한 인터페이스 데이터 유형을 구별하기 위한 유형 접두사입니다.
+
+```cpp
+mapping_prefix = "aced220d";          // Enable mapping
+setparam_prefix = "aced220e";         // Set camera and LiDAR parameters
+UploadScan_prefix = "aced2209";       // Upload laser scan data to the camera
+odom_prefix = "aced0f0a";             // Odometry data
+mapname_prefix = "aced220c";          // Switch maps
+map_request_prefix = "aced220f";      // Download a specified map
+prefix_after_reloc = "aced0f0b";      // Relocalization
+```
+
+* * *
+
+### ROS2 서비스 인터페이스
+
+맵 구축, 맵 자르기, 맵 다운로드, 재배치의 4가지 기능은 주제 구현 인터페이스를 사용할 뿐만 아니라, 통신을 위한 서비스 인터페이스 사용을 지원하고, V2 호스트가 반환한 결과 메시지를 통해 서비스 응답 결과(작업 성공 여부)를 피드백합니다.
+
+1. ros2 서비스 명령을 통해 서비스 인터페이스를 구독합니다.
+
+2. "true"가 반환되면 작업이 성공한 것이고, "false"가 반환되면 작업이 실패한 것입니다.
+
+#### 지도 만들기
+
+서비스 이름: `/LxCamera_Mapping_srv`
+
+서비스 형식 정의:
+
+```bash
+bool status      # Whether to map: true starts mapping; false stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result      # Operation result: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### 사진 잘라내기
+
+서비스 이름: `/LxCamera_SwitchMap_srv`
+
+서비스 형식 정의:
+
+```bash
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result       # Operation result: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### 지도 다운로드
+
+서비스 이름: `/LxCamera_DownloadMap_srv`
+
+서비스 형식 정의:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path   # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### 이전
+
+서비스 이름: `/LxCamera_UploadReloc_srv`
+
+서비스 형식 정의:
+
+```bash
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  "pose": {
+    "header": {
+      "stamp": {
+        "sec": 0,
+        "nanosec": 0
+      },
+      "frame_id": "map"
+    },
+    "pose": {
+      "pose": {
+        "position": {
+          "x": 4.5,
+          "y": -15.5,
+          "z": 0.0
+        },
+        "orientation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.694658,
+          "w": 0.71934
+        }
+      },
+      "covariance": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### 현재 지도 이름을 가져옵니다.
+
+서비스 이름: `/LxCamera_GetCurMapname_srv`
+
+서비스 형식 정의:
+
+```bash
+bool get_cur_mapname # Retrieve the current map identifier
+---
+string mapname      # Current map name
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### 현재 지도 목록 가져오기
+
+서비스 이름: `/LxCamera_GetMapList_srv`
+
+서비스 형식 정의:
+
+```bash
+bool get_map_list # Whether to retrieve the map list
+---
+string[] map_list # Map list
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### 지도 건물 출구
+
+서비스 이름: `/LxCamera_ExitMapping_srv`
+
+서비스 형식 정의:
+
+```bash
+bool exit_mapping # Whether to exit mapping
+---
+bool state        # Whether mapping exited successfully: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### 지도 삭제
+
+서비스 이름: `/LxCamera_EraseMap_srv`
+
+서비스 형식 정의:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+---
+bool result        # Whether map deletion succeeded: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### 히트맵 다운로드
+
+서비스 이름: `/LxCamera_DownloadHeatMap_srv`
+
+서비스 형식 정의:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path   # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+명령어 디버깅:
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## 증분 매핑
+
+서비스 이름: `/LxCamera_IncMapping_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

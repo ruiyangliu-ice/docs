@@ -1,0 +1,339 @@
+---
+title: "Hướng dẫn sử dụng V2Pro"
+description: "Thông số kỹ thuật, giao diện, hướng dẫn cài đặt, ánh xạ và bản địa hóa cho bộ điều khiển điều hướng V2 Pro."
+---
+Để có tài liệu đầy đủ, hãy tải xuống hướng dẫn sử dụng sản phẩm từ [Trung tâm tải xuống](/vi/resources/downloads/specifications-and-user-guides "Trung tâm tải xuống").
+
+<Frame>
+  <img src="/images/legacy/6158883d-7b19-4268-9f60-11fdb71c8ea7/3bbe318b-e488-43a2-ab70-7d4c2d20a6c7.avif" alt="Bộ điều khiển điều hướng V2 Pro" />
+</Frame>
+
+## 1. Tổng quan về sản phẩm
+
+### 1.1 Giới thiệu
+
+MRDVS V2 Pro là bộ điều khiển điều hướng kết hợp dữ liệu từ camera SLAM trực quan hướng lên trên, LiDAR 2D và IMU. Nền tảng tính toán tích hợp của nó không yêu cầu máy tính công nghiệp bên ngoài. Khi robot di chuyển qua khu vực điều hướng, camera sẽ thu thập dữ liệu môi trường và tạo bản đồ để định vị và điều hướng cho robot di động.
+
+### 1.2 Tính năng
+
+#### 1.2.1 Điều hướng robot di động
+
+- Kết hợp dữ liệu từ camera hướng lên trên 108°×57°, LiDAR 2D với phạm vi quét 270° và IMU cho độ chính xác định vị lặp lại ±1cm.
+
+- Sử dụng bộ xử lý 6 TOPS và giao diện trực quan để lập bản đồ.
+
+#### 1.2.2 Cải tiến xe nâng tay
+
+- Bao gồm Wi-Fi 6 để truyền dữ liệu bản địa hóa xe nâng thủ công.
+
+- Cung cấp đầu ra âm thanh 3 chân cho lời nhắc và cảnh báo bằng giọng nói.
+
+### 1.3 Ứng dụng
+
+1.3.1 Hậu cần nhà máy: Hỗ trợ vận hành liền mạch trong nhà và ngoài trời bằng AGV và xe nâng tự hành giữa các kho, bến bốc hàng và nhà xưởng.
+
+1.3.2 Nâng cấp xe nâng thủ công: Thay thế UWB với độ chính xác cao hơn (dưới 3cm), chi phí triển khai thấp hơn và thời gian triển khai ngắn hơn.
+
+<Frame>
+  <img src="/images/legacy/7e7ecff2-21d2-41a0-a2c1-ff158ff930e0/dbf0b002-1764-489f-8697-923817412c41.avif" alt="Ứng dụng V2 Pro" />
+</Frame>
+
+* * *
+
+## 2 Thông số kỹ thuật
+
+### 2.1 Thông số kỹ thuật cơ bản
+
+|  | Tham số | Bộ điều khiển điều hướng V2 Pro |
+| --- | --- | --- |
+| Camera hướng lên trên | Phạm vi hoạt động | 1m-15m ở mức ánh sáng xung quanh 0-10 klux |
+| Trường nhìn (FOV) | 108°(H)×57°(V)±3° |  |
+| Tốc độ khung hình | 20 khung hình/giây |  |
+| Chống nhiễu | Độ chói và khả năng chống ánh sáng xung quanh |  |
+| Mô-đun tích hợp | IMU |  |
+| LiDAR 2D | Tần số quét | 15hz-25hz, có thể chuyển đổi |
+| Phạm vi phát hiện | Độ phản xạ 15m @ 10% / Độ phản xạ 40m @ 90% |  |
+| Độ chính xác khác nhau | ±30mm điển hình |  |
+| Độ phân giải góc | 0,25° |  |
+| Trường nhìn ngang | 270° |  |
+| Hệ thống chính | Bộ xử lý | Nền tảng ARM 8 nhân Rockchip |
+| Hiệu suất NPU | 6TOP |  |
+| Giao diện truyền thông | 1× Ethernet / 1× CAN / 4× IO (2 IN, 2 OUT) |  |
+| Đầu vào nguồn | 24V(±4.8V) DC IN |  |
+| Tiêu thụ điện năng | trung bình 6,6W; tối đa 15,3W |  |
+| Mô-đun không dây | Wi-Fi 6 |  |
+| Đầu ra âm thanh | Đầu ra âm thanh 1×3 chân (L/R/GND) |  |
+| Kích thước | 146,5mm×66,3mm×89,4mm |  |
+| Đánh giá bảo vệ | IP54 |  |
+| Nhiệt độ hoạt động | -20°~60° |  |
+| Nhiệt độ bảo quản | -40°~80° |  |
+
+Lưu ý: Mô hình 3D xác định kích thước sản phẩm.
+
+### 2.2 Định nghĩa giao diện
+
+Bộ điều khiển điều hướng có năm giao diện: nguồn DC 24V, Fast Ethernet, CAN, IO và đầu ra âm thanh 3,5mm.
+
+<Frame>
+  <img src="/images/legacy/24724a5b-15d1-4717-924b-26325b7ff494/e9bb4b68-b23a-45f3-873c-54beb31f17dc.avif" alt="Định nghĩa giao diện V2 Pro" />
+</Frame>
+
+| Cảng | Định nghĩa | Mô tả |
+| --- | --- | --- |
+| CN6 | Ethernet | Đầu nối cái RJ45 |
+| CN7 | CÓ THỂ | Hồng: CAN_H; xanh nhạt: CAN_L; đen: GND |
+| CN8 | IO | 1: IN1+ 2: IN1-<br />3: IN2+ 4: IN2-<br />5: OUT1+ 6: OUT1-<br />7: OUT2+ 8: OUT2-<br />IO IN: Hoạt động ở mức cao 5-24V<br />IO OUT: Đầu ra kéo đẩy hỗ trợ biến tần 24V/100mA |
+| CN9 | Quyền lực | DC 24V/3A; 1: tích cực; G: phủ định |
+| CN10 | Đầu ra âm thanh | Đầu nối đực 3,5mm |
+
+### 3. Thông tin sản phẩm
+
+#### 3.1 Hình thức sản phẩm
+
+<Frame>
+  <img src="/images/legacy/0e48595e-2baa-442e-b1ee-0d134d60aa46/7894c8cf-c5a1-4487-9e9a-36c124d61a44.avif" alt="Bộ điều khiển điều hướng V2 Pro" />
+</Frame>
+
+### 3.2 Bản vẽ cơ khí
+
+<Frame>
+  <img src="/images/legacy/2c2077de-b1f7-4003-b5e5-b72781e30889/2995c2d9-0f15-470f-9b6b-fb7a33801f88.avif" alt="Bản vẽ cơ khí V2 Pro" />
+</Frame>
+
+#### 3.3 Thành phần sản phẩm
+
+#### 3.3.1 Tổng quan về thành phần
+
+<Frame>
+  <img src="/images/legacy/bf604270-608b-4964-84c8-3f03034639de/3bdebbaf-423e-4d4c-ad57-cd7f79d13fac.avif" alt="Các thành phần V2 Pro" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/04312b10-000c-42c1-84e3-5439e185fcd6/d9214987-b9ca-4c74-bad1-447b000d1391.avif" alt="Chi tiết thành phần V2 Pro" />
+</Frame>
+
+| Không. | Thành phần |
+| --- | --- |
+| 1 | Cửa sổ phát tia laser 2D |
+| 2 | Cửa sổ ống kính máy ảnh hướng lên trên |
+| 3 | Đèn chiếu sáng camera hướng lên trên |
+| 4 | Đầu nối ăng-ten Wi-Fi |
+| 5 | Lỗ lắp: bốn lỗ vít M3 |
+| 6 | Cáp camera: Ethernet, nguồn, CAN, IO và âm thanh |
+| 7 | Vị trí nhãn bảng tên |
+
+#### 3.3.2 Mô-đun giao tiếp Wi-Fi
+
+Bộ điều khiển điều hướng V2 Pro bao gồm bộ điều hợp mạng không dây cho Wi-Fi tốc độ cao, ổn định. MIMO nhiều người dùng (MU-MIMO) tăng dung lượng kênh khi nhiều thiết bị chia sẻ cùng một băng tần và hoạt động luồng kép hỗ trợ tốc độ lên tới 1200Mbps. Bộ điều hợp hỗ trợ IEEE 802.11ax/ac/a/b/g/n ở băng tần ISM 2.400GHz~2.4835GHz.
+
+| Danh mục | Chi tiết |
+| --- | --- |
+| Tiêu chuẩn | IEEE 802.11ax/ac/a/b/g/n (2T2R)<br />Bluetooth: V5.3, V5.0, V4.2, V4.1, V4.0 LE, V3.0+HS, V2.1+EDR |
+| Tốc độ dữ liệu | Wi-Fi:<br />→ 802.11b: 11 Mbps<br />· 802.11a/g: 54 Mbps<br />· 802.11n: MCS0~15<br />→ 802.11 AC: MCS0~9<br />→ 802.11ax: HE0~11<br />Bluetooth: 1 Mbps hoặc 2 Mbps, tối đa 3 Mbps |
+| Tần số hoạt động | Băng tần IEEE 802.11ax/ac/a/b/g/n<br />ISM: 2,400 GHz~2,4835 GHz<br />(Băng tần 5G hiện không khả dụng do các hạn chế theo quy định của địa phương.) |
+
+## 4 Hướng dẫn tích hợp Camera
+
+### 4.1 Phạm vi phát hiện của camera và hệ tọa độ
+
+<Frame>
+  <img src="/images/legacy/6d0e6ff7-042b-4579-8f32-b39e2f72ae9f/ec831dfa-3279-4408-904d-f783954ed032.avif" alt="Phạm vi phát hiện camera và hệ tọa độ" />
+</Frame>
+
+### 4.2 Cài đặt camera
+
+<Frame>
+  <img src="/images/legacy/e22a1325-3e14-419f-b115-5d495fb40fb3/9fc8553e-939d-42d6-a472-e30ec7889b9b.avif" alt="Lắp đặt camera" />
+</Frame>
+
+### 4.3 SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển MRDVS SDK.
+
+* * *
+
+### 4.4 Môi trường và độ tin cậy
+
+| Mục |  | Đặc điểm kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20oC~60oC |
+|  | Chiếu sáng | 0KLUX--50KLUX |
+| Môi trường lưu trữ | Nhiệt độ | -40oC~85oC |
+|  | Độ ẩm | Độ ẩm tối đa 90% |
+| Nhiệt độ tăng trong quá trình hoạt động bình thường |  | Tăng nhiệt độ vỏ &lt;25oC |
+| Đánh giá ESD |  | ±4KV phóng điện tiếp xúc, ±8KV xả khí |
+| Đánh giá RE |  | Tuân thủ GB 9254 LỚP A |
+| Tuổi thọ sử dụng |  | Hơn 3 năm |
+| Chứng nhận môi trường |  | RoHS |
+
+* * *
+
+### 5. Bắt đầu nhanh
+
+### 5.1 Nội dung đóng gói
+
+| Không. | Mô tả |
+| --- | --- |
+| 1 | Bộ điều khiển V2 Pro |
+| 2 | Cáp nguồn 2 chân |
+
+#### 5.2 Kiểm tra kết nối
+
+<Frame>
+  <img src="/images/legacy/dfd4c3be-816c-4ffc-81ac-13141e3c2644/9d8858e6-85a0-492f-a353-4e5adf1f81a2.avif" alt="Kiểm tra kết nối" />
+</Frame>
+
+#### 5.2.1 Cấp nguồn cho camera
+
+- Kết nối một đầu của cáp DC với camera và đầu còn lại với bộ chuyển đổi DC 24V/3A.
+
+- Đèn báo nguồn màu xanh lam nhấp nháy chậm xác nhận việc bật nguồn bình thường.
+
+- Nếu đèn báo tắt hoặc bất thường, chẳng hạn như màu đỏ liên tục, hãy kiểm tra đầu nối nguồn và bộ chuyển đổi.
+
+#### 5.2.2 Cấu hình mạng
+
+- Kết nối máy ảnh trực tiếp với máy tính bằng cáp Ethernet Loại 6.
+
+- Địa chỉ IP camera mặc định của nhà sản xuất là 192.168.100.201.
+
+- Đặt IP máy tính về cùng mạng con và tắt tường lửa.
+
+- Trên máy tính mạng LAN, nhập 192.168.100.201:9998 vào trình duyệt web để đăng nhập mà không cần mật khẩu.
+
+#### 5.2.3 Chạy phần mềm
+
+- Chạy phần mềm máy chủ, thu nhận hình ảnh camera và xác minh rằng chúng rõ ràng và ổn định.
+
+- Xem phần 5.3 hoặc hướng dẫn sử dụng LxCameraViewer.
+
+Liên hệ với bộ phận hỗ trợ kỹ thuật hoặc bán hàng của MRDVS để được trợ giúp thêm.
+
+#### 5.3 Tổng quan về giao diện
+
+<Frame>
+  <img src="/images/legacy/4e6942a8-55ab-4030-9609-4c1392a560fa/69362392-66e2-4bd2-8fc3-72e4a3e1efbe.avif" alt="Giao diện V2 Pro" />
+</Frame>
+
+1. Thanh menu màu đỏ: Mở các chức năng như ánh xạ, định vị lại và quản lý bản đồ.
+
+2. Hộp màu xanh: Hiển thị bản đồ phác thảo 2D đã tải và biểu tượng định vị phương tiện.
+
+3. Hộp màu xanh lá cây: Hiển thị hình ảnh RGB trực tiếp từ camera hướng lên trên.
+
+4. Ô màu vàng: Hiển thị cường độ tín hiệu định vị lại theo thời gian thực (xanh: xuất sắc, xanh lam: tốt, đỏ: kém), cùng với tọa độ xe, tốc độ xe và tọa độ con trỏ.
+
+#### 5.4 Lập bản đồ
+
+1. Bắt đầu lập bản đồ
+
+<Frame>
+  <img src="/images/legacy/edcaac72-adf1-4432-ba27-9b7323cde695/8cdd9468-9cb7-437d-a823-4a0cbffae053.avif" alt="Bắt đầu lập bản đồ" />
+</Frame>
+
+2. Nhập tên bản đồ
+
+- Tên bản đồ có thể chứa chữ cái, số và dấu gạch dưới nhưng không được bắt đầu bằng số.
+
+3. Giao diện bản đồ
+
+<Frame>
+  <img src="/images/legacy/2568abac-69b0-4e56-af86-53575c614918/12edb330-0198-49f8-a1de-cbcc05192b4a.avif" alt="Giao diện bản đồ" />
+</Frame>
+
+- Trong quá trình lập bản đồ, giữ tốc độ tuyến tính của xe bằng hoặc dưới 0,5m/s và tốc độ góc bằng hoặc dưới 20 độ/s.
+
+- Giao diện hiển thị đường viền laser và hình ảnh camera hướng lên trên.
+
+4. Lập kế hoạch trước một đường dẫn bản đồ gần đúng. Di chuyển ổn định ở tốc độ thấp (&lt;0,2m/s), sử dụng đường thẳng và rẽ vuông góc, đồng thời tránh các đường đi lặp lại và rung động ngẫu nhiên. Duy trì khoảng một phần ba sự chồng chéo trực quan dọc theo các đường dẫn theo cùng một hướng. Các đường đi song song thường cách nhau khoảng 2m. Bao phủ khu vực lập bản đồ hoặc tuyến đường của robot một cách hoàn chỉnh nhất có thể, như minh họa bên dưới.
+
+<Frame>
+  <img src="/images/legacy/7f2923e9-c17c-47a0-8720-9de448d0a851/045b2eb3-7aca-4ae2-8693-660381d3301e.avif" alt="Đường dẫn ánh xạ được đề xuất" />
+</Frame>
+
+5. Hoàn tất việc lập bản đồ
+
+- Sau khi AGV quét vùng vận hành, nhấp vào **Hoàn tất ánh xạ** trong menu và chờ. Thời gian xử lý tùy thuộc vào khu vực được quét.
+
+#### 5.5 Quản lý bản đồ
+
+1. Giao diện quản lý bản đồ
+
+2. Bản đồ nền
+
+<Frame>
+  <img src="/images/legacy/60beebd0-634a-4145-907c-e553c16a5db1/82af1a8d-d514-4304-89d0-439e413314b3.avif" alt="Quản lý bản đồ nền" />
+</Frame>
+
+Sau khi lập bản đồ, hãy nhấp vào **Quản lý bản đồ**. Bản đồ mới xuất hiện trong danh sách bản đồ nền. Nhấp vào **Triển khai** để triển khai nó lên máy chủ. Triển khai mọi bản đồ khi có nhiều bản đồ. Bạn cũng có thể chỉnh sửa, xuất hoặc xóa bản đồ.
+
+3. Bản đồ máy chủ
+
+<Frame>
+  <img src="/images/legacy/22d53108-6c4c-4352-afde-cea020bcf3dc/60add4a5-7fb8-403b-89fa-52c52a02ac2f.avif" alt="Quản lý bản đồ máy chủ" />
+</Frame>
+
+Nhấp vào **Áp dụng** trên bản đồ máy chủ để kích hoạt nó. Bạn có thể xuất hoặc xóa bản đồ máy chủ. Khởi động lại bộ điều khiển sau khi nhấp vào **Áp dụng**; nếu không, bản đồ sẽ không hoạt động và việc định vị lại có thể không thành công.
+
+#### 5.6 Tái định vị
+
+<Frame>
+  <img src="/images/legacy/a2c8e5ae-7696-4335-aac3-d104f19e5661/deb0504b-1722-4266-9085-373b38eaf7b1.avif" alt="Tái định vị" />
+</Frame>
+
+- Nhấp vào **Định vị lại**, sau đó kéo chuột để tạo tư thế gần đúng bằng cách khớp đám mây điểm laze với đường viền laze.
+
+- Sau khi tái định vị thành công, lỗi hết thời gian nội địa hóa sẽ biến mất.
+
+#### 5.7 Cấu hình tham số
+
+<Frame>
+  <img src="/images/legacy/83cdaa3d-47fc-49fc-9d71-26ba6ae2a4b3/edeb23b6-0f47-4be5-8d33-26a5b0a8a1f5.avif" alt="Cấu hình tham số" />
+</Frame>
+
+Xem và định cấu hình các thông số định vị khung gầm cũng như LiDAR và các thành phần bên ngoài của máy ảnh trong các giá trị hiệu chỉnh cảm biến.
+
+## 6 Khắc phục sự cố
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Tắt tường lửa để không chặn liên lạc camera |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Giải quyết xung đột địa chỉ LAN và chọn địa chỉ IP chính xác |
+| 3 | Luồng camera không ổn định | Sử dụng cáp Gigabit Ethernet; Fast Ethernet có thể gây mất ổn định ban đầu |
+| 4 | Vị trí cài đặt phần mềm | Sử dụng thư mục có quyền đọc và ghi phù hợp thay vì vị trí mặc định của ổ C |
+
+## 7 Biện pháp phòng ngừa
+
+### 7.1 An toàn tia laser
+
+<Frame>
+  <img src="/images/legacy/0df0a45a-f378-43c5-82cc-23e3b6a1805d/12994efb-680e-499f-bce2-781956a9edf9.avif" alt="An toàn tia laser" />
+</Frame>
+
+### 7.2 Chứa pin lithium
+
+<Frame>
+  <img src="/images/legacy/471921a1-2769-4eb1-ac65-e72dea462455/244bbbe8-7ff8-4f38-a9c2-4b13fe44e7d2.avif" alt="Thông báo về pin lithium" />
+</Frame>
+
+## 8 Tệp đính kèm
+
+### Hướng dẫn vận hành
+
+[Hướng dẫn vận hành bản địa hóa thuần túy V2](/vi/developers/v2-localization/pure-localization-guide "Hướng dẫn vận hành bản địa hóa thuần túy V2")
+
+### Giao thức truyền thông
+
+[Giao thức V2PRO UDP](/vi/developers/v2-localization/udp-protocol "Giao thức V2PRO UDP")
+
+[Giao thức LiDAR bên ngoài V2](/vi/developers/v2-localization/external-lidar "Giao thức LiDAR bên ngoài V2")
+
+[Giao thức HTTP mô-đun bản địa hóa trực quan V2](/vi/developers/v2-localization/http-protocol "Giao thức HTTP mô-đun bản địa hóa trực quan V2")
+
+### Ví dụ về ROS1 và ROS2
+
+[README\_V2\_service\_ROS1](/vi/developers/ros/v2-ros1 "README_V2_service_ROS1")
+
+[README\_V2\_service\_ROS2](/vi/developers/ros/v2-ros2 "README_V2_service_ROS2")
+
+[Hướng dẫn ROS tối thiểu](/vi/developers/ros/quickstart "Hướng dẫn ROS tối thiểu")

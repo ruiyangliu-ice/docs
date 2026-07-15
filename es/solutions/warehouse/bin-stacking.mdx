@@ -1,0 +1,125 @@
+---
+title: "Apilado de contenedores con carretilla elevadora AGV"
+description: "Utilice la visión 3D para guiar los montacargas AGV durante la detección precisa de contenedores, el acoplamiento y el apilado multicapa."
+---
+Darle a AGV la capacidad de acoplar con precisión cestas, paletas, etc. es un requisito estricto en el campo de la visión de robots móviles. No sólo puede mejorar la eficiencia operativa de los robots móviles, sino también lograr una fabricación flexible mediante el acoplamiento preciso de robots móviles en diferentes estaciones de trabajo. Actualmente, realizar la función de apilamiento de cestas de carretillas elevadoras AGV aún enfrenta una serie de desafíos técnicos:
+
+**Dificultad uno: requisitos de alta precisión**
+
+La tolerancia de apilamiento de las jaulas superior e inferior es pequeña, lo que no permite la fricción entre el material y el contenedor. A medida que aumenta el número de capas apiladas, garantizar la seguridad requiere un posicionamiento y una revisión de alta precisión.
+
+**Dificultad 2: Jaulas y bienes diversificados**
+
+Para el sistema de posicionamiento por visión 3D, debe adaptarse a diferentes tipos de jaulas y mercancías, y realizar una adaptación precisa y un ajuste adaptativo de acuerdo con los requisitos de la aplicación real para satisfacer las necesidades de diversos escenarios de aplicación.
+
+**Dificultad tres: Escenarios industriales y logísticos complejos y cambiantes**
+
+La iluminación y el entorno de trabajo de diferentes escenarios industriales pueden interferir con el trabajo portuario, por lo que es necesario abordar condiciones ambientales complejas y cambiantes.
+
+## Descripción general de la solución
+
+La solución de apilamiento de cestas por microvisión de Meyer se basa en tecnología de visión 3D y está especialmente diseñada para montacargas inteligentes. Utiliza cámaras 3D de alta precisión para identificar de forma inteligente la información de posición y orientación de las cestas en el montacargas y las cestas en el almacén, calcular la posición relativa y la diferencia de postura y guiar el montacargas para completar operaciones de apilamiento precisas y flexibles. Esta solución mejora eficazmente el nivel de automatización y la eficiencia operativa de las operaciones de apilamiento y es adecuada para escenarios como el almacenamiento inteligente y la distribución logística.
+
+## Ventajas principales
+
+**1. Reconocimiento de alta precisión**: según el valor de desviación reconocido por la cámara, el montacargas puede ajustar de manera flexible la actitud de apilamiento, con una precisión de posicionamiento de ±5 mm, una precisión de ángulo de hasta 0,1° y un rango de reconocimiento de compensación de jaula de ±15°;
+
+2. Identificación inteligente de jaulas de material: el algoritmo de IA de desarrollo propio genera directamente información de posición relativa en tiempo real de las jaulas de material superior e inferior y ajusta la postura del montacargas en tiempo real;
+
+**3. Procesamiento de datos en tiempo real**: el tiempo de procesamiento de datos del sistema por cuadro es inferior a 100 milisegundos, lo que garantiza el funcionamiento eficiente de las operaciones del montacargas;
+
+4. Apilamiento multicapa: admite 1-4 capas de apilamiento, modo de apilamiento 2\*2
+
+<Frame>
+  <img src="/images/legacy/296770eb-776f-4dbb-a0d6-8bf43ccd6710/f463210e-deb3-443b-87f7-d6ef9290e20d.avif" alt="Ilustraciones relacionadas con las fortalezas centrales." />
+</Frame>
+
+Datos de nubes de puntos durante el proceso de atraque de jaulas de carga y descarga
+
+## Demostración de animación
+
+<Frame>
+  <img src="/images/legacy/1701bfc3-a9c4-4767-923a-e7034a195513/46987e2e-f3c5-48c9-b12d-112c3b5ddabc.avif" alt="Ilustraciones relacionadas con la demostración de animación." />
+</Frame>
+
+## Descripción del trabajo
+
+> **Sugerencias para la selección de cámaras**
+
+Serie M: M4Pro, M4mega (las necesidades específicas se determinarán según las necesidades; comuníquese con el soporte técnico de MRDVS para obtener ayuda en la selección)
+
+> **Método de instalación de la cámara**
+
+**• Método de instalación 1: Solución de cámara única**
+
+**•Posición**: La cámara está fijada en el mecanismo de elevación, disparando horizontalmente, y es responsable de la identificación de las cestas de carga del brazo de la horquilla en ambos lados.
+
+**•Requisitos de altura**: La cámara está a una distancia de 35-55 cm del borde inferior del brazo de la horquilla, lo que garantiza que el error de posición del mecanismo de elevación no supere 1 cm.
+
+**• Características**: Una sola cámara es responsable de identificar las patas de la cesta en los brazos de la horquilla izquierda y derecha al mismo tiempo.
+
+<Frame>
+  <img src="/images/legacy/2455a499-e74f-459d-8f80-b6dd0f9f9e9a/72824b55-1af1-44b8-97b7-e20e4908d18b.avif" alt="Ilustraciones relacionadas con instrucciones de trabajo." />
+</Frame>
+
+**• Método de instalación 2: Solución de cámara dual**
+
+**• Posición**: La cámara está instalada de forma fija en ambos lados del montacargas, a 30-40 cm de distancia de la superficie del brazo de la horquilla, y el ángulo de disparo es de 45° con respecto al suelo.
+
+**• Características**: La cámara izquierda toma una fotografía del brazo de la horquilla izquierda y la cámara derecha toma una fotografía del lado derecho, identificando respectivamente las cestas en ambos lados para lograr un apilado preciso.
+
+<Frame>
+  <img src="/images/legacy/26796314-c886-40df-a983-da918d896fc3/ef85b979-fd41-4452-9218-a16363c78210.avif" alt="Gráficos relacionados con la descripción del trabajo 2" />
+</Frame>
+
+> **Solución de comunicación**
+
+El sistema utiliza **protocolo TCP/IP** para la transmisión de datos entre la carretilla elevadora y la cámara 3D:
+
+**• Solicitar información**: Enviar una solicitud para obtener las coordenadas X, Y y el ángulo (θ) de la canasta de materiales.
+
+**•Información de devolución**:
+
+**• Coordenadas X, Y**: La unidad es milímetros, tipo coma flotante de 32 bits.
+
+**•Ángulo Theta**: Rango de -90° a 90°, identifica con precisión las desviaciones.
+
+**• Código de error**: Estado de reconocimiento (0: Éxito, -1: Anormalidad de la cámara, -2: Fallo de posicionamiento, -3: Error de algoritmo).
+
+> **Flujo de trabajo específico**
+
+**Proceso de recogida**:
+
+**1. Posicionamiento**: Mueva la carretilla elevadora a una posición de 2,4-2,6 metros de distancia del borde delantero de la cesta.
+
+**2. Reconocimiento de cámara**: el brazo de la horquilla se eleva a la posición establecida, lo que activa la cámara 3D para reconocer la postura de la cesta.
+
+**3. Ajustar posición**: el montacargas ajusta su ángulo y posición en función de la información de desviación generada por la cámara.
+
+**4. Operación de recogida**: Después de que el montacargas confirma que la posición de la canasta de material es correcta, el brazo de la horquilla realiza la operación de recogida.
+
+**Proceso de apilamiento**:
+
+**1. Preposicionamiento**: La carretilla elevadora se mueve a unos 80 cm delante de la cesta de material a apilar y el brazo de la horquilla se eleva a una posición a 50 cm de la superficie superior de la cesta de material.
+
+**2. Reconocimiento de cámara**: el sistema genera el valor de desviación a través de la cámara 3D para ajustar la izquierda, la derecha y el ángulo.
+
+**3. Alineación precisa**: después de confirmar que el ángulo y la posición cumplen con el umbral, el montacargas completa la alineación mediante un ajuste fino.
+
+**4. Finalización del apilado**: Después de la confirmación, el brazo de la horquilla desciende para completar la operación de apilado.
+
+> **Notas de implementación**
+
+**1. Requisitos ambientales**: Evite ambientes húmedos y con mucho polvo para no afectar el rendimiento de la cámara.
+
+**2. Requisitos de instalación**: Asegure la rigidez y estabilidad del soporte de la cámara 3D para evitar afectar la precisión del reconocimiento.
+
+**3. Mantenimiento regular**: limpie la lente de la cámara con regularidad para evitar que se cubra polvo y garantizar una visión clara de la cámara.
+
+> **Visualización del efecto de reconocimiento**
+
+<Frame>
+  <img src="/images/legacy/c0179ee8-b6fb-4c8f-92cf-0c590ea45ce3/20031c64-666e-41d2-862f-74b10bba8a8f.avif" alt="Ilustraciones relacionadas con la descripción del trabajo 3" />
+</Frame>
+
+* * *

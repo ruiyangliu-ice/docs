@@ -1,0 +1,326 @@
+---
+title: "Hướng dẫn sử dụng sản phẩm S2 Max 2.0"
+description: "1. Cập nhật sơ đồ chân và bổ sung thông số kỹ thuật điện. 2. Đã thêm chứng nhận kiểm tra vào nội dung gói hàng."
+hidden: true
+---
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 30/01/2024 | V0.1 | Phát hành lần đầu |
+| 2024/05/10 | V1.0 | Cập nhật thông số camera |
+| 17/06/2024 | V1.1 | 1. Cập nhật sơ đồ chân và bổ sung thông số kỹ thuật điện. 2. Đã thêm chứng nhận kiểm tra vào nội dung gói hàng. |
+| 25/11/2024 | V1.2 | Cập nhật nhiệt độ bảo quản máy ảnh |
+
+## 1. Giới thiệu
+
+### 1.1 Mục đích và phạm vi
+
+Tài liệu này mô tả thông số kỹ thuật của camera S2 Max 2.0 và các chi tiết thiết kế được chọn lọc dành cho các nhà phát triển tích hợp và sử dụng sản phẩm.
+
+### 1.2 Thuật ngữ
+
+| Máy ảnh RGBD | Một máy ảnh xuất ra hình ảnh có độ sâu và RGB được đồng bộ hóa và căn chỉnh theo không gian |
+| --- | --- |
+| Độ sâu | Luồng video tương tự như luồng màu hoặc đơn sắc, trong đó mỗi pixel biểu thị khoảng cách của nó với máy ảnh |
+| FOV | Trường nhìn: phạm vi góc của cảnh được chụp bởi máy ảnh, bao gồm các trường nhìn ngang (HFOV), dọc (VFOV) và chéo (DFOV) |
+| Camera hồng ngoại | Camera hồng ngoại; ở sản phẩm này, nó chủ yếu thu được dải hồng ngoại gần |
+| Máy ảnh RGB | Một máy ảnh màu |
+| Camera độ sâu | Máy ảnh có mô-đun độ sâu thường bao gồm máy chiếu điểm, camera hồng ngoại và bộ xử lý độ sâu; mô-đun màu của nó thường là máy ảnh RGB |
+| SoC | Hệ thống trên chip dùng để xử lý hình ảnh, tính toán độ sâu và thuật toán ứng dụng |
+
+### 1.3 Nguyên lý hoạt động
+
+Sản phẩm này đo khoảng cách bằng thời gian bay gián tiếp (iToF). Máy ảnh phát ra xung laser và máy thu so sánh dạng sóng nhận được với dạng sóng truyền đi để tính toán độ lệch pha và thời gian truyền xung Δt.
+
+Tính khoảng cách từ mục tiêu đến camera với: khoảng cách = tốc độ ánh sáng \* Δt/2
+
+<Frame>
+  <img src="/images/legacy/f04762f5-7261-4a17-9b69-e0b6abd03511/b327809f-9560-45a7-a951-860596bd7fc9.avif" alt="Nguyên lý hoạt động của iToF" />
+</Frame>
+
+* * *
+
+## 2. Tổng quan về sản phẩm
+
+Máy ảnh RGB-D công nghiệp nhỏ gọn này tích hợp máy ảnh SONY CW iToF và xuất ra hình ảnh RGB ba kênh màu thật với dữ liệu độ sâu từ 0,2m đến 5m. Nó căn chỉnh hình ảnh RGB và độ sâu theo không gian và thời gian, chuyển đổi giữa bốn vùng tránh chướng ngại vật và phát ra các tín hiệu dừng khẩn cấp, giảm tốc độ và trạng thái an toàn.
+
+### 2.1 Hình thức sản phẩm
+
+<Frame>
+  <img src="/images/legacy/b8f9c970-bf1d-4fcc-843d-c1f3db33ce88/9840b66e-ff77-4f7f-aa25-23d7936996b8.avif" alt="Máy ảnh S2 Max 2.0" />
+</Frame>
+
+### 2.2 Tính năng
+
+- Nền tảng điện toán TOPS 1.0 tích hợp chạy các thuật toán tránh chướng ngại vật mà không cần CPU bên ngoài
+
+- Yếu tố hình thức nhỏ gọn để tích hợp linh hoạt, ẩn giấu
+
+- Khả năng thích ứng môi trường mạnh mẽ: chống lại ánh sáng mặt trời 100KLUX và hoạt động từ bóng tối đến ánh sáng mạnh, trong nhà và ngoài trời
+
+- Phạm vi đo rộng 0,2 ~ 5m
+
+- Tránh chướng ngại vật, phát hiện thùng rác và đo thể tích độc lập
+
+- Đầu ra RGB-D
+
+## 3. Thông số kỹ thuật
+
+### 3.1 Thông số cơ bản
+
+| Mẫu sản phẩm | S2 Tối đa 2.0 |
+| --- | --- |
+| Chip | Chip Sony |
+| Định dạng đầu ra | Bản đồ độ sâu&RGB&Biên độ |
+| Độ phân giải TOF và tốc độ khung hình | 320×240 (12 khung hình/giây điển hình) |
+| Trường nhìn TOF | Điển hình: ngang 81°, dọc 61° |
+| Độ phân giải RGB và tốc độ khung hình | 1920×1080 (12 khung hình/giây điển hình) |
+| Trường nhìn RGB | Điển hình: ngang 88°, dọc 56° |
+| Phạm vi | 0,2m~5m (@90%), 0,2~2,5m (@10%) |
+| Độ chính xác | ±3 mm+0,5%*độ sâu |
+| Tiêu thụ điện năng | 6,4W |
+| Laser | 940nm |
+| Kích thước | 92mm×47mm×51mm |
+| Cân nặng | 449g |
+| Đầu vào nguồn | 24V DC/2A |
+| Giao diện truyền thông | Ethernet / IO (tùy chọn) |
+| Đánh giá bảo vệ | IP67 |
+| Nhiệt độ hoạt động | -20°C~60°C |
+| Nhiệt độ bảo quản | -40°C~85°C |
+| Môi trường phần mềm | SDK C / C++ / ROS |
+| Hỗ trợ hệ điều hành | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Làm mát | Bị động, không có quạt |
+| Chống nắng | 100KLUX |
+
+**Lưu ý: Mô hình 3D xác định kích thước sản phẩm.**
+
+* * *
+
+### 3.2 Thông số kỹ thuật điện
+
+Bảng 3-2. Thông số kỹ thuật điện của sản phẩm
+
+| Tham số | Biểu tượng | Tình trạng | Tối thiểu | Điển hình | Tối đa | Đơn vị |
+| --- | --- | --- | --- | --- | --- | --- |
+| Điện áp cung cấp | VDD |  | 18 | 24 | 30 | V |
+| I/O kỹ thuật số | TRONG |  | 3.3 |  | 24 | V |
+| Giao diện CÓ THỂ |  |  | 0 |  | 5V | V |
+| Nhiệt độ hoạt động | Tạ |  | -20 |  | 60 | oC |
+| Độ ẩm hoạt động |  |  | 20 |  | 80 | % |
+| Nhiệt độ bảo quản |  |  | -40 |  | 85 | oC |
+| Độ ẩm bảo quản |  |  | 20 |  | 80 | % |
+
+### 3.3 Giao diện sản phẩm
+
+### 3.3.1 Giao diện phía camera
+
+Camera có ba giao diện: đầu nối nguồn DC24V, đầu nối Gigabit Ethernet và đầu nối chức năng IO/CAN.
+
+<Frame>
+  <img src="/images/legacy/e7e11524-8868-480f-ab4b-74ad6ee65346/360257fb-58ff-4da8-bb82-18e3ed2cb9d8.avif" alt="Giao diện phía máy ảnh" />
+</Frame>
+
+| Cảng | Ghim | Tín hiệu | Mô tả |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | Gigabit Ethernet |
+|  | 2 | MDI0_p |  |
+|  | 3 | MDI1_N |  |
+|  | 4 | MDI1_p |  |
+|  | 5 | MDI2_N |  |
+|  | 6 | MDI2_p |  |
+|  | 7 | MDI3_N |  |
+|  | 8 | MDI3_p |  |
+| Đầu nối chức năng | 1 | CÓ THỂ_H | CÓ THỂ_H |
+|  | 2 | CÓ THỂ_L | CÓ THỂ_L |
+|  | 3 | GND | CÓ THỂ GND |
+|  | 4 | NGOÀI_1 | Đầu ra IO 1 |
+|  | 5 | COM | Thiết bị đầu cuối IO COM |
+|  | 6 | NGOÀI_2 | Đầu ra IO 2 |
+|  | 7 | IN_1 | Đầu vào IO 1 |
+|  | 8 | IN_2 | Đầu vào IO 2 |
+| Đầu nối nguồn | 1 | 24+ | Đầu nối nguồn DC cái, 5,5-2,1mm |
+|  | G | 24- |  |
+
+### 3.3.2 Sơ đồ chân cáp
+
+<Frame>
+  <img src="/images/legacy/1fac8068-a62a-463f-8fea-b348b0817a51/b3a002b1-866c-4e53-a670-3e21563803ad.avif" alt="Sơ đồ chân cáp" />
+</Frame>
+
+| Cáp | Màu sắc | Ghim | Mô tả |
+| --- | --- | --- | --- |
+| Cáp chức năng | Cam | CÓ THỂ_H | CÓ THỂ_H |
+|  | Vàng | CÓ THỂ_L | CÓ THỂ_L |
+|  | Xanh | GND | CÓ THỂ GND |
+|  | Nâu | IN_1 | Đầu vào IO 1 |
+|  | Trắng | IN_2 | Đầu vào IO 2 |
+|  | Màu tím | COM | Thiết bị đầu cuối IO COM |
+|  | Màu xanh | NGOÀI_1 | Đầu ra IO 1 |
+|  | Xám | NGOÀI_2 | Đầu ra IO 2 |
+| Cáp nguồn | Đỏ | 24V+ | Thiết bị đầu cuối nguồn tích cực |
+|  | Đen | GND | Thiết bị đầu cuối điện âm |
+
+Lưu ý: Một số cáp chức năng cũ sử dụng các màu khác nhau. Thực hiện theo các nhãn trên cáp thực tế.
+
+### 3.4 Linh kiện máy ảnh
+
+<Frame>
+  <img src="/images/legacy/079e0e65-3c06-47a4-b5c4-115964d71d5a/478aa068-1207-408b-99ee-c79d1670eb4a.avif" alt="Linh kiện máy ảnh" />
+</Frame>
+
+| Không. | Thành phần |
+| --- | --- |
+| 1 | Chỉ báo nguồn; nhấp nháy chậm sau khi bật nguồn |
+| 2 | Nguồn sáng 940nm |
+| 3 | Mô-đun phát hiện nhiễu nhiều camera |
+| 4 | Ống kính TOF |
+| 5 | Ống kính RGB |
+
+## 4. Hướng dẫn tích hợp camera
+
+### 4.1 Phạm vi phát hiện của camera
+
+Hình 4.1 hiển thị vùng phát hiện S2 Max 2.0. Góc phát hiện ngang là 81° và góc dọc là 61°. Khoảng cách phát hiện phụ thuộc vào công suất quang. Công suất quang học và độ phản xạ mục tiêu cao hơn sẽ làm tăng vùng mù gần và giảm vùng mù xa. Công suất quang học và độ phản xạ mục tiêu thấp hơn sẽ làm giảm vùng mù gần và tăng vùng mù xa. Đối với các mục tiêu có độ phản xạ 10%~90%, phạm vi S2 Max 2.0 là 0,2~5m. Ngoài 5m, cường độ tín hiệu phản xạ thấp và nhiễu ánh sáng xung quanh gây ra sai số phạm vi đáng kể.
+
+<Frame>
+  <img src="/images/legacy/36ec75a7-5443-41d8-9059-840623414d35/98bbffe4-ec39-4b8b-b418-64060da315ea.avif" alt="Phạm vi phát hiện camera" />
+</Frame>
+
+### 4.2 Kích thước camera
+
+<Frame>
+  <img src="/images/legacy/9a8db5e7-9d0f-44d4-bd26-c48fa963e143/4413a8bb-bb59-4f7c-a483-1c47015d7ed9.avif" alt="Kích thước máy ảnh" />
+</Frame>
+
+### 4.3 Hệ tọa độ quang học và gốc tọa độ
+
+**Hệ tọa độ quang học:**
+
+- Hệ tọa độ quang học bao gồm hệ tọa độ camera (CCS) và hệ tọa độ thế giới (WCS).
+
+- Hệ tọa độ camera là hệ tọa độ ảnh chiều sâu 2D. Nguồn gốc của nó là trung tâm quang học.
+
+- Hệ tọa độ thế giới là hệ tọa độ đám mây điểm 3D.
+
+- Sử dụng nội tại của máy ảnh để chuyển đổi tọa độ hình ảnh chiều sâu thành tọa độ đám mây điểm 3D. Xem ví dụ về SDK.
+
+<Frame>
+  <img src="/images/legacy/80b1c745-7eb5-47ee-92c7-464aea3d8673/2c1d56ea-40ec-4833-9328-81c1a40bf269.avif" alt="Hệ tọa độ quang học" />
+</Frame>
+
+**Nguồn gốc camera được xác định như sau:**
+
+1. Gốc tọa độ X thẳng hàng với trục X của sản phẩm.
+
+2. Gốc tọa độ Y thẳng hàng với trục Y của sản phẩm.
+
+3. Gốc tọa độ Z nằm ở mặt trước của máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/392ee590-9d85-474b-ac4c-74e431d7c6f4/c0551ed1-0be6-439d-9b08-21956fc127dd.avif" alt="Xuất xứ máy ảnh" />
+</Frame>
+
+### 4.4 SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển MRDVS SDK.
+
+## 5. Môi trường và độ tin cậy
+
+| Mục |  | Đặc điểm kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20oC~60oC |
+|  | Độ ẩm | 0%–95% RH, không ngưng tụ |
+|  | Chiếu sáng | 0KLUX~100KLUX |
+| Môi trường lưu trữ | Nhiệt độ | -40oC~85oC |
+|  | Độ ẩm | 10%–95% RH, không ngưng tụ |
+| Nhiệt độ tăng trong quá trình hoạt động bình thường |  | Tăng nhiệt độ vỏ &lt;25oC |
+| Đánh giá ESD |  | ±4KV phóng điện tiếp xúc, ±8KV xả khí |
+| Đánh giá RE |  | Tuân thủ GB 9254 LỚP A |
+| Tuổi thọ sử dụng |  | Hơn 3 năm |
+| Chứng nhận môi trường |  | RoHS |
+
+## 6. Bắt đầu nhanh
+
+### 6.1 Kiểm tra kết nối
+
+<Frame>
+  <img src="/images/legacy/9fcc4978-9fad-470b-9174-652d0eeafdc3/473a4d79-b79c-4fd3-b837-e9ad281365c8.avif" alt="Kiểm tra kết nối" />
+</Frame>
+
+1. Kết nối máy ảnh với nguồn điện DC 24V/2A. Đèn báo nguồn màu xanh lam nhấp nháy chậm xác nhận việc bật nguồn bình thường.
+
+2. Kết nối máy ảnh với máy tính bằng cáp Ethernet Loại 6.
+
+3. Địa chỉ IP camera mặc định của nhà sản xuất là 192.168.100.82.
+
+4. Đặt IP máy tính thành mạng con của camera và tắt tường lửa máy tính.
+
+5. Chạy phần mềm máy chủ để xem hình ảnh camera.
+
+6. Liên hệ với bộ phận hỗ trợ kỹ thuật hoặc bán hàng của MRDVS để nhận phần mềm máy chủ.
+
+### 6.2 Đấu dây IO
+
+| Giao diện | Loại | Ghi chú |
+| --- | --- | --- |
+| IN1 | Đầu vào | Đầu vào rời rạc tích cực cao; hỗ trợ 24V/đầu vào mở |
+| IN2 | Đầu vào | Đầu vào rời rạc tích cực cao; hỗ trợ 24V/đầu vào mở |
+| NGOÀI1 | Đầu ra | Đầu ra rời rạc nối đất/mở; hỗ trợ kéo lên 24V |
+| NGOÀI2 | Đầu ra | Đầu ra rời rạc nối đất/mở; hỗ trợ kéo lên 24V |
+| COM | GND | Điểm chung cho các đầu ra rời rạc, được chia sẻ bởi IN và OUT |
+
+## 7. Biện pháp phòng ngừa
+
+### 7.1 Cấp độ an toàn laser
+
+| <img src="/images/legacy/be205c16-cf8f-4c39-9d60-55ecaeb62dd6/3cf7f1de-6b6b-41fe-8b05-58b060c26fe3.avif" alt="An toàn tia laser" /> | An toàn tia laser |
+| --- | --- |
+| Sản phẩm này phát ra tia laser vô hình trong quá trình hoạt động. Tránh để mắt tiếp xúc với chùm tia. Laser tuân thủ Loại 1 và không gây hại cho con người trong quá trình sử dụng bình thường theo quy định của EN60825. |  |
+
+### 7.2 Thao tác đúng
+
+Camera S2 Max 2.0 sử dụng nguồn điện 24V DC. Kết nối cáp nguồn trước khi cấp nguồn và không đảo ngược cực dương và cực âm. Phân cực ngược có thể làm hỏng sản phẩm.
+
+### 7.3 Nhiệt độ hoạt động
+
+Giữ nhiệt độ môi trường trong phạm vi quy định của sản phẩm (Bảng 2-1). Gắn sản phẩm lên bộ phận dẫn nhiệt như khung kim loại để cải thiện khả năng tản nhiệt và đạt được hiệu suất tối ưu.
+
+## 8. Khắc phục sự cố
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh rằng tường lửa đã bị tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong mạng LAN sử dụng cùng IP; chọn địa chỉ IP được yêu cầu |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet; dữ liệu ban đầu có thể không ổn định qua Fast Ethernet |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi cài đặt quyền |
+
+## Phụ lục: Nội dung gói hàng
+
+<Frame>
+  <img src="/images/legacy/3f3660c4-7da6-45f1-9711-fe4305effc6e/ab208cbd-23eb-4476-a6b2-bde7700ad842.avif" alt="Máy ảnh S2 Max 2.0" />
+</Frame>
+
+Máy ảnh S2 Max 2.0
+
+<Frame>
+  <img src="/images/legacy/b7383fd0-ef1a-4d33-9163-2d86241b4bd1/b0dc1e5e-e73b-49f6-87eb-30d9d71e82ad.avif" alt="Cáp chức năng 8 chân" />
+</Frame>
+
+Cáp chức năng 8 chân
+
+<Frame>
+  <img src="/images/legacy/3ff48931-e15d-4ef6-91e5-7cdedcf68c7e/cef46b22-6500-46d1-aab0-c174810b0d8c.avif" alt="Hai bộ dụng cụ chống nước bốn mảnh" />
+</Frame>
+
+Hai bộ dụng cụ chống nước bốn mảnh
+
+<Frame>
+  <img src="/images/legacy/599a77ee-8d91-46b2-b779-b3f6ffbbebb7/13a6d34d-c493-442f-9351-f36d0b237350.avif" alt="Giấy chứng nhận kiểm tra" />
+</Frame>
+
+Một giấy chứng nhận kiểm tra
+
+* * *
+
+* * *

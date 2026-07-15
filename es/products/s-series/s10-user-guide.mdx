@@ -1,0 +1,226 @@
+---
+title: "guía del usuario de la cámara S10"
+description: "Especificaciones del producto y detalles de diseño seleccionados para desarrolladores que integran y utilizan la cámara S10."
+hidden: true
+---
+## Historial de revisiones
+
+| Fecha | Versión | Cambios |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Lanzamiento inicial |
+| 2025/02/27 | V1.1 | Campo de visión TOF actualizado |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## 1. Introducción
+
+### 1.1 Objeto y alcance
+
+Este documento describe las especificaciones de la cámara S10 y detalles de diseño seleccionados para los desarrolladores que integran y utilizan el producto.
+
+### 1.2 Terminología
+
+| Cámara RGBD | Una cámara que genera imágenes RGB y de profundidad sincronizadas y alineadas espacialmente |
+| --- | --- |
+| Profundidad | Una transmisión de video similar a una transmisión en color o monocromática, donde cada píxel representa su distancia a la cámara |
+| campo de visión | Campo de visión: el rango angular de una escena capturada por una cámara, incluidos los campos de visión horizontal (HFOV), vertical (VFOV) y diagonal (DFOV) |
+| Cámara de infrarrojos | Una cámara de infrarrojos; en este producto, captura principalmente la banda del infrarrojo cercano |
+| Cámara RGB | Una cámara a color |
+| Cámara de profundidad | Una cámara cuyo módulo de profundidad normalmente incluye un proyector de puntos, una cámara de infrarrojos y un procesador de profundidad; su módulo de color suele ser una cámara RGB |
+| SoC | Sistema en un chip utilizado para procesamiento de imágenes, cálculo de profundidad y algoritmos de aplicación |
+| DTOF | Tecnología de detección de distancias basada en la medición del tiempo de vuelo |
+
+### 1.3 Principio de funcionamiento
+
+Este producto es una cámara de profundidad DTOF 3D con largo alcance, buena precisión, bajo costo, fuerte resistencia a interferencias y datos estables. Un módulo RGB integrado captura imágenes en color. La cámara alinea las imágenes RGB y de profundidad internamente.
+
+## 2. Descripción general del producto
+
+Esta cámara RGBD industrial compacta proporciona datos de profundidad de 0,3 ma 8 m. Alinea espacial y temporalmente imágenes RGB y de profundidad. Su SoC integrado genera resultados de profundidad, intensidad, RGB, nube de puntos y detección de obstáculos. Además de Ethernet, dos entradas IO y dos salidas IO conmutan entre cuatro zonas para evitar obstáculos y emiten señales de parada de emergencia, desaceleración y estado seguro.
+
+* * *
+
+### 2.1 Apariencia del producto
+
+![cámara s10](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+
+Figura 1. Cámara S10
+
+### 2.2 Características
+
+- Bajo consumo de energía DTOF y tamaño compacto
+
+- Procesamiento integrado que genera resultados de detección de obstáculos para operación plug-and-play
+
+- Fuerte adaptabilidad ambiental: resiste 100 KLUX de luz solar y funciona desde la oscuridad hasta la luz brillante, en interiores y exteriores.
+
+- Amplio rango de medición de 0,3-8 m
+
+* * *
+
+## 3. Especificaciones
+
+### 3.1 Especificaciones básicas
+
+| Modelo de producto | T10 |
+| --- | --- |
+| Principio de funcionamiento | Cámara de profundidad DTOF |
+| Formato de salida | Mapa de profundidad, RGB y amplitud |
+| Resolución TOF y velocidad de fotogramas | 240x160 @Máx. 20 fps, típico 15 fps |
+| Campo de visión TOF | 90°*61° |
+| Resolución RGB y velocidad de fotogramas | 1920×1080 @Máx. 20 fps, típico 15 fps |
+| Campo de visión RGB | 90°*70° |
+| Gama | 0,3-8 m (@90% de referencia), 0,3-3 m (@5%) |
+| Precisión | 1 desviación estándar &lt;3 cm a temperatura ambiente (25 ℃), 70 % de referencia e iluminación &lt;50 kLux |
+| Consumo de energía | ≤4W y 28w |
+| Láser | 940nm |
+| Dimensiones | 80 mm de ancho × 25 mm de alto × 37 mm de profundidad |
+| Peso | ≤300g |
+| Entrada de energía | 24V±20% |
+| Interfaz de comunicación | Ethernet/E/S |
+| Clasificación de protección | IP54 |
+| Temperatura de funcionamiento | -20°C~60°C |
+| Temperatura de almacenamiento | -40°C~85°C |
+| Entorno de software | SDK de C/C++/ROS |
+| Soporte del sistema operativo | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Refrigeración | Pasivo, sin ventilador |
+
+Nota: El modelo 3D define las dimensiones del producto.
+
+### 3.2 Definiciones de interfaz
+
+Interfaces del lado de la cámara:
+
+La cámara tiene tres interfaces: un conector de alimentación DC24V, un conector Fast Ethernet y un conector IO de 8 pines.
+
+<Frame>
+  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Definiciones de la interfaz de la cámara" />
+</Frame>
+
+Distribución de cables:
+
+<Frame>
+  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Distribución de cables" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Detalle de distribución de pines del cable" />
+</Frame>
+
+| Cableado | Pasador P1 | Color | Descripción |
+| --- | --- | --- | --- |
+| Cable Ethernet | 1 | Naranja | OUT_COM2 |
+| ㅤ | 2 | Amarillo | SALIDA_2 |
+| ㅤ | 3 | Verde | OUT_COM1 |
+| ㅤ | 4 | Azul | SALIDA_1 |
+| ㅤ | 5 | Púrpura | IN_COM2 |
+| ㅤ | 6 | Gris | EN_2 |
+| ㅤ | 7 | Marrón | IN_COM1 |
+| ㅤ | 8 | Blanco | EN_1 |
+| Cable de alimentación | 1 | Rojo | 24V+ |
+| ㅤ | GRAMO | Negro | 24V- |
+
+### 3.3 Componentes de la cámara
+
+<Frame>
+  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Componentes de la cámara" />
+</Frame>
+
+| VCSEL | Emisor láser |
+| --- | --- |
+| SPAD | Diodo de avalancha monofotónico |
+| RGB | Módulo RGB |
+| Indicador de encendido | Parpadea lentamente después del encendido |
+
+## 4. Guía de integración de cámaras
+
+### 4.1 Diseño mecánico
+
+### 4.1.1 Campo de visión de la cámara
+
+<Frame>
+  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Campo de visión de la cámara" />
+</Frame>
+
+Figura 3. Campo de visión de la cámara
+
+### 4.1.2 Dimensiones de la cámara
+
+<Frame>
+  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Dimensiones de la cámara" />
+</Frame>
+
+### 4.2 SDK de software
+
+Consulte la guía del usuario del software host MRDVS y la guía de desarrollo del SDK de MRDVS.
+
+* * *
+
+## 5. Medio ambiente y confiabilidad
+
+| Artículo | ㅤ | Especificación |
+| --- | --- | --- |
+| Entorno operativo | Temperatura | -20℃--60℃ |
+| ㅤ | Humedad | 0%–95% HR, sin condensación |
+| ㅤ | Iluminación | 0KLUX--100KLUX |
+| Entorno de almacenamiento | Temperatura | -40℃--85℃ |
+| ㅤ | Humedad | 10%–95% HR, sin condensación |
+| Aumento de temperatura durante el funcionamiento normal | ㅤ | Aumento de temperatura del recinto &lt;25℃ |
+| Clasificación ESD | ㅤ | Descarga de contacto ±4KV, descarga de aire ±8KV |
+| Clasificación RE | ㅤ | Cumple con GB 9254 CLASE A |
+| Vida útil | ㅤ | 10 años |
+| Certificación ambiental | ㅤ | RoHS |
+
+* * *
+
+## 6. Inicio rápido
+
+### 6.1 Prueba de conexión
+
+<Frame>
+  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Prueba de conexión" />
+</Frame>
+
+1. Conecte la cámara a una fuente de alimentación de CC de 24 V/2 A. Un indicador de encendido azul que parpadea lentamente confirma el encendido normal.
+
+2. Conecte la cámara a la computadora con un cable Ethernet de categoría 6.
+
+3. La dirección IP de la cámara predeterminada de fábrica es 192.168.100.82.
+
+4. Configure la IP de la computadora en la subred de la cámara y desactive el firewall de la computadora.
+
+5. Ejecute el software host para ver las imágenes de la cámara.
+
+6. Comuníquese con el soporte técnico o de ventas de MRDVS para obtener el software host.
+
+### 6.2 Cableado de E/S
+
+| Interfaz | Tipo | Notas |
+| --- | --- | --- |
+| EN1 | Entrada | Entrada discreta activa-alta; admite 24 V/entrada abierta |
+| IN2 | Entrada | Entrada discreta activa-alta; admite 24 V/entrada abierta |
+| SALIDA1 | Salida | Salida discreta de tierra/abierto; admite dominadas de 24 V |
+| OUT2 | Salida | Salida discreta de tierra/abierto; admite dominadas de 24 V |
+| COM | Tierra | Terreno común para salidas discretas; utilizar IN1 con IN_COM1 |
+
+* * *
+
+## 7. Precauciones
+
+### 7.1 Clase de seguridad láser
+
+<Frame>
+  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Clase de seguridad láser" />
+</Frame>
+
+* * *
+
+## 8. Solución de problemas
+
+| No. | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde cuando se abre | Verifique que el firewall esté deshabilitado |
+| 2 | El software host detecta múltiples direcciones IP | Otro dispositivo en la LAN usa la misma IP; seleccione la dirección IP requerida |
+| 3 | Los datos de la cámara son inestables después de abrirse | Utilice un cable Gigabit Ethernet; los datos pueden ser inicialmente inestables a través de Fast Ethernet |
+| 4 | Ubicación de instalación del software | Una instalación predeterminada en la unidad C puede verse afectada por la configuración de permisos |

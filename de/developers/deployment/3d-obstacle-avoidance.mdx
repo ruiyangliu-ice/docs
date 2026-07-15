@@ -1,0 +1,548 @@
+---
+title: "Setzen Sie visuelle 3D-Hindernisvermeidung ein"
+description: "Bereitstellen und konfigurieren Sie ToF-Kameras der MRDVS S-Serie für die 3D-Hindernisvermeidung in Echtzeit."
+---
+## 1. Übersicht
+
+Die visuelle Hindernisvermeidung basiert auf den von Meyer Micro Vision selbst entwickelten Kameras der S-Serie und RGBD-Kameras nach dem TOF-Prinzip. Es integriert Deep Learning und traditionelle 3D-Vision-Algorithmen, um ein Hindernisvermeidungssystem zu schaffen, das für umfangreiche Szenen geeignet ist, genau, in Echtzeit, auf einer einzelnen Maschine konfigurierbar, auf mehreren Maschinen kollaborativ ist und über ein gewisses Maß an Initiative und Vorhersehbarkeit verfügt.
+
+Das System verfügt über die folgenden Eigenschaften: dynamische Echtzeiterkennung, adaptive Bodenerkennung, dynamische Verfolgung von Erkennungszielen, unterstützt mehrere Signalausgänge, unterstützt die Umschaltung mehrerer Modi, kann 5 Modi unterstützen und unterstützt die Zusammenarbeit mit mehreren Maschinen.
+
+## 2. Installation und Auswahl der Kamera
+
+### 2.1 AMR unterschreiben
+
+Wie in der folgenden Abbildung dargestellt, ist die Kamera des lauernden Fahrzeugs relativ niedrig installiert. Es wird empfohlen, die Kamera der S10-Serie zu verwenden, die in Fahrtrichtung auf der Vorderseite des lauernden Fahrzeugs installiert wird. Achten Sie bei der Gestaltung des Aufbaus darauf, Störungen des Sichtfeldes zu vermeiden.
+
+<Frame>
+  <img src="/images/legacy/2113c3b1-8f9d-41f4-ba4f-41d0f64ffc71/d803278d-67a2-4a78-a7ca-72e86b149803.avif" alt="Abbildung 2.1 Lauerndes Auto" />
+</Frame>
+
+### 2.2 Gabelstapler
+
+Wie in Abbildung 2.2 dargestellt, ist die intelligente Gabelstaplerkamera relativ hoch installiert. Es wird empfohlen, die Kamera der S10-Serie zu verwenden, die in einem Winkel von 30°-55° nach unten an der Gabelstaplermastkamera installiert wird, sodass sich der Rand des Sichtfelds der Kamera gerade auf der Vorderfläche des Gabelstaplers befindet. Es wird empfohlen, dass die Installationshöhe der Kamera nicht höher als 2 m sein sollte.
+
+<Frame>
+  <img src="/images/legacy/df29f779-2887-4494-8cd5-66a35fcbb05f/4d1053b7-cf49-4285-9a5e-232eef95b067.avif" alt="Abbildung 2.2 Gabelstapler" />
+</Frame>
+
+## 3. Kameraverbindungseinstellungen
+
+1. Bevor Sie die Kamera anschließen, müssen Sie die folgenden Einstellungen vornehmen. Die Werks-IP der Kamera ist 192.168.100.82. Bevor Sie eine Verbindung herstellen, müssen Sie die IP des lokalen Netzwerkports auf dasselbe Netzwerksegment einstellen, wie in Abbildung 3.1 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/616df060-87e3-4812-8831-66b833e1f280/9aa43694-2c5f-456e-9552-c344b873acb4.avif" alt="Abbildung 3.1 IP-Einstellungen geschlossen" />
+</Frame>
+
+2. Schalten Sie die Firewall aus, wie in Abbildung 3.2 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/ccd4abae-1a00-4de4-b597-418920f24dca/99c52d00-ab91-4390-a1d5-ab1ef334f411.avif" alt="Abbildung 3.2 Firewall geschlossen" />
+</Frame>
+
+3. Wenn Sie die IP-Adresse der Kamera ändern müssen, können Sie die PC-Software „**LxCameraViewer**“ öffnen, auf „**Andere Tools**“ klicken, netzwerkbezogen → IP-Konfigurationstool → Klicken Sie auf die zu ändernde IP-Adresse, drücken Sie die Eingabetaste und klicken Sie, um die Änderung zu bestätigen. Nachdem die Änderung abgeschlossen ist, startet die Kamera automatisch neu und stellt die Verbindung wieder her.
+
+<Frame>
+  <img src="/images/legacy/320b027b-2988-458f-9900-cbef3a254247/a3701254-2b0f-48f9-a359-fff2f50a84b3.avif" alt="Abbildungen zu den Kameraverbindungseinstellungen 3" />
+</Frame>
+
+4. Sie können über die Statusleiste in der unteren linken Ecke überprüfen, ob die IP erfolgreich geändert wurde. Wenn Sie sich in einem anderen Netzwerksegment befinden, müssen Sie die lokale IP ändern, bevor Sie die Verbindung zur Kamera wiederherstellen.
+
+<Frame>
+  <img src="/images/legacy/26fef8c4-ff64-4fcc-a9b3-974d68c3a90d/d0d23fb7-fe18-4d75-9c7c-ff87020690d9.avif" alt="Abbildungen zu den Kameraverbindungseinstellungen 4" />
+</Frame>
+
+5. Öffnen Sie die vorinstallierte Host-Computer-Software LxCameraViewer. Die Host-Computersoftware ruft die Kamera automatisch im aktuellen Netzwerksegment ab. Durch Klicken zum Öffnen der Kamera werden automatisch die Tiefenkarte und das Punktwolkenbild geöffnet, wie in Abbildung 3.3 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/5565c511-bef1-4ae7-a803-6e2cd4b2ea1a/772be638-3857-41bc-9055-f88086a49b5d.avif" alt="Abbildung 3.3 PC-Software-Anzeige" />
+</Frame>
+
+6. Erweitern Sie nach dem Öffnen der Kamera die 3D-Einstellungen und Filtereinstellungen, um die Kameraparameter anzupassen. Die empfohlenen Konfigurationsparameter für Anwendungen zur Hindernisvermeidung sind **hohe Belichtung 650, niedrige Belichtung 200, Filtereinstellungen und niedrige Signalschwellen, die auf 10–20 eingestellt werden sollten (bei der S10-Serie muss nur der Blendgrad auf 1 eingestellt werden, und die Belichtung, die niedrige Signalschwelle usw. müssen nicht eingestellt werden)**. Für andere Installations- und Parameterkonfigurationen für unkonventionelle Modelle wird empfohlen, sich an den technischen Support von Meyer Micro Vision zu wenden.
+
+<Frame>
+  <img src="/images/legacy/e8dd9101-6ed2-4bc7-b001-24186895e11f/056ee982-803d-4f8f-85bc-383de72655a2.avif" alt="Abbildungen zu den Kameraverbindungseinstellungen 6" />
+</Frame>
+
+## 4. Konfiguration der Hindernisvermeidungsparameter
+
+1. Klicken Sie nach Abschluss der oben genannten Kameraparametereinstellungen auf die Schaltfläche „Algorithmus anwenden“. Das Algorithmus-Einstellungselement wird in der Statusleiste rechts angezeigt. Stellen Sie es entsprechend der Anwendung auf den normalerweise offenen Modus ein. Der Algorithmus der S10-Kameraanwendung muss [Hindernisvermeidungsalgorithmus] auswählen. Für andere Kameras müssen Sie [Hindernisvermeidungsalgorithmus 2.0] auswählen. Die Versionsnummer des Algorithmus wird unten angezeigt. Die S10-Kamera unterstützt nicht die Verwendung von sektorförmigen Hindernisvermeidungsgebietstypen, was zu Abweichungen bei den Ergebnissen der Hindernisvermeidung führen kann.
+
+<Frame>
+  <img src="/images/legacy/4777637e-6cfe-456f-9ca7-fc2d4b4146f7/46274569-4a2d-429a-a270-1f561e8b2a63.avif" alt="Abbildungen zur Konfiguration der Hindernisvermeidungsparameter" />
+</Frame>
+
+2. Der rechteckige Hindernis-Ausweichbereich und der fächerförmige Hindernis-Ausweichbereich sind in Abbildung 4.1 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/75f84757-7045-4504-9742-e49c74d38889/f6daa1cb-71af-46bf-b501-0cb503ff01ea.avif" alt="Diagramm 2 zur Konfiguration der Hindernisvermeidungsparameter" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a01278e9-15ec-436b-a9ed-62dedce4db2e/856adc1f-bbde-47e2-a750-33e72a921d54.avif" alt="Diagramm 3 zur Konfiguration der Hindernisvermeidungsparameter" />
+</Frame>
+
+Abbildung 4.1 Rechteckiger Hindernis-Ausweichbereich und fächerförmiger Hindernis-Ausweichbereich
+
+3. Wie in Abbildung 4.2 dargestellt, sind die Parameter zur Hindernisvermeidung in die externen Parameter der Kamerainstallation und die Konfigurationsparameter des Hindernisvermeidungsbereichs unterteilt. Nachdem die Konfiguration der externen Parameter der Kamera abgeschlossen und die Einstellungen abgeschlossen sind, werden die anderen vier Konfigurationsbereiche automatisch auf die aktuellen externen Parameter aktualisiert.
+
+Unter anderem kann die S2/S2 Max2.0-Kamera über IO zwischen vier Sätzen von Hindernisvermeidungsbereichen, Konfiguration 0, Konfiguration 1, Konfiguration 2 und Konfiguration 3, wechseln.
+
+Bis zu 20 Gruppen von Hindernisvermeidungsbereichen können über SDK/UDP/RS485 umgeschaltet werden, die je nach Betriebsszenario des Fahrzeugs umgeschaltet werden können. Wenn sich das Auto beispielsweise in einen schmalen Kanal bewegt, kann es auf eine Konfiguration mit schmalem Kanal umgeschaltet werden, und wenn das Auto in einen breiten Kanal fährt, kann es auf eine Konfiguration mit breitem Kanal umgeschaltet werden.
+
+<Frame>
+  <img src="/images/legacy/e45aed16-cda9-48cd-91b0-eb9b14dd4996/381adb42-b038-401f-a1a3-e6d438b64c5f.avif" alt="Diagramm 4 zur Konfiguration der Hindernisvermeidungsparameter" />
+</Frame>
+
+## 5. Externe Parametereinstellungen
+
+### 5.1 Parameterbeschreibung
+
+| Parameterelement | Parameterwert | Beschreibung |
+| --- | --- | --- |
+| Hindernisvermeidungsfunktion | | Wechseln Sie verschiedene Parameter zur Hindernisvermeidung, indem Sie verschiedene Modi einstellen |
+| Kamerawinkel Rollen (x-Achse) | 180 | Externe Kameraparameter, Nickwinkelrolle, die Standardkamera ist 180 |
+| Kamerawinkel Pitch (y-Achse) | 90 | Externer Parameter der Kamera, Rollwinkelneigung, der Standardwert ist die vertikale Installation, also 90 |
+| Kamerawinkel Gier (z-Achse) | 90 | Externe Kameraparameter, Kurswinkel, Gierwinkel, Standardwert ist 90 |
+| Kameraposition (Entfernung x) | 430 | Der Abstand zwischen der Vorder- und Rückseite der Kamera in X-Richtung und der vordere und hintere Abstand des AMR in der Ansicht, Einheit: mm. |
+| Kameraposition (Breite y) | 0 | Der linke und rechte Abstand der Kamera in y-Richtung vom AMR in der Ansicht. Bei mittiger Montage beträgt er 0. Einheit: mm. |
+| Kameraposition (Höhe z) | 120 | Der Parameter für die Installationshöhe der Kamera ist die Höhe der Kamera vom Boden. Einheit: mm. |
+
+### 5.2 Parametereinstellungen
+
+Wenn die Kamera beispielsweise auf der Vorderseite des AGV installiert ist, schließen Sie andere Bilder und verwenden Sie nur Punktwolkenbilder zum Debuggen von Kameraparametern. Priorisieren Sie die Installationshöhe der Kamera. Nach der Feinabstimmung des Rollwinkels RX stellen Sie den Rollwinkel auf horizontal ein und stellen dann den Nickwinkel RY ein. Nachdem Sie den Effekt auf den in der Abbildung unten gezeigten Effekt angepasst haben, klicken Sie auf „**Parameter senden**“, und die externen Parameter der Kamerainstallation werden mit anderen Konfigurationen synchronisiert.
+
+<Frame>
+  <img src="/images/legacy/da147810-37df-42ef-a56c-582790c66e41/b89815fa-fd77-452d-a8f8-3ec9180d9544.avif" alt="Abbildungen zu Parametereinstellungen" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/b8f949cb-62e8-414d-98a9-c44a463f5b67/9e6574f0-4eb3-4fd1-9d33-af87ca067cbc.avif" alt="Abbildungen zur Parametereinstellung 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6aa95f32-ffd6-495d-aaf4-b1b0319edf07/0a556ebd-5ebb-45ea-841e-f4710776ecd9.avif" alt="Abbildungen zur Parametereinstellung 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6d8661c4-f56b-4480-8fdc-6ba45f4b87b9/956d5953-d011-481a-99b8-2199658fa193.avif" alt="Abbildungen zur Parametereinstellung 4" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5ec21f8c-bffe-4026-be4a-823625c1b39f/2454e37b-650e-413e-8849-9776ed708b75.avif" alt="Abbildungen zur Parametereinstellung 5" />
+</Frame>
+
+## 6. Einstellung des Hindernisvermeidungsbereichs
+
+### 6.1 Zonenparameterreferenz
+
+<Frame>
+  <img src="/images/legacy/cbe6b898-926a-43a4-9e5e-8fb984fcba7d/34531a14-4faa-488d-bc64-7ac0102eac10.avif" alt="Abbildungen zu regionalen Parameterbeschreibungen" />
+</Frame>
+
+| Parametername | Wert | Parameterdefinition |
+| --- | --- | --- |
+| Frühwarnabstand (x weit) | 2000 | Hindernisvermeidungsbereich, der Abstand von der Fahrzeugmitte in der Einheit: mm |
+| Alarmabstand (x Mitte) | 1500 | Hindernisvermeidungsbereich, der Abstand von der Fahrzeugmitte in der Einheit: mm. |
+| Schirmungsabstand (x nah) | 600 | Abschirmungsreichweite, die x-Richtung ist geringer als die Abschirmungsentfernung x (nah), es handelt sich um einen blinden Bereich und Hindernisse können in diesem Bereich nicht umgangen werden. Einheit: mm. |
+| Hindernisvermeidungsbereich links (y links) | -810 | Hindernisvermeidungsbereich, der Abstand von der linken Seite der y-Richtung bis zur Fahrzeugmitte. Einheit: mm. |
+| Hindernisvermeidungsbereich rechts (y rechts) | 1270 | Hindernisvermeidungsbereich, der Abstand von der rechten Seite der y-Richtung bis zur Fahrzeugmitte. Einheit: mm. |
+| Hindernisvermeidungsbereich (unter z) | 10 | Hindernisvermeidungsbereich, Höhe vom Boden. Unterhalb dieser Höhe erfolgt keine Bearbeitung. Wenn die Einstellung zu klein ist, kann es aufgrund von Entfernungsfehlern zu Fehlalarmen kommen; Bei einer zu großen Einstellung können große Hindernisse am Boden herausgefiltert werden, was zu Fehlalarmen führt. Einheit: mm. |
+| Hindernisausweichhöhe (z nach oben) | 1500 | Hindernisvermeidungsbereich, Höhe über dem Boden, darüber hinausgehende Höhen werden nicht verarbeitet. Einheit: mm. |
+
+### 6.2 Einstellung des Hindernisvermeidungsbereichs
+
+1. Die aktuelle Hindernisvermeidungsanwendung verfügt über 20 Gruppen integrierter Hindernisvermeidungsbereiche. Benutzer können den Hindernisvermeidungsbereich konfigurieren, nachdem sie die Konfiguration der Kameraparameter abgeschlossen haben. Wenn sich der AMR in verschiedene Hindernisvermeidungsbereiche bewegt, wechseln Sie den Konfigurationsbereich, um den Hindernisvermeidungsbereich zu steuern (IO: vier Gruppen von Hindernisvermeidungsbereichen 0, 1, 2 und 3 können umgeschaltet werden, und 20 Gruppen können für UDP, 485, API und CAN umgeschaltet werden).
+
+- Frühwarnabstand (X weit): Gibt den Hindernisvermeidungsbereich der Kamera für die Frühwarnung (Verzögerung) von 2300 an, d. h. Frühwarnabstand 2300 - Kameraposition 430 = 1870 mm, wie in Abbildung 6.1 dargestellt.
+
+- Alarmentfernung (in
+
+- Abschirmungsabstand (X nah): Gibt den Abschirmungsbereich der Kamera an, d. h. Abschirmungsabstand 450 – Kameraposition 430 = 20 mm, wie in Abbildung 6.1 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/4519dd9a-acbb-4e8e-84e6-8161d406964b/c6a73f89-55f2-4dba-837f-215c8e7422e1.avif" alt="Abbildungen im Zusammenhang mit den Einstellungen für den Hindernisvermeidungsbereich" />
+</Frame>
+
+Abbildung 6.1 Bild des Warnabstands
+
+- Hindernisvermeidungsbereich links (y links): Zeigt an, dass die Kamera Hindernisse in einem Bereich von -500 mm links von der Hindernisvermeidungskamera erkennt, wie in Abbildung 6.2 dargestellt.
+
+- Hindernisvermeidungsbereich links (yrechts): Zeigt an, dass die Kamera Hindernisse innerhalb eines Bereichs von 500 mm rechts von der Hindernisvermeidungskamera erkennt, wie in Abbildung 6.2 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/66455b6e-2c49-4387-bae4-d1e60d4364ec/0c081553-64f1-482a-b982-1145ad687df4.avif" alt="Abbildungen im Zusammenhang mit der Einstellung des Hindernisvermeidungsbereichs 2" />
+</Frame>
+
+Abbildung 6.2 Bild der Hindernisvermeidungsreichweite
+
+- Hindernisvermeidungshöhe (Z unten): Zeigt die Erkennung von Hindernissen innerhalb von 10 mm unter dem Boden auf der Installationshöhe an, wie in Abbildung 6.3 dargestellt.
+
+- Hindernisvermeidungshöhe (Z oben): Zeigt an, dass die Kamera Hindernisse in einem Bereich von 500 mm über dem Boden erkennt, wie in Abbildung 6.3 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/bb805708-d45d-41d9-8f5e-8197b63c6b0d/8ea1a9c6-e585-4567-b8da-ac4708637026.avif" alt="Abbildungen im Zusammenhang mit der Einstellung des Hindernisvermeidungsbereichs 3" />
+</Frame>
+
+Abbildung 6.3 Bild der Hindernisvermeidungshöhe
+
+2. Ausgabe der Hindernisvermeidung:
+
+- Zeigt normal und keine Hindernisse an
+
+- Zeigt an, dass im Warnbereich (im gelben Feld) Hindernisse erkannt werden.
+
+- Zeigt an, dass Hindernisse im Alarmbereich erkannt werden (innerhalb des roten Felds)
+
+3. Nachdem Sie den Host-Computer zum Konfigurieren der Parameter gemäß dem oben beschriebenen Verfahren verwendet haben, können Sie zum Softwareinstallationspfad \\Tools\\params\\ und zur aktuellen Kamera-ID\\avoidance.json gehen, um die Datei „avoidance.json“ zu sichern und die Hindernisvermeidungsparameter für verschiedene Kameras schnell zu synchronisieren: Führen Sie nach dem Einschalten der Kamera „Konfiguration aus Datei laden“ aus, wählen Sie die gesicherte Datei „avoidance.json“ aus und warten Sie, bis die Einstellung abgeschlossen ist.
+
+<Frame>
+  <img src="/images/legacy/5d0604b8-8852-49f2-b3b4-cc268f47f6d6/74e7e96b-e2cb-4c66-85ac-13083d78e2c7.avif" alt="Abbildungen im Zusammenhang mit der Einstellung des Hindernisvermeidungsbereichs 4" />
+</Frame>
+
+## 7. Kommunikationsmethode
+
+1. Bevor Sie verschiedene Kommunikationsmethoden verstehen oder verwenden, müssen Sie **den von uns bereitgestellten Host-Computer verwenden, um die Inhalte der Hindernisvermeidungsparameter einzeln zu konfigurieren**, bevor Sie **Nicht-API-Kommunikationsmethoden** verwenden können, um verschiedene Hindernisvermeidungsparameter zu wechseln. **Notiz:**
+
+**① Einige Kommunikationsprotokolle gelten nur für ein bestimmtes Modell, z. B. ist die RS485-Kommunikation nur für M4Pro verfügbar. **
+
+② Wenn Sie die API-Methode verwenden, um Ergebnisse zur Hindernisvermeidung zu erhalten, aber nicht darauf beschränkt sind, wird empfohlen, zunächst zu bestätigen, ob die Hindernisvermeidungskonfiguration erfolgreich umgeschaltet wurde, d. h. zuerst die aktuelle Bereichsnummer der Hindernisvermeidungskonfiguration abzufragen.
+
+③ Verwenden Sie UDP- und CAN-Kommunikationsmethoden zur Hindernisvermeidung, um den Hindernisvermeidungsbereich zu überprüfen. Einzelheiten finden Sie in der ausführlichen Einführung der einzelnen Kommunikationsmethoden.
+
+<Frame>
+  <img src="/images/legacy/db6c3d37-ba35-439f-9cb2-a844323e0d93/668b983c-c6a4-492d-a676-f4de871c62b1.avif" alt="Illustrationen zu Kommunikationsmethoden" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/eaa2b8fd-e8aa-419d-87d3-4f3fe27bac32/044bd51a-61c8-4a52-af64-dc9cba9d38cd.avif" alt="Illustrationen zu Kommunikationsmethoden 2" />
+</Frame>
+
+2. Alle Parameter zur Hindernisvermeidung des S2 Max/S10 pro können über den von uns bereitgestellten Host-Computer und die API eingestellt werden, aber für andere Kommunikationsmethoden (IO / UDP / CAN / 485) kann nur der Parameterindex zur Hindernisvermeidung geändert werden. Die Hindernisvermeidungsparameter von S10 können über den von uns bereitgestellten Host-Computer eingestellt werden, alle Kommunikationsmethoden beschränken sich jedoch auf die Änderung des Hindernisvermeidungsparameterindex.
+
+| Kameratyp | Unterstützte Kommunikationsmethoden für Hindernisvermeidungsmodule |
+| --- | --- |
+| S2 | API, UDP, IO |
+| S2Max | API, UDP, CAN |
+| S2Max V2.0 | API, UDP, IO, CAN |
+| M4Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API, UDP, IO, CAN |
+
+| Kameratyp | Änderung des Parameterindex zur Hindernisvermeidung | Detaillierte Parametereinstellungen zur Hindernisvermeidung unterstützen die Änderung |
+| --- | --- | --- |
+| S2 | Alle Kommunikationsmethoden können geändert werden | Kann nur mit dem von uns bereitgestellten Host-Computer geändert werden |
+| S2 Max, S2 Max2.0, M4, M4Pro, M4 Mega | Alle Kommunikationsmethoden können geändert werden | Nur der Host-Computer und die API können geändert werden |
+
+**Hinweis: Der Parameterindex zur Hindernisvermeidung** bezieht sich auf den Parametergruppenindex der Konfiguration 0, 1, 2 usw.; **Detaillierte Parameter zur Hindernisvermeidung** beziehen sich auf alle Parameter mit Ausnahme der Hindernisvermeidungsparameter wie Kamerawinkel, Warnabstand usw.
+
+| Priorität | Kommunikationsmethode | Objekt |
+| --- | --- | --- |
+| 1 | IO-Kommunikation | Die Parameter werden sofort wirksam und können nicht auf andere Weise beeinflusst werden. Wenn sie schwebend bleiben oder die E/A-Kommunikation nicht unterstützen, werden die Standardparameter oder temporären Parameter verwendet. |
+| 2 | Host-Computer- und API-Einstellungen | Die Standardparameter sind eingestellt und werden von Stromausfällen nicht beeinflusst. |
+| 2 | Andere (z. B. 485 usw.) | Bei den Einstellungen handelt es sich um temporäre Parameter. Dieser Parameter wird geändert, wenn ein Stromausfall oder eine andere Kommunikation auftritt. Es kann über die Anweisungen | als Standardparameter gespeichert werden
+
+3. Bei der Änderung der Hindernisvermeidungsparameter folgt die Kamera strikt der Prioritätslogik.
+
+4. Der größte Unterschied zwischen temporären Parametern und Standardparametern besteht darin, ob sie nach dem Ausschalten gespeichert werden. Welcher Parameter verwendet wird, hängt davon ab, welche Kommunikationsmethode zuletzt verwendet wurde.
+
+5. Während der E/A-Kommunikation (E/A ist nicht angehalten) können die aktuellen Parameter nicht mit der Kommunikationsmethode der Priorität 2 geändert werden, die Standardparameter und temporären Parameter können jedoch geändert werden. Wenn die E/A-Kommunikation unterbrochen ist (E/A ist ausgesetzt), werden die spezifischen Standardparameter oder temporären Parameter entsprechend der letzten Einstellungsmethode verwendet. Bei der letzten Verwendung von 485- oder UDP-Einstellungen werden temporäre Parameter verwendet. Bei der letzten Verwendung von API-Aufrufen oder Host-Computereinstellungen werden die Standardparameter verwendet. Die Logik ist wie folgt:
+
+<Frame>
+  <img src="/images/legacy/9de2e18d-de3f-4a0a-b783-6cc5c8208344/8bf4f672-a74b-4a6b-9746-55438829cada.avif" alt="Illustrationen zu Kommunikationsmethoden 3" />
+</Frame>
+
+6. Bei der S10-Kamera dauert es 200–300 ms, um die Parameter zu wechseln, bis der Ladevorgang abgeschlossen ist. Daher führt S2 einen Filtervorgang für den Schaltparametervorgang durch und die letzte Einstellung innerhalb von 250 ms wird ignoriert. Unabhängig davon, ob es sich um S10 oder S2Max/S10pro handelt, wird nicht empfohlen, die Parameter zu häufig zu wechseln, da dies den Ressourcenverbrauch der Kamera erhöht und die Bildfrequenz verringert. Da die Aktualisierungsrate der Ergebnisse der Hindernisvermeidung mit der Bildrate zusammenhängt, führt dies auch dazu, dass die Aktualisierungsrate der Ergebnisse der Hindernisvermeidung verringert wird. Die Aktualisierungsrate des Hindernisvermeidungsergebnisses entspricht der Bildbildrate.
+
+### 7.1 API-Aufrufmethode
+
+Die API-Aufrufmethode kann C++, C#, JAVA, ROS1, ROS2 und andere Windows-, Linux-, Arm- und andere Umgebungen unterstützen. Nachdem das SDK der Windows-Umgebung auf der Host-Computersoftware installiert wurde, befinden sich alle SDK-Dateien und Beispielprogrammcodes im Installationspfad (z. B. D:\\Programme\\Lanxin-MRDVS). Das Linux-Umgebungs-SDK kann vom entsprechenden technischen Support von Meier Microvision oder von der offiziellen Website heruntergeladen werden. Es wird nicht empfohlen, diese Methode zum Ändern der Parameter für S10-Kameras zu verwenden. Es wird empfohlen, zum Wechseln der Parameter UDP oder IO zu verwenden.
+
+- Der Ordner „Dokument“ enthält die Dokumentation zur SDK- und Host-Computer-Nutzung.
+
+- Der FirmWare-Ordner ist das Verzeichnis, in dem das Kamera-Firmware-Paket gespeichert ist.
+
+- Der Beispielordner ist das Verzeichnis, in dem der Beispielcode-Quellcode gespeichert ist, der je nach Entwicklungsumgebung ausgewählt werden kann.
+
+– Der SDK-Ordner ist das Verzeichnis, in dem SDK-Bibliotheksdateien gespeichert sind. Sie können Umgebungsvariablen entsprechend der Entwicklungsumgebung konfigurieren.
+
+- Die Hindernisvermeidungsanwendung kann das Hindernisvermeidungs-API-Quellcodeprogramm von C/application\_obstacled im Sampl-Verzeichnis parametrisieren.
+
+### 7.2 485 Kommunikationsmethode
+
+1. Die 485-Kommunikation unterstützt nur M4-Pro-Kameras unter Verwendung des Modbus-RTU-Übertragungsprotokolls. Im Folgenden finden Sie die Definition des Kamerakabelbaums:
+
+| Hafen | Pin | Signal | Beschreibung | Bemerkungen |
+| --- | --- | --- | --- | --- |
+| Socket-Definition | 1 | GND | Signalmasse | Blau |
+| | 2 | 485_A | RS485_A | Grau |
+| | 3 | 485_B | RS485_B | Weiß |
+| | 4 | Fahrgestellnummer + | 24V-Stromeingang Pluspol | Braun |
+| | 5 | Fahrgestellnummer - | 24V-Stromeingang Minuspol | Schwarz |
+
+2. Die 485-Debugging-Methode lautet wie folgt:
+
+- Bei Verbindung über RS485 ist im Debugging-Assistenten die Baudrate auf 9600 eingestellt.
+
+- Überprüfen Sie mit dem Host-Computer die aktuelle Modbus-Adresse, lesen Sie die beiden Registeradressen ab Adresse 108 (0x6C) des Eingangsregisters (0x04) und der zurückgemeldete Registerwert ist das aktuelle Ergebnis der Hindernisvermeidung.
+
+<Frame>
+  <img src="/images/legacy/97dd2a2a-4b90-419b-bef8-8e4504a30720/2f79d722-9523-4a5e-904b-da95fbb4ca5b.avif" alt="485 Symbole für Kommunikationsmethoden" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f3ee28c-ea54-426e-8bd5-bbae25de955c/e5bfac8e-14fb-4540-91b2-d72de1aa86fc.avif" alt="Abbildungen im Zusammenhang mit 485-Kommunikationsmethode 2" />
+</Frame>
+
+- Wenn Sie die Parameter zur Hindernisvermeidung ändern müssen, können Sie die Adresse 106 (0x6A) eines einzelnen Speicherregisters (0x06) schreiben.
+
+<Frame>
+  <img src="/images/legacy/65d76022-f5da-4827-b160-8c597f7c0a5f/c64c76ff-8c7a-442d-8fa2-2cacba78affb.avif" alt="Abbildungen im Zusammenhang mit 485-Kommunikationsmethode 3" />
+</Frame>
+
+### 7.3 UDP-Kommunikationsmethode
+
+Bedeutung des Feldes „Hindernisvermeidungsfunktion“:
+
+| Nummer | Übertragungsrichtung | Nachricht | Ergebnis der Hindernisvermeidung |
+| --- | --- | --- | --- |
+| 1 | Kamera->Körper | ACED0410XX000000 | Barrierefrei, XX stellt die aktuellen Hindernisvermeidungsparameter dar |
+| 2 | | ACED0410XX000001 | Frühwarnverzögerung |
+| 3 | | ACED0410XX000002 | Alarmstopp |
+| 4 | Hauptteil->Kamera | ACED040000000000 | UDP-Verbindung herstellen |
+| 5 | | ACED041A00000000 | Hindernisvermeidungsparameter 0 |
+| 6 | | ACED041A00000001 | Hindernisvermeidungsparameter 1 |
+| 7 | | ACED041A00000002 | Hindernisvermeidungsparameter 2 |
+| 8 | | ACED041A00000003 | Hindernisvermeidungsparameter 3 |
+| 9 | | ... | (und so weiter bis Parameter 19) |
+| 10 | Körper->Kamera | ACED041B00000000 | Aktuelle Parameter als Standardparameter festlegen |
+| 11 | Kamera->Körper | ACED041B00000001 | Standardparameter erfolgreich festgelegt |
+
+1. Wenn Sie eine Verbindung über UDP herstellen, verwenden Sie den Netzwerk-Debugging-Assistenten, um die Kommunikationsverbindung mit der Kamera zu testen, und wählen Sie hexadezimale Übertragung und Empfang zum Empfangen und Senden von Daten aus. Es wird empfohlen, für die erste Kommunikation den Befehl Nr. 4 zu verwenden. Nach dem Aufbau einer UDP-Verbindung werden die Ergebnisse der Hindernisvermeidung automatisch gesendet. Die Sendefrequenz hängt von der aktuellen Bildfrequenz ab. Nachdem Sie die Parameter geändert haben, können Sie anhand der von der Kamera an das Gehäuse gesendeten Meldung bestätigen, ob die Änderung erfolgreich war. Das XX in der Nachricht mit der Nummer 1 ist der aktuelle Parameter.
+
+2. Die von DP eingestellten Parameter bleiben bis zum Neustart der Kamera wirksam, es sei denn, die Stromversorgung wird unterbrochen oder mit anderen Kommunikationsmethoden geändert. Wenn Sie möchten, dass es auch nach einem Stromausfall wirksam bleibt, können Sie es mit der Meldung Nr. 10 als Standardparameter speichern. Die Funktion des Speicherns als Standardparameter ist eine einzigartige Funktion der UDP-Kommunikation, CAN, 485.
+
+3. Legen Sie die lokale Hostadresse und den lokalen Host-Port fest und klicken Sie zum Öffnen. Der Remote-Host ist die Kamera. Geben Sie den IP-Port der Kamera ein: 192.168.100.12:6688. Wenn sich die IP der Kamera geändert hat, lautet sie: Kamera-IP:6688; Nehmen Sie den aktuellen Parameter 19 und ändern Sie ihn als Beispiel in Parameter 0. Klicken Sie, um die Datennummer 5 zu senden. Das Zeichen für die erfolgreiche Einstellung besteht darin, dass das fünfte Byte von 0x13 (Parameter 19) auf 0x00 (Parameter 0) geändert wird, wie unten gezeigt.
+
+<Frame>
+  <img src="/images/legacy/e8a8533b-6b41-4853-bfc7-9217abd0524d/d75adea6-f4e9-4d89-adf3-2772681f0406.avif" alt="Abbildungen im Zusammenhang mit der UDP-Kommunikationsmethode" />
+</Frame>
+
+### 7.4 TCP-Kommunikationsmethode
+
+Bedeutung des Feldes „Hindernisvermeidungsfunktion“:
+
+| Nummer | Übertragungsrichtung | Nachricht | Ergebnis der Hindernisvermeidung |
+| --- | --- | --- | --- |
+| 1 | Kamera->Körper | ACED0410XX000000 | Barrierefrei, XX stellt die aktuellen Hindernisvermeidungsparameter dar |
+| 2 | | ACED0410XX000001 | Frühwarnverzögerung |
+| 3 | | ACED0410XX000002 | Alarmstopp |
+| 4 | Körper->Kamera | ACED041A00000000 | Hindernisvermeidungsparameter 0 |
+| 5 | | ACED041A00000001 | Hindernisvermeidungsparameter 1 |
+| 6 | | ACED041A00000002 | Hindernisvermeidungsparameter 2 |
+| 7 | | ACED041A00000003 | Hindernisvermeidungsparameter 3 |
+| 8 | | ... | (und so weiter bis Parameter 19) |
+| 9 | Körper->Kamera | ACED041B00000000 | Aktuelle Parameter als Standardparameter festlegen |
+| 10 | Kamera->Körper | ACED041B00000001 | Standardparameter erfolgreich festgelegt |
+
+1. Wenn Sie eine Verbindung über TCP herstellen, verwenden Sie den Netzwerk-Debugging-Assistenten, um die Kommunikationsverbindung mit der Kamera zu testen, und wählen Sie hexadezimale Übertragung und Empfang zum Empfangen und Senden von Daten aus. Nachdem die TCP-Verbindung hergestellt wurde, werden die Ergebnisse der Hindernisvermeidung automatisch gesendet und die Sendefrequenz hängt von der aktuellen Bildfrequenz ab. Nachdem Sie die Parameter geändert haben, können Sie anhand der von der Kamera an das Gehäuse gesendeten Meldung bestätigen, ob die Änderung erfolgreich war. Das XX in der Nachricht mit der Nummer 1 ist der aktuelle Parameter.
+
+2. Die von TCP eingestellten Parameter bleiben bis zum Neustart der Kamera wirksam, es sei denn, die Stromversorgung wird unterbrochen oder mit anderen Kommunikationsmethoden geändert. Wenn Sie möchten, dass es auch nach einem Stromausfall wirksam bleibt, können Sie es mit der Meldung Nr. 10 als Standardparameter speichern. Die Funktion zum Speichern als Standardparameter ist eine einzigartige Funktion der TCP-Kommunikation und wird von CAN oder 485 nicht unterstützt.
+
+3. Die Kamera kann mit dem Assistenten getestet werden. Wählen Sie TCP-Client als Protokoll, die Kamera-IP als IP und 6688 als Port aus. Bevor Sie die TCP-Kommunikation verwenden, müssen Sie bestätigen, ob der aktuell verwendete Hindernisvermeidungsbereich auf dem Host-Computer eingestellt wurde.
+
+<Frame>
+  <img src="/images/legacy/b1e7b075-b88e-4547-9e9e-813399cee1de/426d1e53-dda3-4ea0-80fb-5ad61ee30884.avif" alt="Abbildungen im Zusammenhang mit der TCP-Kommunikationsmethode" />
+</Frame>
+
+### 7.5 CAN-Kommunikationsmethode
+
+1. Die CAN-Kommunikation unterstützt nur S2-MAX-Kameras. Das Kommunikationsprotokoll verwendet CanOpen. Das CanOpen-Protokoll ist ein Protokoll der Anwendungsschicht, das auf dem Standard-CAN-Bus läuft. Sein Kommunikationsmodus ist auch der „Master-Slave“-Kommunikationsmodus, der üblicherweise in industriellen Kommunikationsprotokollen verwendet wird. Das heißt, es gibt eine Master-Station und mehrere Slave-Stationen im Netzwerk. Die Slave-Stationen kommunizieren nicht direkt miteinander. Die gesamte Kommunikation findet zwischen der Master-Station und den Slave-Stationen statt. Die Master-Station wird auch „Client“ und die Slave-Station auch „Server“ genannt.
+
+2. Die zugrunde liegende Kommunikationsmethode verwendet das CAN-Standardrahmenformat, dh die CAN-ID beträgt 11 Bit (0x000 ~ 7FF) und die Daten sind 8 Byte.
+
+3. Die Verwendungskonvention der CAN-ID: Teilen Sie die 11-Bit-ID in 4-Bit-Funktionscode und 7-Bit-Knoten-ID. Die CAN-ID wird auch als COB-ID bezeichnet:
+
+<Frame>
+  <img src="/images/legacy/6b14ef30-ae22-4eb0-bdd0-ff371a395ef5/2b8174cc-315e-4622-af5e-c288fd5a391c.avif" alt="Abbildungen im Zusammenhang mit der CAN-Kommunikationsmethode" />
+</Frame>
+
+4. Can-Baudrate: Der Standardwert ist 250 KB, der je nach Anwendung konfiguriert werden kann.
+
+5. Knotennummer: Der Standardwert ist 0x212, der je nach Anwendung konfiguriert werden kann.
+
+6. Die SDO-Kommunikationsnachricht ist ein grundlegendes Protokollformat in CanOpen. Die 8-Byte-Daten in der CAN-Nachricht werden vom Kommunikationsprotokoll als folgendes Format definiert:
+
+<Frame>
+  <img src="/images/legacy/2097250b-a7c5-43f8-8dac-53940a7ccb01/662148d5-54f3-469a-bb77-2d22e7d96075.avif" alt="Abbildungen im Zusammenhang mit CAN-Kommunikationsmethode 2" />
+</Frame>
+
+**Kommunikationsprotokoll des Hindernisvermeidungsmoduls:**
+
+1. Das von der Ontologie an das Gerät gesendete Nachrichtenformat.
+
+<Frame>
+  <img src="/images/legacy/109df244-17e5-4c9b-9900-298a5c5dfcd3/4a23ea06-77c9-4dea-9862-34bd67b013a0.avif" alt="Abbildungen zur CAN-Kommunikationsmethode 3" />
+</Frame>
+
+- Referenzmeldung: 40 00 00 00 0B 00 00 00, 0B: MODECTRL, was bedeutet, dass die Hindernisvermeidungsparameter auf Bereich 11 eingestellt werden.
+
+2. Das Format der vom Gerät an den Hauptteil gesendeten Nachricht.
+
+<Frame>
+  <img src="/images/legacy/e43f7fa2-780a-4885-b98d-1f8b412a1198/4ebef067-087d-46ab-811b-49ff027bb6b4.avif" alt="Abbildungen zur CAN-Kommunikationsmethode 4" />
+</Frame>
+
+- Referenzzeichen: 43 00 00 00 0B 00 00 02, 0B: MODECTRL, was angibt, dass der aktuelle Hindernisvermeidungsparameter Bereich 11 ist; 02: Ergebnis, das das aktuelle Ergebnis der Hindernisvermeidung angibt.
+
+**3. Hinweis: Wie in der folgenden Abbildung dargestellt, werden die Parameter zur Hindernisvermeidung nicht sofort wirksam. **
+
+<Frame>
+  <img src="/images/legacy/c102285c-5b45-4762-87fd-713da40e2468/bd1a716a-80e2-437e-92d2-2acbfb00a2d5.avif" alt="Abbildungen zur CAN-Kommunikationsmethode 5" />
+</Frame>
+
+## 7.5 IO-Kommunikationsmethode
+
+### 7.5.1 Entsprechungstabelle für IO-Eingangsstatus und Hindernisvermeidungsparameter
+
+| Input1-Status | Eingang2-Status | Bemerkungen |
+| --- | --- | --- |
+| Hohes Niveau | Hohes Niveau | Hindernisvermeidungsparameter 2 |
+| Hohes Niveau | Niedriges Niveau | Hindernisvermeidungsparameter 1 |
+| Niedriges Niveau | Hohes Niveau | Hindernisvermeidungsparameter 0 |
+| Niedriges Niveau | Niedriges Niveau | Verwenden Sie Standardparameter oder temporäre Parameter zur Hindernisvermeidung |
+
+- Hinweis: Wenn der Eingangs-IO schwebend bleibt, liegt er auf niedrigem Pegel und die empfohlene Spannung für hohen Pegel beträgt 5–25 V.
+
+- Hinweis: Informationen zur Logik der Verwendung von Standardparametern oder temporären Parametern finden Sie im Vorwort von Kapitel 7 (Kommunikationsmethoden). Einfach ausgedrückt: Wenn die Kamera eingeschaltet ist und keine anderen Kommunikationsmethoden (außer API) zum Konfigurieren der Hindernisvermeidungsparameter verwendet, werden die Standardparameter verwendet. Andernfalls werden temporäre Parameter verwendet.
+
+### 7.5.2 Entsprechungstabelle für IO-Ausgangsstatus und Hindernisvermeidungsparameter
+
+### IO-Status ist Push-Pull
+
+| Ausgabe1-Status | Ausgabe2-Status | Bemerkungen |
+| --- | --- | --- |
+| 24V | 24V | Zugänglich |
+| 24V | 0V | Verzögerungssignal |
+| 0V | 24V | Notstoppsignal |
+| 0V | 0V | Hindernisvermeidung, Initialisierung, Ausnahme nicht aktiviert |
+
+- Hinweis: Wenn die Hindernisvermeidung aktiviert ist, aber alle Ausgangs-IOs geerdet sind, stellen Sie bitte sicher, dass die aktuellen Hindernisvermeidungsparameter vom Host-Computer eingestellt wurden.
+
+<Frame>
+  <img src="/images/legacy/fae16d2e-4221-46a3-a426-1b504d07a04a/c3a59086-bee5-4c6a-91d2-46a71152a6a1.avif" alt="Der E/A-Status besteht aus Push-Pull-bezogenen Symbolen" />
+</Frame>
+
+**IO-Status ist Open-Drain**
+
+| Ausgabe1-Status | Ausgabe2-Status | Bemerkungen |
+| --- | --- | --- |
+| Suspendiert | Suspendiert | Zugänglich |
+| Schwebend | 0V | Verzögerungssignal |
+| 0V | Schwebend | Notstoppsignal |
+| 0V | 0V | Hindernisvermeidung, Initialisierung, Ausnahme nicht aktiviert |
+
+### 7.5.3 S2-Kamera-E/A-Verkabelungsmethode
+
+Die Details des externen Kabels mit dem Strometikett sind in der folgenden Tabelle aufgeführt:
+
+| Labelname | Farbe | Bemerkungen |
+| --- | --- | --- |
+| IN1 | Orange | E/A-Funktion Eingangssignalleitung 1+ |
+| IN_COM1 | Gelb | E/A-Funktionseingangssignalleitung 1- |
+| IN2 | Grün | I/O-Funktionseingangssignalleitung 2+ |
+| OUT_1 | Lila | E/A-Funktionsausgangssignalleitung 1+ |
+| OUT_COM1 | Grau | E/A-Funktionsausgangssignalleitung 1- |
+| IN_COM2 | Blau | E/A-Funktionseingangssignalleitung 2- |
+| OUT_2 | Braun | I/O-Funktionsausgangssignalleitung 2+ |
+| OUT_COM2 | Weiß | I/O-Funktionsausgangssignalleitung 2- |
+
+### 7.5.4 S10-Kamera und I/O-Verkabelungsmethode für Industriecomputer
+
+Beachten Sie, dass die 24-V-Kamera mit der Stromerde des Industriecomputers verbunden werden sollte und dass IN\_G und OUT\_G mit der Signalmasse des Industriecomputers verbunden werden sollten. Kunden können die gemeinsame Erdungsverbindungsmethode entsprechend der tatsächlichen Situation ändern. Wenn der Industriecomputer nicht über Strommasse und Signalbereiche verfügt, können Sie die Kamera 24V-, IN\_G und OUT\_G an den GND des Industriecomputers anschließen.
+
+### 7.5.4.1 Eingangsklemme IN\_Verdrahtungsmethode
+
+1. Die folgende Abbildung zeigt die Verdrahtungsmethode zwischen dem PNP-Ausgang des Industriecomputers und dem Eingangsanschluss der S10-Kamera (im Folgenden als IN\_\* abgekürzt, \* steht für 1 und 2):
+
+<Frame>
+  <img src="/images/legacy/db796979-a48a-4e8f-a439-41163142b7eb/3a6e88b9-58b3-4afc-be18-a86b38d69f44.avif" alt="Abbildungen zur Verdrahtungsmethode der Eingangsklemmen IN\_" />
+</Frame>
+
+2. Die folgende Abbildung zeigt die Verdrahtungsmethode zwischen dem NPN-Ausgang des Industriecomputers und dem Eingangsanschluss der S10-Kamera:
+
+<Frame>
+  <img src="/images/legacy/87186c64-88c9-4afc-a17e-de2ab83ab740/993feed3-fbc4-4587-8f21-29d85d3570ff.avif" alt="Relevantes Diagramm der Eingangsklemme IN\_ Verdrahtungsmethode 2" />
+</Frame>
+
+3. Da die Ausgangsschaltungsdesigns von Industriecomputern verschiedener Hersteller unterschiedlich sind, muss anhand der tatsächlichen Situation beurteilt werden, ob das Hinzufügen eines Pull-up-Widerstands und dessen Widerstandswert erforderlich ist.
+
+4. Sie müssen den Test gemäß den folgenden Schritten durchführen:
+
+- Messen Sie mit einem Multimeter die Impedanz des Industriecomputerausgangs auf 24 V. Wenn sie &lt;50 kΩ beträgt, ist kein Pull-up-Widerstand erforderlich. Wenn er ≥50 kΩ beträgt, fügen Sie einen Pull-up-Widerstand hinzu. Verwenden Sie einen durchkontaktierten Metallschichtwiderstand mit einem Widerstand von 10 kΩ und einer Leistung von ≥1 W. Sie können für vorübergehende Tests einen anderen Widerstand verwenden, eine langfristige Verwendung kann jedoch die Zuverlässigkeit beeinträchtigen. Der Widerstand darf 3 kΩ nicht unterschreiten und der Ausgang darf nicht direkt an 24 V angeschlossen werden.
+
+- Nachdem die Verbindung bestätigt wurde, ziehen Sie den Ausgangsanschluss des Industriecomputers hoch und messen Sie mit einem Multimeter die Spannung zwischen dem Ausgangsanschluss und Masse. Wenn die Spannung ≤ 2 V ist, trennen Sie den Kamerastromkreis und prüfen Sie, ob der Industriecomputer die Spannung hochziehen kann. Wenn die Spannung > 2 V ist, ziehen Sie den Ausgangsanschluss erneut auf Low, um zu prüfen, ob sich am Eingang der S2-Kamera eine Änderung ergibt. Wenn es eine Änderung gibt, bedeutet das, dass es normal verwendet werden kann; Wenn sich keine Änderung ergibt, ziehen Sie den Ausgangsanschluss des Industriecomputers auf Low und messen Sie die Spannung zwischen dem Ausgangsanschluss und Masse. Wenn die Spannung größer als 1 V ist, bedeutet dies, dass die Pull-Up-Stärke zu stark ist und es schwierig ist, sie herunterzuziehen. Sie müssen den Widerstand des Pull-up-Widerstands erhöhen und dann messen, ob sich der Eingang der S2-Kamera nach dem Herunterziehen ändert. Wenn die Spannung weniger als 1 V beträgt, trennen Sie den Industriecomputer, verbinden Sie den IN\_\* der Kamera über den Widerstand mit 24 V und GND und prüfen Sie, ob sich der Kameraeingang ändert. Bei einer Änderung prüfen Sie, ob die Verbindung zwischen Industriecomputer und Kamera korrekt ist; Wenn es keine Änderung gibt, wenden Sie sich an den technischen Support, um das Problem zu beheben.
+
+5. Der Logikbaum sieht wie folgt aus:
+
+<Frame>
+  <img src="/images/legacy/dbde924e-e206-4ed7-a609-b954a60a36cc/b727aee2-58b2-4a2b-bf87-a34d4fa94a63.avif" alt="Relevantes Diagramm der Eingangsklemme IN\_ Verdrahtungsmethode 3" />
+</Frame>
+
+### 7.5.4.2 Ausgangsklemme Out\_wiring-Methode
+
+1. In der Kamera gibt es zwei Arten von f und pnp.
+
+2. Die folgende Abbildung zeigt die Verdrahtungsmethode zwischen dem Eingangsanschluss des Industriecomputers und dem Ausgangsanschluss der S2-Kamera (im Folgenden als OUT\_\* abgekürzt, \* steht für 1 und 2):
+
+<Frame>
+  <img src="/images/legacy/4b34864c-b203-45de-add7-422469d59886/a9234957-e7a1-4eb7-9307-0e93c76c25e4.avif" alt="Abbildungen im Zusammenhang mit der Out\_wiring-Methode des Ausgangsterminals" />
+</Frame>
+
+## 8. Häufig gestellte Fragen
+
+### 8.1 Schwarze Objekte
+
+Aufgrund des TOF-Prinzips werden Kameras der S-Serie durch das Reflexionsvermögen der schwarzen Palette beeinflusst. Mit einem Reflexionsgrad von 5 % der schwarzen Palette kann mit der S2max-Kamera eine Bildaufnahme in einer Reichweite von 2 m erzielt werden. Beim Debuggen kann der Abbildungseffekt der schwarzen Palette auch durch die hohe Integrationszeit und die niedrige Signalschwelle der Host-Computersoftware optimiert werden. Wenn sich in der Hindernisvermeidungsszene ein schwarzer Gabelarm befindet, wird empfohlen, dass der Benutzer der Gabelspitze ein höheres Reflexionsvermögen verleiht, um die Hindernisvermeidung zu erleichtern, indem er beispielsweise einen kleinen Bereich vor der Gabelspitze mit einer Farboberfläche in anderen Farben besprüht.
+
+### 8.2 Niedrige Bodenobjekte
+
+Objekte auf dem Boden können Hindernissen nicht ausweichen. Bei Anwendungen zur Hindernisvermeidung nutzen wir im Allgemeinen den Boden als Grundlage für die Konfiguration externer Parameter. Wenn die Hindernisvermeidung bei niedrigen Hindernissen am Boden nicht möglich ist, können Sie auf folgende Lösungen zurückgreifen:
+
+- Das Punktwolkenbild des Host-Computers zeigt, dass kein Hindernis ausgewählt ist. Sie müssen bestätigen, ob die Hindernisausweichhöhe (unten) ein positiver Wert ist. Wenn es sich um einen positiven Wert handelt, wird empfohlen, ihn vorübergehend auf 0 zu setzen, um festzustellen, ob das Hindernis erkannt werden kann. Wenn die Erkennung immer noch nicht möglich ist, wird empfohlen, die Installationshöhe der Kamera anzupassen.
+
+- Das Punktwolkenbild des Host-Computers kann das Hindernisobjekt auswählen, aber die Ergebnisausgabe der Hindernisvermeidung ist 0. Dieses Phänomen kann durch eine falsche Konfiguration der Kamerainstallationshöhe verursacht werden. Es wird empfohlen, dass der Benutzer die Installationshöhe der Kamera anpasst.
+
+### 8.3 Parameter zur Hindernisvermeidung werden nicht wirksam
+
+- Beim Konfigurieren der Parameter wurde nicht auf „Setup abgeschlossen“ geklickt.
+
+- Die Änderung unzulässiger Parameter führte zum Fehlschlagen der Einstellung.
+
+- Die Kameraverbindung ist instabil und unterbrochen, was dazu führt, dass die Parameterübermittlung fehlschlägt.
+
+### 8.4 Störungen der Installationsstruktur
+
+- Während der Installation gibt es Strukturen rund um die Kamera, die das Sichtfeld der Kamera blockieren, was zu abnormalen Kameradaten führt.
+
+- Während des Strukturdesigns beeinträchtigt das Kameradesign die Rückansicht, was zu abnormalen Kameradaten führt.
+
+- Die Schutzfolie auf dem Kameraspiegel wurde nicht entfernt, was zu abnormalen Kameradaten führt.
+
+- Auf dem Kameraspiegel ist ein anderes Schutzglas angebracht, was zu Datenanomalien führt.
+
+Gerne können Sie uns über die folgenden Methoden kontaktieren:
+
+- Wenn Sie kein Produkt gekauft haben, [Kontaktieren Sie unser Vorverkaufsteam auf WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Kontaktieren Sie den Vorverkauf")
+
+- Wenn Sie ein Produkt gekauft haben, [Kontaktieren Sie den technischen Support auf WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Kontaktieren Sie den technischen Support")
+
+- **Offizielle Website**: [www.mrdvs.cn](https://www.mrdvs.cn/ "www.mrdvs.cn")
+
+- **Bilibili**: [Video-Tutorials und Anwendungsbeispiele](https://space.bilibili.com/3546755102672963 "Video-Tutorials und Anwendungsbeispiele")
+
+- **GitHub**: [Laden Sie das SDK und den Beispielcode herunter](https://github.com/Lanxin-MRDVS/CameraSDK "Laden Sie das SDK und den Beispielcode herunter")
+
+- **E-Mail**: [service@mrdvs.com](mailto:service@mrdvs.com "service@mrdvs.com")
+
+- ：400-025-6680

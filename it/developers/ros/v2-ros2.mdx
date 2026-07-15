@@ -1,0 +1,454 @@
+---
+title: "Riferimento interfaccia V2 ROS 2"
+description: "Costruisci ed esegui l'SDK ROS 2 di localizzazione V2 e utilizza i suoi argomenti e servizi."
+hidden: true
+---
+## Descrizione dell'interfaccia versione ROS2 di lx\_camera\_ros
+
+### Compila
+
+#### 1. Assicurarsi che Qt5 sia stato installato sul computer host. La compilazione richiede Core, Network e altri pacchetti funzionali in Qt5.
+
+```bash
+// Installation differs by Linux distribution. This example uses:
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+#### 2. Installare il pacchetto di funzioni libzip
+
+Scarica il file sorgente (https://libzip.org/download/) dal sito Web ufficiale di libzip, quindi compilalo secondo il tutorial del sito Web ufficiale.
+
+#### 3. Compilare il pacchetto di funzioni ros
+
+Esegui ./build.sh in /lx\_camera\_ros (applicabile alla versione ROS2)
+
+### Correre
+
+Qualsiasi modifica al file di configurazione yaml deve essere ricompilata per avere effetto.
+
+Esegui ./start.sh
+
+* * *
+
+### Interfaccia argomento ROS2
+
+Prima di testare l'interfaccia, è necessario accendere il corpo della fotocamera (attendere 30 secondi per l'avvio del programma corpo) e avviare il nodo SDK ROS2 (vedere la sezione precedente).
+
+#### Ricevi l'interfaccia di posizionamento e postura
+
+1. ROS2 continua a ricevere i valori di posizionamento x, y, theta inviati dalla fotocamera
+
+2. Pubblica i valori di posizionamento x, y e quaternione (convertito da theta) nell'argomento: `LxCamera_LocationPoseResult`
+
+3. Trasmettere il valore di posizionamento e il quaternione attraverso la trasformazione TF
+
+```cpp
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### Ricevi l'interfaccia di stato del posizionamento
+
+1. ROS2 continua a ricevere (frequenza: 1s) lo stato di posizionamento "`true/false`" inviato dalla fotocamera, indicando se il posizionamento corrente è normale.
+
+2. ROS2 pubblica lo stato del posizionamento (dati di tipo `std_msgs::msg::Bool`) all'argomento: `LxCamera_LocationResult`
+
+3. Puoi ottenere lo stato del posizionamento iscrivendoti a Topic (se il posizionamento attuale ha avuto successo)
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### Ricevi l'interfaccia spaziale utilizzata dalla fotocamera corrente
+
+1. ROS2 riceve continuamente (frequenza: 2 s) il rapporto di utilizzo dello spazio di archiviazione inviato dalla fotocamera
+
+2. ROS2 pubblica lo stato di occupazione (dati di tipo `std_msgs::msg::Float32`) al topic: `LxCamera_Capacity_Status`
+
+3. Puoi ottenere la proporzione dello stato occupato iscrivendoti a Topic
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### Riceve il nome del modulo attualmente difettoso
+
+1. ROS2 continua a inviare il nome del modulo errato dalla telecamera
+
+2. ROS2 pubblica lo stato di occupazione (dati di tipo `std_msgs::msg::String`) al topic: `LxCamera_Module_Error`
+
+3. È possibile ottenere il nome del modulo di eccezione iscrivendosi a Topic
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### Ricevi l'interfaccia di avanzamento della mappatura
+
+1. Dopo aver iniziato a costruire la mappa
+
+2. ROS2 pubblica lo stato del posizionamento (dati di tipo `std_msgs::msg::Int32`) all'argomento: `LxCamera_Mapping_Progress`
+
+3. Puoi ottenere i progressi nella costruzione della mappa (0-100) iscrivendoti a Topic
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### Ricevi l'interfaccia dello stato della mappatura
+
+1. Dopo aver iniziato a costruire la mappa
+
+2. ROS2 pubblica lo stato di avanzamento della mappatura (dati di tipo `std_msgs::msg::Bool`) al topic: `LxCamera_MappingState`
+
+3. Puoi cambiare lo stato della mappatura iscrivendoti a Topic.
+
+```bash
+//Use this command to verify that the topic publishes data
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### Impostazione dell'interfaccia dei parametri
+
+1. L'utente pubblica un messaggio di tipo `std_msgs::msg::String` nell'argomento: `LxCamera_SetParam`
+
+2. Il formato del messaggio è composto da 9 numeri in virgola mobile, separati da virgole inglesi ",", che rappresentano rispettivamente: `x,y,z,yaw,pitch,roll,x,y,yaw`, **I primi 6 parametri sono la posa della fotocamera e gli ultimi 3 sono la posa del lidar**.
+
+3. Una volta completata con successo la modifica, verranno impostati i parametri rilevanti in \[Laser1\] e \[Camera1\] nel file del percorso della fotocamera `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### Cambia l'interfaccia della mappa
+
+1. L'utente pubblica un messaggio di tipo `std_msgs::msg::String` nell'argomento: `LxCamera_SwitchMap`
+
+2. Il formato del messaggio è una stringa e contiene un campo: indica il nome della mappa (a condizione che la mappa sia stata costruita nella fotocamera)
+
+3. Se la mappa visualizzata nella pagina web della telecamera è cambiata (aggiornare la pagina web), il passaggio ha avuto esito positivo.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### Scarica l'interfaccia della mappa
+
+1. L'utente pubblica un messaggio di tipo `std_msgs::msg::String` nell'argomento: `LxCamera_DownloadMap`
+
+2. Il formato del messaggio è una stringa e contiene due campi: save\_path rappresenta l'indirizzo di salvataggio (l'indirizzo nel computer host, utilizzando un percorso assoluto) e mapname rappresenta il nome della mappa (il nome del file in formato ".zip" che ha completato la mappatura nella fotocamera)
+
+3. Dopo l'operazione, sarà presente un pacchetto compresso con il nome della mappa specificato nel percorso specificato dal computer host. Dopo la decompressione, otterrai un `PGM map file` e un `YAML configuration file`.
+
+```bash
+// Enter the lx_camera_ros2_ws directory
+//Open a terminal
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### Carica l'interfaccia del contachilometri
+
+1. L'utente pubblica dati di tipo `nav_msgs::msg::Odometry` nell'argomento: `/sim/odom` (può essere modificato)
+
+```bash wrap
+// Enter the lx_camera_ros2_ws directory //Open a terminal source install/setup.bash ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### Interfaccia di riposizionamento
+
+1. L'utente pubblica dati di tipo `geometry_msgs::msg::PoseWithCovarianceStamped` nell'argomento: `LxCamera_UploadReloc`
+
+2. I dati sono la posa laser, tra cui: `x,y,yaw`
+
+3. Se la posizione del corpo visualizzata sulla pagina web della telecamera viene aggiornata alla posizione inviata, il riposizionamento ha esito positivo.
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0]
+  }
+}"
+```
+
+> I quaternioni hanno requisiti di vincolo durante i test e non possono essere compilati a piacimento. Puoi usare [Strumento Web](https://www.itutool.com/tools/euler-quaternion-converter "Strumento web") per convertire `Euler yaw angle` in `quaternion x/y/z/w`
+
+#### Prefisso del tipo di messaggio
+
+Il computer host utilizza UDP per comunicare con la fotocamera. I primi 4 byte del messaggio inviato dalla comunicazione sono il prefisso del tipo per distinguere i diversi tipi di dati dell'interfaccia:
+
+```cpp
+mapping_prefix = "aced220d";          // Enable mapping
+setparam_prefix = "aced220e";         // Set camera and LiDAR parameters
+UploadScan_prefix = "aced2209";       // Upload laser scan data to the camera
+odom_prefix = "aced0f0a";             // Odometry data
+mapname_prefix = "aced220c";          // Switch maps
+map_request_prefix = "aced220f";      // Download a specified map
+prefix_after_reloc = "aced0f0b";      // Relocalization
+```
+
+* * *
+
+### Interfaccia di servizio ROS2
+
+Le quattro funzioni di creazione della mappa, taglio della mappa, download della mappa e riposizionamento non solo utilizzano le interfacce di implementazione degli argomenti, ma supportano anche l'uso delle interfacce di servizio per la comunicazione e forniscono feedback sui risultati della risposta del servizio (se l'operazione ha avuto successo) attraverso i messaggi di risultato restituiti dall'host V2.
+
+1. Sottoscrivere l'interfaccia del servizio tramite il comando ros2 service
+
+2. Se viene restituito "true", significa che l'operazione è riuscita, mentre se viene restituito "false", significa che l'operazione non è riuscita.
+
+#### Crea una mappa
+
+Nome del servizio: `/LxCamera_Mapping_srv`
+
+Definizione del formato del servizio:
+
+```bash
+bool status      # Whether to map: true starts mapping; false stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result      # Operation result: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### Taglia l'immagine
+
+Nome del servizio: `/LxCamera_SwitchMap_srv`
+
+Definizione del formato del servizio:
+
+```bash
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result       # Operation result: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### Scarica la mappa
+
+Nome del servizio: `/LxCamera_DownloadMap_srv`
+
+Definizione del formato del servizio:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path   # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### Trasferimento
+
+Nome del servizio: `/LxCamera_UploadReloc_srv`
+
+Definizione del formato del servizio:
+
+```bash
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  "pose": {
+    "header": {
+      "stamp": {
+        "sec": 0,
+        "nanosec": 0
+      },
+      "frame_id": "map"
+    },
+    "pose": {
+      "pose": {
+        "position": {
+          "x": 4.5,
+          "y": -15.5,
+          "z": 0.0
+        },
+        "orientation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.694658,
+          "w": 0.71934
+        }
+      },
+      "covariance": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### Ottieni il nome della mappa corrente
+
+Nome del servizio: `/LxCamera_GetCurMapname_srv`
+
+Definizione del formato del servizio:
+
+```bash
+bool get_cur_mapname # Retrieve the current map identifier
+---
+string mapname      # Current map name
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### Ottieni l'elenco delle mappe attuali
+
+Nome del servizio: `/LxCamera_GetMapList_srv`
+
+Definizione del formato del servizio:
+
+```bash
+bool get_map_list # Whether to retrieve the map list
+---
+string[] map_list # Map list
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### Esci dalla costruzione della mappa
+
+Nome del servizio: `/LxCamera_ExitMapping_srv`
+
+Definizione del formato del servizio:
+
+```bash
+bool exit_mapping # Whether to exit mapping
+---
+bool state        # Whether mapping exited successfully: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### Elimina la mappa
+
+Nome del servizio: `/LxCamera_EraseMap_srv`
+
+Definizione del formato del servizio:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+---
+bool result        # Whether map deletion succeeded: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### Scarica la mappa termica
+
+Nome del servizio: `/LxCamera_DownloadHeatMap_srv`
+
+Definizione del formato del servizio:
+
+```bash
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path   # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result        # Operation result: true indicates success; false indicates failure
+```
+
+Debug delle istruzioni:
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## Mappatura incrementale
+
+Nome del servizio: `/LxCamera_IncMapping_srv`
+
+Definizione del formato del servizio:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+Debug delle istruzioni:
+
+```cpp
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

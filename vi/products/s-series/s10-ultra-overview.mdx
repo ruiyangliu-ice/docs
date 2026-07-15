@@ -1,0 +1,231 @@
+---
+title: "Camera 3D dòng S10 Ultra"
+description: "Thông số kỹ thuật, giao diện, hỗ trợ IMU, SLAM và hướng dẫn vận hành cho camera S10 Ultra dToF RGB-D."
+---
+Để có tài liệu đầy đủ, hãy tải xuống hướng dẫn sử dụng sản phẩm từ [Trung tâm tải xuống](/vi/resources/downloads/specifications-and-user-guides "Trung tâm tải xuống").
+
+## Tổng quan về sản phẩm
+
+MRDVS S10 Ultra là máy ảnh LiDAR tầm nhìn công nghiệp dựa trên công nghệ dToF với phạm vi trong nhà và ngoài trời 0,2-42m. Nó hỗ trợ căn chỉnh độ sâu RGB theo không gian và thời gian, đồng thời bao gồm IMU có đầu ra dữ liệu lên đến 200Hz để sử dụng với các thuật toán SLAM như FastLio và [FastLio2](https://github.com/Lanxin-MRDVS/MRDVS-S10Ultra_Mapping "FastLio2"). Máy ảnh này bao gồm một SoC, hỗ trợ kích hoạt phần mềm và có sẵn dưới dạng mô-đun MIPI.
+
+<Frame>
+  <img src="/images/legacy/a2ec1932-73d9-4c34-b1f4-045ea8ceb946/b57c7d10-1a66-4d79-aefc-e3706f78f6f8.avif" alt="Máy ảnh S10 Ultra" />
+</Frame>
+
+## Công nghệ cốt lõi và ứng dụng
+
+- Cảm biến độ sâu dToF: Tính toán khoảng cách từ thời gian truyền khứ hồi của tín hiệu laser, cung cấp phạm vi 0,2-42m và khả năng chống lại ánh sáng xung quanh 100 kLux.
+
+- Đầu ra dữ liệu được đồng bộ hóa: Xuất ra hình ảnh độ sâu, RGB và IR chất lượng cao với khả năng đồng bộ hóa không gian và thời gian.
+
+- Thiết kế trạng thái rắn: Không chứa các bộ phận chuyển động, có kích thước nhỏ gọn 106×69×43mm, chống rung và cung cấp dữ liệu RGBD được căn chỉnh.
+
+**Ứng dụng chính:**
+
+- Máy cắt cỏ robot: Định vị và điều hướng trong sân và bãi cỏ.
+
+- Robot công nghiệp bốn chân: Bản địa hóa, điều hướng và nhận thức để kiểm tra và thăm dò.
+
+- Máy bay không người lái đa cánh quạt: Định vị, điều hướng, tránh chướng ngại vật và nhận thức để kiểm tra và khảo sát.
+
+<Frame>
+  <img src="/images/legacy/74e53d10-47b1-47c1-8495-da341b854496/6fa61ae1-77db-4510-8ad0-982542a2afa3.avif" alt="Hình 1. S10 Ultra trên robot bốn chân hiện thân" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f317e34-29b9-4e0d-a405-89afd7f6c34f/2d4a23b0-1117-475a-a700-93ed73a86400.avif" alt="Hình 2. S10 Ultra trên máy cắt cỏ" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0378bc88-1491-4152-8f03-8e0eb6964b5c/183ae5da-42dd-4200-bb67-3299d2a212f0.avif" alt="Hình 3. Ứng dụng máy bay không người lái đa cánh quạt" />
+</Frame>
+
+## Thông số kỹ thuật
+
+| Đặc điểm kỹ thuật | S10 Cực |
+| --- | --- |
+| Môi trường | Trong nhà/ngoài trời |
+| Công nghệ độ sâu | dToF |
+| Bước sóng laser | 940nm |
+| Phạm vi độ sâu | 0,2~42m (độ phản xạ 90%)<br />0,2~30m (độ phản xạ 10%) |
+| Độ chính xác khác nhau | 4cm |
+| Dữ liệu đầu ra | Độ sâu (đám mây điểm)Hình ảnh /RGB/IR (biên độ) |
+| Độ phân giải sâu/tốc độ khung hình | 240×160 @Tối đa 10 khung hình/giây/10 khung hình/giây điển hình |
+| Độ sâu FOV | 120°×80°±3° |
+| Độ phân giải/tốc độ khung hình RGB | 1280×1080 @Tối đa 20 khung hình/giây, 10 khung hình/giây điển hình |
+| FOV RGB | 120°×110°±3° |
+| Căn chỉnh RGBD | Được hỗ trợ |
+| Giao diện dữ liệu | Ethernet |
+| Nhiệt độ hoạt động | -20oC~75oC |
+| Nhiệt độ bảo quản | -40oC~85oC |
+| Đồng bộ hóa thời gian | PTP |
+| Đánh giá bảo vệ | IP67 |
+| An toàn cho mắt | LỚP I |
+| Kích thước | 106×69×43mm |
+| Cân nặng | Khoảng 440g |
+| Tiêu thụ điện năng | < 9W |
+| Đầu vào nguồn | 12~27V |
+| Môi trường phần mềm | SDK C/C++/ROS |
+| Hỗ trợ hệ thống | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Khả năng chống ánh sáng xung quanh | 100kLux |
+| Tần số đầu ra IMU | 200Hz |
+
+## Thiết kế cơ khí và phần mềm
+
+### Kích thước
+
+<Frame>
+  <img src="/images/legacy/2aa056c7-b51d-4adf-962b-ee8bd931f064/9dae8fb1-222d-495e-bc60-8f403e451934.avif" alt="Kích thước S10 Ultra" />
+</Frame>
+
+### SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển SDK.
+
+## Hướng dẫn tích hợp sản phẩm
+
+| Mục |  | Đặc điểm kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20oC--75oC |
+|  | Chiếu sáng | 0KLUX--100KLUX |
+| Môi trường lưu trữ | Nhiệt độ | -40oC--85oC |
+|  | Độ ẩm | Độ ẩm tối đa 90% |
+
+## Phạm vi phát hiện của camera
+
+<Frame>
+  <img src="/images/legacy/d2c3be3a-bf40-44fe-9fa7-e9a06fbab482/d7b9eb6a-d928-4bca-8cfe-883234e52c63.avif" alt="Phạm vi phát hiện camera" />
+</Frame>
+
+## Biện pháp phòng ngừa cài đặt quan trọng
+
+### Khuyến nghị cài đặt
+
+Giữ cho khu vực trống được minh họa hoàn toàn không có vật thể khi lắp đặt camera quan sát 3D. Một đối tượng trong khu vực này sẽ can thiệp vào dữ liệu đám mây điểm và có thể gây ra nhiễu hình ảnh, dừng sai và lỗi dữ liệu.
+
+<Frame>
+  <img src="/images/legacy/6adbdf3c-c914-456a-9777-5a4721879f16/d195c008-fd7a-4674-953f-f37919a40b89.avif" alt="Cài đặt được đề xuất" />
+</Frame>
+
+### Nguyên nhân gây lỗi camera
+
+Môi trường lắp đặt không phù hợp có thể cản trở các phép đo thời gian bay và phép đo tam giác, đồng thời gây ra các lỗi vận hành:
+
+1. Cài đặt phần cứng không đúng cách: cản trở vật lý và cắt FOV
+
+Các cạnh hoặc gân của vỏ có thể nhập FOV được chỉ định. Việc lắp đặt lệch tâm hoặc lỗ mở quá nhỏ cũng có thể cắt bớt tầm nhìn và khiến cảm biến phát hiện vỏ bọc làm mục tiêu. Các triệu chứng bao gồm các điểm mù cố định, các phép đo tầm ngắn sai và FOV bị nén, có thể khiến chướng ngại vật bị bỏ sót và đường đi không chính xác.
+
+2. Nhiễu quang: nhiễu xuyên âm và phản xạ hồng ngoại trường gần
+
+Lỗi thường gặp này xảy ra khi không gian lắp đặt hạn chế gây ra phản xạ hồng ngoại và nhiễu xuyên âm bất thường:
+
+Đầu tiên, sự phản xạ từ các bức tường bên trong gây ra nhiễu đa đường. Ánh sáng hồng ngoại phản xạ từ các bức tường bao quanh nhiều lần trước khi đến máy thu, làm thay đổi thời gian đo và làm sai lệch khoảng cách tính toán.
+
+Thứ hai, bề mặt có độ phản chiếu cao gây ra hư hỏng cục bộ. Các vật liệu mịn, sáng như kim loại đánh bóng và gương tạo ra phản xạ gương, gây ra tín hiệu bị mất hoặc phơi sáng quá bão hòa.
+
+Thứ ba, sự phản xạ mạnh từ các công trình gần đó gây ra hiện tượng chói lóa. Khi một cấu trúc sáng, mịn cách cảm biến chưa đến 10cm, phản xạ mạnh sẽ làm bão hòa bộ thu. Ánh sáng chói làm gián đoạn pha của máy ảnh iToF và ngăn cản việc tính toán thời gian bay. Sự can thiệp này làm biến dạng dữ liệu, làm tăng tốc độ lão hóa của máy thu và ảnh hưởng đến các chức năng cốt lõi.
+
+3. Giao thoa quang học: cửa sổ quang học
+
+Chất liệu và độ sạch của kính bảo vệ hoặc các cửa sổ quang học khác phía trước cảm biến có thể gây ra ba loại nhiễu:
+
+Đầu tiên, nhiều phản xạ gây ra hiện tượng giả hình. Sự phản chiếu từ cả hai bề mặt cửa sổ trộn lẫn với tín hiệu hợp lệ, gây ra các điểm ảnh bóng mờ và bay trong ảnh có độ sâu và các đám mây điểm LiDAR trùng lặp.
+
+Thứ hai, ô nhiễm và sương mù làm giảm tỷ lệ tín hiệu trên nhiễu. Không gian kín có thể khiến cửa sổ bị tạo sương mù hoặc bám bụi, khiến cảm biến không thể xác định được các tín hiệu hợp lệ.
+
+Thứ ba, các vật liệu không tương thích sẽ làm suy giảm tín hiệu. Tín hiệu có thể không truyền qua kính hoặc acrylic thông thường, gây mất dữ liệu hoàn toàn. Sự can thiệp của cửa sổ làm tăng sai số đo, có thể làm hỏng ống kính và tăng chi phí bảo trì. Kính có độ truyền qua cao có thể cải thiện hiệu suất.
+
+4. Các yếu tố gián tiếp khác
+
+Đầu tiên, áp lực khi lắp đặt: Các kẹp quá chặt có thể làm biến dạng ống kính hoặc dịch chuyển trục quang, gây ra lỗi khoảng cách ToF.
+
+Thứ hai, nhiễu nhiệt: Tản nhiệt kém trong không gian kín làm tăng nhiệt độ cảm biến và làm biến dạng cửa sổ, gây lệch phạm vi và có thể hỏng hóc lâu dài.
+
+## Bắt đầu nhanh
+
+### Kiểm tra kết nối
+
+<Frame>
+  <img src="/images/legacy/3b17fd5d-5aee-40d8-90bd-be711fd0ea96/84ce70a3-9bfd-46d9-961d-a4d57091a8cb.avif" alt="Kiểm tra kết nối" />
+</Frame>
+
+Sơ đồ kiểm tra kết nối
+
+### Cấp nguồn cho máy ảnh
+
+- Kết nối một đầu của cáp DC với máy ảnh và đầu còn lại với bộ chuyển đổi DC 12~27V/3A.
+
+- Đèn báo nguồn màu xanh lam nhấp nháy chậm xác nhận việc bật nguồn bình thường.
+
+- Nếu đèn báo tắt hoặc bất thường, chẳng hạn như màu đỏ liên tục, hãy kiểm tra đầu nối nguồn và bộ chuyển đổi.
+
+### Cấu hình mạng
+
+- Kết nối máy ảnh trực tiếp với máy tính bằng cáp Ethernet Loại 6.
+
+- Địa chỉ IP camera mặc định của nhà sản xuất là 192.168.100.82.
+
+- Đặt IP máy tính về cùng mạng con và tắt tường lửa.
+
+### Chạy phần mềm
+
+- Chạy phần mềm máy chủ, thu nhận hình ảnh camera và xác minh rằng chúng rõ ràng và ổn định.
+
+- Xem phần 5.3 hoặc hướng dẫn sử dụng LxCameraViewer.
+
+- Liên hệ với bộ phận bán hàng hoặc hỗ trợ kỹ thuật của MRDVS để được trợ giúp thêm.
+
+## Tổng quan về giao diện
+
+LxCameraViewer mở và hiển thị nhiều thiết bị. Nó hiển thị độ sâu, cường độ, đám mây điểm và hình ảnh RGB, đồng thời định cấu hình các thông số thuật toán và máy ảnh cơ bản. Bạn có thể xem và lưu dữ liệu hình ảnh, cấu hình camera và chi tiết thuật toán.
+
+Giao diện ban đầu có danh sách thiết bị (vùng xanh 1), thanh menu (vùng xanh 2) và hiển thị hình ảnh (vùng màu đỏ 4). Bấm đúp vào thanh menu để tối đa hóa hoặc thu nhỏ nó. Kéo giao diện bằng nút chuột trái.
+
+<Frame>
+  <img src="/images/legacy/039de4f0-71e7-4a2e-a01c-a7f17bd8f4e8/e6945a49-8ace-487b-a38c-793ff8bfbf99.avif" alt="Giao diện trước khi mở camera" />
+</Frame>
+
+Giao diện trước khi mở camera
+
+Sau khi mở camera sẽ xuất hiện bảng chức năng ở bên phải (khu vực 3). Sử dụng **Các công cụ cơ bản**, **Thuật toán ứng dụng** và **Khác** ở trên cùng. Các công cụ cơ bản bao gồm hiển thị hình ảnh, cài đặt 2D, cài đặt 3D và lọc.
+
+<Frame>
+  <img src="/images/legacy/3d8475ee-e7db-4454-a232-72d54359f815/21260dfa-61bc-493e-843c-f5d8cd8c2fdc.avif" alt="Giao diện với camera mở" />
+</Frame>
+
+Giao diện với camera mở
+
+Danh sách thiết bị nằm ở phía trên bên trái. Nhấp vào **Mở** hoặc **Đóng** để điều khiển máy ảnh. Khu vực chính giữa bên trái hiển thị thông tin camera, thao tác phần mềm, kết quả và kết quả truyền phát. Khu vực phía dưới bên trái hiển thị thông tin về thiết bị đã chọn.
+
+Nhấp vào **Chụp** để bắt đầu hoặc dừng thu thập hình ảnh. Nút vẫn bị vô hiệu hóa cho đến khi thao tác kết thúc. Nhấp vào **Lưu khung** để lưu hình ảnh từ các luồng đang hoạt động. Chọn **Độ sâu**, **Cường độ**, **RGB** hoặc **Đám mây điểm** để mở các chế độ xem được yêu cầu.
+
+Để biết chi tiết, hãy xem hướng dẫn sử dụng LxCameraViewer.
+
+## Lớp an toàn laser
+
+<Frame>
+  <img src="/images/legacy/3e69ba1d-2ef0-43c0-a1f1-e0d6678e1f89/3fadcf0c-5f15-49e3-9c07-631fef6c3faa.avif" alt="Lớp an toàn laser" />
+</Frame>
+
+## Khắc phục sự cố
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh rằng tường lửa đã bị tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong mạng LAN sử dụng cùng IP; chọn IP cần thiết |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet; Fast Ethernet ban đầu có thể không ổn định |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi quyền |
+
+### S10 Ultra nổi bật là sản phẩm tiêu biểu tại IROS 2025
+
+<Frame>
+  <img src="/images/legacy/4039bcf6-5835-435c-9acc-a3772876c353/c9b68b10-48f7-4f85-ad89-64e51a072bb0.avif" alt="S10 Ultra tại IROS 2025" />
+</Frame>
+
+## Nghiên cứu điển hình
+
+[Làm thế nào xe nâng tự động của Công ty F hoàn thành hơn 500 nhiệm vụ mỗi ngày một cách an toàn](/vi/solutions/warehouse/cases/unmanned-forklift-500-tasks "Nghiên cứu trường hợp xe nâng tự động")
+
+[Tránh chướng ngại vật AMR dưới gầm xe](/vi/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Tránh chướng ngại vật AMR dưới gầm xe")
+
+[Tránh chướng ngại vật 3D cho robot hình người có bánh xe](/vi/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Robot hình người có bánh xe tránh chướng ngại vật")

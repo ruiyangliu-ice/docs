@@ -1,0 +1,231 @@
+---
+title: "Benutzerhandbuch für die H3310-Kamera"
+description: "Produktspezifikationen und Designdetails für die Integration und Verwendung der H3310-Kamera."
+hidden: true
+---
+## Revisionsverlauf
+
+| Revisionsdatum | Version | Änderungen |
+| --- | --- | --- |
+| 21.11.2023 | V0.1 | Erstveröffentlichung |
+| 25.11.2024 | V1.0 | Die Lagertemperatur der Kamera wurde aktualisiert |
+
+## 1. Einführung
+
+### 1.1 Zweck und Umfang
+
+Dieses Dokument enthält die Spezifikationen und Designdetails der H3310-Kamera für Entwickler, die das Produkt integrieren und verwenden.
+
+### 1.2 Terminologie
+
+| Grundlinie | Bei einer Stereo-Tiefenkamera ist die Basislinie der horizontale Abstand zwischen den beiden Kameras. Genauer gesagt ist es der Abstand zwischen ihren optischen Achsen und wird typischerweise in Millimetern (mm) gemessen. |
+| --- | --- |
+| Tiefe | Wie ein Farb- oder Monochrom-Videostream weist ein Tiefenstream jedem Pixel einen Wert zu. Dieser Wert stellt den Abstand des Pixels von der Kamera dar. |
+| Sichtfeld | Sichtfeld. Die Winkelausdehnung einer Szene, die die Kamera erfassen kann. Es umfasst horizontales FOV (HFOV), vertikales FOV (VFOV) und diagonales FOV (DFOV). |
+| IR-Kamera | Eine Infrarotkamera. Bei diesem Produkt werden hauptsächlich Bilder im nahen Infrarotspektrum erfasst. |
+| RGB-Kamera | Eine Farbkamera. |
+| Tiefenkamera | Eine Kamera mit einem Tiefenbildmodul, das normalerweise aus einem Punktprojektor, einer IR-Kamera und einem Tiefenprozessor besteht. Das Farbbildmodul ist typischerweise eine RGB-Kamera. |
+| SoC | Ein System-on-Chip, das Bilddaten verarbeitet, die Tiefe berechnet und Anwendungsalgorithmen ausführt. |
+
+### 1.3 Strukturlicht-Technologie
+
+Binokulares strukturiertes Licht ist eine gängige 3D-Sehmesstechnologie, die Stereosehen mit strukturierter Lichtprojektion kombiniert. Es verwendet zwei Kameras und einen Projektor mit strukturiertem Licht, um die 3D-Form und -Tiefe eines Objekts zu erfassen.
+
+Der Prozess funktioniert wie folgt:
+
+1. Strukturlichtprojektion: Ein Projektor wirft strukturiertes Licht auf das Zielobjekt. Normalerweise erzeugt eine Infrarot- oder sichtbare Lichtquelle das Licht, das mithilfe eines Gitter- oder Fleckenmusters speziell codiert oder moduliert wird. Das projizierte Licht erzeugt helle, dunkle oder verzerrte Muster auf der Oberfläche des Objekts.
+
+2. Stereobildgebung: Während das strukturierte Licht projiziert wird, erfassen zwei Kameras gleichzeitig das Zielobjekt. Die Kameras haben einen festen Abstand voneinander, ähnlich dem Abstand zwischen menschlichen Augen. Sie zeichnen sowohl das projizierte Muster als auch das Erscheinungsbild des Objekts auf.
+
+3. Bilderfassung: Die Kameras erfassen linke und rechte Bilder. Eine Verzerrung oder Verschiebung des projizierten Musters in diesen Bildern kodiert die Tiefeninformationen des Objekts.
+
+4. Bildverarbeitung: Unterschiede zwischen dem linken und dem rechten Bild werden zur Berechnung der Oberflächentiefe verwendet. Durch die Kombination dieser Unterschiede mit dem projizierten Muster entsteht ein 3D-Punktwolkenmodell des Objekts.
+
+5. Messung und Rekonstruktion: Die resultierende 3D-Punktwolke kann zum Messen, Analysieren oder Rekonstruieren der Form und Abmessungen des Objekts verwendet werden.
+
+<Frame>
+  <img src="/images/legacy/a61ed5fb-17e0-43a4-ada4-5340e15a4b19/d01b639a-c41f-46c8-b093-00dddfed7d5d.avif" alt="So funktioniert die Strukturlicht-Technologie" />
+</Frame>
+
+Abbildung 1.1
+
+* * *
+
+## 2. Produktübersicht
+
+Die H3310 ist eine RGB-D-Industrie-Streifenlichtkamera mit einem Gewicht von 400 g. Sie können es an einem Verbundroboter oder einem kleinen Roboterarm montieren. Bei einem Erkennungsabstand von 30–60 cm liefert es hochpräzise 3D-Daten und hochauflösende RGB-Daten. Seine integrierte Computerplattform führt KI-Anwendungsalgorithmen unabhängig für Erkennungs-, Inspektions- und Positionierungsaufgaben von Industrierobotern aus.
+
+### 2.1 Aussehen des Produkts
+
+<Frame>
+  <img src="/images/legacy/338d1fbe-bfb7-4fdf-82f3-206a9c8c8aff/c0bca9b4-dacf-4e17-892e-adc10dd00300.avif" alt="H3310-Kamera" />
+</Frame>
+
+Abbildung 2.1 H3310-Kamera
+
+### 2.2 Funktionen
+
+- Integrierte Computerplattform: Bietet 6,0 TOPS Rechenleistung und führt Anwendungsalgorithmen ohne externe CPU aus.
+
+- 3D-Datenausgabe: Kombiniert Strukturlichtbildgebung mit KI-Algorithmen, um hochpräzise 3D-Daten bereitzustellen.
+
+- Kompaktes Design: Wiegt 400 g und bietet offene Schnittstellen für den Einsatz.
+
+- Massenproduktion: Unterstützt eine stabile Massenproduktion.
+
+* * *
+
+## 3. Spezifikationen
+
+### 3.1 Allgemeine Spezifikationen
+
+| Modell | H3310 |
+| --- | --- |
+| Funktionsprinzip | Binokular codierte Strukturlicht-Technologie |
+| Tiefenauflösung (HxV) | 1280x1024 |
+| RGB-Auflösung (HxV) | 1920x1080 |
+| Datenerfassungszeit | Ungefähr 0,8 Sekunden |
+| Ausgabe | Tiefen-, RGB- und Amplitudenbilder |
+| Betriebsbereich | 300 mm bis 600 mm |
+| Sichtfeld (HxV) | 55°×45° |
+| Genauigkeit | ±0,1 mm (@350 mm) |
+| Stromverbrauch | 8W@24VDC |
+| Abmessungen (LxBxH) | 124mm×70mm×53mm |
+| Gewicht | 400g |
+| Stromversorgung | 12V-24VDC/3A |
+| Datenschnittstelle | Gigabit-Ethernet |
+| Schutzart | IP55 |
+| Betriebstemperatur | 0°C bis 40°C |
+| Lagertemperatur | -40°C bis 85°C |
+| Programmiersprachen | C/C++ |
+| Support von Drittanbietern | ROS/ROS2 |
+| Betriebssysteme | - ARM Linux (AArch64) |
+| ㅤ | - Linux (x86_64) |
+| ㅤ | - Windows 7/8/10/11 |
+| Kühlung | Passive Kühlung |
+| Augensicherheit | Klasse 3R |
+| Umgebungslichttoleranz | 10Klux |
+
+### 3.2 Steckerbelegung
+
+**Kameraseitige Anschlüsse:**
+
+**Stromanschluss** **Ethernet-Anschluss**
+
+<Frame>
+  <img src="/images/legacy/893a78d3-9354-4185-b28d-b6bbdfabdc0a/32e71e5d-7906-424f-8588-5018186891d3.avif" alt="Pinbelegung des Steckers" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c4ac542c-fa27-4c1f-bc87-ed38f6972cec/a97d5c1e-0d04-40c8-9ffc-3f2721d61095.avif" alt="Steckerbelegung 2" />
+</Frame>
+
+**Tabelle 3.1 Anschlussbelegung**
+
+| Hafen | Pin | Signal | Beschreibung |
+| --- | --- | --- | --- |
+| Ethernet-Anschluss | 1 | 0+ | Orange/weiß |
+| ㅤ | 2 | 0- | Orange |
+| ㅤ | 3 | 1+ | Grün/weiß |
+| ㅤ | 4 | 1- | Grün |
+| ㅤ | 5 | 2+ | Blau |
+| ㅤ | 6 | 2- | Blau/weiß |
+| ㅤ | 7 | 3+ | Braun/weiß |
+| ㅤ | 8 | 3- | Braun |
+| Stromanschluss | 1 | CON_IN | Gemeinsamer Anschluss für IO-Eingänge |
+| ㅤ | 2 | IN_2 | IO-Eingang 2 |
+| ㅤ | 3 | IN_1 | IO-Eingang 1 |
+| ㅤ | 4 | COM_OUT | Gemeinsamer Anschluss für IO-Ausgänge |
+| ㅤ | 5 | OUT_2 | IO-Ausgang 2 |
+| ㅤ | 6 | OUT_1 | IO-Ausgang 1 |
+| ㅤ | 7 | Fahrgestellnummer+ | Gleichstrom 24 V positiv |
+| ㅤ | 8 | VIN- | Gleichstrom 24 V negativ |
+
+### 3.3 Kamerakomponenten
+
+<Frame>
+  <img src="/images/legacy/45450db9-7808-4927-abbe-66fd471ff7cf/72fdc20c-725a-4769-87b3-446427cce099.avif" alt="Kamerakomponenten" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/348abb3d-3f69-4f1e-84f2-9a3dd573bf81/45c2bac2-d3f2-4a47-81f4-3757543f069b.avif" alt="Kamerakomponenten 2" />
+</Frame>
+
+| Nummer | Komponente |
+| --- | --- |
+| 1 | IR-Kamera |
+| 2 | RGB-Kamera |
+| 3 | Strukturlichtprojektor |
+| 4 | Stromkabel |
+| 5 | Ethernet |
+
+* * *
+
+## 4. Anleitung zur Kameraintegration
+
+### 4.1 Sichtfeld der Kamera
+
+<Frame>
+  <img src="/images/legacy/face6745-edf1-4df2-b756-02f8d65eff58/f31b095b-1d37-4be4-9633-87fef66f4ee6.avif" alt="Sichtfeld der Kamera" />
+</Frame>
+
+### 4.2 Kamera-Koordinatenursprung
+
+1. Der Ursprung der X-Achse wird an der Mittellinie der X-Achse des Produkts ausgerichtet.
+
+2. Der Ursprung der Y-Achse wird an der Mittellinie der Y-Achse des Produkts ausgerichtet.
+
+3. Der Ursprung der Z-Achse liegt auf der Vorderseite der Kamera.
+
+<Frame>
+  <img src="/images/legacy/a3ee9173-0ca3-42bd-9750-899a5062dbc7/f62d395a-966f-4eec-911f-b728dfdf04b0.avif" alt="Ursprung der Kamerakoordinaten" />
+</Frame>
+
+### 4.3 Kameraabmessungen
+
+<Frame>
+  <img src="/images/legacy/6288c91a-62ab-4b00-aae6-87c1768d64df/ab3d50eb-d654-417a-a702-ba8ddcdea070.avif" alt="Kameraabmessungen" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5acd27ac-becd-4f6b-8cc4-89c82ceecfbb/328cbea7-de84-48c3-b225-74feca5519c1.avif" alt="Kameraabmessungen 2" />
+</Frame>
+
+* * *
+
+## 5. Umwelt und Zuverlässigkeit
+
+| Artikel | ㅤ | Spezifikation |
+| --- | --- | --- |
+| Betriebsumgebung | Temperatur | 0℃-- 40℃ |
+| ㅤ | Luftfeuchtigkeit | Relative Luftfeuchtigkeit: 0 % bis 95 % relative Luftfeuchtigkeit, nicht kondensierend |
+| ㅤ | Beleuchtungsstärke | 0KLUX--30KLUX |
+| Speicherumgebung | Temperatur | -20℃--85℃ |
+| ㅤ | Luftfeuchtigkeit | Relative Luftfeuchtigkeit: 10 % bis 95 % relative Luftfeuchtigkeit, nicht kondensierend |
+| Temperaturanstieg im Normalbetrieb | ㅤ | Anstieg der Gehäusetemperatur &lt;20℃ |
+| ESD-Bewertung | ㅤ | Kontaktentladung ±4KV, Luftentladung ±8KV |
+| RE-Rating | ㅤ | Entspricht GB 9254 KLASSE A |
+| Lebensdauer | ㅤ | Mehr als 3 Jahre |
+| Umweltzertifizierung | ㅤ | RoHS |
+| Lasersicherheit | ㅤ | Klasse 1 |
+
+* * *
+
+## 6. Vorsichtsmaßnahmen
+
+### 6.1 Laserschutzklasse
+
+<Frame>
+  <img src="/images/legacy/2177acfb-be60-4020-9cc6-7c2d5e81c1a4/7a95289d-a785-412d-9502-93f484d3bc68.avif" alt="Laserschutzklasse" />
+</Frame>
+
+* * *
+
+## 7. FAQ
+
+| Nummer | Problem | Auflösung |
+| --- | --- | --- |
+| 1 | Die Kamera reagiert nicht, wenn Sie versuchen, sie zu öffnen | Überprüfen Sie, ob die Firewall deaktiviert ist. Sie müssen die Firewall deaktivieren. |
+| 2 | Der Host erkennt mehrere IP-Adressen | Die Kamera hat eine IP-Adresse erhalten, die bereits im LAN verwendet wird. Wählen Sie die erforderliche IP-Adresse aus, um die Kamera zu öffnen. |
+| 3 | Kameradaten sind nach dem Öffnen der Kamera instabil | Verwenden Sie ein Gigabit-Ethernet-Kabel. Mit einem 100-Mbps-Ethernet-Kabel können die Daten zunächst instabil sein. |
+| 4 | Software-Installationsort | Für die Installation der Software auf dem Standardlaufwerk C sind möglicherweise Berechtigungseinstellungen erforderlich. |

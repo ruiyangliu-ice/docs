@@ -1,0 +1,584 @@
+---
+title: "Implementar medición de volumen"
+description: "Implemente cámaras MRDVS serie M para medición de volumen estática o dinámica sin una computadora industrial externa."
+hidden: true
+---
+## 1. Introducción
+
+El algoritmo de detección de volumen fue desarrollado por Meyer Micro Vision (MRDVS) y se utiliza específicamente en escenarios de medición de volumen. Se utiliza en cámaras de la serie M de desarrollo propio en logística, entrega urgente, depósitos de carbón, almacenamiento y otros escenarios. El algoritmo de detección de volumen se ejecuta dentro de la cámara, eliminando la necesidad de una computadora industrial externa. El algoritmo admite detección estática y dinámica.
+
+El software solo requiere que el usuario calibre los parámetros externos de la cámara y dibuje el rango de detección, y luego puede detectar y medir objetos individuales o múltiples. La calibración de parámetros externos puede obtener automáticamente resultados de calibración y admitir la detección de empalmes multicámara.
+
+Este artículo presenta principalmente la implementación y el uso de la función de detección de volumen de microvisión de Meyer.
+
+## 2. Escenarios de aplicación de detección de volumen
+
+### 2.1 Industria logística
+
+1. Al obtener información como el volumen y peso de las mercancías, podemos lograr operaciones refinadas, lo que ayudará a mejorar las tasas de carga de vehículos, reducir los costos de los vehículos, los costos de transporte y los costos laborales, y lograr una reducción de costos y una mejora de la eficiencia durante todo el proceso.
+
+2. Puede detectar rápidamente el volumen y el peso de mercancías/cajas y calcular el flete con un solo clic. Junto con la báscula de suelo, también puede medir eficazmente camiones y camiones portacontenedores para garantizar que todo el vehículo no tenga sobrepeso.
+
+### 2.2 Industria exprés
+
+Al realizar y recibir entrega urgente, con la ayuda de equipos inteligentes de medición de volumen, se puede obtener rápidamente información como el volumen y el peso de la mercancía. Los datos están conectados al sistema interno para una fácil búsqueda y revisión, lo que no solo evita el problema de la pérdida de datos, sino que también reduce efectivamente la inversión manual y mejora la eficiencia del trabajo.
+
+### 2.3 Industria minera del carbón
+
+Los métodos tradicionales para medir el volumen de grandes pilas de mineral de carbón suelen utilizar estaciones totales y métodos de medición de un solo punto RTK, y requieren una extracción manual de los puntos característicos con precisión. Sin embargo, debido a que las grandes pilas de mineral de carbón suelen ser incómodas de escalar, es extremadamente difícil extraer puntos característicos precisos. Al mismo tiempo, el método de medición de un solo punto tiene una baja densidad de datos y no puede obtener con precisión el volumen de las pilas de mineral de carbón, lo que resulta en una eficiencia operativa extremadamente baja.
+
+### 2.4 Industria de almacenamiento
+
+En la logística, el almacenamiento e incluso en las industrias industriales en general, los AGV transportan mercancías y es necesario comprobar el volumen y el peso de las mercancías al entrar y salir del almacén.
+
+### 3. Resuelve el problema
+
+En industrias industriales como la logística y el almacenamiento, obtener el volumen y la cantidad de artículos y dominar la entrada y salida de artículos son de gran importancia para la gestión del inventario de producción. Sin embargo, las soluciones tradicionales siempre enfrentan problemas como la falta de medios técnicos, grandes errores de medición, baja eficiencia de la gestión manual y dificultades de supervisión.
+
+La detección de volumen de la cámara Meyer Micro Vision ToF tiene más ventajas que el radar, la luz estructurada y las cámaras 2D. Las cámaras Meyer Micro Vision son fáciles de implementar y solo requieren soportes de firmware de cámara, cables de alimentación y cables de red. El algoritmo se ejecuta dentro de la cámara sin necesidad de configuraciones informáticas industriales redundantes. Es más cómodo de usar y de menor coste que el radar.
+
+## 4. Guía de implementación del hardware de la cámara
+
+### 4.1 Uso de tipos de cámaras
+
+Tipo de cámara: cámara serie M
+
+Manual de usuario de la cámara: [Cámara ToF serie M](/es/products/m-series/m4-overview "Cámara ToF serie M")
+
+<Frame>
+  <img src="/images/legacy/5dd130cc-7499-4f38-bf97-dbd56dbb0e11/a28f58f9-2432-4605-aee2-c8811c0fe221.avif" alt="Utilice iconos relacionados con el tipo de cámara" />
+</Frame>
+
+### 4.2 Método de instalación de la cámara
+
+La cámara de detección de volumen M4 adopta un método de instalación fija. La cámara toma fotografías hacia abajo e intenta asegurarse de que el espejo de la cámara esté paralelo al suelo. La siguiente figura es un diagrama esquemático de la instalación.
+
+<Frame>
+  <img src="/images/legacy/03510465-d902-4781-bf31-9e5c152f5bd2/18837b64-6a77-4a60-9ce3-b8fa0647c995.avif" alt="Ilustraciones relacionadas con los métodos de instalación de la cámara." />
+</Frame>
+
+Figura 4.1 Diagrama de instalación
+
+### 4.3 Conexión de la cámara
+
+La cámara funciona con 24 V y se conecta a través de un cable de red de Categoría 6e/Categoría 7. Después de instalar e implementar la cámara, abra el software de la computadora host de detección de volumen a través de una computadora portátil para realizar la calibración de parámetros externos y la configuración del rango de detección de la cámara. El algoritmo se ejecutará dentro de la cámara en tiempo real. Cuando se implementan varias cámaras, es necesario conectarlas mediante un conmutador Gigabit.
+
+<Frame>
+  <img src="/images/legacy/f9ab7dc5-20d0-4693-a41f-1b6a56c4e50f/317bd48f-8fa4-4e0a-989d-6366de6f91e0.avif" alt="Iconos relacionados con la conexión de la cámara" />
+</Frame>
+
+## 5. Guía de instalación del software de la cámara
+
+### 5.1 Proceso de instalación del software
+
+Cuando utilice el software por primera vez, puede seguir el siguiente proceso para completar la operación.
+
+<Frame>
+  <img src="/images/legacy/e1da8232-f39e-4e11-a71f-86726a19262d/0cda21b0-286e-4778-a352-23fc6dd977a5.avif" alt="Ilustraciones relacionadas con el proceso de instalación de software." />
+</Frame>
+
+### 5.2 Requisitos del entorno operativo del ordenador host de detección de volumen
+
+Se recomienda ejecutar el equipo informático host de detección de volumen para cumplir con los requisitos.
+
+| Sistema operativo | Windows10 y superior |
+| --- | --- |
+| CPU | Recomendado Intel Core i5 de 7.ª generación y superior |
+| Memoria | 8G y superior |
+| GPU | Gráficos Intel(R) UHD/pantalla central o superior |
+
+### 5.3 Instalar el software del ordenador host de la cámara
+
+1. Descargue el software del host de la cámara desde la base de conocimientos de MRDVS: [Descarga de programas](/es/developers/software/lxcameraviewer "Descarga de programas")
+
+2. Haga doble clic para instalar el software de la computadora host Lanxin-MRDVS. La computadora host debe instalarse fuera de la unidad c.
+
+<Frame>
+  <img src="/images/legacy/8a1a3bb1-c6dd-434d-af79-709f37313844/cabcc88e-3d26-401e-aaeb-a01cd4a2b1d3.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara" />
+</Frame>
+
+3. Después de seleccionar el idioma a usar, haga clic en [**Aceptar**], seleccione un directorio de instalación que no sea la unidad C y haga clic en [**Siguiente**].
+
+<Frame>
+  <img src="/images/legacy/b4e46f8b-825a-4d64-a3ee-1d10704f7fba/348dee6d-9f34-4f8d-88fb-6c8b00c6b902.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 2" />
+</Frame>
+
+4. Marque [**Crear acceso directo en el escritorio**] y haga clic en [**Siguiente**].
+
+<Frame>
+  <img src="/images/legacy/aa1145f9-d860-4751-aec1-c5e8384963ae/ce1b8ead-e096-4834-ba4c-261facc55082.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 3" />
+</Frame>
+
+5. Haga clic en el botón [**Instalar**] para comenzar a instalar el software.
+
+<Frame>
+  <img src="/images/legacy/0694d88e-a2ac-497d-b731-0a0e71cd331a/c7a2bf1d-a332-4fab-919a-4d7cbb96b716.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 4" />
+</Frame>
+
+6. Una vez completada la instalación, puede ejecutar el software de la computadora host de la cámara.
+
+<Frame>
+  <img src="/images/legacy/764b4e79-f161-44ca-ac5c-4000190d08d5/dac8ba59-4e9f-4a33-89b1-e60678f4605f.avif" alt="Ilustraciones relacionadas con la instalación del software host de la cámara 5" />
+</Frame>
+
+### 5.4 Instalar el software del ordenador host de detección de volumen
+
+1. Copie el software de la computadora host de detección de volumen obtenido en la computadora host de la cámara \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/5d8d5ae7-8e2b-4519-9d9b-3440cb83d1ee/e36c0214-2d47-413e-ba9e-aad7d6b841a2.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host de detección de volumen" />
+</Frame>
+
+2. Al reemplazar, seleccione [**Reemplazar archivos en destino**].
+
+<Frame>
+  <img src="/images/legacy/5f862ff0-6785-435b-a335-5f6a6d4a2c8c/7cf0179a-1fde-4763-9cd6-ff223c820762.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host de detección de volumen 2" />
+</Frame>
+
+3. Haga doble clic para abrir el software y ejecutarlo.
+
+4. En la barra de lista de dispositivos de la izquierda, el estado de la cámara es [**Desconocido**], lo que significa que la cámara no tiene un algoritmo de detección de volumen.
+
+<Frame>
+  <img src="/images/legacy/b1e28a85-544d-4cd7-83a0-b19e5567aeac/154d1261-0517-48a5-87fb-b4d8b8771f2d.avif" alt="Ilustraciones relacionadas con la instalación del software del ordenador host de detección de volumen 3" />
+</Frame>
+
+### 5.5 Actualización del software de detección de volumen
+
+Para actualizar el software de detección de volumen, solo es necesario reemplazar el archivo "**.exe**".
+
+### 5.6 Actualización del algoritmo
+
+1. Para actualizar el algoritmo de la cámara, debe abrir el software del host de la cámara y hacer doble clic en [**LxCameraViewer**].
+
+<Frame>
+  <img src="/images/legacy/98da739f-2f77-46e6-9fc2-698a1b288371/c9790445-b910-4441-8867-78bf594deaa3.avif" alt="Ilustraciones relacionadas con la actualización del algoritmo." />
+</Frame>
+
+2. Haga clic en el botón [**Abrir**] para ver las imágenes de la cámara.
+
+<Frame>
+  <img src="/images/legacy/2fb54986-038d-4d1c-a52d-6e08488ca0c4/b4750100-e4b5-4111-a0d9-7fc89c344c98.avif" alt="Diagrama relacionado con la actualización del algoritmo 2" />
+</Frame>
+
+3. Haga clic en Herramientas básicas → Configuración de funciones → [**Actualización de firmware**] para actualizar el algoritmo de detección de volumen. (Solicite al personal de soporte técnico para obtener el algoritmo)
+
+<Frame>
+  <img src="/images/legacy/94042d12-537e-4ecf-9bf7-096e88053035/cb352cff-1854-476a-a179-9b5c0f5b229e.avif" alt="Diagrama relacionado con la actualización del algoritmo 3" />
+</Frame>
+
+4. Después de hacer clic en el botón [**Ejecutar**], seleccione "Algoritmo de detección de volumen" y haga clic en el botón [**Abrir**] para comenzar a parpadear el algoritmo.
+
+<Frame>
+  <img src="/images/legacy/88ed6bb9-e81b-4923-958c-af6c7d6c5179/1d8334a0-0e47-4781-8a2e-765311aaceac.avif" alt="Diagrama relacionado con la actualización del algoritmo 4" />
+</Frame>
+
+5. Durante el proceso de actualización del algoritmo, la cámara se reiniciará y la ID de la cámara en la lista de dispositivos de la izquierda desaparecerá. Después de que vuelva a aparecer, significa que el parpadeo se realizó correctamente.
+
+<Frame>
+  <img src="/images/legacy/c7f8ce1b-993e-41a9-9918-25422fcacf16/ade34da0-16e3-40d8-9af0-542a5c13cbe5.avif" alt="Diagrama relacionado con la actualización del algoritmo 5" />
+</Frame>
+
+6. En este momento, abra nuevamente el software de detección de volumen y la lista de dispositivos se mostrará en verde.
+
+<Frame>
+  <img src="/images/legacy/65639621-cec1-4e58-9d25-b2c1147e6db8/7bc15af4-8e94-45ca-9181-e872410b5ccf.avif" alt="Diagrama relacionado con la actualización del algoritmo 6" />
+</Frame>
+
+## 6. Interfaz del software de detección de volumen
+
+### 6.1 Iniciar el programa de detección de volumen
+
+1. Haga doble clic en el programa [**LxApplicationViewer.exe**] para iniciar el software de detección de volumen. Haga clic en la cámara en línea en la lista de dispositivos de la izquierda para abrir la imagen de la cámara.
+
+<Frame>
+  <img src="/images/legacy/27aad056-f103-41e3-86f9-b9d876481dc6/cb274ae3-6877-40e8-ba2b-485fe835c0ec.avif" alt="Ilustraciones relacionadas con el inicio del programa de detección de volumen." />
+</Frame>
+
+2. El usuario actual selecciona el administrador y no necesita ingresar una contraseña. Haga clic en Aceptar directamente para ingresar al modo de administrador (la configuración de los parámetros de detección de volumen no se puede realizar en el modo de usuario). El modo Administrador tendrá más opciones de detección de volumen y configuración de cámara.
+
+<Frame>
+  <img src="/images/legacy/9078f3bd-2942-426e-98a8-ef4b43f40de7/29f2bf28-535d-4b1d-9aa6-03e03100d78a.avif" alt="Ilustración relacionada con el inicio del programa de detección de volumen 2" />
+</Frame>
+
+### 6.2 Herramientas básicas
+
+Las herramientas básicas incluyen principalmente cambio de usuario, terreno ideal, terreno de parámetros externos, visualización de cuadro de volumen múltiple, botón de disparo, exportar y guardar imágenes, reproducción de historial y estado de volumen.
+
+<Frame>
+  <img src="/images/legacy/a23bcd50-9098-47e0-84b8-3d47b3ca2610/4cdcef72-7639-4e7f-84c8-4380fbbed27f.avif" alt="Ilustraciones relacionadas con herramientas básicas." />
+</Frame>
+
+| Herramientas básicas | Significado funcional |
+| --- | --- |
+| Cambio de usuario | Cambiar permisos, permisos de usuario: ver solo los resultados de la detección. Derechos de administrador: puede configurar la configuración de la cámara, la configuración de los parámetros de detección de volumen, etc. |
+| Terreno ideal | El suelo se refiere a la línea horizontal y se puede apagar. |
+| Tierra de parámetros externos | El plano horizontal en el que se calibran los parámetros externos de la cámara. Se puede apagar. |
+| Visualización del cuadro de volumen | Cuando se detectan varios objetos en el área de detección, se pueden cambiar diferentes cuadros de volumen para ver los resultados de la detección de diferentes objetos. |
+| Botón de disparo | Después de configurar el modo de disparo, se puede llamar a este botón de disparo para obtener imágenes y resultados. |
+| Exportar imágenes almacenadas | Exportar imágenes almacenadas |
+| Reproducción del historial | Ver registros de imágenes RGB y TOF. |
+| Visualización del resultado de la detección de volumen | Muestra los resultados de la detección, número de objetos, longitud, ancho y alto del objeto. |
+
+### 6.3 Configuración global
+
+Cambia el modo de trabajo de la cámara.
+
+<Frame>
+  <img src="/images/legacy/bb2afbde-b2d5-43ff-8673-d4922aa726b2/0c157f74-799a-4f32-9634-cdb91fc83228.avif" alt="Iconos relacionados con la configuración global" />
+</Frame>
+
+### 6.4 Detección de volumen
+
+<Frame>
+  <img src="/images/legacy/fbce3fe9-69bd-4c1d-9a50-08aaec8f8a8a/e1a0e9a1-7371-4ad5-93df-9d1dd625aada.avif" alt="Iconos relacionados con la detección de volumen" />
+</Frame>
+
+| Configuración global de detección de volumen | Significado funcional |
+| --- | --- |
+| Número de versión del algoritmo | Información de la versión actual del algoritmo. |
+| Modo de disparo | Botón de interruptor de gatillo. Después de activar el modo de activación, haga clic en el botón "Guardar y enviar" para activarlo correctamente. |
+| Detección ascendente | Detección inversa del sistema de coordenadas de la cámara (actualmente detección hacia abajo, es decir, detecta la distancia desde el plano a la superficie del objeto, después de activar la detección hacia arriba, detectará la distancia desde la superficie del objeto a la cámara). |
+| Frecuencia de detección | Con qué frecuencia detecta el algoritmo. Es decir, cuántos ms actualizar la imagen + datos del resultado. |
+| Distancia del plano de detección | Distancia del plano de detección de distancia de la cámara, esta distancia está relacionada con la altura de medición. Unidad: mm. |
+| Umbral de número de vecinos | Filtrar parámetros, no se requieren cambios. El valor predeterminado es suficiente. |
+| Umbral de distancia del vecindario | Parámetros de filtrado, no es necesario cambiarlos, los valores predeterminados son suficientes. |
+| Umbral de filtro de vector normal | Se recomienda el parámetro de filtro de filete de borde del objeto, 60 (generalmente no es necesario ajustarlo). |
+| Umbral de distancia vectorial normal | Parámetro de filtro, valor recomendado 20-30 (compatible con la mayoría de los objetos detectados). |
+| Número mínimo de puntos | Cuando la nube de puntos del objeto es mayor que el número mínimo de puntos, se considera que existe un objeto. |
+| Mínimo X | La longitud mínima del objeto. Si es menor que este valor, no se puede detectar. Unidad: mm. |
+| Mínimo Y | El ancho mínimo del objeto. Si es menor que este valor, no se puede detectar. Unidad: mm. |
+| Z mínima | La altura mínima del objeto. Si es menor que este valor, no se puede detectar. Unidad: mm. |
+
+<Frame>
+  <img src="/images/legacy/e9733410-8173-4d09-95e5-334ba8ae58c0/d4d05111-3551-446e-a866-37f098c13e7d.avif" alt="Diagrama relacionado con la detección de volumen 2" />
+</Frame>
+
+| Configuración del área de detección de volumen | Significado funcional |
+| --- | --- |
+| Mínimo X | Valor mínimo en la dirección X del marco de detección de volumen |
+| Máximo X | Valor máximo en la dirección X del cuadro de detección de volumen |
+| Mínimo Y | Valor mínimo en la dirección Y del marco de detección de volumen |
+| Máximo Y | Valor máximo en la dirección Y del marco de detección de volumen |
+| Z mínima | Valor mínimo en la dirección Z del marco de detección de volumen |
+| Máximo Z | Valor máximo en la dirección Z del cuadro de detección de volumen |
+
+### 6.5 Configuración de la cámara
+
+<Frame>
+  <img src="/images/legacy/07b96b09-95e7-4251-938f-d1e35401e1ce/95f4513b-47df-41aa-ae24-5a02749888c1.avif" alt="Iconos relacionados con la configuración de la cámara" />
+</Frame>
+
+| Configuración de la cámara | Significado de la función |
+| --- | --- |
+| Nombre de la cámara | Modifica el nombre de la cámara actual. Cuando hay varias cámaras, puedes juzgar por el nombre de la cámara. |
+| Modo simulación | Uso interno, los usuarios no necesitan abrirlo. |
+| Modo de ahorro de imagen | Active el guardado algorítmico de imágenes para almacenar datos de imágenes dentro de la cámara. |
+| Modo de captura | El modo de captura se divide en MDS y SDK. El uso de MDS no ocupará los permisos de la cámara y podrá abrir la computadora host de la cámara normalmente. El uso del SDK ocupará los permisos de la cámara y la computadora host no se podrá abrir cuando se ejecute el algoritmo. |
+| x | cámara calibrada posición x |
+| y | La posición y de la calibración de la cámara |
+| z | Altura de la cámara calibrada desde el suelo |
+| rollo | ángulo de calibración de la cámara |
+| tono | ángulo de calibración de la cámara |
+| guiñada | ángulo de calibración de la cámara |
+| Terreno ideal | Déjalo como predeterminado. |
+| Guardar y enviar | Una vez completada la calibración de los parámetros externos, haga clic en el botón [Guardar y enviar] para guardar; de lo contrario, los parámetros no tendrán efecto |
+| Leer configuración desde la cámara | Leer los parámetros de configuración actuales de la cámara |
+| Calibración de parámetros externos | Calibre la altura de la cámara desde el suelo, el giro de la cámara, los ángulos de inclinación y orientación. |
+
+### 6.6 Idioma
+
+Cambia entre chino e inglés.
+
+### 6.7 Barra de estado
+
+<Frame>
+  <img src="/images/legacy/3941c475-8f8f-45a1-94cc-2cf678831d53/706d6184-84a3-44cb-a6a6-6fb57cf36309.avif" alt="Iconos relacionados con la barra de estado" />
+</Frame>
+
+| Barra de estado | Significado funcional |
+| --- | --- |
+| RGB | Marque para ver imágenes RGB |
+| Nube de puntos | Después de verificar, vea la imagen de la nube de puntos |
+| Algoritmo de parada | Después de hacer clic para detener el algoritmo, éste no se iniciará hasta la próxima vez que se encienda la cámara. |
+| Actualizar firmware | El firmware del algoritmo se puede actualizar |
+| Reiniciar cámara | Reinicie la cámara. |
+
+### 7. Proceso de implementación de detección de volumen
+
+Después de abrir el software de detección de volumen, la imagen predeterminada es RGB. Después de hacer clic para cambiar a la imagen de la nube de puntos, la imagen será negra. Debe mover el mouse al área de visualización de la imagen, deslizar hacia arriba y hacia abajo con la rueda del mouse y mantener presionado el botón izquierdo del mouse para moverse; luego se mostrarán los datos de la nube de puntos.
+
+<Frame>
+  <img src="/images/legacy/b2f80e70-7390-4713-9eda-f7b342eca918/38bf207d-97e3-4f22-9867-e59c1e252ef1.avif" alt="Ilustraciones relacionadas con el proceso de implementación de la detección de volúmenes" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0bea89d2-f83c-4deb-ab3c-0584a061302e/d91faf31-886e-442c-8ab5-b367a14db036.avif" alt="Ilustraciones relacionadas con el proceso de implementación de detección de volumen 2" />
+</Frame>
+
+### 7.1 Configuración de red de cámaras
+
+Tomando el sistema Win10 como ejemplo, haga doble clic en el Panel de control
+
+Después de ingresar al panel de control, haga clic en "**Ver estado y tareas de la red**".
+
+<Frame>
+  <img src="/images/legacy/d27495e0-56ba-43a1-84ca-eb6c209c6e94/95fb9d57-7f0c-4a1f-9376-14267dcb3f6c.avif" alt="Ilustraciones relacionadas con la configuración de la red de cámaras." />
+</Frame>
+
+Ingrese a la interfaz del Centro de redes y recursos compartidos y haga clic en "**Cambiar configuración del adaptador**".
+
+<Frame>
+  <img src="/images/legacy/738c34bb-f38e-4457-826b-02ce8ef64a28/5181b10d-ae88-4a9d-9485-4deba6993533.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 2" />
+</Frame>
+
+Ingrese a la interfaz de conexión de red, haga doble clic con el mouse para seleccionar la Ethernet a la que está conectada la cámara.
+
+<Frame>
+  <img src="/images/legacy/a9e4f271-a49e-45ba-9c95-507da52dd6bc/44b2f404-5ef4-4ddf-8eef-a3ae1eed10d7.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 3" />
+</Frame>
+
+Verifique el estado de Ethernet (se recomienda utilizar un puerto de red Gigabit) y haga clic en el botón "**Propiedades**".
+
+<Frame>
+  <img src="/images/legacy/f4e9e585-b466-4cfe-9073-3a51dd6f5a60/3f3596f1-39e4-4de8-8ba0-240b563ef8fb.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 4" />
+</Frame>
+
+Ingrese a la interfaz de propiedades de Ethernet, busque "**Protocolo de Internet versión 4 (TCP/IPv4)**" y haga doble clic para abrirlo.
+
+<Frame>
+  <img src="/images/legacy/41593f67-f0f6-4fb0-a1f5-25b16aab42c9/58c00f3e-7ce4-4f9f-92a3-16fb4a3198a5.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 5" />
+</Frame>
+
+Ingrese a la interfaz del Protocolo de Internet versión 4 (TCP/IPv4), seleccione "**Usar la siguiente dirección IP**" para escribir la dirección IP, la máscara de subred y la puerta de enlace predeterminada.
+
+<Frame>
+  <img src="/images/legacy/f929004b-da3f-45e9-9220-2dffb173782e/9beedb39-c61d-481b-ac65-eae8966c7684.avif" alt="Diagrama relacionado con la configuración de la red de cámaras 6" />
+</Frame>
+
+Configuración de dirección IP: 192.168.100.xxx Máscara de subred: 255.255.255.0 Puerta de enlace predeterminada: 192.168.100.1. Configure la IP como se muestra a continuación. Una vez completada la configuración, haga clic en el botón "Aceptar".
+
+<Frame>
+  <img src="/images/legacy/d45ed4aa-13c0-463a-b0e0-8bd35ad2cd32/917ecfab-67f5-4f53-8f98-756f33624e7c.avif" alt="Ilustraciones relacionadas con la configuración de red de la cámara 7" />
+</Frame>
+
+Después de hacer clic en el botón Aceptar, volverá automáticamente a la interfaz anterior. Haga clic en "**Aceptar**" nuevamente para completar la configuración de la red.
+
+<Frame>
+  <img src="/images/legacy/f56eefc8-af02-4633-8c35-7da0caa84905/395584ea-e679-44f5-818b-4dc6a76389da.avif" alt="Ilustraciones relacionadas con la configuración de red de cámaras 8" />
+</Frame>
+
+### 7.2 Confirmación de cierre del firewall
+
+1. Una vez que la cámara esté instalada de forma fija, el primer paso de la implementación requiere apagar el firewall de la computadora.
+
+2. Tomando el sistema Win10 como ejemplo, haga doble clic en [**Panel de control**] en el escritorio y haga clic en [**Sistema y seguridad**] después de ingresar.
+
+<Frame>
+  <img src="/images/legacy/10f577ff-3207-45a6-ada2-d7e2d90da11b/03de5534-1fe9-4ffe-9db7-9309b05b73f0.avif" alt="Iconos relacionados con la confirmación de apagado del firewall" />
+</Frame>
+
+3. Haga clic en el botón [**Windows Defender Firewall**] para ingresar a la página del firewall
+
+<Frame>
+  <img src="/images/legacy/6480e38b-8e12-4d64-8c96-68612da23908/d61d5bac-33e8-4d46-ab22-1a55500a26ff.avif" alt="Icono relacionado con la confirmación de apagado del firewall 2" />
+</Frame>
+
+4. Haga clic en el botón [**Activar o desactivar el Firewall de Windows Defender**] para ingresar a la página de activación/desactivación del firewall.
+
+5. Seleccione [**Desactivar Firewall de Windows Defender**] para redes públicas y privadas y haga clic en el botón [**Confirmar**] para desactivar el firewall.
+
+<Frame>
+  <img src="/images/legacy/1a7789dc-c752-4106-9316-681f5c1a4afa/d8583eab-22db-413f-9a42-76dc0908b50b.avif" alt="Icono relacionado con la confirmación de apagado del firewall 3" />
+</Frame>
+
+### 7.3 Calibración de parámetros externos de detección de volumen
+
+1. Una vez completada la configuración IP de la cámara y cerrado el firewall, continúe con el segundo paso de la implementación. Abra el software para calibrar los parámetros externos del algoritmo. Es necesario calibrar el suelo de referencia específico y la desviación del ángulo de instalación de la cámara.
+
+2. Haga clic en la configuración de la cámara y cambie a la interfaz de calibración de parámetros. Antes de realizar la calibración de parámetros externos, asegúrese de que x, y, z, balanceo, cabeceo y guiñada sean 0. Si no son 0, debe devolver todos los parámetros a 0 y hacer clic en el botón [**Guardar y enviar**]. Una vez que los parámetros se hayan guardado correctamente, vuelva a calibrar los parámetros externos.
+
+<Frame>
+  <img src="/images/legacy/8e7ce98c-d40b-4d33-8761-2567f011af39/5b0ac758-4684-43e9-83c5-65f9fc7f1c76.avif" alt="Ilustraciones relacionadas con la calibración de parámetros externos de detección de volumen" />
+</Frame>
+
+3. Después de confirmar que todos los parámetros son 0, haga clic en el botón [**Calibración de parámetros externos**]. Una vez que la calibración sea exitosa, el software mostrará un cuadro emergente. Puede ver los parámetros de la cámara calibrada en la columna de parámetros de la derecha.
+
+<Frame>
+  <img src="/images/legacy/e6cf55ec-456a-4d76-9966-90c577dc843b/69fb9d8f-7938-4488-81c4-d817b5ac5b86.avif" alt="Ilustración relacionada con la calibración de parámetros externos de detección de volumen 2" />
+</Frame>
+
+4. Después de grabar el valor de altura de la cámara "z", cambie el valor z a 0 y haga clic en el botón [**Guardar y enviar**]. Los parámetros de calibración de la cámara se guardan correctamente. (El valor z de la cámara debe configurarse en la distancia del plano de detección durante la detección de volumen, por lo que después de registrar la altura de calibración de la cámara, debe cambiarse a 0; de lo contrario, habrá problemas con la detección)
+
+<Frame>
+  <img src="/images/legacy/68e62f9a-1684-46f5-bd66-a9eba060776d/291a7bc1-f174-4321-a322-3f7ab22dd720.avif" alt="Ilustración relacionada con la calibración de parámetros externos de detección de volumen 3" />
+</Frame>
+
+5. Una vez guardados y distribuidos los parámetros calibrados, se completa la calibración de parámetros externos. El siguiente paso es configurar los parámetros de detección de volumen.
+
+### 7.4 Configuración de la distancia del plano de detección de volumen
+
+1. Haga clic en Detección de volumen, cambie a la página de configuración de parámetros de detección de volumen y primero configure la "Distancia del plano de detección", que está relacionada con el dibujo del área de detección y la precisión de la detección.
+
+<Frame>
+  <img src="/images/legacy/7481f12c-1af6-4de4-bf05-2f48487bef85/a5609871-908c-45e6-a129-ff9e86dac5c6.avif" alt="Ilustraciones relacionadas con el ajuste de la distancia del plano de detección de volumen" />
+</Frame>
+
+2. Complete el valor de altura "z" 2709 obtenido durante la calibración del parámetro externo en la distancia del plano de detección. Esta es la distancia real entre la cámara y el plano de detección. Haga clic en el botón [**Guardar y enviar**] para escribir el valor de altura establecido en la cámara.
+
+<Frame>
+  <img src="/images/legacy/afb78eac-49f7-43ac-8c5d-b6963a53716b/fadaeebd-d48e-4ba2-90d9-87d9017926af.avif" alt="Ilustración relacionada con el ajuste de distancia del plano de detección de volumen 2" />
+</Frame>
+
+3. Al mover los datos de la imagen de la nube de puntos, puede ver que la altura del suelo ha cambiado. En este momento, se puede configurar el área de detección de volumen.
+
+<Frame>
+  <img src="/images/legacy/3cea221c-a39b-4f53-9965-41192272e8ed/3d8aeec7-d33b-48e8-a061-890a6ebed8fa.avif" alt="Ilustraciones relacionadas con el ajuste de distancia del plano de detección de volumen 3" />
+</Frame>
+
+### 7.5 Configuración del rango de detección de volumen
+
+1. Configure el rango de detección. Para ajustar la longitud y el ancho (xy) de la detección, se recomienda cambiar primero a la vista arriba y abajo. Las siguientes son las teclas de acceso directo para cada vista.
+
+<Frame>
+  <img src="/images/legacy/d328c397-8e2f-41ef-9f06-46ce32b2cf7f/30b799d3-964c-4adc-90cc-b0cca7ebe17a.avif" alt="Ilustraciones relacionadas con la configuración del rango de detección de volumen" />
+</Frame>
+
+2. Utilice las teclas de método abreviado del teclado para cambiar a la vista arriba y abajo, como se muestra en la siguiente figura. El cuadro blanco señalado por la flecha roja indica la dirección x del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, el rango de detección máximo y mínimo en la dirección x está establecido en 600 y -600.
+
+<Frame>
+  <img src="/images/legacy/e0d9e0ec-e8f1-493c-8262-3e6522ee4280/f81e0deb-e48b-4215-99cb-f49c5b0cc3ec.avif" alt="Ilustración relacionada con la configuración 2 del rango de detección de volumen" />
+</Frame>
+
+3. El cuadro blanco señalado por la flecha verde indica la dirección y del rango de detección. Puede modificar el valor correspondiente desplazando la rueda del mouse para completar el ajuste de la longitud y el ancho del rango de detección. Actualmente, el rango de detección máximo y mínimo en la dirección y está establecido en 480 y -580.
+
+<Frame>
+  <img src="/images/legacy/3bc64b36-13b3-4f5d-a14a-30ddb9509781/817b24b0-3bfc-4157-868f-43142cd956e4.avif" alt="Ilustración relacionada con la configuración del rango de detección de volumen 3" />
+</Frame>
+
+4. La flecha azul apunta a la dirección z del rango de detección. El valor se puede modificar desplazándose con la rueda del mouse o se puede ingresar el valor directamente. Se recomienda que el valor z máximo del rango de detección actual se establezca ligeramente por encima de la distancia del plano de detección. La distancia del plano de detección actual es 2709 y el valor z máximo se establece en 2690. El rango de detección mínimo se establece según el tamaño del objeto. Si la altura del objeto excede el valor z mínimo, el algoritmo no lo detectará.
+
+<Frame>
+  <img src="/images/legacy/68123a29-8322-4773-8b0a-67c7c388b797/17fe8b13-04c3-4f75-9e9b-1a5843af9533.avif" alt="Ilustración relacionada con la configuración del rango de detección de volumen 4" />
+</Frame>
+
+5. Después de configurar el área de detección, haga clic en el botón [**Guardar y enviar**] para guardar los parámetros en la cámara.
+
+<Frame>
+  <img src="/images/legacy/630b6f2b-c6fe-4a60-b3c3-d77ebff70f00/18746efa-a7b4-4e85-98fd-b16bcc470536.avif" alt="Ilustraciones relacionadas con la configuración del rango de detección de volumen 5" />
+</Frame>
+
+### 7.6 Ver resultados de detección de volumen
+
+1. Después de configurar la calibración de parámetros externos, los parámetros de detección de volumen y el área de detección de volumen, haga clic en "**Herramientas básicas**" y coloque objetos en el área de detección para ver los resultados. Actualmente no hay ningún objeto y no se mostrará ningún objeto en la barra de funciones básicas.
+
+<Frame>
+  <img src="/images/legacy/1d829501-eb9b-4ddf-9a4c-b8d6622ef5c8/909c8066-fa20-47ea-b78b-d97bf227cd3b.avif" alt="Ver íconos relacionados para resultados de pruebas de volumen" />
+</Frame>
+
+2. Después de colocar el objeto actual, la información de largo, ancho y alto del objeto actual se mostrará en la barra de visualización del estado del volumen.
+
+<Frame>
+  <img src="/images/legacy/c5e9a64a-ae7f-45d3-b755-901d823dd7c2/8f782245-62e5-4988-bfd1-ccea4c1d9b11.avif" alt="Resultados de la prueba de volumen ver el diagrama relacionado 2" />
+</Frame>
+
+3. Cuando se colocan varios objetos, la columna de visualización del resultado de la detección de volumen mostrará la longitud, el ancho y la altura de varios objetos, y se mostrará el número de objetos.
+
+<Frame>
+  <img src="/images/legacy/3c57003c-871a-476b-a797-242644703cf8/1f873710-e793-47b1-aaa0-13b76302c457.avif" alt="Resultados de la prueba de volumen ver el diagrama relacionado 3" />
+</Frame>
+
+### 7.7 Función de disparo único de detección de volumen
+
+1. En la interfaz de configuración de detección de volumen, active el modo táctil y haga clic en el botón [**Guardar y enviar**] para activar correctamente el modo de activación.
+
+<Frame>
+  <img src="/images/legacy/46b712f6-2daa-40c2-9a01-b8a18f6acc13/4bd31b14-3a53-479b-b2b1-e51ef03634ed.avif" alt="Ilustraciones relacionadas con la función de disparo único de detección de volumen" />
+</Frame>
+
+2. Haga clic en la herramienta básica y obtenga imágenes y resultados haciendo clic en el botón [**Single Trigger**].
+
+<Frame>
+  <img src="/images/legacy/29f635b6-9707-4f17-b77d-a05883ffb7fd/e40f2f1f-6fb0-49bb-ae01-53b0627846fe.avif" alt="Ilustración relacionada con la función de disparo único de detección de volumen 2" />
+</Frame>
+
+## 8. Protocolo de comunicación
+
+### 8.1 Comunicación TCP
+
+1. Los resultados de la detección de volumen se pueden obtener mediante comunicación TCP. A través del asistente de depuración de red, la cámara remota IP: 192.168.100.82, puerto: 14951, envía RESULT\_UPDATE para ver la información del resultado de la detección del volumen devuelto.
+
+<Frame>
+  <img src="/images/legacy/3268f158-13ec-4e80-b780-9c3dc39fc857/018ebf50-eeee-4ab6-b688-4cffbcc99987.avif" alt="Iconos relacionados con la comunicación TCP" />
+</Frame>
+
+### 8.2 Comunicación UDP
+
+1. Los resultados de la detección de volumen se pueden obtener mediante comunicación UDP. A través del asistente de depuración de red, la cámara remota IP: 192.168.100.82, puerto: 14950, envía RESULT\_UPDATE para ver la información del resultado de la detección del volumen devuelto.
+
+<Frame>
+  <img src="/images/legacy/17127c06-43af-4038-b287-8a42f8aa9ba7/905bafb7-3038-43f2-9c23-666327a4c4e0.avif" alt="Iconos relacionados con la comunicación UDP" />
+</Frame>
+
+### 8.3 Comunicación HTTP
+
+1. Los resultados de la detección de volumen se pueden obtener mediante comunicación HTTP, número de puerto: 14952.
+
+2. El sistema de capa superior (WMS) obtiene la señal del resultado del envío visual y el visual devuelve una cadena en formato JSON.
+
+| WMS -> Visión | ㅤ |
+| --- | --- |
+| Resultado | Significado |
+| RESULT_UPDATE | Activar señal de retorno de resultado visual |
+| Visión -> WMS | ㅤ |
+| Resultado | Significado |
+| propiedad intelectual | Cámara de fuente de datos IP |
+| MT | Estado de detección de volumen |
+| ángulo | Ángulo del objeto seleccionado |
+| cx | coordenada x del objeto seleccionado en el marco |
+| cy | Coordenada y del objeto seleccionado en el cuadro |
+| cz | Marco de la coordenada z del objeto seleccionado |
+| altura | altura del objeto |
+| longitud | longitud del objeto |
+| ancho | ancho del objeto |
+| válido | falso si la confianza es demasiado baja; verdadero en caso contrario |
+| TM_DATA_TIME | Tiempo de extracción de datos de detección de volumen |
+| TM_RES_TIME | Tiempo de salida del resultado de la detección de volumen |
+| apodo_nombre | Nombre de la cámara de detección de volumen, configurable en la cámara |
+| código_ret | Código de retorno, 0 es éxito |
+
+**9\.Apéndice**
+
+```json
+{
+
+"IP":"192.168.100.82", // Camera IP
+
+"TM":\[{
+
+"angle":-6.821981430053711, // Bounding-box angle
+
+"cx":39.98405456542969, // Bounding-box x-coordinate
+
+"cy":257.008056640625, // Bounding-box y-coordinate
+
+"cz":2400.63818359375, // Bounding-box z-coordinate
+
+"height":616.723876953125, // Object height
+
+"length":525.5135498046875, // Object length
+
+"type":"","valid":true, // false when confidence is too low
+
+"width":419.761474609375}\], // Object width
+
+"TM_DATA_TIME":"2024_11_13_16_37_47.422", // Volume-detection data timestamp
+
+"TM_RES_TIME":"2024_11_13_16_37_48.209", // Volume-detection result timestamp
+
+"nick_name":"_default_", // Volume-detection camera name
+
+"ret_code":0 // Return code; 0 indicates success
+
+}
+```

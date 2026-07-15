@@ -1,0 +1,486 @@
+---
+title: "V2 HTTP 프로토콜"
+description: "V2 시각적 지역화 모듈 HTTP 엔드포인트, 요청 매개변수 및 응답 형식을 사용합니다."
+hidden: true
+---
+## 글로벌 정보 검색
+
+### 메인 프로그램 업데이트
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+요청 예시:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### 카메라 높이 설정
+
+요청 URL `http://<ip>:9998/tool/rob/setHeightRequest` 예：
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## 글로벌 정보 검색
+
+### 프로그램 버전 받기
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+요청 예시: 생략
+
+응답 예：
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### 기본 차량 정보 얻기
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+요청 예시: 생략
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### 호스트에서 지도 패키지 가져오기
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+요청 매개변수:
+
+콘텐츠 유형: 애플리케이션/json
+
+|  |  |  |
+| --- | --- | --- |
+| 필수 | 매개변수 | 설명 |
+| 예 | 이름 | 지도 이름 |
+
+응답 예：
+
+콘텐츠 유형이 application/zip인 파일을 반환합니다.
+
+### GetAGVPose
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+요청 매개변수: 없음
+
+응답 예：
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\. **이전(온라인으로 전환)**
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/relocate`
+
+요청 매개변수:
+
+콘텐츠 유형: 애플리케이션/json
+
+|  |  |  |
+| --- | --- | --- |
+| 필수 | 매개변수 | 설명 |
+| 예 | 엑스 | X 위치(미터) |
+| 예 | 와이 | Y 위치(미터) |
+| 예 | 각도 | – |
+| 예 | 시끄러운X | 시끄러운 (미터) |
+| 예 | 시끄러워요 | 시끄러운 (미터) |
+| 예 | 시끄러운 각도 | 시끄러운 (미터) |
+
+요청 예시: 생략
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## 지도 작업
+
+### 지도 배포
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+요청 매개변수
+
+|  |  |  |
+| --- | --- | --- |
+| 필수 | 매개변수 | 설명 |
+| 예 | 아이디 | 지도 이름 |
+
+응답 예:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 지도 적용
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+요청 매개변수
+
+|  |  |  |
+| --- | --- | --- |
+| 필수 | 매개변수 | 설명 |
+| 예 | 이름 | 지도 이름 |
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 매핑 시작
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+요청 매개변수
+
+|  |  |  |
+| --- | --- | --- |
+| 필수 | 매개변수 | 설명 |
+| 예 | 이름 | 지도 이름 |
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 매핑 중지
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+요청 매개변수: 없음
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 증분 매핑 시작
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+요청 예：
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 증분 매핑 중지
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+요청 예：
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 지역 지도 목록 가져오기(백엔드)(배경 지도 목록 가져오기, 권장하지 않음)
+
+요청 URL
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+요청 매개변수: 없음
+
+응답 예:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### 지역 지도 목록 가져오기(권장)
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+요청 매개변수: 없음
+
+응답 예:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### 카메라에 지도 패키지 업로드
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+요청 매개변수: 없음
+
+요청 예시:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 지도 다운로드
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+요청 매개변수: 없음
+
+요청 예시:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+응답 예：
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## 작동 인터페이스
+
+### 카메라 프로그램 다시 시작
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/restart`
+
+요청 매개변수: 없음
+
+응답 예:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### 카메라 재부팅
+
+요청 URL
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+요청 매개변수: 없음
+
+응답 예:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

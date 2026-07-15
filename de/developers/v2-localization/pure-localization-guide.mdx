@@ -1,0 +1,162 @@
+---
+title: "Leitfaden nur zur V2-Lokalisierung"
+description: "Verwenden Sie die reine Lokalisierungs-Weboberfläche V2 für Kartierung, Lokalisierung und Kartenverwaltung."
+hidden: true
+---
+## Schnittstellenbeschreibung
+
+Rote Menüleiste: Klicken Sie hier, um die entsprechenden Funktionsoperationsdetails einzugeben, z. B. Kartierung starten, verschieben, Kartenverwaltung usw.
+
+Blaues Kästchen: sichtbar anhand der geladenen 2D-Höhenlinienkarte und des Anzeigesymbols für die Fahrzeugpositionierung
+
+Grünes Feld: Zeigt das Echtzeit-RGB-Bild der Draufsichtkamera an
+
+Gelbes Feld: Echtzeitanzeige der Stärke des Verlagerungssignals (grün: ausgezeichnete Stärke, blau: gute Stärke, rot: schlechte Stärke); Echtzeitanzeige der aktuellen Positionskoordinaten des Fahrzeugs, der aktuellen Bewegungsgeschwindigkeit des Fahrzeugs und der Mauspositionskoordinaten
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="Symbole für die Schnittstellenbeschreibung" />
+</Frame>
+
+Abbildung 1 Schnittstellenbeschreibung
+
+## 1. Beginnen Sie mit dem Erstellen der Karte
+
+Klicken Sie auf der Weboberfläche auf die Schaltfläche **Karte erstellen starten**, wie in der folgenden Abbildung dargestellt:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="1. Illustrationen zum Beginn der Kartenerstellung" />
+</Frame>
+
+Geben Sie den Kartennamen ein (der Kartenname besteht aus Buchstaben, Zahlen und Unterstrichen und darf nicht mit Zahlen beginnen), wie in der folgenden Abbildung dargestellt:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="1. Abbildungen zum Starten des Mappings 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="1. Abbildungen zum Starten des Mappings 3" />
+</Frame>
+
+Dies ist die Seite, auf der Sie mit der Kartierung beginnen können
+
+Bewegen Sie dann das AGV, um die Karte im Betriebsgebiet zu scannen. Nachdem der Scan abgeschlossen ist, klicken Sie auf die Menüleiste, um die Kartenerstellung zu beenden. Bitte warten Sie geduldig (die Wartezeit hängt von der Größe des Scanbereichs ab).
+
+Wenn die Zuordnung erfolgreich ist, können die Zuordnungsdaten im Kartenverwaltungselement angezeigt werden.
+
+inkrementelle Zuordnung
+
+Funktion: Fügen Sie neue Kartenbereiche basierend auf vorhandenen Karten hinzu, z. B. Kartenerweiterungen und ergänzen Sie tote Winkel
+
+Voraussetzung: Beim Erstellen inkrementeller Karten müssen Sie sicherstellen, dass die Verschiebung der Webseite abgeschlossen ist und Sie zu der Karte gewechselt sind, die hinzugefügt werden muss.
+
+(Derzeit wird eine manuelle HTTP-Anfrage ausgegeben)
+
+Adresse [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
+
+Parameter Json
+
+```json
+{
+
+    "cmd":905, // 904 starts incremental mapping; 905 stops incremental mapping
+
+    "attach":{
+
+        "sub_command":0,
+
+        "param":""
+
+}
+
+}
+```
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="1. Abbildungen zum Starten des Mappings 4" />
+</Frame>
+
+Nachdem die inkrementelle Kartierung abgeschlossen ist, wird der neu aufgezeichnete Bereich direkt zur Originalkarte hinzugefügt und Sie müssen nur noch die Verschiebung neu starten.
+
+## 2. Kartenverwaltung
+
+![2. Illustrationen im Zusammenhang mit der Kartenverwaltung](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif) Abbildung 2 Schematische Darstellung der Kartenverwaltung
+
+Nachdem die Kartenerstellung abgeschlossen ist, klicken Sie in der Menüleiste auf **Kartenverwaltung**. Sie können den Namen der Karte, die Sie gerade erstellt haben, in der Host-Kartenliste sehen. Klicken Sie auf die Schaltfläche „Übernehmen“, um zur Karte zu wechseln. Wenn Sie mehrere regionale Karten wechseln möchten, müssen Sie zum Wechseln auch die Kartenverwaltungsfunktion verwenden. Klicken Sie auf die Schaltfläche „Löschen“, um die entsprechende Karte zu löschen. **Karte anwenden:** Stellen Sie nach dem Klicken auf „Übernehmen“ sicher, dass Sie den Host neu starten, bevor die Karte angewendet wird und wirksam wird, andernfalls ist die Verschiebung nicht möglich.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="2. Abbildungen im Zusammenhang mit der Kartenverwaltung 2" />
+</Frame>
+
+Abbildung 3 Schematische Darstellung der Anwendungskarte
+
+## 3. Umzug
+
+Nachdem Sie auf die Verlagerung geklickt haben, können Sie mit der Maus ziehen, um die ungefähre Verlagerungsposition basierend auf der passenden Eingabeaufforderung der Laserpunktwolke und der Laserkonturkarte für die Verlagerung anzugeben;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="3. Umzugsbezogene Symbole" />
+</Frame>
+
+Abbildung 4 Schematische Darstellung der Relocation-Funktion
+
+Nachdem die Verschiebung erfolgreich war, verschwindet die Ausnahme **Positionierungs-Timeout**.
+
+Verschiebung des QR-Codes
+
+Beim Erstellen einer Karte können Sie den Apritag-Code an einigen Stellen zur Verschiebung einfügen. Wenn der vollständige QR-Code in der Perspektive des Geräts angezeigt wird, erkennt es automatisch, auf welcher Karte und an welchem ​​Ort sich der Code befindet, wechselt automatisch die Karte und wechselt den Standort.
+
+Website zur QR-Code-Generierung [https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="3. Umzugsbezogene Symbole 2" />
+</Frame>
+
+Stellen Sie lediglich sicher, dass die Tag-ID in dem Bereich, in dem sich ein Gerät befindet, nicht wiederholt wird. TagFamily ist wie oben gezeigt festgelegt.
+
+## 4. Parameterkonfiguration und -anzeige
+
+Sehen und konfigurieren Sie die externen Laser- und Kameraparameter in den Chassispositionierungsparametern und Sensorkalibrierungswerten der Roboterkonfiguration
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="4. Parameterkonfiguration und entsprechende Symbole anzeigen" />
+</Frame>
+
+Abbildung 5 Parameterkonfiguration
+
+## 5. Protokollexportfunktion
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="5. Abbildungen im Zusammenhang mit der Protokollexportfunktion" />
+</Frame>
+
+Abbildung 6 Protokollimport- und -exportfunktion
+
+Wie in der Abbildung oben gezeigt, können Sie die entsprechenden Protokolle nach Zeitintervall, Modultyp und anderen Optionen filtern. Das folgende Protokoll ist das entsprechende Abrufprotokoll, das nach Auswahl exportiert werden kann.
+
+## 7. Firmware-Update
+
+Paket lokal anzeigen: Lokale Firmware importieren, die aktualisiert werden muss (Gehäuse, Aktuator, Kamera-Firmware).
+
+Paket wiederherstellen: Notieren Sie die Firmware-Version vor dem letzten Update. Wenn Sie zurückgehen müssen, klicken Sie einfach darauf.
+
+![7. Symbole für Firmware-Updates](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif) Abbildung 7 Firmware-Update
+
+Firmware-Upgrade des Kamera-Hosts
+
+Sie können die Firmware mit einem normalen Host-Computer aktualisieren. Diese Upgrade-Methode kann nicht rückgängig gemacht werden und Sie müssen beim Upgrade vorsichtig sein. ![7. Symbole für Firmware-Updates 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
+
+## 8. Stoppen Sie die Hauptanwendung und starten Sie sie neu
+
+Klicken Sie auf das entsprechende Steuerelement. Bevor Sie LxCameraViewer mit der Kamera verbinden, stoppen Sie die Hauptanwendung des Roboters. Andernfalls behält der Roboter die Kontrolle über die Kamera und verhindert, dass LxCameraViewer eine Verbindung herstellt. ![Hauptsteuerelemente der Anwendung](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
+
+Abbildung 8 Ontologiefunktionen
+
+9. Versionsabfrage
+
+Klicken Sie, um die Ontologieversion und die Front-End-Version abzufragen.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="7. Symbole für Firmware-Updates 4" />
+</Frame>
+
+Abbildung 9 Versionsabfrage

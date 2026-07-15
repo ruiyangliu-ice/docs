@@ -1,0 +1,209 @@
+---
+title: "Khởi động nhanh ROS"
+description: "Định cấu hình, xây dựng và chạy SDK ROS bản địa hóa trực quan V2 để ánh xạ và bản địa hóa cơ bản."
+hidden: true
+---
+## Lời nói đầu
+
+Bài viết này giới thiệu kiến ​​trúc phần mềm của mô-đun định vị trực quan, phương pháp cấu hình ROS SDK và quy trình vận hành định vị và ánh xạ cơ bản.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7ed197c5-c599-4d93-af40-94afbc0a5507.avif" alt="Các biểu tượng liên quan đến lời nói đầu" />
+</Frame>
+
+Sơ đồ của mô-đun định vị này được hiển thị ở trên. Trong số đó, chương trình định vị tích hợp của camera tương tác với ROS SDK của máy tính chủ bằng UDP. Ngoài ra, chương trình định vị còn đi kèm với giao diện người dùng WEB có thể định cấu hình có thể thực hiện trực quan hóa định vị (có thể mở bằng bất kỳ trình duyệt chính thống nào, IP truy cập mặc định là 192.168.100.201:9998). Giao diện người dùng có hai chức năng chính:
+
+1. Chạy DEMO hoàn chỉnh để hoàn tất quá trình lập bản đồ và định vị;
+
+2. Định cấu hình ID mục tiêu và PORT để liên lạc với ROS SDK. Theo cách tương tự, IP và PORT của camera mục tiêu phải được định cấu hình trước khi khởi động ROS SDK.
+
+Sau khi hoàn thành cấu hình ở trên, tất cả các chức năng của giao diện front-end WEB, chẳng hạn như ánh xạ, định vị lại và tải xuống bản đồ, có thể được gọi thông qua ROS SDK.
+
+## Biên dịch
+
+### Cấu hình môi trường chạy chương trình
+
+1. Cài đặt QT
+
+Đảm bảo rằng QT5 đã được cài đặt trên máy chủ. Bạn cần Core, Network và các gói chức năng khác trong QT5. Phương pháp cài đặt của các phiên bản Linux khác nhau có thể khác nhau. Đây là một ví dụ cài đặt:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+2. Cài đặt gói chức năng libzip
+
+Hướng dẫn cài đặt https://blog.csdn.net/iamhuanyu/article/details/129603632
+
+3. Biên dịch gói chức năng ROS. Chạy `catkin_make` theo đường dẫn `/V2-ROS-SDK-service` (cùng cấp với `/src`).
+
+## Chạy
+
+1\. Nhập đường dẫn /V2-ROS-SDK-service
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/15e7b1f0-5386-423e-85c9-4c433631e49c.avif" alt="Các biểu tượng liên quan đến hoạt động" />
+</Frame>
+
+2\. Xác nhận tập tin cấu hình
+
+Một. Xác nhận cấu hình tệp ROS SDK
+
+Thư mục tệp cấu hình/V2-ROS-SDK-service/src/lx\_Camera\_ros/launch/mapping.launch
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/42a61e00-5e2f-427e-93d0-9b6f2c255397.avif" alt="Biểu tượng liên quan đến hoạt động 2" />
+</Frame>
+
+IP mặc định của camera là 192.168.100.201 (nếu bạn cần thay đổi IP camera, vui lòng sử dụng máy tính chủ của nhà sản xuất camera để sửa đổi và sửa đổi IP cho phù hợp) và cổng được cố định thành 8001.
+
+b. Xác nhận rằng máy ảnh và máy tính nằm trên cùng một đoạn mạng và được kết nối với cùng một bộ chuyển mạch. c. Xác nhận rằng chương trình camera được cấu hình chính xác, nhập WEB và nhấp vào Cấu hình tham số.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c579b834-e264-488c-9ee6-0e0832bc73f2.avif" alt="Biểu tượng liên quan đến hoạt động 3" />
+</Frame>
+
+Nhấp vào nút "Cấu hình tham số" trên thanh menu bên trái và cửa sổ sau sẽ bật lên:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c78ada8-7eec-447c-9b42-23e298e2017b.avif" alt="Biểu tượng liên quan đến hoạt động 4" />
+</Frame>
+
+Thay đổi portCode thành 8987 (thường được cố định bằng giá trị này) và thay đổi portName thành IP của cổng mạng kết nối máy và camera (tức là IP card mạng của máy tính chủ chạy ROS SDK)
+
+3\. Bắt đầu nút ROS
+
+```bash
+source devel/setup.bash
+roslaunch lx_camera_ros mapping.launch
+```
+
+Sau khi khởi động, màn hình hiển thị như hình bên dưới cho biết quá trình khởi động đã thành công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/49dea7d3-7962-4ee7-8168-216378b6ca63.avif" alt="Các biểu tượng liên quan đến thao tác 5" />
+</Frame>
+
+### Gỡ lỗi
+
+1\. Phương pháp gỡ lỗi ROS
+
+Mở một thiết bị đầu cuối mới, nhập đường dẫn `/V2-ROS-SDK-service` và chạy `source devel/setup.bash`, sau đó bắt đầu gỡ lỗi.
+
+Một. Đăng ký tin nhắn
+
+Ví dụ: Chiếm không gian lưu trữ máy ảnh hiện tại
+
+Sau khi vào gỡ lỗi, hãy chạy `rostopic echo /lx_localization_node/LxCamera_Capacity_Status` trong thiết bị đầu cuối.
+
+Nhận được thông báo sau có nghĩa là toàn bộ liên kết truyền thông vẫn bình thường. Đồng thời, tin nhắn này còn có thể được sử dụng như một gói tin nhịp tim có tần số 2hz.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8092fa65-76da-46ef-8756-b0e37d673e76.avif" alt="Gỡ lỗi các biểu tượng liên quan" />
+</Frame>
+
+2\. Gọi giao diện dịch vụ
+
+Ví dụ: Xem tên bản đồ hiện được chọn
+
+Chạy `rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"` trong thiết bị đầu cuối.
+
+Nhận được thông báo sau có nghĩa là toàn bộ liên kết liên lạc vẫn bình thường và thông báo trả về là tên bản đồ hiện tại.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/efa918a2-6e6e-4191-9627-dfd126ceb610.avif" alt="Gỡ lỗi các biểu tượng liên quan 2" />
+</Frame>
+
+## Quy trình vận hành cơ bản
+
+Bật nguồn máy ảnh, đợi khoảng 30 giây rồi khởi động nút chuyển tiếp dữ liệu để bắt đầu sử dụng.
+
+Nhập thiết bị đầu cuối gỡ lỗi
+
+***1. Ban hành hướng dẫn xây dựng bản đồ***
+
+rosservice gọi /lx\_localization\_node/LxCamera\_Mapping\_srv “trạng thái: tên bản đồ thực: ‘test\_map’”
+
+Lệnh này được sử dụng để bắt đầu một tác vụ ánh xạ. Nó sẽ chuẩn bị tạo một bản đồ có tên "test\_map". Nếu nó được phát hành thành công, nó sẽ trả về true. Lúc này bạn có thể kéo xe để quét bản đồ.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a77a9c8-f9df-4c71-a4c9-a4e9d66d6892.avif" alt="Hình ảnh minh họa liên quan đến quy trình vận hành cơ bản" />
+</Frame>
+
+***2. Ra lệnh kết thúc ánh xạ***
+
+rosservice gọi /lx\_localization\_node/LxCamera\_Mapping\_srv “trạng thái: tên bản đồ sai: ‘test\_map’”
+
+Lệnh này được sử dụng để kết thúc một tác vụ ánh xạ. Nó sẽ trả về true sau khi giao hàng thành công. Tại thời điểm này, bạn có thể nhận được giá trị trả về sau khi chờ hoàn tất ánh xạ.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c93beee-a975-4c4a-93d0-31c500a676f4.avif" alt="Các minh họa liên quan đến quy trình vận hành cơ bản 2" />
+</Frame>
+
+***3. Sau khi xây dựng bản đồ xong, đợi một lát và chuyển sang tên bản đồ mới***
+
+rosservice gọi /lx\_localization\_node/LxCamera\_SwitchMap\_srv “map\_name:“test\_map’”
+
+***4. Sau khi cắt ảnh gửi tin nhắn chuyển địa điểm***
+
+rosservice gọi /lx\_localization\_node/LxCamera\_UploadReloc\_srv “tư thế:
+
+tiêu đề:
+
+số thứ tự: 0
+
+con tem:
+
+giây: 0
+
+nsec: 0
+
+khung\_id: ‘bản đồ’
+
+tư thế:
+
+tư thế:
+
+chức vụ:
+
+x: 4.5
+
+y: -15.5
+
+z: 0.0
+
+định hướng:
+
+x: 0.0
+
+y: 0.0
+
+z: 0.694658
+
+w: 0.71934
+
+hiệp phương sai: \[0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0\]”
+
+Trong đó x, y, z, w theo hướng là biểu diễn bậc bốn của góc. Hãy chú ý đến hình thức.
+
+***5. Nhận vị trí định vị thời gian thực hiện tại***
+
+tiếng vang rostopic /lx\_localization\_node/LxCamera\_LocationPoseResult
+
+### Câu hỏi và giải pháp thường gặp
+
+***1\.ROS*** Chương trình không thể biên dịch được
+
+\-Kiểm tra môi trường thư viện phụ thuộc để xác nhận xem tất cả các thư viện phụ thuộc đã được cài đặt đầy đủ chưa
+
+***2.ROS SDK*** Không trả lời sau khi gửi tin nhắn
+
+\-Xác nhận rằng camera và máy nằm trên cùng một phân đoạn mạng hoặc liệu bạn có thể sử dụng máy tính chủ của camera để mở camera để xem hình ảnh hay không.
+
+\-Xác nhận rằng không có vấn đề gì với tệp cấu hình camera và xác nhận rằng không có vấn đề gì với tệp cấu hình ROS.
+
+***3.ROS*** Không thể gửi thông báo gỡ lỗi
+
+Thông báo \-ROS có yêu cầu nghiêm ngặt về định dạng. Khi gỡ lỗi, vui lòng tuân thủ đầy đủ định dạng của tài liệu hướng dẫn và chỉ sửa đổi giá trị.
+
+Thay đổi gỡ lỗi.

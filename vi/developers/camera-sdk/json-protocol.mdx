@@ -1,0 +1,35 @@
+---
+title: "Giao thức truyền thông JSON"
+description: "Định dạng thông báo JSON của TCP Socket và tham chiếu trường để liên lạc giữa máy ảnh và robot hoặc PLC."
+hidden: true
+---
+## Giao diện
+
+- Máy chủ ổ cắm TCP. Máy ảnh hoạt động như máy chủ. Cổng mặc định là `5501`.
+
+- Nội dung tin nhắn: Định dạng văn bản có hỗ trợ ASCII. JSON được khuyến khích.
+
+## Yêu cầu và phản hồi
+
+**1. Robot (PLC) -> hệ thống thị giác**
+
+```json
+{"action": "3D"}
+```
+
+Yêu cầu này kích hoạt tác vụ tầm nhìn 3D.
+
+**2. Hệ thống thị giác —> robot (PLC)**
+
+Máy ảnh trả về kết quả phát hiện với các trường sau:
+
+| Lĩnh vực | Bắt buộc | Mô tả |
+| --- | --- | --- |
+| kết quả | Có | Trạng thái phát hiện số nguyên. `0` chỉ ra rằng quá trình bản địa hóa không thành công và không có kết quả. Bất kỳ giá trị nào khác cho biết thành công và chỉ định số lượng kết quả được trả về. |
+| tư thế | Có | Các giá trị X, Y, Z, RX, RY và RZ đặt ra cho đối tượng được phát hiện trong hệ tọa độ robot. Đơn vị là milimét và độ. `-180° ≤ RZ ≤ 180°`. Tất cả các giá trị được đặt thành `0` khi phát hiện không thành công. |
+
+**Ví dụ**
+
+| Phát hiện thành công | `{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}` |
+| --- | --- |
+| Phát hiện không thành công | `{"result":0,"pos":[0,0,0,0,0,0]}` |

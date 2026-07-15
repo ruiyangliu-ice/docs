@@ -1,0 +1,89 @@
+---
+title: "Detección del estado de ubicación del contenedor"
+description: "Detecte ubicaciones de almacenes ocupadas y vacías en tiempo real para que el WMS pueda emitir instrucciones precisas y seguras a los AGV."
+---
+## Introducción a los antecedentes
+
+Desafío: en la mayoría de los almacenes donde se han aplicado AGV, los artículos todavía se apilan manualmente. Esto hará que el sistema WMS no pueda juzgar la ocupación real de cada ubicación del almacén en tiempo real, lo que dará como resultado información inexacta proporcionada por el WMS a los AGV. Si no se puede identificar a tiempo el almacén ocupado, el AGV puede recibir instrucciones erróneas, lo que no sólo reduce la eficiencia operativa, sino que también choca fácilmente con otros bienes o equipos. En casos graves, puede incluso provocar un accidente de seguridad y poner en peligro la seguridad del personal y del equipo.
+
+Por lo tanto, surgió el sistema de identificación del estado del almacén. A través de funciones como posicionamiento automático, sincronización de datos en tiempo real y control preciso de inventario, el sistema optimiza la asignación de recursos de almacén, reduce los errores humanos y mejora la eficiencia operativa.
+
+<Frame>
+  <img src="/images/legacy/b8e92a99-9044-4228-bc87-0ff0f64ad6df/a1c8f0e7-3d9f-42e2-b250-12b1f8c64152.avif" alt="Ilustraciones relacionadas con la introducción de antecedentes." />
+</Frame>
+
+* * *
+
+**Dos puntos débiles comunes de los sensores de reconocimiento del estado de la ubicación de almacenamiento:**
+
+- La información de la ubicación de almacenamiento transmitida por lidar de un solo punto no es lo suficientemente precisa y puede provocar fácilmente accidentes de apilamiento.
+
+Algunos almacenes utilizan lidar de un solo punto para detectar la ubicación de almacenamiento, pero este radar de alcance solo puede emitir un rayo láser a la vez para formar un punto en la superficie de un objeto. Puede ignorar los espacios entre cajas o paletas, lo que lleva a una identificación errónea del estado del lugar de almacenamiento y provoca accidentes de apilamiento.
+
+- El método de calibración de las cámaras RGB puras es único y existe el riesgo de errores de juicio y falta de información.
+
+Existen las siguientes desventajas al utilizar cámaras RGB para determinar el estado de la ubicación:
+
+- Cuando se utiliza el aprendizaje profundo para detectar objetivos, los objetos fuera del conjunto de entrenamiento que ingresan al almacén pueden provocar detecciones falsas y brindar información incorrecta.
+
+- La falta de información sobre la altura de la carga dificulta la organización de las tareas de apilamiento.
+
+- Las cámaras de ojo de pez ultra gran angular tienen problemas de distorsión de los bordes al determinar la ubicación del almacén, lo que afecta la precisión del entrenamiento y la predicción del modelo y aumenta los costos del servidor.
+
+* * *
+
+## Descripción general de la solución
+
+Meyer Micro Vision utiliza una **cámara RGB-D** para proporcionar datos tridimensionales e información de color de las ubicaciones del almacén, e identificar automáticamente la presencia, las especificaciones de ubicación y la ocupación anormal de los productos. También puede distinguir categorías de carga a través del sistema de inteligencia artificial inteligente con visión 3D y enviarlas al sistema de despacho para lograr una inspección inteligente de entrada y salida. La cámara tiene potencia informática incorporada y no requiere una computadora industrial externa. Al mismo tiempo, Meyer Micro Vision proporciona soluciones integradas de software y hardware para la identificación del estado del almacén, así como capacitación de modelos profesionales y orientación para la implementación y otros servicios de soporte.
+
+<Frame>
+  <img src="/images/legacy/cc79bcea-1ede-422f-a072-54e7f48bc49e/a76fdfe2-3848-47e4-a0fc-e97d97879d7c.avif" alt="Gráficos relacionados con la descripción general de la solución" />
+</Frame>
+
+## Ventajas principales
+
+- Monitoreo integral: identifique con precisión el estado de la ubicación de almacenamiento a través de datos tridimensionales y recopilación de información de color, combinados con tecnología de inteligencia artificial.
+
+- Implementación simple: el algoritmo de reconocimiento del estado de la ubicación de almacenamiento se coloca en el lado de la cámara para reducir los costos de implementación y mantenimiento.
+
+- Comunicación flexible: admite TCP/IP, UDP, HTTP y otros métodos de comunicación, y reporta datos al sistema de control en formato JSON en tiempo real.
+
+- Mejorar la eficiencia: la transmisión en tiempo real de información de ubicación del almacén ayuda al sistema de despacho a asignar tareas de manera rápida y precisa.
+
+## Demostración de escena
+
+<Frame>
+  <img src="/images/legacy/c1a3c8e5-f742-49c5-b9dd-ef5ce1ceb6c7/607dc6a7-6055-4434-a416-9e8914631393.avif" alt="Ilustraciones relacionadas con la demostración de escena." />
+</Frame>
+
+Demostración del escenario de reconocimiento del estado de la ubicación de almacenamiento
+
+## Descripción del trabajo
+
+> **Sugerencias de selección de cámara: S10Pro**
+
+> **Método de instalación de la cámara**
+
+Instalación fija: Cuando la cámara se instala en una columna o en el techo, se recomienda instalarla directamente encima del lugar de almacenamiento que se va a monitorear.
+
+<Frame>
+  <img src="/images/legacy/13530b5b-265b-4977-b960-e3987b55083e/a9108d02-119f-4e4d-a995-d99ef3400339.avif" alt="Ilustraciones relacionadas con instrucciones de trabajo." />
+</Frame>
+
+> **Flujo de trabajo específico**
+
+Paso 1: el sistema de control de nivel superior envía instrucciones de tarea y la cámara de visión 3D recopila imágenes y obtiene con precisión el estado del almacén especificado;
+
+Paso 2: Los resultados de la detección de la ubicación de almacenamiento se informan al sistema de capa superior a través de JSON para ayudar al sistema de despacho a realizar una gestión inteligente de entradas y salidas.
+
+Método de comunicación: TCP, UDP, HTTP
+
+> **Notas de implementación**
+
+Entorno de aplicación: Es necesario evitar entornos hostiles con mucho polvo y condensación;
+
+Requisitos de instalación: Garantizar la rigidez y estabilidad del soporte de montaje de la cámara;
+
+[Guía de implementación de detección de estado de ubicación de contenedores](/es/developers/deployment/algorithm-detection "Guía de implementación de detección de estado de ubicación de contenedores")
+
+* * *

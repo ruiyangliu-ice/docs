@@ -1,0 +1,125 @@
+---
+title: "Xếp thùng xe nâng AGV"
+description: "Sử dụng tầm nhìn 3D để hướng dẫn xe nâng AGV trong quá trình phát hiện thùng, lắp ghép và xếp chồng nhiều lớp chính xác."
+---
+Việc cung cấp cho AGV khả năng gắn giỏ, pallet, v.v. một cách chính xác là một yêu cầu khắt khe trong lĩnh vực thị giác của robot di động. Nó không chỉ có thể cải thiện hiệu quả hoạt động của robot di động mà còn đạt được khả năng sản xuất linh hoạt thông qua việc lắp ghép chính xác các robot di động tại các máy trạm khác nhau. Hiện tại, việc hiện thực hóa chức năng xếp giỏ xe nâng AGV vẫn phải đối mặt với hàng loạt thách thức kỹ thuật:
+
+**Độ khó thứ nhất: Yêu cầu độ chính xác cao**
+
+Dung sai xếp chồng của lồng trên và lồng dưới nhỏ, không tạo ra ma sát giữa vật liệu và thùng chứa. Khi số lượng lớp xếp chồng lên nhau tăng lên, việc đảm bảo an toàn đòi hỏi phải định vị và xem xét có độ chính xác cao.
+
+**Độ khó 2: Chuồng và hàng hóa đa dạng**
+
+Đối với hệ thống định vị tầm nhìn 3D, nó cần phải thích ứng với các loại lồng và hàng hóa khác nhau, đồng thời thực hiện điều chỉnh thích ứng và điều chỉnh chính xác theo yêu cầu ứng dụng thực tế để đáp ứng nhu cầu của các tình huống ứng dụng khác nhau.
+
+**Khó khăn thứ ba: Các kịch bản công nghiệp và hậu cần phức tạp và đang thay đổi**
+
+Ánh sáng và môi trường làm việc của các khu công nghiệp khác nhau có thể cản trở công việc lắp ghép, do đó cần phải xử lý các điều kiện môi trường phức tạp và thay đổi.
+
+## Tổng quan về giải pháp
+
+Giải pháp xếp giỏ tầm nhìn vi mô của Meyer dựa trên công nghệ tầm nhìn 3D và được thiết kế đặc biệt cho xe nâng thông minh. Nó sử dụng camera 3D có độ chính xác cao để xác định thông minh vị trí và thông tin định hướng của giỏ trên xe nâng và các giỏ trong kho, tính toán vị trí tương đối và chênh lệch tư thế, đồng thời hướng dẫn xe nâng hoàn thành các thao tác xếp chồng chính xác và linh hoạt. Giải pháp này cải thiện hiệu quả mức độ tự động hóa và hiệu quả vận hành của hoạt động xếp hàng, đồng thời phù hợp với các tình huống như kho bãi thông minh và phân phối hậu cần.
+
+## Ưu điểm cốt lõi
+
+**1. Nhận dạng có độ chính xác cao**: Dựa trên giá trị độ lệch được camera nhận dạng, xe nâng có thể điều chỉnh linh hoạt tư thế xếp chồng, với độ chính xác định vị là ±5 mm, độ chính xác góc lên tới 0,1° và phạm vi nhận dạng độ lệch lồng là ±15°;
+
+2. Nhận dạng thông minh các lồng vật liệu: Thuật toán AI tự phát triển trực tiếp đưa ra thông tin vị trí tương đối theo thời gian thực của lồng vật liệu trên và dưới, đồng thời điều chỉnh tư thế xe nâng theo thời gian thực;
+
+**3. Xử lý dữ liệu theo thời gian thực**: Thời gian xử lý dữ liệu trên mỗi khung hình của hệ thống dưới 100 mili giây, đảm bảo hoạt động vận hành xe nâng hiệu quả;
+
+4. Xếp chồng nhiều lớp: hỗ trợ xếp chồng 1-4 lớp, chế độ xếp chồng 2\*2
+
+<Frame>
+  <img src="/images/legacy/296770eb-776f-4dbb-a0d6-8bf43ccd6710/f463210e-deb3-443b-87f7-d6ef9290e20d.avif" alt="Các minh họa liên quan đến sức mạnh cốt lõi" />
+</Frame>
+
+Dữ liệu đám mây điểm trong quá trình cập bến xếp dỡ lồng
+
+## Trình diễn hoạt hình
+
+<Frame>
+  <img src="/images/legacy/1701bfc3-a9c4-4767-923a-e7034a195513/46987e2e-f3c5-48c9-b12d-112c3b5ddabc.avif" alt="Các hình ảnh minh họa liên quan đến trình diễn hoạt hình" />
+</Frame>
+
+## Mô tả công việc
+
+> **Gợi ý lựa chọn máy ảnh**
+
+Dòng M: M4Pro, M4mega (nhu cầu cụ thể xác định theo nhu cầu, vui lòng liên hệ bộ phận hỗ trợ kỹ thuật của MRDVS để được hỗ trợ lựa chọn)
+
+> **Phương pháp lắp đặt camera**
+
+**$ Phương pháp lắp đặt 1: Giải pháp camera đơn**
+
+**→Vị trí**: Camera được cố định trên cơ cấu nâng, chụp theo chiều ngang và có nhiệm vụ nhận dạng các giỏ đựng tay càng nâng ở cả hai bên.
+
+**·Yêu cầu về chiều cao**: Camera cách mép dưới của tay nâng 35-55cm, đảm bảo sai số vị trí của cơ cấu nâng không quá 1cm.
+
+***** Tính năng**: Một camera duy nhất có nhiệm vụ xác định chân giỏ bên trái và bên phải của tay nâng cùng một lúc.
+
+<Frame>
+  <img src="/images/legacy/2455a499-e74f-459d-8f80-b6dd0f9f9e9a/72824b55-1af1-44b8-97b7-e20e4908d18b.avif" alt="Hình ảnh minh họa liên quan đến hướng dẫn công việc" />
+</Frame>
+
+***** Cách lắp đặt 2: Giải pháp camera kép**
+
+***** Vị trí**: Camera được lắp cố định 2 bên xe nâng, cách bề mặt tay càng nâng 30-40cm, góc chụp 45° so với mặt đất.
+
+***** Tính năng**: Camera bên trái chụp ảnh tay nĩa bên trái và camera bên phải chụp ảnh bên phải, lần lượt xác định các giỏ ở cả hai bên để đạt được khả năng xếp chồng chính xác.
+
+<Frame>
+  <img src="/images/legacy/26796314-c886-40df-a983-da918d896fc3/ef85b979-fd41-4452-9218-a16363c78210.avif" alt="Đồ họa liên quan đến mô tả công việc 2" />
+</Frame>
+
+> **Giải pháp truyền thông**
+
+Hệ thống sử dụng **giao thức TCP/IP** để truyền dữ liệu giữa xe nâng và camera 3D:
+
+**$ Yêu cầu thông tin**: Gửi yêu cầu lấy tọa độ X, Y và góc (θ) của giỏ nguyên liệu.
+
+*****Thông tin trả lại**:
+
+**+ Tọa độ X, Y**: Đơn vị là milimét, loại dấu phẩy động 32 bit.
+
+**>>Góc Theta**: Phạm vi -90° đến 90°, xác định chính xác độ lệch.
+
+**$ Mã lỗi**: Trạng thái nhận dạng (0: Thành công, -1: Camera bất thường, -2: Lỗi định vị, -3: Lỗi thuật toán).
+
+> **Quy trình làm việc cụ thể**
+
+**Quy trình nhận hàng**:
+
+**1. Định vị**: Di chuyển xe nâng đến vị trí cách mép trước của giỏ 2,4-2,6 mét.
+
+**2. Nhận dạng camera**: Tay càng nâng được nâng lên vị trí đã đặt, kích hoạt camera 3D nhận dạng tư thế giỏ.
+
+**3. Điều chỉnh vị trí**: Xe nâng điều chỉnh góc và vị trí dựa trên thông tin sai lệch do camera xuất ra.
+
+**4. Thao tác lấy hàng**: Sau khi xe nâng xác nhận vị trí của giỏ nguyên liệu là chính xác, tay càng nâng sẽ thực hiện thao tác lấy hàng.
+
+**Quy trình xếp chồng**:
+
+**1. Định vị trước**: Xe nâng di chuyển đến phía trước giỏ nguyên liệu khoảng 80cm để xếp và tay càng nâng lên vị trí cách mặt trên của giỏ nguyên liệu 50cm.
+
+**2. Nhận dạng camera**: Hệ thống đưa ra giá trị độ lệch thông qua camera 3D để tinh chỉnh trái, phải và góc.
+
+**3. Căn chỉnh chính xác**: Sau khi xác nhận rằng góc và vị trí đáp ứng ngưỡng, xe nâng sẽ hoàn thành việc căn chỉnh thông qua tinh chỉnh.
+
+**4. Hoàn thành việc xếp chồng**: Sau khi xác nhận, tay càng nâng hạ xuống để hoàn thành thao tác xếp chồng.
+
+> **Ghi chú triển khai**
+
+**1. Yêu cầu về môi trường**: Tránh môi trường bụi bặm và ẩm ướt để tránh ảnh hưởng đến hiệu suất của máy ảnh.
+
+**2. Yêu cầu lắp đặt**: Đảm bảo độ cứng và ổn định của khung camera 3D để tránh ảnh hưởng đến độ chính xác nhận dạng.
+
+**3. Bảo trì thường xuyên**: Làm sạch ống kính máy ảnh thường xuyên để tránh bụi bám và đảm bảo tầm nhìn rõ ràng về máy ảnh.
+
+> **Hiển thị hiệu ứng nhận dạng**
+
+<Frame>
+  <img src="/images/legacy/c0179ee8-b6fb-4c8f-92cf-0c590ea45ce3/20031c64-666e-41d2-862f-74b10bba8a8f.avif" alt="Các hình ảnh minh họa liên quan đến mô tả công việc 3" />
+</Frame>
+
+* * *

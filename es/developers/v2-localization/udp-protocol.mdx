@@ -1,0 +1,161 @@
+---
+title: "Protocolo V2 Pro UDP"
+description: "Configure la comunicación V2 Pro UDP y utilice sus estructuras de mensajes, tipos de interfaz y ejemplos."
+hidden: true
+---
+V2PRO admite el modo UDP para interactuar con el cliente. La configuración del puerto y la IP del dispositivo de destino se puede completar en la computadora host WEB. La ubicación específica es la siguiente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/12c4877a-909d-42bd-9ed3-cab1b25650f6.avif" alt="Ilustraciones relacionadas con el protocolo de comunicación V2PRO UDP" />
+</Frame>
+
+Entre ellos, portCode es el número de puerto que escucha el dispositivo de destino y portName es la IP del dispositivo de destino. V2 PRO escuchará en el puerto 8001 para recibir información de otros dispositivos.
+
+## **1.1** Formato de datos
+
+1.1.1 Adoptar el modo big-endian: byte alto primero, byte bajo último
+
+1.1.2 El formato de la trama de comunicación es el siguiente: encabezado de datos + longitud de datos + byte de comando + contenido de datos + código de verificación.
+
+1.1.3 Verificación: 1 byte, todos los bytes, excepto el encabezado de datos y el byte del código de verificación, se realizan mediante operación XOR para obtener el código de verificación.
+
+1.1.3 Longitud de los datos: el campo de longitud se calcula sin byte de verificación ni encabezado. No todos los marcos tienen Longitud.
+
+1.1.4 El formato del mapa solo permite la combinación de letras en inglés, '\_' y números, y debe comenzar con una letra en inglés.
+
+## **1.2 V2 PRO** Información recibida
+
+a. Marco de información del odómetro (13 bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0x0a |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenido | V3_ | V 2 _ | V 1 _ | V 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenido | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 12 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenido | Consultar |  |  |  |
+
+Cabe señalar que v y theta se transmiten en números enteros de cuatro bytes, donde la unidad de v es mm/s y la unidad del ángulo theta es 0,01 grados. Es decir, se requieren 9000 para 90 grados.
+
+b. Reposicionar el marco (entregar la pose X, Y, Theta)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0x02 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenido | x3_ | x2_ | x1_ | x0_ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenido | y3_ | y 2 _ | y 1 _ | y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Contenido | Theta 3 _ | Theta 2 _ | Theta 1 _ | Theta 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Contenido | Consultar |  |  |  |
+
+Cabe señalar que x, y y theta se transmiten en números enteros de cuatro bytes, donde la unidad de xey es mm y la unidad del ángulo theta es 0,01 grados. Es decir, se requieren 9000 para 90 grados.
+
+do. Mapeo inicial/final
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0x02 |
+
+| Bytes | Byte4(Estado) | Byte5 | …. | Byte 34 |
+| --- | --- | --- | --- | --- |
+| Contenido | 0x01 | nombre del mapa 0 _ _ | … | nombre del mapa 29 _ _ |
+
+| Bytes | Byte 35 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenido | Consultar |  |  |  |
+
+Complete el número de bytes del nombre del mapa desde Byte5 (mapa\_nombre\_0 a mapa\_nombre\_29), los bytes fijos son 30 (se utiliza codificación ASCII estándar, solo se admiten caracteres, números y guiones bajos en inglés. No comience el nombre del mapa con un número). Los bytes insuficientes se rellenan con 0x00. Al mismo tiempo, el mapa solo se puede crear una vez (no envíe comandos de creación de mapas continuamente). Byte4 (Estado) Determina el estado de la asignación. Cuando sea 0x00, finalizará el mapeo. Cuando sea 0x01, comenzará el mapeo.
+
+d.Cambiar mapa
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0x0C |
+
+| Bytes | Byte4 | …. | …. | Byte33 |
+| --- | --- | --- | --- | --- |
+| Contenido | nombre del mapa 0 _ _ | … | … | nombre del mapa 29 _ _ |
+
+| Bytes | Byte 34 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenido | Consultar |  |  |  |
+
+Los 30 BYTE que comienzan en Byte5map\_name\_0 son los nombres de los mapas que deben cambiarse. Es necesario asegurarse de que el nombre del mapa haya completado la tarea de mapeo.
+
+## Mensaje enviado por **1.2 V2 PRO**
+
+a. Marco de posicionamiento (25 bytes)
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0x01 |
+
+| Bytes | Byte 4 | Byte 5 | Byte 6 | Byte 7 |
+| --- | --- | --- | --- | --- |
+| Contenido | X3_ | X2_ | X1_ | X 0 _ |
+
+| Bytes | Byte 8 | Byte 9 | Byte 10 | Byte 11 |
+| --- | --- | --- | --- | --- |
+| Contenido | Y3_ | Y 2 _ | Y 1 _ | Y 0 _ |
+
+| Bytes | Byte 12 | Byte 13 | Byte 14 | Byte 15 |
+| --- | --- | --- | --- | --- |
+| Contenido | TETA 3 _ | TETA 2 _ | TETA 1 _ | THETA 0 _ |
+
+| Bytes | Byte 16 | Byte 17 | Byte 18 | Byte 19 |
+| --- | --- | --- | --- | --- |
+| Contenido | MARCA DE TIEMPO 7 _ | MARCA DE TIEMPO 6 _ | MARCA DE TIEMPO 5 _ | MARCA DE TIEMPO 4 _ |
+
+| Bytes | Byte 20 | Byte 21 | Byte 22 | Byte 23 |
+| --- | --- | --- | --- | --- |
+| Contenido | MARCA DE TIEMPO 3 _ | MARCA DE TIEMPO 2 _ | MARCA DE TIEMPO 1 _ | MARCA DE TIEMPO 0 _ |
+
+| Bytes | Byte 24 |  |  |  |
+| --- | --- | --- | --- | --- |
+| Contenido | VERIFICAR |  |  |  |
+
+Cabe señalar que la unidad de X e Y es MM y la unidad de THETA es 0,001 radianes.
+
+Después de que la reubicación sea exitosa, V2PRO siempre enviará el marco de posicionamiento.
+
+b.Marco de retorno del resultado de la ejecución de la tarea
+
+Incluyendo la devolución de resultados de mapeo de inicio/fin y la devolución de resultados de cambio de mapa. Este tipo de marco tiene la siguiente estructura:
+
+| Bytes | Byte 0 | Byte 1 | Byte 2 | Byte 3(CMD) |
+| --- | --- | --- | --- | --- |
+| Contenido | Aire acondicionado | DE | Longitud | 0xFF |
+
+| Bytes | Identificación | Estado | Byte 6 |
+| --- | --- | --- | --- |
+| Contenido | 0x01 | 0x01 | Consultar |
+
+Donde Id es el byte del tipo de tarea:
+
+| 0x01: | Indica inicio del mapeo |
+| --- | --- |
+| 0x02: | Indica el final del mapeo |
+| 0x03: | Indica cambio de mapa |
+
+El estado corresponde a si la tarea se realizó correctamente, 0x01 significa éxito y 0x00 significa fracaso.
+
+Cabe señalar que lleva mucho tiempo finalizar el mapeo, que es aproximadamente 1/3 del tiempo real de escaneo del mapeo. Una vez emitida la tarea larga, se devolverá el estado.

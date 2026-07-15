@@ -1,0 +1,326 @@
+---
+title: "Bedienungsanleitung für das S2 Max 2.0-Produkt"
+description: "1. Die Pinbelegung wurde aktualisiert und elektrische Spezifikationen hinzugefügt. 2. Das Prüfzertifikat wurde dem Paketinhalt hinzugefügt."
+hidden: true
+---
+## Revisionsverlauf
+
+| Datum | Version | Änderungen |
+| --- | --- | --- |
+| 30.01.2024 | V0.1 | Erstveröffentlichung |
+| 10.05.2024 | V1.0 | Aktualisierte Kameraparameter |
+| 17.06.2024 | V1.1 | 1. Die Pinbelegung wurde aktualisiert und elektrische Spezifikationen hinzugefügt. 2. Das Prüfzertifikat wurde dem Paketinhalt hinzugefügt. |
+| 25.11.2024 | V1.2 | Aktualisierte Kamera-Lagertemperatur |
+
+## 1. Einführung
+
+### 1.1 Zweck und Umfang
+
+Dieses Dokument beschreibt die Spezifikationen der S2 Max 2.0-Kamera und ausgewählte Designdetails für Entwickler, die das Produkt integrieren und verwenden.
+
+### 1.2 Terminologie
+
+| RGBD-Kamera | Eine Kamera, die synchronisierte und räumlich ausgerichtete RGB- und Tiefenbilder ausgibt |
+| --- | --- |
+| Tiefe | Ein Videostream, der einem Farb- oder Monochrom-Stream ähnelt, wobei jedes Pixel seinen Abstand von der Kamera darstellt |
+| Sichtfeld | Sichtfeld: Der Winkelbereich einer von einer Kamera erfassten Szene, einschließlich horizontaler (HFOV), vertikaler (VFOV) und diagonaler (DFOV) Sichtfelder |
+| IR-Kamera | Eine Infrarotkamera; In diesem Produkt wird hauptsächlich das Nahinfrarotband erfasst |
+| RGB-Kamera | Eine Farbkamera |
+| Tiefenkamera | Eine Kamera, deren Tiefenmodul typischerweise einen Punktprojektor, eine IR-Kamera und einen Tiefenprozessor umfasst; sein Farbmodul ist typischerweise eine RGB-Kamera |
+| SoC | System auf einem Chip zur Bildverarbeitung, Tiefenberechnung und Anwendungsalgorithmen |
+
+### 1.3 Funktionsprinzip
+
+Dieses Produkt misst die Entfernung mit indirekter Flugzeit (iToF). Die Kamera sendet einen Laserimpuls aus und der Empfänger vergleicht die empfangene Wellenform mit der gesendeten Wellenform, um die Phasendifferenz und die Impulslaufzeit Δt zu berechnen.
+
+Berechnen Sie die Entfernung des Ziels von der Kamera mit: Entfernung = Lichtgeschwindigkeit \* Δt / 2
+
+<Frame>
+  <img src="/images/legacy/f04762f5-7261-4a17-9b69-e0b6abd03511/b327809f-9560-45a7-a951-860596bd7fc9.avif" alt="iToF-Funktionsprinzip" />
+</Frame>
+
+* * *
+
+## 2. Produktübersicht
+
+Diese kompakte industrielle RGB-D-Kamera integriert eine SONY CW iToF-Kamera und gibt Dreikanal-Echtfarben-RGB-Bilder mit Tiefendaten von 0,2 m bis 5 m aus. Es richtet RGB- und Tiefenbilder räumlich und zeitlich aus, schaltet zwischen vier Hindernisvermeidungszonen um und gibt Notstopp-, Verlangsamungs- und Sicherheitszustandssignale aus.
+
+### 2.1 Aussehen des Produkts
+
+<Frame>
+  <img src="/images/legacy/b8f9c970-bf1d-4fcc-843d-c1f3db33ce88/9840b66e-ff77-4f7f-aa25-23d7936996b8.avif" alt="S2 Max 2.0 Kamera" />
+</Frame>
+
+### 2.2 Funktionen
+
+- Integrierte 1.0 TOPS-Rechenplattform, die Hindernisvermeidungsalgorithmen ohne externe CPU ausführt
+
+- Kompakter Formfaktor für flexible, verdeckte Integration
+
+- Starke Anpassungsfähigkeit an die Umwelt: Widersteht 100.000 Lux Sonnenlicht und funktioniert von der Dunkelheit bis zum hellen Licht, drinnen und draußen
+
+- Großer Messbereich von 0,2 bis 5 m
+
+- Eigenständige Hindernisvermeidung, Behältererkennung und Volumenmessung
+
+- RGB-D-Ausgang
+
+## 3. Spezifikationen
+
+### 3.1 Grundlegende Spezifikationen
+
+| Produktmodell | S2 Max 2.0 |
+| --- | --- |
+| Chip | Sony-Chip |
+| Ausgabeformat | Tiefen-, RGB- und Amplitudenkarte |
+| TOF-Auflösung und Bildrate | 320×240 (typisch 12fps) |
+| TOF-Sichtfeld | Typisch: 81° horizontal, 61° vertikal |
+| RGB-Auflösung und Bildrate | 1920×1080 (typisch 12fps) |
+| RGB-Sichtfeld | Typisch: 88° horizontal, 56° vertikal |
+| Reichweite | 0,2 bis 5 m (@90 %), 0,2 bis 2,5 m (@10 %) |
+| Genauigkeit | ±3mm+0,5%*Tiefe |
+| Stromverbrauch | 6,4W |
+| Laser | 940nm |
+| Abmessungen | 92mm×47mm×51mm |
+| Gewicht | 449g |
+| Leistungsaufnahme | 24V DC / 2A |
+| Kommunikationsschnittstelle | Ethernet / IO (optional) |
+| Schutzart | IP67 |
+| Betriebstemperatur | -20°C~60°C |
+| Lagertemperatur | -40°C~85°C |
+| Softwareumgebung | C / C++ / ROS SDK |
+| Betriebssystemunterstützung | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Kühlung | Passiv, kein Lüfter |
+| Sonnenlichtbeständigkeit | 100KLUX |
+
+**Hinweis: Das 3D-Modell definiert die Produktabmessungen.**
+
+* * *
+
+### 3.2 Elektrische Spezifikationen
+
+Tabelle 3-2. Elektrische Spezifikationen des Produkts
+
+| Parameter | Symbol | Zustand | Minimum | Typisch | Maximal | Einheit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Versorgungsspannung | VDD |  | 18 | 24 | 30 | V |
+| Digitale E/A | IN |  | 3.3 |  | 24 | V |
+| CAN-Schnittstelle |  |  | 0 |  | 5V | V |
+| Betriebstemperatur | Ta |  | -20 |  | 60 | ℃ |
+| Betriebsfeuchtigkeit |  |  | 20 |  | 80 | % |
+| Lagertemperatur |  |  | -40 |  | 85 | ℃ |
+| Lagerfeuchtigkeit |  |  | 20 |  | 80 | % |
+
+### 3.3 Produktschnittstellen
+
+### 3.3.1 Kameraseitige Schnittstellen
+
+Die Kamera verfügt über drei Schnittstellen: einen DC24V-Stromanschluss, einen Gigabit-Ethernet-Anschluss und einen IO/CAN-Funktionsanschluss.
+
+<Frame>
+  <img src="/images/legacy/e7e11524-8868-480f-ab4b-74ad6ee65346/360257fb-58ff-4da8-bb82-18e3ed2cb9d8.avif" alt="Kameraseitige Schnittstellen" />
+</Frame>
+
+| Hafen | Pin | Signal | Beschreibung |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | Gigabit-Ethernet |
+|  | 2 | MDI0_p |  |
+|  | 3 | MDI1_N |  |
+|  | 4 | MDI1_p |  |
+|  | 5 | MDI2_N |  |
+|  | 6 | MDI2_p |  |
+|  | 7 | MDI3_N |  |
+|  | 8 | MDI3_p |  |
+| Funktionsstecker | 1 | CAN_H | CAN_H |
+|  | 2 | CAN_L | CAN_L |
+|  | 3 | GND | CAN-GND |
+|  | 4 | OUT_1 | IO-Ausgang 1 |
+|  | 5 | COM | IO COM-Terminal |
+|  | 6 | OUT_2 | IO-Ausgang 2 |
+|  | 7 | IN_1 | IO-Eingang 1 |
+|  | 8 | IN_2 | IO-Eingang 2 |
+| Stromanschluss | 1 | 24+ | Gleichstrom-Buchse, 5,5–2,1 mm |
+|  | G | 24- |  |
+
+### 3.3.2 Kabel-Pinbelegung
+
+<Frame>
+  <img src="/images/legacy/1fac8068-a62a-463f-8fea-b348b0817a51/b3a002b1-866c-4e53-a670-3e21563803ad.avif" alt="Pinbelegung des Kabels" />
+</Frame>
+
+| Kabel | Farbe | Pin | Beschreibung |
+| --- | --- | --- | --- |
+| Funktionskabel | Orange | CAN_H | CAN_H |
+|  | Gelb | CAN_L | CAN_L |
+|  | Grün | GND | CAN-GND |
+|  | Braun | IN_1 | IO-Eingang 1 |
+|  | Weiß | IN_2 | IO-Eingang 2 |
+|  | Lila | COM | IO COM-Terminal |
+|  | Blau | OUT_1 | IO-Ausgang 1 |
+|  | Grau | OUT_2 | IO-Ausgang 2 |
+| Stromkabel | Rot | 24V+ | Positiver Stromanschluss |
+|  | Schwarz | GND | Negativer Stromanschluss |
+
+Hinweis: Einige ältere Funktionskabel verwenden andere Farben. Befolgen Sie die Etiketten auf dem tatsächlichen Kabel.
+
+### 3.4 Kamerakomponenten
+
+<Frame>
+  <img src="/images/legacy/079e0e65-3c06-47a4-b5c4-115964d71d5a/478aa068-1207-408b-99ee-c79d1670eb4a.avif" alt="Kamerakomponenten" />
+</Frame>
+
+| Nein. | Komponente |
+| --- | --- |
+| 1 | Betriebsanzeige; blinkt langsam nach dem Einschalten |
+| 2 | 940 nm Lichtquelle |
+| 3 | Multikamera-Interferenzerkennungsmodul |
+| 4 | TOF-Objektiv |
+| 5 | RGB-Objektiv |
+
+## 4. Anleitung zur Kameraintegration
+
+### 4.1 Kameraerkennungsbereich
+
+Abbildung 4.1 zeigt den S2 Max 2.0-Erkennungsbereich. Der horizontale Erfassungswinkel beträgt 81° und der vertikale Winkel 61°. Die Erkennungsentfernung hängt von der optischen Leistung ab. Eine höhere optische Leistung und ein höheres Zielreflexionsvermögen vergrößern die nahe Blindzone und verringern die ferne Blindzone. Eine geringere optische Leistung und ein geringeres Zielreflexionsvermögen verringern die nahe Blindzone und vergrößern die ferne Blindzone. Für Ziele mit einem Reflexionsvermögen von 10 % bis 90 % beträgt die Reichweite des S2 Max 2.0 0,2 bis 5 m. Über 5 m hinaus verursachen geringe reflektierte Signalstärke und Umgebungslichtstörungen erhebliche Entfernungsfehler.
+
+<Frame>
+  <img src="/images/legacy/36ec75a7-5443-41d8-9059-840623414d35/98bbffe4-ec39-4b8b-b418-64060da315ea.avif" alt="Erfassungsbereich der Kamera" />
+</Frame>
+
+### 4.2 Kameraabmessungen
+
+<Frame>
+  <img src="/images/legacy/9a8db5e7-9d0f-44d4-bd26-c48fa963e143/4413a8bb-bb59-4f7c-a483-1c47015d7ed9.avif" alt="Kameraabmessungen" />
+</Frame>
+
+### 4.3 Optische und Ursprungskoordinatensysteme
+
+**Optisches Koordinatensystem:**
+
+- Das optische Koordinatensystem umfasst das Kamerakoordinatensystem (CCS) und das Weltkoordinatensystem (WCS).
+
+- Das Kamerakoordinatensystem ist das 2D-Tiefenbildkoordinatensystem. Sein Ursprung ist das optische Zentrum.
+
+- Das Weltkoordinatensystem ist das 3D-Punktwolken-Koordinatensystem.
+
+- Verwenden Sie die Kamerafunktionen, um Tiefenbildkoordinaten in 3D-Punktwolkenkoordinaten umzuwandeln. Sehen Sie sich die SDK-Beispiele an.
+
+<Frame>
+  <img src="/images/legacy/80b1c745-7eb5-47ee-92c7-464aea3d8673/2c1d56ea-40ec-4833-9328-81c1a40bf269.avif" alt="Optisches Koordinatensystem" />
+</Frame>
+
+**Der Kameraursprung ist wie folgt definiert:**
+
+1. Der X-Koordinatenursprung wird an der X-Achse des Produkts ausgerichtet.
+
+2. Der Y-Koordinatenursprung wird an der Y-Achse des Produkts ausgerichtet.
+
+3. Der Z-Koordinatenursprung liegt auf der Vorderseite der Kamera.
+
+<Frame>
+  <img src="/images/legacy/392ee590-9d85-474b-ac4c-74e431d7c6f4/c0551ed1-0be6-439d-9b08-21956fc127dd.avif" alt="Kameraursprung" />
+</Frame>
+
+### 4.4 Software-SDK
+
+Weitere Informationen finden Sie im Benutzerhandbuch zur MRDVS-Hostsoftware und im MRDVS SDK-Entwicklungshandbuch.
+
+## 5. Umwelt und Zuverlässigkeit
+
+| Artikel |  | Spezifikation |
+| --- | --- | --- |
+| Betriebsumgebung | Temperatur | -20℃~60℃ |
+|  | Luftfeuchtigkeit | 0 %–95 % relative Luftfeuchtigkeit, nicht kondensierend |
+|  | Beleuchtung | 0KLUX~100KLUX |
+| Speicherumgebung | Temperatur | -40℃~85℃ |
+|  | Luftfeuchtigkeit | 10 %–95 % relative Luftfeuchtigkeit, nicht kondensierend |
+| Temperaturanstieg im Normalbetrieb |  | Anstieg der Gehäusetemperatur &lt;25℃ |
+| ESD-Bewertung |  | ±4KV Kontaktentladung, ±8KV Luftentladung |
+| RE-Rating |  | Entspricht GB 9254 KLASSE A |
+| Lebensdauer |  | Mehr als 3 Jahre |
+| Umweltzertifizierung |  | RoHS |
+
+## 6. Schnellstart
+
+### 6.1 Verbindungstest
+
+<Frame>
+  <img src="/images/legacy/9fcc4978-9fad-470b-9174-652d0eeafdc3/473a4d79-b79c-4fd3-b837-e9ad281365c8.avif" alt="Verbindungstest" />
+</Frame>
+
+1. Schließen Sie die Kamera an eine 24V/2A-Gleichstromversorgung an. Eine langsam blinkende blaue Betriebsanzeige bestätigt das normale Einschalten.
+
+2. Schließen Sie die Kamera mit einem Ethernet-Kabel der Kategorie 6 an den Computer an.
+
+3. Die werkseitig voreingestellte IP-Adresse der Kamera lautet 192.168.100.82.
+
+4. Stellen Sie die Computer-IP auf das Subnetz der Kamera ein und deaktivieren Sie die Computer-Firewall.
+
+5. Führen Sie die Host-Software aus, um die Kamerabilder anzuzeigen.
+
+6. Wenden Sie sich an den MRDVS-Vertrieb oder den technischen Support, um die Host-Software zu erhalten.
+
+### 6.2 IO-Verkabelung
+
+| Schnittstelle | Geben Sie | ein Notizen |
+| --- | --- | --- |
+| IN1 | Eingabe | Aktiv-High-Diskreter Eingang; unterstützt 24V/offener Eingang |
+| IN2 | Eingabe | Aktiv-High-Diskreter Eingang; unterstützt 24V/offener Eingang |
+| OUT1 | Ausgabe | Erdung/offener diskreter Ausgang; unterstützt 24V-Pull-up |
+| OUT2 | Ausgabe | Erdung/offener diskreter Ausgang; unterstützt 24V-Pull-up |
+| COM | GND | Gemeinsame Masse für diskrete Ausgänge, gemeinsam genutzt von IN und OUT |
+
+## 7. Vorsichtsmaßnahmen
+
+### 7.1 Laserschutzklasse
+
+| <img src="/images/legacy/be205c16-cf8f-4c39-9d60-55ecaeb62dd6/3cf7f1de-6b6b-41fe-8b05-58b060c26fe3.avif" alt="Lasersicherheit" /> | Lasersicherheit |
+| --- | --- |
+| Dieses Produkt sendet während des Betriebs einen unsichtbaren Laser aus. Vermeiden Sie es, die Augen dem Strahl auszusetzen. Der Laser entspricht der Klasse 1 und schadet Menschen bei normalem Gebrauch gemäß EN60825 nicht. |  |
+
+### 7.2 Korrekter Betrieb
+
+Die S2 Max 2.0-Kamera verwendet eine 24-V-Gleichstromversorgung. Schließen Sie das Netzkabel an, bevor Sie Strom anlegen, und vertauschen Sie nicht die Plus- und Minuspole. Eine Verpolung kann das Produkt beschädigen.
+
+### 7.3 Betriebstemperatur
+
+Halten Sie die Umgebungstemperatur innerhalb des in den Produktspezifikationen angegebenen Bereichs (Tabelle 2-1). Montieren Sie das Produkt auf einer wärmeleitenden Komponente wie einer Metallhalterung, um die Wärmeableitung zu verbessern und eine optimale Leistung zu erzielen.
+
+## 8. Fehlerbehebung
+
+| Nein. | Problem | Auflösung |
+| --- | --- | --- |
+| 1 | Kamera reagiert beim Öffnen nicht | Stellen Sie sicher, dass die Firewall deaktiviert ist |
+| 2 | Host-Software erkennt mehrere IP-Adressen | Ein anderes Gerät im LAN verwendet dieselbe IP; Wählen Sie die gewünschte IP-Adresse aus |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernet-Kabel. Daten können über Fast Ethernet zunächst instabil sein |
+| 4 | Software-Installationsort | Eine Standardinstallation auf Laufwerk C kann von den Berechtigungseinstellungen | betroffen sein
+
+## Anhang: Packungsinhalt
+
+<Frame>
+  <img src="/images/legacy/3f3660c4-7da6-45f1-9711-fe4305effc6e/ab208cbd-23eb-4476-a6b2-bde7700ad842.avif" alt="S2 Max 2.0 Kamera" />
+</Frame>
+
+S2 Max 2.0 Kamera
+
+<Frame>
+  <img src="/images/legacy/b7383fd0-ef1a-4d33-9163-2d86241b4bd1/b0dc1e5e-e73b-49f6-87eb-30d9d71e82ad.avif" alt="8-poliges Funktionskabel" />
+</Frame>
+
+8-poliges Funktionskabel
+
+<Frame>
+  <img src="/images/legacy/3ff48931-e15d-4ef6-91e5-7cdedcf68c7e/cef46b22-6500-46d1-aab0-c174810b0d8c.avif" alt="Zwei vierteilige wasserdichte Kits" />
+</Frame>
+
+Zwei vierteilige wasserdichte Kits
+
+<Frame>
+  <img src="/images/legacy/599a77ee-8d91-46b2-b779-b3f6ffbbebb7/13a6d34d-c493-442f-9351-f36d0b237350.avif" alt="Prüfzertifikat" />
+</Frame>
+
+Ein Prüfzertifikat
+
+* * *
+
+* * *

@@ -1,0 +1,35 @@
+---
+title: "Protocolo de comunicación JSON"
+description: "Formato de mensaje TCP Socket JSON y referencia de campo para la comunicación entre la cámara y un robot o PLC."
+hidden: true
+---
+## Interfaz
+
+- Servidor de sockets TCP. La cámara actúa como servidor. El puerto predeterminado es `5501`.
+
+- Contenido del mensaje: formato de texto con soporte ASCII. Se recomienda JSON.
+
+## Solicitud y respuesta
+
+**1. Robot (PLC) —> sistema de visión**
+
+```json
+{"action": "3D"}
+```
+
+Esta solicitud desencadena una tarea de visión 3D.
+
+**2. Sistema de visión —> robot (PLC)**
+
+La cámara devuelve el resultado de la detección con estos campos:
+
+| Campo | Requerido | Descripción |
+| --- | --- | --- |
+| resultado | Sí | Estado de detección de números enteros. `0` indica que la localización falló y no hay resultados disponibles. Cualquier otro valor indica éxito y especifica el número de resultados devueltos. |
+| posición | Sí | X, Y, Z, RX, RY y RZ representan valores para el objeto detectado en el sistema de coordenadas del robot. Las unidades son milímetros y grados. `-180° ≤ RZ ≤ 180°`. Todos los valores se establecen en `0` cuando falla la detección. |
+
+**Ejemplos**
+
+| Detección exitosa | `{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}` |
+| --- | --- |
+| Error de detección | `{"result":0,"pos":[0,0,0,0,0,0]}` |

@@ -1,0 +1,477 @@
+---
+title: "V2 ROS 1 인터페이스 참조"
+description: "V2 현지화 ROS 1 SDK를 빌드 및 실행하고 해당 주제와 서비스를 사용하세요."
+hidden: true
+---
+## 1: 컴파일
+
+### 1. 호스트 컴퓨터에 QT5가 설치되어 있는지 확인하세요. 컴파일에는 QT5의 코어, 네트워크 및 기타 기능 패키지가 필요합니다.
+
+```cpp
+// Installation differs by Linux distribution. This example uses:
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+### 2. libzip 함수 패키지 설치
+
+libzip 공식 웹사이트에서 소스 파일(https://libzip.org/download/)을 다운로드한 후 공식 웹사이트 튜토리얼에 따라 컴파일합니다.
+
+### 3. ros 함수 패키지 컴파일
+
+/V2-ROS-SDK-service 경로(/src).와 동일한 레벨)에서 `catkin_make` 명령어를 사용하여 컴파일합니다.
+
+## 2: 실행
+
+ROS 예제를 실행하기 전에 ROS 마스터-슬레이브가 카메라에 배포된 경우 먼저 ROS 마스터-슬레이브 관련 설정을 꺼야 합니다. 그렇지 않으면 ROS 관련 통신 예외가 발생합니다. 카메라에 ROS 환경이 있는 경우, ROS 샘플 프로그램을 실행하기 전에 카메라 전원을 켠 후 약 20초 정도 기다려야 합니다.
+
+ROS 노드 생성 단계:
+
+1. 샘플 프로그램 코드 파일 디렉터리 `home/username/V2_ROS_SDK`를 입력하고 src 폴더와 동일한 수준에서 명령을 실행합니다.
+
+2. 캣킨\_make
+
+3. 소스 devel/setup.bash
+
+## 3: ROS 주제 인터페이스
+
+기능에 따른 분류는 다음과 같습니다.
+
+매핑 단계:
+
+1. 매핑 활성화 인터페이스
+
+2. 매핑 상태 인터페이스 수신
+
+3. 매핑 진행 인터페이스 수신
+
+포지셔닝 단계:
+
+1. 재배치 인터페이스
+
+2. 포지셔닝 상태 인터페이스 수신
+
+2. 스위치 맵 인터페이스
+
+예외, 매개변수 구성 및 기타 인터페이스:
+
+1. 매개변수 인터페이스 설정
+
+2. 현재 카메라가 사용하는 하드 디스크 공간 인터페이스를 얻습니다.
+
+3. 현재 결함이 있는 모듈 이름을 수신합니다.
+
+4. 등고선 지도 인터페이스 다운로드(레이저 윤곽선만 해당)
+
+5. 지도 파일 zip 인터페이스 업로드(신규)
+
+인터페이스를 테스트하기 전에 카메라 본체를 켜고(본체 프로그램이 시작될 때까지 30초 대기) ROS SDK 노드를 열어야 합니다(이전 섹션 참조).
+
+### 포지셔닝 및 자세 인터페이스 수신
+
+1. ROS는 카메라에서 전송된 위치 값 x, y, theta를 계속해서 수신합니다.
+
+2. 위치 지정 값 x, y 및 쿼터니언(세타에서 변환됨)을 주제: `LxCamera_LocationPoseResult`에 게시합니다.
+
+3. TF 변환을 통해 포지셔닝 값과 쿼터니언을 브로드캐스팅합니다.
+
+```cpp
+rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+```
+
+### 위치 확인 상태 인터페이스 수신
+
+1. ROS는 카메라에서 전송된 위치 확인 상태 "`true/false`"를 계속 수신하여 현재 위치 확인이 정상인지 여부를 나타냅니다.
+
+2. ROS는 위치 확인 상태(`std_msgs::Bool` 유형의 데이터)를 주제: `LxCamera_LocationResult`에 게시합니다.
+
+3. Topic을 구독하시면 포지셔닝 상태를 알 수 있습니다. (현재 포지셔닝 성공 여부)
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_LocationResult
+```
+
+### 현재 카메라에서 사용하는 하드 디스크 공간 인터페이스를 수신합니다.
+
+1. ROS는 카메라에서 전송된 저장 공간 사용 비율\*\*(주파수: 2s)\*\*을 계속해서 수신합니다.
+
+2. ROS는 점유 상태(`std_msgs::Float32` 유형 데이터)를 주제: `LxCamera_Capacity_Status`에 게시합니다.
+
+3. 토픽을 구독하면 점유 상태 비율을 얻을 수 있습니다.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+### 현재 결함이 있는 모듈 이름을 수신합니다.
+
+1. ROS는 카메라에서 잘못된 모듈 이름을 계속 전송합니다.
+
+2. ROS는 점유 상태(`std_msgs::String` 유형 데이터)를 주제: `LxCamera_Module_Error`에 게시합니다.
+
+3. Topic을 구독하면 예외 모듈 이름을 얻을 수 있습니다.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Module_Error
+```
+
+### 매핑 상태 인터페이스 수신
+
+1. 지도 제작을 시작한 후
+
+2. ROS는 위치 확인 상태(`std_msgs::Bool` 유형의 데이터)를 주제: `LxCamera_MappingState`에 게시합니다.
+
+3. 토픽을 구독하면 매핑 상태를 전환할 수 있습니다.
+
+```cpp
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_MappingState
+```
+
+#### 매핑 진행 인터페이스 수신
+
+1. 지도 제작을 시작한 후
+
+2. ROS2는 위치 확인 상태(`std_msgs::Int32` 유형의 데이터)를 주제: `LxCamera_Mapping_Progress`에 게시합니다.
+
+3. Topic을 구독하면 지도 구축 진행 상황(0~100)을 확인할 수 있습니다.
+
+```bash
+//Use this command to verify that the topic publishes data
+rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
+```
+
+### 매개변수 인터페이스 설정
+
+1. 사용자는 `std_msgs/String` 유형의 메시지를 주제: `LxCamera_SetParam`에 게시합니다.
+
+2. 메시지 형식은 영어 쉼표 ","로 구분된 9개의 부동 소수점 숫자입니다. 이는 각각 다음을 나타냅니다. `x,y,z,yaw,pitch,roll,x,y,yaw`, **처음 6개 매개변수는 카메라의 자세이고 마지막 3개는 LiDAR의 자세입니다**.
+
+3. 수정이 성공한 후 카메라 경로 `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` 파일의 \[Laser1\] 및 \[Camera1\]에 관련 매개변수가 설정됩니다. 예:
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
+```
+
+### 스위치 맵 인터페이스
+
+1. 사용자는 `std_msgs/String` 유형의 메시지를 주제: `LxCamera_SwitchMap`에 게시합니다.
+
+2. 메시지 형식은 지도 이름입니다. (**카메라에서 지도 구축이 완료된 경우**)
+
+3. 카메라 웹 페이지에 표시된 지도가 변경된 경우(웹 페이지 새로 고침) 전환이 성공한 것입니다.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
+```
+
+### 주행거리계 업로드
+
+1. 사용자는 `nav_msgs::Odometry` 유형 데이터를 주제: `/sim/odom`(수정 가능)에 게시합니다.
+
+rostopic pub /odom nav\_msgs/Odometry "헤더: seq: 0 스탬프: 초: 0 nsecs: 0 프레임\_id: 'odom' child\_frame\_id: 'base\_link' 포즈: 포즈: 위치: x: 1.0 y: 2.0 z: 0.0 방향: x: 0.0 y: 0.0 z: 0.0 w: 1.0 공분산: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] 트위스트: 트위스트: 선형: x: 0.5 y: 0.0 z: 0.0 각도: x: 0.0 y: 0.0 z: 0.1 공분산: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
+```
+
+### 개요 지도 인터페이스 다운로드
+
+1. 사용자는 `std_msgs/String` 유형의 메시지를 주제: `LxCamera_DownloadMap`에 게시합니다.
+
+2. 메시지 형식은 저장 주소와 맵 이름을 쉼표(,)로 구분하여 표시합니다. 주소는 절대 경로를 사용하는 호스트 컴퓨터의 주소입니다. 맵 이름은 카메라에서 매핑이 완료된 ".zip" 형식의 파일 이름입니다.
+
+3. 성공하면 호스트 컴퓨터에서 지정한 경로 아래에 지정된 맵 이름을 가진 압축 패키지가 있게 됩니다. 압축을 풀면 `PGM map file` 및 `YAML configuration file`를 얻게 됩니다.
+
+```cpp
+// Enter the lx_camera_udp directory
+//Open a terminal
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
+```
+
+### 지도 파일 zip 인터페이스 업로드(신규)
+
+1. 사용자는 `std_msgs/String` 유형의 메시지를 주제: `LxCamera_UploadMapZip`에 게시합니다.
+
+2. 메시지 내용은 업로드해야 하는 **맵 압축 패키지 경로**입니다(예: "/home/fr1511b/map.zip"). 다운로드 인터페이스에서 다운로드한 압축 패키지를 업로드해야 합니다.
+
+3. 지도 파일을 찾으면 패키지하여 카메라로 보냅니다. 이를 수신한 후 카메라는 지정된 경로(`/home/fr1511b/hontai/map/`)로 압축을 푼다.
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
+```
+
+### 재배치 인터페이스
+
+1. 사용자는 `geometry_msgs::PoseWithCovarianceStamped` 유형의 데이터를 주제: `LxCamera_UploadReloc`에 게시합니다.
+
+2. 데이터는 `x,y,yaw`를 포함한 레이저 포즈입니다.
+
+3. 카메라 웹 페이지에 표시된 신체 위치가 전송된 위치로 업데이트되면 재배치에 성공한 것입니다.
+
+```cpp
+rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
+header:
+  frame_id: ''
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0
+      y: 0
+      z: -0.694658
+      w: 0.71934
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+> 쿼터니언에는 테스트 중에 제약 조건이 있으며 마음대로 채울 수 없습니다. [웹 도구](https://www.itutool.com/tools/euler-quaternion-converter "웹 도구")를 사용하여 `Euler yaw angle`를 `quaternion x/y/z/w`로 변환할 수 있습니다.
+
+## ROS 서비스 인터페이스:
+
+위의 주제(ROS TOPIC)를 사용하여 매핑, 지도 전환, 지도 다운로드, 재배치의 4가지 기능을 구현하는 동시에 서비스(ROS SERVICE) 인터페이스를 사용하여 통신하고 서비스 응답 결과(작업 성공 여부)를 피드백하는 기능도 지원합니다. TOPIC과 비교하여 다음 서비스 인터페이스를 우선적으로 사용하는 것이 좋습니다.
+
+1. rosservice 명령을 통해 서비스 인터페이스를 구독합니다.
+
+2. "true"가 반환되면 작업이 성공한 것이고, "false"가 반환되면 작업이 실패한 것입니다.
+
+기능에 따른 분류는 다음과 같습니다.
+
+매핑 단계:
+
+1. 매핑
+
+2. 출구 매핑
+
+3. 증분 매핑(즉, 기존 맵에 대한 증분 매핑과 자동 병합)
+
+포지셔닝 단계:
+
+1. 재배치 인터페이스
+
+2. 맵 전환
+
+기타 인터페이스:
+
+1. 현재 지도 이름을 가져옵니다.
+
+2. 지도 다운로드
+
+3. 현재 지도 목록 가져오기
+
+4. 지도 삭제
+
+5. 히트맵 다운로드
+
+### 매핑
+
+서비스 이름: `/lx_localization_node/LxCamera_Mapping_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
+mapname: 'test_map'"
+```
+
+### 스위치 맵
+
+서비스 이름: `/lx_localization_node/LxCamera_SwitchMap_srv`
+
+서비스 형식 정의:
+
+```cpp
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
+```
+
+### 지도 다운로드
+
+서비스 이름: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+서비스 형식 정의:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
+save_path: '/home/fr1511b/T/TEST'"
+```
+
+### 이전
+
+서비스 이름: `/lx_localization_node/LxCamera_UploadReloc_srv`
+
+서비스 형식 정의:
+
+```cpp
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+  header:
+    seq: 0
+    stamp:
+      secs: 0
+      nsecs: 0
+    frame_id: 'map'
+  pose:
+    pose:
+      position:
+        x: 4.5
+        y: -15.5
+        z: 0.0
+      orientation:
+        x: 0.0
+        y: 0.0
+        z: 0.694658
+        w: 0.71934
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+### 현재 지도 이름을 가져옵니다.
+
+서비스 이름: `/lx_localization_node/LxCamera_GetCurMapname_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool get_cur_mapname #Retrieve the current map identifier
+---
+string mapname     #Current map name
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+### 현재 지도 목록 가져오기
+
+서비스 이름: `/lx_localization_node/LxCamera_GetMapList_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool get_map_list # Whether to retrieve the map list
+---
+string[] map_list # Map list
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
+```
+
+### 출구 매핑(맞춤형 인터페이스)
+
+서비스 이름: `/lx_localization_node/LxCamera_ExitMapping_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool exit_mapping #Whether to exit mapping
+---
+bool state #Whether mapping exited successfully
+```
+
+명령어 디버깅:
+
+rosservice 호출 /lx\_localization\_node/LxCamera\_ExitMapping\_srv "exit\_mapping: true"
+
+### 지도 삭제
+
+서비스 이름: `/lx_localization_node/LxCamera_EraseMap_srv`
+
+서비스 형식 정의:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+---
+bool result #Whether the map was deleted successfully
+```
+
+명령어 디버깅:
+
+rosservice 호출 /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "맵 이름: 'TEST888'"
+
+### 히트맵 다운로드
+
+서비스 이름: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+서비스 형식 정의:
+
+```cpp
+string mapname    # Map name; must not start with a digit; maximum 30 characters
+string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result
+```
+
+명령어 디버깅:
+
+rosservice 호출 /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "맵 이름: 'TEST\_999' 저장\_경로: '/home/fr1511b/T/TEST'"
+
+### 증분 매핑
+
+서비스 이름: `/lx_localization_node/LxCamera_IncMapping_srv`
+
+서비스 형식 정의:
+
+```cpp
+bool status      # Whether to map: 1 starts mapping; 0 stops mapping
+string mapname   # Map name; must not start with a digit; maximum 30 characters
+---
+bool result
+```
+
+명령어 디버깅:
+
+```cpp
+rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
+mapname: 'test_map'"
+```

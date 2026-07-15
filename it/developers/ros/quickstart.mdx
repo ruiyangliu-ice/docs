@@ -1,0 +1,209 @@
+---
+title: "Avvio rapido del ROS"
+description: "Configura, crea ed esegui l'SDK ROS di localizzazione visiva V2 per la mappatura e la localizzazione di base."
+hidden: true
+---
+## Prefazione
+
+Questo articolo introduce l'architettura software del modulo di posizionamento visivo, il metodo di configurazione dell'SDK ROS e il processo operativo di mappatura e posizionamento di base.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7ed197c5-c599-4d93-af40-94afbc0a5507.avif" alt="Icone relative alla prefazione" />
+</Frame>
+
+Il diagramma schematico di questo modulo di posizionamento è mostrato sopra. Tra questi, il programma di posizionamento integrato della fotocamera interagisce con l'SDK ROS del computer host utilizzando UDP. Inoltre, il programma di posizionamento è dotato di un front-end WEB configurabile in grado di realizzare la visualizzazione del posizionamento (può essere aperto utilizzando qualsiasi browser tradizionale, l'IP di accesso predefinito è 192.168.100.201:9998). Il front-end ha due funzioni principali:
+
+1. Eseguire la DEMO completa per completare il processo di mappatura e posizionamento;
+
+2. Configurare l'ID di destinazione e la PORTA per la comunicazione con ROS SDK. Allo stesso modo, l'IP e la PORTA della telecamera di destinazione devono essere configurati prima di avviare ROS SDK.
+
+Dopo aver completato la configurazione di cui sopra, tutte le funzioni dell'interfaccia WEB front-end, come la mappatura, il riposizionamento e il download delle mappe, possono essere richiamate tramite ROS SDK.
+
+## Compila
+
+### Programma che esegue la configurazione dell'ambiente
+
+1. Installa QT
+
+Assicurati che QT5 sia stato installato sul computer host. Sono necessari Core, Network e altri pacchetti funzionali in QT5. I metodi di installazione delle diverse versioni di Linux potrebbero essere diversi. Ecco un esempio di installazione:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+2. Installare il pacchetto di funzioni libzip
+
+Tutorial sull'installazione https://blog.csdn.net/iamhuanyu/article/details/129603632
+
+3. Compilare il pacchetto di funzioni ROS. Corri `catkin_make` sotto il percorso `/V2-ROS-SDK-service` (stesso livello di `/src`).
+
+## Correre
+
+1\. Inserisci il percorso /V2-ROS-SDK-service
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/15e7b1f0-5386-423e-85c9-4c433631e49c.avif" alt="Icone relative al funzionamento" />
+</Frame>
+
+2\. Conferma il file di configurazione
+
+UN. Conferma la configurazione del file SDK ROS
+
+Directory del file di configurazione/V2-ROS-SDK-service/src/lx\_camera\_ros/launch/mapping.launch
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/42a61e00-5e2f-427e-93d0-9b6f2c255397.avif" alt="Icona relativa all'operazione 2" />
+</Frame>
+
+L'IP predefinito della telecamera è 192.168.100.201 (se è necessario modificare l'IP della telecamera, utilizzare il computer host di fabbrica della telecamera per modificarlo e modificare l'IP di conseguenza) e la porta è fissa su 8001.
+
+B. Confermare che la fotocamera e il computer si trovino sullo stesso segmento di rete e collegati allo stesso switch. C. Confermare che il programma della fotocamera sia configurato correttamente, accedere a WEB e fare clic su Configurazione parametri.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c579b834-e264-488c-9ee6-0e0832bc73f2.avif" alt="Icona relativa all'operazione 3" />
+</Frame>
+
+Fare clic sul pulsante "Configurazione parametri" sulla barra dei menu di sinistra e verrà visualizzata la seguente finestra:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c78ada8-7eec-447c-9b42-23e298e2017b.avif" alt="Icona relativa all'operazione 4" />
+</Frame>
+
+Modificare portCode in 8987 (solitamente fissato su questo valore) e modificare portName nell'IP della porta di rete che collega la macchina e la fotocamera (ovvero, l'IP della scheda di rete del computer host che esegue ROS SDK)
+
+3\. Avvia il nodo ROS
+
+```bash
+source devel/setup.bash
+roslaunch lx_camera_ros mapping.launch
+```
+
+Dopo l'avvio, il display mostrato nella figura seguente indica che l'avvio è riuscito.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/49dea7d3-7962-4ee7-8168-216378b6ca63.avif" alt="Icone relative al funzionamento 5" />
+</Frame>
+
+### Debug
+
+1\. Metodo di debug ROS
+
+Apri un nuovo terminale, inserisci il percorso `/V2-ROS-SDK-service` ed esegui `source devel/setup.bash`, quindi avvia il debug.
+
+UN. Iscriviti ai messaggi
+
+Esempio: occupare lo spazio di archiviazione corrente della fotocamera
+
+Dopo aver inserito il debug, esegui `rostopic echo /lx_localization_node/LxCamera_Capacity_Status` nel terminale.
+
+La ricezione del seguente messaggio significa che l'intero collegamento di comunicazione è normale. Allo stesso tempo, questo messaggio può essere utilizzato anche come pacchetto heartbeat con una frequenza di 2 Hz.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8092fa65-76da-46ef-8756-b0e37d673e76.avif" alt="Icone correlate al debug" />
+</Frame>
+
+2\. Chiamare l'interfaccia di servizio
+
+Esempio: Visualizza il nome della mappa attualmente selezionata
+
+Esegui `rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"` nel terminale.
+
+La ricezione del messaggio seguente significa che l'intero collegamento di comunicazione è normale e il messaggio restituito è il nome della mappa corrente.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/efa918a2-6e6e-4191-9627-dfd126ceb610.avif" alt="Icone correlate al debug 2" />
+</Frame>
+
+## Processo operativo di base
+
+Accendi la fotocamera, attendi circa 30 secondi, quindi avvia il nodo di inoltro dati per iniziare a utilizzarla.
+
+Accedi al terminale di debug
+
+***1. Pubblica le istruzioni per la creazione della mappa***
+
+chiamata rosservice /lx\_localization\_node/LxCamera\_Mapping\_srv “status: true mapname: 'test\_map'”
+
+Questo comando viene utilizzato per avviare un'attività di mappatura. Si preparerà a creare una mappa con il nome "test\_map". Se viene emesso con successo, restituirà true. In questo momento, puoi tirare l'auto per scansionare la mappa.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a77a9c8-f9df-4c71-a4c9-a4e9d66d6892.avif" alt="Illustrazioni relative alle procedure operative di base" />
+</Frame>
+
+***2. Emetti il ​​comando per terminare la mappatura***
+
+chiamata rosservice /lx\_localization\_node/LxCamera\_Mapping\_srv “status: false mapname: 'test\_map'”
+
+Questo comando viene utilizzato per terminare un'attività di mappatura. Restituirà vero dopo che la consegna è andata a buon fine. A questo punto, puoi ricevere il valore restituito dopo aver atteso il completamento della mappatura.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c93beee-a975-4c4a-93d0-31c500a676f4.avif" alt="Illustrazioni relative alle procedure operative di base 2" />
+</Frame>
+
+***3. Una volta completata la costruzione della mappa, attendi qualche istante e passa al nome della nuova mappa***
+
+chiamata rosservice /lx\_localization\_node/LxCamera\_SwitchMap\_srv “map\_name:“test\_map’”
+
+***4. Dopo aver tagliato l'immagine, invia il messaggio di trasferimento***
+
+rosservice chiama /lx\_localization\_node/LxCamera\_UploadReloc\_srv “posa:
+
+intestazione:
+
+seq: 0
+
+timbro:
+
+secondi: 0
+
+nsec: 0
+
+frame\_id: 'mappa'
+
+posa:
+
+posa:
+
+posizione:
+
+x: 4.5
+
+y: -15.5
+
+z: 0.0
+
+orientamento:
+
+x: 0.0
+
+y: 0.0
+
+z: 0.694658
+
+w: 0.71934
+
+covarianza: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]”
+
+Tra questi, x, y, z, w nell'orientamento sono la rappresentazione quaternionica dell'angolo. Si prega di prestare attenzione al formato.
+
+***5. Ottieni la posizione di posizionamento attuale in tempo reale***
+
+eco rostopica /lx\_localization\_node/LxCamera\_LocationPoseResult
+
+### Domande frequenti e soluzioni
+
+***1\.ROS*** Impossibile compilare il programma
+
+\-Controllare l'ambiente della libreria dipendente per verificare se tutte le librerie dipendenti sono completamente installate
+
+***2.ROS SDK*** Nessuna risposta dopo l'invio del messaggio
+
+\-Verificare che la fotocamera e la macchina si trovino sullo stesso segmento di rete o se è possibile utilizzare il computer host della fotocamera per aprire la fotocamera e visualizzare le immagini.
+
+\-Confermare che non ci siano problemi con il file di configurazione della telecamera e confermare che non ci siano problemi con il file di configurazione ROS.
+
+***3.ROS*** Il messaggio di debug non può essere inviato
+
+I messaggi \-ROS hanno severi requisiti di formato. Durante il debug, seguire completamente il formato del documento di istruzioni e modificare solo il valore.
+
+Modifica il debug.

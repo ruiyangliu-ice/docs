@@ -1,0 +1,548 @@
+---
+title: "Triển khai tránh chướng ngại vật trực quan 3D"
+description: "Triển khai và định cấu hình camera ToF dòng S của MRDVS để tránh chướng ngại vật 3D theo thời gian thực."
+---
+## 1. Tổng quan
+
+Khả năng tránh chướng ngại vật trực quan dựa trên camera dòng S và camera RGBD do Meyer Micro Vision tự phát triển dựa trên nguyên tắc TOF. Nó tích hợp thuật toán học sâu và thị giác 3D truyền thống để tạo ra một hệ thống tránh chướng ngại vật phù hợp với các cảnh phong phú, chính xác, thời gian thực, có thể cấu hình một máy, cộng tác nhiều máy và có mức độ chủ động và khả năng dự đoán nhất định.
+
+Hệ thống có các đặc điểm sau: phát hiện động thời gian thực, phát hiện mặt đất thích ứng, theo dõi động mục tiêu phát hiện, hỗ trợ nhiều đầu ra tín hiệu, hỗ trợ chuyển đổi nhiều chế độ, có thể hỗ trợ 5 chế độ và hỗ trợ công việc cộng tác nhiều máy.
+
+## 2. Lựa chọn và cài đặt camera
+
+### 2.1 Giảm AMR
+
+Như hình bên dưới, camera của xe đang rình rập được lắp đặt tương đối thấp. Nên sử dụng camera dòng S10, được lắp ở mặt trước của phương tiện đang ẩn nấp theo hướng chuyển động. Khi thiết kế cấu trúc, chú ý tránh can thiệp vào trường nhìn.
+
+<Frame>
+  <img src="/images/legacy/2113c3b1-8f9d-41f4-ba4f-41d0f64ffc71/d803278d-67a2-4a78-a7ca-72e86b149803.avif" alt="Hình 2.1 Xe đang rình rập" />
+</Frame>
+
+### 2.2 Xe nâng
+
+Như hình 2.2, camera xe nâng thông minh được lắp đặt tương đối cao. Bạn nên sử dụng camera dòng S10, được lắp trên camera cột của xe nâng ở góc 30°-55° hướng xuống, sao cho mép trường nhìn của camera nằm ngay trên bề mặt trước của xe nâng. Khuyến cáo chiều cao lắp đặt camera không được cao hơn 2m.
+
+<Frame>
+  <img src="/images/legacy/df29f779-2887-4494-8cd5-66a35fcbb05f/4d1053b7-cf49-4285-9a5e-232eef95b067.avif" alt="Hình 2.2 Xe nâng" />
+</Frame>
+
+## 3. Cài đặt kết nối camera
+
+1. Trước khi kết nối máy ảnh, bạn cần thực hiện các cài đặt sau. IP nhà máy của camera là 192.168.100.82. Trước khi kết nối, bạn cần đặt IP cổng mạng cục bộ vào cùng một phân đoạn mạng, như trong Hình 3.1.
+
+<Frame>
+  <img src="/images/legacy/616df060-87e3-4812-8831-66b833e1f280/9aa43694-2c5f-456e-9552-c344b873acb4.avif" alt="Hình 3.1 Cài đặt IP đã đóng" />
+</Frame>
+
+2. Tắt tường lửa như trong Hình 3.2.
+
+<Frame>
+  <img src="/images/legacy/ccd4abae-1a00-4de4-b597-418920f24dca/99c52d00-ab91-4390-a1d5-ab1ef334f411.avif" alt="Hình 3.2 Tường lửa đã đóng" />
+</Frame>
+
+3. Nếu bạn cần sửa đổi IP camera, bạn có thể mở phần mềm PC "**LxCameraViewer**", nhấp vào "**Other Tools**", liên quan đến mạng → công cụ cấu hình IP → nhấp vào địa chỉ IP để sửa đổi, nhấn Enter và nhấp để xác nhận sửa đổi. Sau khi sửa đổi xong, camera sẽ tự động khởi động lại và kết nối lại.
+
+<Frame>
+  <img src="/images/legacy/320b027b-2988-458f-9900-cbef3a254247/a3701254-2b0f-48f9-a359-fff2f50a84b3.avif" alt="Hình ảnh minh họa liên quan đến cài đặt kết nối camera 3" />
+</Frame>
+
+4. Bạn có thể kiểm tra xem IP đã được sửa đổi thành công hay chưa thông qua thanh trạng thái ở góc dưới bên trái. Nếu bạn đang ở phân đoạn mạng khác, bạn cần sửa đổi IP cục bộ trước khi kết nối lại với camera.
+
+<Frame>
+  <img src="/images/legacy/26fef8c4-ff64-4fcc-a9b3-974d68c3a90d/d0d23fb7-fe18-4d75-9c7c-ff87020690d9.avif" alt="Hình ảnh minh họa liên quan đến cài đặt kết nối máy ảnh 4" />
+</Frame>
+
+5. Mở phần mềm máy tính chủ LxCameraViewer được cài đặt sẵn. Phần mềm máy tính chủ sẽ tự động truy xuất camera theo phân đoạn mạng hiện tại. Nhấp để mở camera sẽ tự động mở bản đồ độ sâu và hình ảnh đám mây điểm, như trong Hình 3.3.
+
+<Frame>
+  <img src="/images/legacy/5565c511-bef1-4ae7-a803-6e2cd4b2ea1a/772be638-3857-41bc-9055-f88086a49b5d.avif" alt="Hình 3.3 Màn hình phần mềm PC" />
+</Frame>
+
+6. Sau khi mở camera, hãy mở rộng cài đặt 3D và cài đặt bộ lọc để điều chỉnh các thông số của camera. Các thông số cấu hình khuyến nghị cho các ứng dụng tránh chướng ngại vật là **độ phơi sáng cao 650, độ phơi sáng thấp 200, cài đặt bộ lọc và ngưỡng tín hiệu thấp nên đặt thành 10-20 (dòng S10 chỉ cần đặt mức độ chói thành 1 và không cần đặt độ phơi sáng, ngưỡng tín hiệu thấp, v.v.)**. Đối với các cấu hình tham số và cài đặt khác dành cho các mẫu máy độc đáo, bạn nên liên hệ với nhân viên hỗ trợ kỹ thuật của Meyer Micro Vision.
+
+<Frame>
+  <img src="/images/legacy/e8dd9101-6ed2-4bc7-b001-24186895e11f/056ee982-803d-4f8f-85bc-383de72655a2.avif" alt="Hình ảnh minh họa liên quan đến cài đặt kết nối máy ảnh 6" />
+</Frame>
+
+## 4. Cấu hình tham số tránh chướng ngại vật
+
+1. Sau khi hoàn tất cài đặt thông số camera ở trên, hãy nhấp vào nút Áp dụng thuật toán. Mục cài đặt thuật toán sẽ hiện lên trên thanh trạng thái bên phải. Đặt nó ở chế độ thường mở theo ứng dụng. Thuật toán ứng dụng camera S10 cần chọn [Thuật toán tránh chướng ngại vật]. Đối với các máy ảnh khác, bạn cần chọn [Thuật toán tránh chướng ngại vật 2.0] và số phiên bản thuật toán được hiển thị bên dưới. Camera S10 không hỗ trợ sử dụng các loại khu vực tránh chướng ngại vật hình khu vực, điều này có thể gây ra sai lệch trong kết quả tránh chướng ngại vật.
+
+<Frame>
+  <img src="/images/legacy/4777637e-6cfe-456f-9ca7-fc2d4b4146f7/46274569-4a2d-429a-a270-1f561e8b2a63.avif" alt="Hình minh họa liên quan đến cấu hình thông số tránh chướng ngại vật" />
+</Frame>
+
+2. Vùng tránh chướng ngại vật hình chữ nhật và vùng tránh chướng ngại vật hình quạt được thể hiện trên Hình 4.1.
+
+<Frame>
+  <img src="/images/legacy/75f84757-7045-4504-9742-e49c74d38889/f6daa1cb-71af-46bf-b501-0cb503ff01ea.avif" alt="Sơ đồ liên quan đến cấu hình thông số tránh chướng ngại vật 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a01278e9-15ec-436b-a9ed-62dedce4db2e/856adc1f-bbde-47e2-a750-33e72a921d54.avif" alt="Sơ đồ liên quan đến cấu hình tham số tránh chướng ngại vật 3" />
+</Frame>
+
+Hình 4.1 Khu vực tránh chướng ngại vật hình chữ nhật và khu vực tránh chướng ngại vật hình quạt
+
+3. Như trong Hình 4.2, các tham số tránh chướng ngại vật được chia thành các tham số bên ngoài lắp đặt camera và các tham số cấu hình khu vực tránh chướng ngại vật. Sau khi hoàn tất cấu hình thông số bên ngoài của máy ảnh và hoàn tất cài đặt, bốn vùng cấu hình còn lại sẽ tự động được cập nhật theo các thông số bên ngoài hiện tại.
+
+Trong số đó, camera S2/S2 Max2.0 có thể chuyển đổi giữa bốn bộ cấu hình khu vực tránh chướng ngại vật 0, cấu hình 1, cấu hình 2 và cấu hình 3 thông qua IO.
+
+Có thể chuyển đổi tối đa 20 nhóm khu vực tránh chướng ngại vật thông qua SDK/UDP/RS485, có thể chuyển đổi tùy theo kịch bản vận hành của ô tô. Ví dụ: khi ô tô di chuyển sang kênh hẹp, có thể chuyển sang cấu hình kênh hẹp và khi ô tô di chuyển sang kênh rộng, có thể chuyển sang cấu hình kênh rộng.
+
+<Frame>
+  <img src="/images/legacy/e45aed16-cda9-48cd-91b0-eb9b14dd4996/381adb42-b038-401f-a1a3-e6d438b64c5f.avif" alt="Sơ đồ liên quan đến cấu hình thông số tránh chướng ngại vật 4" />
+</Frame>
+
+## 5. Cài đặt thông số bên ngoài
+
+### 5.1 Mô tả thông số
+
+| Mục tham số | Giá trị tham số | Mô tả |
+| --- | --- | --- |
+| Chức năng tránh chướng ngại vật | | Chuyển đổi các thông số tránh chướng ngại vật khác nhau bằng cách đặt các chế độ khác nhau |
+| Góc camera Cuộn (trục x) | 180 | Thông số bên ngoài camera, góc nghiêng, camera mặc định là 180 |
+| Góc camera Sân (trục y) | 90 | Thông số bên ngoài của camera, góc nghiêng cuộn, mặc định là cài đặt dọc, là 90 |
+| Góc camera Yaw (trục z) | 90 | Thông số bên ngoài của camera, góc nghiêng tiêu đề, mặc định là 90 |
+| Vị trí camera (khoảng cách x) | 430 | Khoảng cách giữa mặt trước và mặt sau của camera theo hướng X và khoảng cách trước và sau của AMR trong tầm nhìn, đơn vị: mm. |
+| Vị trí camera (chiều rộng y) | 0 | Khoảng cách bên trái và bên phải của camera theo hướng y so với AMR trong chế độ xem. Nếu lắp ở giữa thì là 0. Đơn vị: mm. |
+| Vị trí camera (chiều cao z) | 120 | Thông số chiều cao lắp đặt camera là chiều cao của camera tính từ mặt đất. Đơn vị: mm. |
+
+### 5.2 Cài đặt thông số
+
+Ví dụ: khi camera được lắp đặt ở mặt trước của AGV, hãy đóng các hình ảnh khác và chỉ sử dụng hình ảnh đám mây điểm để gỡ lỗi các thông số camera. Ưu tiên chiều cao lắp đặt camera. Sau khi tinh chỉnh góc cuộn RX, điều chỉnh góc cuộn theo chiều ngang, sau đó điều chỉnh góc nghiêng RY. Sau khi điều chỉnh hiệu ứng theo hiệu ứng như trong hình bên dưới, hãy nhấp vào "**Gửi thông số**", và các thông số bên ngoài cài đặt camera sẽ được đồng bộ hóa với các cấu hình khác.
+
+<Frame>
+  <img src="/images/legacy/da147810-37df-42ef-a56c-582790c66e41/b89815fa-fd77-452d-a8f8-3ec9180d9544.avif" alt="Hình minh họa liên quan đến cài đặt thông số" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/b8f949cb-62e8-414d-98a9-c44a463f5b67/9e6574f0-4eb3-4fd1-9d33-af87ca067cbc.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thông số 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6aa95f32-ffd6-495d-aaf4-b1b0319edf07/0a556ebd-5ebb-45ea-841e-f4710776ecd9.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thông số 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/6d8661c4-f56b-4480-8fdc-6ba45f4b87b9/956d5953-d011-481a-99b8-2199658fa193.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thông số 4" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5ec21f8c-bffe-4026-be4a-823625c1b39f/2454e37b-650e-413e-8849-9776ed708b75.avif" alt="Hình ảnh minh họa liên quan đến cài đặt thông số 5" />
+</Frame>
+
+## 6. Thiết lập khu vực tránh chướng ngại vật
+
+### 6.1 Tham chiếu tham số vùng
+
+<Frame>
+  <img src="/images/legacy/cbe6b898-926a-43a4-9e5e-8fb984fcba7d/34531a14-4faa-488d-bc64-7ac0102eac10.avif" alt="Minh họa liên quan đến mô tả tham số khu vực" />
+</Frame>
+
+| Tên tham số | Giá trị | Định nghĩa tham số |
+| --- | --- | --- |
+| Khoảng cách cảnh báo sớm (x xa) | 2000 | Phạm vi tránh chướng ngại vật, khoảng cách từ tâm xe tính bằng Đơn vị: mm |
+| Khoảng cách báo động (x giữa) | 1500 | Phạm vi tránh chướng ngại vật, khoảng cách từ tâm xe tính bằng Đơn vị: mm. |
+| Khoảng cách che chắn (x gần) | 600 | Phạm vi che chắn, hướng x thấp hơn khoảng cách che chắn x (gần), là vùng mù, không thể tránh chướng ngại vật trong vùng này. Đơn vị: mm. |
+| Phạm vi tránh chướng ngại vật bên trái (y left) | -810 | Phạm vi tránh chướng ngại vật, khoảng cách từ bên trái hướng y đến tâm xe. Đơn vị: mm. |
+| Phạm vi tránh chướng ngại vật phải (y phải) | 1270 | Phạm vi tránh chướng ngại vật, khoảng cách từ bên phải hướng y đến tâm xe. Đơn vị: mm. |
+| Phạm vi tránh chướng ngại vật (dưới z) | 10 | Phạm vi tránh chướng ngại vật, độ cao tính từ mặt đất. Sẽ không có quá trình xử lý nào được thực hiện dưới độ cao này. Nếu cài đặt quá nhỏ, có thể xảy ra cảnh báo sai do lỗi phạm vi; nếu cài đặt quá lớn, các chướng ngại vật lớn trên mặt đất có thể bị lọc ra, dẫn đến cảnh báo sai. Đơn vị: mm. |
+| Chiều cao tránh chướng ngại vật (z lên) | 1500 | Phạm vi tránh chướng ngại vật, độ cao tính từ mặt đất, độ cao cao hơn mức này sẽ không được xử lý. Đơn vị: mm. |
+
+### 6.2 Thiết lập khu vực tránh chướng ngại vật
+
+1. Ứng dụng tránh chướng ngại vật hiện nay có 20 nhóm khu vực tránh chướng ngại vật được tích hợp sẵn. Người dùng có thể định cấu hình khu vực tránh chướng ngại vật sau khi hoàn tất cấu hình thông số camera. Khi AMR di chuyển đến các phạm vi tránh chướng ngại vật khác nhau, hãy chuyển vùng cấu hình để kiểm soát phạm vi tránh chướng ngại vật (IO: có thể chuyển đổi bốn nhóm khu vực tránh chướng ngại vật 0, 1, 2 và 3 và có thể chuyển đổi 20 nhóm cho UDP, 485, API và CAN).
+
+- Khoảng cách cảnh báo sớm (X xa): biểu thị phạm vi tránh chướng ngại vật cảnh báo sớm (giảm tốc) của camera là 2300, tức là khoảng cách cảnh báo sớm 2300 - vị trí camera 430 = 1870mm, như hình 6.1.
+
+- Khoảng cách báo động (trong
+
+- Khoảng cách che chắn (X đóng): Cho biết phạm vi che chắn của camera, tức là khoảng cách che chắn 450-vị trí camera 430=20mm, như hình 6.1.
+
+<Frame>
+  <img src="/images/legacy/4519dd9a-acbb-4e8e-84e6-8161d406964b/c6a73f89-55f2-4dba-837f-215c8e7422e1.avif" alt="Các hình minh họa liên quan đến cài đặt khu vực tránh chướng ngại vật" />
+</Frame>
+
+Hình 6.1 Hình ảnh khoảng cách cảnh báo
+
+- Phạm vi tránh chướng ngại vật bên trái (y left): Cho biết camera phát hiện chướng ngại vật trong phạm vi -500mm về phía bên trái của camera tránh chướng ngại vật như hình 6.2.
+
+- Phạm vi tránh chướng ngại vật bên trái (yright): biểu thị camera phát hiện chướng ngại vật trong phạm vi 500mm về phía bên phải camera tránh chướng ngại vật như hình 6.2.
+
+<Frame>
+  <img src="/images/legacy/66455b6e-2c49-4387-bae4-d1e60d4364ec/0c081553-64f1-482a-b982-1145ad687df4.avif" alt="Các hình ảnh minh họa liên quan đến thiết lập khu vực tránh chướng ngại vật 2" />
+</Frame>
+
+Hình 6.2 Hình ảnh phạm vi tránh chướng ngại vật
+
+- Chiều cao tránh chướng ngại vật (Z bên dưới): Biểu thị khả năng phát hiện chướng ngại vật trong phạm vi 10mm dưới mặt đất ở độ cao lắp đặt, như hình 6.3.
+
+- Chiều cao tránh chướng ngại vật (Z top): Cho biết camera phát hiện chướng ngại vật trong phạm vi 500mm so với mặt đất, như hình 6.3.
+
+<Frame>
+  <img src="/images/legacy/bb805708-d45d-41d9-8f5e-8197b63c6b0d/8ea1a9c6-e585-4567-b8da-ac4708637026.avif" alt="Các hình ảnh minh họa liên quan đến thiết lập khu vực tránh chướng ngại vật 3" />
+</Frame>
+
+Hình 6.3 Hình ảnh chiều cao tránh chướng ngại vật
+
+2. Đầu ra tránh chướng ngại vật:
+
+- Biểu thị bình thường và không có trở ngại
+
+- Cho biết phát hiện chướng ngại vật trong vùng cảnh báo (trong ô màu vàng)
+
+- Cho biết phát hiện chướng ngại vật trong vùng báo động (trong ô màu đỏ)
+
+3. Sau khi sử dụng máy tính chủ để cấu hình các thông số theo quy trình trên, bạn có thể vào đường dẫn cài đặt phần mềm \\Tools\\params\\ và ID camera hiện tại\\avoidance.json để sao lưu tệp tránh.json và đồng bộ nhanh các thông số tránh chướng ngại vật cho các camera khác nhau: Sau khi bật camera, thực hiện "Tải cấu hình từ tệp", chọn tệp tránh.json đã sao lưu và đợi cài đặt hoàn tất.
+
+<Frame>
+  <img src="/images/legacy/5d0604b8-8852-49f2-b3b4-cc268f47f6d6/74e7e96b-e2cb-4c66-85ac-13083d78e2c7.avif" alt="Các hình ảnh minh họa liên quan đến thiết lập khu vực tránh chướng ngại vật 4" />
+</Frame>
+
+## 7. Phương thức giao tiếp
+
+1. Trước khi hiểu hoặc sử dụng các phương thức liên lạc khác nhau, **bạn phải sử dụng máy tính chủ mà chúng tôi cung cấp để định cấu hình từng thông số tránh chướng ngại vật** trước khi bạn có thể sử dụng **các phương thức liên lạc không phải API** để chuyển đổi các thông số tránh chướng ngại vật khác nhau. **Ghi chú:**
+
+**① Một số giao thức giao tiếp chỉ dành riêng cho một mẫu máy nhất định, chẳng hạn như giao tiếp RS485 chỉ dành cho M4Pro; **
+
+② Khi sử dụng nhưng không giới hạn phương pháp API để thu được kết quả tránh chướng ngại vật, trước tiên nên xác nhận xem cấu hình tránh chướng ngại vật có được chuyển đổi thành công hay không, tức là trước tiên hãy truy vấn số khu vực cấu hình tránh chướng ngại vật hiện tại;
+
+③ Sử dụng phương pháp liên lạc tránh chướng ngại vật UDP và CAN để kiểm tra khu vực tránh chướng ngại vật. Để biết chi tiết, xem phần giới thiệu chi tiết về từng phương thức giao tiếp.
+
+<Frame>
+  <img src="/images/legacy/db6c3d37-ba35-439f-9cb2-a844323e0d93/668b983c-c6a4-492d-a676-f4de871c62b1.avif" alt="Minh họa liên quan đến phương pháp giao tiếp" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/eaa2b8fd-e8aa-419d-87d3-4f3fe27bac32/044bd51a-61c8-4a52-af64-dc9cba9d38cd.avif" alt="Minh họa liên quan đến phương thức giao tiếp 2" />
+</Frame>
+
+2. Tất cả các thông số liên quan đến tránh chướng ngại vật của S2 Max/S10 pro có thể được thiết lập thông qua máy tính chủ và API do chúng tôi cung cấp, nhưng đối với các phương thức liên lạc khác (IO / UDP / CAN / 485), chỉ có thể sửa đổi chỉ số thông số tránh chướng ngại vật. Các thông số liên quan đến tránh chướng ngại vật của S10 có thể được thiết lập thông qua máy tính chủ do chúng tôi cung cấp, nhưng tất cả các phương thức liên lạc đều bị giới hạn trong việc sửa đổi chỉ số tham số tránh chướng ngại vật.
+
+| Loại máy ảnh | Các phương pháp liên lạc mô-đun tránh chướng ngại vật được hỗ trợ |
+| --- | --- |
+| S2 | API、UDP、IO |
+| S2Max | API、UDP、CÓ THỂ |
+| S2Max V2.0 | API、UDP、IO、CÓ THỂ |
+| M4Pro | API、UDP、RS485 |
+| M4 | API、UDP、CÓ THỂ |
+| M4 Mega | API、UDP、IO、CÓ THỂ |
+
+| Loại máy ảnh | Sửa đổi chỉ số tham số tránh chướng ngại vật | Hỗ trợ sửa đổi cài đặt thông số chi tiết tránh chướng ngại vật |
+| --- | --- | --- |
+| S2 | Tất cả các phương thức liên lạc có thể được sửa đổi | Chỉ có thể được sửa đổi bằng máy chủ mà chúng tôi cung cấp |
+| S2 Max, S2 Max2.0, M4, M4Pro, M4 Mega | Tất cả các phương thức liên lạc có thể được sửa đổi | Chỉ có thể sửa đổi máy chủ và API |
+
+**Lưu ý: Chỉ số thông số tránh chướng ngại vật** đề cập đến chỉ số nhóm thông số của cấu hình 0, 1, 2, v.v.; **Thông số chi tiết về tránh chướng ngại vật** đề cập đến tất cả các thông số ngoại trừ các thông số tránh chướng ngại vật, chẳng hạn như góc camera, khoảng cách cảnh báo, v.v.
+
+| Ưu tiên | Phương thức giao tiếp | Đối tượng |
+| --- | --- | --- |
+| 1 | Giao tiếp IO | Các thông số có hiệu lực ngay lập tức và không thể bị can thiệp bởi các phương tiện khác. Nếu chúng được thả nổi hoặc không hỗ trợ giao tiếp IO, các tham số mặc định hoặc tham số tạm thời sẽ được sử dụng. |
+| 2 | Cài đặt máy chủ và API | Các thông số mặc định được cài đặt sẵn và không bị ảnh hưởng khi mất điện. |
+| 2 | Khác (chẳng hạn như 485, v.v.) | Các cài đặt là các tham số tạm thời. Thông số này sẽ được sửa đổi nếu mất điện hoặc các thông tin liên lạc khác. Nó có thể được lưu làm tham số mặc định thông qua hướng dẫn, |
+
+3. Để sửa đổi các thông số tránh chướng ngại vật, camera sẽ tuân thủ nghiêm ngặt logic ưu tiên.
+
+4. Sự khác biệt lớn nhất giữa các tham số tạm thời và các tham số mặc định là liệu chúng có được lưu sau khi tắt nguồn hay không. Tham số nào được sử dụng tùy thuộc vào phương thức liên lạc nào được sử dụng lần trước.
+
+5. Trong quá trình giao tiếp IO (IO không bị treo), không thể sửa đổi các tham số hiện tại bằng phương thức liên lạc có mức độ ưu tiên 2, nhưng có thể sửa đổi các tham số mặc định và tham số tạm thời. Khi giao tiếp IO bị ngắt kết nối (IO bị treo), các tham số mặc định cụ thể hoặc tham số tạm thời sẽ được sử dụng theo phương pháp cài đặt cuối cùng. Lần cuối cùng cài đặt 485 hoặc UDP được sử dụng, các tham số tạm thời sẽ được sử dụng. Lần cuối cùng các lệnh gọi API hoặc cài đặt máy chủ được sử dụng, các tham số mặc định sẽ được sử dụng. Logic như sau:
+
+<Frame>
+  <img src="/images/legacy/9de2e18d-de3f-4a0a-b783-6cc5c8208344/8bf4f672-a74b-4a6b-9746-55438829cada.avif" alt="Minh họa liên quan đến phương thức giao tiếp 3" />
+</Frame>
+
+6. Đối với camera S10, phải mất 200 ~ 300ms để chuyển đổi thông số cho đến khi quá trình tải hoàn tất. Do đó, S2 thực hiện thao tác lọc trên hoạt động tham số chuyển mạch và cài đặt cuối cùng trong vòng 250ms sẽ bị bỏ qua. Dù là S10 hay S2Max/S10pro thì cũng không nên chuyển đổi thông số quá thường xuyên vì điều này sẽ làm tăng mức sử dụng tài nguyên của máy ảnh và giảm tốc độ khung hình. Bởi vì tốc độ làm mới của kết quả tránh chướng ngại vật có liên quan đến tốc độ khung hình nên nó cũng sẽ khiến tốc độ làm mới của kết quả tránh chướng ngại vật bị giảm. Tốc độ làm mới kết quả tránh chướng ngại vật bằng tốc độ khung hình hình ảnh.
+
+### Phương thức gọi API 7.1
+
+Phương thức gọi API có thể hỗ trợ C++, C#, JAVA, ROS1, ROS2 và các môi trường khác của windows, Linux, arm và các môi trường khác. Sau khi SDK của môi trường windows được cài đặt trên phần mềm máy tính chủ, các tệp SDK và mã chương trình mẫu đều nằm trong đường dẫn cài đặt (ví dụ: D:\\Program Files\\Lanxin-MRDVS). Bạn có thể tải xuống SDK môi trường Linux từ bộ phận hỗ trợ kỹ thuật liên quan do Meier Microvision cung cấp hoặc từ trang web chính thức. Không nên sử dụng phương pháp này để chuyển đổi thông số cho camera S10. Nên sử dụng UDP hoặc IO để chuyển đổi tham số.
+
+- Thư mục Document chứa SDK và tài liệu sử dụng máy tính chủ.
+
+- Thư mục FirmWare là thư mục chứa gói firmware của máy ảnh.
+
+- Thư mục Sample là thư mục lưu trữ source code mẫu, có thể lựa chọn tùy theo môi trường phát triển.
+
+- Thư mục SDK là thư mục chứa các file thư viện SDK. Bạn có thể định cấu hình các biến môi trường theo môi trường phát triển.
+
+- Ứng dụng tránh chướng ngại vật có thể tham số hóa chương trình mã nguồn API tránh chướng ngại vật của C/application_obstacled trong thư mục Sampl.
+
+### 7.2 485 phương thức giao tiếp
+
+1. Giao tiếp 485 chỉ hỗ trợ camera M4 pro, sử dụng giao thức truyền Modbus RTU. Sau đây là định nghĩa dây nối của máy ảnh:
+
+| Cảng | Ghim | Tín hiệu | Mô tả | Bình luận |
+| --- | --- | --- | --- | --- |
+| Định nghĩa ổ cắm | 1 | GND | Mặt đất tín hiệu | Màu xanh |
+| | 2 | 485_A | RS485_A | Xám |
+| | 3 | 485_B | RS485_B | Trắng |
+| | 4 | VIN + | Cực dương đầu vào nguồn 24V | Nâu |
+| | 5 | VIN - | Cực âm đầu vào nguồn 24V | Đen |
+
+2. Phương pháp gỡ lỗi 485 như sau:
+
+- Khi kết nối qua RS485, trong trợ lý gỡ lỗi, tốc độ truyền được đặt thành 9600.
+
+- Sử dụng máy tính chủ để kiểm tra địa chỉ Modbus hiện tại, đọc hai địa chỉ thanh ghi bắt đầu từ địa chỉ 108 (0x6C) của thanh ghi đầu vào (0x04) và giá trị thanh ghi phản hồi là kết quả tránh chướng ngại vật hiện tại.
+
+<Frame>
+  <img src="/images/legacy/97dd2a2a-4b90-419b-bef8-8e4504a30720/2f79d722-9523-4a5e-904b-da95fbb4ca5b.avif" alt="485 biểu tượng liên quan đến phương thức liên lạc" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/9f3ee28c-ea54-426e-8bd5-bbae25de955c/e5bfac8e-14fb-4540-91b2-d72de1aa86fc.avif" alt="Các hình ảnh minh họa liên quan đến phương thức truyền thông 485 2" />
+</Frame>
+
+- Nếu bạn cần sửa đổi các tham số tránh chướng ngại vật, bạn có thể ghi địa chỉ 106 (0x6A) của một thanh ghi lưu đơn (0x06).
+
+<Frame>
+  <img src="/images/legacy/65d76022-f5da-4827-b160-8c597f7c0a5f/c64c76ff-8c7a-442d-8fa2-2cacba78affb.avif" alt="Hình ảnh minh họa liên quan đến phương thức giao tiếp 485 3" />
+</Frame>
+
+### 7.3 Phương thức giao tiếp UDP
+
+Ý nghĩa của trường loại chức năng tránh chướng ngại vật:
+
+| Số | Hướng truyền tải | Tin nhắn | Kết quả tránh chướng ngại vật |
+| --- | --- | --- | --- |
+| 1 | Máy ảnh->Thân máy | ACED0410XX000000 | Không rào cản, XX đại diện cho thông số tránh chướng ngại vật hiện tại |
+| 2 | | ACED0410XX000001 | Cảnh báo sớm giảm tốc độ |
+| 3 | | ACED0410XX000002 | Dừng báo động |
+| 4 | Thân chính->Camera | ACED040000000000 | Thiết lập kết nối UDP |
+| 5 | | ACED041A00000000 | Thông số tránh chướng ngại vật 0 |
+| 6 | | ACED041A00000001 | Thông số tránh chướng ngại vật 1 |
+| 7 | | ACED041A00000002 | Thông số tránh chướng ngại vật 2 |
+| 8 | | ACED041A00000003 | Thông số tránh chướng ngại vật 3 |
+| 9 | | ... | (và cứ như vậy cho đến tham số 19) |
+| 10 | Thân máy->Máy ảnh | ACED041B00000000 | Đặt tham số hiện tại làm tham số mặc định |
+| 11 | Máy ảnh->Thân máy | ACED041B00000001 | Thông số mặc định được đặt thành công |
+
+1. Khi kết nối qua UDP, hãy sử dụng trợ lý gỡ lỗi mạng để kiểm tra kết nối giao tiếp với máy ảnh, đồng thời chọn truyền và nhận thập lục phân để nhận và gửi dữ liệu. Nên sử dụng lệnh số 4 cho lần liên lạc đầu tiên. Sau khi thiết lập kết nối UDP, kết quả tránh chướng ngại vật sẽ được gửi tự động. Tần số gửi có liên quan đến tốc độ khung hình hiện tại. Sau khi sửa đổi các thông số, bạn có thể xác nhận xem việc sửa đổi có thành công hay không thông qua tin nhắn được camera gửi đến thân máy. XX trong tin nhắn được đánh số 1 là tham số hiện tại.
+
+2. Các thông số do DP thiết lập sẽ có hiệu lực cho đến khi máy ảnh được khởi động lại, trừ khi nguồn bị cắt hoặc sửa đổi bằng các phương thức liên lạc khác. Nếu bạn muốn nó vẫn có hiệu lực sau khi mất điện, bạn có thể sử dụng tin nhắn số 10 để lưu làm thông số mặc định. Chức năng lưu làm tham số mặc định là chức năng duy nhất của giao tiếp UDP, CAN, 485.
+
+3. Đặt địa chỉ máy chủ cục bộ và cổng máy chủ cục bộ, nhấp để mở; máy chủ từ xa là camera, điền cổng IP camera: 192.168.100.12:6688, nếu IP camera thay đổi sẽ là: IP camera:6688 ; Lấy tham số hiện tại 19 và sửa đổi nó thành tham số 0 làm ví dụ. Bấm để gửi dữ liệu số 5. ​​Dấu hiệu cài đặt thành công là byte thứ năm được thay đổi từ 0x13 (tham số 19) thành 0x00 (tham số 0), như hình bên dưới.
+
+<Frame>
+  <img src="/images/legacy/e8a8533b-6b41-4853-bfc7-9217abd0524d/d75adea6-f4e9-4d89-adf3-2772681f0406.avif" alt="Minh họa liên quan đến phương thức truyền thông UDP" />
+</Frame>
+
+### Phương thức giao tiếp TCP 7.4
+
+Ý nghĩa của trường loại chức năng tránh chướng ngại vật:
+
+| Số | Hướng truyền tải | Tin nhắn | Kết quả tránh chướng ngại vật |
+| --- | --- | --- | --- |
+| 1 | Máy ảnh->Thân máy | ACED0410XX000000 | Không rào cản, XX đại diện cho thông số tránh chướng ngại vật hiện tại |
+| 2 | | ACED0410XX000001 | Cảnh báo sớm giảm tốc độ |
+| 3 | | ACED0410XX000002 | Dừng báo động |
+| 4 | Thân máy->Máy ảnh | ACED041A00000000 | Thông số tránh chướng ngại vật 0 |
+| 5 | | ACED041A00000001 | Thông số tránh chướng ngại vật 1 |
+| 6 | | ACED041A00000002 | Thông số tránh chướng ngại vật 2 |
+| 7 | | ACED041A00000003 | Thông số tránh chướng ngại vật 3 |
+| 8 | | ... | (và cứ như vậy cho đến tham số 19) |
+| 9 | Thân máy->Máy ảnh | ACED041B00000000 | Đặt tham số hiện tại làm tham số mặc định |
+| 10 | Máy ảnh->Thân máy | ACED041B00000001 | Thông số mặc định được đặt thành công |
+
+1. Khi kết nối qua TCP, hãy sử dụng trợ lý gỡ lỗi mạng để kiểm tra kết nối giao tiếp với máy ảnh, đồng thời chọn truyền và nhận thập lục phân để nhận và gửi dữ liệu. Sau khi kết nối TCP được thiết lập, kết quả tránh chướng ngại vật sẽ được gửi tự động và tần suất gửi có liên quan đến tốc độ khung hình hiện tại. Sau khi sửa đổi các thông số, bạn có thể xác nhận xem việc sửa đổi có thành công hay không thông qua tin nhắn được camera gửi đến thân máy. XX trong tin nhắn được đánh số 1 là tham số hiện tại.
+
+2. Các thông số do TCP thiết lập sẽ có hiệu lực cho đến khi camera được khởi động lại, trừ khi nguồn bị cắt hoặc được sửa đổi bằng các phương thức liên lạc khác. Nếu bạn muốn nó vẫn có hiệu lực sau khi mất điện, bạn có thể sử dụng tin nhắn số 10 để lưu làm thông số mặc định. Chức năng lưu làm tham số mặc định là chức năng duy nhất của giao tiếp TCP và không được CAN hoặc 485 hỗ trợ.
+
+3. Máy ảnh có thể được kiểm tra với trợ lý. Chọn Máy khách TCP cho giao thức, chọn ip camera cho ip và chọn 6688 cho cổng. Trước khi sử dụng giao tiếp TCP, bạn cần xác nhận xem khu vực tránh chướng ngại vật hiện đang sử dụng đã được đặt trên máy chủ hay chưa.
+
+<Frame>
+  <img src="/images/legacy/b1e7b075-b88e-4547-9e9e-813399cee1de/426d1e53-dda3-4ea0-80fb-5ad61ee30884.avif" alt="Minh họa liên quan đến phương thức truyền thông TCP" />
+</Frame>
+
+### 7.5 Phương thức giao tiếp CAN
+
+1. Giao tiếp CAN chỉ hỗ trợ camera S2-MAX. Giao thức truyền thông sử dụng CanOpen. Giao thức CanOpen là giao thức lớp ứng dụng chạy trên bus CAN tiêu chuẩn. Chế độ giao tiếp của nó cũng là chế độ giao tiếp "master-slave" thường được sử dụng trong các giao thức truyền thông công nghiệp. Tức là sẽ có một trạm chủ + nhiều trạm phụ trong mạng. Các trạm phụ sẽ không liên lạc trực tiếp với nhau. Tất cả các hoạt động liên lạc đều diễn ra giữa trạm chính và trạm phụ. Trạm chính còn được gọi là "máy khách" và trạm phụ còn được gọi là "máy chủ".
+
+2. Phương thức giao tiếp cơ bản sử dụng định dạng khung tiêu chuẩn CAN, nghĩa là ID CAN là 11 bit (0x000~7FF) và dữ liệu là 8 byte.
+
+3. Quy ước sử dụng CAN ID: Chia ID 11 bit thành mã chức năng 4 bit và ID nút 7 bit, CAN ID còn được gọi là ID COB:
+
+<Frame>
+  <img src="/images/legacy/6b14ef30-ae22-4eb0-bdd0-ff371a395ef5/2b8174cc-315e-4622-af5e-c288fd5a391c.avif" alt="Các hình ảnh minh họa liên quan đến phương pháp truyền thông CAN" />
+</Frame>
+
+4. Tốc độ truyền có thể: Mặc định là 250K, có thể được cấu hình theo ứng dụng.
+
+5. Số nút: Mặc định là 0x212, có thể được cấu hình theo ứng dụng.
+
+6. Thông báo liên lạc SDO là định dạng giao thức cơ bản trong CanOpen. Dữ liệu 8 byte trong thông báo CAN được xác định bởi giao thức truyền thông theo định dạng sau:
+
+<Frame>
+  <img src="/images/legacy/2097250b-a7c5-43f8-8dac-53940a7ccb01/662148d5-54f3-469a-bb77-2d22e7d96075.avif" alt="Các minh họa liên quan đến phương pháp truyền thông CAN 2" />
+</Frame>
+
+**Giao thức truyền thông mô-đun tránh chướng ngại vật:**
+
+1. Định dạng tin nhắn được ontology gửi tới thiết bị.
+
+<Frame>
+  <img src="/images/legacy/109df244-17e5-4c9b-9900-298a5c5dfcd3/4a23ea06-77c9-4dea-9862-34bd67b013a0.avif" alt="Các minh họa liên quan đến phương pháp truyền thông CAN 3" />
+</Frame>
+
+- Thông báo tham khảo: 40 00 00 00 0B 00 00 00, 0B: MODECTRL, tức là cài đặt thông số tránh chướng ngại vật về vùng 11.
+
+2. Định dạng của tin nhắn được thiết bị gửi đến nội dung chính.
+
+<Frame>
+  <img src="/images/legacy/e43f7fa2-780a-4885-b98d-1f8b412a1198/4ebef067-087d-46ab-811b-49ff027bb6b4.avif" alt="Các minh họa liên quan đến phương pháp truyền thông CAN 4" />
+</Frame>
+
+- Ký tự tham chiếu: 43 00 00 00 0B 00 00 02, 0B: MODECTRL, biểu thị thông số tránh chướng ngại vật hiện tại là vùng 11; 02: kết quả, biểu thị kết quả tránh chướng ngại vật hiện tại.
+
+**3. Lưu ý: Như hình bên dưới, việc thiết lập thông số tránh chướng ngại vật không có tác dụng ngay lập tức. **
+
+<Frame>
+  <img src="/images/legacy/c102285c-5b45-4762-87fd-713da40e2468/bd1a716a-80e2-437e-92d2-2acbfb00a2d5.avif" alt="Các minh họa liên quan đến phương pháp truyền thông CAN 5" />
+</Frame>
+
+## 7.5 Phương thức giao tiếp IO
+
+### 7.5.1 Bảng tương ứng trạng thái đầu vào IO và thông số tránh chướng ngại vật
+
+| Trạng thái đầu vào1 | Trạng thái đầu vào2 | Bình luận |
+| --- | --- | --- |
+| Cấp cao | Cấp cao | Thông số tránh chướng ngại vật 2 |
+| Cấp cao | Cấp thấp | Thông số tránh chướng ngại vật 1 |
+| Cấp thấp | Cấp cao | Thông số tránh chướng ngại vật 0 |
+| Cấp thấp | Cấp thấp | Sử dụng tham số mặc định hoặc tham số tạm thời để tránh chướng ngại vật |
+
+- Lưu ý: Khi đầu vào IO ở trạng thái nổi, nó ở mức thấp và điện áp khuyến nghị cho mức cao là 5~25V.
+
+- Lưu ý: Để biết logic sử dụng tham số mặc định hoặc tham số tạm thời, vui lòng tham khảo lời nói đầu của Chương 7 (Phương thức giao tiếp). Nói một cách đơn giản, khi camera được bật nguồn và không sử dụng các phương thức giao tiếp khác (trừ API) để cấu hình các thông số tránh chướng ngại vật thì các thông số mặc định sẽ được sử dụng. Nếu không, các tham số tạm thời sẽ được sử dụng.
+
+### 7.5.2 Bảng tương ứng trạng thái đầu ra IO và thông số tránh chướng ngại vật
+
+### Trạng thái IO là đẩy-kéo
+
+| Trạng thái đầu ra1 | Trạng thái đầu ra2 | Bình luận |
+| --- | --- | --- |
+| 24V | 24V | Có thể truy cập |
+| 24V | 0V | Tín hiệu giảm tốc |
+| 0V | 24V | Tín hiệu dừng khẩn cấp |
+| 0V | 0V | Tránh chướng ngại vật, khởi tạo, ngoại lệ không được kích hoạt |
+
+- Lưu ý: Khi bật tính năng tránh chướng ngại vật nhưng các IO đầu ra đều được nối đất, hãy đảm bảo rằng các thông số tránh chướng ngại vật hiện tại đã được máy tính chủ thiết lập.
+
+<Frame>
+  <img src="/images/legacy/fae16d2e-4221-46a3-a426-1b504d07a04a/c3a59086-bee5-4c6a-91d2-46a71152a6a1.avif" alt="Trạng thái IO là các biểu tượng liên quan đến kéo đẩy" />
+</Frame>
+
+**Trạng thái IO là cống mở**
+
+| Trạng thái đầu ra1 | Trạng thái đầu ra2 | Bình luận |
+| --- | --- | --- |
+| Bị đình chỉ | Bị đình chỉ | Có thể truy cập |
+| Nổi | 0V | Tín hiệu giảm tốc |
+| 0V | Nổi | Tín hiệu dừng khẩn cấp |
+| 0V | 0V | Tránh chướng ngại vật, khởi tạo, ngoại lệ không được kích hoạt |
+
+### Phương pháp nối dây I/O của máy ảnh 7.5.3 S2
+
+Chi tiết về cáp ngoài có nhãn nguồn được thể hiện trong bảng sau:
+
+| Tên nhãn | Màu sắc | Bình luận |
+| --- | --- | --- |
+| IN1 | Cam | Đường tín hiệu đầu vào chức năng I/O 1+ |
+| IN_COM1 | Vàng | Đường tín hiệu đầu vào chức năng I/O 1- |
+| IN2 | Xanh | Đường tín hiệu đầu vào chức năng I/O 2+ |
+| NGOÀI_1 | Màu tím | Đường tín hiệu đầu ra chức năng I/O 1+ |
+| OUT_COM1 | Xám | Đường tín hiệu đầu ra chức năng I/O 1- |
+| IN_COM2 | Màu xanh | Đường tín hiệu đầu vào chức năng I/O 2- |
+| NGOÀI_2 | Nâu | Đường tín hiệu đầu ra chức năng I/O 2+ |
+| OUT_COM2 | Trắng | Đường tín hiệu đầu ra chức năng I/O 2- |
+
+### 7.5.4 Phương pháp nối dây I/O của máy ảnh và máy tính công nghiệp S10
+
+Lưu ý rằng camera 24V- phải được kết nối với mặt đất nguồn của máy tính công nghiệp và IN\_G và OUT\_G phải được kết nối với mặt đất tín hiệu của máy tính công nghiệp. Khách hàng có thể sửa đổi phương thức kết nối mặt đất chung tùy theo tình hình thực tế. Nếu máy tính công nghiệp không có vùng tiếp đất và tín hiệu, bạn có thể kết nối camera 24V-, IN\_G và OUT\_G với GND của máy tính công nghiệp.
+
+### 7.5.4.1 Trạm đầu vào IN\_phương pháp nối dây
+
+1. Hình bên dưới thể hiện phương thức nối dây giữa đầu ra loại PNP của máy tính công nghiệp và đầu vào đầu vào của camera S10 (sau đây viết tắt là IN\_\*, \* tượng trưng cho 1 và 2):
+
+<Frame>
+  <img src="/images/legacy/db796979-a48a-4e8f-a439-41163142b7eb/3a6e88b9-58b3-4afc-be18-a86b38d69f44.avif" alt="Các hình ảnh minh họa liên quan đến phương pháp nối dây đầu vào IN\_" />
+</Frame>
+
+2. Hình dưới đây thể hiện phương thức nối dây giữa đầu ra NPN của máy tính công nghiệp và đầu vào đầu vào của camera S10:
+
+<Frame>
+  <img src="/images/legacy/87186c64-88c9-4afc-a17e-de2ab83ab740/993feed3-fbc4-4587-8f21-29d85d3570ff.avif" alt="Sơ đồ liên quan của đầu vào IN\_ phương thức nối dây 2" />
+</Frame>
+
+3. Do thiết kế mạch đầu ra của máy tính công nghiệp của các nhà sản xuất khác nhau là khác nhau nên cần phải đánh giá xem có cần thêm điện trở kéo lên và giá trị điện trở của nó dựa trên tình hình thực tế hay không.
+
+4. Bạn cần kiểm tra theo các bước sau:
+
+- Dùng đồng hồ vạn năng đo trở kháng đầu ra của máy tính công nghiệp đến 24V. Nếu là &lt;50 kΩ thì không cần điện trở kéo lên. Nếu ≥50 kΩ, hãy thêm điện trở kéo lên. Sử dụng điện trở màng kim loại xuyên lỗ có điện trở 10 kΩ và công suất ≥1 W. Bạn có thể sử dụng điện trở khác để thử nghiệm tạm thời nhưng sử dụng lâu dài có thể ảnh hưởng đến độ tin cậy. Điện trở không được nhỏ hơn 3 kΩ và bạn không được kết nối trực tiếp đầu ra với 24 V.
+
+- Sau khi kết nối được xác nhận, hãy kéo cực ra của máy tính công nghiệp lên cao và dùng đồng hồ vạn năng để đo điện áp giữa cực ra và đất. Nếu điện áp 2V, hãy ngắt kết nối mạch camera và kiểm tra xem máy tính công nghiệp có thể kéo điện áp lên cao hay không; nếu điện áp > 2V, hãy kéo đầu ra xuống thấp lần nữa để kiểm tra xem có sự thay đổi ở đầu vào của camera S2 hay không. Nếu có thay đổi nghĩa là có thể sử dụng bình thường; nếu không có thay đổi, hãy kéo cực đầu ra của máy tính công nghiệp xuống thấp và đo điện áp giữa cực đầu ra và mặt đất. Nếu điện áp lớn hơn 1V nghĩa là lực kéo lên quá mạnh và khó kéo xuống. Bạn cần tăng điện trở kéo lên, sau đó đo xem có bất kỳ thay đổi nào ở đầu vào của camera S2 sau khi kéo nó xuống hay không. Nếu điện áp nhỏ hơn 1V, hãy ngắt kết nối máy tính công nghiệp, kết nối camera IN\_\* với 24V và GND thông qua điện trở, đồng thời kiểm tra xem đầu vào camera có thay đổi hay không. Nếu có thay đổi, hãy kiểm tra xem kết nối giữa máy tính công nghiệp và camera có chính xác hay không; nếu không có thay đổi, hãy liên hệ với bộ phận hỗ trợ kỹ thuật để khắc phục sự cố.
+
+5. Cây logic như hình dưới đây:
+
+<Frame>
+  <img src="/images/legacy/dbde924e-e206-4ed7-a609-b954a60a36cc/b727aee2-58b2-4a2b-bf87-a34d4fa94a63.avif" alt="Sơ đồ liên quan của đầu vào IN\_ phương pháp nối dây 3" />
+</Frame>
+
+### 7.5.4.2 Phương thức đầu cuối ra\_wiring
+
+1. Có hai loại f và pnp bên trong máy ảnh.
+
+2. Hình dưới đây thể hiện phương thức nối dây giữa đầu vào của máy tính công nghiệp và đầu ra của camera S2 (sau đây viết tắt là OUT\_\*, \* tượng trưng cho 1 và 2):
+
+<Frame>
+  <img src="/images/legacy/4b34864c-b203-45de-add7-422469d59886/a9234957-e7a1-4eb7-9307-0e93c76c25e4.avif" alt="Các hình ảnh minh họa liên quan đến phương thức Out\_wiring của thiết bị đầu cuối đầu ra" />
+</Frame>
+
+## 8. Câu hỏi thường gặp
+
+### 8.1 Vật thể màu đen
+
+Do nguyên lý TOF, camera dòng S bị ảnh hưởng bởi độ phản xạ của pallet đen. Với độ phản xạ 5% của pallet đen, camera S2max có thể được sử dụng để thu được hình ảnh trong phạm vi 2m. Trong quá trình gỡ lỗi, hiệu ứng hình ảnh của pallet đen cũng có thể được tối ưu hóa thông qua thời gian tích hợp cao và ngưỡng tín hiệu thấp của phần mềm máy tính chủ. Nếu có cánh tay càng màu đen trong cảnh tránh chướng ngại vật, người dùng nên thêm độ phản xạ cao hơn vào đầu càng để hỗ trợ tránh chướng ngại vật, chẳng hạn như phun một phần nhỏ phía trước đầu càng nâng bằng bề mặt sơn màu khác.
+
+### 8.2 Vật thể ở dưới đất thấp
+
+Các vật ở trên mặt đất không thể tránh được chướng ngại vật. Trong các ứng dụng tránh chướng ngại vật, chúng ta thường sử dụng mặt đất làm cơ sở cho cấu hình tham số bên ngoài. Nếu không thể tránh chướng ngại vật khi gặp chướng ngại vật thấp trên mặt đất, bạn có thể tham khảo các giải pháp sau:
+
+- Hình ảnh đám mây điểm của máy chủ cho thấy không có vật cản nào được chọn. Bạn cần xác nhận xem chiều cao tránh chướng ngại vật (phía dưới) có phải là giá trị dương hay không. Nếu là giá trị dương, nên tạm thời đặt thành 0 để xác định xem có thể phát hiện được chướng ngại vật hay không. Nếu vẫn không phát hiện được thì nên điều chỉnh độ cao lắp đặt camera.
+
+- Hình ảnh đám mây điểm của máy chủ có thể chọn đối tượng chướng ngại vật nhưng kết quả tránh chướng ngại vật đầu ra là 0. Hiện tượng này có thể do cấu hình độ cao lắp đặt camera không chính xác. Người dùng nên điều chỉnh độ cao lắp đặt camera.
+
+### 8.3 Thông số tránh chướng ngại vật không có hiệu lực
+
+- Không bấm vào Setup Complete khi cấu hình thông số.
+
+- Sửa đổi các tham số không hợp lệ khiến cài đặt không thành công.
+
+- Kết nối camera không ổn định, bị ngắt kết nối khiến việc truyền thông số không thành công.
+
+### 8.4 Can thiệp vào cấu trúc lắp đặt
+
+- Trong quá trình lắp đặt có các cấu trúc xung quanh camera chặn tầm nhìn của camera dẫn đến dữ liệu camera không bình thường.
+
+- Trong quá trình thiết kế kết cấu, thiết kế camera cản trở tầm nhìn phía sau khiến dữ liệu camera bất thường.
+
+- Lớp màng bảo vệ trên gương máy ảnh chưa được gỡ bỏ dẫn đến dữ liệu máy ảnh không bình thường.
+
+- Kính bảo vệ khác được lắp vào gương camera gây ra dữ liệu bất thường.
+
+Chào mừng bạn đến liên hệ với chúng tôi thông qua các phương pháp sau:
+
+- Nếu bạn chưa mua sản phẩm [liên hệ với nhóm bán hàng trước của chúng tôi trên WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Liên hệ bán hàng trước")
+
+- Nếu bạn đã mua sản phẩm, [liên hệ hỗ trợ kỹ thuật trên WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Liên hệ hỗ trợ kỹ thuật")
+
+- **Trang web chính thức**: [www.mrdvs.cn](https://www.mrdvs.cn/ "www.mrdvs.cn")
+
+- **Mật độ**: [Video hướng dẫn và ví dụ ứng dụng](https://space.bilibili.com/3546755102672963 "Video hướng dẫn và ví dụ ứng dụng")
+
+- **GitHub**: [Tải xuống SDK và mã mẫu](https://github.com/Lanxin-MRDVS/CameraSDK "Tải xuống SDK và mã mẫu")
+
+- **Email**: [dịch vụ@mrdvs.com](mailto:service@mrdvs.com "dịch vụ@mrdvs.com")
+
+- ：400-025-6680

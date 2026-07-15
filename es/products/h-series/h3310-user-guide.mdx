@@ -1,0 +1,231 @@
+---
+title: "guía del usuario de la cámara h3310"
+description: "Especificaciones del producto y detalles de diseño para la integración y uso de la cámara H3310."
+hidden: true
+---
+## Historial de revisiones
+
+| Fecha de revisión | Versión | Cambios |
+| --- | --- | --- |
+| 2023/11/21 | V0.1 | Lanzamiento inicial |
+| 2024/11/25 | V1.0 | Se actualizó la temperatura de almacenamiento de la cámara |
+
+## 1. Introducción
+
+### 1.1 Objeto y alcance
+
+Este documento proporciona las especificaciones de la cámara H3310 y detalles de diseño para los desarrolladores que integran y utilizan el producto.
+
+### 1.2 Terminología
+
+| Línea de base | En una cámara de profundidad estéreo, la línea de base es la distancia horizontal entre las dos cámaras. Más precisamente, es la distancia entre sus ejes ópticos y normalmente se mide en milímetros (mm). |
+| --- | --- |
+| Profundidad | Al igual que una transmisión de video en color o monocromática, una transmisión de profundidad asigna un valor a cada píxel. Este valor representa la distancia del píxel a la cámara. |
+| campo de visión | Campo de visión. La extensión angular de una escena que la cámara puede capturar. Incluye FOV horizontal (HFOV), FOV vertical (VFOV) y FOV diagonal (DFOV). |
+| Cámara de infrarrojos | Una cámara de infrarrojos. En este producto, captura principalmente imágenes en el espectro del infrarrojo cercano. |
+| Cámara RGB | Una cámara a color. |
+| Cámara de profundidad | Una cámara con un módulo de imágenes de profundidad que normalmente consta de un proyector de puntos, una cámara de infrarrojos y un procesador de profundidad. Su módulo de imágenes en color suele ser una cámara RGB. |
+| SoC | Un sistema en chip que procesa datos de imágenes, calcula la profundidad y ejecuta algoritmos de aplicación. |
+
+### 1.3 Tecnología de luz estructurada
+
+La luz estructurada binocular es una tecnología común de medición de visión 3D que combina visión estéreo con proyección de luz estructurada. Utiliza dos cámaras y un proyector de luz estructurada para capturar la forma y profundidad 3D de un objeto.
+
+El proceso funciona de la siguiente manera:
+
+1. Proyección de luz estructurada: un proyector proyecta luz estructurada sobre el objeto objetivo. Una fuente de luz infrarroja o visible normalmente produce la luz, que está especialmente codificada o modulada mediante un patrón de cuadrícula o moteado. La luz proyectada crea patrones brillantes, oscuros o distorsionados en la superficie del objeto.
+
+2. Imagen estéreo: mientras se proyecta la luz estructurada, dos cámaras capturan el objeto objetivo simultáneamente. Las cámaras están separadas por una distancia fija, similar a la distancia entre los ojos humanos. Registran tanto el patrón proyectado como la apariencia del objeto.
+
+3. Captura de imágenes: Las cámaras capturan imágenes de izquierda y derecha. La distorsión o desplazamiento del patrón proyectado en estas imágenes codifica la información de profundidad del objeto.
+
+4. Procesamiento de imágenes: las diferencias entre las imágenes izquierda y derecha se utilizan para calcular la profundidad de la superficie. La combinación de estas diferencias con el patrón proyectado produce un modelo de nube de puntos 3D del objeto.
+
+5. Medición y reconstrucción: la nube de puntos 3D resultante se puede utilizar para medir, analizar o reconstruir la forma y las dimensiones del objeto.
+
+<Frame>
+  <img src="/images/legacy/a61ed5fb-17e0-43a4-ada4-5340e15a4b19/d01b639a-c41f-46c8-b093-00dddfed7d5d.avif" alt="Cómo funciona la tecnología de luz estructurada" />
+</Frame>
+
+Figura 1.1
+
+* * *
+
+## 2. Descripción general del producto
+
+La H3310 es una cámara industrial de luz estructurada RGB-D que pesa 400 g. Puede montarlo en un robot compuesto o en un brazo robótico pequeño. A una distancia de reconocimiento de 30-60 cm, proporciona datos 3D de alta precisión y datos RGB de alta resolución. Su plataforma informática integrada ejecuta algoritmos de aplicación de IA de forma independiente para tareas de reconocimiento, inspección y posicionamiento de robots industriales.
+
+### 2.1 Apariencia del producto
+
+<Frame>
+  <img src="/images/legacy/338d1fbe-bfb7-4fdf-82f3-206a9c8c8aff/c0bca9b4-dacf-4e17-892e-adc10dd00300.avif" alt="cámara h3310" />
+</Frame>
+
+Figura 2.1 Cámara H3310
+
+### 2.2 Características
+
+- Plataforma informática integrada: proporciona 6.0 TOPS de potencia informática y ejecuta algoritmos de aplicaciones sin una CPU externa.
+
+- Salida de datos 3D: combina imágenes de luz estructurada con algoritmos de IA para proporcionar datos 3D de alta precisión.
+
+- Diseño compacto: pesa 400 gy proporciona interfaces abiertas para su implementación.
+
+- Producción en masa: admite una producción estable y de gran volumen.
+
+* * *
+
+## 3. Especificaciones
+
+### 3.1 Especificaciones generales
+
+| Modelo | H3310 |
+| --- | --- |
+| Principio de funcionamiento | Tecnología de luz estructurada codificada binoculares |
+| Resolución de profundidad (HxV) | 1280x1024 |
+| Resolución RGB (HxV) | 1920x1080 |
+| Tiempo de captura de datos | Aproximadamente 0,8 segundos |
+| Salida | Imágenes de profundidad, RGB y amplitud |
+| Rango de funcionamiento | 300 mm a 600 mm |
+| Campo de visión (HxV) | 55°×45° |
+| Precisión | ±0,1 mm (@350 mm) |
+| Consumo de energía | 8W@24VCC |
+| Dimensiones (largo x ancho x alto) | 124 mm × 70 mm × 53 mm |
+| Peso | 400g |
+| Fuente de alimentación | 12V-24VCC/3A |
+| Interfaz de datos | GigabitEthernet |
+| Protección de ingreso | IP55 |
+| Temperatura de funcionamiento | 0°C a 40°C |
+| Temperatura de almacenamiento | -40°C a 85°C |
+| Lenguajes de programación | C/C++ |
+| Soporte de terceros | ROS/ROS2 |
+| Sistemas operativos | - ARM Linux (AArch64) |
+| ㅤ | -Linux (x86_64) |
+| ㅤ | - Windows 7/8/10/11 |
+| Refrigeración | Refrigeración pasiva |
+| Seguridad ocular | Clase 3R |
+| Tolerancia a la luz ambiental | 10Klux |
+
+### 3.2 Distribución de pines del conector
+
+**Conectores del lado de la cámara:**
+
+**Conector de alimentación** **Conector Ethernet**
+
+<Frame>
+  <img src="/images/legacy/893a78d3-9354-4185-b28d-b6bbdfabdc0a/32e71e5d-7906-424f-8588-5018186891d3.avif" alt="Distribución de pines del conector" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c4ac542c-fa27-4c1f-bc87-ed38f6972cec/a97d5c1e-0d04-40c8-9ffc-3f2721d61095.avif" alt="Distribución de pines del conector 2" />
+</Frame>
+
+**Tabla 3.1 Distribución de pines del conector**
+
+| Puerto | Alfiler | Señal | Descripción |
+| --- | --- | --- | --- |
+| Conector Ethernet | 1 | 0+ | Naranja/blanco |
+| ㅤ | 2 | 0- | Naranja |
+| ㅤ | 3 | 1+ | Verde/blanco |
+| ㅤ | 4 | 1- | Verde |
+| ㅤ | 5 | 2+ | Azul |
+| ㅤ | 6 | 2- | Azul/blanco |
+| ㅤ | 7 | 3+ | Marrón/blanco |
+| ㅤ | 8 | 3- | Marrón |
+| Conector de alimentación | 1 | CON_IN | Terminal común para entradas IO |
+| ㅤ | 2 | EN_2 | Entrada E/S 2 |
+| ㅤ | 3 | EN_1 | Entrada E/S 1 |
+| ㅤ | 4 | COM_OUT | Terminal común para salidas IO |
+| ㅤ | 5 | SALIDA_2 | Salida E/S 2 |
+| ㅤ | 6 | SALIDA_1 | Salida E/S 1 |
+| ㅤ | 7 | VIN+ | Alimentación CC 24v positiva |
+| ㅤ | 8 | VIN- | Alimentación CC 24v negativa |
+
+### 3.3 Componentes de la cámara
+
+<Frame>
+  <img src="/images/legacy/45450db9-7808-4927-abbe-66fd471ff7cf/72fdc20c-725a-4769-87b3-446427cce099.avif" alt="Componentes de la cámara" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/348abb3d-3f69-4f1e-84f2-9a3dd573bf81/45c2bac2-d3f2-4a47-81f4-3757543f069b.avif" alt="Componentes de la cámara 2" />
+</Frame>
+
+| Número | Componente |
+| --- | --- |
+| 1 | Cámara de infrarrojos |
+| 2 | Cámara RGB |
+| 3 | Proyector de luz estructurada |
+| 4 | Cable de alimentación |
+| 5 | Ethernet |
+
+* * *
+
+## 4. Guía de integración de cámaras
+
+### 4.1 Campo de visión de la cámara
+
+<Frame>
+  <img src="/images/legacy/face6745-edf1-4df2-b756-02f8d65eff58/f31b095b-1d37-4be4-9633-87fef66f4ee6.avif" alt="Campo de visión de la cámara" />
+</Frame>
+
+### 4.2 Origen de coordenadas de la cámara
+
+1. El origen del eje X se alinea con la línea central del eje X del producto.
+
+2. El origen del eje Y se alinea con la línea central del eje Y del producto.
+
+3. El origen del eje Z está en la superficie frontal de la cámara.
+
+<Frame>
+  <img src="/images/legacy/a3ee9173-0ca3-42bd-9750-899a5062dbc7/f62d395a-966f-4eec-911f-b728dfdf04b0.avif" alt="Origen de coordenadas de la cámara" />
+</Frame>
+
+### 4.3 Dimensiones de la cámara
+
+<Frame>
+  <img src="/images/legacy/6288c91a-62ab-4b00-aae6-87c1768d64df/ab3d50eb-d654-417a-a702-ba8ddcdea070.avif" alt="Dimensiones de la cámara" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5acd27ac-becd-4f6b-8cc4-89c82ceecfbb/328cbea7-de84-48c3-b225-74feca5519c1.avif" alt="Dimensiones de la cámara 2" />
+</Frame>
+
+* * *
+
+## 5. Medio ambiente y confiabilidad
+
+| Artículo | ㅤ | Especificación |
+| --- | --- | --- |
+| Entorno operativo | Temperatura | 0℃-- 40℃ |
+| ㅤ | Humedad | Humedad relativa: 0%~95%RH, sin condensación |
+| ㅤ | Iluminancia | 0KLUX--30KLUX |
+| Entorno de almacenamiento | Temperatura | -20℃--85℃ |
+| ㅤ | Humedad | Humedad relativa: 10%~95%RH, sin condensación |
+| Aumento de temperatura durante el funcionamiento normal | ㅤ | Aumento de temperatura del recinto &lt;20℃ |
+| Clasificación ESD | ㅤ | Descarga de contacto ±4KV, descarga de aire ±8KV |
+| Clasificación RE | ㅤ | Cumple con GB 9254 CLASE A |
+| Vida útil | ㅤ | Más de 3 años |
+| Certificación ambiental | ㅤ | RoHS |
+| Seguridad láser | ㅤ | Clase 1 |
+
+* * *
+
+## 6. Precauciones
+
+### 6.1 Clase de seguridad láser
+
+<Frame>
+  <img src="/images/legacy/2177acfb-be60-4020-9cc6-7c2d5e81c1a4/7a95289d-a785-412d-9502-93f484d3bc68.avif" alt="Clase de seguridad láser" />
+</Frame>
+
+* * *
+
+## 7. Preguntas frecuentes
+
+| Número | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde cuando intentas abrirla | Compruebe si el firewall está deshabilitado. Debes desactivar el firewall. |
+| 2 | El host detecta múltiples direcciones IP | La cámara adquirió una dirección IP que ya está en uso en la LAN. Seleccione la dirección IP requerida para abrir la cámara. |
+| 3 | Los datos de la cámara son inestables después de abrir la cámara | Utilice un cable Gigabit Ethernet. Los datos pueden ser inicialmente inestables con un cable Ethernet de 100 Mbps. |
+| 4 | Ubicación de instalación del software | La instalación del software en la unidad C predeterminada puede requerir configuración de permisos. |

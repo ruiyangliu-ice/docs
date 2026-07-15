@@ -1,0 +1,231 @@
+---
+title: "Guida per l'utente della fotocamera H3310"
+description: "Specifiche del prodotto e dettagli di progettazione per l'integrazione e l'utilizzo della fotocamera H3310."
+hidden: true
+---
+## Cronologia delle revisioni
+
+| Data di revisione | Versione | Modifiche |
+| --- | --- | --- |
+| 2023/11/21 | V0.1 | Versione iniziale |
+| 25/11/2024 | V1.0 | Aggiornata la temperatura di conservazione della fotocamera |
+
+## 1. Introduzione
+
+### 1.1 Scopo e campo di applicazione
+
+Questo documento fornisce le specifiche della fotocamera H3310 e i dettagli di progettazione per gli sviluppatori che integrano e utilizzano il prodotto.
+
+### 1.2 Terminologia
+
+| Base | In una fotocamera di profondità stereo, la linea di base è la distanza orizzontale tra le due fotocamere. Più precisamente, è la distanza tra i loro assi ottici e viene tipicamente misurata in millimetri (mm). |
+| --- | --- |
+| Profondità | Come un flusso video a colori o monocromatico, un flusso di profondità assegna un valore a ciascun pixel. Questo valore rappresenta la distanza del pixel dalla fotocamera. |
+| FOV | Campo visivo. L'estensione angolare di una scena che la fotocamera può catturare. Include FOV orizzontale (HFOV), FOV verticale (VFOV) e FOV diagonale (DFOV). |
+| Telecamera IR | Una telecamera a infrarossi. In questo prodotto, cattura principalmente immagini nello spettro del vicino infrarosso. |
+| Fotocamera RGB | Una fotocamera a colori. |
+| Fotocamera di profondità | Una fotocamera con un modulo di imaging di profondità che in genere consiste in un proiettore di punti, una fotocamera IR e un processore di profondità. Il suo modulo di imaging a colori è tipicamente una fotocamera RGB. |
+| SoC | Un sistema su chip che elabora i dati dell'immagine, calcola la profondità ed esegue algoritmi applicativi. |
+
+### 1.3 Tecnologia a luce strutturata
+
+La luce strutturata binoculare è una comune tecnologia di misurazione della visione 3D che combina la visione stereo con la proiezione di luce strutturata. Utilizza due fotocamere e un proiettore a luce strutturata per catturare la forma 3D e la profondità di un oggetto.
+
+Il processo funziona come segue:
+
+1. Proiezione di luce strutturata: un proiettore proietta luce strutturata sull'oggetto target. Una sorgente di luce infrarossa o visibile produce tipicamente la luce, che è appositamente codificata o modulata utilizzando uno schema a griglia o maculato. La luce proiettata crea motivi luminosi, scuri o distorti sulla superficie dell'oggetto.
+
+2. Imaging stereo: mentre viene proiettata la luce strutturata, due telecamere catturano contemporaneamente l'oggetto target. Le telecamere sono separate da una distanza fissa, simile alla spaziatura tra gli occhi umani. Registrano sia il modello proiettato che l'aspetto dell'oggetto.
+
+3. Acquisizione dell'immagine: le telecamere acquisiscono immagini a sinistra e a destra. La distorsione o lo spostamento del modello proiettato in queste immagini codifica le informazioni sulla profondità dell'oggetto.
+
+4. Elaborazione delle immagini: le differenze tra le immagini sinistra e destra vengono utilizzate per calcolare la profondità della superficie. La combinazione di queste differenze con il modello proiettato produce un modello di nuvola di punti 3D dell'oggetto.
+
+5. Misurazione e ricostruzione: la nuvola di punti 3D risultante può essere utilizzata per misurare, analizzare o ricostruire la forma e le dimensioni dell'oggetto.
+
+<Frame>
+  <img src="/images/legacy/a61ed5fb-17e0-43a4-ada4-5340e15a4b19/d01b639a-c41f-46c8-b093-00dddfed7d5d.avif" alt="Come funziona la tecnologia a luce strutturata" />
+</Frame>
+
+Figura 1.1
+
+* * *
+
+## 2. Panoramica del prodotto
+
+L'H3310 è una telecamera industriale a luce strutturata RGB-D che pesa 400 g. Puoi montarlo su un robot composto o un piccolo braccio robotico. A una distanza di riconoscimento di 30-60 cm, fornisce dati 3D ad alta precisione e dati RGB ad alta risoluzione. La sua piattaforma informatica integrata esegue algoritmi applicativi di intelligenza artificiale in modo indipendente per attività di riconoscimento, ispezione e posizionamento dei robot industriali.
+
+### 2.1 Aspetto del prodotto
+
+<Frame>
+  <img src="/images/legacy/338d1fbe-bfb7-4fdf-82f3-206a9c8c8aff/c0bca9b4-dacf-4e17-892e-adc10dd00300.avif" alt="Telecamera H3310" />
+</Frame>
+
+Figura 2.1 Telecamera H3310
+
+### 2.2 Caratteristiche
+
+- Piattaforma informatica integrata: fornisce 6,0 TOPS di potenza di calcolo ed esegue algoritmi applicativi senza CPU esterna.
+
+- Output dati 3D: combina l'imaging a luce strutturata con algoritmi AI per fornire dati 3D ad alta precisione.
+
+- Design compatto: pesa 400 g e fornisce interfacce aperte per la distribuzione.
+
+- Produzione di massa: supporta una produzione stabile e di grandi volumi.
+
+* * *
+
+## 3. Specifiche
+
+### 3.1 Specifiche generali
+
+| Modello | H3310|
+| --- | --- |
+| Principio di funzionamento | Tecnologia a luce strutturata codificata binoculare |
+| Risoluzione della profondità (HxV) | 1280x1024 |
+| Risoluzione RGB (HxV) | 1920x1080 |
+| Tempo di acquisizione dati | Circa 0,8 secondi |
+| Uscita | Immagini di profondità, RGB e ampiezza |
+| Raggio d'azione | Da 300 mm a 600 mm |
+| Campo visivo (HxV) | 55°×45° |
+| Precisione | ±0,1 mm (@350 mm) |
+| Consumo energetico | 8 W @ 24 V CC |
+| Dimensioni (LxPxA) | 124 mm×70 mm×53 mm |
+| Peso | 400 g|
+| Alimentazione | 12 V-24 V CC/3 A |
+| Interfaccia dati | GigabitEthernet |
+| Protezione dall'ingresso | IP55|
+| Temperatura operativa | Da 0°C a 40°C |
+| Temperatura di conservazione | da -40°C a 85°C |
+| Linguaggi di programmazione | C/C++ |
+| Supporto di terze parti | ROS/ROS2 |
+| Sistemi operativi | -ARM Linux (AArch64) |
+| ㅤ | -Linux (x86_64) |
+| ㅤ | -Finestre 7/8/10/11 |
+| Raffreddamento | Raffreddamento passivo |
+| Sicurezza degli occhi | Classe 3R |
+| Tolleranza alla luce ambientale | 10Klux |
+
+### 3.2 Piedinatura del connettore
+
+**Connettori lato fotocamera:**
+
+**Connettore di alimentazione** **Connettore Ethernet**
+
+<Frame>
+  <img src="/images/legacy/893a78d3-9354-4185-b28d-b6bbdfabdc0a/32e71e5d-7906-424f-8588-5018186891d3.avif" alt="Pinatura del connettore" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c4ac542c-fa27-4c1f-bc87-ed38f6972cec/a97d5c1e-0d04-40c8-9ffc-3f2721d61095.avif" alt="Pinatura del connettore 2" />
+</Frame>
+
+**Tabella 3.1 Pinout del connettore**
+
+| Porto | Perno | Segnale | Descrizione |
+| --- | --- | --- | --- |
+| Connettore Ethernet | 1| 0+ | Arancione/bianco |
+| ㅤ | 2| 0- | Arancione |
+| ㅤ | 3| 1+ | Verde/bianco |
+| ㅤ | 4| 1- | Verde |
+| ㅤ | 5| 2+ | Blu |
+| ㅤ | 6| 2- | Blu/bianco |
+| ㅤ | 7| 3+ | Marrone/bianco |
+| ㅤ | 8| 3- | Marrone |
+| Connettore di alimentazione | 1| CON_IN | Morsetto comune per ingressi IO |
+| ㅤ | 2| IN_2 | Ingresso IO 2 |
+| ㅤ | 3| IN_1 | Ingresso IO 1 |
+| ㅤ | 4| COM_OUT | Morsetto comune per uscite IO |
+| ㅤ | 5| USCITA_2 | Uscita IO 2 |
+| ㅤ | 6| OUT_1 | Uscita IO 1 |
+| ㅤ | 7| VIN+ | Alimentazione CC 24 V positiva |
+| ㅤ | 8| VIN- | Alimentazione CC 24 V negativa |
+
+### 3.3 Componenti della fotocamera
+
+<Frame>
+  <img src="/images/legacy/45450db9-7808-4927-abbe-66fd471ff7cf/72fdc20c-725a-4769-87b3-446427cce099.avif" alt="Componenti della fotocamera" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/348abb3d-3f69-4f1e-84f2-9a3dd573bf81/45c2bac2-d3f2-4a47-81f4-3757543f069b.avif" alt="Componenti della fotocamera 2" />
+</Frame>
+
+| Numero | Componente |
+| --- | --- |
+| 1| Telecamera IR |
+| 2| Fotocamera RGB |
+| 3| Proiettore a luce strutturata |
+| 4| Cavo di alimentazione |
+| 5| Ethernet |
+
+* * *
+
+## 4. Guida all'integrazione della fotocamera
+
+### 4.1 Campo visivo della telecamera
+
+<Frame>
+  <img src="/images/legacy/face6745-edf1-4df2-b756-02f8d65eff58/f31b095b-1d37-4be4-9633-87fef66f4ee6.avif" alt="Campo visivo della telecamera" />
+</Frame>
+
+### 4.2 Origine delle coordinate della telecamera
+
+1. L'origine dell'asse X si allinea con la linea centrale dell'asse X del prodotto.
+
+2. L'origine dell'asse Y si allinea con la linea centrale dell'asse Y del prodotto.
+
+3. L'origine dell'asse Z si trova sulla superficie anteriore della fotocamera.
+
+<Frame>
+  <img src="/images/legacy/a3ee9173-0ca3-42bd-9750-899a5062dbc7/f62d395a-966f-4eec-911f-b728dfdf04b0.avif" alt="Origine delle coordinate della telecamera" />
+</Frame>
+
+### 4.3 Dimensioni della fotocamera
+
+<Frame>
+  <img src="/images/legacy/6288c91a-62ab-4b00-aae6-87c1768d64df/ab3d50eb-d654-417a-a702-ba8ddcdea070.avif" alt="Dimensioni della fotocamera" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/5acd27ac-becd-4f6b-8cc4-89c82ceecfbb/328cbea7-de84-48c3-b225-74feca5519c1.avif" alt="Dimensioni della telecamera 2" />
+</Frame>
+
+* * *
+
+## 5. Ambiente e affidabilità
+
+| Articolo | ㅤ | Specificazione |
+| --- | --- | --- |
+| Ambiente operativo | Temperatura | 0℃--40℃ |
+| ㅤ | Umidità | Umidità relativa: 0%~95%RH, senza condensa |
+| ㅤ | Illuminamento | 0KLUX--30KLUX |
+| Ambiente di archiviazione | Temperatura | -20℃--85℃ |
+| ㅤ | Umidità | Umidità relativa: 10%～95%RH, senza condensa |
+| Aumento della temperatura durante il funzionamento normale | ㅤ | Aumento della temperatura dell'involucro &lt;20℃ |
+| Valutazione ESD | ㅤ | Scarica a contatto ±4KV, scarica in aria ±8KV |
+| Voto RE | ㅤ | Conforme alla norma GB 9254 CLASSE A |
+| Durata utile | ㅤ | Più di 3 anni |
+| Certificazione ambientale | ㅤ | RoHS |
+| Sicurezza laser | ㅤ | Classe 1 |
+
+* * *
+
+## 6. Precauzioni
+
+### 6.1 Classe di sicurezza laser
+
+<Frame>
+  <img src="/images/legacy/2177acfb-be60-4020-9cc6-7c2d5e81c1a4/7a95289d-a785-412d-9502-93f484d3bc68.avif" alt="Classe di sicurezza laser" />
+</Frame>
+
+* * *
+
+## 7. Domande frequenti
+
+| Numero | Problema | Risoluzione |
+| --- | --- | --- |
+| 1| La fotocamera non risponde quando provi ad aprirla | Controlla se il firewall è disabilitato. È necessario disattivare il firewall. |
+| 2| L'host rileva più indirizzi IP | La telecamera ha acquisito un indirizzo IP già in uso sulla LAN. Selezionare l'indirizzo IP richiesto per aprire la telecamera. |
+| 3| I dati della fotocamera sono instabili dopo l'apertura della fotocamera | Utilizzare un cavo Gigabit Ethernet. I dati potrebbero inizialmente essere instabili con un cavo Ethernet da 100 Mbps. |
+| 4| Percorso di installazione del software | L'installazione del software sull'unità C predefinita potrebbe richiedere impostazioni di autorizzazione. |

@@ -1,0 +1,486 @@
+---
+title: "Protocolo HTTP V2"
+description: "Utilice los puntos finales HTTP, los parámetros de solicitud y los formatos de respuesta del módulo de localización visual V2."
+hidden: true
+---
+## Recuperar información global
+
+### Actualizar programa principal
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/quiet_update`
+
+Ejemplo de solicitud:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+
+}
+```
+
+### Establecer altura de la cámara
+
+Solicitar URL `http://<ip>:9998/tool/rob/setHeightRequest` Ejemplo:
+
+```json
+{
+
+"height": 1.3
+
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Recuperar información global
+
+### Obtener la versión del programa
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/getRobotVersion`
+
+Ejemplo de solicitud: omitido
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "data":"version 12313", "message":"success"
+
+}
+```
+
+### Obtenga información básica del vehículo
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/getVehicle`
+
+Ejemplo de solicitud: omitido
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success", "data":{
+
+"vehicleId":"vehicle UUID",
+
+"mapId":"current map", "vehicleType":"vehicle model"
+
+}
+
+}
+```
+
+### Obtener paquete de mapas del anfitrión
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/getRunMapZip`
+
+Parámetros de solicitud:
+
+Tipo de contenido: aplicación/json
+
+|  |  |  |
+| --- | --- | --- |
+| Requerido | Parámetros | Descripción |
+| Sí | Nombre | Nombre del mapa |
+
+Ejemplo de respuesta:
+
+Devuelve un archivo con tipo de contenido: aplicación/zip
+
+### Obtener AGVPose
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/getAGVPose`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+    "code": 200,
+
+    "pose": {
+
+        "x": -1.4972912073135376,
+
+        "y": -0.57843643426895142,
+
+        "yaw": 1.6737515926361084
+
+    }
+
+}
+```
+
+- 1\. **Reubicación (Conectarse en línea)**
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/relocate`
+
+Parámetros de solicitud:
+
+Tipo de contenido: aplicación/json
+
+|  |  |  |
+| --- | --- | --- |
+| Requerido | Parámetros | Descripción |
+| Sí | x | Posición X (metros) |
+| Sí | y | Posición Y (metros) |
+| Sí | ángulo | – |
+| Sí | ruidosoX | Ruidoso (metros) |
+| Sí | ruidosoY | Ruidoso (metros) |
+| Sí | ángulo ruidoso | Ruidoso (metros) |
+
+Ejemplo de solicitud: omitido
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success",
+
+}
+```
+
+## Operaciones de mapa
+
+### Implementar mapa
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/deployRunMap`
+
+Solicitar parámetros
+
+|  |  |  |
+| --- | --- | --- |
+| Requerido | Parámetros | Descripción |
+| Sí | identificación | Nombre del mapa |
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Aplicar mapa
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+Solicitar parámetros
+
+|  |  |  |
+| --- | --- | --- |
+| Requerido | Parámetros | Descripción |
+| Sí | nombre | Nombre del mapa |
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Iniciar mapeo
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/startMapping`
+
+Solicitar parámetros
+
+|  |  |  |
+| --- | --- | --- |
+| Requerido | Parámetros | Descripción |
+| Sí | nombre | Nombre del mapa |
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Detener mapeo
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/stopMapping`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Iniciar mapeo incremental
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Ejemplo de solicitud:
+
+```json
+{
+
+"cmd":904,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Detener mapeo incremental
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/sendCMD`
+
+Ejemplo de solicitud:
+
+```json
+{
+
+"cmd":905,
+
+"attach":{
+
+"sub_command":0,
+
+"param":"mapname"
+
+}
+
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Obtener lista de mapas locales (Backend) (Obtener la lista de mapas de fondo, no recomendado)
+
+Solicitar URL
+
+`http://<ip>:9998/tool/editor/getLocalMaps`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success", "data":\[
+
+{
+
+"id":"map name1",
+
+"name":"map name1",
+
+},
+
+{
+
+"id":"map name2",
+
+"name":"map name2",
+
+},
+
+\]
+
+}
+```
+
+### Obtener la lista de mapas locales (recomendado)
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+    "code": 200,
+
+    "message": "success",
+
+    "run_maps": \[
+
+        "chejianceshi",
+
+        "pf",
+
+        "xz9_test9",
+
+        "comm"
+
+    \]
+
+}
+```
+
+### Cargar paquete de mapas a la cámara
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de solicitud:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Descargar mapa
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de solicitud:
+
+```json
+{
+
+"url":"http://192.168.2.179:8080/map.zip"
+
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+## Interfaces de operación
+
+### Reiniciar el programa de la cámara
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/restart`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```
+
+### Reiniciar cámara
+
+Solicitar URL
+
+`http://<ip>:9998/tool/rob/Reboot`
+
+Parámetros de solicitud: ninguno
+
+Ejemplo de respuesta:
+
+```json
+{
+
+"code":200, "message":"success"
+
+}
+```

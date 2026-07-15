@@ -1,0 +1,226 @@
+---
+title: "Bedienungsanleitung für die S10-Kamera"
+description: "Produktspezifikationen und ausgewählte Designdetails für Entwickler, die die S10-Kamera integrieren und verwenden."
+hidden: true
+---
+## Revisionsverlauf
+
+| Datum | Version | Änderungen |
+| --- | --- | --- |
+| 13.01.2025 | V1.0 | Erstveröffentlichung |
+| 27.02.2025 | V1.1 | Aktualisiertes TOF-Sichtfeld |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## 1. Einführung
+
+### 1.1 Zweck und Umfang
+
+Dieses Dokument beschreibt die Spezifikationen der S10-Kamera und ausgewählte Designdetails für Entwickler, die das Produkt integrieren und verwenden.
+
+### 1.2 Terminologie
+
+| RGBD-Kamera | Eine Kamera, die synchronisierte und räumlich ausgerichtete RGB- und Tiefenbilder ausgibt |
+| --- | --- |
+| Tiefe | Ein Videostream, der einem Farb- oder Monochrom-Stream ähnelt, wobei jedes Pixel seinen Abstand von der Kamera darstellt |
+| Sichtfeld | Sichtfeld: Der Winkelbereich einer von einer Kamera erfassten Szene, einschließlich horizontaler (HFOV), vertikaler (VFOV) und diagonaler (DFOV) Sichtfelder |
+| IR-Kamera | Eine Infrarotkamera; In diesem Produkt wird hauptsächlich das Nahinfrarotband erfasst |
+| RGB-Kamera | Eine Farbkamera |
+| Tiefenkamera | Eine Kamera, deren Tiefenmodul typischerweise einen Punktprojektor, eine IR-Kamera und einen Tiefenprozessor umfasst; sein Farbmodul ist typischerweise eine RGB-Kamera |
+| SoC | System auf einem Chip zur Bildverarbeitung, Tiefenberechnung und Anwendungsalgorithmen |
+| DTOF | Abstandserkennungstechnologie basierend auf Flugzeitmessung |
+
+### 1.3 Funktionsprinzip
+
+Bei diesem Produkt handelt es sich um eine DTOF-3D-Tiefenkamera mit großer Reichweite, guter Genauigkeit, geringen Kosten, starker Störfestigkeit und stabilen Daten. Ein integriertes RGB-Modul erfasst Farbbilder. Die Kamera richtet RGB- und Tiefenbilder intern aus.
+
+## 2. Produktübersicht
+
+Diese kompakte industrielle RGBD-Kamera liefert Tiefendaten von 0,3 m bis 8 m. Es richtet RGB- und Tiefenbilder räumlich und zeitlich aus. Sein integrierter SoC gibt Ergebnisse zu Tiefe, Intensität, RGB, Punktwolke und Hinderniserkennung aus. Zusätzlich zu Ethernet schalten zwei IO-Eingänge und zwei IO-Ausgänge zwischen vier Hindernisvermeidungszonen um und geben Notstopp-, Verlangsamungs- und Sicherheitszustandssignale aus.
+
+* * *
+
+### 2.1 Aussehen des Produkts
+
+![S10-Kamera](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+
+Abbildung 1. S10-Kamera
+
+### 2.2 Funktionen
+
+- Niedriger DTOF-Stromverbrauch und kompakte Größe
+
+- Integrierte Verarbeitung, die Hinderniserkennungsergebnisse für den Plug-and-Play-Betrieb ausgibt
+
+- Starke Anpassungsfähigkeit an die Umwelt: Widersteht 100.000 Lux Sonnenlicht und funktioniert von der Dunkelheit bis zum hellen Licht, drinnen und draußen
+
+- Großer Messbereich von 0,3–8 m
+
+* * *
+
+## 3. Spezifikationen
+
+### 3.1 Grundlegende Spezifikationen
+
+| Produktmodell | S10 |
+| --- | --- |
+| Funktionsprinzip | DTOF-Tiefenkamera |
+| Ausgabeformat | Tiefen-, RGB- und Amplitudenkarte |
+| TOF-Auflösung und Bildrate | 240x160 @Max. 20fps, typisch 15fps |
+| TOF-Sichtfeld | 90°*61° |
+| RGB-Auflösung und Bildrate | 1920×1080 @Max. 20fps, typisch 15fps |
+| RGB-Sichtfeld | 90°*70° |
+| Reichweite | 0,3–8 m (@90 % Ref), 0,3–3 m (@5 %) |
+| Genauigkeit | 1 Standardabweichung &lt;3cm bei Raumtemperatur (25℃), 70 % Ref. und &lt;50kLux Beleuchtung |
+| Stromverbrauch | ≤4W & 28W |
+| Laser | 940nm |
+| Abmessungen | 80 mm breit × 25 mm hoch × 37 mm tief |
+| Gewicht | ≤300g |
+| Leistungsaufnahme | 24V±20% |
+| Kommunikationsschnittstelle | Ethernet / IO |
+| Schutzart | IP54 |
+| Betriebstemperatur | -20°C~60°C |
+| Lagertemperatur | -40°C~85°C |
+| Softwareumgebung | C / C++ / ROS SDK |
+| Betriebssystemunterstützung | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Kühlung | Passiv, kein Lüfter |
+
+Hinweis: Das 3D-Modell definiert die Produktabmessungen.
+
+### 3.2 Schnittstellendefinitionen
+
+Kameraseitige Schnittstellen:
+
+Die Kamera verfügt über drei Schnittstellen: einen DC24V-Stromanschluss, einen Fast-Ethernet-Anschluss und einen 8-Pin-IO-Anschluss.
+
+<Frame>
+  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Definitionen der Kameraschnittstelle" />
+</Frame>
+
+Kabelbelegung:
+
+<Frame>
+  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Pinbelegung des Kabels" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Detail der Pinbelegung des Kabels" />
+</Frame>
+
+| Kabel | P1-Pin | Farbe | Beschreibung |
+| --- | --- | --- | --- |
+| Ethernet-Kabel | 1 | Orange | OUT_COM2 |
+| ㅤ | 2 | Gelb | OUT_2 |
+| ㅤ | 3 | Grün | OUT_COM1 |
+| ㅤ | 4 | Blau | OUT_1 |
+| ㅤ | 5 | Lila | IN_COM2 |
+| ㅤ | 6 | Grau | IN_2 |
+| ㅤ | 7 | Braun | IN_COM1 |
+| ㅤ | 8 | Weiß | IN_1 |
+| Stromkabel | 1 | Rot | 24V+ |
+| ㅤ | G | Schwarz | 24V- |
+
+### 3.3 Kamerakomponenten
+
+<Frame>
+  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Kamerakomponenten" />
+</Frame>
+
+| VCSEL | Laserstrahler |
+| --- | --- |
+| SPAD | Einzelphotonen-Lawinendiode |
+| RGB | RGB-Modul |
+| Betriebsanzeige | Blinkt langsam nach dem Einschalten |
+
+## 4. Anleitung zur Kameraintegration
+
+### 4.1 Mechanisches Design
+
+### 4.1.1 Sichtfeld der Kamera
+
+<Frame>
+  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Sichtfeld der Kamera" />
+</Frame>
+
+Abbildung 3. Sichtfeld der Kamera
+
+### 4.1.2 Kameraabmessungen
+
+<Frame>
+  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Kameraabmessungen" />
+</Frame>
+
+### 4.2 Software-SDK
+
+Weitere Informationen finden Sie im Benutzerhandbuch zur MRDVS-Hostsoftware und im MRDVS SDK-Entwicklungshandbuch.
+
+* * *
+
+## 5. Umwelt und Zuverlässigkeit
+
+| Artikel | ㅤ | Spezifikation |
+| --- | --- | --- |
+| Betriebsumgebung | Temperatur | -20℃--60℃ |
+| ㅤ | Luftfeuchtigkeit | 0 %–95 % relative Luftfeuchtigkeit, nicht kondensierend |
+| ㅤ | Beleuchtung | 0KLUX--100KLUX |
+| Speicherumgebung | Temperatur | -40℃--85℃ |
+| ㅤ | Luftfeuchtigkeit | 10 %–95 % relative Luftfeuchtigkeit, nicht kondensierend |
+| Temperaturanstieg im Normalbetrieb | ㅤ | Anstieg der Gehäusetemperatur &lt;25℃ |
+| ESD-Bewertung | ㅤ | ±4KV Kontaktentladung, ±8KV Luftentladung |
+| RE-Rating | ㅤ | Entspricht GB 9254 KLASSE A |
+| Lebensdauer | ㅤ | 10 Jahre |
+| Umweltzertifizierung | ㅤ | RoHS |
+
+* * *
+
+## 6. Schnellstart
+
+### 6.1 Verbindungstest
+
+<Frame>
+  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Verbindungstest" />
+</Frame>
+
+1. Schließen Sie die Kamera an eine 24V/2A-Gleichstromversorgung an. Eine langsam blinkende blaue Betriebsanzeige bestätigt das normale Einschalten.
+
+2. Schließen Sie die Kamera mit einem Ethernet-Kabel der Kategorie 6 an den Computer an.
+
+3. Die werkseitig voreingestellte IP-Adresse der Kamera lautet 192.168.100.82.
+
+4. Stellen Sie die Computer-IP auf das Subnetz der Kamera ein und deaktivieren Sie die Computer-Firewall.
+
+5. Führen Sie die Host-Software aus, um die Kamerabilder anzuzeigen.
+
+6. Wenden Sie sich an den MRDVS-Vertrieb oder den technischen Support, um die Host-Software zu erhalten.
+
+### 6.2 IO-Verkabelung
+
+| Schnittstelle | Geben Sie | ein Notizen |
+| --- | --- | --- |
+| IN1 | Eingabe | Aktiv-High-Diskreter Eingang; unterstützt 24V/offener Eingang |
+| IN2 | Eingabe | Aktiv-High-Diskreter Eingang; unterstützt 24V/offener Eingang |
+| OUT1 | Ausgabe | Erdung/offener diskreter Ausgang; unterstützt 24V-Pull-up |
+| OUT2 | Ausgabe | Erdung/offener diskreter Ausgang; unterstützt 24V-Pull-up |
+| COM | GND | Gemeinsame Masse für diskrete Ausgänge; Verwenden Sie IN1 mit IN_COM1 |
+
+* * *
+
+## 7. Vorsichtsmaßnahmen
+
+### 7.1 Laserschutzklasse
+
+<Frame>
+  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Laserschutzklasse" />
+</Frame>
+
+* * *
+
+## 8. Fehlerbehebung
+
+| Nein. | Problem | Auflösung |
+| --- | --- | --- |
+| 1 | Kamera reagiert beim Öffnen nicht | Stellen Sie sicher, dass die Firewall deaktiviert ist |
+| 2 | Host-Software erkennt mehrere IP-Adressen | Ein anderes Gerät im LAN verwendet dieselbe IP; Wählen Sie die gewünschte IP-Adresse aus |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernet-Kabel. Daten können über Fast Ethernet zunächst instabil sein |
+| 4 | Software-Installationsort | Eine Standardinstallation auf Laufwerk C kann von den Berechtigungseinstellungen | betroffen sein

@@ -1,0 +1,1789 @@
+---
+title: "Hướng dẫn nhận dạng pallet PalletPro"
+description: "Cài đặt, cấu hình, hiệu chỉnh, vận hành và khắc phục sự cố nhận dạng pallet PalletPro."
+---
+## Lịch sử sửa đổi
+
+|  |  |  |
+| --- | --- | --- |
+| Ngày sửa đổi | Số phiên bản | Mô tả sửa đổi |
+| 30/12/2024 | V0.1 | Thêm tài liệu mới và tải lên Feishu |
+| 2025/01/09 | V1.0 | Sửa đổi vấn đề chiều cao ở Chương 2.1.2 và sửa đổi cài đặt phần mềm phiên bản mới ở Chương 3 |
+| 12/02/2026 | V1.1 | Sửa đổi nội dung cập nhật giao thức truyền thông và bổ sung nội dung thông tin mở rộng |
+
+## 1. Giới thiệu
+
+PalletPro là phần mềm nhận dạng pallet được phát triển bởi MRDVS, được sử dụng cho ứng dụng của camera dòng M tự phát triển để gắn các pallet hoặc pallet trên xe nâng hàng. Thuật toán được tự động gửi đến camera thông qua phần mềm PalletPro và tương thích với việc nhận dạng pallet ba chân và pallet hai chân có thông số kỹ thuật khác nhau. Các thuật toán độc quyền có thể được tùy chỉnh cho các loại pallet khác. Máy ảnh dòng M có khả năng tính toán tích hợp, loại bỏ nhu cầu sử dụng máy tính công nghiệp bên ngoài. Phần mềm có tính năng phát hiện động và có thể nhận được kết quả nhận dạng mà không cần nhận dạng bãi đậu xe.
+
+Phần mềm không yêu cầu người dùng phải tham gia lập trình. Với việc điều chỉnh tham số đơn giản, PalletPro có thể nhanh chóng nhận ra khả năng nhận dạng thích ứng của nhiều loại pallet khác nhau và hỗ trợ nhận dạng các cảnh khác nhau như sàn và kệ. Nếu bạn có các loại pallet đặc biệt vui lòng liên hệ với nhân viên bán hàng của chúng tôi. Hình ảnh dưới đây thể hiện pallet tiêu chuẩn được mô tả trong bài viết này.
+
+**Lưu ý: Pallet tiêu chuẩn được giới hạn ở các pallet được hiển thị trong hình bên dưới. Kích thước pallet: Kích thước pallet tiêu chuẩn Châu Âu (1,2m\*0,8m, 1,2m\*1m). Vui lòng xác nhận với doanh số Maier Micro Vision cho các kích thước còn lại. **
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f73dd95b-0a97-48f5-b5ae-160b1bf3fe88.avif" alt="Giới thiệu các biểu tượng liên quan" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a98ee54b-4985-420a-88ea-2b68fd3b1cd2.avif" alt="Giới thiệu 2" /> |
+| --- | --- |
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/feb58f36-ea13-4e75-a0b6-921c1f5fabe0.avif" alt="Giới thiệu các biểu tượng liên quan 3" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cbde8f75-f24f-4a25-9938-6ee7bf09edd1.avif" alt="Giới thiệu 4" /> |
+| --- | --- |
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/383d87d4-b28b-481a-9709-247833434f10.avif" alt="Giới thiệu các biểu tượng liên quan 5" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2ccc1f3-50b9-42a8-bd49-f60b5527cfdc.avif" alt="Giới thiệu 6" /> |
+| --- | --- |
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/dc27edd7-49bb-4032-a2e3-e20088ca2cb2.avif" alt="Giới thiệu các biểu tượng liên quan 7" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/26b133bd-573b-4e95-9a9a-0735d454d651.avif" alt="Giới thiệu 8" /> |
+| --- | --- |
+
+## 2. Cài đặt phần cứng camera
+
+### 2.1 Phương pháp lắp đặt camera
+
+#### 2.1.1 Cài đặt tiếp theo
+
+Camera được đặt trên bảng gốc của tay nĩa ở một độ cao nhất định so với bề mặt trên của tay nĩa (để biết độ cao cụ thể, vui lòng liên hệ với nhân viên bán hàng trước của Meyer Micro Vision để đánh giá), càng gần tâm của hai càng càng tốt (độ lệch trái và phải không quá 5cm) và gương camera phải thẳng đứng với mặt đất. Như hình dưới đây.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/879407bc-0a1c-4687-b0dc-de672b750eb1.avif" alt="Hình minh họa liên quan đến cài đặt tiếp theo" />
+</Frame>
+
+#### 2.1.2 Cài đặt thả xuống
+
+Camera được lắp dưới tay càng nâng thông qua một dụng cụ. Khi tay nâng được nâng lên, máy ảnh sẽ rơi cùng với dụng cụ. Sau khi dụng cụ rơi hoàn toàn, nó sẽ đi theo tay càng nâng. Camera cách mặt dưới của tay nâng khoảng 400 mm. Khi xe nâng xác định được pallet mặt đất, tay càng nâng cần được nâng lên một khoảng nhất định đến vị trí lắp ghép trước (**Điểm chụp ảnh**), sau đó kích hoạt việc lắp ghép trực quan.
+
+Điều tương tự cũng áp dụng cho việc lắp các pallet vào giá đỡ. Khi xe nâng được nâng lên vị trí lắp ghép trước, cần đảm bảo khoảng cách giữa đáy các chân pallet trên kệ và tâm quang học của camera trước khi kích hoạt nhận dạng trực quan. Camera phải càng gần tâm của hai càng chĩa càng tốt (độ lệch trái và phải không quá 5cm) và gương camera phải được giữ vuông góc với mặt đất. Không nên có góc nghiêng càng nhiều càng tốt. Không được có vật thể nào khác trong trường nhìn gây cản trở hình ảnh của vật thể được phát hiện. Quá trình cài đặt như trong hình bên dưới (**Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với nhân viên bán hàng trước của Myer Microvision**).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f179b615-5416-441b-b92d-69197d7e56f1.avif" alt="Hình minh họa liên quan đến cài đặt thả xuống" />
+</Frame>
+
+#### 2.1.3 Yêu cầu về trường nhìn của camera
+
+Nhận dạng pallet yêu cầu một cái nhìn toàn cảnh về pallet trong trường quan sát để ngăn chặn cánh tay càng nâng chặn pallet. Do đó, yêu cầu cánh tay nĩa không chặn camera ở khoảng cách nhận dạng gần nhất. Nếu có vật cản thì nên tăng chiều cao lắp đặt camera.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/25a06cb4-2d7c-4b2e-9b60-90627b464c9b.avif" alt="Hình ảnh minh họa liên quan đến yêu cầu về trường nhìn của camera" />
+</Frame>
+
+#### 2.1.4 Khuyến khích cài đặt camera
+
+Theo dữ liệu đo thực tế, khi chiều dài tay càng nâng nhỏ hơn 1,2 mét thì chiều cao lắp đặt khoảng **0,35 m-0,4 m**; khi chiều dài tay càng nâng lớn hơn 1,2 m thì chiều cao lắp đặt khoảng **0,4 m-0,8 m**. Dữ liệu trên dựa trên kinh nghiệm và các xe nâng khác nhau sẽ có sự khác biệt.
+
+Lưu ý: Khi chiều dài của tay nâng vượt quá 1,2 mét, chiều cao lắp đặt cần được thông báo với bộ phận hỗ trợ kỹ thuật của Meyer Microvision.
+
+Trường nhìn của camera cần được chiếu sáng để đạt được các hiệu ứng sau.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/46f23df0-84b3-4168-ae3c-e30b8bea88e4.avif" alt="Hình ảnh minh họa liên quan đến việc lắp đặt camera rất khuyến khích" />
+</Frame>
+
+**Lưu ý: Dock xe nâng được chia thành dock chính, dock phụ và docking thời gian thực nên cần đảm bảo camera vẫn có thể nhận diện được thông tin pallet đầy đủ ở vị trí 1,2 mét. Vì vậy, có yêu cầu cao hơn về chiều cao lắp đặt. Nếu cài đặt quá thấp sẽ ảnh hưởng đến trường nhìn của camera. Việc gắn nó quá cao sẽ ảnh hưởng đến khả năng nhận dạng chân pallet của máy ảnh. **
+
+### 2.2 Kết nối camera
+
+Sử dụng dây nguồn 5pin của camera để cấp nguồn điện 24V, kết nối camera với máy tính thông qua cáp mạng Category 7 và chạy phần mềm PalletPro.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/062c53ec-9719-4a41-a2a0-d08ee04ade33.avif" alt="Các biểu tượng liên quan đến kết nối máy ảnh" />
+</Frame>
+
+## 3. Hướng dẫn cài đặt phần mềm camera
+
+### 3.1 Quá trình cài đặt phần mềm
+
+- Khi sử dụng phần mềm lần đầu tiên, bạn có thể thực hiện theo quy trình sau để hoàn tất thao tác.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/79677dca-4d34-4f16-9fc1-1baa4e3af656.avif" alt="Hình ảnh minh họa liên quan đến quá trình cài đặt phần mềm" />
+</Frame>
+
+### 3.2 Yêu cầu hệ thống
+
+Khuyến cáo thiết bị chạy phần mềm pallet PalletPro đáp ứng được yêu cầu.
+
+|  |  |
+| --- | --- |
+| Hệ điều hành | Windows10 trở lên |
+| CPU | Đề xuất Intel® Core™ i5 thế hệ thứ 7 trở lên |
+| Ký ức | 8G trở lên |
+| GPU | Màn hình lõi/đồ họa Intel® UHD trở lên |
+
+### 3.3 Cài đặt phần mềm
+
+Cài đặt phần mềm PalletPro và tải phần mềm PalletPro-V1.4.35\_1224 thông qua Cơ sở Kiến thức Myer Microvision → Tải xuống Phần mềm
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/04882579-a8ed-4712-a22e-bbdfccb73bc4.avif" alt="Các biểu tượng liên quan đến phần mềm cài đặt" />
+</Frame>
+
+Sau khi tải về, click đúp vào gói cài đặt PalletPro-V1.4.5\_1224 để vào cài đặt phần mềm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9d149dca-0cc2-44dd-92a6-e22606ee8770.avif" alt="Cài đặt các biểu tượng liên quan đến phần mềm 2" />
+</Frame>
+
+Trong quá trình cài đặt, bạn sẽ được nhắc cài đặt thư viện C++. Lúc này bạn phải chọn đồng ý và cài đặt, nếu không phần mềm sẽ không mở được.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/559b9e9c-9b43-4805-b37c-c89fa3aa490b.avif" alt="Cài đặt các biểu tượng liên quan đến phần mềm 3" />
+</Frame>
+
+### 3.4 Chạy phần mềm
+
+Bấm đúp vào PalletPro trên màn hình để mở phần mềm chia tay khay.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/728585ff-3c1c-4030-9587-4018af303feb.avif" alt="Hình ảnh minh họa liên quan đến phần mềm đang chạy" />
+</Frame>
+
+### 3.5 Nâng cấp phần mềm
+
+1. Sao lưu thư mục PalletPro1.4.2.
+
+2. Sau khi xác nhận rằng nó đã được sao lưu, hãy xóa thư mục PalletPro1.4.2 gốc.
+
+3. Bấm đúp vào phiên bản mới của phần mềm để cài đặt.
+
+### 3.6 Thuật toán nâng cấp
+
+Thuật toán chương trình cơ sở cần được nâng cấp trong Meyer Micro Vision **Máy tính chủ LxCameraViewer**. Các bước nâng cấp thuật toán firmware như sau:
+
+1. Kết nối máy tính với camera thông qua cáp mạng.
+
+2. Nhấp đúp để mở máy tính chủ “**LxCameraViewer**”. (Để biết thông tin về cách tải xuống và sử dụng phần mềm LxCameraViewer, vui lòng tham khảo **Hướng dẫn sử dụng phần mềm LxCameraViewer**)
+
+3. Tìm ID của camera gắn đế trên khay và nhấp vào nút [**Open]** (một ô tô có thể được kết nối với nhiều camera, vì vậy bạn phải **xóa** ID của camera gắn đế hoặc bạn có thể đánh giá nó dựa trên loại camera hoặc IP).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76c13378-ec70-420d-ac08-a221f10a3158.avif" alt="Nâng cấp các biểu tượng liên quan đến thuật toán" />
+</Frame>
+
+Sau khi mở máy ảnh được gắn đế, hãy tìm tùy chọn "**Nâng cấp chương trình cơ sở**" trong cột "**Cài đặt chức năng**" trong hộp màu đỏ và nhấp vào nút [**Execute]**.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3b2a1117-bfb2-474d-8e59-3578dc22137f.avif" alt="Sơ đồ liên quan đến thuật toán nâng cấp 2" />
+</Frame>
+
+Sau khi nhấp vào [**Execute**], chọn phiên bản thuật toán chương trình cơ sở mới nhất thu được và nhấp vào [**Open**] để bắt đầu nâng cấp thuật toán khay.
+
+Trong quá trình nâng cấp thuật toán chương trình cơ sở, phần mềm máy tính chủ LxCameraViewer sẽ có **lời nhắc thông tin**. Trong quá trình nâng cấp, camera sẽ biến mất khỏi danh sách thiết bị và sẽ xuất hiện trở lại sau khi nâng cấp hoàn tất.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b68a605e-d70d-4db2-bc50-91a4b7b21c81.avif" alt="Sơ đồ liên quan đến thuật toán nâng cấp 3" />
+</Frame>
+
+Sau khi nâng cấp hoàn tất, bạn có thể kết nối lại camera bằng cách "**Open**", chọn [**Apply Algorithm**] và phiên bản thuật toán sẽ được hiển thị ở bên phải giao diện phần mềm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/bb9fbe6b-715d-4056-9e53-a3abbc0b62fa.avif" alt="Sơ đồ liên quan đến thuật toán nâng cấp 4" />
+</Frame>
+
+Mở lại phần mềm khay **PalletPro** và phiên bản thuật toán phần sụn được hiển thị ở góc dưới bên trái của giao diện.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/335a87df-d15b-4fe8-99a4-910434d2c928.avif" alt="Sơ đồ liên quan đến thuật toán nâng cấp 5" />
+</Frame>
+
+Việc nâng cấp phiên bản chương trình cơ sở của máy ảnh cũng giống như phương pháp nâng cấp thuật toán khay.
+
+### 3.7 Câu hỏi thường gặp về cài đặt
+
+**Vấn đề 1: Không mở được phần mềm**
+
+**Hiện tượng vấn đề:**
+
+Việc thực thi mã không thể tiếp tục vì không tìm thấy msvcp140.dll.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/70f7aacc-b438-4c68-8c10-0b040a56594e.avif" alt="Hình minh họa liên quan đến cài đặt Câu hỏi thường gặp" />
+</Frame>
+
+**Các lý do có thể có:**
+
+Hệ thống máy tính bị thiếu một số file dll.
+
+**Phương pháp xử lý:**
+
+1. Tải xuống các tệp dll có liên quan từ Internet và hoàn thành chúng.
+
+2. Liên hệ với nhân viên bán hàng trước của Maier Microvision để nhận phần mềm sửa chữa **DirectX**.
+
+## 4. Giao diện phần mềm
+
+### 4.1 Giao diện chính
+
+Sau khi mở phần mềm sẽ hiển thị giao diện chính sau, nơi thực hiện các thao tác như kết nối camera, hiệu chỉnh camera, nhận dạng khay.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/67014553-fc9c-4333-b910-a42fbdc29b17.avif" alt="Các biểu tượng liên quan đến giao diện chính" />
+</Frame>
+
+**Giao diện này bao gồm các chức năng sau:**
+
+|  |  |
+| --- | --- |
+| Thanh thực đơn | Chứa các thao tác cơ bản, ứng dụng nâng cao, hiệu chỉnh tham số bên ngoài, thao tác camera, tham số nâng cao và tham số đã lưu. |
+| Cài đặt thông số camera | Bao gồm quét, nhúng, mở và đóng camera, hiển thị thời gian thực, phát hiện, chiếu và cài đặt thông số hiệu chỉnh camera. |
+| Nhập tệp | Chứa các tập tin tham số hiệu chuẩn, hình ảnh nhận dạng và thư mục. |
+| In nhật ký | Kết quả phát hiện in, phiên bản phần mềm máy ảnh, phiên bản thuật toán, v.v. |
+| Hiển thị hình ảnh | Hiển thị dữ liệu hình ảnh |
+
+### 4.2 Thanh menu
+
+**Lưu ý:** Có bốn tùy chọn: hiệu chỉnh tham số bên ngoài, vận hành camera, tham số nâng cao và tham số đã lưu. Các thông số trong hoạt động cơ bản và ứng dụng nâng cao bao gồm bốn mục này. Chỉ các tham số trong **thao tác cơ bản** và **ứng dụng nâng cao** mới được mô tả bên dưới.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/28ad57b8-97d1-456c-99c9-df3115e83cf9.avif" alt="Các biểu tượng liên quan đến thanh menu" />
+</Frame>
+
+#### 4.2.1 Các thao tác cơ bản
+
+|  |  |  |
+| --- | --- | --- |
+| Thực đơn | Tùy chọn | Mô tả |
+| Các thao tác cơ bản | Hiệu chuẩn tham số bên ngoài | Hiệu chỉnh camera, hiệu chỉnh chiều cao camera, độ lệch ngang của camera, góc nghiêng, góc tiêu đề và góc cuộn. |
+| Lưu thông số | Lưu các thông số đã thiết lập và gửi chúng đến camera. | |
+| Vận hành camera | Nhận IP camera, ID camera, nhật ký phần mềm. | |
+
+##### 4.2.1.1 Mô-đun hiệu chỉnh thông số bên ngoài
+
+Nhấp vào **Hiệu chỉnh tham số bên ngoài** trong "**Thao tác cơ bản**" để hiển thị giao diện hiệu chỉnh tham số bên ngoài ở phía bên phải của giao diện phần mềm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/837649f6-d016-466c-b24a-f8f5096753ae.avif" alt="Các sơ đồ liên quan của module hiệu chỉnh thông số bên ngoài" />
+</Frame>
+
+Nhấp vào [**Hướng dẫn hiệu chỉnh**] trong "**Hiệu chỉnh thông số bên ngoài**" và các biện pháp phòng ngừa cho việc hiệu chỉnh thông số bên ngoài sẽ được hiển thị. Vui lòng đọc **chi tiết** để tránh sự cố trong quá trình hiệu chỉnh.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5a2925c6-3c71-4bf4-999d-2316dc175bf0.avif" alt="Sơ đồ liên quan của module hiệu chuẩn tham số ngoài 2" />
+</Frame>
+
+Thông tin xác nhận ở cuối [**Hướng dẫn hiệu chuẩn**]:
+
+- **Tên khách hàng:** Nên đặt tên kèm theo số dự án + số xe nâng để thuận tiện cho việc khắc phục sự cố.
+
+- **Nhận dạng khoảng cách gần nhất (mm): **Mặc định là đủ (nếu khoảng cách hiệu chuẩn gần hơn thì điều chỉnh thành 1,2m).
+
+Khoảng cách giữa tâm xoay và tâm quang: Khi giá trị mặc định là 0 tức là tọa độ của khay dưới camera. **Khoảng cách từ tâm quang học của camera đến tâm quay của xe nâng phải được điền đầy đủ. **
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/82268422-8aad-4b49-a476-80f90e8cd958.avif" alt="Sơ đồ liên quan của module hiệu chuẩn tham số ngoài 3" />
+</Frame>
+
+Sau khi nhấp vào [Đặt lại hiệu chỉnh], tất cả các thông số hiệu chuẩn sẽ được khôi phục về 0.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/aaccd3e8-afdc-4147-a6ce-51fa6f4e8286.avif" alt="Sơ đồ liên quan của module hiệu chỉnh thông số bên ngoài 4" />
+</Frame>
+
+Độ lệch bên được xác định tự động thông qua hiệu chuẩn.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b7d0a60f-8b73-4ea4-8c9b-a07b8355991e.avif" alt="Sơ đồ liên quan của module hiệu chỉnh thông số bên ngoài 5" />
+</Frame>
+
+Hướng dẫn trên pallet như sau (**nên hiệu chỉnh hai lần**):
+
+- **Dạy về pallet đơn:** Hiệu chỉnh gần đúng pallet ở vị trí cách tay càng nâng của xe nâng 200mm. Việc hiệu chuẩn này có thể đánh dấu chiều cao của pallet, độ lệch ngang, góc hướng và góc cuộn.
+
+- **Hai hướng dẫn pallet: **Sau khi hiệu chỉnh đầu gần, thực hiện hiệu chỉnh đầu xa (dạy thứ cấp). Nếu khoảng cách giữa camera hiệu chuẩn gần và pallet là 1300mm thì bạn cần cho xe nâng chạy theo đường thẳng khoảng 400-800mm mà không được chuyển động góc cạnh hay chuyển động ngang. Thực hiện hiệu chỉnh ở xa cách pallet 1,8-2,4m để hiệu chỉnh góc nghiêng của camera.
+
+- Sau khi hiệu chỉnh xong nhớ click lại để lưu thông số.
+
+##### 4.2.1.2 Lưu tham số module
+
+Lưu các thông số phần mềm hiện tại và gửi chúng đến camera.
+
+##### 4.2.1.3 Mô-đun vận hành camera
+
+Nhấp vào nút [**Thao tác máy ảnh**] để hiển thị giao diện sau:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d2829473-e852-44a4-9fe3-fcec81d8e6f2.avif" alt="Các hình ảnh minh họa liên quan đến module vận hành camera" />
+</Frame>
+
+1. Lấy IP và ID của camera hiện tại.
+
+2. Trực tiếp nâng cấp phiên bản thuật toán (**hiện không được hỗ trợ**).
+
+3. Lấy thông tin nhật ký đang chạy phần mềm và thông báo thu thập nhật ký thành công sẽ được hiển thị ở góc dưới bên trái của giao diện phần mềm. Nhật ký thu được được hiển thị trong "**Thư mục PalletPro-V1.4.1**" → "**IP Camera hiện tại\_ID Thư mục**".
+
+#### 4.2.2 Ứng dụng nâng cao
+
+|  |  |  |
+| --- | --- | --- |
+| Thực đơn | Tùy chọn | Mô tả |
+| Ứng dụng nâng cao | Thông số nâng cao | Đặt thông số nhận dạng pallet |
+| Hiển thị 3D | Xem kết quả chụp ảnh pallet | |
+| Kiểm tra ngoại tuyến | Kiểm tra xem có vấn đề gì với việc nhận dạng khay hay không bằng cách nhập ảnh | |
+| Xuất thông số | Không thể sử dụng | |
+
+##### 4.2.2.1 Mô-đun tham số nâng cao
+
+|  |  |
+| --- | --- |
+| Nhấp vào **Thông số nâng cao** trong **Ứng dụng nâng cao**. Nội dung của nó khớp với **Thông số nâng cao** trong giao diện chính. | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ef6d54f-759b-4f28-b5aa-d6c4558227c4.avif" alt="Hình ảnh minh họa liên quan đến module thông số nâng cao" /> |
+
+Cài đặt thông số nâng cao bao gồm địa chỉ đọc, IP/ID camera, thông số nâng cao, thông số lưu, chọn chiều rộng chân, chiều rộng khay, phát hiện thanh ngang và một số thông tin tham số.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8783df78-997c-47f5-ae33-73c8f71f6125.avif" alt="Sơ đồ liên quan đến mô-đun tham số nâng cao 2" />
+</Frame>
+
+Đọc địa chỉ
+
+- Đọc file json của camera và hiển thị IP camera, thư mục ID và json tại cột này.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/67c8c4fe-d25f-4883-b083-3adce2246e61.avif" alt="Sơ đồ liên quan đến mô-đun tham số nâng cao 3" />
+</Frame>
+
+IP/ID máy ảnh
+
+- Hiển thị thông tin IP và ID của camera hiện tại.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/28cc495c-b33c-4cab-ab20-527053d4c5f5.avif" alt="Các sơ đồ liên quan của module thông số nâng cao 4" />
+</Frame>
+
+Thông số nâng cao
+
+- Sau khi kiểm tra, tất cả các thông số nâng cao có thể được hiển thị (các thông số trên trang hiện tại là các thông số cơ bản).
+
+**Các thông số có thể được sửa đổi trong các thông số nâng cao: **Phương pháp lắp đặt, chiều cao camera, đặt tên tùy chỉnh, phát hiện nhiều pallet, phát hiện pallet bốn chân, giá trị tối thiểu theo hướng z, giá trị tối đa theo hướng z, giá trị tối thiểu theo hướng ngang, giá trị tối đa theo hướng ngang và phát hiện hai chân. Tất cả các tham số khác không thể được sửa đổi.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/39350ae7-09b1-42f8-9565-9faf4eab4340.avif" alt="Các sơ đồ liên quan của module thông số nâng cao 5" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0d272688-e021-4cb1-bd4b-26d3c7da31b7.avif" alt="Các sơ đồ liên quan của module tham số nâng cao 6" />
+</Frame>
+
+- Ý nghĩa các thông số nâng cao (**Màu đỏ biểu thị các thông số không thể thay đổi**)
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| | Tên tham số | Mô tả thông số | Ý nghĩa tham số |
+| Thông số cơ bản | R:[0,0,0,0,0,0] | Thông số góc hiệu chỉnh camera | R:[Góc nghiêng, góc hướng, góc cuộn] |
+| t:[0.0,0.0,0.0] | Thông số bù camera | t:[Bù ngang, không có hiệu lực, bù chiều sâu] | |
+| mặt đất_y | Chiều cao lắp đặt camera | Chiều cao từ mặt đất đến camera, tính bằng milimét (mm) | |
+| x-khách hàng | Đặt tên tùy chỉnh | Nên đặt tên bằng project + ID | |
+| định hướng | phương pháp cài đặt | 0: cài đặt chính thức, 2: cài đặt ngược. 1, 3: Lắp bên hông | |
+| đa_cấp | Có hỗ trợ phát hiện nhiều pallet hay không | 0: Tắt. 1: Kích hoạt tính năng phát hiện nhiều pallet | |
+| bốn | Có hỗ trợ bốn chân | 0: Tắt. 1: Kích hoạt tính năng nhận dạng pallet bốn chân | |
+| Thông số nâng cao | phút_z | Giá trị tối thiểu theo hướng z | Khoảng cách máy ảnh. Nếu khoảng cách thấp hơn giá trị tối thiểu theo hướng z, việc phát hiện sẽ thất bại. |
+| max_z | Giá trị tối đa theo hướng z | Khoảng cách máy ảnh. Nếu nó cao hơn giá trị tối đa theo hướng z thì việc phát hiện sẽ thất bại. | |
+| phút_x | Giá trị tối thiểu theo phương ngang | Phát hiện không thành công khi vượt quá giá trị tối thiểu theo hướng ngang. | |
+| max_x | Giá trị lớn nhất theo phương ngang | Việc phát hiện không thành công khi vượt quá giá trị tối đa theo hướng ngang. | |
+| hai_chân | Nhận dạng chân | 0: Tắt. 1: Bật. | |
+
+Lưu thông số
+
+- Nó có chức năng tương tự như "Save Parameters" trong thao tác cơ bản. Sau khi cài đặt thông số, nhấp vào [**Save Parameters**] để lưu thông số và gửi chúng đến máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e9c6dd9e-41d0-42a1-9d49-212650231af9.avif" alt="Các sơ đồ liên quan của module thông số nâng cao 7" />
+</Frame>
+
+Lựa chọn chiều rộng chân
+
+- Chế độ tiêu chuẩn (10-15cm)
+
+- Chế độ thon gọn chân (5cm)
+
+- Khay mỏng (3-4cm)
+
+- Quá rộng (15cm)
+
+- Cực rộng (20cm+)
+
+Chiều rộng pallet
+
+- Chế độ tiêu chuẩn (0,7-1,3m)
+
+- Pallet rộng (1,1-1,6m)
+
+Phát hiện thanh ngang
+
+- Tiêu chuẩn (**mặc định**, thông thường không cần thay đổi)
+
+- Tốt hơn (80%)
+
+- Rất tốt (60%)
+
+- Hiếm (10%)
+
+**4.2.2.2 Hiển thị mô-đun 3D**
+
+Chọn "**Ứng dụng nâng cao**" và nhấp vào nút [**Hiển thị 3D**] để hiển thị hiệu ứng đám mây điểm 3D hiện tại và có thể điều chỉnh độ dài và chiều rộng của trang thông qua các cạnh. Bạn cũng có thể sử dụng chức năng này để kiểm tra tính toàn vẹn của đám mây điểm pallet trong quá trình thử nghiệm ngoại tuyến.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/26d93e66-55f3-4744-b356-da58ee25a9d5.avif" alt="Sơ đồ liên quan của module thông số nâng cao 8" />
+</Frame>
+
+##### 4.2.2.3 Mô-đun kiểm tra ngoại tuyến
+
+Chọn "**Ứng dụng nâng cao**" và nhấp vào nút [**Kiểm tra ngoại tuyến**]. Bằng cách nhập **tệp hiệu chỉnh json**, **ảnh được nhận dạng** và **thư mục ảnh được nhận dạng** vào phần mềm PalletPro, hãy nhấp vào nút **Bắt đầu phát hiện** để xác định ảnh. Như minh họa trong hình bên dưới, chức năng kiểm tra ngoại tuyến có thể được chia thành năm phần.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1c325c-6b9c-42fa-95be-6fdcb76b646e.avif" alt="Hình ảnh minh họa liên quan đến module thử nghiệm offline" />
+</Frame>
+
+Tấm "1" màu đỏ (tệp tham số):
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/208ab654-3d3c-4305-b2b0-d335d43a39b9.avif" alt="Sơ đồ liên quan đến mô-đun kiểm tra ngoại tuyến 2" />
+</Frame>
+
+- Bạn cần đưa file hiệu chỉnh thông số camera vào cột này (trực tiếp **kéo** file hiệu chỉnh json vào cột **parameter file**). Cách tìm file hiệu chỉnh json, sử dụng phần mềm PalletPro để kết nối với camera hiện tại và tạo file json trong thư mục phần mềm PalletPro → thư mục ID camera.
+
+|  |  |
+| --- | --- |
+| Ví dụ: Nhấp đúp vào **PalletPro**. Lưu ý IP camera và ID camera hiển thị trong cài đặt camera. Mở thư mục phần mềm PalletPro, tìm IP và ID phù hợp, xác nhận chúng và nhấp đúp vào thư mục. | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e5072e73-6903-468d-b0a6-ee6dd278db74.avif" alt="Sơ đồ liên quan đến mô-đun kiểm tra ngoại tuyến 3" /> |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a295e499-49bf-4775-b189-89b4bd6c8393.avif" alt="Các hình ảnh minh họa liên quan đến module test offline 4" />
+</Frame>
+
+**pallet\_settings.json** là tệp thông số hiệu chỉnh máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8731bfe4-8542-4e57-bf41-45fd3fe4d3b3.avif" alt="Các hình ảnh minh họa liên quan đến module thử nghiệm offline 5" />
+</Frame>
+
+Phần "2" màu xanh lá cây (tệp đầu vào, thư mục đầu vào):
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/596c759f-de2f-40b2-b074-01c89746729e.avif" alt="Các hình ảnh minh họa liên quan đến module test offline 6" />
+</Frame>
+
+- Kéo hình ảnh hoặc thư mục kết quả png camera thu được vào hình ảnh hiện tại.
+
+(1) Kéo thư mục chứa ảnh kết quả camera vào cột "**Thư mục**" trong hình trên.
+
+(2) Kéo và thả một ảnh định dạng png vào cột "**Tệp đầu vào**".
+
+**Tấm "3" màu vàng (kiểm tra ngoại tuyến):**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a8eac85d-1456-4487-b6f3-19502cd40a89.avif" alt="Các hình ảnh minh họa liên quan đến module test offline 7" />
+</Frame>
+
+- Có các tùy chọn "**File**" và "**Folder**" để kiểm tra ngoại tuyến, có thể kiểm tra một ảnh hoặc tất cả các ảnh trong thư mục.
+
+- **Từ**, khi chọn "**Thư mục**" để kiểm tra, bạn có thể nhập một số vào "**Từ**". Nếu bạn nhập 100 thì có nghĩa là bắt đầu từ bức ảnh thứ 100.
+
+**Tấm số "4" màu xanh lam (cài đặt thông số):**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/32da337e-a50e-4414-b88e-4830991f0722.avif" alt="Các hình ảnh minh họa liên quan đến module test offline 8" />
+</Frame>
+
+- Sau khi kéo file hiệu chuẩn json vào phần mềm PalletPro, các thông số file hiệu chuẩn hiện tại sẽ được hiển thị tại mục “Parameter Setting”.
+
+**Tấm "5" màu trắng (hiển thị kết quả nhận dạng):**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/20fdff18-7806-4d2c-b82f-2bd51fcb8b32.avif" alt="Các hình ảnh minh họa liên quan đến module thử nghiệm offline 9" />
+</Frame>
+
+- Kiểm tra ngoại tuyến, hiển thị thông tin kết quả nhận dạng.
+
+**OK:** Tọa độ của kết quả nhận dạng trong hệ tọa độ camera.
+
+**R:**Camera chuyển đổi tọa độ theo xe nâng.
+
+##### 4.2.2.4 Xuất mô-đun tham số
+
+Tạm thời không có.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4b510c51-277a-43eb-921c-51594b8e0109.avif" alt="Hình ảnh minh họa liên quan đến module xuất tham số" />
+</Frame>
+
+- Trong thư mục gốc của phần mềm pallet, trong thư mục IP và ID của camera hiện tại, có thể xuất file hiệu chỉnh pallet\_settings.
+
+### 4.3 Cài đặt thông số camera
+
+Cài đặt thông số máy ảnh được chia thành hai phần: **Cài đặt máy ảnh** và **Cài đặt thông số**.
+
+#### 4.3.1 Cài đặt máy ảnh
+
+Cài đặt camera bao gồm bảy phần: quét, nhúng, bật camera, tắt camera, hiển thị thời gian thực, phát hiện và chiếu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1ec272e-d160-4c1f-929c-6054a9d6a189.avif" alt="Các biểu tượng liên quan đến cài đặt máy ảnh" />
+</Frame>
+
+##### 4.3.1.1 Mô-đun quét
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| * Quét các camera được kết nối với máy tính này | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/91d46791-2e54-4657-9fd1-25eff29e6ec4.avif" alt="Các biểu tượng liên quan đến mô-đun quét" /> | Một camera hiện đang được kết nối. Nếu nhiều camera được kết nối, địa chỉ IP của chúng sẽ xuất hiện theo thứ tự. | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9efacbcd-459f-4864-b728-447d5e40d152.avif" alt="Quét camera 2" /> |
+
+##### 4.3.1.2 Mô-đun nhúng
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f4da2251-4f6f-49bb-bf6a-bcf41ce9b395.avif" alt="Các biểu tượng liên quan đến mô-đun nhúng" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1f56d80-e516-4ba2-aee1-bb68213e7098.avif" alt="Chế độ nhúng 2" /> |
+
+- Sau khi kiểm tra, kết quả nhận dạng của thuật toán chạy camera hiển thị ở cột in nhật ký như hình trên (nếu muốn xem kết quả chạy camera bạn cần kết nối camera, bấm vào nút "**Open Camera**" và tích vào Embedded to display).
+
+##### 4.3.1.3 Mở mô-đun camera
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ae6fd220-0b63-4974-ad98-492b22009c57.avif" alt="Mở các biểu tượng liên quan đến mô-đun máy ảnh" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f8be977e-3dfa-4adf-a843-9b89922f4f41.avif" alt="Mở máy ảnh 2" /> |
+
+- Sau khi kết nối với camera qua cáp mạng, nhấp vào nút [**Open Camera**] để bắt đầu truyền phát camera thành công, nút này chuyển sang màu xám và trạng thái camera thay đổi từ "**Tắt**" thành "**Đang chạy**".
+
+##### 4.3.1.4 Đóng mô-đun camera
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f8be977e-3dfa-4adf-a843-9b89922f4f41.avif" alt="Đóng các biểu tượng liên quan đến mô-đun máy ảnh" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ae6fd220-0b63-4974-ad98-492b22009c57.avif" alt="Đóng camera 2" /> |
+
+- Nhấp vào nút [**Đóng camera**] để dừng luồng camera thành công, nút này chuyển sang màu xám và trạng thái camera thay đổi từ "**Đang chạy**" thành "**Đóng**".
+
+##### 4.3.1.5 Mô-đun trình chiếu
+
+|  |  |
+| --- | --- |
+| * Sau khi bạn mở máy ảnh, **Chiếu** được chọn theo mặc định. Bạn không cần phải thay đổi nó. | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/eb8b8a33-c798-45c3-9c96-1f2c4c69bd73.avif" alt="Các biểu tượng liên quan đến mô-đun chiếu" /> |
+
+##### 4.3.1.6 Mô-đun hiển thị thời gian thực
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/536c12fd-dfe2-4162-8dea-59e0655a3fe7.avif" alt="Các biểu tượng liên quan đến mô-đun hiển thị thời gian thực" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e9032e3f-91a8-456a-985e-e8c6191b400e.avif" alt="Hiển thị thời gian thực 2" /> |
+
+- Hiển thị hình ảnh trực tiếp. Sau khi mở máy ảnh, [**Hiển thị thời gian thực**] được chọn theo mặc định và không cần thay đổi. Nếu không chọn hiển thị thời gian thực, "**Giao diện hiển thị hình ảnh**" sẽ không hiển thị hình ảnh thời gian thực.
+
+##### 4.3.1.7 Mô-đun phát hiện
+
+- Phát hiện nhận dạng thuật toán. Sau khi bật máy ảnh, [**Detection**] không được kiểm tra theo mặc định, điều đó có nghĩa là tính năng phát hiện thuật toán máy tính chủ PalletPro không được bật.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1362ef94-c918-4695-95d9-1e4b4b7328b1.avif" alt="Các biểu tượng liên quan đến mô-đun phát hiện" />
+</Frame>
+
+- Sau khi kiểm tra [**Detection**], kết quả phát hiện sẽ xuất ra ở góc trên bên trái của "**Giao diện hiển thị hình ảnh**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6261c51-9d0e-4457-b230-6ba5aea66103.avif" alt="Sơ đồ liên quan đến mô-đun phát hiện 2" />
+</Frame>
+
+#### 4.3.2 Cài đặt thông số
+
+Khi bạn nhấp vào nút "**Open Camera**", phần mềm PalletPro sẽ tự động đọc tệp thông số hiệu chỉnh camera và hiển thị trong "**Parameter Setting**". Các cài đặt tham số được chia thành sáu phần: Máy khách, chiều cao lắp đặt, góc nghiêng RX, góc tiêu đề RY, góc cuộn RZ và phương pháp lắp đặt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/06fb1cf2-d0dc-4598-a416-a3df8aa020bf.avif" alt="Hình minh họa liên quan đến cài đặt thông số" />
+</Frame>
+
+##### 4.3.2.1 Mô-đun máy khách
+
+|  |  |
+| --- | --- |
+| * Tên của tập tin hiệu chuẩn hiện tại. | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb70bf8a-9107-4083-9ea7-2b2a1fa923fa.avif" alt="Các biểu tượng liên quan đến mô-đun máy khách" /> |
+
+##### 4.3.2.2 Lắp đặt module chiều cao
+
+- Chiều cao lắp đặt camera. Thông tin về chiều cao của máy ảnh có thể được lấy thông qua "**Dạy một lần (hiệu chỉnh gần cuối)**" và cũng có thể được điều chỉnh thủ công.
+
+**Ví dụ:**Một camera mới cần xác định các pallet.
+
+**(1)** Sau khi kết nối máy ảnh, hãy mở phần mềm và nhấp vào nút [Height Adaptive] để cho phép phần mềm tự động phát hiện chiều cao của máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c55037-9fcd-4526-9702-44f3095f094f.avif" alt="Hình ảnh minh họa liên quan đến module chiều cao lắp đặt" />
+</Frame>
+
+**(2)** Sau khi nhấp vào "Nút thích ứng độ cao", giá trị độ cao được phát hiện là giá trị khoảng và cần phải tinh chỉnh thủ công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2261fc68-c946-4ed8-afca-636f87427f09.avif" alt="Các hình ảnh minh họa liên quan đến chiều cao lắp đặt module 2" />
+</Frame>
+
+**(3)** Nhấp vào "416" trong cột chiều cao cài đặt để tinh chỉnh bằng con lăn chuột. Cố gắng giữ đường ngang màu đỏ trong hình ngang bằng với mặt đất.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/746c8f34-3173-4fa4-9c77-83fa62293fb2.avif" alt="Các hình ảnh minh họa liên quan đến chiều cao lắp đặt module 3" />
+</Frame>
+
+**(4)** Sau khi điều chỉnh, bạn cần nhấp vào nút Lưu thông số trên thanh menu. Vì việc điều chỉnh độ cao sẽ tự động hủy hiển thị thời gian thực nên sau khi lưu độ cao đã điều chỉnh, bạn cần kiểm tra lại hiển thị thời gian thực trong cài đặt camera.
+
+<Frame>
+  <img src="/images/legacy/b548cafe-58af-4df6-8d65-8c3a4ff16911/8ad50a7a-9b76-4324-83bc-a44eba8f03a1.avif" alt="Các hình ảnh minh họa liên quan đến chiều cao lắp đặt module 4" />
+</Frame>
+
+##### 4.3.2.3 Mô-đun RX góc nghiêng
+
+- Có được góc nghiêng của camera thông qua "**Dạy thứ hai (Hiệu chỉnh từ xa)**". **Không nên điều chỉnh thông số này theo cách thủ công**, điều này có thể gây ra sai lệch trong kết quả nhận dạng. Nếu không thể đánh dấu hiệu chuẩn tự động, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+- **Tilt:**Vị trí lắp đặt camera nghiêng về phía trước và phía sau. Máy ảnh bị nghiêng xuống và có thể sửa bằng cách điều chỉnh góc nghiêng về giá trị âm. Như minh họa trong hình bên dưới, góc nghiêng của camera RX là độ nghiêng xuống (hướng lên) của camera dựa trên mặt đất nằm ngang.
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/36cf2383-f706-49ba-8225-c75149df532b.avif" alt="Các hình ảnh minh họa liên quan đến module RX góc nghiêng" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/880ea9b8-ee41-4d6f-bced-71ba6181857a.avif" alt="Sân RX 2" /> |
+| --- | --- |
+
+##### 4.3.2.4 Môđun RY góc hướng
+
+- Lấy góc hướng của camera thông qua "**Dạy đơn (hiệu chỉnh gần cuối)**". **Không nên điều chỉnh thông số này theo cách thủ công**, điều này có thể gây ra sai lệch trong kết quả nhận dạng. Nếu không thể đánh dấu hiệu chuẩn tự động, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+- **Tiêu đề:**Độ lệch góc ngang trái và phải của camera. Nếu camera có góc quay theo chiều kim đồng hồ, có thể sửa bằng cách điều chỉnh góc tiêu đề về giá trị dương. Như minh họa trong hình bên dưới, góc hướng của camera RY là góc quay theo chiều kim đồng hồ (ngược chiều kim đồng hồ) của camera dựa trên mặt đất nằm ngang.
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/64df8250-f66e-4e99-a246-9147f7cb1114.avif" alt="Các hình ảnh minh họa liên quan đến mô-đun góc nghiêng RY" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8016b27f-de21-41f0-9081-4af8a8646640.avif" alt="Tiêu đề RY 2" /> |
+| --- | --- |
+
+##### 4.3.2.5 Mô-đun RZ góc cuộn
+
+- Có được góc cuộn camera thông qua "**Dạy đơn (Hiệu chỉnh gần)**". **Không nên điều chỉnh thông số này theo cách thủ công**, điều này có thể gây ra sai lệch trong kết quả nhận dạng. Nếu không thể đánh dấu hiệu chuẩn tự động, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+- **Roll:**Vị trí lắp đặt camera nghiêng sang trái và phải. Như thể hiện trong hình bên dưới, góc cuộn camera RZ nghiêng sang phải (trái) so với mặt đất nằm ngang.
+
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/36cf2383-f706-49ba-8225-c75149df532b.avif" alt="Sơ đồ liên quan của module RZ góc cuộn" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/83886353-53bd-437a-895b-11ce9351f0da.avif" alt="Cuộn RZ 2" /> |
+| --- | --- |
+
+### 4.4 Nhập tệp
+
+Trong "**Kiểm tra ngoại tuyến**", chức năng nhập tệp được giải thích ngắn gọn. Bạn có thể nhấp vào "**Ứng dụng nâng cao**" để xem (chức năng nhập tệp chỉ được sử dụng trong quá trình "**Kiểm tra ngoại tuyến**").
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b861b49c-16b6-41bc-9301-6fd572deb026.avif" alt="Các biểu tượng liên quan đến nhập tệp" />
+</Frame>
+
+#### 4.4.1 Tệp tham số
+
+- Sau khi PalletPro mở camera, nó sẽ tự động lấy file hiệu chuẩn camera và hiển thị tại cột file tham số.
+
+- Trong quá trình kiểm tra ngoại tuyến, hãy kéo tệp hiệu chỉnh pallet\_setting.json của máy ảnh vào thanh tệp tham số.
+
+#### 4.4.2 Tệp đầu vào
+
+- Kéo hình ảnh khay thu được ở định dạng png vào "thanh tệp đầu vào" để kiểm tra một hình ảnh png ngoại tuyến.
+
+#### 4.4.3 Thư mục
+
+- Kéo toàn bộ thư mục ảnh vào “Folder” để kiểm tra thư mục ảnh nhé.
+
+### 4.5 In nhật ký
+
+Ở góc dưới bên trái của phần mềm PalletPro, thông tin in nhật ký được hiển thị theo thời gian thực.
+
+#### 4.5.1 Mở in nhật ký camera
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/aae1353b-dffc-43bf-b60a-c1c831c8032c.avif" alt="Mở nhật ký của máy ảnh và in các biểu tượng liên quan" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/960378d2-0aa7-4c55-9825-dd7c23eb8520.avif" alt="Bật ghi nhật ký camera 2" /> |
+
+- \[Camera đang khởi động\]
+
+- In \[trạng thái đã thay đổi thành\]——Trạng thái đã thay đổi
+
+- \[Phiên bản API 2.4.20\]——Phiên bản API
+
+- \[firmware\_verv1.1.75\_240608\_sp\]——Thông tin phiên bản firmware của máy ảnh
+
+- \[Camera 192.168.100.82:3956 đã khởi động thành công\]——Camera đã khởi động thành công
+
+- \[Embeded Alg Ver:0.7.5\_@18/06/2024\]——Thông tin phiên bản firmware thuật toán
+
+#### 4.5.2 Sửa đổi việc in nhật ký RX, RY, RZ và chế độ cài đặt
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/bb6f34e1-5117-488b-881b-fc23b3df1dd5.avif" alt="Sửa đổi các biểu tượng liên quan đến in của nhật ký RX, RY, RZ và phương pháp cài đặt" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2bc345f-9e3e-42dc-b176-16cafbc6dc6b.avif" alt="Định cấu hình ghi nhật ký RX, RY, RZ và chế độ cài đặt 2" /> |
+
+- \[Góc Euler -0,2 -0,3 -0,3 Lật\]——In thông tin về góc nghiêng, góc tiêu đề, góc cuộn và phương pháp lắp đặt.
+
+#### 4.5.3 Lấy bản in nhật ký trong các tùy chọn vận hành máy ảnh
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ac89b5e8-9a07-441e-8b7f-b44513d9fb27.avif" alt="Lấy các biểu tượng liên quan đến in của nhật ký nhật ký trong các tùy chọn vận hành máy ảnh" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c94221da-246d-4463-93c4-5ff3d62f38ec.avif" alt="Truy xuất nhật ký từ hoạt động của camera 2" /> |
+
+- Khi sử dụng tùy chọn [Thao tác máy ảnh], hãy nhấp vào nút "**Chỉ nhận nhật ký**", cột in nhật ký sẽ hiển thị \[Bắt đầu nhận nhật ký\]
+
+#### 4.5.4 In nhật ký khi được nhúng
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/57bdc0eb-4470-4076-965b-daa8d89bde1f.avif" alt="Hình minh họa liên quan đến việc in nhật ký khi được nhúng" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/68596f50-15d4-4404-99be-a7634968b642.avif" alt="Ghi nhật ký nhúng 2" /> |
+
+- \[InnerFailed. Err=-6\]——Kết quả nhận dạng của thuật toán chạy camera hiện là lỗi nhận dạng.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a0558ab9-a554-4021-945b-dbf92f8f930c.avif" alt="Hình minh họa liên quan đến in nhật ký khi nhúng 3" />
+</Frame>
+
+- \[Inner -1390, 1, -0.01\]——Kết quả nhận dạng của thuật toán chạy camera hiện đã thành công.
+
+### 4.6 Hiển thị hình ảnh
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9771a9fc-d418-4f5b-87a0-8120882fe006.avif" alt="Hiển thị hình ảnh các biểu tượng liên quan" />
+</Frame>
+
+- Sau khi nhấp vào "**Mở Camera**", hình ảnh hiện tại sẽ được hiển thị theo thời gian thực trên giao diện [Hiển thị hình ảnh].
+
+- Trong quá trình kiểm tra offline, kết quả nhận dạng hình ảnh được hiển thị trên giao diện [Image Display].
+
+## 5. Hướng dẫn đăng ký
+
+Hướng dẫn ứng dụng này chủ yếu giới thiệu việc chuẩn bị camera, hiệu chỉnh thông số bên ngoài của camera và kết quả nhận dạng xe nâng.
+
+### 5.1 Chuẩn bị
+
+Chuẩn bị một pallet tiêu chuẩn để hiệu chuẩn. (**Hình bên dưới là pallet tiêu chuẩn**)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c73f521c-b1b8-4cc5-aeb2-a7d290138a24.avif" alt="Các hình ảnh minh họa liên quan đến công tác chuẩn bị" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1559e995-214d-4a80-9028-535e5f89c1ea.avif" alt="Hình ảnh minh họa liên quan đến việc chuẩn bị 2" />
+</Frame>
+
+Khi sử dụng nhận dạng camera lần đầu tiên, bạn cần cấu hình IP của máy tính trước. Phân đoạn mạng của camera là 192.168.100.82 và mặt nạ mạng con là 255.255.255.0.
+
+Cần có không gian thoáng, mặt đất bằng phẳng và không có cột phản chiếu xung quanh sẽ ảnh hưởng đến khả năng nhận dạng của camera.
+
+Chuẩn bị một máy ảnh dòng M.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f151acf-ff75-4da2-8f33-d17ea8e2e25a.avif" alt="Hình ảnh minh họa liên quan đến việc chuẩn bị 3" />
+</Frame>
+
+### 5.2 Cấu hình mạng
+
+Lấy hệ thống Win10 làm ví dụ, nhấp đúp vào Control Panel
+
+Sau khi vào bảng điều khiển, nhấp vào "**Xem trạng thái và tác vụ mạng**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe84f727-0667-4284-968e-eca2f6d40d77.avif" alt="Các biểu tượng liên quan đến cấu hình mạng" />
+</Frame>
+
+Vào giao diện Trung tâm Mạng và Chia sẻ và nhấp vào "**Thay đổi cài đặt bộ điều hợp**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07dc1ddf-a5d9-4dbd-925f-1bb1814b4646.avif" alt="Sơ đồ liên quan đến cấu hình mạng 2" />
+</Frame>
+
+Vào giao diện kết nối mạng, click đúp chuột để chọn Ethernet mà camera được kết nối.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2a638513-6feb-43ca-ab87-f8ebd32cda04.avif" alt="Sơ đồ liên quan đến cấu hình mạng 3" />
+</Frame>
+
+Kiểm tra trạng thái Ethernet (nên sử dụng cổng mạng Gigabit) và nhấp vào nút "**Properties**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c509fe2f-c1f2-485e-b805-02fa022c23c8.avif" alt="Sơ đồ liên quan đến cấu hình mạng 4" />
+</Frame>
+
+Nhập giao diện thuộc tính Ethernet, tìm "**Internet Protocol Version 4 (TCP/IPv4)**" và nhấp đúp để mở.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4926669f-ee3f-448a-93c6-a803020b02ea.avif" alt="Sơ đồ liên quan đến cấu hình mạng 5" />
+</Frame>
+
+Nhập giao diện Giao thức Internet phiên bản 4 (TCP/IPv4), chọn "Sử dụng địa chỉ IP sau" để ghi địa chỉ IP, mặt nạ mạng con và cổng mặc định.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/22c5af72-0565-4faa-8573-e569eb018c03.avif" alt="Sơ đồ liên quan đến cấu hình mạng 6" />
+</Frame>
+
+Cài đặt địa chỉ IP: 192.168.100.xxx Mặt nạ mạng con: 255.255.255.0 Cổng mặc định: 192.168.100.1. Đặt IP như hình bên dưới. Sau khi cài đặt hoàn tất, nhấp vào nút "OK".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a854bdac-62c8-43bb-a2cc-b795b63479cf.avif" alt="Sơ đồ liên quan đến cấu hình mạng 7" />
+</Frame>
+
+Sau khi nhấn nút OK sẽ tự động quay về giao diện trước đó. Nhấp vào "OK" lần nữa để hoàn tất cấu hình mạng.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6c3ba87a-e9b6-4f7a-a2f4-e9f1a54d9243.avif" alt="Sơ đồ liên quan đến cấu hình mạng 8" />
+</Frame>
+
+### 5.3 Xác nhận phiên bản phần mềm
+
+Sau khi cấu hình mạng hoàn tất, tường lửa hệ thống cần được tắt. Chỉ khi đó bạn mới có thể xác nhận phiên bản.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa0f645-65f4-4099-b5ab-6d7d3d91f7be.avif" alt="Xác nhận các biểu tượng liên quan đến phiên bản phần mềm" />
+</Frame>
+
+Nhập link xác nhận phiên bản phần mềm. Cần đảm bảo:
+
+- Phần mềm máy chủ LxCameraViewer cài đặt Lanxin-MRDVS-1.3.47.0611.exe trở lên.
+
+- Firmware máy ảnh phiên bản 0608 trở lên.
+
+- Thuật toán khay phiên bản 0.7.4 trở lên.
+
+#### 5.3.1 Xác nhận phiên bản máy tính chủ LxCameraViewer
+
+Nhấp đúp để mở phần mềm "**LxCameraViewer**".
+
+Nhấp vào ID camera "FA4351148898" và ID sẽ chuyển sang màu xanh lam.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c5b702aa-b3af-4474-80a3-3ef6edeeb393.avif" alt="Các biểu tượng liên quan đến xác nhận phiên bản PC của LxCameraViewer" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/02c08228-390b-4256-9959-e279316b13bf.avif" alt="Xác nhận LxCameraViewer phiên bản 2" /> |
+
+Ở góc dưới bên trái giao diện hiện tại hiển thị thông tin phiên bản phần mềm trên thanh thông tin thiết bị.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f200768-06e8-44fd-996a-4d77271d7692.avif" alt="Biểu tượng liên quan đến xác nhận phiên bản máy tính chủ LxCameraViewer 3" />
+</Frame>
+
+Nếu phiên bản thấp hơn 0608, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision để nhận phiên bản mới của phần mềm máy tính chủ.
+
+#### 5.3.2 Xác nhận phiên bản firmware của máy ảnh
+
+Nhấp vào nút "**Open**", máy ảnh bắt đầu phát trực tuyến thành công và phiên bản chương trình cơ sở của máy ảnh được hiển thị trên thanh thông tin thiết bị ở góc dưới bên trái của giao diện. Phiên bản chương trình cơ sở của máy ảnh thấp hơn 0607, vui lòng liên hệ với nhân viên bán hàng trước của Myer Microvision để nhận phiên bản chương trình cơ sở mới.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/25f23a1a-7e89-4aef-aecb-ce6613690d78.avif" alt="Các biểu tượng liên quan đến xác nhận phiên bản phần mềm máy ảnh" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef758279-5572-43d4-ba65-51eb9f8a154f.avif" alt="Xác nhận firmware máy ảnh phiên bản 2" /> |
+
+#### 5.3.3 Xác nhận phiên bản thuật toán khay
+
+Sau khi xác nhận phiên bản phần mềm và phiên bản thuật toán. Trên trang hiện tại, nhấp vào nút "**Áp dụng thuật toán**" để hiển thị thanh Áp dụng thuật toán ở bên phải giao diện. Khi sử dụng LxCameraViewer lần đầu tiên, thuật toán ứng dụng máy tính phía trên sẽ bị tắt.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/04022bde-027a-4d59-8ab2-79a0c17b96e0.avif" alt="Hình minh họa liên quan đến xác nhận phiên bản thuật toán pallet" />
+</Frame>
+
+Chọn thuật toán "Định vị pallet". Cột phiên bản thuật toán sẽ hiển thị phiên bản thuật toán pallet hiện tại. Phiên bản thuật toán thấp hơn 0.7.6. Vui lòng liên hệ với nhân viên bán hàng trước của Myer Microvision để có được phiên bản mới của chương trình cơ sở thuật toán pallet.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ffb7232-aba0-4ba1-904a-4cf0893ceacd.avif" alt="Sơ đồ liên quan đến xác nhận phiên bản thuật toán pallet 2" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/02b27dac-62fa-498c-aa79-de96ce81de4e.avif" alt="Xác nhận thuật toán pallet phiên bản 3" /> |
+
+### 5.4 LxCameraViewer điều chỉnh hình ảnh camera
+
+Hình ảnh camera cần được điều chỉnh thông qua cài đặt 3D "**Độ phơi sáng cao**" và lọc "**Ngưỡng tín hiệu thấp**" trong phần mềm PC LxCameraViewer. Các thông số nhận dạng cho thời gian này được đặt thành: mức phơi sáng cao: 1400 ngưỡng tín hiệu thấp: 20
+
+Điều chỉnh thông số tại thanh chức năng bên phải giao diện phần mềm LxCameraViewer.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7955b74b-4956-40ed-9189-ca45734f3d84.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến hình ảnh của máy ảnh" />
+</Frame>
+
+**Cài đặt hiển thị hình ảnh:** Không cần điều chỉnh.
+
+**Cài đặt 2D:** Không cần điều chỉnh.
+
+**Cài đặt 3D:**Điều chỉnh các thông số phơi sáng của máy ảnh. (Đối với độ phản chiếu thấp và khay đen, ảnh sẽ không được chụp và độ phơi sáng sẽ tăng lên).
+
+**Lọc:** Có thể lọc nhiễu đám mây điểm 3D và các điểm bay (điều chỉnh thông số này khi thiếu hình ảnh chân pallet).
+
+**Giao diện phần cứng:** Không cần điều chỉnh.
+
+**Cài đặt chuyển đổi:** Không cần điều chỉnh.
+
+**Cài đặt chức năng:** Nâng cấp chương trình cơ sở và sử dụng thuật toán khay.
+
+Nhấp vào "Cài đặt 3D" trên thanh chức năng để điều chỉnh độ phơi sáng của máy ảnh. Giá trị phơi sáng cao ban đầu là 600. Theo điều kiện chụp ảnh của khay tại chỗ, mức phơi sáng tối đa không được vượt quá 1400.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a2916226-443c-48d5-8274-ef41279415e2.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến chụp ảnh camera 2" />
+</Frame>
+
+Hình ảnh phơi sáng cao 600
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b4122cb-dd88-44fa-ad0a-5cb276e5f15f.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến chụp ảnh camera 3" />
+</Frame>
+
+Hình ảnh phơi sáng cao 1400
+
+Đối với các thông số lọc, ngưỡng tín hiệu thấp càng nhỏ thì càng nhìn thấy được nhiều đám mây điểm nhưng cũng sẽ có nhiều nhiễu hơn. Ngưỡng tín hiệu thấp càng lớn thì càng có ít đám mây điểm và nhiễu có thể nhìn thấy.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2dd89c39-1d3d-4289-ae3d-0036ba2f2038.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến chụp ảnh camera 4" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ccb27370-f34c-4a68-bb2c-cc34e62390cf.avif" alt="Điều chỉnh hình ảnh camera trong LxCameraViewer 5" /> |
+
+Hình ảnh ngưỡng tín hiệu thấp 10 Hình ảnh ngưỡng tín hiệu thấp 20
+
+Nếu bạn gặp khay phản chiếu thấp màu đen và không thể nhận dạng được nó ngay cả sau khi điều chỉnh độ phơi sáng lên 1400, bạn cần điều chỉnh ngưỡng tín hiệu thấp thành 10 và kiểm tra hiệu ứng hình ảnh. Nếu vẫn không thể nhận dạng được, vui lòng liên hệ với nhân viên bán hàng trước của Meyer Micro Vision.
+
+<Frame>
+  <img src="/images/legacy/c64ac2c6-0d6e-4562-8fed-395c1ff0a7e3/651550eb-6bbe-43e6-b164-57c9b2af7b5e.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến chụp ảnh camera 6" />
+</Frame>
+
+Hình ảnh tín hiệu thấp 20
+
+<Frame>
+  <img src="/images/legacy/04caca9d-4f05-4a48-8bb1-21365c92ae1c/1d3f63ca-164c-4920-8344-1b6fd36c547f.avif" alt="LxCameraViewer điều chỉnh các biểu tượng liên quan đến chụp ảnh camera 7" />
+</Frame>
+
+Hình ảnh tín hiệu thấp 10
+
+### 5.5 Cài đặt thuật toán ứng dụng LxCameraViewer
+
+Trong máy chủ LxCameraViewer, nhấp vào "**Áp dụng thuật toán**". Cài đặt thuật toán ứng dụng sẽ hiển thị ở bên phải giao diện. Bạn cần chọn thuật toán ứng dụng là "**Định vị pallet**". Chế độ làm việc chọn [**Đóng khi ngắt kết nối**] hoặc [**Thường mở**] tùy theo tình huống. Đối với ứng dụng này, chọn [**Đóng khi ngắt kết nối**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a6afea98-b01e-455e-8310-3c91ab6d5758.avif" alt="Các biểu tượng liên quan đến cài đặt thuật toán ứng dụng LxCameraViewer" />
+</Frame>
+
+[**Đóng khi ngắt kết nối**]: Khi sử dụng phần mềm khay PalletPro bạn cần thiết lập chế độ làm việc là đóng khi ngắt kết nối.
+
+[**Thường mở**]: Khi sử dụng thuật toán tùy chỉnh pallet, chế độ làm việc cần được đặt thành thường mở.
+
+### 5.6 Cài đặt chiều cao ban đầu của PalletPro
+
+Sau khi mở phần mềm PalletPro, chọn IP camera gắn đế, nhấp vào nút "**Mở Camera**" và camera sẽ chạy.
+
+<Frame>
+  <img src="/images/legacy/5b05cd99-e8a5-421e-b7a4-b052984fc1ae/b387ed76-3832-4de7-81c3-54d08a9ec632.avif" alt="Hình ảnh minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro" />
+</Frame>
+
+Khi vận hành camera lần đầu, độ cao lắp đặt là -100. Bạn cần nhấp vào nút "**Thích ứng độ cao**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b7a06ade-e493-47c8-9354-f21b25d1f7a8.avif" alt="Các minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro 2" />
+</Frame>
+
+Giá trị độ cao của camera được hiệu chỉnh tự động có thể bị sai lệch do mặt đất. Khuyến nghị sau khi tự động phát hiện, hãy tinh chỉnh thủ công độ cao hiệu chỉnh sao cho đường màu đỏ nằm ngang giao với mặt đất hoặc cao hơn mặt đất một chút. Như hình dưới đây.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5da77cbe-addf-448a-a3df-6374c77d6b63.avif" alt="Các minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro 3" />
+</Frame>
+
+Sau khi điều chỉnh độ cao, hãy nhớ nhấp vào nút "**Save Parameters**", các thông số sẽ được lưu và gửi đến camera (**Nếu không lưu, các thông số sẽ không thể gửi đến camera**).
+
+Như hình bên dưới, do đây là lần đầu tiên mở phần mềm để chỉnh thông số nên không có tên “Client” và không lưu được. Nó cần phải được đổi tên trước khi có thể lưu các tham số.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b399f0fb-b5bf-468a-af21-5a347ffadbce.avif" alt="Hình ảnh minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro 4" />
+</Frame>
+
+Sau khi đổi tên thành MRDVS-1, nó đã được lưu thành công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/49072cee-9fe5-4bf9-afab-70c8313664cf.avif" alt="Các minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro 5" />
+</Frame>
+
+**Sau khi lưu thông số**, bạn cần kiểm tra lại "**Real-time Display**" và "**Detection**" ở cột thông số camera để nhận dạng thành công khay (**Kết quả nhận dạng sẽ có sai sót do không hiệu chuẩn giảng dạy**).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/aa324adf-1335-4c7a-a284-bc6e298bb338.avif" alt="Hình ảnh minh họa liên quan đến cài đặt chiều cao ban đầu của PalletPro 6" />
+</Frame>
+
+### 5.7 Giải thích về hiệu chỉnh thông số bên ngoài
+
+Chương "**5.6**" giải thích sự cần thiết phải đặt độ cao cài đặt khi mở phần mềm lần đầu tiên. Trong ứng dụng thực tế cần phải hiệu chỉnh các thông số bên ngoài của camera để xác định mối quan hệ giữa camera, xe nâng và pallet. Sau khi mở phần mềm khay PalletPro và kết nối với camera, hãy nhấp vào nút [**External Parameter Calibration**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6283040-9f88-4811-99a2-99ffa26e74b4.avif" alt="Hình ảnh minh họa liên quan đến giải thích hiệu chuẩn thông số bên ngoài" />
+</Frame>
+
+Đảm bảo pallet là pallet tiêu chuẩn và pallet được đặt ở giữa trong tầm nhìn của máy ảnh, như minh họa trong pallet tiêu chuẩn màu xanh lam như minh họa bên dưới (pallet chỉ mang tính chất tham khảo).
+
+<Frame>
+  <img src="/images/legacy/92280c55-9379-4e51-be45-f0135bfc7dcf/9434c66a-f45d-4a57-8aef-0cfec418a401.avif" alt="Các minh họa liên quan về giải thích hiệu chuẩn thông số bên ngoài 2" />
+</Frame>
+
+Khoảng cách tuyến tính giữa máy ảnh và khay là khoảng 1,3m và quá trình hiệu chỉnh gần cuối bắt đầu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/57c8afa5-1405-43f6-ace8-e44617140bdb.avif" alt="Các minh họa liên quan về giải thích hiệu chuẩn thông số bên ngoài 3" />
+</Frame>
+
+Đối với hiệu chuẩn gần cuối, không được có vật cản trong phạm vi 2m ở bên trái và bên phải của cảnh khay hiệu chuẩn, nếu không sẽ ảnh hưởng đến việc hiệu chỉnh máy ảnh.
+
+#### 5.7.1 Dạy Pallet (Gần) Giải thích
+
+Khi được xác nhận là pallet tiêu chuẩn, môi trường xung quanh không bị cản trở và khoảng cách khoảng 1,3m, hãy nhấp vào nút [**Dạy Pallet (Gần cuối)**]. Hộp nhắc sẽ nhắc khi quá trình hiệu chuẩn gần kết thúc hoàn tất và thông tin thu được từ quá trình hiệu chuẩn gần cuối thành công sẽ được hiển thị trong cột "**Cài đặt tham số**" ở bên trái (hiệu chuẩn gần cuối sẽ đánh dấu chiều cao lắp đặt camera, góc nghiêng và góc hướng).
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7fc738bd-e93a-420d-9874-7b62d527be28.avif" alt="Các minh họa liên quan đến giải thích khay dạy học (gần cuối)" />
+</Frame>
+
+Nhấp vào nút "**OK**" trong hộp nhắc hiệu chuẩn thành công, phần mềm sẽ hiển thị kết quả nhận dạng và tự động lưu các thông số hiệu chuẩn.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/298fdfe6-fd22-4787-97d5-f416478711c6.avif" alt="Hình minh họa liên quan đến việc dạy bằng pallet (gần cuối) 2" />
+</Frame>
+
+Sau khi quá trình hiệu chỉnh gần hoàn tất, nếu kết quả nhận dạng không được hiển thị, vui lòng kiểm tra xem "**Phát hiện**" có được chọn hay không.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/539206a1-41c5-479f-a03d-6bd82616e53c.avif" alt="Hình minh họa liên quan đến việc dạy bằng pallet (gần cuối) 3" />
+</Frame>
+
+Kết quả nhận dạng sau khi hiệu chuẩn gần hết sẽ có lỗi do **góc nghiêng** không được đánh dấu.
+
+#### 5.7.2 Giải thích về cách dạy pallet (từ xa)
+
+**Lưu ý: Nên thực hiện hiệu chỉnh từ xa để đảm bảo kết quả hiệu chỉnh máy ảnh là chính xác. **
+
+Dựa trên "**Dạy Pallet (Gần)**", nút [**Dạy Pallet (Từ xa)**] sẽ hiển thị và có thể nhấn để di chuyển xe nâng về phía sau khoảng 600-1000mm dựa trên vị trí hiện tại (**không thể di chuyển sang trái và phải**). Pallet cách xe nâng khoảng 2-2,4m để hiệu chỉnh từ xa. Như minh họa trong hình bên dưới, di chuyển đến vị trí 2,1m và nhấp vào nút [**Dạy Pallet (Từ xa)**] để bắt đầu hiệu chỉnh từ xa.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fcc86111-e972-495f-b009-3b41871d4154.avif" alt="Các minh họa liên quan về giải thích việc dạy pallet (từ xa)" />
+</Frame>
+
+Khi hiệu chuẩn từ xa thành công, phần mềm sẽ nhắc "Hoàn thành hiệu chuẩn thứ hai" và các thông số sẽ tự động được lưu.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6f6ca34c-7a50-4e9e-b7c2-f12ed83dfd2a.avif" alt="Dạy Pallet (Từ xa) Minh họa liên quan 2" />
+</Frame>
+
+Nhấp chuột vào các thông số nâng cao của giao diện palletpro để xem kết quả hiệu chuẩn đầu gần và hiệu chuẩn đầu cuối.
+
+`R:{0.00,.0.19,0.00}` → Góc bước: 0; góc nghiêng: 0,19; góc cuộn: 0.
+
+`t:{-14.00,0.00,0.00}` → Độ lệch ngang: -14; giá trị không hợp lệ: 0,00; độ lệch độ sâu: 0.
+
+**Lưu ý:** Độ lệch ngang là độ lệch của vị trí ngang của máy ảnh so với pallet. Sau khi bù, độ lệch ngang hiện tại của camera so với pallet là 0.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bacebbe-7943-4be4-8ce5-c755e5e5c3f1.avif" alt="Dạy Pallet (Từ xa) Minh họa liên quan 3" />
+</Frame>
+
+### 5.8 Xác minh kết quả hiệu chuẩn
+
+Sau khi hoàn thành hiệu chuẩn đầu gần và hiệu chuẩn đầu xa, bạn có thể bắt đầu xác minh tính chính xác của kết quả hiệu chuẩn.
+
+#### 5.8.1 Kiểm tra kết quả hiệu chuẩn
+
+Di chuyển xe nâng qua lại giữa điểm hiệu chuẩn xa và điểm hiệu chuẩn gần để quan sát khoảng cách (giá trị x), độ lệch ngang (giá trị y) và dữ liệu góc đầu ra của R. Nếu sai số x và y nằm trong 10mm và khả năng nhận dạng ổn định, không có rò rỉ thì việc hiệu chuẩn được coi là thành công và xe nâng có thể hoạt động bình thường.
+
+#### 5.8.2 Mô tả hệ tọa độ camera của phần mềm pallet
+
+Kiểu tọa độ của camera trong phần mềm khay được hiển thị trong hình bên dưới.
+
+**Ví dụ:**x, y, theta = (-2000, 100, 2.3)
+
+Khay đại diện cách quang tâm của máy ảnh 2000 mm, 100 mm về bên phải và độ lệch góc là 2,3° (nhìn từ trên xuống, ngược chiều kim đồng hồ).
+
+Kết quả gửi dữ liệu là X: -2000; Y: 100; theta: 2300
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d83a6d3-9081-4f4a-b790-9a1cb52b584c.avif" alt="Sơ đồ mô tả hệ tọa độ camera của phần mềm pallet" />
+</Frame>
+
+Ví dụ: nếu khay di chuyển 8,5cm sang trái so với máy ảnh, giá trị đầu ra R là -90, nghĩa là sai số là 5mm.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1b8e4364-a9f0-42ef-92a6-9aba8d6e4b7d.avif" alt="Sơ đồ mô tả hệ thống tọa độ camera phần mềm pallet 2" />
+</Frame>
+
+### 5.9 Ứng dụng camera xe nâng Diniu
+
+#### 5.9.1 Hiệu chuẩn xe nâng
+
+Việc hiệu chuẩn xe nâng cũng giống như [**giải thích về hiệu chuẩn tham số bên ngoài**].
+
+hiệu chuẩn gần cuối
+
+- Giải pháp hiệu chuẩn cận điểm áp dụng phương pháp hiệu chuẩn giảng dạy. Xe nâng cần được điều khiển bằng tay để cập bến với pallet một lần. Xe nâng ở trạng thái chính giữa khi lắp và tháo pallet, như hình bên dưới.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8eafd7a6-08c3-48c3-9540-6bb7b85822c8.avif" alt="Các biểu tượng liên quan đến hiệu chuẩn xe nâng" />
+</Frame>
+
+- Di chuyển xe nâng thẳng ra khỏi pallet (**không cần nhấc pallet khi pallet vẫn nằm trên mặt đất**), đảm bảo mũi càng cách mép trước của pallet khoảng 200mm như hình bên dưới.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/88b2e510-04da-4b05-ba0a-7b00c6f25012.avif" alt="Sơ đồ liên quan đến hiệu chuẩn xe nâng 2" />
+</Frame>
+
+- Khi đó nhấn vào phần cân chỉnh gần cuối để hiệu chỉnh chiều cao lắp đặt, độ lệch ngang, góc hướng và góc cuộn.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2b1caa76-df75-494c-95eb-ea8aef8422ee.avif" alt="Sơ đồ liên quan đến hiệu chuẩn xe nâng 3" />
+</Frame>
+
+hiệu chuẩn từ xa
+
+Chức năng hiệu chỉnh từ xa là hiệu chỉnh góc nghiêng của việc lắp đặt camera, việc này chỉ có thể được thực hiện sau khi hiệu chỉnh gần hết ở bước trước. Sau khi hoàn tất việc hiệu chuẩn gần cuối, đảm bảo vị trí của pallet không thay đổi và điều khiển xe nâng tránh xa pallet. Khi phạm vi khoảng cách 2000-2400mm hiển thị trên giao diện phần mềm PalletPro, nhấp vào hiệu chỉnh đầu xa. Góc nghiêng của cài đặt camera sau đó sẽ được hiệu chỉnh và các thông số hiệu chỉnh sẽ được lưu tự động, như trong hình.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8d5db307-fcf7-40ca-aae6-0b100e50ef5f.avif" alt="Sơ đồ liên quan đến hiệu chuẩn xe nâng 4" />
+</Frame>
+
+Kết quả nhận dạng được thể hiện trong hình dưới đây.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/dfd2148b-47d8-48a3-877c-899592d2442f.avif" alt="Sơ đồ liên quan đến hiệu chuẩn xe nâng 5" />
+</Frame>
+
+Kiểm tra hiệu chuẩn
+
+Sau khi hiệu chuẩn hoàn tất, di chuyển xe nâng qua lại giữa điểm hiệu chuẩn đầu xa và điểm hiệu chuẩn gần cuối để quan sát xem phạm vi sai số của dữ liệu đầu ra theo R có nằm trong 10 mm hay không. Nếu quá trình nhận dạng ổn định và không bị rò rỉ thì quá trình hiệu chuẩn đã hoàn tất. **OK:** Tọa độ camera. **R:** Xuất tọa độ của xe nâng.
+
+**R：（-2444，-27），2.4**
+
+\-2444: Khoảng cách giữa máy ảnh và khay
+
+\-27: Khay nằm bên trái máy ảnh.
+
+2.4: Góc pallet
+
+## 6. Giao thức truyền thông
+
+### Giao thức 6.1 TCP + UDP
+
+Giao thức truyền thông hỗ trợ TCP Server + UDP. Chọn thuật toán ứng dụng "**Định vị pallet**" thông qua máy tính chủ LxCameraViewer và chọn chế độ làm việc [**Chế độ mở thông thường**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b9e5e787-e767-4219-a435-f70188ad0a8e.avif" alt="Sơ đồ liên quan đến giao thức TCP + UDP" />
+</Frame>
+
+Cổng mặc định của Máy chủ TCP 5501.
+
+Cổng UDP mặc định là 8000.
+
+### 6.2 Nội dung thỏa thuận
+
+Dạng nhị phân, thường không quá 128 byte (độ dài tiêu chuẩn là 16 byte).
+
+Áp dụng chế độ Big-Endian: byte cao trước, byte thấp cuối cùng.
+
+### 6.3 Định dạng khung truyền thông
+
+**Khách hàng sử dụng phần mềm pallet PalletPro**
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| Bit byte | 0 | 1 | 2-3 |
+| Nội dung | Mã, char không dấu sử dụng ký tự 0x60 | Độ dài byte, 4 ký tự không dấu | Mã hướng dẫn 0: Bắt đầu 1: Kết thúc |
+
+**Ví dụ:**
+
+Gửi nội dung 0x60 0x04 0x00 0x00, cho biết bắt đầu nhiệm vụ nhận dạng
+
+Gửi nội dung 0x60 0x04 0x00 0x01, cho biết kết thúc nhiệm vụ nhận dạng
+
+**Phần mềm khay PalletPro cho khách hàng**
+
+|  |  |  |
+| --- | --- | --- |
+| Byte | Nội dung | Bình luận |
+| 1-2 | Mã, giá trị trả về, 16-bit unsigned int (unsigned int) 0 biểu thị nhận dạng thành công; các giá trị khác không nhận dạng được, xem Phần 8 để biết vị trí cụ thể | |
+| 3-4 | Độ dài byte tổng thể (số byte), int không dấu 16 bit (int không dấu). Hiện tại 24 | |
+| 5-8 | Khay xác định các ký hiệu X, Y, theta và Z. 0x00 là dương và 0x01 là âm. | |
+| 12-9 | Vị trí tâm X của mặt trước pallet, số nguyên không dấu 4 byte, đơn vị mm | |
+| 13-16 | Vị trí tâm Y của mặt trước pallet, số nguyên không dấu 4 byte, đơn vị mm | |
+| 17-20 | Góc theta (góc đơn vị) của tâm mặt trước pallet, số nguyên không dấu 4 từ, đơn vị: góc * 1000 | |
+| 21-24 | Chiều cao của pallet (với tâm quang học của camera là điểm xa, hướng xuống dưới là điểm dương), số nguyên không dấu 4 byte, đơn vị: mm | |
+| 25-32 | Phần mở rộng 8 byte, được đặt thành 0 | |
+
+### Trường hợp giao tiếp UDP 6.4
+
+- Khi sử dụng phương thức giao tiếp UDP, bạn cần đặt chế độ làm việc của thuật toán trên máy chủ thành [**Chế độ thường mở]**
+
+- Cấu hình port như hình: số port của máy chủ là 8000
+
+- Gửi nội dung 0x60 0x04 0x00 0x00, nghĩa là bắt đầu nhiệm vụ nhận dạng
+
+- Gửi nội dung 0x60 0x04 0x00 0x01, thông báo kết thúc nhiệm vụ nhận dạng
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2fe5017d-8412-47d3-87f1-e90fb6d8fbfd.avif" alt="Minh họa liên quan đến các trường hợp giao tiếp UDP" />
+</Frame>
+
+**Ý nghĩa ký tự:**
+
+00 00 00 14 01 00 00 00 00 17 8E 78 00 00 17 70 00 00 28 F5 00
+
+|  |  |
+| --- | --- |
+| Byte | Nội dung |
+| 1-2 | Mã, giá trị trả về, 16-bit unsigned int (unsigned int) 0 nghĩa là nhận dạng thành công; các giá trị khác thể hiện ngoại lệ nhận dạng 1: ngoại lệ mở camera 2: lỗi định vị khay 3: ngoại lệ bên trong camera |
+| 3-4 | Độ dài byte tổng thể (số byte), int không dấu 16 bit (int không dấu). Hiện tại 24 |
+| 5-8 | Khay xác định các ký hiệu X, Y, theta và Z. 0x00 là dương và 0x01 là âm. |
+| 12-9 | Vị trí điểm giữa phía trước pallet X, số nguyên không dấu 4 byte, đơn vị mm * 1000 |
+| 13-16 | Vị trí điểm giữa phía trước pallet Y, số nguyên không dấu 4 byte, đơn vị mm * 1000 |
+| 17-20 | Góc theta (góc đơn vị) của tâm mặt trước pallet, số nguyên không dấu 4 từ, đơn vị: góc * 1000 |
+| 21-24 | Chiều cao pallet (khoảng cách từ tâm quang học của camera đến chùm pallet, hướng xuống dưới là dương), số nguyên không dấu 4 byte, đơn vị: mm*1000 |
+| 25-32 | Phần mở rộng 8 byte, được đặt thành 0 |
+
+### Trường hợp giao tiếp TCP 6.5
+
+- Khi sử dụng phương thức giao tiếp TCP, bạn cần đặt chế độ làm việc của thuật toán trên máy chủ thành [**Chế độ thường mở**]
+
+- Cấu hình cổng như trong hình: camera là cổng TCP SERVER số 5501
+
+- Gửi nội dung 0x60 0x04 0x00 0x00, nghĩa là bắt đầu nhiệm vụ nhận dạng
+
+- Gửi nội dung 0x60 0x04 0x00 0x01, thông báo kết thúc nhiệm vụ nhận dạng
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2179b589-f9ed-42a3-a3ab-eb8173537cd5.avif" alt="Minh họa liên quan đến các trường hợp giao tiếp TCP" />
+</Frame>
+
+**Ý nghĩa ký tự:**
+
+00 00 00 14 01 00 00 00 00 17 AA FC 00 00 18 38 00 00 2A 41
+
+|  |  |
+| --- | --- |
+| Byte | Nội dung |
+| 1-2 | Mã, giá trị trả về, 16-bit unsigned int (unsigned int) 0 nghĩa là nhận dạng thành công; các giá trị khác thể hiện ngoại lệ nhận dạng 1: ngoại lệ mở camera 2: lỗi định vị khay 3: ngoại lệ bên trong camera |
+| 3-4 | Độ dài byte tổng thể (số byte), int không dấu 16 bit (int không dấu). Hiện tại 24 |
+| 5-8 | Khay xác định các ký hiệu X, Y, theta và Z. 0x00 là dương và 0x01 là âm. |
+| 12-9 | Vị trí điểm giữa phía trước pallet X, số nguyên không dấu 4 byte, đơn vị mm * 1000 |
+| 13-16 | Vị trí điểm giữa phía trước pallet Y, số nguyên không dấu 4 byte, đơn vị mm * 1000 |
+| 17-20 | Góc theta (góc đơn vị) của tâm mặt trước pallet, số nguyên không dấu 4 từ, đơn vị: góc * 1000 |
+| 21-24 | Chiều cao của pallet (với tâm quang học của camera là điểm xa, hướng xuống dưới là điểm dương), số nguyên không dấu 4 byte, đơn vị: mm*1000 |
+| 25-32 | Phần mở rộng 8 byte, được đặt thành 0 |
+
+### 6.6 485 trường hợp giao tiếp
+
+**Lưu ý: Giao tiếp 485 chỉ hỗ trợ camera M4 PRO. **
+
+**Định nghĩa cổng nối tiếp:** Tốc độ truyền 9600, 8 bit dữ liệu, không có bit chẵn lẻ, 1 bit stop
+
+Địa chỉ Modbus mặc định là 0x17 và có thể được định cấu hình thông qua SDK, trong khoảng từ 1-247.
+
+Bật/tắt thuật toán pallet, mã chức năng 0x06, định nghĩa thanh ghi 120 (0x0078), 0: tắt 1: bật.
+
+**Ví dụ:**
+
+**Xe nâng->Thiết bị**
+
+17 06 00 78 00 01 CA E5 (cho phép nhận dạng)
+
+17 06 00 78 00 00 0B 25 (tắt)
+
+17: địa chỉ modbus
+
+06: Mã chức năng
+
+0078: Đăng ký địa chỉ
+
+0001: Giá trị đăng ký
+
+AB20: Mã kiểm tra CRC
+
+**Thiết bị->Thân máy**
+
+\[17\]\[06\]\[00\]\[78\]\[00\]\[01\]\[CA\]\[E5\]
+
+Lấy kết quả pallet, mã hàm 0x04, định nghĩa thanh ghi 122 (0x007A)
+
+**Ví dụ:**
+
+**Bản thể học->Thiết bị**
+
+17 04 00 7A 00 08 D2 E3 (lấy kết quả ghi nhận)
+
+17: địa chỉ modbus
+
+04: Mã chức năng
+
+007A: Đăng ký địa chỉ
+
+0010: Số lượng thanh ghi (thanh ghi được xác định bởi modbus là 2 byte, mỗi pallet
+
+Kết quả trường là 4 byte, vì vậy 8 thanh ghi được đọc)
+
+D2E3: Mã kiểm tra CRC
+
+**Thiết bị->Thân máy**
+
+\[17\]\[04\]\[10\]\[00\]\[00\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[ 00\]\[00\]\[03\]\[FF\]\[FF\]\[FF\]\[FE\]\[00\]\[00\]\[00\]\[03\[86\]\[d2\]
+
+17: địa chỉ modbus
+
+04: Mã chức năng
+
+10: Chiều dài
+
+\[00\]\[00\]\[00\]\[01\]:Kết quả khay x
+
+\[00\]\[00\]\[00\]\[02\]:Kết quả khay y
+
+\[00\]\[00\]\[00\]\[03\]: kết quả khay bị lệch
+
+\[FF\]\[FF\]\[FF\]\[FE\]: giá trị trả về khay
+
+\[00\]\[00\]\[00\]\[03\]: Chiều cao kết quả của pallet H
+
+\[86\]\[d2\]: Mã kiểm tra CRC
+
+### Trường hợp giao tiếp CAN 6.7
+
+**Lưu ý: Giao thức CAN hiện tại chỉ hỗ trợ máy ảnh dòng M4/M4mega. **
+
+1. Giao thức truyền thông sử dụng CanOpen. Giao thức CanOpen là giao thức lớp ứng dụng chạy trên bus CAN tiêu chuẩn. Chế độ giao tiếp của nó cũng là chế độ giao tiếp "**master-Slave**" thường được sử dụng trong các giao thức truyền thông công nghiệp. Tức là sẽ có một trạm chính + nhiều trạm phụ trong mạng. Các trạm phụ sẽ không liên lạc trực tiếp với nhau. Tất cả các hoạt động liên lạc đều diễn ra giữa trạm chính và trạm phụ. Trạm chính còn được gọi là "máy khách" và trạm phụ còn được gọi là "máy chủ".
+
+2. Phương thức giao tiếp cơ bản sử dụng định dạng khung tiêu chuẩn CAN, nghĩa là ID CAN là 11 bit (0x000~7FF) và dữ liệu là 8 byte.
+
+3. Về quy ước sử dụng CAN ID:
+
+Chia ID 11 bit thành mã chức năng 4 bit và ID nút 7 bit và ID CAN còn được gọi là ID COB:
+
+|  |  |  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ID khung CÓ THỂ | | | | | | | | | | |
+| 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+| Mã chức năng | | | | Số nút | | | | | | |
+
+Tốc độ baud có thể được định nghĩa là 250K
+
+Thông báo liên lạc SDO là định dạng giao thức cơ bản trong CanOpen. Dữ liệu 8 byte trong thông báo CAN được xác định bởi giao thức truyền thông theo định dạng sau:
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| Mã lệnh | Chỉ mục | | Chỉ mục phụ | Dữ liệu | | | |
+
+**Giao thức truyền thông định vị pallet:**
+
+**Bản thể học->Thiết bị**
+
+Phần thân gửi **COB ID:0x212** tới thiết bị
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| 0x40 | 0x00 | 0x01 | 0x00 | CHẾ ĐỘ CTRL | 0x00 | 0x00 | 0x00 |
+
+**CHẾ ĐỘ CTRL bật tắt, 0 tắt, 1 bật**
+
+**Ký tự tham chiếu**: 40 00 01 00 01 00 00 00
+
+**Thiết bị->Thân máy**
+
+Thiết bị gửi **COB ID: 0x192** đến nội dung chính, số lượng tăng thêm 1 cho mỗi truy vấn, X Y yaw Height LeftHoleWidth RightHoleWidth MiddleLegWidth là giá trị thực tế x1000, kiểu int
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| đếm |  | kết quả |  | ôi |  |  |  |
+
+Thiết bị gửi **COB ID:0x292** đến phần chính
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| X |  |  |  | Y |  |  |  |
+
+Thiết bị gửi **COB ID:0x392** đến phần chính
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| Chiều cao |  |  |  | LeftHoleWidth |  |  |  |
+
+Thiết bị gửi **COB ID:0x492** đến phần chính
+
+|  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Dữ liệu |  |  |  |  |  |  |  |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| RightHoleWidth |  |  |  | MiddleLegWidth |  |  |  |
+
+### Trường hợp giao tiếp modelbas 6.8
+
+Modbus chỉ hỗ trợ phiên bản 0.8.1 trở lên
+
+**Thông số cấu hình nô lệ**
+
+1.1 **Cấu hình giao tiếp cơ bản**
+
+- Số cổng: 6601
+
+- Địa chỉ nghe: tất cả các giao diện mạng
+
+- Số lượng đăng ký: 20
+
+- Đăng ký địa chỉ thực: 0x100 (256)
+
+1.2 **Đăng ký quy tắc lưu trữ**
+
+|  |  |  |  |
+| --- | --- | --- | --- |
+| Bù địa chỉ | Đăng ký địa chỉ | Mô tả nội dung | Bình luận |
+| 0 | 0x100 | Giá trị trả về giá trị tuyệt đối, 0 có nghĩa là nhận dạng thành công; các giá trị khác không được công nhận và thất bại | Số nguyên không dấu 16 bit |
+| 1 | 0x101 | Dấu của x | 0 dương, 1 âm |
+| 2 | 0x102 | Dấu hiệu của y | 0 dương, 1 âm |
+| 3 | 0x103 | Dấu hiệu ngáp | 0 dương, 1 âm |
+| 4 | 0x104 | Dấu hiệu chiều cao | 0 dương, 1 âm |
+| 5 | 0x105 | Vị trí tâm điểm phía trước pallet X, đơn vị mm | Số nguyên không dấu 16 bit |
+| 6 | 0x106 | Vị trí tâm điểm phía trước pallet Y, đơn vị mm | Số nguyên không dấu 16 bit |
+| 7 | 0x107 | Góc nghiêng (góc đơn vị) của tâm mặt trước pallet, đơn vị: góc*1000 | Số nguyên không dấu 16 bit |
+| 8 | 0x108 | Chiều cao của pallet (với tâm quang học của camera là điểm xa, hướng xuống dưới là điểm dương), số nguyên không dấu 4 byte, đơn vị: mm | Số nguyên không dấu 16 bit |
+| 9 | 0x109 | Chiều rộng pallet, đơn vị: mm | Số nguyên không dấu 16 bit |
+| 10 | 0x10A | Số lượng chân pallet | Số nguyên không dấu 16 bit |
+| 11~19 | | | Dành riêng |
+
+**Khắc phục sự cố ngoại lệ:**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a58536bc-46f2-4e91-a3ef-f80dab24e7d8.avif" alt="Các hình ảnh minh họa liên quan đến các trường hợp giao tiếp modelbas" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/771a83b6-2c42-44f7-b395-2c1809460dad.avif" alt="Các minh họa liên quan đến trường hợp truyền thông modelbas 2" />
+</Frame>
+
+Ví dụ: x:-2000, y:100, yaw:2.3, có nghĩa là khay cách trung tâm quang học của máy ảnh 2000 mm, 100 mm về bên phải và độ lệch góc là 2,3° (nhìn từ trên xuống, ngược chiều kim đồng hồ).
+
+## 7. Câu hỏi thường gặp
+
+### 7.1 Báo lỗi hiệu chỉnh
+
+Hiệu chuẩn pallet không chuẩn gây ra sai sót.
+
+Pallet phi tiêu chuẩn, thông số kỹ thuật của pallet được giải thích tại Chương 1 [**Giới thiệu**].
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/586ebf9a-5dbb-433c-98e3-4d7c8e3fe5f3.avif" alt="Các biểu tượng liên quan đến lỗi hiệu chuẩn" />
+</Frame>
+
+**Giải pháp:** Sử dụng pallet tiêu chuẩn.
+
+Có những vật thể có độ phản chiếu thấp chặn pallet tiêu chuẩn.
+
+<Frame>
+  <img src="/images/legacy/ad65b922-c3e4-4fb6-b5d9-bf82c19edeb1/b31ab8db-ea54-4964-9896-04f6405082ae.avif" alt="Biểu tượng liên quan đến lỗi hiệu chuẩn 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c99a3280-014c-4126-b5d9-22d44d1d9699.avif" alt="Biểu tượng liên quan đến lỗi hiệu chuẩn 3" />
+</Frame>
+
+**Giải pháp:** Đảm bảo không có chướng ngại vật trong phạm vi 2m tính từ khu vực xung quanh.
+
+### 7.2 Lỗi nhận dạng
+
+Lỗi nhận dạng do khoảng cách quá gần
+
+Giá trị z tối thiểu mặc định của phần mềm là 1,2m. Nếu khoảng cách giữa camera và khay nhỏ hơn 1,2m sẽ không nhận dạng được. Giao diện phần mềm báo lỗi “**failed: -6**”.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1ee255-4b0d-44ba-9bca-d9d838e88bf4.avif" alt="Các biểu tượng liên quan đến lỗi nhận dạng" />
+</Frame>
+
+**Giải pháp:** Nếu khoảng cách lắp ghép tối thiểu nhỏ hơn 1,2m, vui lòng sửa đổi giá trị tối thiểu của tham số nâng cao PalletPro min\_z.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b247331-b575-4580-99e1-ee37b6bbc959.avif" alt="Hình minh họa liên quan đến lỗi nhận dạng 2" />
+</Frame>
+
+Không thể nhận dạng được do hình ảnh chân pallet không đủ
+
+Giao diện phần mềm báo lỗi “**failed: -2 hoặc -6**”.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/709520dd-dcc7-4ad8-a749-57edb7ed7205.avif" alt="Hình minh họa liên quan đến lỗi nhận dạng 3" />
+</Frame>
+
+**Giải pháp:**Điều chỉnh mức phơi sáng cao thành 1400 và ngưỡng tín hiệu thấp thành 10 thông qua máy tính chủ LxCameraViewer. Kiểm tra xem việc tạo ảnh của các chân khay chụp ảnh đã hoàn tất chưa. Nếu vẫn còn thiếu thứ gì đó, hãy liên hệ với nhân viên bán hàng trước của Meyer Microvision để kích hoạt chức năng kim tự tháp.
+
+Nhận dạng khay phản chiếu thấp màu đen không thành công
+
+Bản chất của vấn đề "2" ở trên là như nhau, nguyên nhân là do hình ảnh của chân pallet không đủ.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f00ced00-58e4-4336-9e11-9e0556866fee.avif" alt="Các minh họa liên quan đến lỗi nhận dạng 4" />
+</Frame>
+
+**Giải pháp:**Điều chỉnh mức phơi sáng cao thành 1400 và ngưỡng tín hiệu thấp thành 10 thông qua máy tính chủ LxCameraViewer. Kiểm tra xem việc tạo ảnh của các chân khay chụp ảnh đã hoàn tất chưa. Nếu vẫn còn thiếu thứ gì đó, hãy liên hệ với nhân viên bán hàng trước của Meyer Microvision để kích hoạt chức năng kim tự tháp.
+
+Trụ phản quang cạnh pallet gây lỗi nhận dạng
+
+Giao diện phần mềm báo lỗi “**failed: -7**”.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c6ebdc6-a08d-41c0-803f-a95eeeac4ff8.avif" alt="Hình minh họa liên quan đến lỗi nhận dạng 5" />
+</Frame>
+
+**Giải pháp:** Cố gắng giữ các trụ phản chiếu càng xa chân pallet càng tốt. Nếu vẫn không thể nhận dạng được, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/aaa977f5-d409-4a83-a053-e178b0f3b4ad.avif" alt="Hình minh họa liên quan đến lỗi nhận dạng 6" />
+</Frame>
+
+Các cột phản chiếu loại bỏ hiệu ứng nhận dạng thấp hơn.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c509bf27-1a38-4119-bdc5-a4bd47a56a3b.avif" alt="Hình minh họa liên quan đến lỗi nhận dạng 7" />
+</Frame>
+
+Chiều rộng chân pallet được đặt không chính xác
+
+Phần mềm báo lỗi "**failed: -3**"
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14bbfd9c-068e-401a-be11-9a40b9b25a6f.avif" alt="Các minh họa liên quan đến lỗi nhận dạng 8" />
+</Frame>
+
+**Giải pháp:** Nếu chân pallet mỏng, hãy sửa đổi "**Lựa chọn chiều rộng chân**" trong thông số nâng cao của PalletPro thành chế độ chân mỏng và nhấp vào "**Save Parameters**". Kiểm tra hiệu ứng nhận dạng. Nếu vẫn không thể nhận dạng được, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+Lỗi nhận dạng do thanh ngang quá mỏng
+
+Giao diện phần mềm báo lỗi “**failed: -6**”.
+
+**Giải pháp:**
+
+**Tùy chọn 1:** Sửa đổi thông số bộ lọc trong máy chủ LxCameraViewer và tắt các điểm ảnh bay.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5334a489-629d-419f-af95-3b312c9c0631.avif" alt="Các minh họa liên quan đến lỗi nhận dạng 9" />
+</Frame>
+
+**Phương án 2:**Sửa đổi “**crossbar detect**” trong thông số nâng cao của phần mềm PalletPro và chọn theo độ dày của thanh ngang pallet.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9c69a34-ead7-4e8b-a072-574ab2542046.avif" alt="Các hình ảnh minh họa liên quan đến lỗi nhận dạng 10" />
+</Frame>
+
+Lỗi nhận dạng do góc pallet quá mức
+
+Giao diện phần mềm báo lỗi “**failed: -8**”
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/197a7886-9a45-436b-8ec0-16ff280f5344.avif" alt="Các minh họa liên quan đến lỗi nhận dạng 11" />
+</Frame>
+
+**Giải pháp:** Đặt khay gắn đế trực quan ở một góc nhỏ nhất có thể.
+
+### 7.3 Kết nối không thành công
+
+Nếu việc lắp ghép trực quan của xe nâng không thành công, nó cần được phân tích và đánh giá dựa trên nhật ký camera và điều hướng của xe nâng. Vì quá trình lắp ghép được thực hiện bởi nhiều bên nên không thể phân biệt một cách đơn giản đó là máy ảnh hay xe nâng.
+
+**Giải pháp:** Khi xảy ra lỗi lắp ghép, nếu sự cố không phải do sự cố thân xe, bạn có thể liên hệ với nhân viên bán hàng trước của Myer Microvision để lấy hình ảnh kết quả nhận dạng nhật ký camera nhằm khắc phục sự cố nhận dạng camera.
+
+### 7.4 Độ lệch lắp ghép
+
+Các sai lệch về hình ảnh lắp ghép của xe nâng cũng cần được nhiều bên điều tra. Trước tiên, bạn có thể lấy kết quả nhận dạng nhật ký camera để xác định xem liệu nguyên nhân có phải do lỗi nhận dạng camera hay không.
+
+**Giải pháp 1:** Nếu xe nâng bị lệch mỗi khi cập pallet, đó có thể là sự cố hiệu chỉnh camera. Nên tái sử dụng pallet tiêu chuẩn để hiệu chuẩn, sau đó gắn lại pallet để kiểm tra xem có sai lệch nào không.
+
+**Giải pháp 2:** Nếu không có khay hiệu chuẩn thì không có môi trường hiệu chuẩn. Bạn có thể đưa xe nâng vào giữa pallet, sau đó kéo tay nâng ra xa pallet 500mm. Kiểm tra kết quả nhận dạng thông qua phần mềm PalletPro. Nếu tọa độ đầu ra dao động 10 mm theo hướng Y thì nó nằm trong phạm vi bình thường. Nếu mức vượt quá đặc biệt lớn, vui lòng điều chỉnh độ lệch bên theo cách thủ công.
+
+**Ví dụ:**
+
+Khay nằm ở giữa tầm nhìn của máy ảnh. Kết quả y lý thuyết là "0", nhưng kết quả phát hiện thực tế là "-42".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9d98faf4-ad5f-4ce1-9016-db8905b12e01.avif" alt="Hình minh họa liên quan đến độ lệch lắp ghép" />
+</Frame>
+
+Bằng cách điều chỉnh tham số "t" trong "Thông số nâng cao", giá trị đầu tiên là giá trị bù bên.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4b91f04b-4f85-43b9-847d-5aeac359e3cf.avif" alt="Hình minh họa liên quan đến độ lệch lắp ghép 2" />
+</Frame>
+
+Giá trị "-42" thu được trong ảnh cho thấy khay phía trước nằm ở bên trái so với máy ảnh. Khi đó độ lệch ngang của t cần phải là "+42". Sau khi thay đổi các thông số như hình bên dưới, nhấp vào nút "**Save Parameters**".
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f21cb4f-b1b9-4980-914a-abf7b1edb30f.avif" alt="Hình minh họa liên quan đến độ lệch lắp ghép 3" />
+</Frame>
+
+Kết quả nhận dạng đầu ra sẽ thay đổi từ "-42" thành khoảng "1". Chứng minh rằng việc sửa đổi offset thành công.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2bf7b92b-f754-41a3-8d2a-ab80cf39aa82.avif" alt="Sơ đồ liên quan đến độ lệch lắp ghép 4" />
+</Frame>
+
+## 8. Phụ lục
+
+### 8.1 Mã lỗi
+
+Khi dữ liệu nhận được đều là 0.0.0 thì khi mở phần mềm PalletPro có xuất hiện hình ảnh nhưng giao diện hiển thị hình ảnh hiển thị mã lỗi âm. Bạn có thể giải quyết theo giải pháp tương ứng với mã lỗi. Nếu vấn đề vẫn không thể giải quyết được sau khi sửa đổi, vui lòng liên hệ với nhân viên bán hàng trước của Maier Microvision.
+
+|  |  |  |
+| --- | --- | --- |
+| Mã lỗi | Mô tả | Giải pháp |
+| 0 | Nhận dạng bình thường | / |
+| -1 | Hình ảnh không có dữ liệu hoặc không đủ dữ liệu | Sử dụng phần mềm máy tính chủ để xác nhận xem máy ảnh có tạo ra hình ảnh bình thường hay không. |
+| -2 hoặc -6 | Quá ít dữ liệu đám mây điểm, không phát hiện thấy chân pallet nào | Những lý do có thể: 1. Chiều cao nâng của máy ảnh hoặc tay nâng thay đổi. 2. Chân bị chặn. 3. Máy ảnh hoặc cánh tay nĩa. 4. Hình ảnh chân không đầy đủ. 5. Cột phản chiếu quá gần pallet ảnh hưởng đến hình ảnh của camera. Lưu ý: Nên điều chỉnh các thông số cấu hình, điều chỉnh cột phản quang, hoặc điều chỉnh thái độ xe nâng sau khi xác nhận qua phần mềm PalletPro. |
+| -3 | Kích thước chân pallet không đạt yêu cầu hoặc không phát hiện được chân pallet | Các đặc tính của chân pallet vượt quá phạm vi nhận dạng (có thể điều chỉnh phạm vi chiều rộng chân hoặc chiều rộng pallet) |
+| -4 | Chiều cao lắp đặt camera chưa được đặt | Điều chỉnh độ cao lắp đặt |
+| -5 | Xác minh pallet không thành công: phát hiện chùm tia của pallet không bình thường hoặc góc nghiêng của pallet quá lớn | Chùm tia không được nhận dạng. Nên tắt các điểm ảnh bay qua máy tính chủ hoặc điều chỉnh khoảng cách lắp ghép để đưa camera đến gần pallet hơn. |
+| -7 | Chênh lệch chiều rộng của chân pallet trong trường nhìn quá lớn | Kiểm tra xem phụ kiện pallet có cột phản quang hay sát tường làm ảnh hưởng đến hình ảnh chân mép |
+| -8 | Góc của pallet trong trường nhìn quá lớn (>30 độ) | Làm thẳng pallet |
+
+### 8.2 Mô tả thuật toán nhận dạng chân
+
+**Phương pháp 1:** Bằng cách sửa đổi giá trị "two\_leg" trong tham số nâng cao, 1 có nghĩa là bật, 0 có nghĩa là tắt.
+
+**Lưu ý: Khi bật chức năng nhận dạng 2 chân, hệ thống sẽ ưu tiên phát hiện pallet 3 chân. Sau khi phát hiện thất bại, pallet hai chân sẽ được phát hiện. **
+
+Cách 2: Thực hiện thông qua cấu hình tham số. Cấu hình tham số được nhập thông qua chuỗi định dạng JSON và cấu hình được tự động ghi vào máy ảnh sau khi được truyền vào.
+
+**Ví dụ:**
+
+```json
+{"two_leg": 1} enables two-leg pallet detection.
+```
+
+```json
+{"two_leg": 0} disables two-leg pallet detection.
+```
+
+### 8.3 Hướng dẫn nhận dạng nhiều pallet
+
+Bật công tắc nhận dạng nhiều pallet (tắt theo mặc định), multi\_level = 1;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/588b0ca7-c3bb-43e2-bfa5-88f69da86d69.avif" alt="Các hình ảnh minh họa liên quan đến hướng dẫn nhận dạng nhiều pallet" />
+</Frame>
+
+Đầu ra kết quả nhiều pallet
+
+- Trong phần giao diện phần mềm, dữ liệu tọa độ camera phía trên và dữ liệu tọa độ robot phía dưới không thay đổi và tương thích với một pallet duy nhất. Kết quả của pallet được nhận dạng ở phía dưới được phản hồi lại; sau khi bật tính năng nhận dạng nhiều pallet, các ký tự màu xanh lá cây ở phía dưới biểu thị dữ liệu pallet nhiều lớp được nhận dạng, sắp xếp từ trên xuống dưới. Nếu quá trình nhận dạng không thành công, mã lỗi lỗi sẽ được phản hồi lại.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/65828678-119e-4f40-bff1-9ea5da432cb4.avif" alt="Các hình ảnh minh họa liên quan đến hướng dẫn nhận dạng nhiều pallet 2" />
+</Frame>
+
+- Phần kết quả đầu ra. Được gọi thông qua API C++ của máy tính chủ, giao diện gọi như sau:
+
+int LXPL\_LocatePallet(đầu ra LxPalletPose\*, tay cầm LXPL\_Handle);
+
+Trong số đó, cấu trúc đầu ra LxPalletPose được xác định như sau:
+
+cấu trúc typedef &#123;
+
+int return\_val;
+
+thả nổi x, y, yaw;
+
+int phạm vi\[8192\];
+
+&#125; LxPalletPose;
+
+Lấy dữ liệu pallet thông qua lệnh gọi giao diện API C++ của máy chủ
+
+(**Để biết chi tiết, vui lòng tham khảo danh mục máy tính chủ Sample\\C\\application\_pallet\\application\_pallet.cpp**)
+
+Dữ liệu //Get
+
+void\* algordata = nullptr;
+
+checkTC(DcGetPtrValue(xử lý, LX\_PTR\_ALGORITHM\_OUTPUT, &algordata));
+
+LxPalletPose\* palletdata = (LxPalletPose\*)data\_ptr;
+
+Khi bật nhiều pallet, thông tin về pallet nhiều lớp sẽ ở Mức độ.
+
+|  |  |  |
+| --- | --- | --- |
+| Mức độ | Nội dung | Mô tả |
+| 0 | Chiều cao khay (lấy tâm quang của camera làm điểm xa, hướng xuống dưới làm điểm dương) | Khay dưới cùng |
+| 1 | Chiều dài pallet (khoảng cách từ giữa chân trái đến giữa chân phải) | |
+| 2 | Số lượng chân pallet | 2 hoặc 3 |
+| 3 | Chân pallet 1 chiều rộng | |
+| 4 | Chân pallet 2 chiều rộng | |
+| 5 | Chân pallet 3 chiều rộng | |
+| 6 | —— |  |
+| 7 | Chiều rộng lỗ pallet (trái) | |
+| 8 | Chiều rộng lỗ pallet (phải) | |
+| 9 | —— |  |
+| 10 | Tổng số pallet n (hợp lệ, từ trên xuống dưới, tối đa 4) | |
+| 11 12 13 14 | p1: | Thông tin pallet thứ 1 |
+| 15 16 17 18 | p2: | Thông tin pallet thứ 2 |
+| 19 20 21 22 | p3: | Thông tin pallet thứ 3 |
+| 23 24 25 26 | p4: | thông tin pallet thứ 4 |
+
+### 8.4 Mô tả thuật toán tùy chỉnh
+
+Nếu bạn cần nhận dạng pallet không phải là pallet ba chân (chẳng hạn như pallet không có chân), vui lòng liên hệ với nhân viên bán hàng hoặc nhân viên bán hàng trước của Meyer Microvision. Như thể hiện trong hình bên dưới, cần có các thuật toán tùy chỉnh.
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1c3a0bf-fa28-4fe0-a0b0-ac143bdbd91f.avif" alt="Hình minh họa liên quan đến mô tả thuật toán tùy chỉnh" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d892d31-7eef-4e0b-8258-e6b47ce508d5.avif" alt="Ghi chú thuật toán tùy chỉnh 2" /> |
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/602e69de-17f9-4c82-b5a7-7a09a2df953d.avif" alt="Sơ đồ liên quan đến mô tả thuật toán tùy chỉnh 3" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f203ba49-447c-4b11-ae1e-c0f890f34841.avif" alt="Ghi chú thuật toán tùy chỉnh 4" /> |
+
+|  |  |
+| --- | --- |
+| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3bc45258-002c-4ea1-9ef7-c3fb28eafdb0.avif" alt="Sơ đồ liên quan đến mô tả thuật toán tùy chỉnh 5" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/bb350389-27e6-4d29-91e0-d6671ef3038b.avif" alt="Ghi chú thuật toán tùy chỉnh 6" /> |
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/111ac328-45b6-450a-9681-a15f27e5c6ea.avif" alt="Sơ đồ liên quan đến mô tả thuật toán tùy chỉnh 7" />
+</Frame>
+
+### 8.5 Phương pháp điều khiển chuyển động được đề xuất
+
+#### 8.5.1 Hai đế cắm
+
+Phương pháp lắp ghép hai bước sử dụng ba bước để nhận được kết quả nhận dạng của camera hai lần, đó là định vị xa, xác minh gần cuối và đi bộ mù để nhặt pallet.
+
+Định vị từ xa:
+
+Xe nâng nhận nhiệm vụ điều động và di chuyển đến điểm tập kết để kích hoạt dữ liệu camera nhận dạng pallet. Xe nâng điều chỉnh góc và độ lệch ngang thông qua điều khiển chuyển động. Điểm tiếp nối từ xa khuyến nghị khoảng cách giữa pallet và máy ảnh nằm trong phạm vi 1800mm-2800mm.
+
+Xác minh gần cuối:
+
+Khi đầu càng nâng cách mép trước của pallet 200mm, kết quả nhận dạng của camera sẽ được thu lại một lần nữa để xác minh xem độ chính xác của việc lắp ghép có đáp ứng yêu cầu của xe nâng hay không, đáp ứng được pallet **xe nâng đường thẳng** của xe nâng và không đáp ứng **điều chỉnh tại chỗ** để nâng pallet và sau đó nâng nó lên.
+
+#### 8.5.2 Kết nối thời gian thực
+
+Phương pháp lắp ghép thời gian thực sử dụng kết quả nhận dạng của camera thu được theo thời gian thực và kết hợp nó với xe nâng điều khiển chuyển động để điều chỉnh tư thế của nó trong thời gian thực. Khi xe nâng di chuyển đến điểm mà đầu càng nâng cách mép trước của pallet khoảng 200mm, nó sẽ thực hiện các điều chỉnh tinh tế và sau đó trực tiếp nâng pallet.
+
+**Lưu ý: Khi sử dụng tính năng kết nối thời gian thực, bạn cần thêm dấu thời gian. Sử dụng dấu thời gian của kết quả thuật toán để xác định việc cập nhật dữ liệu nhằm ngăn chặn việc sửa sai do sự chậm trễ gây ra. **
+
+### 8.6 Hướng dẫn đặc biệt
+
+#### 8.6.1 Hướng dẫn đặc biệt nhận biết pallet đen và pallet kim loại
+
+- Do nguyên lý TOF nên camera dòng M bị ảnh hưởng bởi độ phản xạ thấp và độ phản xạ cao. Một tấm pallet đen có độ phản xạ 5% có thể đạt được hiệu ứng hình ảnh trong phạm vi 2m. Trong quá trình gỡ lỗi, hiệu ứng hình ảnh của pallet đen cũng có thể được tối ưu hóa thông qua thời gian tích hợp cao và ngưỡng tín hiệu thấp của phần mềm máy tính chủ.
+
+- Độ lệch ngang của phạm vi nhận dạng của pallet đen có thể hỗ trợ tối đa ±400mm (tâm quang học của camera tính từ tâm pallet) và góc quay tối đa của pallet có thể hỗ trợ ±10°.
+
+- Khi tỷ lệ phản xạ cao lớn hơn 100% và tỷ lệ phản xạ thấp dưới 5%, tức là khi xác định và đánh giá các bảng màu đen và bảng màu cơ bản bằng kim loại, khách hàng nên sử dụng các sản phẩm dòng M để thử nghiệm thực tế để đánh giá hiệu quả nhận dạng.
+
+#### 8.6.2 Mô tả điều kiện nhận dạng pallet
+
+Cơ sở để đánh giá việc thực hiện pallet tiêu chuẩn phải đồng thời đáp ứng các điều kiện sau (**Các loại pallet tiêu chuẩn được giới hạn ở: như trong hình giới thiệu ở Mục 1**)
+
+①: Phạm vi chiều rộng pallet: 800mm-2000mm;
+
+②: Phạm vi chiều dài pallet: 800mm-2000mm;
+
+③: Phạm vi chiều cao của pallet: 80mm-200mm;
+
+④: Phạm vi chiều rộng chân pallet: 40mm-200mm;
+
+⑤: Phạm vi chiều rộng lỗ khay: 300mm-600mm;
+
+⑥: Độ dày dầm pallet: hơn 30 mm;
+
+⑦: Khoảng cách nhận dạng pallet 1200mm-3000mm
+
+⑧: Cần đảm bảo rằng toàn bộ pallet không bị xáo trộn trong tầm nhìn của camera và pallet không bị chặn.
+
+Cố gắng tránh tình trạng khay bị chặn như trong hình bên dưới.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/039e38eb-9a5f-4623-a3aa-85241d457f89.avif" alt="Hình ảnh minh họa liên quan đến việc xác định tình trạng pallet" />
+</Frame>
+
+#### 8.6.3 Tác động của việc triển khai cột phản quang cho xe bán tải cấp cao
+
+Khi xe nâng trong kho ba chiều tiếp cận hàng hóa, việc điều hướng cần được định vị thông qua các cột phản chiếu nhưng camera nhận dạng pallet dễ bị ảnh hưởng bởi các cột phản chiếu. Cần tránh tác động của các trụ phản quang lên việc nhận dạng pallet trong quá trình triển khai. Khuyến cáo rằng khi triển khai các cột phản quang, khoảng cách tương đối giữa các cột phản quang và chân pallet phải cách nhau từ 20 cm trở lên, như trong hình.
+
+<Frame>
+  <img src="/images/legacy/395b6c3b-089b-4ad9-98c8-c4c78dc2be0a/8cda1f84-eee3-4ad9-b339-5fe24a98d876.avif" alt="Minh họa liên quan đến tác động của việc triển khai cột phản quang cho xe bán tải cao cấp" />
+</Frame>
+
+### 8.7 Về hướng dẫn của camera
+
+M4 Pro hỗ trợ giao thức 485 modbus rtu; Camera M4 có thể hỗ trợ giao thức CÓ THỂ MỞ;
+
+Chào mừng bạn đến liên hệ với chúng tôi thông qua các phương pháp sau:
+
+- Nếu bạn chưa mua sản phẩm [liên hệ với nhóm bán hàng trước của chúng tôi trên WeCom](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Liên hệ bán hàng trước")
+
+- Nếu bạn đã mua sản phẩm, [liên hệ hỗ trợ kỹ thuật trên WeCom](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "Liên hệ hỗ trợ kỹ thuật")
+
+**Cảm ơn bạn đã ghé thăm và hy vọng nền tảng kiến ​​thức có thể là trợ thủ đắc lực để bạn hiểu sâu hơn về các sản phẩm và giải pháp của Meyer Microvision! **

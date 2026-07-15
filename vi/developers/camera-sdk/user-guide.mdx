@@ -1,0 +1,1294 @@
+---
+title: "Hướng dẫn sử dụng SDK máy ảnh"
+description: "Tích hợp các camera MRDVS được hỗ trợ trên các hệ thống Windows x86 hoặc x86 và Arm Linux với API SDK Camera."
+hidden: true
+---
+## 1. **Tổng quan**
+
+Tài liệu này chủ yếu dành cho các nhà phát triển liên quan đến quyền truy cập thiết bị máy ảnh (yêu cầu khả năng phát triển phần mềm). Hiện hỗ trợ các sản phẩm dòng M4/M4 Mega/M4 Pro/V1Pro/S2/S2/H3. Mục đích chính của tài liệu này là giải thích cách sử dụng API do SDK cung cấp. SDK máy ảnh hỗ trợ chạy trên hệ điều hành Windows dựa trên x86 và hệ điều hành Linux dựa trên X86 và Arm.
+
+Camera SDK cung cấp giao diện cấu hình tham số và điều khiển truy cập thống nhất, hỗ trợ thu thập dữ liệu thiết bị đồng bộ hoặc không đồng bộ (bao gồm hình ảnh độ sâu, hình ảnh cường độ, hình ảnh đám mây điểm, hình ảnh RGB). Một số mẫu máy ảnh hỗ trợ tránh chướng ngại vật, lắp ghép, định vị và các dữ liệu khác.
+
+Tài liệu này cung cấp hỗ trợ phát triển ở mức độ lớn nhất và nội dung được cung cấp có thể bị lỗi hoặc không đầy đủ.
+
+* * *
+
+## 2**. Thiết lập môi trường**
+
+### 2.1 Cấu hình hệ thống được máy chủ đề xuất
+
+| Mục cấu hình | Cấu hình đề xuất |
+| --- | --- |
+| Hệ điều hành | Windows7 Windows10 Windows11<br />Ubfox16.04 trở lên |
+| Ký ức | 4G trở lên |
+| CPU | 4 nhân Cortex-A57 hoặc tương đương trở lên |
+| Card mạng | Gigabit trở lên |
+
+### 2.2 Thiết lập môi trường
+
+#### 2.2.1 Thiết lập môi trường phần cứng
+
+Máy ảnh được kết nối với điện áp 24V bên ngoài và được kết nối với máy tính chủ nơi đặt máy tính chủ bằng cáp mạng, như trong Hình 2.1.
+
+<Frame>
+  <img src="/images/legacy/2c0d602c-834d-4780-beab-f69d6c37593c/9d585c4c-d229-4e71-8275-014d7a30f2eb.avif" alt="Các hình ảnh minh họa liên quan đến xây dựng môi trường phần cứng" />
+</Frame>
+
+Hình 2.1 Sơ đồ kết nối camera
+
+#### 2.2.2 Thiết lập môi trường mạng
+
+1. Phân đoạn mạng IP mặc định của camera là: 192.168.100.\*
+
+2. Trên máy tính chủ, đặt địa chỉ IP của cổng mạng được kết nối với máy ảnh thành địa chỉ trong phân đoạn mạng 192.168.100.x và đảm bảo rằng địa chỉ đó không xung đột với thiết bị. Mặt nạ mạng con là 255.255.255.0, như thể hiện trong hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/dda39d36-adb1-490c-a208-2b7221a9e628/68567bcb-79e9-4442-bade-9266bc2e6aba.avif" alt="Các hình ảnh minh họa liên quan đến xây dựng môi trường mạng" />
+</Frame>
+
+3. Khi kết nối với máy ảnh, nên tắt tường lửa để tránh các gói dữ liệu máy ảnh bị chặn bởi máy chủ nơi đặt SDK, như minh họa trong hình sau:
+
+<Frame>
+  <img src="/images/legacy/f3a9f7f1-d341-43d6-ac8d-4c1e5b6d1d50/9c5cfdd9-1dd2-4e9e-873f-08625c29e9dc.avif" alt="Các minh họa liên quan đến xây dựng môi trường mạng 2" />
+</Frame>
+
+4. Cấu hình mạng của hệ thống Linux giống như cấu hình mạng của Windows. Phương pháp tắt tường lửa có thể khác nhau ở các hệ thống khác nhau. Lấy Ubuntu làm ví dụ:
+
+- Dừng dịch vụ tường lửa: sudo systemctl stop ufw.service
+
+- Vô hiệu hóa dịch vụ tường lửa: sudo systemctl vô hiệu hóa ufw.service Kiểm tra xem dịch vụ tường lửa có bị tắt hay không: sudo ufw status
+
+#### 2.2.3 Xây dựng môi trường phần mềm
+
+##### 2.2.3.1 Cài đặt hệ thống Windows:
+
+Mở gói cài đặt và cài đặt Lanxin-MRDVS-xxx.exe. Nếu bạn cần cài đặt nó cho tất cả người dùng, bạn cần có quyền quản trị viên để chạy gói cài đặt. Hình dưới đây cho thấy quá trình cài đặt.
+
+<Frame>
+  <img src="/images/legacy/0a7392e3-bf32-471b-aa31-8fa8fce6cced/06c7291e-7290-4c3d-8a90-88bd2bff7be6.avif" alt="Cài đặt hệ thống Windows: Minh họa liên quan" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/18efed64-f390-4fe3-8540-f5509c3af2d4/84f19e25-ae92-4889-bc34-e8fb6f09bf53.avif" alt="Cài đặt hệ thống Windows: Minh họa liên quan 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/a5542933-3960-4d25-b48d-6d1f41153f9a/8e13b104-d47a-4fd6-be41-ae61441048c3.avif" alt="Cài đặt hệ thống Windows: Minh họa liên quan 3" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/d2995663-9902-43ef-9556-d02e800b725b/eab5e847-062d-4fbd-a23b-503ec60e26b2.avif" alt="Cài đặt hệ thống Windows: Minh họa liên quan 4" />
+</Frame>
+
+##### 2.2.3.2 Cài đặt hệ thống Linux:
+
+1. Giải nén và thực thi tập lệnh cài đặt
+
+- tar xvf Lanxin-MRDVS-xxx.tar.gz
+
+- cd Lanxin-MRDVS
+
+2. Vì cài đặt yêu cầu quyền root nên nếu người dùng hiện tại chưa root, bạn cần chuyển sang người dùng root
+
+- sudo su gốc
+
+3. Sau đó thực hiện cài đặt
+
+- chmod +x install.sh
+
+- ./install.sh
+
+Tập lệnh cài đặt sẽ cài đặt sdk vào thư mục /opt/Lanxin-MRDVS và đặt các biến môi trường. Cần lưu ý rằng các biến môi trường được đặt trong tập lệnh là các biến môi trường của người dùng hiện tại. Nếu chương trình đang chạy không phải là người dùng root, bạn cần chạy lại tập lệnh install.sh để đặt các biến môi trường hoặc thêm thủ công import LD\_LIBRARY\_PATH=/opt/Lanxin-MRDVS/lib/:$LD\_LIBRARY\_PATH vào cuối ~/.bashrc của người dùng hiện tại.
+
+Đối với các phiên cuối đã được mở trước khi cài đặt, bạn cần thực thi source ~/.bashrc để cập nhật biến môi trường LD\_LIBRARY\_PATH trước khi chạy chương trình.
+
+* * *
+
+## 3**. Hướng dẫn sử dụng SDK máy ảnh**
+
+### 3.1 Cấu trúc thư mục SDK máy ảnh
+
+Nội dung của thư mục SDK máy ảnh bao gồm các hình ảnh sau:
+
+<Frame>
+  <img src="/images/legacy/e63ed7f0-5413-49e4-ae83-5b1ca5701c3f/c8513558-20e0-42d9-8a4a-cf788fbddee2.avif" alt="Sơ đồ liên quan đến cấu trúc thư mục SDK của máy ảnh" />
+</Frame>
+
+- Tài liệu chứa nhiều tài liệu khác nhau cho SDK
+
+- FirmWare chứa gói nâng cấp firmware máy ảnh
+
+- Mẫu chứa mã mẫu sử dụng SDK Camera bằng nhiều ngôn ngữ lập trình khác nhau
+
+- SDK bao gồm các file header và file thư viện của Camera SDK
+
+### 3.2 Quá trình phát triển
+
+#### 3.2.1 Cấu hình dự án
+
+C/C++ được khuyến nghị làm ngôn ngữ lập trình phát triển thứ cấp chính để tích hợp SDK và tập lệnh CMakeLists.txt để xây dựng dự án thông qua công cụ Cmake được cung cấp; đồng thời, thư mục Mẫu cung cấp các ví dụ về phương pháp phát triển bằng các ngôn ngữ khác nhau. Để biết chi tiết, vui lòng tham khảo thông tin trong Mẫu và "Hướng dẫn chương trình mẫu Linux".
+
+#### 3.2.2 Quá trình gọi giao diện đồng bộ
+
+<Frame>
+  <img src="/images/legacy/821c0e91-5da0-4bb9-ad44-9aff7d3e5b4f/5d92b8cc-615b-4948-aeea-4dd0e96daed5.avif" alt="Biểu đồ luồng cuộc gọi giao diện chế độ đồng bộ" />
+</Frame>
+
+#### 3.2.3 Quá trình gọi giao diện không đồng bộ
+
+<Frame>
+  <img src="/images/legacy/b7bf7592-9337-4597-9443-807edf3803b1/7d62fa56-8dd8-4fdb-bdfe-4c9e4b249429.avif" alt="Biểu đồ luồng cuộc gọi giao diện chế độ không đồng bộ" />
+</Frame>
+
+* * *
+
+## 4. **Ghi chú gọi SDK của Camera**
+
+### 4.1 Nguyên tắc chung khi gọi giao diện SDK Camera
+
+1. Đối với các kiểu liệt kê có tiền tố LX\_INT, sử dụng DcSetIntValue hoặc DcGetIntValue để đặt hoặc lấy tham số kiểu INT;
+
+2. Đối với các kiểu liệt kê có tiền tố LX\_FLOAT, hãy sử dụng DcSetFloatValue hoặc DcGetFloatValue để đặt hoặc lấy tham số kiểu FLOAT;
+
+3. Đối với các kiểu liệt kê có tiền tố LX\_BOOL, hãy sử dụng DcSetBoolValue hoặc DcGetBoolValue để đặt hoặc lấy tham số loại BOOL;
+
+4. Đối với các kiểu liệt kê có tiền tố LX\_STRING, hãy sử dụng DcSetStringValue hoặc DcGetStringValue để đặt hoặc lấy tham số kiểu chuỗi;
+
+5. Sử dụng DcSetCmd để thực thi các lệnh cho các kiểu liệt kê có tiền tố LX\_CMD;
+
+6. Đối với các kiểu liệt kê có tiền tố LX\_PTR, hãy sử dụng DcGetPtrValue để lấy kết quả kiểu con trỏ;
+
+### 4.2 Điều kiện gọi phần giao diện SDK máy ảnh
+
+**1. Khi luồng được bắt đầu hoặc chế độ làm việc (LX\_INT\_WORK\_MODE) là chế độ mở thông thường, không được phép đặt các chức năng sau:**
+
+- DcSetRoi
+
+- LX\_INT\_3D\_BINNING\_MODE;
+
+- LX\_INT\_2D\_BINNING\_MODE;
+
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH;
+
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR;
+
+- LX\_BOOL\_ENABLE\_MULTI\_MACHINE;
+
+- LX\_INT\_TRIGGER\_MODE;
+
+- LX\_INT\_CALCULATE\_UP;
+
+- LX\_BOOL\_ENABLE\_HDR;
+
+- LX\_BOOL\_ENABLE\_TOF\_DEPTH\_CALIBE;
+
+- LX\_BOOL\_ENABLE\_SYNC\_FRAME
+
+- LX\_INT\_SAVE\_PARAMS\_GROUP
+
+**2. Không được phép cài đặt ngay cả khi chế độ làm việc (LX\_INT\_WORK\_MODE) thường mở:**
+
+- LX\_INT\_TOF\_FREQMODE<br />
+
+**3. Khi bật phơi sáng tự động 3D (LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE), các thao tác liệt kê chức năng sau không được phép:**
+
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR ;
+
+- LX\_INT\_FIRST\_EXPOSURE;
+
+- LX\_INT\_SECOND\_EXPOSURE;
+
+- LX\_INT\_THIRD\_EXPOSURE;
+
+- LX\_INT\_GAIN;<br />
+
+**4.Khi tắt phơi sáng tự động 3D (LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE), chức năng liệt kê sau đây không được phép hoạt động:**
+
+- LX\_INT\_3D\_AUTO\_EXPOSURE\_LEVEL
+
+Không được phép đặt giá trị tối đa phơi sáng tự động 3D (LX\_INT\_3D\_AUTO\_EXPOSURE\_MAX) và giá trị tối thiểu
+
+- (LX\_INT\_3D\_AUTO\_EXPOSURE\_MIN)
+
+**5. Khi bật phơi sáng tự động 2D (LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE), các thao tác liệt kê chức năng sau không được phép:**
+
+- LX\_INT\_2D\_MANUAL\_EXPOSURE
+
+<br />**6. Khi tắt phơi sáng tự động 2D (LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE), chức năng liệt kê sau đây không được phép hoạt động:**
+
+- LX\_INT\_2D\_AUTO\_EXPOSURE\_LEVEL;
+
+<br />7.**Ở chế độ lọc đặc biệt, không được phép cài đặt sau:**
+
+- LX\_INT\_FILTER\_SMOOTH\_LEVEL LX\_INT\_FILTER\_NOISE\_LEVEL
+
+- LX\_INT\_FILTER\_TIME\_LEVEL
+
+<br />8.**Khi bật tính năng chống biến dạng 2D, trước tiên phải bật căn chỉnh RGBD:**
+
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH
+
+<br />9.**Đối với các thiết bị không phải loại S2, khi bật thuật toán tích hợp, trước tiên bạn cần đặt thuật toán tof. Các tham số thuật toán chỉ được phép đặt khi thuật toán tích hợp (LX\_INT\_ALGORITHM\_MODE) được bật.**
+
+- (LX\_STRING\_ALGORITHM\_PARAMS)
+
+<br />10.**Để lấy dữ liệu đám mây điểm (LX\_PTR\_XYZ\_DATA), trước tiên bạn phải mở bản đồ độ sâu**
+
+- (LX\_BOOL\_ENABLE\_3D\_DEPTH\_STREAM)
+
+* * *
+
+## 5. **Mô tả kiểu dữ liệu**
+
+### 5.1 LX\_STATE
+
+Chức năng: Mã trạng thái giá trị trả về của chức năng giao diện SDK
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_THÀNH CÔNG | Thực hiện chức năng thành công |
+| LX_ERROR | Thực thi chức năng không thành công |
+| LX_E_NOT_SUPPORT | Camera được kết nối không hỗ trợ chức năng này |
+| LX_E_NETWORK_ERROR | Lỗi giao tiếp mạng |
+| LX_E_INPUT_ILLEGAL | Các tham số hàm không hợp lệ được truyền vào |
+| LX_E_RECONNECTING | Đang kết nối lại thiết bị |
+| LX_E_DEVICE_ERROR | Lỗi thiết bị |
+| LX_E_DEVICE_NEED_UPDATE | Phiên bản thiết bị quá thấp và phiên bản phần sụn cần được nâng cấp |
+| LX_E_API_NEED_UPDATE | Phiên bản API quá thấp, SDK cần được nâng cấp |
+| LX_E_CTRL_PERMISS_ERROR | Quyền kiểm soát độc quyền không thành công (thiết bị chỉ có thể có một kết nối SDK cùng lúc) |
+| LX_E_GET_DEVICEINFO_ERROR | Không lấy được thông tin thiết bị |
+| LX_E_IMAGE_SIZE_ERROR | Kích thước ảnh không khớp, mở lại camera |
+| LX_E_IMAGE_PARTITION_ERROR | Phân tích hình ảnh không thành công |
+| LX_E_DEVICE_NOT_CONNECTED | Máy ảnh không được kết nối |
+| LX_E_DEVICE_INIT_FAILED | Khởi tạo máy ảnh không thành công |
+| LX_E_DEVICE_NOT_FOUND | Không tìm thấy máy ảnh phù hợp |
+| LX_E_FILE_INVALID | Lỗi tệp (tên tệp hoặc loại hoặc định dạng tệp không chính xác) |
+| LX_E_CRC_CHECK_FAILED | Xác minh tệp crc hoặc md5 không thành công |
+| LX_E_TIME_OUT | Hết giờ |
+| LX_E_FRAME_LOSS | Thiếu khung |
+| LX_E_ENABLE_ANYSTREAM_FAILED | Không mở được bất kỳ luồng nào |
+| LX_E_NOT_RECEIVE_STREAM | Truyền dữ liệu không nhận được |
+| LX_E_PARSE_STREAM_FAILED | Quá trình phát trực tuyến đã bắt đầu thành công nhưng không phân tích được dữ liệu luồng |
+| LX_E_PROCESS_IMAGE_FAILED | Xử lý tính toán hình ảnh không thành công |
+| LX_E_SETTING_NOT_ALLOWED | Không được phép cài đặt ở chế độ mở thông thường |
+| LX_E_LOAD_DATAPROCESSLIB_ERROR | Lỗi tải thư viện thuật toán xử lý ảnh |
+| LX_E_FUNCTION_CALL_LOGIC_ERROR | Lỗi logic lệnh gọi hàm |
+| LX_E_IPAPPDR_UNREACHABLE_ERROR | Không truy cập được IP hoặc lỗi cấu hình mạng |
+| LX_E_FRAME_ID_NOT_MATCH | Lỗi không đồng bộ hóa khung trong phạm vi thời gian chờ |
+| LX_E_FRAME_MULTI_MACHINE | Tín hiệu nhiễu đa máy được phát hiện trong khung |
+
+### 5.2 LX\_DATA\_TYPE
+
+Chức năng: định dạng dữ liệu. Bản đồ cường độ 3D và bản đồ độ sâu có định dạng dữ liệu khác nhau. Để lấy con trỏ dữ liệu, bạn cần sử dụng tính năng tương ứng.
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_DATA_UNSIGNED_CHAR | Kiểu ký tự không dấu |
+| LX_DATA_UNSIGNED_SHORT | Số nguyên ngắn không dấu |
+| LX_DATA_SIGNED_SHORT | Ký ngắn |
+| LX_DATA_FLOAT | Kiểu dấu phẩy động |
+| LX_DATA_OBSTACLE | Kiểu cấu trúc thuật toán tránh chướng ngại vật |
+| LX_DATA_PALLET | Kiểu cấu trúc thuật toán pallet |
+| LX_DATA_LOCATION | Kiểu cấu trúc thuật toán định vị trực quan |
+| LX_DATA_OBSTACLE | Thuật toán tránh chướng ngại vật kiểu cấu trúc V2 |
+
+### 5.3 LX\_BINNING\_MODE
+
+Chức năng: Chế độ Bining
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_BINNING_1X1 | Binning 1x1 |
+| LX_BINNING_2X2 | Binning 2x2 |
+| LX_BINNING_4X4 | Binning 4x4 |
+
+### 5.4 LX\_STRUCT\_LIGHT\_CODE\_MODE
+
+Chức năng:
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_CODE_BÌNH THƯỜNG | Chung |
+| LX_CODE_STATBLE | Ổn định |
+| LX_CODE_ENHANCE | Nâng cao độ chính xác cao |
+
+### 5.5 LX\_ALGORITHM\_MODE
+
+Chức năng:
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| MODE_ALL_OFF | Tắt thuật toán tích hợp của camera |
+| MODE_AVOID_OBSTACLE | Thuật toán tránh chướng ngại vật tích hợp |
+| MODE_PALLET_LOCATE | Thuật toán pallet tích hợp |
+| MODE_VISION_LOCATION | Thuật toán định vị trực quan tích hợp |
+| MODE_AVOID_OBSTACLE2 | Tích hợp thuật toán tránh chướng ngại vật V2 |
+
+### 5.6 LX\_CAMERA\_WORK\_MODE
+
+Chức năng:
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| GIỮ_HEARTBEAT | Chế độ nhịp tim, camera SDK chuyển sang trạng thái chờ sau khi nhịp tim bị gián đoạn |
+| CÔNG VIỆC_FOREVER | Thông thường ở chế độ này, camera luôn hoạt động |
+
+### 5.7 LX\_TRIGGER\_MODE
+
+Chức năng:
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_TRIGGER_MODE_OFF | Đóng chế độ kích hoạt, chế độ phát trực tuyến, mặc định |
+| LX_TRIGGER_PHẦN MỀM | Chế độ kích hoạt mềm |
+| LX_TRIGGER_PHẦN CỨNG | Chế độ kích hoạt cứng |
+
+### 5.8 LX\_CAMERA\_TÍNH NĂNG
+
+Chức năng: Các thông số có thể đọc và ghi khác nhau
+
+#### 5.8.1 tham số kiểu int
+
+##### 5.8.1.1 Thông số chung
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_INT_FIRST_EXPOSURE | Giá trị phơi sáng, đơn vị cho chúng tôi, đối với nhiều điểm, đó là thời gian phơi sáng của điểm đầu tiên |
+| LX_INT_SECOND_EXPOSURE | Đối với nhiều điểm, thời gian phơi sáng của điểm thứ hai |
+| LX_INT_THIRD_EXPOSURE | Trong trường hợp có nhiều điểm, thời gian phơi sáng của điểm thứ ba được một số kiểu máy hỗ trợ |
+| LX_INT_FOURTH_EXPOSURE | Trong trường hợp có nhiều điểm, thời gian phơi sáng của điểm thứ tư được một số kiểu máy hỗ trợ |
+| LX_INT_GAIN | Đạt được, tương đương với hiệu ứng tiếp xúc. Tiếng ồn sẽ được đưa vào và mức tăng có thể được điều chỉnh phù hợp để ngăn các thông số phơi sáng quá lớn |
+| LX_INT_MIN_DEPTH | Giá trị độ sâu tối thiểu, các giá trị ngoài phạm vi không hợp lệ |
+| LX_INT_MAX_DEPTH | Giá trị độ sâu tối đa, các giá trị ngoài phạm vi không hợp lệ |
+| LX_INT_MIN_AMPLITUDE | Giá trị cường độ tín hiệu hiệu dụng tối thiểu, giá trị độ sâu ngoài phạm vi không hợp lệ |
+| LX_INT_MAX_AMPLITUDE | Giá trị cường độ tối đa của tín hiệu hợp lệ, giá trị độ sâu ngoài phạm vi được đặt thành không hợp lệ |
+| LX_INT_CODE_MODE | Chế độ mã hóa camera ánh sáng cấu trúc, tham khảo CODE_MODE (được một số kiểu máy hỗ trợ) |
+| LX_INT_WORK_MODE | Chế độ làm việc, tham khảo LX_CAMERA_WORK_MODE |
+| LX_INT_LINK_SPEED | Tốc độ card mạng đàm phán là 100-100 Mbit/s, 1000-1000 Mbit/s, chỉ hỗ trợ thu nhận và không thể đặt |
+| LX_INT_TOF_GLOBAL_OFFSET | Độ lệch dữ liệu độ sâu TOF |
+| LX_INT_ALGORITHM_MODE | Chế độ kích hoạt thuật toán tích hợp, được hỗ trợ bởi một số kiểu máy, các giá trị tương ứng tham khảo LX_ALGORITHM_MODE |
+| LX_INT_TRIGGER_MODE | Chế độ kích hoạt, giá trị tương ứng đề cập đến LX_TRIGGER_MODE |
+| LX_INT_MODBUS_ADDR | địa chỉ modbus, một số model hỗ trợ đầu ra giao thức MODBUS thông qua cổng nối tiếp |
+| LX_INT_HEART_TIME | Thời gian nhịp tim, camera sẽ tự động chờ nếu hết thời gian và không nhận được nhịp tim |
+| LX_INT_GVSP_PACKET_SIZE | Kích thước gói dữ liệu gói đơn GVSP, byte đơn vị |
+| LX_INT_CALCULATE_UP | Cho phép thuật toán tof hoặc rgb di chuyển lên xuống, tiết kiệm khả năng tính toán của máy tính chủ hoặc camera, có thể ảnh hưởng đến tốc độ khung hình và độ trễ |
+| LX_INT_CAN_BAUD_RATE | giá trị tốc độ truyền của can, đơn vị bps |
+| LX_INT_SAVE_PARAMS_GROUP | Lưu cấu hình camera hiện tại làm nhóm thông số đã chỉ định |
+| LX_INT_LOAD_PARAMS_GROUP | Tải nhóm tham số của chỉ mục đã chỉ định bằng một cú nhấp chuột |
+
+##### 5.8.1.2 Thông số hình ảnh 3D
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_INT_3D_IMAGE_WIDTH | Độ phân giải hình ảnh 3D chiều rộng hiện tại |
+| LX_INT_3D_IMAGE_HEIGHT | Độ phân giải hình ảnh 3D chiều cao hiện tại |
+| LX_INT_3D_IMAGE_OFFSET_X | Các pixel offset ngang ROI, vui lòng sử dụng DcSetRoI để đặt tham số |
+| LX_INT_3D_IMAGE_OFFSET_Y | Các pixel offset dọc ROI, vui lòng sử dụng DcSetRoI để đặt tham số |
+| LX_INT_3D_BINNING_MODE | Hợp nhất pixel, tham khảo LX_BINNING_MODE |
+| LX_INT_3D_DEPTH_DATA_TYPE | Định dạng dữ liệu hình ảnh độ sâu, chỉ có thể được lấy. Để biết giá trị tương ứng, hãy tham khảo LX_DATA_TYPE |
+| LX_INT_3D_AMPLITUDE_CHANNEL | Số kênh ảnh cường độ 3D, chia sẻ với kênh ảnh chiều sâu |
+| LX_INT_3D_AMPLITUDE_DATA_TYPE | Định dạng dữ liệu hình ảnh cường độ, chỉ có thể được lấy. Để biết giá trị tương ứng, hãy tham khảo LX_DATA_TYPE |
+| LX_INT_3D_AUTO_EXPOSURE_LEVEL | Mức phơi sáng khi bật phơi sáng tự động 3D, trong thời gian đó không được phép đặt giá trị phơi sáng và mức tăng |
+| LX_INT_3D_AUTO_EXPOSURE_MAX | Giới hạn trên của phơi sáng tự động 3D |
+| LX_INT_3D_AUTO_EXPOSURE_MIN | Giá trị giới hạn dưới của phơi sáng tự động 3D |
+| LX_INT_3D_UNDISTORT_SCALE | Hệ số chống biến dạng hình ảnh 3D |
+
+##### 5.8.1.4 Thông số hình ảnh 2D
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_INT_2D_IMAGE_CHANNEL | Số kênh hình ảnh 2D, đơn sắc là 1, màu sắc là 3 |
+| LX_INT_2D_IMAGE_WIDTH | Độ phân giải hình ảnh 2D chiều rộng hiện tại |
+| LX_INT_2D_IMAGE_HEIGHT | Độ phân giải hình ảnh 2D chiều cao hiện tại |
+| LX_INT_2D_IMAGE_OFFSET_X | Chỉ có thể lấy các pixel bù ngang ROI của hình ảnh 2D, vui lòng sử dụng DcSetRoI để đặt tham số |
+| LX_INT_2D_IMAGE_OFFSET_Y | Chỉ có thể lấy các pixel offset dọc ROI của hình ảnh 2D, vui lòng sử dụng DcSetRoI để đặt tham số |
+| LX_INT_2D_BINNING_MODE | Hợp nhất pixel, tham khảo LX_BINNING_MODE |
+| LX_INT_2D_MANUAL_EXPOSURE | Giá trị phơi sáng khi phơi sáng thủ công 2D |
+| LX_INT_2D_MANUAL_GAIN | Đạt được giá trị trong quá trình phơi sáng thủ công 2D |
+| LX_INT_2D_AUTO_EXPOSURE_LEVEL | Mức phơi sáng trong quá trình phơi sáng tự động của hình ảnh 2D |
+| LX_INT_2D_IMAGE_DATA_TYPE | Chỉ có thể lấy được định dạng dữ liệu hình ảnh 2D. Để biết giá trị tương ứng, hãy tham khảo LX_DATA_TYPE |
+| LX_INT_2D_UNDISTORT_SCALE | Hệ số chống biến dạng hình ảnh 2D |
+
+##### 5.8.1.5 Tham số kích hoạt
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_INT_TRIGGER_MODE | Chế độ kích hoạt, giá trị tương ứng đề cập đến LX_TRIGGER_MODE |
+| LX_INT_HARDWARE_TRIGGER_FILTER_TIME | Thời gian lọc kích hoạt cứng, đơn vị chúng tôi |
+| LX_INT_TRIGGER_MIN_PERIOD_TIME | Khoảng thời gian kích hoạt tối thiểu, theo đơn vị chúng tôi |
+| LX_INT_TRIGGER_DELAY_TIME | Thời gian trễ kích hoạt tính bằng µs. Giá trị &lt;= 1000 có hiệu lực ngay lập tức. Các giá trị lớn hơn 1000 sẽ có hiệu lực sau một khoảng thời gian trễ. Tính năng này được bảo lưu. |
+| LX_INT_TRIGGER_FRAME_COUNT | Số khung kích hoạt đơn |
+| LX_INT_IO_WORK_MODE | Chế độ điều khiển đầu ra tín hiệu GPIO, tham khảo LX_IO_WORK_MODE |
+| LX_INT_IO_OUTPUT_STATE | Chế độ điều khiển của người dùng đối với đầu ra tín hiệu GPIO, tham khảo LX_IO_OUTPUT_STATE |
+
+##### 5.8.1.6 Tham số bộ lọc
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_INT_FILTER_MODE | Chế độ lọc, tham khảo LX_FILTER_MODE |
+| LX_INT_FILTER_SMOOTH_LEVEL | Khi LX_INT_FILTER_MODE là FILTER_NORMAL, <br /> có thể đặt mức làm mịn bộ lọc, [0, 3], giá trị càng lớn thì khả năng lọc càng mạnh |
+| LX_INT_FILTER_NOISE_LEVEL | Khi LX_INT_FILTER_MODE là FILTER_NORMAL, <br /> có thể đặt mức nhiễu của bộ lọc, [0, 3], giá trị càng lớn thì khả năng lọc càng mạnh |
+| LX_INT_FILTER_TIME_LEVEL | Khi LX_INT_FILTER_MODE là FILTER_NORMAL, <br /> có thể đặt cấp miền thời gian của bộ lọc, [0, 3]. Giá trị càng lớn thì khả năng lọc càng mạnh |
+
+#### 5.8.2 tham số kiểu float
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_FLOAT_FILTER_LEVEL | Mức lọc, 0-1, giá trị càng lớn thì cường độ lọc càng cao |
+| LX_FLOAT_EST_OUT_EXPOSURE | Có đánh giá dữ liệu phơi sáng quá mức hay không, 0-1, nếu 1 thì dữ liệu phơi sáng quá mức không hợp lệ |
+| LX_FLOAT_LIGHT_INTENSITY | Cường độ ánh sáng, được hỗ trợ bởi một số kiểu máy |
+| LX_FLOAT_3D_DEPTH_FPS | Tốc độ khung hình hiện tại của bản đồ độ sâu |
+| LX_FLOAT_3D_AMPLITUDE_FPS | Tốc độ khung hình hiện tại của bản đồ cường độ |
+| LX_FLOAT_2D_IAMGE_FPS | Tốc độ khung hình hiện tại của hình ảnh RGB |
+| LX_FLOAT_DEVICE_TEMPERATURE | Lấy nhiệt độ camera hiện tại |
+
+#### 5.8.3 tham số kiểu bool
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_BOOL_CONNECT_STATE | Trạng thái kết nối hiện tại |
+| LX_BOOL_ENABLE_3D_DEPTH_STREAM | Bật/tắt bản đồ độ sâu (được một số camera hỗ trợ) |
+| LX_BOOL_ENABLE_3D_AMP_STREAM | Bật/tắt bản đồ cường độ (được một số máy ảnh hỗ trợ) |
+| LX_BOOL_ENABLE_3D_AUTO_EXPOSURE | Bật phơi sáng tự động 3D |
+| LX_BOOL_ENABLE_3D_UNDISTORT | Bật chống méo 3D |
+| LX_BOOL_ENABLE_BACKGROUND_AMP | Bật cường độ ánh sáng nền |
+| LX_BOOL_ENABLE_ANTI_FLICKER | Hỗ trợ chống hoạt động, ánh sáng xung quanh bằng đèn LED có thể gây ra hiện tượng gợn sóng rõ ràng trong dữ liệu, một số kiểu máy hỗ trợ |
+| LX_BOOL_ENABLE_2D_STREAM | Bật/tắt RGB |
+| LX_BOOL_ENABLE_2D_AUTO_EXPOSURE | Bật phơi sáng tự động 2D |
+| LX_BOOL_ENABLE_2D_UNDISTORT | Kích hoạt chống biến dạng 2D |
+| LX_BOOL_ENABLE_2D_TO_DEPTH | Bật căn chỉnh tọa độ RGBD |
+| LX_BOOL_ENABLE_MULTI_MACHINE | Đã bật chế độ nhiều máy, được một số kiểu máy hỗ trợ |
+| LX_BOOL_ENABLE_MULTI_EXPOSURE_HDR | Đã bật HDR (chế độ dải động cao đa phơi sáng) |
+| LX_BOOL_ENABLE_SYNC_FRAME | Có bật đồng bộ hóa khung bắt buộc hay không, ưu tiên thời gian thực của dữ liệu mặc định được đưa ra, nếu cần đồng bộ hóa RGBD, <br /> cần bật chế độ này |
+
+#### 5.8.4 tham số kiểu chuỗi
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_STRING_DEVICE_VERSION | Số phiên bản thiết bị |
+| LX_STRING_FIRMWARE_NAME | Tên tệp chương trình cơ sở, được sử dụng để nâng cấp phiên bản thiết bị, chỉ có thể được đặt |
+| LX_STRING_FILTER_PARAMS | Thuật toán lọc tham số, chuỗi định dạng json |
+| LX_STRING_ALGORITHM_PARAMS | Các tham số thuật toán tích hợp, các chế độ mở khác nhau, tương ứng với các chuỗi định dạng json khác nhau, điều kiện tiên quyết <br /> cần được đặt LX_ALGORITHM_MODE |
+| LX_STRING_ALGORITHM_VERSION | Số phiên bản thuật toán tích hợp, các chế độ mở khác nhau, trả về số phiên bản tương ứng, chỉ có thể lấy được, điều kiện tiên quyết <br /> cần được đặt LX_ALGORITHM_MODE |
+| LX_STRING_DEVICE_OS_VERSION | Số phiên bản hình ảnh hệ thống thiết bị |
+| LX_STRING_IMPORT_PARAMS_FROM_FILE | Tải thông số từ tệp cục bộ vào camera |
+| LX_STRING_EXPORT_PARAMS_TO_FILE | Xuất các thông số hiện tại của camera sang tệp cục bộ |
+
+#### 5.8.5 Tham số loại lệnh
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_CMD_GET_NEW_FRAME | Cập nhật dữ liệu một lần, thời gian chờ mặc định là 1s |
+| LX_CMD_RETURN_VERSION | Quay lại phiên bản trước |
+| LX_CMD_RESTART_DEVICE | Khởi động lại máy ảnh |
+| LX_CMD_WHITE_BALANCE | Tự động cân bằng trắng |
+| LX_CMD_RESET_PARAM | Khôi phục thông số mặc định |
+
+#### 5.8.6 tham số loại ptr
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_PTR_2D_IMAGE_DATA | Lấy con trỏ dữ liệu hình ảnh 2D, độ dài dữ liệu được xác định bởi kích thước hình ảnh 2D, số kênh và định dạng dữ liệu (LX_INT_2D_IMAGE_DATA_TYPE) |
+| LX_PTR_3D_AMP_DATA | Lấy con trỏ dữ liệu bản đồ cường độ 3D. Độ dài dữ liệu được xác định bởi kích thước hình ảnh 3D, số kênh và định dạng dữ liệu (LX_INT_3D_AMPLITUDE_DATA_TYPE) |
+| LX_PTR_3D_DEPTH_DATA | Lấy con trỏ dữ liệu bản đồ độ sâu 3D. Độ dài dữ liệu được xác định bởi kích thước hình ảnh 3D, số kênh và định dạng dữ liệu (LX_INT_3D_DEPTH_DATA_TYPE) |
+| LX_PTR_XYZ_DATA | Lấy con trỏ dữ liệu đám mây điểm, ba kênh loại float* (x, y, z là một tập hợp dữ liệu, được lặp theo trình tự), độ dài dữ liệu là LX_INT_3D_IMAGE_WIDTH*LX_INT_3D_IMAGE_HEIG HT*sizeof(float)*3 |
+| LX_PTR_ALGORITHM_OUTPUT | Nhận đầu ra thuật toán tích hợp, liên quan đến chế độ thuật toán. MODE_AVOID_OBSTACLE là con trỏ LxAvoidanceOutput, MODE_PALLET_LOCATE là con trỏ LxPalletPose và MODE_VISION_LOCATION là con trỏ LxLocation tham chiếu |
+| LX_PTR_2D_INTRIC_PARAM | Nhận các tham số bên trong của hình ảnh 2D, con trỏ kiểu float*, độ dài <br /> được cố định ở 9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX_PTR_3D_INTRIC_PARAM | Nhận các tham số bên trong của hình ảnh 3D, con trỏ kiểu float*, độ dài <br /> được cố định ở 9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX_PTR_3D_EXTRIC_PARAM | Lấy các tham số bên ngoài của hình ảnh 3D, con trỏ kiểu float*, độ dài của <br /> được cố định ở 12*sizeof(float) (9 số đầu tiên đại diện cho ma trận xoay, 3 số cuối đại diện cho vectơ dịch chuyển) |
+| LX_PTR_FRAME_DATA | Lấy khung dữ liệu hoàn chỉnh và kết quả đầu ra đề cập đến cấu trúc FrameInfo |
+
+### 5,9 LxDeviceInfo
+
+Chức năng: Cấu trúc thông tin thuộc tính thiết bị
+
+| Lĩnh vực | Loại | Mô tả |
+| --- | --- | --- |
+| xử lý | DcHandle | mã định danh duy nhất của thiết bị |
+| dev_type | LX_DEVICE_TYPE | Loại thiết bị |
+| id | mảng char | id thiết bị |
+| ip | mảng char | IP thiết bị: cổng |
+| sn | mảng char | Số sê-ri thiết bị |
+| mac | mảng char | địa chỉ mac của thiết bị |
+| firmware_ver | mảng char | Số phiên bản phần mềm thiết bị |
+| thuật toán_ver | mảng char | Số phiên bản thuật toán thiết bị |
+| tên | mảng char | Tên thiết bị, chẳng hạn như: camera_M3_192.168.11.13_9803 |
+| dự trữ | mảng char | trường dành riêng, mặt nạ mạng con |
+| dự trữ2 | mảng char | Trường dự trữ 2, cổng |
+| dự trữ3 | mảng char | Trường dành riêng 3 |
+| dự trữ4 | mảng char | Trường dành riêng 4 |
+
+### 5.10 LxIntValueInfo
+
+Chức năng: Cấu trúc thông tin thuộc tính thiết bị
+
+| Lĩnh vực | Loại | Mô tả |
+| --- | --- | --- |
+| set_available | Bool | Giá trị hiện tại có thể đặt được hay không, đúng - có thể đặt được, sai - không thể đặt |
+| cur_value | Int | Giá trị hiện tại |
+| giá trị tối đa | Int | giá trị tối đa |
+| giá trị tối thiểu | Int | Giá trị tối thiểu |
+| dự trữ | Mảng int | trường dành riêng |
+
+### 5.11 LxFloatValueInfo
+
+Chức năng: Cấu trúc thông tin thuộc tính thiết bị
+
+| Lĩnh vực | Loại | Mô tả |
+| --- | --- | --- |
+| set_available | Bool | Giá trị hiện tại có thể được đặt hay không, true - có thể được đặt, false - không thể được đặt |
+| cur_value | phao | giá trị hiện tại |
+| giá trị tối đa | phao | giá trị tối đa |
+| giá trị tối thiểu | phao | giá trị tối thiểu |
+| dự trữ | mảng nổi | trường dành riêng |
+
+### 5.12 LX\_DEVICE\_TYPE
+
+Chức năng: loại thiết bị
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| LX_DEVICE_M2 | Máy ảnh M2 |
+| LX_DEVICE_M3 | máy ảnh M3 |
+| LX_DEVICE_M4 Pro | Máy ảnh M4 Pro |
+| LX_DEVICE_M4_MEGA | Camera M4 Mega |
+| LX_DEVICE_M4 | máy ảnh M4 |
+| LX_DEVICE_S1 | Máy ảnh S1 |
+| LX_DEVICE_S2 | Máy ảnh S2 |
+| LX_DEVICE_I1 | máy ảnh I1 |
+| LX_DEVICE_I2 | máy ảnh I2 |
+| LX_DEVICE_T1 | Máy ảnh T1 |
+| LX_DEVICE_T2 | Máy ảnh T2 |
+| LX_DEVICE_H3 | Camera H3 |
+| LX_DEVICE_V1Pro | Máy ảnh V1Pro |
+| LX_DEVICE_NULL | Dành riêng |
+
+### 5.13 LX\_OPEN\_MODE
+
+Chức năng: loại thiết bị
+
+| Từ khóa | Mô tả |
+| --- | --- |
+| OPEN_BY_INDEX | Mở theo chỉ số dưới trong danh sách tìm kiếm. Tham số tương ứng là số chỉ mục. Khi danh sách thiết bị tìm kiếm thay đổi, thiết bị được <br /> chọn để mở cũng sẽ khác |
+| OPEN_BY_IP | Mở theo ip tương ứng trong danh sách tìm kiếm, tham số tương ứng là ip thiết bị hoặc ip:port |
+| OPEN_BY_SN | Mở theo chế độ sn tương ứng trong danh sách tìm kiếm và tham số tương ứng là thiết bị sn |
+| OPEN_BY_ID | Mở theo id tương ứng trong danh sách tìm kiếm, tham số tương ứng là id thiết bị |
+
+### 5.14 FrameDataInfo
+
+Chức năng: Cấu trúc thông tin hiển thị hình ảnh
+
+| Lĩnh vực | Loại | Mô tả |
+| --- | --- | --- |
+| frame_data_type | LX_DATA_TYPE | Kiểu dữ liệu khung |
+| frame_width | Int | Chiều rộng hình ảnh dữ liệu khung |
+| khung_height | Int | Chiều cao hình ảnh dữ liệu khung |
+| frame_channel | Int | Số lượng kênh dữ liệu khung |
+| frame_data | Vô hiệu *loại con trỏ | nội dung dữ liệu khung |
+| cảm biến_timestamp | Loại dài không dấu | dấu thời gian hình ảnh cảm biến |
+| recv_timestamp | Loại dài không dấu | Dấu thời gian khi nhận được dữ liệu khung |
+
+### 5.15 Thông tin khung hình
+
+Chức năng: Cấu trúc thông tin khung dữ liệu
+
+| Lĩnh vực | Loại | Mô tả |
+| --- | --- | --- |
+| khung_state | LX_STATE | Trạng thái dữ liệu khung |
+| xử lý | DcHandle | mã định danh duy nhất của thiết bị |
+| độ sâu_data | Loại FrameDataInfo | Cấu trúc dữ liệu khung bản đồ độ sâu |
+| amp_data | Loại FrameDataInfo | Cấu trúc dữ liệu khung bản đồ cường độ |
+| rgb_data | Loại FrameDataInfo | Cấu trúc dữ liệu khung Rgb |
+| dữ liệu ứng dụng | Loại FrameDataInfo | Cấu trúc đầu ra thuật toán |
+| dữ liệu dự trữ | Vô hiệu *loại con trỏ | trường dành riêng mở rộng |
+
+* * *
+
+## 6**. Mô tả API**
+
+### 6.1 Tìm, kết nối và đóng camera
+
+#### 6.1.1 DcGetDeviceList
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/574fb5b6-8cf7-4a0b-b362-47859b5a7bbe/8b322247-9b7e-4131-b5ee-10120e5a5bae.avif" alt="Các biểu tượng liên quan đến DcGetDeviceList" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận danh sách các máy ảnh được hỗ trợ.
+
+**Thông số chức năng:**
+
+- \[out\]devlist Đã tìm thấy danh sách camera
+
+- \[out\]devnum Số lượng camera được tìm thấy
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Bộ nhớ được duy trì bên trong và không cần cấp phát bộ nhớ ngoài. Tuy nhiên, vì nội dung gốc sẽ bị xóa trước mỗi lần tìm kiếm nên cần phải đảm bảo an toàn cho luồng bên ngoài.
+
+#### 6.1.2 DcOpenDevice
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/f628bf77-caf9-4975-8bcd-c810744df8ad/fecb1fc4-7432-4b45-8a6c-85e3c236dffb.avif" alt="Các biểu tượng liên quan đến DcOpenDevice" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Kết nối thiết bị của bạn.
+
+**Thông số chức năng:**
+
+- Chế độ mở \[in\]open\_mode, xem OpenMode để biết chi tiết
+
+- \[in\]param các phương thức mở khác nhau, điền các tham số khác nhau
+
+- \[out\]handle là phần xử lý thiết bị được trả về sau khi kết nối thành công. Tất cả các truy cập giao diện tiếp theo đều phụ thuộc vào tay cầm này.
+
+- \[out\]info Chi tiết camera được trả về sau khi kết nối thành công
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.1.3 DcCloseThiết bị
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/71d93c55-6e7c-4c44-b488-4e83dfb49edd/3450f411-98f1-4c8f-8ae9-90d6544d38b5.avif" alt="Các biểu tượng liên quan đến DcCloseDevice" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Tắt thiết bị
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.2 Bắt đầu phát trực tuyến và đóng phát trực tuyến
+
+#### 6.2.1 DcStartStream
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/39b2d399-7df6-4e9d-bff4-4a0a5c6746c6/b1907a64-3f0e-4dde-b25a-49e376793bd4.avif" alt="Các biểu tượng liên quan đến DcStartStream" />
+</Frame>
+
+**Chức năng:**Mở luồng dữ liệu
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.2.2 DcStopStream
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/9fc6dd98-36e4-4462-888b-658e9c590504/7e6b2b0d-3094-431b-8e8b-400ed269710f.avif" alt="Các biểu tượng liên quan đến DcStopStream" />
+</Frame>
+
+**Chức năng:**Đóng luồng dữ liệu
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.3 Đọc và cài đặt thông số camera
+
+#### 6.3.1 DcSetIntValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/6d8c8c16-79bf-4053-a7d6-0df27577a5d2/7f58b2cf-096a-47fe-a512-d821284fcf54.avif" alt="Các biểu tượng liên quan đến DcSetIntValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt tham số kiểu int
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[in\]value đặt giá trị tham số
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.2 DcGetIntValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/6de18c97-e83c-490b-8075-43fbb4fbae45/b64ee220-a648-459f-9d9f-6d9e388285a7.avif" alt="Các biểu tượng liên quan đến DcGetIntValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận tham số kiểu int
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[out\]value trả về cấu trúc tham số, giá trị lớn nhất và nhỏ nhất của tham số, giá trị hiện tại, v.v.
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.3 DcSetFloatValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/6a7513d0-16c8-4013-8e53-ef59f5207840/9a31bf61-c101-40aa-867a-57dd5756517a.avif" alt="Các biểu tượng liên quan đến DcSetFloatValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt tham số kiểu float
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[in\]value đặt giá trị tham số
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.4 DcGetFloatValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/e7d8d4fe-6cc2-4323-a4c3-a8481c1ae7ef/a3d3272e-4c3e-4949-8166-79918b3268bc.avif" alt="Các biểu tượng liên quan đến DcGetFloatValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận tham số kiểu float
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[out\]value trả về cấu trúc tham số, giá trị lớn nhất và nhỏ nhất của tham số, giá trị hiện tại, v.v.
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.5 DcSetBoolValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/87940dfa-c21f-41c3-aedf-4da82823857a/56fae64f-16a3-47db-9672-09edabbbf90d.avif" alt="Các biểu tượng liên quan đến DcSetBoolValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt tham số loại bool
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[in\]value đặt giá trị tham số
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.6 DcGetBoolValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/fdf6d572-85d6-450f-a32b-57a3666971e2/da68f6d4-8396-4940-bee4-e8fc3298b957.avif" alt="Các biểu tượng liên quan đến DcGetBoolValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận tham số loại bool
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- Tham số trả về giá trị \[out\]
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.7 DcSetStringValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/3deec81d-fab8-4ed1-8aaf-2c1828fdc6f3/52abe248-6d06-4f2a-b2ef-ec92e1ec0a13.avif" alt="Các biểu tượng liên quan đến DcSetStringValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt tham số loại chuỗi
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham khảo LX\_CAMERA\_FEATURE
+
+- \[in\]value đặt giá trị tham số
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.8 DcGetStringValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/b7ce6c7f-8fa6-4f4e-be45-6da51924afe3/feb87fff-fcaa-4556-8615-5ff6cf782778.avif" alt="Các biểu tượng liên quan đến DcGetStringValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận tham số loại chuỗi
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[out\]value trả về các tham số mà không cần cấp phát bộ nhớ bên ngoài
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.9 DcGetPtrValue
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/71e88e0b-fc25-496e-8a5a-70999dcdeee6/87125244-175a-4688-b868-32f52ecd7106.avif" alt="Các biểu tượng liên quan đến DcGetPtrValue" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Lấy tham số kiểu con trỏ
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+- \[out\]value trả về các tham số mà không cần cấp phát bộ nhớ bên ngoài
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.3.10 DcSetCmd
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/48722082-f1c2-42fe-91ba-0aa517a0607e/d5ec99a5-a579-4740-b90b-75da81714ae6.avif" alt="Các biểu tượng liên quan đến DcSetCmd" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Thực hiện thao tác lệnh loại CMD tương ứng
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]cmd tham chiếu LX\_CAMERA\_FEATURE
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.4 Lưu điểm đám mây
+
+#### 6.4.1 DcSaveXYZ
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/294db837-9ec7-4c6c-8964-991eaccf5737/6a2ad8e7-fad9-4104-b44e-544c6e5ee322.avif" alt="Các biểu tượng liên quan đến DcSaveXYZ" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Lưu đám mây điểm và gọi trực tiếp
+
+**Thông số chức năng:**
+
+- xử lý thiết bị xử lý
+
+- tên file tên file, hỗ trợ các định dạng txt, ply và pcd. Định dạng txt lưu tất cả dữ liệu theo thứ tự hình ảnh, ply và pcd chỉ lưu dữ liệu khác 0
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.5 Kiểm soát đặc biệt
+
+#### 6.5.1 DcĐiều khiển đặc biệt
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/464ec28f-aded-4bb0-b1a8-21510aea51b8/4c95d60d-5677-4cee-9aa8-99c636ab3b34.avif" alt="Các biểu tượng liên quan đến Dc SpecialControl" />
+</Frame>
+
+**Chức năng chức năng:**
+
+LX\_CAMERA\_FEATURE Các thao tác đặc biệt ngoài định nghĩa
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- thao tác \[in\]param
+
+- Giá trị \[inout\] là tham số đầu vào tương ứng khi được đặt và tham số đầu ra tương ứng khi được lấy mà không cần cấp phát bộ nhớ bên ngoài.
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.6 Đặt ROI và đường dẫn tham số
+
+#### 6.6.1 DcSetRoI
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/e5d10918-25dd-463c-afb0-164434434e85/fa418b0e-69d4-47d4-9af9-784af13f7387.avif" alt="Các biểu tượng liên quan đến DcSetRoI" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt vùng ROI. Nếu giá trị đầu vào không phải là bội số nguyên của 8, nó sẽ tự động được xử lý nội bộ dưới dạng bội số nguyên gần nhất của 8 so với giá trị đích. Thông số kích thước hình ảnh cần được cập nhật sau khi cài đặt
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý
+
+- \[in\]offsetx độ lệch ngang của điểm bắt đầu tính bằng pixel
+
+- \[in\]offsety độ lệch dọc của điểm bắt đầu tính bằng pixel
+
+- \[in\]widthroi chiều rộng của vùng mục tiêu
+
+- \[in\]heightroi chiều cao của vùng mục tiêu
+
+- Hình ảnh \[in\]type0-3D Hình ảnh 1-2D
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.7 Đặt IP camera
+
+#### 6.7.1 DcSetCameraIp
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/04d3cb25-46d7-4698-b58a-3912be71be4c/6995c86c-31e7-4bf4-b3e8-1eeb18a0170d.avif" alt="Các biểu tượng liên quan đến DcSetCameraIp" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt IP camera và mặt nạ mạng con, cổng
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý,
+
+- \[in\]IP thiết bị ip,
+
+- \[in\]netmask mặt nạ mạng con (nếu trống, mặc định bên trong là "255.255.0.0")
+
+- \[in\]gateway cổng ip (nếu trống, mặc định bên trong là đặt phân đoạn mạng cuối cùng của ip thành "1" làm cổng)
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Khi thiết bị chưa được kết nối, trước tiên bạn cần lấy thiết bị thông qua tìm kiếm. Nếu thiết bị hỗ trợ sửa đổi cổng và mặt nạ mạng con, hãy đặt cổng vào cùng một phân đoạn mạng và mặt nạ mạng con thành "255.255.0.0". Sau khi sửa đổi, danh sách thiết bị sẽ thay đổi và bạn cần gọi lại giao diện DcGetDeviceList để lấy danh sách thiết bị mới.
+
+### 6.8 Thông tin nhật ký và thông tin phiên bản
+
+#### 6.8.1 DcGetApiVersion
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/0caa9bec-1869-40f0-aa97-300ad1b74751/8b7829b0-af3b-44cb-a05a-9998373a2072.avif" alt="Các biểu tượng liên quan đến DcGetApiVersion" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Nhận số phiên bản API
+
+**Thông số chức năng:**
+
+**Giá trị trả về:**
+
+dữ liệu con trỏ char.
+
+**Nhận xét:**
+
+#### 6.8.2 DcSetInfoOutput
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/a28e3b3b-9399-48a2-adbc-79724aaf8ba1/8d807a90-2d59-4619-903c-8544768c1004.avif" alt="Các biểu tượng liên quan đến DcSetInfoOutput" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đặt mức thông tin in
+
+**Thông số chức năng:**
+
+- \[in\]print\_level 0: thông tin tất cả các thông tin gỡ lỗi; 1: cảnh báo thông tin gỡ lỗi quan trọng và cảnh báo; 2: lỗi chỉ xuất thông tin lỗi
+
+- \[in\]enable\_screen\_print có in trong cửa sổ hay không
+
+- \[in\]log\_path Đường dẫn lưu tệp nhật ký (không bao gồm tên tệp nhật ký), có thể để trống. Windows mặc định là đường dẫn người dùng hiện tại và Linux mặc định là đường dẫn /var/log.
+
+- ngôn ngữ \[in\]ngôn ngữ (chưa được sử dụng)
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.8.3 DcLog
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/e8c65075-57c0-46b8-979b-88da89690207/aad615f7-a4e3-4d86-9ee0-61e129664cfe.avif" alt="Các biểu tượng liên quan đến DcLog" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Cho phép người dùng xuất thông tin gỡ lỗi vào tệp nhật ký
+
+**Thông số chức năng:**
+
+- \[in\]str Chuỗi cần xuất, được kết thúc bởi '\\0'
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.8.4 DcRegisterFrameCallback
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/2c7da0a7-d94a-4dd1-8882-97c453121aee/d6580ec0-bde6-499f-9e75-089e327989fb.avif" alt="Các biểu tượng liên quan đến DcRegisterFrameCallback" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đăng ký chức năng gọi lại khung dữ liệu và tự động gọi nó khi nhận được dữ liệu mới.
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý,
+
+- Hàm gọi lại dữ liệu khung \[in\]func frame,
+
+- Các tham số \[in\]usr\_data do người dùng xác định, có thể để trống
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.8.5 DcUnregisterFrameCallback
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/f1d5c426-1b39-47e9-8cbe-e5a942557600/e97dda1c-88b0-4860-928d-d92008d680f8.avif" alt="Các biểu tượng liên quan đến DcUnregisterFrameCallback" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Hủy gọi lại khung
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý,
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+### 6.9 Gọi lại trạng thái thiết bị
+
+#### 6.9.1 DcRegisterCameraStatusGọi lại
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/1ff6db5a-98b2-4ab9-b138-5d72450dad30/a641903d-04eb-4cde-8a36-b3b460be7a3f.avif" alt="Các biểu tượng liên quan đến DcRegisterCameraStatusCallback" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Đăng ký chức năng gọi lại trạng thái máy ảnh, chức năng này sẽ tự động được gọi khi trạng thái máy ảnh thay đổi.
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý,
+
+- Hàm gọi lại dữ liệu khung \[in\]func frame,
+
+- Các tham số \[in\]usr\_data do người dùng xác định, có thể để trống
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+#### 6.9.2 DcUnregisterCameraStatusGọi lại
+
+**Nguyên mẫu hàm:**
+
+<Frame>
+  <img src="/images/legacy/162713c3-9690-4a16-a1ab-ee8d902a5270/a139a7a4-b7b6-4156-8cc3-c0ed4f8db165.avif" alt="Các biểu tượng liên quan đến DcUnregisterCameraStatusCallback" />
+</Frame>
+
+**Chức năng chức năng:**
+
+Hủy cuộc gọi lại đăng ký trạng thái máy ảnh
+
+**Thông số chức năng:**
+
+- \[in\]xử lý thiết bị xử lý,
+
+**Giá trị trả về:**
+
+Dữ liệu int, giá trị này bằng LX\_SUCCESS, cho biết lệnh gọi giao diện thành công.
+
+**Lưu ý:** Đảm bảo các tham số được truyền vào là hợp lệ
+
+* * *
+
+## 7. **Phiên bản và cập nhật**
+
+| Số phiên bản | Cập nhật hướng dẫn |
+| --- | --- |
+| 2.4.16 | 1. Hỗ trợ camera S2 <br />2. Thêm nhập và xuất tham số và chuyển đổi nhóm tham số <br />3. Thêm cài đặt chức năng liên quan |
+| 2.4.9 | 1. Tối ưu hóa và thêm một số chức năng cũng như thông số cấu hình 2. Thay đổi dấu thời gian cho chúng tôi |
+| 2.4.2 | Hỗ trợ camera M4/M4 Mega/M4 Pro/V1Pro/S2/H3 |
+| 2.0.2 | Khắc phục một số vấn đề đã biết, điều chỉnh một số giao diện và thông số |
+
+* * *
+
+Chào mừng bạn đến liên hệ với chúng tôi thông qua các phương pháp sau:
+
+- Nếu bạn chưa mua sản phẩm, vui lòng [Bấm vào tôi](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Bấm vào tôi") để thêm tài khoản WeChat kỹ sư/doanh nghiệp bán hàng trước
+
+- Người dùng đã mua sản phẩm, vui lòng [bấm vào tôi](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "bấm vào tôi") để thêm doanh nghiệp hỗ trợ kỹ thuật sau bán hàng WeChat
+
+[https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe](https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe "https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe")
+
+* * *
+
+Sử dụng tài liệu này để tìm hiểu thêm về các sản phẩm và giải pháp MRDVS.

@@ -1,0 +1,1099 @@
+---
+title: "Guida per l'utente di LxCameraViewer"
+description: "Installa e utilizza l'applicazione Windows LxCameraViewer con le fotocamere MRDVS e l'SDK della fotocamera C o C++."
+---
+Scarica l'ultima versione del manuale in versione PDF:
+
+[Manuale utente LxCameraViewer.pdf](/files/legacy/eb7e3080-2d7f-4d21-9acf-fdce85d40a91/f734e513-b541-4ccd-9c4f-650b54dc966c.pdf)
+
+## 1. Panoramica
+
+LxCameraViewer è un software per computer host Windows sviluppato sulla base dei prodotti per fotocamere sviluppati internamente da Blue Core e del kit di sviluppo SDK C o C++ della fotocamera, di seguito denominato questo software.
+
+Questo software fornisce agli utenti della telecamera funzioni semplici e veloci come visualizzazione, impostazioni della telecamera, impostazioni dell'algoritmo, configurazione IP, visualizzazione di nuvole di punti, strumenti di acquisizione di pacchetti, strumenti di comunicazione, configurazione del firewall e altre funzioni. Attualmente, questo software supporta l'apertura e la visualizzazione di più dispositivi, supporta la visualizzazione dell'output di immagini di profondità, immagini di intensità, immagini di nuvole di punti e immagini RGB. Supporta inoltre la lettura e l'impostazione di parametri quali le funzioni di base della fotocamera e la configurazione di base degli algoritmi.
+
+Attraverso questa applicazione, gli utenti possono visualizzare e salvare dati di immagine ad alta precisione ottenuti dalla fotocamera, configurazione della fotocamera e dati dettagliati dell'algoritmo, ecc.
+
+## 2. Installazione
+
+### 2.1 Configurazione di sistema consigliata
+
+| Elementi di configurazione | Configurazione consigliata |
+| --- | --- |
+| Sistema operativo | Windows10 (64 bit) Windows11 (64 bit) |
+| Memoria | 4G e versioni successive |
+| Scheda di rete/cavo di rete | Gigabit e superiori |
+
+| Elementi di configurazione | Configurazione consigliata |
+| --- | --- |
+| Sistema operativo | Ubuntu (64 bit) |
+| Memoria | 4G e versioni successive |
+| Scheda di rete/cavo di rete | Gigabit e superiori |
+
+### 2.2 Indirizzo IP e configurazione del gateway
+
+- Il metodo di connessione è una connessione con indirizzo IP fisso. Se è necessario modificare l'IP, è possibile modificarlo tramite questo software.
+
+- L'indirizzo IP predefinito della telecamera è: 192.168.100.82.
+
+- Il gateway predefinito può essere vuoto.
+
+- La maschera di sottorete è 255.255.0.0, 255.255.255.0 su piattaforma Linux
+
+- Impostare l'indirizzo IP dell'Ethernet collegata alla telecamera sul computer host su 192.168.100.x. x rappresenta qualsiasi numero compreso tra 3 e 254. L'IP del computer host e l'IP della telecamera non possono essere gli stessi.
+
+- Ad esempio, quando l'IP della telecamera è 192.168.100.12, l'indirizzo IP del computer host è impostato su 192.168.100.89 e la maschera di sottorete è 255.255.0.0 come mostrato nella figura seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7147dc86-d32e-4afb-8575-65f404e42d47.avif" alt="Illustrazione relativa all'indirizzo IP e alla configurazione del gateway" />
+</Frame>
+
+### 2.3 Installazione del computer host
+
+- Fare doppio clic per aprire il pacchetto di installazione del computer host Lanxin-MRDVS-x.x.x.xxxx.exe
+
+- Fare clic per consentire all'app di apportare modifiche al dispositivo
+
+- Selezionare la lingua da utilizzare durante l'installazione (Figura 1)
+
+- Selezionare il percorso di installazione, si consiglia di utilizzare il percorso di installazione predefinito (Figura 2)
+
+- Selezionare [Crea collegamento sul desktop] (Figura 3)
+
+- Una volta completata l'installazione, deselezionare [Esegui Lanxin-MRDVS] e fare clic su Fine (Figura 4)
+
+- Quando si apre il computer host per la prima volta, è necessario utilizzare i diritti di amministratore per aprirlo. Fare clic con il pulsante destro del mouse sull'icona del software desktop e fare clic su [Esegui come amministratore] (Figura 5)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8b8740cd-5d09-4b72-bfb0-58675ea2cda1.avif" alt="Illustrazioni relative all'installazione del computer host" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/33d54828-e95f-45b1-9c2c-ba58053fe1e1.avif" alt="Illustrazioni relative all'installazione del computer host 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96ac4701-9de1-4083-a2f4-6a75ab387aeb.avif" alt="Illustrazioni relative all'installazione del computer host 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a26f6a36-047d-46c6-95a8-d60e1335433c.avif" alt="Illustrazioni relative all'installazione del computer host 4" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d1860fc-2d7f-4069-a405-26b39933f032.avif" alt="Illustrazioni relative all'installazione del computer host 5" />
+</Frame>
+
+Figura 5
+
+### 2.4 Configurazione del firewall
+
+Per aprire la fotocamera, è necessario disattivare il firewall. Il processo di impostazione è come mostrato nella figura seguente (prendendo WIN10 come esempio):
+
+Apri questo software e fai clic sul pulsante [Altri strumenti] in alto
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a1d2044-52c3-4094-aee5-ba2e74529e6c.avif" alt="Icone relative alla configurazione del firewall" />
+</Frame>
+
+Figura 1
+
+Selezionare [Strumento di configurazione della scheda di rete] nella barra popup a destra
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/347b75c7-d48d-449f-a4db-a17d48d7b801.avif" alt="Diagramma relativo alla configurazione del firewall 2" />
+</Frame>
+
+Figura 2
+
+Nello strumento di configurazione della scheda di rete, fare clic sul pulsante sotto [Apri/Chiudi]
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14eb74a6-5be7-4aed-a5f1-d0ae5c8f149f.avif" alt="Diagramma relativo alla configurazione del firewall 3" />
+</Frame>
+
+![Icona relativa alla configurazione del firewall 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df0eba42-c3b8-4230-87ba-b4676ab32e37.avif)Figura 3
+
+Quando viene visualizzata la finestra popup nella Figura 4, il firewall è attivo. Quando il popup è come mostrato nella Figura 5 e la Figura 6 viene visualizzata nell'angolo in basso a destra, il firewall è disattivato.
+
+![Icona relativa alla configurazione del firewall 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/079270ad-0c8d-4a96-9ffa-096bc980f692.avif) ![Icona relativa alla configurazione del firewall 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ebbf202-28ae-4474-93df-85549c0bd78c.avif)
+
+Figura 4 Figura 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6ba5fc85-0e0f-46e4-80b0-a23e2551cf85.avif" alt="Diagramma relativo alla configurazione del firewall 7" />
+</Frame>
+
+Figura 6
+
+Se il metodo sopra descritto non funziona, è possibile fare clic sul pulsante [Pagina di configurazione del firewall] come mostrato di seguito e attendere l'apertura della pagina.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b807be23-6a9f-4930-bf30-5919fa9e8349.avif" alt="Diagramma relativo alla configurazione del firewall 8" />
+</Frame>
+
+Figura 7
+
+**Il firewall deve essere disattivato**
+
+## 3. Istruzioni per l'uso di LxCameraViewer
+
+### 3.1 Panoramica dell'interfaccia del software
+
+#### 3.1.1 Panoramica dell'interfaccia del software (senza aprire la fotocamera)
+
+L'interfaccia iniziale di questo software è divisa in 3 sezioni principali:
+
+- Barra di riepilogo (area blu numero 1):
+
+- Elenco dei dispositivi
+
+- Informazioni attuali
+
+- Informazioni sul dispositivo
+
+- Barra dei menu (area verde numero 2):
+
+- Tre pulsanti della barra degli strumenti a destra
+
+- Pulsante di cambio lingua dell'interfaccia
+
+- Barra di visualizzazione immagine (area rossa numero 4):
+
+- Visualizzazione della nuvola di punti
+
+- Visualizzazione della mappa di profondità
+
+- Visualizzazione del grafico dell'intensità
+
+- Visualizzazione delle immagini RGB
+
+- Fare doppio clic nell'area della barra dei menu per ingrandire/minimizzare, tenere premuto il pulsante sinistro del mouse e spostare il mouse per trascinare l'interfaccia
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b8b763b-d8a2-4e74-ac00-1e7f5ca4fff6.avif" alt="Icone relative alla panoramica dell'interfaccia del software (fotocamera non aperta)." />
+</Frame>
+
+#### 3.1.2 Panoramica dell'interfaccia del software (fotocamera accesa)
+
+Dopo aver aperto la fotocamera, sul lato destro dell'interfaccia (area rossa numero 3) è presente una barra delle funzioni aggiuntiva
+
+- Strumenti di base che forniscono le seguenti funzioni:
+
+- Impostazioni di visualizzazione delle immagini
+
+- Impostazioni 2D
+
+- Impostazioni 3D
+
+- filtraggio
+
+-Interfaccia hardware
+
+- Impostazioni della raccolta
+
+- Impostazioni delle funzioni
+
+- Applicare algoritmi per fornire le seguenti funzioni:
+
+- Impostazioni della modalità di lavoro
+
+- Impostazioni della modalità algoritmo
+
+- Visualizzazione della versione dell'algoritmo
+
+- Impostazioni dettagliate dell'algoritmo
+
+- Altri, che forniscono le seguenti funzioni:
+
+- Carica la nuvola di punti locale
+
+- Strumento di configurazione IP
+
+- Strumento di cattura dei pacchetti
+
+- Strumento di configurazione della scheda di rete
+
+- Strumenti di comunicazione
+
+- GPU abilitata
+
+- Livello di registro
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e2f50c2a-95f2-4019-a47b-215f46aeb5b4.avif" alt="Icone relative alla panoramica dell'interfaccia software (fotocamera accesa)." />
+</Frame>
+
+### 3.2 Accensione e spegnimento del dispositivo
+
+#### 3.2.1 Elenco dei dispositivi
+
+- L'elenco dei dispositivi si trova nell'angolo in alto a sinistra dell'interfaccia (nel riquadro rosso nella Figura 1)
+
+- Il pulsante [Aggiorna] si trova accanto all'elenco dei dispositivi (nel riquadro rosso nella Figura 2)
+
+- Il pulsante di compressione/espansione dell'elenco dei dispositivi si trova a destra del pulsante di aggiornamento (riquadro verde nella Figura 2). Dopo il collasso, vedere la Figura 3.
+
+- Tre proprietà verranno visualizzate nella barra di elenco dei dispositivi:
+
+- Se la fotocamera è accesa (nella casella rossa nella Figura 2, il dispositivo uno è acceso, ma il dispositivo due non è acceso)
+
+- ID telecamera (all'interno del riquadro giallo nella Figura 2)
+
+- IP della telecamera, passa il mouse sull'ID della telecamera per visualizzarlo (mostrato nel riquadro rosso nella Figura 4 è l'IP della seconda telecamera)
+
+- L'elenco dei dispositivi imposta un pulsante per ogni telecamera trovata. Fare clic sul testo [On] o [Close] per accendere o spegnere la fotocamera (nella casella blu nella Figura 2). Il pulsante visualizzerà anche le informazioni sullo stato corrente della fotocamera (Figura 5)
+
+- Il carattere della telecamera selezionata nella barra dell'elenco dei dispositivi è blu e il carattere delle altre telecamere è bianco (come mostrato nella Figura 6, la seconda telecamera è selezionata ma non aperta e la prima telecamera è aperta ma non selezionata)
+
+- È possibile aprire più dispositivi contemporaneamente nell'elenco dei dispositivi (come mostrato nella Figura 7), ma è necessario prestare attenzione se la larghezza di banda della rete è sufficiente. Fare clic sull'ID della telecamera per passare alla visualizzazione di telecamere diverse.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8cfcca2f-d122-4354-a8cf-5efa532028c2.avif" alt="Icone relative all'elenco dei dispositivi" />
+</Frame>
+
+Figura 1
+
+![Icona relativa all'elenco dei dispositivi 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/720170de-c154-457f-b05e-50ad20a1a722.avif) ![Icona relativa all'elenco dei dispositivi 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76d9c825-e6ea-4d68-bd83-d6e550f8ea75.avif)
+
+Figura 2 Figura 3
+
+![Icona relativa all'elenco dei dispositivi 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6fceb9c-d6e4-4051-a48f-3336850ecd35.avif) ![Icona relativa all'elenco dei dispositivi 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c9a2fd72-e489-4e66-ab3b-805c320d1e96.avif)
+
+Figura 4 Figura 5
+
+![Icona relativa all'elenco dei dispositivi 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3794ca81-4a2e-4eef-95b2-113facaeefd2.avif) ![Icona relativa all'elenco dei dispositivi 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1964dd45-e345-45af-9348-04b1ba499c94.avif)
+
+Figura 6 Figura 7
+
+### 3.3 Informazioni sull'applicazione
+
+- L'elenco dei dispositivi si trova al centro del lato sinistro dell'interfaccia (nel riquadro rosso nella Figura 1)
+
+- L'elenco dei dispositivi mostrerà le seguenti informazioni:
+
+- Tutte le informazioni sulla fotocamera (riquadro rosso nella Figura 2)
+
+- Funzionamento del software (riquadro verde nella Figura 2)
+
+- Risultati dell'operazione (riquadro blu nella Figura 2)
+
+- Risultati dell'acquisizione del flusso (casella di colore rosso nella Figura 4)
+
+- Quando il testo è troppo lungo, puoi trascinare la barra di scorrimento blu in basso per visualizzare il testo completo (come mostrato nella Figura 3, c'è una barra di scorrimento blu aggiuntiva in basso)
+
+- Le informazioni correnti visualizzano fino a 25 informazioni correlate, che possono essere fatte scorrere utilizzando la rotella del mouse. Le vecchie informazioni verranno sovrascritte.
+
+- Fare clic sul pulsante Comprimi per comprimere le informazioni correnti (nella casella gialla nella Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f399ea28-827f-487f-85b7-7e9897b3a32a.avif" alt="Icone relative alle informazioni sull'applicazione" />
+</Frame>
+
+Figura 1
+
+![Immagine relativa alle informazioni sulla domanda 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/150dd70b-5072-4fd8-957f-a0d198ed3155.avif) ![Immagine relativa alle informazioni sulla domanda 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95953500-0432-4510-b0ac-e20b95894bb5.avif) ![Immagine relativa alle informazioni sulla domanda 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/223211b0-34d8-4b8a-a775-2cf65b18db6c.avif)
+
+Figura 2 Figura 3 Figura 4
+
+### 3.4 Informazioni sul dispositivo
+
+- Le informazioni sul dispositivo si trovano nell'angolo in basso a sinistra dell'interfaccia (nel riquadro rosso nella Figura 1)
+
+- Informazioni sul dispositivo visualizza le informazioni rilevanti sul dispositivo attualmente selezionato nell'elenco dei dispositivi. Le informazioni sono le seguenti:
+
+- Numero di serie: identificativo univoco del dispositivo
+
+- ID telecamera: l'identificatore univoco del dispositivo. È possibile utilizzare SKD per aprire il dispositivo in base all'ID della fotocamera.
+
+- Indirizzo IP: indirizzo IP del dispositivo
+
+- Indirizzo fisico: indirizzo MAC del dispositivo
+
+- Versione software: versione software integrata nel dispositivo
+
+- Versione algoritmo: versione dell'algoritmo integrato nel dispositivo (visualizzato dopo l'apertura della fotocamera)
+
+- Velocità di rete della scheda di rete: Quando il dispositivo non è acceso, è disconnesso. Dopo l'accensione, il cavo di rete della scheda di rete determina se è 100 Mbit o Gigabit.
+
+- Tipo di fotocamera: modello del dispositivo
+
+- Versione mirror: versione mirror integrata nel dispositivo (visualizzata dopo l'apertura della fotocamera)
+
+- Fare clic sul pulsante di piega per piegare le informazioni del dispositivo (nella casella gialla nella Figura 2)
+
+- Fare clic con il pulsante destro del mouse su un elemento nelle informazioni del dispositivo per copiare le informazioni (come mostrato nella Figura 3, copiare le informazioni sulla velocità della scheda di rete)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9652a7cc-2a78-4f7a-94cb-35a679b171a5.avif" alt="Icone relative alle informazioni sul dispositivo" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2b1e261-dd83-4d61-82da-e82008fefa83.avif" alt="Icona relativa alle informazioni sul dispositivo 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9a413f8-5329-4057-92b2-3da999a09560.avif" alt="Icona relativa alle informazioni sul dispositivo 3" />
+</Frame>
+
+Figura 3
+
+### 3.5 Immagine, dati e salvataggio
+
+#### 3.5.1 Anteprima
+
+- L'area centrale dell'immagine, dei dati dell'immagine e del software operativo relativo all'immagine (all'interno del riquadro rosso nella Figura 1)
+
+- [Avvia/Interrompi flusso] [Salvataggio singolo] [Mappa profondità] [Mappa intensità] [RGB] [Nuvola di punti] è il controllo operativo dell'immagine
+
+- Le tre immagini al centro sono immagini di profondità, immagini di intensità, immagini di nuvole di punti e immagini RGB ottenute dal dispositivo.
+
+- Il carattere bianco in basso rappresenta i dati della fotocamera e dell'immagine (come mostrato nella Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fa05fb01-9d59-4202-992c-e770002d078d.avif" alt="Anteprima delle icone correlate" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/007f900d-d780-4883-b875-b6370bbd87a7.avif" alt="Icona relativa all'anteprima 2" />
+</Frame>
+
+Figura 2
+
+#### 3.5.2 Controllo dell'immagine (flusso).
+
+- Pulsante [Avvia/arresta flusso]: fare clic per avviare o interrompere il flusso del dispositivo
+
+- Pulsante [Salvataggio singolo]: salva l'immagine dei dati del flusso che è stata attivata
+
+- Ad esempio, la Figura 2 salva solo l'immagine di profondità e l'immagine della nuvola di punti. L'immagine RGB e l'immagine dell'intensità non sono attivate, quindi non vengono salvate.
+
+- Il suffisso per i file della mappa di profondità e della mappa di intensità è .pgm, il suffisso per i file di immagine RGB è .png e il suffisso per i file di immagine della nuvola di punti è .pcd
+
+- L'immagine di profondità, l'immagine di intensità e l'immagine della nuvola di punti salvate sono le immagini originali senza aggiungere falsi colori.
+
+- Puoi fare clic più volte per salvare continuamente, ma puoi salvare fino a tre volte di seguito.
+
+- Casella di controllo [Mappa profondità]: se visualizzare (attivare) la mappa di profondità
+
+- Casella di controllo [Grafico intensità]: se visualizzare (attivare) il grafico dell'intensità
+
+- Casella di controllo [Nuvola di punti]: se visualizzare (attivare) l'immagine della nuvola di punti
+
+- Casella di controllo [RGB]: se attivare l'immagine RGB
+
+- Dopo aver deselezionato la mappa RGB/intensità, il dispositivo interromperà la raccolta delle immagini della mappa RGB/intensità, ma il dispositivo interromperà la raccolta dei dati di profondità solo quando la mappa di profondità e la mappa della nuvola di punti saranno disattivate contemporaneamente.
+
+- Nella Figura 2, il dispositivo avvia lo streaming e visualizza immagini di profondità, immagini di nuvole di punti, immagini RGB e immagini di intensità.
+
+- Nella Figura 3 il dispositivo smette di scorrere e non si vede alcun tipo di immagine.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/10bcfd4f-2447-44fb-9229-60922e39b3a3.avif" alt="Icone relative al controllo dell'immagine (flusso)." />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0732a8cf-e7fa-4a4d-bc1e-27e92d99234d.avif" alt="Diagramma relativo al controllo dell'immagine (flusso) 2" />
+</Frame>
+
+Figura 3
+
+#### 3.5.3 Dati immagine
+
+- Visualizza la temperatura della fotocamera (riquadro rosso nella Figura 4)
+
+- Visualizza il frame rate della mappa di profondità quando la mappa di profondità è selezionata (riquadro verde nella Figura 4)
+
+- Visualizza il frame rate della mappa di intensità quando la mappa di intensità è selezionata (riquadro blu nella Figura 4)
+
+- Visualizza la frequenza fotogrammi dell'immagine RGB quando è selezionata l'immagine RGB (casella dei colori rouge nella Figura 4)
+
+- Quando viene selezionata l'immagine RGB, viene visualizzato il valore del pixel selezionato nell'immagine RGB (riquadro nero nella Figura 4)
+
+- Quando viene selezionata la mappa di profondità, viene visualizzato il valore del pixel selezionato nella mappa di profondità (riquadro giallo in Figura 4)
+
+- Quando la mappa di intensità è selezionata, viene visualizzato il valore del pixel selezionato nella mappa di intensità (riquadro arancione nella Figura 4)
+
+- Quando viene selezionata la mappa della nuvola di punti, viene visualizzato il valore della nuvola di punti corrispondente al pixel selezionato nella mappa di profondità (riquadro viola nella Figura 4)
+
+- Quando non è selezionato alcun pixel, per impostazione predefinita è selezionato il pixel (0,0).
+
+- Quando il frame rate è superiore a 12, il colore di sfondo è verde, se è maggiore di 6 e inferiore a 12, è arancione, e se è inferiore a 6, è rosso.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/066e6c1a-c11a-463d-9173-f8d8a0c9df32.avif" alt="Icone relative ai dati immagine" />
+</Frame>
+
+Figura 4
+
+#### 3.5.4 Visualizzazione delle immagini
+
+- Puoi scegliere diversi metodi di visualizzazione:
+
+- Schermata singola: quando viene selezionata una delle quattro immagini, verrà visualizzata una schermata singola (come mostrato nella Figura 5)
+
+- Doppio schermo: quando vengono selezionate due delle quattro immagini, verrà visualizzato un doppio schermo (come mostrato nella Figura 6)
+
+- Tre immagini: quando vengono selezionate tre delle quattro immagini, verranno visualizzate tre immagini (come mostrato nella Figura 7)
+
+- Schermata quad: quando vengono selezionate tutte e quattro le immagini, verranno visualizzate quattro schermate (come mostrato nella Figura 8)
+
+- Quando si sposta il mouse sull'immagine, è possibile utilizzare la rotellina del mouse per ingrandire o rimpicciolire con il mouse al centro, tenere premuto il pulsante sinistro del mouse e trascinare (confrontare le immagini RGB in Figura 5 e Figura 6)
+
+- Fare clic con il pulsante sinistro del mouse sull'immagine per selezionare i pixel e i tasti freccia possono spostare i pixel selezionati (Figura 6)
+
+![Immagine relativa alla visualizzazione delle immagini](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/038be00d-997d-47ea-8c6e-3da9cb2f5737.avif)![Immagine relativa alla visualizzazione dell'immagine 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a3715e8b-c3fa-417a-bccd-c819ea029b5a.avif)
+
+Figura 5 Figura 6
+
+![Immagine relativa alla visualizzazione dell'immagine 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/320369a9-49ff-4524-8019-622ada69f7c5.avif)![Immagine relativa alla visualizzazione dell'immagine 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08a8e2a6-a3ee-4d1b-8b6c-a2c30d3d60f2.avif)
+
+Figura 7 Figura 8
+
+#### 3.5.5 Operazione immagine nuvola di punti
+
+- Tieni premuto il pulsante sinistro sull'immagine della nuvola di punti e trascina per ruotare la prospettiva della fotocamera
+
+- Tieni premuta la parte centrale del mouse e trascina per spostare il focus
+
+- Tieni premuto il pulsante destro del mouse e trascina il mouse verso l'alto o verso il basso oppure utilizza la rotellina del mouse per ingrandire o ridurre la nuvola di punti
+
+- Le operazioni dei tasti di scelta rapida dell'immagine della nuvola di punti sono le seguenti:
+
+|  |  |
+| --- | --- |
+| Tasti di scelta rapida | Funzioni |
+| W | Modello con visualizzazione a griglia, premere S per cambiare |
+| R | Ripristina la visualizzazione della telecamera |
+| S | Modello con display di superficie, premi W per cambiare |
+| P| Nascondi tutti i segmenti di linea, superfici e mesh, premi W, S per ripristinare |
+| U | Chiamata funzione definita dall'utente (non valida) |
+| O| Eliminare l'effetto fisheye, premere nuovamente per ripristinare |
+| F | Ingrandisci la posizione del mouse e imposta la posizione del mouse come centro di rotazione |
+| G | Mostra la barra della scala e la scala, premi di nuovo per nascondere |
+|
+| M | Visualizzare il riquadro di delimitazione della nuvola di punti, premere nuovamente per visualizzare la nuvola di punti |
+| A | Ridurre lo spessore della nuvola di punti ad un minimo di 1 |
+| D | Aumenta lo spessore della nuvola di punti, fino a 6 |
+| E| Ritorno alla prospettiva iniziale |
+| [ | Utilizza il punto centrale medio come punto focale per passare alla vista frontale, non supportato nella modalità evita ostacoli |
+| ] | Utilizza il punto centrale medio come punto focale per spostarti nella prospettiva posteriore, non supportato nella modalità evita ostacoli |
+| ; | Utilizza il punto centrale medio come punto focale per spostarti nella prospettiva del lato sinistro, non supportato nella modalità evita ostacoli |
+| ‘| Utilizza il punto centrale medio come punto focale per spostarti nella prospettiva giusta, non supportato nella modalità evita ostacoli |
+| . | Utilizzare il punto centrale medio come punto focale per passare alla vista dall'alto, che non è supportata nella modalità evita ostacoli |
+| / | Utilizza il punto centrale medio come punto focale per rivolgerti alla vista verso l'alto, che non è supportata nella modalità evita ostacoli |
+
+### 3.6 Barra dei menu
+
+- La barra dei menu include [Funzioni di base] [Algoritmo dell'applicazione] [Altro] [Lingua] (Figura 1)
+
+- Fare clic su [Funzioni di base] per visualizzare come mostrato nella Figura 2
+
+- Fare clic su [Applica algoritmo] per visualizzare come mostrato nella Figura 3
+
+- Fare clic su [Altri strumenti] per visualizzare come mostrato nella Figura 4
+
+- Fare clic su [Lingua] per visualizzare come mostrato nella Figura 5
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e35d1c41-3e31-4595-92e6-4168ccb63928.avif" alt="Icone relative alla barra dei menu" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d0d806a-9d20-4881-b74d-f5f6261d6b6c.avif" alt="Icone relative alla barra dei menu 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec624ff5-e5e5-4399-8f0a-122fa54b23de.avif" alt="Icone relative alla barra dei menu 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d18452fe-8cbe-4826-95f9-3429617c8b1d.avif" alt="Icone relative alla barra dei menu 4" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6bb109ee-e3fc-4d19-8013-65a21fda8286.avif" alt="Icone relative alla barra dei menu 5" />
+</Frame>
+
+Figura 5
+
+### 3.7 Barra delle funzioni
+
+#### 3.7.1 Funzione di visualizzazione
+
+- Comprimi la colonna di destra (riquadro rosso nella Figura 1)
+
+- Espandi tutto e comprimi tutto (nel riquadro blu della Figura 1, l'apice significa comprime tutto, il pedice significa espandi tutto)
+
+- Fare clic sul nome della funzione per visualizzare le informazioni di impostazione corrispondenti nell'SDK (nella casella blu nella parte inferiore della Figura 1)
+
+- Ad esempio, nell'immagine, viene fatto clic su Anti-distorsione nelle impostazioni 2D (testo nella casella verde) e l'interfaccia API e il valore di enumerazione quando si chiama questa funzione vengono visualizzati nella casella blu.
+
+- Stato espanso e stato compresso (2D nella Figura 1 è impostato sullo stato espanso, gli altri sono impostati sullo stato compresso)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08dceb49-92e5-4dba-8ea9-422242ae540a.avif" alt="Visualizza le icone relative alle funzioni" />
+</Frame>
+
+Figura 1
+
+#### 3.7.2 Strumenti di base
+
+- Fare clic su [Strumenti di base] sulla barra dei menu per visualizzare le impostazioni pertinenti degli strumenti di base sul lato destro dell'interfaccia (Figura 1)
+
+- Gli strumenti di base includono [Impostazioni visualizzazione immagine] [Impostazioni 2D] [Impostazioni 3D] [Filtro] [Interfaccia hardware] [Impostazioni di acquisizione] [Impostazioni funzione] (Figura 2)
+
+- Il nome della funzione e il valore di enumerazione corrispondente all'interfaccia vengono visualizzati nella casella blu sottostante (Figura 2)
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1634ffda-c43e-49ce-a3c1-6d327b4c1397.avif" alt="Illustrazioni relative agli strumenti di base" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1bdfe8e-e7d0-47fa-8171-1f9b73c84073.avif" alt="Illustrazioni relative agli strumenti di base 2" />
+</Frame>
+
+Figura 2
+
+##### 3.7.2.1 Impostazioni di visualizzazione delle immagini
+
+- [Visualizza modello fotocamera] Visualizza (Figura 4) o meno (Figura 5) il modello della fotocamera sull'immagine della nuvola di punti
+
+- [Visualizza falsi colori] Visualizza i colori di profondità sulle nuvole di punti e visualizza i colori RGB dopo aver attivato l'allineamento RGB
+
+- [Stabilità nuvola di punti] L'attivazione può stabilizzare la visualizzazione della nuvola di punti quando la nuvola di punti scompare per motivi di adattamento su alcuni computer.
+
+- [Sincronizzazione forte delle immagini] Modifica la profondità minima della mappa di profondità e della mappa della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+- [Mantieni fotogrammi di interferenza] Modifica la profondità massima della mappa di profondità e della mappa della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+- [Profondità minima] Modifica la profondità minima della mappa di profondità e della mappa della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+- [Profondità massima] Modifica la profondità massima della mappa di profondità e della mappa della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+- [Intensità minima] Modifica l'intensità minima della mappa di profondità e dell'immagine della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+- [Intensità massima] Modifica l'intensità massima della mappa di profondità e dell'immagine della nuvola di punti visualizzata sull'interfaccia e l'output della fotocamera rimane invariato.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3631db86-23a0-4ed3-a73a-1748d1a97727.avif" alt="Icone relative alle impostazioni di visualizzazione delle immagini" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe564767-2b53-4033-b8b7-d50612a5f49b.avif" alt="Illustrazioni relative alle impostazioni di visualizzazione delle immagini 2" />
+</Frame>
+
+Figura 4
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2adbbdfb-2ddf-4b3d-a201-00feab5b6348.avif" alt="Illustrazioni relative alle impostazioni di visualizzazione delle immagini 3" />
+</Frame>
+
+Figura 5
+
+##### 3.7.2.2 Impostazioni 2D
+
+- [Larghezza RGB] Larghezza in pixel dell'immagine RGB, determinata dal modello del dispositivo e non può essere impostata
+
+- [Altezza RGB] Altezza dei pixel dell'immagine RGB, determinata dal modello del dispositivo e non può essere impostata
+
+- [Binning pixel] Premere 1\*1 o 2\*2 o N\*N per aggiungere i valori dei pixel nella matrice e dividerli per 2\*2 o N\*N per ottenere l'immagine binning (la dimensione dell'immagine diventa la dimensione originale divisa per la dimensione pixel binning in orizzontale e verticale);
+
+- [Anti-distorsione] Richiama i parametri di distorsione nei parametri interni per rimuovere la distorsione dell'immagine nel display dell'interfaccia
+
+- [Coefficiente anti-distorsione] Regola il coefficiente di distorsione per aumentare o indebolire la distorsione dell'immagine schermata
+
+- [Esposizione automatica] Accende o spegne la fotocamera per impostare automaticamente il valore di esposizione RGB
+
+- [Esposizione] L'esposizione manuale può essere impostata quando l'esposizione automatica è disattivata
+
+- [Guadagno] Guadagno manuale, può essere impostato quando l'esposizione automatica è disattivata
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6dbead-0b0e-475a-b5a1-389f486de155.avif" alt="Icone relative alle impostazioni 2D" />
+</Frame>
+
+Figura 6
+
+##### 3.7.2.3 Impostazioni 3D
+
+- [Larghezza 3D] La larghezza dell'immagine della nuvola di punti è determinata dal modello del dispositivo e non può essere impostata.
+
+- [Altezza 3D] L'altezza dell'immagine della nuvola di punti è determinata dal modello del dispositivo e non può essere impostata.
+
+- [Binning pixel] Premere 1\*1 o 2\*2 o N\*N per aggiungere i valori dei pixel nella matrice e dividerli per 2\*2 o N\*N per ottenere l'immagine binning, che può essere modificata dopo aver interrotto il flusso (la dimensione dell'immagine diventa la dimensione originale e viene divisa per la dimensione pixel binning orizzontalmente e verticalmente)
+
+- [Allineamento RGB] Allinea la mappa di profondità, la mappa di intensità, la nuvola di punti e l'immagine RGB. Dopo l'allineamento, la mappa di profondità e la mappa di intensità avranno la stessa larghezza e altezza dell'immagine RGB. I dati della nuvola di punti aumenteranno e potranno essere modificati dopo aver interrotto il flusso.
+
+- [Modalità multi-camera] L'attivazione quando si utilizzano più fotocamere contemporaneamente può eliminare le interferenze di altre fotocamere e può essere modificata dopo aver interrotto il flusso.
+
+- [Sensibilità algoritmo multi-macchina] I parametri integrati del dispositivo sono determinati dal modello del dispositivo e non possono essere impostati.
+
+- [Anti-distorsione] Richiama i parametri di distorsione nei parametri interni per rimuovere la distorsione dell'immagine nel display dell'interfaccia
+
+- [Coefficiente anti-distorsione] Regola il coefficiente di distorsione per aumentare o indebolire la distorsione dell'immagine schermata
+
+- [Modalità frequenza] I parametri integrati del dispositivo sono determinati dal modello del dispositivo (la frequenza di alcune telecamere è fissa e non può essere impostata)
+
+- [Abilita HDR] L'attivazione dell'abilitazione HDR può migliorare la chiarezza dell'immagine nelle scene con forti cambiamenti di luce e buio.
+
+- [Esposizione automatica] Quando è acceso, il dispositivo regola automaticamente i parametri di esposizione in base all'intensità della luce ambientale.
+
+- [Intensità target] Soglia di intensità durante l'acquisizione di immagini di profondità (non può essere impostata)
+
+- [Limite superiore esposizione automatica] Imposta il limite superiore dell'esposizione automatica
+
+- [Limite inferiore esposizione automatica] Imposta il limite inferiore per l'esposizione automatica (non può essere impostato)
+
+- [Guadagno] può aumentare il valore dell'intensità di multipli (non può essere impostato)
+
+- [x] La coordinata x dell'angolo superiore sinistro dell'area ROI impostata, che può essere modificata dopo l'arresto del flusso.
+
+- [y] Imposta la coordinata y dell'angolo superiore sinistro dell'area ROI, che può essere modificata dopo l'interruzione del flusso.
+
+- [Alta integrazione] Tempo di integrazione elevato (aumentandolo si consente alla fotocamera di misurare ulteriormente la distanza)
+
+- [Integrazione bassa] Tempo di integrazione basso (controlla principalmente la misurazione della distanza a una distanza più ravvicinata, generalmente non è necessario modificarlo)
+
+- [x offset] valore di offset nella direzione della larghezza, che può essere modificato dopo aver interrotto il flusso
+
+- [y offset] Il valore di offset nella direzione alta, che può essere modificato dopo l'arresto del flusso.
+
+- [Larghezza] La larghezza dell'area ROI impostata, che può essere modificata dopo aver interrotto il flusso.
+
+- [Alta] L'altezza dell'area ROI impostata, che può essere modificata dopo aver interrotto il flusso.
+
+- [Frame rate 3D] Imposta il frame rate della nuvola di punti entro l'intervallo del frame rate del dispositivo
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b1dcad39-ddcd-4db3-9940-9a6776a8e5ef.avif" alt="Icone relative alle impostazioni 3D" />
+</Frame>
+
+Figura 7
+
+##### 3.7.2.4 Impostazioni filtro
+
+- [Profondità minima] Il limite inferiore del falso colore o della distanza della mappa di profondità. Al di sotto di questo valore, il falso colore viene visualizzato come nero e viene impostato forzatamente su zero.
+
+- [Profondità massima] Il limite superiore del falso colore o della distanza della mappa di profondità. Al di sopra di questo valore, il falso colore viene visualizzato come nero e viene impostato forzatamente su zero.
+
+- [Soglia segnale basso] Il limite inferiore del valore di intensità. Al di sotto di questo valore, i pixel corrispondenti nella mappa di profondità vengono impostati forzatamente a zero (non efficace per la mappa di intensità)
+
+- [Soglia segnale alto] Il limite superiore del valore di intensità. Se è superiore a questo valore, i pixel corrispondenti nella mappa di profondità vengono forzatamente impostati a zero (non ha effetto sulla mappa di intensità)
+
+- [Misurazione del segnale piccolo] Imposta il livello di rilevamento del segnale piccolo. Più alto è il livello, più facile sarà rilevarlo.
+
+- [Modalità filtro] Imposta il livello di schermatura del filtro
+
+- [Livello di attenuazione] Controlla l'intensità di attenuazione del filtraggio spaziale, mantenendo i dettagli dei bordi dell'oggetto e attenuando il rumore
+
+- [Livello rumore] Imposta la soglia per il filtraggio del rumore (maggiore è il valore, maggiore è il rumore)
+
+- [Livello temporale] Controlla l'intensità del filtraggio temporale e utilizza i dati storici multi-frame per migliorare la continuità dei dati di profondità
+
+- Nota: impostare il livello di livellamento, il livello di rumore e il livello del dominio del tempo su 0 significa disattivare il filtraggio.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6178fcc4-ee41-41dd-b01e-42b877764fd9.avif" alt="Illustrazioni relative alle impostazioni del filtro" />
+</Frame>
+
+Figura 8
+
+##### 3.7.2.5 Interfaccia hardware
+
+- [Modalità uscita IO] È possibile impostare il formato di uscita dell'interfaccia IO
+
+- [Modalità controllo utente IO] I parametri integrati del dispositivo definiscono l'interfaccia IO e non possono essere modificati.
+
+- [Velocità di trasmissione CAN] Il valore predefinito è 250000. La velocità di trasmissione deve essere coerente quando si comunica con altri dispositivi tramite CAN.
+
+- [Tipo di protocollo CAN] L'impostazione predefinita è il tipo di protocollo ufficiale MRDVS, che può essere modificato in kcrobots
+
+- [Indirizzo CAN] Indirizzo iniziale della comunicazione CAN, il valore predefinito è 18
+
+- [Indirizzo MODBUS] Indirizzo iniziale della comunicazione MODBUS, il valore predefinito è 23
+
+- [Ottieni stato IO] Ottieni lo stato di ritorno dell'interfaccia IO corrente
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6a48416-31fc-41c0-869f-d745b3c54c99.avif" alt="Schema dell'interfaccia hardware" />
+</Frame>
+
+Figura 9
+
+##### 3.7.2.6 Impostazioni della raccolta
+
+- [Sincronizzazione fotogrammi] Controlla le condizioni ambientali di ciascun tipo di acquisizione di immagini per essere coerenti durante il salvataggio delle immagini
+
+- [Modalità trigger] Controlla la modalità di flusso per essere continua, passiva o attiva
+
+- [Metodo di salvataggio della nuvola di punti]
+
+- Regolare (nuvola di punti non ordinata): il numero di nuvole di punti rimane invariato, larghezza = larghezza\*altezza, altezza = 1, come mostrato nella Figura 3
+
+- Nuvola di punti ordinata: il numero di nuvole di punti rimane invariato, larghezza = larghezza TOF, altezza = altezza TOF, come mostrato nella Figura 4
+
+- [Formato salvataggio nuvola di punti] Imposta il formato dati per il salvataggio delle nuvole di punti
+
+- BINARIO: salva in formato binario
+
+- ASCII: salva in formato codice ascii, ovvero salva in modalità testo
+
+- [Unità valore nuvola di punti] Imposta l'unità di misura dei dati nell'immagine della nuvola di punti.
+
+- [Inizia a salvare le immagini] Salva continuamente il tipo di immagini attualmente selezionato
+
+- [Apri percorso di salvataggio] Apre il percorso per salvare le immagini con la funzione [Salvataggio singolo].
+
+Nota: per un'immagine 640\*480, il tempo di salvataggio ascii è di circa 6,6 secondi e il tempo di salvataggio binario è di circa 32 ms. La velocità di salvataggio binario è 206 volte quella di ascii. Si consiglia di salvare in formato binario.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/571ef290-056a-4f5a-8c4a-cee7c35fd78c.avif" alt="Icone relative alle impostazioni della raccolta" />
+</Frame>
+
+Figura 10
+
+##### 3.7.2.7 Impostazioni delle funzioni
+
+- [Seleziona configurazione] È possibile selezionare la configurazione dei parametri della telecamera che è stata impostata
+
+- [Salva configurazione] Salva manualmente la configurazione dei parametri correnti della telecamera
+
+- [Carica configurazione] Applica la configurazione dei parametri della telecamera già impostata alla telecamera corrente
+
+- [Esporta configurazione su file] Crea un pacchetto della configurazione corrente dei parametri della fotocamera in un file in formato json ed esportalo
+
+- [Carica configurazione dal file] Importa il file json con la configurazione dei parametri della fotocamera nella fotocamera corrente e applica la configurazione
+
+- [ID definito dall'utente] Personalizza l'ID della configurazione del parametro corrente
+
+- [Algoritmo Sposta su] Migra l'attuale algoritmo integrato sulla piattaforma superiore per l'esecuzione
+
+- [Ottieni parametri interni] Visualizza la configurazione dei parametri integrati della fotocamera
+
+- [Ripristina impostazioni di fabbrica] Ripristina la fotocamera allo stato di fabbrica. Questa operazione dimenticherà tutte le configurazioni impostate, incluso ma non limitato all'IP della telecamera. La fotocamera si spegnerà automaticamente e dovrà essere riaccesa manualmente.
+
+- [Aggiornamento firmware] Aggiorna il firmware della fotocamera. Dopo aver fatto clic, verrà visualizzata una finestra di dialogo per la selezione del file. Seleziona il file con il suffisso .bin.
+
+- [Riavvia fotocamera] Riavvia la fotocamera. La fotocamera non si spegnerà automaticamente, ma entrerà nello stato di riconnessione. Si prega di non eseguire altre operazioni durante la riconnessione.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/18de7052-ce07-4e34-8108-d51560225d1e.avif" alt="Icone relative alle impostazioni delle funzioni" />
+</Frame>
+
+Figura 11
+
+#### 3.7.3 Algoritmo applicativo
+
+- Fare clic su [Applica algoritmo] sulla barra dei menu per visualizzare le impostazioni pertinenti dell'algoritmo dell'applicazione sul lato destro dell'interfaccia (Figura 1)
+
+- [Modalità di lavoro] È possibile impostare la fotocamera per continuare a produrre risultati dell'algoritmo anche quando è disconnessa dal computer host.
+
+- [Algoritmo dell'applicazione] Selezionare l'algoritmo dell'applicazione da abilitare:
+
+- [Chiudi] (Immagine 2)
+
+- [Algoritmo di evitamento degli ostacoli 2.0] (Figura 3)
+
+- [Posizionamento ed espansione pallet] (Figura 4)
+
+- [Versione algoritmo] visualizza il numero di versione dell'algoritmo attualmente selezionato
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb61c0f8-1d50-40eb-abe4-45d837a52c48.avif" alt="Illustrazioni relative agli algoritmi applicativi" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d876d359-e0a8-404d-8287-5871e2c4ce18.avif" alt="Diagramma relativo all'algoritmo dell'applicazione 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a21b97d3-250e-4c14-b41e-68c62e02919a.avif" alt="Diagramma relativo all'algoritmo dell'applicazione 3" />
+</Frame>
+
+Figura 3
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f7fb3525-ef8a-4a2e-9bb2-ca68a77a5a9d.avif" alt="Diagramma relativo all'algoritmo dell'applicazione 4" />
+</Frame>
+
+Figura 4
+
+##### 3.7.3.1 Algoritmo per evitare gli ostacoli
+
+- Impostare l'algoritmo dell'applicazione sull'algoritmo per evitare gli ostacoli e verranno visualizzate le configurazioni relative all'elusione degli ostacoli.
+
+- [Visualizza carrozzeria] È possibile disattivare o attivare il modello di auto che visualizza la posizione della carrozzeria nell'immagine della nuvola di punti.
+
+- [Indice di evitamento degli ostacoli] L'evitamento degli ostacoli può avere più configurazioni, impostate tramite questa opzione
+
+- [Angolo di rotazione della telecamera (asse x)] Parametro esterno della telecamera, angolo di rotazione, la telecamera predefinita è 180
+
+- [Pitch angolo telecamera (asse y)] Il parametro esterno della telecamera, angolo di inclinazione, installazione verticale predefinita, è 90
+
+- [Imbardata angolo telecamera (asse z)] Parametro esterno della telecamera, imbardata angolo di rotta, il valore predefinito è 90
+
+- [Posizione della telecamera (distanza x)] Parametro esterno della telecamera, la distanza tra la direzione x e l'origine, unità: metri.
+
+- [Posizione telecamera (larghezza y)] Parametro esterno della telecamera, la distanza tra la direzione y e l'origine, se installata al centro, è 0. Unità: metri.
+
+- [Posizione della telecamera (altezza z)] Il parametro esterno della telecamera, la distanza tra la direzione z e l'origine, può essere inteso come l'altezza della telecamera da terra, unità: metri.
+
+- [Distanza di preavviso (x lontano)] Intervallo di evitamento degli ostacoli, la distanza dal centro dell'auto nella direzione x. Gli ostacoli oltre questa distanza sono considerati sicuri; la distanza tra la distanza di preavviso e la distanza di allarme è considerata decelerazione di preavviso e l'interfaccia visualizza un'area gialla. Unità: metro.
+
+- [Distanza allarme (centro x)] Intervallo di evitamento degli ostacoli, la distanza dal centro dell'auto nella direzione x. Gli ostacoli al di sotto di questa distanza vengono considerati come fermate di allarme e l'interfaccia visualizza un'area rossa; la distanza tra la distanza di preallarme e la distanza di allarme viene considerata come una decelerazione di preallarme e l'interfaccia visualizza un'area gialla. Unità: metro.
+
+- [Distanza di schermatura (vicino a x)] Campo di evitamento degli ostacoli, la distanza nella direzione x dal centro dell'auto. Gli ostacoli entro questa distanza verranno ignorati. Unità: metro.
+
+- [Portata per evitare l'ostacolo a sinistra (y sinistra)] Portata per evitare l'ostacolo, la distanza dal lato sinistro della direzione y al centro dell'auto. Unità: metro.
+
+- [Intervallo di evitamento dell'ostacolo a destra (y destra)] Intervallo di evitamento dell'ostacolo, la distanza dal lato destro della direzione y al centro dell'auto. Unità: metro.
+
+- [Altezza per evitare l'ostacolo inferiore (z inferiore)] L'intervallo di evitamento dell'ostacolo, altezza da terra, al di sotto di questa altezza non verrà elaborato. Se l'impostazione è troppo piccola, potrebbero verificarsi falsi allarmi dovuti a errori di portata; se l'impostazione è troppo grande, gli ostacoli di grandi dimensioni sul terreno potrebbero essere filtrati, generando falsi allarmi. Unità: metro.
+
+- [Altezza di evitamento ostacolo superiore (z superiore)] L'intervallo di evitamento dell'ostacolo, altezza da terra, superiore a questa altezza non verrà elaborato. Unità: metro.
+
+- [Uscita evitamento ostacolo] Risultati in uscita per evitare l'ostacolo
+
+- [Ripristina parametri esterni telecamera] Ripristina tutti i parametri che non sono stati scritti sulla telecamera
+
+- [Imposta parametri esterni] Scrive tutti i parametri sulla fotocamera
+
+- Per impostazioni dettagliate sull'evitamento degli ostacoli, consultare la documentazione sull'elusione degli ostacoli.
+
+##### 3.7.3.3 Posizionamento pallet
+
+- Impostare l'algoritmo dell'applicazione sul posizionamento del pallet e verranno visualizzate le configurazioni relative all'elusione degli ostacoli.
+
+- [Nome progetto] Assegna un nome alla configurazione attuale dei parametri di riconoscimento pallet
+
+- [Configurazione rapida] Diverse configurazioni fornite dalla fotocamera per impostazione predefinita
+
+- [Rotazione angolo telecamera (asse x)] L'angolo di inclinazione della telecamera rispetto all'asse X
+
+- [Inclinazione angolo telecamera (asse y)] L'angolo di inclinazione della telecamera rispetto all'asse Y
+
+- [Imbardata angolo telecamera (asse z)] L'angolo di inclinazione della telecamera rispetto all'asse Z
+
+- [Posizione telecamera (distanza x)] La distanza relativa tra il centro ottico della telecamera e il centro di rotazione del carrello elevatore nella direzione X
+
+- [Posizione telecamera (larghezza y)] La distanza relativa tra il centro ottico della telecamera e il centro di rotazione del carrello elevatore nella direzione Y
+
+- [Posizione della telecamera (altezza z)] La distanza relativa tra il centro ottico della telecamera e il centro di rotazione del carrello elevatore nella direzione Z
+
+- [Altezza del suolo] La distanza dal centro ottico della telecamera al suolo
+
+- [Larghezza massima delle gambe del pallet] Deve essere compatibile con la larghezza massima delle gambe del pallet nel tipo di pallet
+
+- [Larghezza minima delle gambe del pallet] Deve essere compatibile con la larghezza minima delle gambe del pallet nel tipo di pallet
+
+- [Distanza dal vassoio] La distanza dal centro ottico della fotocamera al vassoio una volta completato l'inserimento
+
+- [Metodo di installazione] Impostato in base alla direzione fissa della telecamera, l'impostazione predefinita è l'installazione formale (0)
+
+- [Valore Z minimo] Identificare la distanza di profondità più vicina del pallet
+
+- [Valore Z massimo] Identificare la distanza di profondità massima del pallet
+
+- [Valore X minimo] Identificare il confine laterale del pallet (il confine sinistro con la fotocamera al centro)
+
+- [Valore X massimo] Identificare il confine laterale del pallet (il confine destro con la fotocamera centrata)
+
+- [Output algoritmo pallet] visualizza i risultati dell'algoritmo pallet
+
+- [Istruzioni per la calibrazione] Calibra automaticamente quando il terreno è pianeggiante e non ci sono ostacoli davanti al pallet. Il pallet è di dimensioni standard.
+
+- [Ripristina parametri predefiniti] Ripristina tutti i parametri alle impostazioni di fabbrica
+
+- [Leggi parametri esterni dalla telecamera] Leggi tutti i parametri dalla telecamera, tutti i parametri non inviati verranno sovrascritti
+
+- [Invia parametri] Scrive tutti i parametri sulla fotocamera
+
+- Per le impostazioni dettagliate del rilevamento dei pallet, fare riferimento alla documentazione della funzione di rilevamento dei pallet.
+
+#### 3.7.4 Altri strumenti
+
+- [Carica nuvola di punti locale] È possibile aprire file di nuvole di punti in formato .pcl, .png e visualizzarli. Per i dettagli fare riferimento alla descrizione dello strumento.
+
+- [Strumento di configurazione IP] È possibile configurare l'IP, la maschera di sottorete e il gateway della telecamera
+
+- [Strumento di acquisizione pacchetti] può essere utilizzato per acquisire i dati dei pacchetti della scheda di rete, vedere la descrizione dello strumento per i dettagli
+
+- [Strumento di configurazione della scheda di rete] supporta la configurazione di schede di rete e firewall, vedere la descrizione dello strumento per i dettagli
+
+- [Strumento di comunicazione] Supporta la comunicazione TCP, UDP, MODBUS, FTP, fare riferimento alla descrizione dello strumento per i dettagli
+
+- [Abilita GPU] Consente l'uso dei calcoli della GPU per elaborare la grafica
+
+- [Livello registro] Controlla il livello di dettaglio delle informazioni di stampa del registro
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b8797c14-d930-417a-a6bd-85d45c22adbd.avif" alt="Altre icone relative agli strumenti" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/51669a0b-c3c1-4878-98e0-e436ceed6807.avif" alt="Altre icone relative agli strumenti 2" />
+</Frame>
+
+Figura 2
+
+## 4. Accedi al sistema di telecamere
+
+- Connettersi tramite ssh all'indirizzo IP della telecamera, porta 22
+
+- Prendi MobaXterm come esempio, presupponendo che l'IP della telecamera sia 192.168.100.15 (Figura 1, Figura 2)
+
+- Nome utente: utente, password: utente. Dopo aver effettuato con successo l'accesso, vedrai l'interfaccia come mostrato nella Figura 3.
+
+- Il sistema viene fornito con la configurazione come mostrato nella tabella seguente
+
+|  |  |
+| --- | --- |
+| Configurazione integrata | Numero di versione |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| PCl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Nota: non modificare a piacimento la configurazione integrata del sistema, poiché ciò potrebbe causare l'arresto anomalo del sistema**
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/611909af-41f3-4eab-a4b0-74221d61b2f4.avif" alt="4. Accedere alle icone relative al sistema della telecamera" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6198bda7-f6e3-4a6c-a8e8-8782066d5fbf.avif" alt="4. Illustrazioni relative all'accesso al sistema di telecamere 2" />
+</Frame>
+
+Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/40ff82ed-4595-4753-842c-48c471c5fbf9.avif" alt="4. Illustrazioni relative all'accesso al sistema di telecamere 3" />
+</Frame>
+
+Figura 3
+
+## Descrizione dello strumento
+
+### 5.1 Strumento di configurazione IP
+
+- Dopo aver aperto [Strumento di configurazione IP], come mostrato nella Figura 1
+
+- Fare doppio clic sulle informazioni dopo l'indirizzo MAC da copiare, fare doppio clic sulle informazioni dopo l'indirizzo IP, la maschera di sottorete e il gateway da scrivere, fare clic su altre opzioni per annullare la modifica e premere Invio per confermare la modifica, come mostrato nella Figura 2
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db8cd5ed-0942-4a8d-9719-a2401e268c52.avif" alt="Interfaccia delle impostazioni di rete Windows IPv4" />
+</Frame>
+
+Figura 1
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4eca7e7e-b50d-43ac-ae67-ca82cd2062e3.avif" alt="Interfaccia delle impostazioni di rete Windows IPv4 2" />
+</Frame>
+
+Figura 2
+
+### 5.2 Strumenti di comunicazione
+
+- Aprire [Strumenti di comunicazione] come mostrato nella Figura 1
+
+- Gli strumenti di comunicazione supportano TCP, UDP, FTP, Modbus TCP, Modbus RTU, CAN (linux)
+
+- Gli strumenti di comunicazione supportano l'apertura multipla di diverse schede
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3f776879-9244-4d03-be34-a4b1ed20fffa.avif" alt="Illustrazioni relative agli strumenti di comunicazione" />
+</Frame>
+
+Figura 1
+
+### 5.3 Strumento di configurazione della scheda di rete
+
+- Dopo aver aperto lo [Strumento nuvola di punti locale], come mostrato nella Figura 1
+
+- Lo strumento di configurazione della scheda di rete può impostare il firewall
+
+- Dopo aver selezionato la scheda di rete, è possibile aprire le proprietà della scheda di rete e l'interfaccia di configurazione fornita con Windows.
+
+-Supporto per l'apertura della pagina di configurazione del firewall
+
+- Supporta l'apertura del task manager
+
+-Supporto per l'apertura del Centro connessione di rete
+
+- La lingua segue automaticamente questo software
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76495e2c-d92d-4f17-b2f8-21d1bb7b9072.avif" alt="Illustrazioni relative allo strumento di configurazione della scheda di rete" />
+</Frame>
+
+Figura 1
+
+## Domande e soluzioni frequenti
+
+|  |  |
+| --- | --- |
+| Descrizione del problema | Soluzione |
+| Impossibile trovare la fotocamera | * Controllare se l'alimentazione della fotocamera è collegata. Dopo l'accensione, la luce blu sulla parte anteriore della telecamera è sempre accesa * Controllare se l'indirizzo IP e la maschera di sottorete sono corretti * Controllare se al computer host è vietato l'accesso alla rete |
+| È possibile aprire la fotocamera ma lo streaming non riesce | Verificare se il computer host è stato aperto con diritti di amministratore |
+| Ritardo immagine | Controlla se la scheda di rete, il cavo di rete e lo switch sono Gigabit. Dopo aver attivato l'allineamento RGB, la rete 100M subirà un certo grado di ritardo |
+| La fotocamera si riconnette spesso | Dopo il ripristino delle impostazioni di fabbrica, l'aggiornamento del firmware o quando la fotocamera viene accesa per la prima volta su una rete da 100 M, la fotocamera si regolerà/riavvierà automaticamente per circa 30 secondi. Entro 30 secondi, il computer host continuerà a tentare di connettersi alla fotocamera finché questa non sarà stabile |
+| Nessun dato di profondità, dati della nuvola di punti | * Controlla se la fotocamera è bloccata * Controlla se l'oggetto si trova nel campo di ripresa della fotocamera * Controlla se i valori di profondità massima/minima sono corretti * Controlla se i parametri del filtro sono corretti |
+| La nuvola di punti scompare e sull'interfaccia è visibile solo la cornice bianca | Fare clic sull'immagine della nuvola di punti con il mouse e premere il tasto 'm' per attivare la stabilizzazione della nuvola di punti |
+| La visualizzazione della nuvola di punti è anomala | Controlla se è stato utilizzato il tasto di scelta rapida della nuvola di punti e attiva la stabilità della nuvola di punti |
+| La nuvola di punti non viene visualizzata dopo l'apertura della fotocamera sotto Linux | Utilizzare il mouse per premere e trascinare l'immagine della nuvola di punti per visualizzare |
+| Visualizzazione dell'applicazione: caricamento VTK non riuscito, la nuvola di punti non verrà visualizzata, controllare la configurazione della scheda grafica e il driver della scheda grafica | * Controllare se la configurazione della scheda grafica è troppo bassa * Controllare se il driver della scheda grafica funziona normalmente * La visualizzazione della nuvola di punti richiede una scheda grafica con memoria video indipendente e il relativo driver |
+
+## Aiuto
+
+### 7.1 Informazioni
+
+Fare clic su [Informazioni] nell'angolo in alto a destra o nelle informazioni correnti al primo avvio del software, è possibile visualizzare il numero di versione del software, il numero di versione dell'SDK e altre informazioni correlate. Fare clic sul pulsante [Apri documento della Guida] per aprire questo documento, come mostrato nella figura seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c3d926d9-7023-4d79-83d6-1a51ce88ad55.avif" alt="Informazioni sulle icone correlate" />
+</Frame>
+
+### 7.2 Manuale dell'utente
+
+Fare clic con il pulsante destro del mouse sul collegamento di questo software → aprire il percorso del file → tornare alla directory superiore → è possibile visualizzare tutti i documenti correlati in Documento, come mostrato nella figura seguente:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cbee533-fab9-4664-8a6b-0b6ea4bb2a34.avif" alt="Icone relative al manuale utente" />
+</Frame>

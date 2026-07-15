@@ -1,0 +1,584 @@
+---
+title: "Triển khai đo khối lượng"
+description: "Triển khai camera MRDVS M Series để đo âm lượng tĩnh hoặc động mà không cần máy tính công nghiệp bên ngoài."
+hidden: true
+---
+## 1. Giới thiệu
+
+Thuật toán phát hiện âm lượng được phát triển bởi Meyer Micro Vision (MRDVS) và được sử dụng cụ thể trong các tình huống đo âm lượng. Nó được sử dụng trong các máy ảnh dòng M tự phát triển trong lĩnh vực hậu cần, chuyển phát nhanh, bãi than, kho bãi và các tình huống khác. Thuật toán phát hiện âm lượng chạy bên trong máy ảnh, loại bỏ nhu cầu sử dụng máy tính công nghiệp bên ngoài. Thuật toán hỗ trợ phát hiện tĩnh và động.
+
+Phần mềm chỉ yêu cầu người dùng hiệu chỉnh các thông số bên ngoài của camera và vẽ phạm vi phát hiện, sau đó có thể phát hiện và đo lường một/nhiều đối tượng. Hiệu chuẩn tham số bên ngoài có thể tự động thu được kết quả hiệu chuẩn và hỗ trợ phát hiện nối nhiều camera.
+
+Bài viết này chủ yếu giới thiệu việc triển khai và sử dụng chức năng phát hiện khối lượng tầm nhìn vi mô của Meyer.
+
+## 2. Kịch bản ứng dụng phát hiện ổ đĩa
+
+### 2.1 Ngành logistic
+
+1. Bằng cách thu thập thông tin như khối lượng và trọng lượng hàng hóa, chúng tôi có thể đạt được các hoạt động tinh tế, giúp cải thiện tỷ lệ chất tải trên xe, giảm chi phí phương tiện, chi phí vận chuyển và chi phí nhân công, đồng thời giảm chi phí và cải thiện hiệu quả trong toàn bộ quá trình.
+
+2. Nó có thể nhanh chóng phát hiện khối lượng và trọng lượng của hàng hóa/hộp và tính cước vận chuyển chỉ bằng một cú nhấp chuột. Cùng với cân sàn, nó còn có thể đo lường hiệu quả xe tải, xe container để đảm bảo toàn bộ xe không bị thừa cân.
+
+### 2.2 Công nghiệp chuyển phát nhanh
+
+Khi gửi và nhận chuyển phát nhanh, với sự trợ giúp của thiết bị đo khối lượng thông minh, có thể nhanh chóng thu được các thông tin như khối lượng, trọng lượng của hàng hóa. Dữ liệu được kết nối với hệ thống nội bộ để dễ dàng tìm kiếm và xem xét, điều này không chỉ tránh được vấn đề mất dữ liệu mà còn giảm thiểu hiệu quả đầu tư thủ công và nâng cao hiệu quả công việc.
+
+### 2.3 Công nghiệp khai thác than
+
+Các phương pháp truyền thống để đo thể tích của các đống quặng than lớn thường sử dụng máy toàn đạc và phương pháp đo điểm đơn RTK, đồng thời yêu cầu trích xuất thủ công các điểm đặc trưng một cách chính xác. Tuy nhiên, vì các đống quặng than lớn thường bất tiện khi leo lên nên việc trích xuất các điểm đặc trưng chính xác là vô cùng khó khăn. Đồng thời, phương pháp đo đơn điểm có mật độ dữ liệu thấp và không thể thu được chính xác khối lượng của các đống quặng than dẫn đến hiệu suất vận hành cực kỳ thấp.
+
+### 2.4 Ngành Kho bãi
+
+Trong hậu cần, kho bãi và thậm chí cả các ngành công nghiệp nói chung, AGV vận chuyển hàng hóa, cần kiểm tra khối lượng, trọng lượng hàng hóa khi ra vào kho.
+
+### 3. Giải quyết vấn đề
+
+Trong các ngành công nghiệp như hậu cần và kho bãi, việc nắm được khối lượng, số lượng mặt hàng và nắm vững việc xuất nhập hàng hóa có ý nghĩa rất lớn đối với việc quản lý hàng tồn kho trong sản xuất. Tuy nhiên, các giải pháp truyền thống luôn gặp phải các vấn đề như thiếu phương tiện kỹ thuật, sai số đo lường lớn, hiệu quả quản lý thủ công thấp, khó giám sát.
+
+Tính năng phát hiện âm lượng camera Meyer Micro Vision ToF có nhiều ưu điểm hơn radar, ánh sáng có cấu trúc và camera 2D. Camera Meyer Micro Vision triển khai đơn giản và chỉ yêu cầu giá đỡ chương trình cơ sở của camera, dây nguồn và cáp mạng. Thuật toán chạy bên trong máy ảnh mà không cần cấu hình máy tính công nghiệp dự phòng. Nó thuận tiện hơn khi sử dụng và chi phí thấp hơn radar.
+
+## 4. Hướng dẫn triển khai phần cứng camera
+
+### 4.1 Sử dụng các loại camera
+
+Loại máy ảnh: Máy ảnh dòng M
+
+Hướng dẫn sử dụng máy ảnh: [Camera ToF dòng M](/vi/products/m-series/m4-overview "Camera ToF dòng M")
+
+<Frame>
+  <img src="/images/legacy/5dd130cc-7499-4f38-bf97-dbd56dbb0e11/a28f58f9-2432-4605-aee2-c8811c0fe221.avif" alt="Sử dụng các biểu tượng liên quan đến loại máy ảnh" />
+</Frame>
+
+### 4.2 Phương pháp lắp đặt camera
+
+Camera phát hiện âm lượng M4 áp dụng phương pháp cài đặt cố định. Máy ảnh chụp ảnh hướng xuống dưới và cố gắng đảm bảo rằng gương máy ảnh song song với mặt đất. Hình dưới đây là sơ đồ của quá trình cài đặt.
+
+<Frame>
+  <img src="/images/legacy/03510465-d902-4781-bf31-9e5c152f5bd2/18837b64-6a77-4a60-9ce3-b8fa0647c995.avif" alt="Hình ảnh minh họa liên quan đến phương pháp lắp đặt camera" />
+</Frame>
+
+Hình 4.1 Sơ đồ lắp đặt
+
+### 4.3 Kết nối camera
+
+Camera được cấp nguồn 24V và được kết nối thông qua cáp mạng Loại 6e/Loại 7. Sau khi camera được cài đặt và triển khai, hãy mở phần mềm máy tính chủ phát hiện âm lượng thông qua máy tính xách tay để thực hiện hiệu chỉnh tham số bên ngoài và cài đặt phạm vi phát hiện của camera. Thuật toán sẽ chạy bên trong camera theo thời gian thực. Khi triển khai nhiều camera, chúng cần được kết nối thông qua bộ chuyển mạch Gigabit.
+
+<Frame>
+  <img src="/images/legacy/f9ab7dc5-20d0-4693-a41f-1b6a56c4e50f/317bd48f-8fa4-4e0a-989d-6366de6f91e0.avif" alt="Các biểu tượng liên quan đến kết nối máy ảnh" />
+</Frame>
+
+## 5. Hướng dẫn cài đặt phần mềm camera
+
+### 5.1 Quá trình cài đặt phần mềm
+
+Khi sử dụng phần mềm lần đầu tiên, bạn có thể làm theo quy trình sau để hoàn tất thao tác.
+
+<Frame>
+  <img src="/images/legacy/e1da8232-f39e-4e11-a71f-86726a19262d/0cda21b0-286e-4778-a352-23fc6dd977a5.avif" alt="Hình ảnh minh họa liên quan đến quá trình cài đặt phần mềm" />
+</Frame>
+
+### 5.2 Yêu cầu về môi trường hoạt động của máy chủ phát hiện khối lượng
+
+Nên chạy thiết bị máy tính chủ phát hiện khối lượng để đáp ứng yêu cầu.
+
+| Hệ điều hành | Windows10 trở lên |
+| --- | --- |
+| CPU | Khuyến nghị Intel Core i5 thế hệ thứ 7 trở lên |
+| Ký ức | 8G trở lên |
+| GPU | Màn hình lõi/đồ họa Intel(R) UHD trở lên |
+
+### 5.3 Cài đặt phần mềm máy tính chủ camera
+
+1. Tải xuống phần mềm máy chủ camera từ cơ sở kiến ​​thức MRDVS: [Tải xuống phần mềm](/vi/developers/software/lxcameraviewer "Tải xuống phần mềm")
+
+2. Nhấp đúp để cài đặt phần mềm máy tính chủ Lanxin-MRDVS. Máy chủ cần được cài đặt bên ngoài ổ c.
+
+<Frame>
+  <img src="/images/legacy/8a1a3bb1-c6dd-434d-af79-709f37313844/cabcc88e-3d26-401e-aaeb-a01cd4a2b1d3.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera" />
+</Frame>
+
+3. Sau khi chọn ngôn ngữ sử dụng, nhấp vào [**OK**], chọn thư mục cài đặt không phải ổ C và nhấp vào [**Next**].
+
+<Frame>
+  <img src="/images/legacy/b4e46f8b-825a-4d64-a3ee-1d10704f7fba/348dee6d-9f34-4f8d-88fb-6c8b00c6b902.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 2" />
+</Frame>
+
+4. Chọn [**Tạo lối tắt trên màn hình**] và nhấp vào [**Tiếp theo**].
+
+<Frame>
+  <img src="/images/legacy/aa1145f9-d860-4751-aec1-c5e8384963ae/ce1b8ead-e096-4834-ba4c-261facc55082.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 3" />
+</Frame>
+
+5. Bấm vào nút [**Install**] để bắt đầu cài đặt phần mềm.
+
+<Frame>
+  <img src="/images/legacy/0694d88e-a2ac-497d-b731-0a0e71cd331a/c7a2bf1d-a332-4fab-919a-4d7cbb96b716.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 4" />
+</Frame>
+
+6. Sau khi cài đặt hoàn tất, bạn có thể chạy phần mềm máy tính chủ camera.
+
+<Frame>
+  <img src="/images/legacy/764b4e79-f161-44ca-ac5c-4000190d08d5/dac8ba59-4e9f-4a33-89b1-e60678f4605f.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ camera 5" />
+</Frame>
+
+### 5.4 Cài đặt phần mềm máy chủ phát hiện ổ đĩa
+
+1. Sao chép phần mềm máy tính chủ phát hiện âm lượng thu được vào máy tính chủ camera \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/5d8d5ae7-8e2b-4519-9d9b-3440cb83d1ee/e36c0214-2d47-413e-ba9e-aad7d6b841a2.avif" alt="Hình ảnh minh họa liên quan đến việc cài đặt phần mềm máy tính chủ phát hiện khối lượng" />
+</Frame>
+
+2. Khi thay thế, chọn [**Thay thế tệp trong mục tiêu**].
+
+<Frame>
+  <img src="/images/legacy/5f862ff0-6785-435b-a335-5f6a6d4a2c8c/7cf0179a-1fde-4763-9cd6-ff223c820762.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ phát hiện ổ đĩa 2" />
+</Frame>
+
+3. Click đúp để mở phần mềm và chạy.
+
+4. Ở thanh danh sách thiết bị bên trái, trạng thái camera là [**Unknown**] nghĩa là camera không có thuật toán phát hiện âm lượng.
+
+<Frame>
+  <img src="/images/legacy/b1e28a85-544d-4cd7-83a0-b19e5567aeac/154d1261-0517-48a5-87fb-b4d8b8771f2d.avif" alt="Hình ảnh minh họa liên quan đến cài đặt phần mềm máy chủ phát hiện ổ đĩa 3" />
+</Frame>
+
+### 5.5 Nâng cấp phần mềm phát hiện ổ đĩa
+
+Để nâng cấp phần mềm phát hiện âm lượng, chỉ cần thay thế tệp "**.exe**".
+
+### 5.6 Nâng cấp thuật toán
+
+1. Để nâng cấp thuật toán camera, bạn cần mở phần mềm máy chủ camera và nhấp đúp vào [**LxCameraViewer**].
+
+<Frame>
+  <img src="/images/legacy/98da739f-2f77-46e6-9fc2-698a1b288371/c9790445-b910-4441-8867-78bf594deaa3.avif" alt="Hình ảnh minh họa liên quan đến nâng cấp thuật toán" />
+</Frame>
+
+2. Nhấp vào nút [**Open**] để xem ảnh camera.
+
+<Frame>
+  <img src="/images/legacy/2fb54986-038d-4d1c-a52d-6e08488ca0c4/b4750100-e4b5-4111-a0d9-7fc89c344c98.avif" alt="Sơ đồ liên quan nâng cấp thuật toán 2" />
+</Frame>
+
+3. Nhấp vào Công cụ cơ bản → Cài đặt chức năng → [**Nâng cấp chương trình cơ sở**] để flash thuật toán phát hiện ổ đĩa. (Vui lòng liên hệ nhân viên hỗ trợ kỹ thuật để lấy thuật toán)
+
+<Frame>
+  <img src="/images/legacy/94042d12-537e-4ecf-9bf7-096e88053035/cb352cff-1854-476a-a179-9b5c0f5b229e.avif" alt="Sơ đồ liên quan đến nâng cấp thuật toán 3" />
+</Frame>
+
+4. Sau khi nhấp vào nút [**Execute**], chọn "Thuật toán phát hiện âm lượng" và nhấp vào nút [**Open**] để bắt đầu nhấp nháy thuật toán.
+
+<Frame>
+  <img src="/images/legacy/88ed6bb9-e81b-4923-958c-af6c7d6c5179/1d8334a0-0e47-4781-8a2e-765311aaceac.avif" alt="Sơ đồ liên quan nâng cấp thuật toán 4" />
+</Frame>
+
+5. Trong quá trình nhấp nháy thuật toán, camera sẽ khởi động lại và ID camera trong danh sách thiết bị bên trái sẽ biến mất. Sau khi nó hiển thị lại có nghĩa là flash thành công.
+
+<Frame>
+  <img src="/images/legacy/c7f8ce1b-993e-41a9-9918-25422fcacf16/ade34da0-16e3-40d8-9af0-542a5c13cbe5.avif" alt="Sơ đồ liên quan nâng cấp thuật toán 5" />
+</Frame>
+
+6. Lúc này, hãy mở lại phần mềm phát hiện âm lượng và danh sách thiết bị sẽ hiển thị màu xanh lục.
+
+<Frame>
+  <img src="/images/legacy/65639621-cec1-4e58-9d25-b2c1147e6db8/7bc15af4-8e94-45ca-9181-e872410b5ccf.avif" alt="Sơ đồ liên quan nâng cấp thuật toán 6" />
+</Frame>
+
+## 6. Giao diện phần mềm dò tìm dung lượng
+
+### 6.1 Bắt đầu chương trình phát hiện âm lượng
+
+1. Bấm đúp vào chương trình [**LxApplicationViewer.exe**] để khởi động phần mềm phát hiện ổ đĩa. Bấm vào camera trực tuyến trong danh sách thiết bị bên trái để mở hình ảnh camera.
+
+<Frame>
+  <img src="/images/legacy/27aad056-f103-41e3-86f9-b9d876481dc6/cb274ae3-6877-40e8-ba2b-485fe835c0ec.avif" alt="Hình minh họa liên quan đến việc khởi động chương trình phát hiện âm lượng" />
+</Frame>
+
+2. Người dùng hiện tại chọn quản trị viên và không cần nhập mật khẩu. Nhấp trực tiếp vào OK để vào chế độ quản trị viên (không thể thực hiện cài đặt tham số phát hiện âm lượng ở chế độ người dùng). Chế độ quản trị viên sẽ có nhiều tùy chọn phát hiện âm lượng và cấu hình camera hơn.
+
+<Frame>
+  <img src="/images/legacy/9078f3bd-2942-426e-98a8-ef4b43f40de7/29f2bf28-535d-4b1d-9aa6-03e03100d78a.avif" alt="Hình minh họa liên quan đến việc khởi động chương trình phát hiện ổ đĩa 2" />
+</Frame>
+
+### 6.2 Công cụ cơ bản
+
+Các công cụ cơ bản chủ yếu bao gồm chuyển đổi người dùng, mặt đất lý tưởng, mặt đất thông số bên ngoài, hiển thị nhiều hộp âm lượng, nút kích hoạt, xuất và lưu hình ảnh, phát lại lịch sử và trạng thái âm lượng.
+
+<Frame>
+  <img src="/images/legacy/a23bcd50-9098-47e0-84b8-3d47b3ca2610/4cdcef72-7639-4e7f-84c8-4380fbbed27f.avif" alt="Các hình ảnh minh họa liên quan đến công cụ cơ bản" />
+</Frame>
+
+| Công cụ cơ bản | Ý nghĩa chức năng |
+| --- | --- |
+| Chuyển đổi người dùng | Chuyển quyền, quyền người dùng: chỉ xem kết quả phát hiện. Quyền quản trị viên: có thể định cấu hình cấu hình camera, cấu hình tham số phát hiện âm lượng, v.v. |
+| Mảnh Đất Lý Tưởng | Mặt đất đề cập đến đường ngang và có thể tắt. |
+| Mặt đất tham số bên ngoài | Mặt phẳng nằm ngang nơi các thông số bên ngoài của máy ảnh được hiệu chỉnh. Nó có thể được tắt. |
+| Hiển thị hộp âm lượng | Khi có nhiều đối tượng được phát hiện trong khu vực phát hiện, các hộp âm lượng khác nhau có thể được chuyển đổi để xem kết quả phát hiện của các đối tượng khác nhau. |
+| Nút kích hoạt | Sau khi cài đặt sang chế độ kích hoạt, nút kích hoạt này có thể được gọi để thu được hình ảnh và kết quả. |
+| Xuất hình ảnh được lưu trữ | Xuất hình ảnh được lưu trữ |
+| Phát lại lịch sử | Xem nhật ký hình ảnh RGB và TOF. |
+| Hiển thị kết quả phát hiện khối lượng | Hiển thị kết quả phát hiện, số lượng đối tượng, chiều dài, chiều rộng và chiều cao của đối tượng. |
+
+### 6.3 Cấu hình chung
+
+Chuyển chế độ làm việc của camera.
+
+<Frame>
+  <img src="/images/legacy/bb2afbde-b2d5-43ff-8673-d4922aa726b2/0c157f74-799a-4f32-9634-cdb91fc83228.avif" alt="Các biểu tượng liên quan đến cấu hình chung" />
+</Frame>
+
+### 6.4 Phát hiện âm lượng
+
+<Frame>
+  <img src="/images/legacy/fbce3fe9-69bd-4c1d-9a50-08aaec8f8a8a/e1a0e9a1-7371-4ad5-93df-9d1dd625aada.avif" alt="Các biểu tượng liên quan đến phát hiện âm lượng" />
+</Frame>
+
+| Cấu hình toàn cầu phát hiện khối lượng | Ý nghĩa chức năng |
+| --- | --- |
+| Số phiên bản thuật toán | Thông tin phiên bản thuật toán hiện tại. |
+| Chế độ kích hoạt | Nút chuyển đổi kích hoạt. Sau khi bật chế độ kích hoạt, nhấp vào nút "Lưu và gửi" để bật thành công. |
+| Phát hiện hướng lên | Hệ thống tọa độ camera phát hiện ngược (hiện tại là phát hiện hướng xuống, tức là phát hiện khoảng cách từ mặt phẳng đến bề mặt vật thể, sau khi bật tính năng phát hiện hướng lên trên sẽ phát hiện khoảng cách từ bề mặt vật thể đến camera). |
+| Tần số phát hiện | Tần suất thuật toán phát hiện. Tức là cần bao nhiêu ms để làm mới dữ liệu hình ảnh + kết quả. |
+| Khoảng cách mặt phẳng phát hiện | Khoảng cách máy ảnh phát hiện khoảng cách mặt phẳng, khoảng cách này có liên quan đến chiều cao đo. Đơn vị: mm. |
+| Ngưỡng số hàng xóm | Lọc thông số, không cần thay đổi. Giá trị mặc định là đủ. |
+| Ngưỡng khoảng cách lân cận | Lọc thông số, không cần thay đổi, giá trị mặc định là đủ. |
+| Ngưỡng bộ lọc vector thông thường | Tham số bộ lọc phi lê cạnh đối tượng, được khuyến nghị là 60 (thường không cần điều chỉnh). |
+| Ngưỡng khoảng cách vector chuẩn | Tham số bộ lọc, giá trị khuyến nghị 20-30 (tương thích với hầu hết các đối tượng được phát hiện). |
+| Số điểm tối thiểu | Khi đám mây điểm đối tượng lớn hơn số điểm tối thiểu thì được coi là có một đối tượng. |
+| Tối thiểu X | Chiều dài tối thiểu của đối tượng Nếu nó nhỏ hơn giá trị này thì không thể phát hiện được. Đơn vị: mm. |
+| Tối thiểu Y | Chiều rộng tối thiểu của đối tượng. Nếu nó nhỏ hơn giá trị này thì không thể phát hiện được. Đơn vị: mm. |
+| Z tối thiểu | Chiều cao tối thiểu của vật thể. Nếu nó nhỏ hơn giá trị này thì không thể phát hiện được. Đơn vị: mm. |
+
+<Frame>
+  <img src="/images/legacy/e9733410-8173-4d09-95e5-334ba8ae58c0/d4d05111-3551-446e-a866-37f098c13e7d.avif" alt="Sơ đồ liên quan đến phát hiện khối lượng 2" />
+</Frame>
+
+| Cấu hình khu vực phát hiện khối lượng | Ý nghĩa chức năng |
+| --- | --- |
+| Tối thiểu X | Giá trị tối thiểu theo hướng X của khung phát hiện âm lượng |
+| Tối đa X | Giá trị tối đa theo hướng X của khung phát hiện âm lượng |
+| Tối thiểu Y | Giá trị tối thiểu theo hướng Y của khung phát hiện âm lượng |
+| Tối đa Y | Giá trị tối đa theo hướng Y của khung phát hiện âm lượng |
+| Z tối thiểu | Giá trị tối thiểu theo hướng Z của khung phát hiện âm lượng |
+| Z tối đa | Giá trị tối đa theo hướng Z của khung phát hiện âm lượng |
+
+### Cấu hình camera 6.5
+
+<Frame>
+  <img src="/images/legacy/07b96b09-95e7-4251-938f-d1e35401e1ce/95f4513b-47df-41aa-ae24-5a02749888c1.avif" alt="Các biểu tượng liên quan đến cấu hình camera" />
+</Frame>
+
+| Cài đặt máy ảnh | Ý nghĩa chức năng |
+| --- | --- |
+| Tên máy ảnh | Sửa đổi tên của máy ảnh hiện tại. Khi có nhiều camera, bạn có thể đánh giá theo tên camera. |
+| Chế độ mô phỏng | Sử dụng nội bộ, người dùng không cần phải mở nó. |
+| Chế độ lưu ảnh | Bật tính năng lưu ảnh thuật toán để lưu trữ dữ liệu hình ảnh bên trong camera. |
+| Chế độ chụp | Chế độ chụp được chia thành MDS và SDK. Việc sử dụng MDS sẽ không chiếm quyền sử dụng camera và có thể mở máy chủ camera một cách bình thường. Việc sử dụng SDK sẽ chiếm quyền của máy ảnh và không thể mở được máy chủ khi chạy thuật toán. |
+| x | camera đã hiệu chỉnh vị trí x |
+| y | Vị trí y của hiệu chỉnh máy ảnh |
+| z | Hiệu chỉnh chiều cao camera từ mặt đất |
+| cuộn | góc hiệu chỉnh camera |
+| sân | góc hiệu chỉnh camera |
+| ôi | góc hiệu chỉnh camera |
+| Mảnh đất lý tưởng | Cứ để nó như mặc định. |
+| Lưu và gửi | Sau khi hiệu chỉnh thông số bên ngoài hoàn tất, hãy nhấp vào nút [Save and send] để lưu, nếu không các thông số sẽ không có hiệu lực |
+| Đọc cấu hình từ camera | Đọc thông số cấu hình hiện tại từ camera |
+| Hiệu chuẩn tham số bên ngoài | Hiệu chỉnh độ cao của máy ảnh từ mặt đất, cuộn camera, góc nghiêng và góc ngáp. |
+
+### 6.6 Ngôn ngữ
+
+Chuyển đổi giữa tiếng Trung và tiếng Anh.
+
+### 6.7 Thanh trạng thái
+
+<Frame>
+  <img src="/images/legacy/3941c475-8f8f-45a1-94cc-2cf678831d53/706d6184-84a3-44cb-a6a6-6fb57cf36309.avif" alt="Các biểu tượng liên quan đến thanh trạng thái" />
+</Frame>
+
+| Thanh trạng thái | Ý nghĩa chức năng |
+| --- | --- |
+| RGB | Kiểm tra để xem hình ảnh RGB |
+| Đám mây điểm | Sau khi kiểm tra, xem hình ảnh đám mây điểm |
+| Dừng thuật toán | Sau khi nhấp để dừng thuật toán, thuật toán sẽ không được bắt đầu cho đến lần bật máy ảnh tiếp theo. |
+| Nâng cấp chương trình cơ sở | Phần sụn thuật toán có thể được nâng cấp |
+| Khởi động lại máy ảnh | Khởi động lại máy ảnh. |
+
+### 7. Quá trình triển khai phát hiện khối lượng
+
+Sau khi mở phần mềm phát hiện âm lượng, mặc định là hình ảnh RGB. Sau khi nhấn chuyển sang ảnh đám mây điểm thì ảnh sẽ có màu đen. Bạn cần di chuyển chuột đến vùng hiển thị hình ảnh, dùng bánh xe chuột trượt lên xuống và giữ chuột trái để di chuyển thì dữ liệu đám mây điểm sẽ được hiển thị.
+
+<Frame>
+  <img src="/images/legacy/b2f80e70-7390-4713-9eda-f7b342eca918/38bf207d-97e3-4f22-9867-e59c1e252ef1.avif" alt="Hình minh họa liên quan đến quá trình triển khai phát hiện khối lượng" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0bea89d2-f83c-4deb-ab3c-0584a061302e/d91faf31-886e-442c-8ab5-b367a14db036.avif" alt="Hình minh họa liên quan đến quá trình triển khai phát hiện khối lượng 2" />
+</Frame>
+
+### 7.1 Cấu hình mạng camera
+
+Lấy hệ thống Win10 làm ví dụ, nhấp đúp vào Control Panel
+
+Sau khi vào bảng điều khiển, nhấp vào "**Xem trạng thái và tác vụ mạng**".
+
+<Frame>
+  <img src="/images/legacy/d27495e0-56ba-43a1-84ca-eb6c209c6e94/95fb9d57-7f0c-4a1f-9376-14267dcb3f6c.avif" alt="Hình ảnh minh họa liên quan đến cấu hình mạng camera" />
+</Frame>
+
+Vào giao diện Trung tâm Mạng và Chia sẻ và nhấp vào "**Thay đổi cài đặt bộ điều hợp**".
+
+<Frame>
+  <img src="/images/legacy/738c34bb-f38e-4457-826b-02ce8ef64a28/5181b10d-ae88-4a9d-9485-4deba6993533.avif" alt="Sơ đồ liên quan cấu hình mạng camera 2" />
+</Frame>
+
+Vào giao diện kết nối mạng, click đúp chuột để chọn Ethernet mà camera được kết nối.
+
+<Frame>
+  <img src="/images/legacy/a9e4f271-a49e-45ba-9c95-507da52dd6bc/44b2f404-5ef4-4ddf-8eef-a3ae1eed10d7.avif" alt="Sơ đồ liên quan cấu hình mạng camera 3" />
+</Frame>
+
+Kiểm tra trạng thái Ethernet (nên sử dụng cổng mạng Gigabit) và nhấp vào nút "**Properties**".
+
+<Frame>
+  <img src="/images/legacy/f4e9e585-b466-4cfe-9073-3a51dd6f5a60/3f3596f1-39e4-4de8-8ba0-240b563ef8fb.avif" alt="Sơ đồ liên quan cấu hình mạng camera 4" />
+</Frame>
+
+Nhập giao diện thuộc tính Ethernet, tìm "**Internet Protocol Version 4 (TCP/IPv4)**" và nhấp đúp để mở.
+
+<Frame>
+  <img src="/images/legacy/41593f67-f0f6-4fb0-a1f5-25b16aab42c9/58c00f3e-7ce4-4f9f-92a3-16fb4a3198a5.avif" alt="Sơ đồ liên quan cấu hình mạng camera 5" />
+</Frame>
+
+Nhập giao diện Internet Protocol version 4 (TCP/IPv4), chọn "**Use the after IP address**" để ghi địa chỉ IP, subnetmask và default Gateway.
+
+<Frame>
+  <img src="/images/legacy/f929004b-da3f-45e9-9220-2dffb173782e/9beedb39-c61d-481b-ac65-eae8966c7684.avif" alt="Sơ đồ liên quan đến cấu hình mạng camera 6" />
+</Frame>
+
+Cài đặt địa chỉ IP: 192.168.100.xxx Mặt nạ mạng con: 255.255.255.0 Cổng mặc định: 192.168.100.1. Đặt IP như hình bên dưới. Sau khi cài đặt hoàn tất, nhấp vào nút "OK".
+
+<Frame>
+  <img src="/images/legacy/d45ed4aa-13c0-463a-b0e0-8bd35ad2cd32/917ecfab-67f5-4f53-8f98-756f33624e7c.avif" alt="Các hình ảnh minh họa liên quan đến cấu hình mạng camera 7" />
+</Frame>
+
+Sau khi nhấn nút OK sẽ tự động quay về giao diện trước đó. Nhấp vào "**OK**" lần nữa để hoàn tất cấu hình mạng.
+
+<Frame>
+  <img src="/images/legacy/f56eefc8-af02-4633-8c35-7da0caa84905/395584ea-e679-44f5-818b-4dc6a76389da.avif" alt="Các hình ảnh minh họa liên quan đến cấu hình mạng camera 8" />
+</Frame>
+
+### 7.2 Xác nhận tắt tường lửa
+
+1. Sau khi camera được cài đặt cố định, bước triển khai đầu tiên yêu cầu tắt tường lửa của máy tính.
+
+2. Lấy hệ thống Win10 làm ví dụ, nhấp đúp vào [**Control Panel**] trên màn hình nền và nhấp vào [**System and Security**] sau khi nhập.
+
+<Frame>
+  <img src="/images/legacy/10f577ff-3207-45a6-ada2-d7e2d90da11b/03de5534-1fe9-4ffe-9db7-9309b05b73f0.avif" alt="Các biểu tượng liên quan đến xác nhận tắt tường lửa" />
+</Frame>
+
+3. Nhấp vào nút [**Tường lửa của Bộ bảo vệ Windows**] để vào trang tường lửa
+
+<Frame>
+  <img src="/images/legacy/6480e38b-8e12-4d64-8c96-68612da23908/d61d5bac-33e8-4d46-ab22-1a55500a26ff.avif" alt="Biểu tượng liên quan đến xác nhận tắt tường lửa 2" />
+</Frame>
+
+4. Nhấp vào nút [**Bật hoặc tắt Tường lửa của Bộ bảo vệ Windows**] để vào trang bật/tắt tường lửa.
+
+5. Chọn [**Tắt tường lửa của Bộ bảo vệ Windows**] cho cả mạng riêng và mạng công cộng, rồi nhấp vào nút [**Xác nhận**] để tắt tường lửa.
+
+<Frame>
+  <img src="/images/legacy/1a7789dc-c752-4106-9316-681f5c1a4afa/d8583eab-22db-413f-9a42-76dc0908b50b.avif" alt="Biểu tượng liên quan đến xác nhận tắt tường lửa 3" />
+</Frame>
+
+### 7.3 Hiệu chỉnh tham số bên ngoài phát hiện khối lượng
+
+1. Sau khi hoàn tất cấu hình IP camera và đóng tường lửa, hãy chuyển sang bước triển khai thứ hai. Mở phần mềm để hiệu chỉnh các thông số bên ngoài của thuật toán. Cần phải hiệu chỉnh mặt đất tham chiếu cụ thể và độ lệch góc lắp đặt camera.
+
+2. Click vào cấu hình camera và chuyển sang giao diện hiệu chỉnh thông số. Trước khi thực hiện hiệu chỉnh tham số bên ngoài, hãy đảm bảo rằng x, y, z, roll, pitch và yaw bằng 0. Nếu chúng khác 0, bạn cần đưa tất cả các tham số về 0 và nhấp vào nút [**Save and Send**]. Sau khi các thông số được lưu thành công, hãy hiệu chỉnh lại các thông số bên ngoài.
+
+<Frame>
+  <img src="/images/legacy/8e7ce98c-d40b-4d33-8761-2567f011af39/5b0ac758-4684-43e9-83c5-65f9fc7f1c76.avif" alt="Hình minh họa liên quan đến hiệu chuẩn tham số bên ngoài phát hiện khối lượng" />
+</Frame>
+
+3. Sau khi xác nhận rằng tất cả các tham số đều bằng 0, hãy nhấp vào nút [**Hiệu chỉnh tham số bên ngoài**]. Sau khi hiệu chuẩn thành công, phần mềm sẽ hiện ra hộp thoại nhắc nhở. Bạn có thể xem thông số camera đã hiệu chỉnh ở cột thông số bên phải.
+
+<Frame>
+  <img src="/images/legacy/e6cf55ec-456a-4d76-9966-90c577dc843b/69fb9d8f-7938-4488-81c4-d817b5ac5b86.avif" alt="Hình minh họa liên quan đến hiệu chuẩn tham số bên ngoài phát hiện khối lượng 2" />
+</Frame>
+
+4. Sau khi ghi lại giá trị chiều cao camera "z", hãy thay đổi giá trị z thành 0 và nhấp vào nút [**Save and Send**]. Các thông số hiệu chỉnh camera được lưu thành công. (Giá trị z của camera cần được đặt ở khoảng cách mặt phẳng phát hiện trong quá trình phát hiện âm lượng, vì vậy sau khi ghi lại chiều cao hiệu chỉnh của camera, nó cần được thay đổi thành 0, nếu không sẽ có vấn đề với việc phát hiện)
+
+<Frame>
+  <img src="/images/legacy/68e62f9a-1684-46f5-bd66-a9eba060776d/291a7bc1-f174-4321-a322-3f7ab22dd720.avif" alt="Hình minh họa liên quan đến hiệu chuẩn thông số bên ngoài phát hiện khối lượng 3" />
+</Frame>
+
+5. Sau khi các tham số đã hiệu chỉnh được lưu và phân phối, quá trình hiệu chỉnh tham số bên ngoài sẽ hoàn tất. Bước tiếp theo là thiết lập các tham số phát hiện âm lượng.
+
+### 7.4 Cài đặt khoảng cách mặt phẳng phát hiện khối
+
+1. Nhấp vào Phát hiện âm lượng, chuyển sang trang cài đặt tham số phát hiện âm lượng và trước tiên đặt "Khoảng cách mặt phẳng phát hiện", liên quan đến việc vẽ vùng phát hiện và độ chính xác phát hiện.
+
+<Frame>
+  <img src="/images/legacy/7481f12c-1af6-4de4-bf05-2f48487bef85/a5609871-908c-45e6-a129-ff9e86dac5c6.avif" alt="Các minh họa liên quan đến cài đặt khoảng cách mặt phẳng phát hiện âm lượng" />
+</Frame>
+
+2. Điền giá trị chiều cao "z" 2709 thu được trong quá trình hiệu chỉnh tham số bên ngoài vào khoảng cách mặt phẳng phát hiện. Đây là khoảng cách thực tế giữa camera và mặt phẳng phát hiện. Nhấp vào nút [**Save and Send**] để ghi giá trị độ cao đã cài đặt vào máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/afb78eac-49f7-43ac-8c5d-b6963a53716b/fadaeebd-d48e-4ba2-90d9-87d9017926af.avif" alt="Hình minh họa liên quan đến cài đặt khoảng cách mặt phẳng phát hiện khối 2" />
+</Frame>
+
+3. Bằng cách di chuyển dữ liệu hình ảnh đám mây điểm, bạn có thể thấy độ cao mặt đất đã thay đổi. Tại thời điểm này, khu vực phát hiện âm lượng có thể được cấu hình.
+
+<Frame>
+  <img src="/images/legacy/3cea221c-a39b-4f53-9965-41192272e8ed/3d8aeec7-d33b-48e8-a061-890a6ebed8fa.avif" alt="Các minh họa liên quan đến cài đặt khoảng cách mặt phẳng phát hiện khối 3" />
+</Frame>
+
+### 7.5 Cài đặt phạm vi phát hiện âm lượng
+
+1. Đặt phạm vi phát hiện. Để điều chỉnh độ dài và chiều rộng (xy) của phát hiện, trước tiên nên chuyển sang chế độ xem lên và xuống. Sau đây là các phím tắt cho mỗi chế độ xem.
+
+<Frame>
+  <img src="/images/legacy/d328c397-8e2f-41ef-9f06-46ce32b2cf7f/30b799d3-964c-4adc-90cc-b0cca7ebe17a.avif" alt="Hình minh họa liên quan đến cài đặt phạm vi phát hiện âm lượng" />
+</Frame>
+
+2. Sử dụng các phím tắt trên bàn phím để chuyển sang chế độ xem lên và xuống như minh họa trong hình bên dưới. Hộp màu trắng được chỉ bằng mũi tên màu đỏ cho biết hướng x của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại, phạm vi phát hiện tối đa và tối thiểu theo hướng x được đặt thành 600 và -600.
+
+<Frame>
+  <img src="/images/legacy/e0d9e0ec-e8f1-493c-8262-3e6522ee4280/f81e0deb-e48b-4215-99cb-f49c5b0cc3ec.avif" alt="Hình minh họa liên quan đến cài đặt phạm vi phát hiện âm lượng 2" />
+</Frame>
+
+3. Hộp màu trắng được chỉ bằng mũi tên màu xanh lục cho biết hướng y của phạm vi phát hiện. Bạn có thể sửa đổi giá trị tương ứng bằng cách cuộn con lăn chuột để hoàn thành việc điều chỉnh độ dài và chiều rộng của phạm vi phát hiện. Hiện tại, phạm vi phát hiện tối đa và tối thiểu theo hướng y được đặt thành 480 và -580.
+
+<Frame>
+  <img src="/images/legacy/3bc64b36-13b3-4f5d-a14a-30ddb9509781/817b24b0-3bfc-4157-868f-43142cd956e4.avif" alt="Hình minh họa liên quan đến cài đặt phạm vi phát hiện âm lượng 3" />
+</Frame>
+
+4. Mũi tên màu xanh chỉ hướng z của phạm vi phát hiện. Giá trị có thể được sửa đổi bằng cách cuộn bằng con lăn chuột hoặc giá trị có thể được nhập trực tiếp. Nên đặt giá trị z tối đa của phạm vi phát hiện hiện tại cao hơn một chút so với khoảng cách mặt phẳng phát hiện. Khoảng cách mặt phẳng phát hiện hiện tại là 2709 và giá trị z tối đa được đặt thành 2690. Phạm vi phát hiện tối thiểu được đặt theo kích thước của đối tượng. Nếu chiều cao của đối tượng vượt quá giá trị z tối thiểu thì thuật toán sẽ không phát hiện được.
+
+<Frame>
+  <img src="/images/legacy/68123a29-8322-4773-8b0a-67c7c388b797/17fe8b13-04c3-4f75-9e9b-1a5843af9533.avif" alt="Hình minh họa liên quan đến cài đặt phạm vi phát hiện âm lượng 4" />
+</Frame>
+
+5. Sau khi định cấu hình vùng phát hiện, nhấp vào nút [**Save and Send**] để lưu các thông số vào camera.
+
+<Frame>
+  <img src="/images/legacy/630b6f2b-c6fe-4a60-b3c3-d77ebff70f00/18746efa-a7b4-4e85-98fd-b16bcc470536.avif" alt="Các minh họa liên quan đến cài đặt phạm vi phát hiện âm lượng 5" />
+</Frame>
+
+### 7.6 Xem kết quả phát hiện ổ đĩa
+
+1. Sau khi cài đặt hiệu chuẩn tham số bên ngoài, tham số phát hiện âm lượng và vùng phát hiện âm lượng, hãy nhấp vào "**Công cụ cơ bản**" và đặt các đối tượng vào vùng phát hiện để xem kết quả. Hiện tại không có đối tượng nào và sẽ không có đối tượng nào được hiển thị trên thanh chức năng cơ bản.
+
+<Frame>
+  <img src="/images/legacy/1d829501-eb9b-4ddf-9a4c-b8d6622ef5c8/909c8066-fa20-47ea-b78b-d97bf227cd3b.avif" alt="Xem các biểu tượng liên quan để biết kết quả kiểm tra khối lượng" />
+</Frame>
+
+2. Sau khi đặt đối tượng hiện tại, thông tin chiều dài, chiều rộng và chiều cao của đối tượng hiện tại sẽ được hiển thị trên thanh hiển thị trạng thái âm lượng.
+
+<Frame>
+  <img src="/images/legacy/c5e9a64a-ae7f-45d3-b755-901d823dd7c2/8f782245-62e5-4988-bfd1-ccea4c1d9b11.avif" alt="Xem kết quả kiểm tra khối lượng xem sơ đồ liên quan 2" />
+</Frame>
+
+3. Khi đặt nhiều đối tượng, cột hiển thị kết quả phát hiện âm lượng sẽ hiển thị chiều dài, chiều rộng và chiều cao của nhiều đối tượng và số lượng đối tượng sẽ được hiển thị.
+
+<Frame>
+  <img src="/images/legacy/3c57003c-871a-476b-a797-242644703cf8/1f873710-e793-47b1-aaa0-13b76302c457.avif" alt="Xem kết quả kiểm tra khối lượng xem sơ đồ liên quan 3" />
+</Frame>
+
+### 7.7 Chức năng kích hoạt đơn phát hiện âm lượng
+
+1. Trong giao diện cài đặt phát hiện âm lượng, hãy bật chế độ cảm ứng và nhấp vào nút [**Save and Send**] để bật chế độ kích hoạt thành công.
+
+<Frame>
+  <img src="/images/legacy/46b712f6-2daa-40c2-9a01-b8a18f6acc13/4bd31b14-3a53-479b-b2b1-e51ef03634ed.avif" alt="Hình minh họa liên quan đến chức năng kích hoạt đơn phát hiện khối lượng" />
+</Frame>
+
+2. Nhấp vào công cụ cơ bản và nhận hình ảnh cũng như kết quả bằng cách nhấp vào nút [**Single Trigger**].
+
+<Frame>
+  <img src="/images/legacy/29f635b6-9707-4f17-b77d-a05883ffb7fd/e40f2f1f-6fb0-49bb-ae01-53b0627846fe.avif" alt="Hình minh họa liên quan đến chức năng kích hoạt đơn phát hiện khối lượng 2" />
+</Frame>
+
+## 8. Giao thức truyền thông
+
+### 8.1 Giao tiếp TCP
+
+1. Có thể thu được kết quả phát hiện ổ đĩa thông qua giao tiếp TCP. Thông qua trợ lý gỡ lỗi mạng, IP camera từ xa: 192.168.100.82, cổng: 14951, gửi RESULT\_UPDATE để xem thông tin kết quả phát hiện ổ đĩa được trả về.
+
+<Frame>
+  <img src="/images/legacy/3268f158-13ec-4e80-b780-9c3dc39fc857/018ebf50-eeee-4ab6-b688-4cffbcc99987.avif" alt="Các biểu tượng liên quan đến giao tiếp TCP" />
+</Frame>
+
+### 8.2 Giao tiếp UDP
+
+1. Có thể thu được kết quả phát hiện ổ đĩa thông qua giao tiếp UDP. Thông qua trợ lý gỡ lỗi mạng, IP camera từ xa: 192.168.100.82, cổng: 14950, gửi RESULT\_UPDATE để xem thông tin kết quả phát hiện ổ đĩa được trả về.
+
+<Frame>
+  <img src="/images/legacy/17127c06-43af-4038-b287-8a42f8aa9ba7/905bafb7-3038-43f2-9c23-666327a4c4e0.avif" alt="Các biểu tượng liên quan đến giao tiếp UDP" />
+</Frame>
+
+### 8.3 Giao tiếp HTTP
+
+1. Có thể nhận được kết quả phát hiện ổ đĩa thông qua giao tiếp HTTP, số cổng: 14952.
+
+2. Hệ thống lớp trên (WMS) thu được tín hiệu từ kết quả gửi hình ảnh và hình ảnh trả về một chuỗi ở định dạng JSON.
+
+| WMS -> Tầm nhìn | ㅤ |
+| --- | --- |
+| Kết quả | Ý nghĩa |
+| KẾT QUẢ_CẬP NHẬT | Kích hoạt tín hiệu trả về kết quả trực quan |
+| Tầm nhìn -> WMS | ㅤ |
+| Kết quả | Ý nghĩa |
+| IP | Nguồn dữ liệu camera IP |
+| TM | Trạng thái phát hiện khối lượng |
+| góc | Góc của đối tượng được chọn |
+| cx | tọa độ x của đối tượng được chọn khung |
+| cy | tọa độ y của đối tượng được chọn khung |
+| cz | Khung đối tượng được chọn tọa độ z |
+| chiều cao | chiều cao vật thể |
+| chiều dài | chiều dài vật thể |
+| chiều rộng | chiều rộng đối tượng |
+| hợp lệ | sai nếu độ tin cậy quá thấp, đúng nếu không |
+| TM_DATA_TIME | Thời gian trích xuất dữ liệu phát hiện khối lượng |
+| TM_RES_TIME | Thời gian xuất kết quả phát hiện khối lượng |
+| biệt danh | Tên camera phát hiện âm lượng, có thể cấu hình trong camera |
+| ret_code | Mã trả về, 0 là thành công |
+
+**9\.Phụ lục**
+
+```json
+{
+
+"IP":"192.168.100.82", // Camera IP
+
+"TM":\[{
+
+"angle":-6.821981430053711, // Bounding-box angle
+
+"cx":39.98405456542969, // Bounding-box x-coordinate
+
+"cy":257.008056640625, // Bounding-box y-coordinate
+
+"cz":2400.63818359375, // Bounding-box z-coordinate
+
+"height":616.723876953125, // Object height
+
+"length":525.5135498046875, // Object length
+
+"type":"","valid":true, // false when confidence is too low
+
+"width":419.761474609375}\], // Object width
+
+"TM_DATA_TIME":"2024_11_13_16_37_47.422", // Volume-detection data timestamp
+
+"TM_RES_TIME":"2024_11_13_16_37_48.209", // Volume-detection result timestamp
+
+"nick_name":"_default_", // Volume-detection camera name
+
+"ret_code":0 // Return code; 0 indicates success
+
+}
+```

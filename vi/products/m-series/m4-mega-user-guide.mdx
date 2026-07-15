@@ -1,0 +1,587 @@
+---
+title: "Hướng dẫn sử dụng sản phẩm M4 Mega"
+description: "Thông số kỹ thuật, tính năng và hướng dẫn vận hành của camera MRDVS M4 Mega."
+hidden: true
+---
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 30/01/2024 | V0.1 | Tài liệu ban đầu |
+| 03/04/2023 | V1.0 | Đã thêm hướng dẫn kích hoạt phần mềm và phần cứng |
+| 2024/05/10 | V1.1 | Đã sửa thông tin và thông số camera |
+| 17/06/2024 | V1.2 | Sửa lại thứ tự dây camera và bổ sung giấy chứng nhận hợp quy cho gói hàng |
+| 2024/11/125 | V1.3 | Cập nhật nhiệt độ bảo quản máy ảnh |
+
+## 1. Tổng quan về sản phẩm
+
+Hướng dẫn này mô tả máy ảnh M4 Mega do Chiết Giang MRDVS Technology Co., Ltd. phát triển, bao gồm các thông số kỹ thuật, tính năng và hướng dẫn vận hành.
+
+Dòng sản phẩm M4 Mega bao gồm máy ảnh M4 Mega. Sản phẩm ToF này sử dụng giao diện truyền thông Gigabit Ethernet và nguồn điện 24VDC.
+
+<Frame>
+  <img src="/images/legacy/dfa15fb3-9172-4f91-9552-5e84b02ac2df/9e681e0b-79da-495d-997b-3622da10cf53.avif" alt="Tổng quan về máy ảnh M4 Mega" />
+</Frame>
+
+Hình 1.1. Máy ảnh M4 Mega
+
+### 1.1 Đặc tính sản phẩm
+
+- Khả năng tính toán 1Tops tích hợp để hoạt động mà không cần CPU bên ngoài
+
+- Hỗ trợ RGB-D
+
+- Tránh chướng ngại vật độc lập, lắp ghép, định vị, nắm gói phần mềm, phát hiện vị trí lưu trữ và đo khối lượng
+
+- Cổng Gigabit Ethernet
+
+- Bảo vệ chống xâm nhập IP67
+
+### 1.2 Điều khoản sử dụng
+
+**Tuân thủ các yêu cầu sau trong quá trình sử dụng:**
+
+- Không bóc nhãn khỏi sản phẩm.
+
+- Không tháo rời sản phẩm. Việc tháo rời có thể làm hỏng nó.
+
+- Không sử dụng sản phẩm ở nơi có từ trường mạnh.
+
+- Không sử dụng sản phẩm dưới ánh nắng gay gắt trên 100KLUX.
+
+- Để làm sạch vỏ, hãy lau bằng vải mềm, không có xơ, được làm ẩm nhẹ bằng nước tinh khiết hoặc cồn.
+
+- Giữ nguyên bao bì gốc và sử dụng bất cứ khi nào có thể trong quá trình vận chuyển.
+
+* * *
+
+## 2. Thông số sản phẩm
+
+### 2.1 Nguyên lý đo khoảng cách
+
+Máy ảnh M4 Mega sử dụng phạm vi thời gian bay (ToF). Nó đo thời gian giữa lúc phát ra ánh sáng và nhận được sự phản xạ từ một vật thể để tính khoảng cách giữa vật thể đó và máy ảnh.
+
+Camera M4 Mega ghi lại độ sâu trực tiếp, cung cấp thông tin độ sâu chất lượng cao với tài nguyên điện toán tối thiểu và xây dựng cảnh có độ sâu ở tốc độ khung hình cao. Giống như LiDAR, máy ảnh ToF có thể sử dụng ToF xung (P\_ToF) hoặc ToF được điều chế sóng liên tục (CW\_ToF). P\_ToF phát ra các xung ánh sáng, thường không nhìn thấy được và tính toán khoảng cách từ thời gian khứ hồi của chúng. CW\_ToF phát ra ánh sáng liên tục được điều chế và tính toán khoảng cách so với độ lệch pha giữa ánh sáng phát ra và ánh sáng phản hồi.
+
+<Frame>
+  <img src="/images/legacy/9073b55e-eee9-4096-9763-f0dff90715c4/48b26d0f-36a5-43d7-a236-8e885b07fe10.avif" alt="Nguyên lý đo khoảng cách ToF" />
+</Frame>
+
+Hình 2.1. Nguyên tắc phát hiện
+
+### 2.2 Tổng quan về sản phẩm
+
+Máy ảnh RGB-D công nghiệp nhỏ gọn này tích hợp máy ảnh Sony CW iToF với đầu ra RGB màu thật ba kênh. Nó cung cấp dữ liệu độ sâu từ 0,2m~5m và căn chỉnh hình ảnh RGB và độ sâu theo không gian và thời gian. Máy ảnh cũng có thể xuất kết quả nhận dạng pallet có cấu trúc qua CAN.
+
+### 2.3 Thông số kỹ thuật
+
+Bảng 2-1. Thông số sản phẩm
+
+| Máy ảnh | Người mẫu | Đại Bàng-M4 Mega |
+| --- | --- | --- |
+| Hiệu suất | Cảm biến | Cảm biến Sony |
+| ㅤ | Phương pháp đo | Giờ bay |
+| ㅤ | Bước sóng hoạt động | 940nm |
+| ㅤ | Độ phân giải TOF và tốc độ khung hình | 640×480 (15 khung hình/giây điển hình, Tối đa 25 khung hình/giây) |
+| ㅤ | Trường nhìn TOF | 81°×61° |
+| ㅤ | Độ phân giải RGB và tốc độ khung hình | 1280×960 (15 khung hình/giây điển hình, Tối đa 25 khung hình/giây) |
+| ㅤ | Trường nhìn RGB | 86°×55° |
+| ㅤ | Phạm vi đo | 0,2 ~ 5m (độ phản xạ 90%); 0,2~2,5m (độ phản xạ 10%) |
+| ㅤ | Độ chính xác của phép đo | ±3 mm+0,25%×độ sâu |
+| Điện | Giao diện truyền thông | Ethernet / CÓ THỂ / IO |
+| ㅤ | Đầu nối nguồn | Đầu nối tròn 5 chân công nghiệp |
+| ㅤ | Nguồn điện | 24V DC/2A |
+| ㅤ | Tiêu thụ điện năng trung bình | 6,8 tuần |
+| Cơ khí | Kích thước | 92mm×47mm×51mm |
+| ㅤ | Cân nặng | 449g |
+| ㅤ | Bảo vệ xâm nhập | IP67 |
+| ㅤ | Nhiệt độ hoạt động | -20oC~60oC |
+| ㅤ | Nhiệt độ bảo quản | -40oC~85oC |
+| ㅤ | Độ ẩm | 10%~90%RH, không ngưng tụ |
+| Khác | Miễn dịch ánh sáng xung quanh | Hỗ trợ ánh sáng mặt trời lên tới 100Klux |
+| ㅤ | Chuyển đổi bóng sang ánh sáng | Biến đổi nhỏ hơn 1cm trên ranh giới ánh sáng bóng tối 100Klux |
+| ㅤ | Môi trường phần mềm | SDK C / C++ / ROS |
+| ㅤ | Hệ điều hành được hỗ trợ | Windows7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Làm mát | Bị động |
+
+Lưu ý: Tham khảo mô hình 3D để biết kích thước sản phẩm.
+
+* * *
+
+## 3. Đặc tính sản phẩm
+
+### 3.1 Đặc tính điện
+
+Bảng 3-1. Đặc tính điện
+
+| Tham số | Biểu tượng | Tình trạng | Tối thiểu | Điển hình | Tối đa | Đơn vị |
+| --- | --- | --- | --- | --- | --- | --- |
+| Điện áp cung cấp | VDD | ㅤ | 18 | 24 | 30 | V |
+| I/O kỹ thuật số | TRONG | ㅤ | 3.3 | ㅤ | 24 | V |
+| CÓ THỂ | ㅤ | ㅤ | 0 | ㅤ | 5V | V |
+| Nhiệt độ hoạt động | Tạ | ㅤ | -20 | ㅤ | 60 | oC |
+| Độ ẩm hoạt động | ㅤ | ㅤ | 20 | ㅤ | 80 | % |
+| Độ ẩm bảo quản | ㅤ | ㅤ | -25 | ㅤ | 80 | % |
+| Nhiệt độ bảo quản | ㅤ | ㅤ | -40 | ㅤ | 85 | oC |
+
+### 3.2 Đặc tính đầu ra
+
+Theo mặc định, camera M4 Mega xuất ra hình ảnh độ sâu (Hình 3.1), dữ liệu cường độ tín hiệu trên mỗi pixel (Hình 3.2) và đám mây điểm được tạo từ dữ liệu độ sâu (Hình 3.3). Đối tượng được hiển thị là một cấu hình nhôm.
+
+<Frame>
+  <img src="/images/legacy/7fba5ea3-f9bc-4302-8e63-bf4b09d06542/9cf66ae3-32b0-4888-b89b-088c2d9ccdb2.avif" alt="Hình ảnh độ sâu M4 Mega" />
+</Frame>
+
+Hình 3.1. Hình ảnh có chiều sâu
+
+<Frame>
+  <img src="/images/legacy/2f31d128-6807-4da9-ab0f-2a75815adf78/40d8b3a3-0f10-4908-9d0a-31e407159724.avif" alt="Hình ảnh biên độ Mega M4" />
+</Frame>
+
+Hình 3.2. Hình ảnh biên độ
+
+<Frame>
+  <img src="/images/legacy/e6af30f3-0b25-4d52-b50d-5ab6f0e04039/4ee38776-48ad-4426-8d59-8236dae4152b.avif" alt="Đám mây điểm M4 Mega" />
+</Frame>
+
+Hình 3.3. Đám mây điểm
+
+Máy ảnh sử dụng dải động cao (HDR) liên khung để mở rộng phạm vi đo. Cảm biến xuất ra hai khung độ sâu với thời gian tích hợp và thông số hiệu chuẩn khác nhau. Đối với mỗi pixel, ứng dụng máy chủ sẽ chọn khung hình có cường độ cao hơn và kết hợp các kết quả vào đầu ra cuối cùng, cải thiện độ chính xác về độ sâu trên các phạm vi đo.
+
+### 3.3 Phạm vi phát hiện
+
+Hình 3.4 thể hiện vùng phát hiện M4 Mega. Trường nhìn ngang của máy ảnh là 81° và trường nhìn dọc của nó là 61°. Khoảng cách phát hiện phụ thuộc vào công suất quang. Công suất quang học và độ phản xạ mục tiêu cao hơn sẽ làm tăng vùng mù gần nhưng giảm vùng mù xa. Công suất quang học và độ phản xạ mục tiêu thấp hơn sẽ làm giảm vùng mù gần nhưng làm tăng vùng mù xa. Đối với các vật thể có độ phản xạ 10%~90%, phạm vi đo M4 Mega là 0,2~5m. Ngoài 5m, tín hiệu phản xạ yếu dễ bị ảnh hưởng bởi ánh sáng xung quanh hơn và tạo ra sai số lớn hơn.
+
+<Frame>
+  <img src="/images/legacy/d2c7d1d4-7874-4390-946b-d8730eea406b/d6a07ab9-42fc-4b9c-a880-f18036ec5d5e.avif" alt="Phạm vi phát hiện M4 Mega" />
+</Frame>
+
+Hình 3.4. Trường nhìn
+
+### 3.4 Tham chiếu độ phản xạ
+
+Các giá trị phản xạ trong hướng dẫn này được đo bằng thẻ trắng tiêu chuẩn Kodak. Giá trị tham khảo cho các vật liệu khác xuất hiện bên dưới.
+
+Bảng 3-2. Độ phản xạ vật liệu
+
+| Không. | Chất liệu | Phản xạ |
+| --- | --- | --- |
+| 1 | Cao su đen | 22% |
+| 2 | Cốc gốm đen | 34% |
+| 3 | Tấm nhựa đen | 42% |
+| 4 | Báo | 45% |
+| 5 | Vải đen | 78% |
+| 6 | Chai nhựa đục | 85% |
+| 7 | Tấm gỗ mịn | 90% |
+| 8 | Giấy trắng | 90% |
+| 9 | Thẻ trắng tiêu chuẩn Kodak | 100% |
+| 10 | Kính trong | 140% |
+| 11 | Bề mặt kim loại sáng bóng, sáng màu | 150% |
+
+### 3,5 Kích thước
+
+<Frame>
+  <img src="/images/legacy/41e5cfff-1f96-4d8b-b5c3-778510deecc6/92c19eea-e8de-492c-974b-c336c6e9c35a.avif" alt="Kích thước máy ảnh M4 Mega" />
+</Frame>
+
+Hình 3.5. Kích thước máy ảnh M4 Mega
+
+### 3.6 Hệ tọa độ quang học và gốc tọa độ
+
+**Hệ tọa độ quang học:**
+
+- Hệ tọa độ quang học bao gồm hệ tọa độ camera (CCS) và hệ tọa độ thế giới (WCS).
+
+- Hệ tọa độ camera là hệ tọa độ ảnh chiều sâu hai chiều. Nguồn gốc của nó là trung tâm quang học.
+
+- Hệ tọa độ thế giới là hệ tọa độ đám mây điểm ba chiều.
+
+- Sử dụng nội tại của máy ảnh để chuyển đổi tọa độ hình ảnh chiều sâu thành tọa độ đám mây điểm 3D. Xem ví dụ về SDK.
+
+<Frame>
+  <img src="/images/legacy/15bb76dc-0f9d-44b5-b5e1-ff5f5db180c9/66151ae6-e148-4e2f-b3cc-cc7c07ab6786.avif" alt="Hệ tọa độ quang học" />
+</Frame>
+
+Hình 3.6. Hệ tọa độ quang học
+
+**Nguồn gốc camera được xác định như sau:**
+
+1. Gốc tọa độ X thẳng hàng với trục X của sản phẩm.
+
+2. Gốc tọa độ Y thẳng hàng với trục Y của sản phẩm.
+
+3. Gốc tọa độ Z nằm ở mặt trước của máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/0ad35a33-5ffd-4ac5-aa4a-4c49510b3086/d103a7c5-96e8-41f6-a584-9d84290acf49.avif" alt="Xuất xứ máy ảnh M4 Mega" />
+</Frame>
+
+Hình 3.7. Xuất xứ máy ảnh
+
+### 3.7 Giao diện sản phẩm
+
+### 3.7.1 Giao diện phía camera
+
+Camera có ba giao diện: cổng nguồn DC24V, cổng Gigabit Ethernet và cổng chức năng I/O/CAN.
+
+<Frame>
+  <img src="/images/legacy/084d1df0-d394-47f2-8b63-36772f8206a7/bc4360fc-0155-417f-acd3-25f738923f47.avif" alt="Giao diện phía camera M4 Mega" />
+</Frame>
+
+Bảng 3-3. Định nghĩa ghim
+
+| Cảng | Ghim | Tín hiệu | Mô tả |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0_N | Gigabit Ethernet |
+| ㅤ | 2 | MDI0_p | ㅤ |
+| ㅤ | 3 | MDI1_N | ㅤ |
+| ㅤ | 4 | MDI1_p | ㅤ |
+| ㅤ | 5 | MDI2_N | ㅤ |
+| ㅤ | 6 | MDI2_p | ㅤ |
+| ㅤ | 7 | MDI3_N | ㅤ |
+| ㅤ | 8 | MDI3_p | ㅤ |
+| Cổng chức năng | 1 | CÓ THỂ_H | CÓ THỂ_H |
+| ㅤ | 2 | CÓ THỂ_L | CÓ THỂ_L |
+| ㅤ | 3 | GND | CÓ THỂ GND |
+| ㅤ | 4 | NGOÀI_1 | Đầu ra I/O 1 |
+| ㅤ | 5 | COM | Thiết bị đầu cuối COM I/O |
+| ㅤ | 6 | NGOÀI_2 | Đầu ra I/O 2 |
+| ㅤ | 7 | IN_1 | Đầu vào/ra 1 |
+| ㅤ | 8 | IN_2 | Đầu vào/ra 2 |
+| Cổng nguồn | 1 | 24+ | Đầu nối nguồn DC cái, 5,5-2,1mm |
+| ㅤ | G | 24- | ㅤ |
+
+### 3.7.2 Thứ tự dây cáp chức năng
+
+<Frame>
+  <img src="/images/legacy/127c7be8-df93-4eb0-b3d3-43900a9f8029/9b15e07f-c965-496b-8a78-e8218383e90b.avif" alt="Đặt hàng dây cáp chức năng M4 Mega" />
+</Frame>
+
+Bảng 3-4. Thứ tự dây cáp chức năng
+
+| Cáp | Màu sắc | Ghim | Mô tả |
+| --- | --- | --- | --- |
+| Cáp chức năng | Cam | CÓ THỂ_H | CÓ THỂ_H |
+| ㅤ | Vàng | CÓ THỂ_L | CÓ THỂ_L |
+| ㅤ | Xanh | GND | CÓ THỂ GND |
+| ㅤ | Nâu | IN_1 | Đầu vào/ra 1 |
+| ㅤ | Trắng | IN_2 | Đầu vào/ra 2 |
+| ㅤ | Màu tím | COM | Thiết bị đầu cuối COM I/O |
+| ㅤ | Màu xanh | NGOÀI_1 | Đầu ra I/O 1 |
+| ㅤ | Xám | NGOÀI_2 | Đầu ra I/O 2 |
+| Cáp nguồn | Đỏ | 24V+ | Thiết bị đầu cuối nguồn tích cực |
+| ㅤ | Đen | GND | Thiết bị đầu cuối điện âm |
+
+Lưu ý: Một số cáp chức năng cũ sử dụng các màu khác nhau. Kết nối dây theo nhãn của họ.
+
+### 3.8 Kích hoạt phần cứng
+
+1. Kích hoạt phần cứng chỉ hoạt động khi sản phẩm ở chế độ kích hoạt phần cứng. Các chế độ kích hoạt phần cứng và tránh chướng ngại vật loại trừ lẫn nhau. Ở chế độ kích hoạt phần cứng, máy ảnh chờ xung hợp lệ trên chân đầu vào I/O 1, hiển thị một khung hình và quay lại trạng thái chờ.
+
+2. Tín hiệu kích hoạt phần cứng phải là 3,3V~24V và cung cấp dòng điện ít nhất 10mA. Thêm một mạch tách vào chân tín hiệu kích hoạt để ngăn chặn các kích hoạt sai do nhiễu xung.
+
+### 3.8.1 Cấu hình kích hoạt phần cứng trong ứng dụng máy chủ
+
+Mở máy ảnh → xác minh rằng thuật toán tránh chướng ngại vật đã tắt → dừng luồng → **Công cụ cơ bản** → **Cài đặt ghi hình** → chuyển **Chế độ kích hoạt** thành **Trình kích hoạt phần cứng** → định cấu hình các tham số → bắt đầu truyền phát và chờ tín hiệu kích hoạt bên ngoài.
+
+**1. Thông số kích hoạt phần cứng**
+
+**Thời gian lọc:** Thời gian chờ trước khi kiểm tra lại tín hiệu kích hoạt sau khi đầu vào kích hoạt phần cứng nhận được. Điều này lọc tiếng ồn. Sử dụng giá trị dưới 5ms. Giá trị lớn hơn có thể lọc các tín hiệu kích hoạt hợp lệ.
+
+**Khoảng thời gian tối thiểu:** Khoảng thời gian giữa hai tín hiệu kích hoạt tự động liên tiếp. Phạm vi là 70000 ~ 100000000μs và giá trị phải vượt quá thời gian tích hợp.
+
+**Thời gian kích hoạt:** Trì hoãn sau khi kiểm tra lại tín hiệu kích hoạt. Đặt thành 0 để kích hoạt ngay lập tức. Phạm vi là 0 ~ 100000000μs.
+
+**Khung hình trên mỗi trình kích hoạt:** Số khung hình liên tiếp được kích hoạt bởi một trình kích hoạt phần cứng. Phạm vi là 1 ~ 200 khung hình.
+
+**2. Ví dụ về kích hoạt phần cứng**
+
+**Ví dụ 1:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: 70000 (tối thiểu); thời gian kích hoạt: 2000; khung hình trên mỗi kích hoạt: 10.
+
+Sau khi nhận được tín hiệu, camera đợi 1ms và kiểm tra lại. Nó đợi thêm 2ms trước khi kích hoạt khung đầu tiên, sau đó đợi 70ms giữa các khung tiếp theo cho đến khung 10. Tín hiệu kích hoạt nhận được trong chuỗi này sẽ bị bỏ qua.
+
+**Ví dụ 2:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: bị vô hiệu hóa; thời gian kích hoạt: 0; khung hình trên mỗi kích hoạt: 1.
+
+Sau khi nhận được tín hiệu, camera đợi 1ms, kiểm tra lại và kích hoạt ngay lập tức. Khoảng thời gian tối thiểu không áp dụng khi số khung hình trên mỗi trình kích hoạt là 1.
+
+**Ví dụ 3:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: 200000; thời gian kích hoạt: 0; khung hình trên mỗi kích hoạt: 200.
+
+### 3.9 Phần mềm kích hoạt
+
+Kích hoạt phần mềm chỉ hoạt động khi sản phẩm ở chế độ kích hoạt phần mềm. Các chế độ kích hoạt phần mềm và tránh chướng ngại vật loại trừ lẫn nhau. Ở chế độ kích hoạt phần mềm, máy ảnh sẽ chờ tín hiệu kích hoạt phần mềm hợp lệ, hiển thị một khung hình và quay lại trạng thái chờ.
+
+### 3.9.1 Cấu hình kích hoạt phần mềm trong ứng dụng chủ
+
+Mở máy ảnh → xác minh rằng thuật toán tránh chướng ngại vật đã tắt → dừng phát trực tuyến → **Công cụ cơ bản** → **Cài đặt ghi hình** → chuyển **Chế độ kích hoạt** thành **Trình kích hoạt phần mềm** → định cấu hình các tham số → bắt đầu phát trực tuyến → chọn **Gửi trình kích hoạt phần mềm**.
+
+1. **Thông số kích hoạt phần mềm**
+
+**Thời gian lọc:** Thời gian chờ trước khi kiểm tra lại tín hiệu kích hoạt sau khi đầu vào kích hoạt phần mềm nhận được. Điều này lọc tiếng ồn. Sử dụng giá trị dưới 5ms. Giá trị lớn hơn có thể lọc các tín hiệu kích hoạt hợp lệ.
+
+**Khoảng thời gian tối thiểu:** Khoảng thời gian giữa hai tín hiệu kích hoạt tự động liên tiếp. Phạm vi là 70000 ~ 100000000μs và giá trị phải vượt quá thời gian tích hợp.
+
+**Thời gian kích hoạt:** Trì hoãn sau khi kiểm tra lại tín hiệu kích hoạt. Đặt thành 0 để kích hoạt ngay lập tức. Phạm vi là 0 ~ 100000000μs.
+
+**Khung hình trên mỗi trình kích hoạt:** Số khung hình liên tiếp được kích hoạt bởi một trình kích hoạt phần mềm. Phạm vi là 1 ~ 200 khung hình.
+
+1. **Ví dụ về trình kích hoạt phần mềm**
+
+**Ví dụ 1:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: 70000 (tối thiểu); thời gian kích hoạt: 2000; khung hình trên mỗi kích hoạt: 10.
+
+Sau khi nhận được tín hiệu, camera đợi 1ms và kiểm tra lại. Nó đợi thêm 2ms trước khi kích hoạt khung đầu tiên, sau đó đợi 70ms giữa các khung tiếp theo cho đến khung 10. Tín hiệu kích hoạt nhận được trong chuỗi này sẽ bị bỏ qua.
+
+**Ví dụ 2:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: bị vô hiệu hóa; thời gian kích hoạt: 0; khung hình trên mỗi kích hoạt: 1.
+
+Sau khi nhận được tín hiệu, camera đợi 1ms, kiểm tra lại và kích hoạt ngay lập tức. Khoảng thời gian tối thiểu không áp dụng khi số khung hình trên mỗi trình kích hoạt là 1.
+
+**Ví dụ 3:** Thời gian lọc: 1000; khoảng thời gian tối thiểu: 200000; thời gian kích hoạt: 0; khung hình trên mỗi kích hoạt: 200.
+
+### 3.10 Linh kiện máy ảnh
+
+<Frame>
+  <img src="/images/legacy/64b9fcbe-8510-47da-879a-9f507a420b39/f10ec8bf-9fbd-4171-8bfd-343f75a7aab1.avif" alt="Linh kiện máy ảnh M4 Mega" />
+</Frame>
+
+| Không. | Thành phần |
+| --- | --- |
+| 1 | Chỉ báo nguồn; nhấp nháy chậm sau khi bật nguồn |
+| 2 | nguồn sáng 940 |
+| 3 | Mô-đun phát hiện nguồn nhiễu nhiều camera |
+| 4 | Ống kính TOF |
+| 5 | Ống kính RGB |
+
+### 3.11 Khuyến nghị cài đặt
+
+**Sử dụng một trong ba phương pháp cài đặt sau.**
+
+**Lắp đặt 1:** Không nhìn thấy được bức tường và sàn bên phải. Đặt máy ảnh ở một góc chỉ có bức tường phía trước trong tầm nhìn của nó. Cấu hình này cung cấp hiệu suất tốt.
+
+<Frame>
+  <img src="/images/legacy/030ef6a4-ef27-4b36-8352-3a1445bd2832/28aafc0b-35e5-4805-85f3-33b81dd90b1b.avif" alt="Khuyến nghị cài đặt M4 Mega 1" />
+</Frame>
+
+Hình 3.8. Cài đặt 1
+
+**Lắp đặt 2:** Có thể nhìn thấy bức tường bên phải nhưng không nhìn thấy sàn nhà. Đặt camera ở góc cách tường bên phải ít nhất 20 cm, đo bằng khoảng cách `d`. Cấu hình này có thể đạt được độ chính xác trong phạm vi ±15mm.
+
+<Frame>
+  <img src="/images/legacy/76b2edc0-9998-4b48-b1b3-eb5a4bb70ff2/705dd490-d064-4673-ae1d-ea26a5988268.avif" alt="Khuyến nghị cài đặt M4 Mega 2" />
+</Frame>
+
+Hình 3.9. Cài đặt 2
+
+**Lắp đặt 3:** Có thể nhìn thấy sàn nhưng không nhìn thấy bức tường bên phải. Lắp đặt camera ở độ cao khuyến nghị là 10cm~30cm so với sàn nhà.
+
+<Frame>
+  <img src="/images/legacy/af31b3dd-2dfe-4c86-9cd8-ad3cf733b6d5/781c4b72-b66f-4333-8863-e8841134f91c.avif" alt="Khuyến nghị cài đặt M4 Mega 3" />
+</Frame>
+
+Hình 3.10. Cài đặt 3
+
+Khi đặt camera gần sàn, tầng gần đó sẽ bị phơi sáng quá mức và ảnh hưởng đến các khu vực khác. Ánh sáng lạc và phản xạ đa đường cũng ảnh hưởng đến các phép đo gần sàn, như trong Hình 3.11.
+
+<Frame>
+  <img src="/images/legacy/7ed5f394-5804-4d15-bb62-5af975b04ea0/52e4d051-d12c-485b-a332-881a4079bec3.avif" alt="Hiệu ứng đa đường gần sàn" />
+</Frame>
+
+Hình 3.11. Hiệu ứng đa đường gần sàn
+
+Trong quang học hình ảnh, ánh sáng lạc chủ yếu xuất hiện dưới dạng bóng ma và ánh sáng lóa, như trong Hình 3.12.
+
+<Frame>
+  <img src="/images/legacy/be215d41-1668-41b1-94d9-307fc00c3111/74c91749-1740-42f4-8102-db289a1ac9ac.avif" alt="Bóng ma và ánh sáng chói từ ánh sáng lạc" />
+</Frame>
+
+Hình 3.12. Bóng ma và bùng phát
+
+**Không lắp đặt sản phẩm ở nơi có thể nhìn thấy cả tường và sàn bên phải**, như minh họa bên dưới. Ánh sáng đi lạc từ sàn và phản xạ đa đường từ tường có thể ảnh hưởng đến các phép đo theo những cách phức tạp.
+
+<Frame>
+  <img src="/images/legacy/6b579da9-bf2d-47ee-ae55-79872f74719d/991a71f8-ec30-46b0-bd22-529f0fb6716d.avif" alt="Cài đặt M4 Mega không được hỗ trợ" />
+</Frame>
+
+Hình 3.13. Cài đặt không được hỗ trợ
+
+* * *
+
+## 4. Độ chính xác và chính xác
+
+### 4.1 Độ chính xác
+
+Hiệu chuẩn loại bỏ các sai lệch cố định giữa các phép đo cảm biến và giá trị thực tế bằng cách ánh xạ cái này với cái kia. Để hiệu chỉnh máy ảnh M4 Mega, hãy gắn nó lên một thanh ray và hướng nó vào bức tường trắng. Ánh xạ giá trị đo được của từng pixel theo khoảng cách giữa camera và khu vực tường tương ứng, sau đó sửa các phép đo bằng ánh xạ này, như trong Hình 4.1.
+
+<Frame>
+  <img src="/images/legacy/379b03b6-5b43-4db0-bc44-b715c859694e/cd16d195-e215-49ca-a673-1c00034af49f.avif" alt="Thiết lập hiệu chuẩn M4 Mega" />
+</Frame>
+
+Hình 4.1. Sự định cỡ
+
+M4 Mega sử dụng phạm vi hoạt động nên có nhiều yếu tố ảnh hưởng đến độ chính xác của nó. Việc lắp đặt không đúng cách có thể gây ra hiệu ứng đa đường và làm sai lệch các phép đo.
+
+Điều này đặc biệt đáng chú ý khi đo mục tiêu có độ phản chiếu thấp bên cạnh vật thể có độ phản chiếu cao. Lý tưởng nhất là ánh sáng đi theo con đường màu xanh. Ánh sáng phản chiếu từ bức tường cũng có thể tới mục tiêu và quay trở lại máy ảnh dọc theo đường đi màu xanh lá cây. Ánh sáng phản chiếu trực tiếp từ vật thể có độ phản chiếu cao liền kề có thể đi vào máy ảnh dọc theo đường màu đỏ. Những khiếm khuyết quang học biến ánh sáng này thành ánh sáng chói gây cản trở phạm vi, như trong Hình 4.2.
+
+<Frame>
+  <img src="/images/legacy/e4159efc-5b5f-458d-b57f-e01e572c892f/b523267e-64ca-4b4c-9c2d-6d3c5afd55b6.avif" alt="Đường dẫn cài đặt và phản chiếu M4 Mega" />
+</Frame>
+
+Hình 4.2. Lắp đặt camera
+
+### 4.2 Độ chính xác
+
+Độ chính xác thường đề cập đến sự thay đổi một điểm (1-σ). Là một thiết bị đo quang điện tử, M4 Mega bị ảnh hưởng bởi chuyển đổi ADC, tỷ lệ tín hiệu trên nhiễu và nhiễu hệ thống. Hình 4.3 thể hiện mối quan hệ giữa độ chính xác của phép đo và cường độ tín hiệu.
+
+<Frame>
+  <img src="/images/legacy/ee73d646-4d62-4aaf-8833-5f2c4b5cf3d9/a3a07cf5-cd92-42b4-a817-e1ef02896e6d.avif" alt="Độ chính xác đo và cường độ tín hiệu" />
+</Frame>
+
+Hình 4.3. Độ chính xác đo và cường độ tín hiệu
+
+M4 Mega chuyển đổi tín hiệu tương tự quang điện tử thành dữ liệu số. Trong quá trình chuyển đổi ADC, giá trị tương tự được làm tròn đến bước phân giải nhỏ nhất, gây ra nhiễu. Tín hiệu 1.1V có thể được biểu diễn dưới dạng 1V, tạo ra sai số 10%. Tín hiệu 10,1V có thể trở thành 10V và tín hiệu 100,1V có thể trở thành 100V, mỗi tín hiệu tạo ra sai số khoảng 1%. Do đó, chuyển đổi ADC tạo ra nhiều nhiễu và lỗi hơn ở mức tín hiệu thấp. Tỷ lệ tín hiệu trên nhiễu của camera ToF thường tuân theo SNR∝1/√t, trong đó `t` là thời gian tích hợp. Tăng thời gian tích hợp làm tăng cường độ tín hiệu.
+
+* * *
+
+## 5. Nhiễu nhiều camera
+
+### 5.1 Nhiễu song song
+
+Khi hai camera được lắp song song, mỗi camera có thể nhận được cả ánh sáng phản chiếu của chính nó và ánh sáng từ camera kia, gây nhiễu dữ liệu độ sâu. Nhiễu song song làm tăng sai số đo khi hai camera M4 Mega quay cùng một hướng.
+
+<Frame>
+  <img src="/images/legacy/3b09c42a-62ef-4a7f-96ad-6366d662588e/172c3d00-c862-4b8b-b294-8cfbcccfe558.avif" alt="Nhiễu camera song song" />
+</Frame>
+
+Để tránh nhiễu song song, hãy lắp đặt camera nghiêng một góc so với phương ngang. Nếu chúng phải được lắp đặt ở góc 0° so với mặt phẳng nằm ngang, hãy liên hệ với MRDVS để có cấu hình tùy chỉnh.
+
+* * *
+
+## 6. Tổng quan về phần mềm
+
+### SDK 6.1
+
+Sử dụng SDK để khởi tạo và khởi động camera, truy xuất dữ liệu và đóng camera. Đối với các nền tảng không phải Linux hoặc Windows, hãy chuyển ứng dụng bằng cách tham khảo mã nguồn SDK.
+
+Bảng 6-1. Chi tiết SDK
+
+| Hệ điều hành | Linux&Windows |
+| --- | --- |
+| Ngôn ngữ lập trình | C/C++ |
+| Định dạng dữ liệu | Ngắn không dấu 16-bit |
+| Tích hợp | Thư viện dùng chung (.so), thư viện liên kết động (.dll) hoặc mã nguồn SDK tích hợp |
+
+### Thứ tự đầu ra SDK 6.2
+
+<Frame>
+  <img src="/images/legacy/84ac41e4-cda9-4a16-8090-118e488a3bb8/cd2fd356-196f-47a6-a7e3-2dadb89d7acd.avif" alt="Thứ tự đầu ra SDK" />
+</Frame>
+
+Hình 6.1. Thứ tự đầu ra SDK
+
+SDK xuất ra một khung hình cho mỗi dữ liệu độ sâu và biên độ ở độ phân giải được định cấu hình. Mỗi khung hình được lưu trữ dưới dạng mảng một chiều, bắt đầu từ pixel phía trên bên trái và tiến dần từ trái sang phải, sau đó từ trên xuống dưới. Hình 6.1 hiển thị đầu ra dọc theo trục x, theo sau là trục y, tạo ra thứ tự sau:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Mỗi pixel hình ảnh độ sâu là một đoạn ngắn không dấu 16 bit biểu thị khoảng cách từ vật thể được đo đến mặt phẳng camera.
+
+Mỗi pixel hình ảnh biên độ là một đoạn ngắn không dấu 16 bit biểu thị cường độ tín hiệu được trả về.
+
+### 6.3 Địa chỉ IP
+
+Địa chỉ IP mặc định của camera M4 Mega là 192.168.100.82. Để thay đổi địa chỉ IP hoặc bật DHCP, hãy sử dụng ứng dụng demo do MRDVS cung cấp.
+
+### 6.4 Ứng dụng demo
+
+### Cấu hình IP 6.4.1
+
+Kết nối cáp nguồn, sau đó kết nối camera với máy tính bằng cáp Ethernet. Vì địa chỉ IP mặc định của máy ảnh là 192.168.100.82 nên hãy đặt máy tính ở mạng con 192.168.100.x, ngoại trừ 100.82, với mặt nạ mạng con 255.255.255.0. Mở **Cài đặt** → **Ethernet** → **Thay đổi tùy chọn bộ điều hợp**. Nhấp chuột phải vào **Ethernet**, chọn **Thuộc tính**, sau đó chọn **Giao thức Internet Phiên bản 4 (TCP/IPv4)**. Ví dụ: đặt địa chỉ IP thành 192.168.100.20 và mặt nạ mạng con thành 255.255.255.0.
+
+### 6.4.2 Mở ứng dụng
+
+Tải xuống và cài đặt phần mềm, sau đó nhấp đúp vào biểu tượng demo LxCameraViwer. Ứng dụng máy chủ mở ra, tìm kiếm camera, mở nó và bắt đầu thu thập dữ liệu tự động khi một camera được kết nối.
+
+**Lưu ý: Trong lần khởi chạy đầu tiên, một số hệ thống yêu cầu bạn cho phép ứng dụng vượt qua tường lửa.**
+
+Ứng dụng bao gồm các điều khiển cơ bản, lựa chọn hình ảnh, cấu hình camera và thông tin camera. Thông tin camera bao gồm địa chỉ IP, ID, địa chỉ MAC, số sê-ri cũng như các phiên bản phần mềm và thuật toán. Chọn hộp kiểm độ sâu, biên độ, RGB hoặc đám mây điểm để hiển thị chế độ xem đó trong bảng điều khiển trung tâm.
+
+<Frame>
+  <img src="/images/legacy/cd14e0c2-b881-4edd-b937-a746441fd228/704290c3-d6e3-4760-95bc-961f6e265dea.avif" alt="Hiển thị hình ảnh LxCameraViewer" />
+</Frame>
+
+Hình 6.2. Hiển thị hình ảnh
+
+### 6.4.3 Lưu hình ảnh
+
+Chọn **Save** để lưu ảnh đã chọn vào thư mục `./data` trong thư mục cài đặt. Thiết bị đầu cuối cũng in đường dẫn, ví dụ: `save path= ./data/<camera-ID>`.
+
+Sau khi lưu, `_a` xác định hình ảnh biên độ, `_d` xác định hình ảnh độ sâu và `_r` xác định hình ảnh RGB (MONO). `.pcd` xác định đám mây điểm. Hình ảnh độ sâu và biên độ sử dụng định dạng PGM, hình ảnh RGB sử dụng PNG và đám mây điểm sử dụng PCD.
+
+<Frame>
+  <img src="/images/legacy/f357c339-6f49-43d3-89f3-e06f5282e21d/980df246-024e-4047-a082-49269a6058c1.avif" alt="Tệp hình ảnh đã lưu" />
+</Frame>
+
+Hình 6.3. Hình ảnh đã lưu
+
+### 6.4.4 Thay đổi địa chỉ IP
+
+Nhập địa chỉ IP được yêu cầu, chẳng hạn như 192.168.10.199. Nhập mặt nạ mạng con 255.255.255.0 và cổng 192.168.10.1. Cổng phải nằm trên cùng mạng con với địa chỉ IP được yêu cầu; đặt octet cuối cùng của nó thành 1. Xác nhận thay đổi, sau đó cấp nguồn cho máy ảnh.
+
+<Frame>
+  <img src="/images/legacy/d11694ec-a58e-43fc-add5-3214bbb90002/28bc8364-e86f-453b-9298-c890fcb21d01.avif" alt="Thay đổi địa chỉ IP của máy ảnh" />
+</Frame>
+
+* * *
+
+## 7. Tính năng chính
+
+### 7.1 Khoảng cách
+
+Camera M4 Mega có kích thước từ 0,2 ~ 5m. Liên hệ với MRDVS nếu bạn cần một phạm vi tùy chỉnh.
+
+### 7.2 Lọc
+
+SDK MRDVS cung cấp các bộ lọc sau:
+
+- Bộ lọc trung vị
+
+- Bộ lọc chế độ
+
+- Loại bỏ pixel bay
+
+* * *
+
+## 8. Biện pháp phòng ngừa
+
+### 8.1 Cấp độ an toàn laser
+
+<Frame>
+  <img src="/images/legacy/4a9c13b4-2d4e-4703-95cc-ee1d8b2121f8/3b5b8b5d-d12d-484a-9ce5-8e96e138ade3.avif" alt="Lớp an toàn laser" />
+</Frame>
+
+### 8.2 Thao tác đúng
+
+Camera M4 Mega sử dụng nguồn điện 24V DC. Kết nối cáp nguồn trước khi cấp nguồn. Không đảo ngược cực dương và cực âm vì điều này có thể làm hỏng sản phẩm.
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác nhận rằng tường lửa đã bị tắt. |
+| 2 | Ứng dụng máy chủ phát hiện nhiều địa chỉ IP | Một địa chỉ IP trùng lặp tồn tại trên mạng LAN. Chọn địa chỉ IP cần thiết. |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet. Dữ liệu ban đầu có thể không ổn định qua cáp 100Mbps. |
+| 4 | Vị trí cài đặt phần mềm | Việc cài đặt vào vị trí mặc định trên ổ C có thể yêu cầu thay đổi quyền. |
+
+* * *
+
+### 8.3 Nhiệt độ hoạt động
+
+Giữ nhiệt độ môi trường xung quanh trong phạm vi quy định trong Bảng 2-1. Gắn sản phẩm lên bộ phận dẫn nhiệt, chẳng hạn như khung kim loại, để cải thiện khả năng tản nhiệt và đạt được hiệu suất tối ưu.
+
+* * *
+
+## 9. Câu hỏi thường gặp
+
+Bảng 9-1. Câu hỏi thường gặp
+
+| Không. | Vấn đề | Độ phân giải |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác nhận rằng tường lửa đã bị tắt. |
+| 2 | Ứng dụng máy chủ phát hiện nhiều địa chỉ IP | Một địa chỉ IP trùng lặp tồn tại trên mạng LAN. Chọn địa chỉ IP cần thiết. |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet. Dữ liệu ban đầu có thể không ổn định qua cáp 100Mbps. |
+| 4 | Vị trí cài đặt phần mềm | Việc cài đặt vào vị trí mặc định trên ổ C có thể yêu cầu thay đổi quyền. |

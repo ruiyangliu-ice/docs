@@ -1,0 +1,584 @@
+---
+title: "Setzen Sie eine Volumenmessung ein"
+description: "Setzen Sie Kameras der MRDVS M-Serie für statische oder dynamische Volumenmessungen ohne externen Industriecomputer ein."
+hidden: true
+---
+## 1. Einführung
+
+Der Volumenerkennungsalgorithmus wurde von Meyer Micro Vision (MRDVS) entwickelt und wird speziell in Volumenmessszenarien eingesetzt. Es wird in selbst entwickelten Kameras der M-Serie in der Logistik, im Expressversand, auf Kohlenhöfen, in der Lagerhaltung und in anderen Szenarien eingesetzt. Der Volumenerkennungsalgorithmus läuft innerhalb der Kamera, sodass kein externer Industriecomputer erforderlich ist. Der Algorithmus unterstützt statische und dynamische Erkennung.
+
+Die Software erfordert lediglich, dass der Benutzer die externen Parameter der Kamera kalibriert und den Erfassungsbereich einzeichnet, und kann dann einzelne/mehrere Objekte erkennen und messen. Die externe Parameterkalibrierung kann automatisch Kalibrierungsergebnisse erhalten und die Spleißerkennung mit mehreren Kameras unterstützen.
+
+In diesem Artikel wird hauptsächlich die Bereitstellung und Verwendung der Meyer Microvision-Volumenerkennungsfunktion vorgestellt.
+
+## 2. Anwendungsszenarien zur Volumenerkennung
+
+### 2.1 Logistikbranche
+
+1. Durch den Erhalt von Informationen wie Volumen und Gewicht der Waren können wir verfeinerte Abläufe erreichen, die dazu beitragen, die Laderaten der Fahrzeuge zu verbessern, Fahrzeugkosten, Transportkosten und Arbeitskosten zu senken sowie Kostensenkungen und Effizienzsteigerungen im gesamten Prozess zu erreichen.
+
+2. Es kann schnell das Volumen und Gewicht von Waren/Kartons erkennen und die Fracht mit einem Klick berechnen. Zusammen mit der Bodenwaage können damit auch LKWs und Containerfahrzeuge effektiv vermessen werden, um sicherzustellen, dass das gesamte Fahrzeug nicht übergewichtig ist.
+
+### 2.2 Expressindustrie
+
+Beim Versand und Empfang von Expresslieferungen lassen sich mit Hilfe intelligenter Volumenmessgeräte schnell Informationen wie Volumen und Gewicht der Ware ermitteln. Die Daten sind zur einfachen Suche und Überprüfung mit dem internen System verbunden, wodurch nicht nur das Problem des Datenverlusts vermieden, sondern auch manuelle Investitionen effektiv reduziert und die Arbeitseffizienz verbessert werden.
+
+### 2.3 Kohlebergbau
+
+Herkömmliche Methoden zur Messung des Volumens großer Kohleerzhalden nutzen in der Regel Totalstationen und RTK-Einzelpunkt-Messmethoden und erfordern eine genaue manuelle Extraktion von Merkmalspunkten. Da es jedoch in der Regel schwierig ist, große Kohleerzhaufen zu erklimmen, ist es äußerst schwierig, präzise Merkmalspunkte zu extrahieren. Gleichzeitig weist die Einzelpunkt-Messmethode eine geringe Datendichte auf und kann das Volumen von Kohleerzhalden nicht genau ermitteln, was zu einer äußerst geringen Betriebseffizienz führt.
+
+### 2.4 Lagerwirtschaft
+
+In der Logistik, Lagerhaltung und sogar in der allgemeinen Industrie transportieren AGVs Waren, und beim Betreten und Verlassen des Lagers müssen Volumen und Gewicht der Waren überprüft werden.
+
+### 3. Lösen Sie das Problem
+
+In Industriezweigen wie Logistik und Lagerhaltung sind die Ermittlung des Volumens und der Menge der Artikel sowie die Beherrschung des Ein- und Ausgangs von Artikeln für die Bestandsverwaltung in der Produktion von großer Bedeutung. Allerdings stehen herkömmliche Lösungen immer vor Problemen wie fehlenden technischen Mitteln, großen Messfehlern, geringer Effizienz der manuellen Verwaltung und Schwierigkeiten bei der Überwachung.
+
+Die Volumenerkennung der Meyer Micro Vision ToF-Kamera bietet mehr Vorteile als Radar-, Strukturlicht- und 2D-Kameras. Meyer Micro Vision-Kameras sind einfach zu installieren und erfordern lediglich Kamera-Firmware-Halterungen, Netzkabel und Netzwerkkabel. Der Algorithmus läuft innerhalb der Kamera, ohne dass redundante Industriecomputerkonfigurationen erforderlich sind. Es ist bequemer zu verwenden und kostengünstiger als Radar.
+
+## 4. Leitfaden zur Bereitstellung der Kamera-Hardware
+
+### 4.1 Kameratypen verwenden
+
+Kameratyp: Kamera der M-Serie
+
+Kamera-Benutzerhandbuch: [ToF-Kamera der M-Serie](/de/products/m-series/m4-overview "ToF-Kamera der M-Serie")
+
+<Frame>
+  <img src="/images/legacy/5dd130cc-7499-4f38-bf97-dbd56dbb0e11/a28f58f9-2432-4605-aee2-c8811c0fe221.avif" alt="Verwenden Sie Symbole für den Kameratyp" />
+</Frame>
+
+### 4.2 Kamerainstallationsmethode
+
+Die Volumenerkennungskamera M4 verwendet eine feste Installationsmethode. Die Kamera nimmt Bilder nach unten auf und versucht sicherzustellen, dass der Kameraspiegel parallel zum Boden ist. Die folgende Abbildung ist ein schematisches Diagramm der Installation.
+
+<Frame>
+  <img src="/images/legacy/03510465-d902-4781-bf31-9e5c152f5bd2/18837b64-6a77-4a60-9ce3-b8fa0647c995.avif" alt="Abbildungen zu Kamerainstallationsmethoden" />
+</Frame>
+
+Abbildung 4.1 Installationsdiagramm
+
+### 4.3 Kameraanschluss
+
+Die Kamera wird mit 24 V betrieben und ist über ein Netzwerkkabel der Kategorie 6e/Kategorie 7 angeschlossen. Nachdem die Kamera installiert und bereitgestellt wurde, öffnen Sie die Host-Computersoftware zur Volumenerkennung über einen Laptop, um die externe Parameterkalibrierung und die Einstellung des Erkennungsbereichs der Kamera durchzuführen. Der Algorithmus wird in Echtzeit in der Kamera ausgeführt. Wenn mehrere Kameras eingesetzt werden, müssen diese über einen Gigabit-Switch verbunden werden.
+
+<Frame>
+  <img src="/images/legacy/f9ab7dc5-20d0-4693-a41f-1b6a56c4e50f/317bd48f-8fa4-4e0a-989d-6366de6f91e0.avif" alt="Symbole für die Kameraverbindung" />
+</Frame>
+
+## 5. Installationsanleitung für die Kamerasoftware
+
+### 5.1 Software-Installationsprozess
+
+Wenn Sie die Software zum ersten Mal verwenden, können Sie den folgenden Vorgang befolgen, um den Vorgang abzuschließen.
+
+<Frame>
+  <img src="/images/legacy/e1da8232-f39e-4e11-a71f-86726a19262d/0cda21b0-286e-4778-a352-23fc6dd977a5.avif" alt="Illustrationen zum Softwareinstallationsprozess" />
+</Frame>
+
+### 5.2 Anforderungen an die Betriebsumgebung des Hostcomputers für die Volumenerkennung
+
+Es wird empfohlen, die Host-Computerausrüstung zur Volumenerkennung laufen zu lassen, um die Anforderungen zu erfüllen.
+
+| Betriebssystem | Windows10 und höher |
+| --- | --- |
+| CPU | Empfohlener Intel Core i5 der 7. Generation und höher |
+| Erinnerung | 8G und höher |
+| GPU | Intel(R) UHD-Grafik/Core-Display oder höher |
+
+### 5.3 Installieren Sie die Host-Computersoftware der Kamera
+
+1. Laden Sie die Kamera-Host-Software aus der MRDVS-Wissensdatenbank herunter: [Software-Download](/de/developers/software/lxcameraviewer "Software-Download")
+
+2. Doppelklicken Sie, um die Lanxin-MRDVS-Hostcomputersoftware zu installieren. Der Host-Computer muss außerhalb des Laufwerks C installiert werden.
+
+<Frame>
+  <img src="/images/legacy/8a1a3bb1-c6dd-434d-af79-709f37313844/cabcc88e-3d26-401e-aaeb-a01cd4a2b1d3.avif" alt="Abbildungen zur Installation der Kamera-Host-Software" />
+</Frame>
+
+3. Nachdem Sie die zu verwendende Sprache ausgewählt haben, klicken Sie auf [**OK**], wählen Sie ein anderes Installationsverzeichnis als das Laufwerk C und klicken Sie auf [**Weiter**].
+
+<Frame>
+  <img src="/images/legacy/b4e46f8b-825a-4d64-a3ee-1d10704f7fba/348dee6d-9f34-4f8d-88fb-6c8b00c6b902.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 2" />
+</Frame>
+
+4. Aktivieren Sie [**Desktop-Verknüpfung erstellen**] und klicken Sie auf [**Weiter**].
+
+<Frame>
+  <img src="/images/legacy/aa1145f9-d860-4751-aec1-c5e8384963ae/ce1b8ead-e096-4834-ba4c-261facc55082.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 3" />
+</Frame>
+
+5. Klicken Sie auf die Schaltfläche [**Installieren**], um mit der Installation der Software zu beginnen.
+
+<Frame>
+  <img src="/images/legacy/0694d88e-a2ac-497d-b731-0a0e71cd331a/c7a2bf1d-a332-4fab-919a-4d7cbb96b716.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 4" />
+</Frame>
+
+6. Nachdem die Installation abgeschlossen ist, können Sie die Host-Computersoftware der Kamera ausführen.
+
+<Frame>
+  <img src="/images/legacy/764b4e79-f161-44ca-ac5c-4000190d08d5/dac8ba59-4e9f-4a33-89b1-e60678f4605f.avif" alt="Abbildungen zur Installation der Kamera-Host-Software 5" />
+</Frame>
+
+### 5.4 Installieren Sie die Host-Computersoftware zur Volumenerkennung
+
+1. Kopieren Sie die erhaltene Volumenerkennungs-Hostcomputersoftware auf den Kamera-Hostcomputer \\Lanxin-MRDVS\\Tools.
+
+<Frame>
+  <img src="/images/legacy/5d8d5ae7-8e2b-4519-9d9b-3440cb83d1ee/e36c0214-2d47-413e-ba9e-aad7d6b841a2.avif" alt="Abbildungen im Zusammenhang mit der Installation der Host-Computersoftware zur Volumenerkennung" />
+</Frame>
+
+2. Wählen Sie beim Ersetzen [**Dateien im Ziel ersetzen**] aus.
+
+<Frame>
+  <img src="/images/legacy/5f862ff0-6785-435b-a335-5f6a6d4a2c8c/7cf0179a-1fde-4763-9cd6-ff223c820762.avif" alt="Abbildungen zur Installation der Host-Computersoftware zur Volumenerkennung 2" />
+</Frame>
+
+3. Doppelklicken Sie, um die Software zu öffnen und auszuführen.
+
+4. In der Gerätelistenleiste auf der linken Seite lautet der Kamerastatus [**Unbekannt**], was bedeutet, dass die Kamera keinen Lautstärkeerkennungsalgorithmus hat.
+
+<Frame>
+  <img src="/images/legacy/b1e28a85-544d-4cd7-83a0-b19e5567aeac/154d1261-0517-48a5-87fb-b4d8b8771f2d.avif" alt="Abbildungen zur Installation der Host-Computersoftware zur Volumenerkennung 3" />
+</Frame>
+
+### 5.5 Software-Upgrade zur Volumenerkennung
+
+Um die Datenträgererkennungssoftware zu aktualisieren, muss lediglich die Datei „**.exe**“ ersetzt werden.
+
+### 5.6 Algorithmus-Upgrade
+
+1. Um den Kameraalgorithmus zu aktualisieren, müssen Sie die Kamera-Host-Software öffnen und auf [**LxCameraViewer**] doppelklicken.
+
+<Frame>
+  <img src="/images/legacy/98da739f-2f77-46e6-9fc2-698a1b288371/c9790445-b910-4441-8867-78bf594deaa3.avif" alt="Illustrationen zum Algorithmus-Upgrade" />
+</Frame>
+
+2. Klicken Sie auf die Schaltfläche [**Öffnen**], um das Kamerabild anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/2fb54986-038d-4d1c-a52d-6e08488ca0c4/b4750100-e4b5-4111-a0d9-7fc89c344c98.avif" alt="Diagramm zum Algorithmus-Upgrade 2" />
+</Frame>
+
+3. Klicken Sie auf Grundlegende Tools → Funktionseinstellungen → [**Firmware-Upgrade**], um den Lautstärkeerkennungsalgorithmus zu aktualisieren. (Bitte wenden Sie sich an den technischen Support, um den Algorithmus zu erhalten.)
+
+<Frame>
+  <img src="/images/legacy/94042d12-537e-4ecf-9bf7-096e88053035/cb352cff-1854-476a-a179-9b5c0f5b229e.avif" alt="Algorithmus-Upgrade-bezogenes Diagramm 3" />
+</Frame>
+
+4. Nachdem Sie auf die Schaltfläche [**Ausführen**] geklickt haben, wählen Sie „Volume Detection Algorithm“ und klicken Sie auf die Schaltfläche [**Open**], um das Flashen des Algorithmus zu starten.
+
+<Frame>
+  <img src="/images/legacy/88ed6bb9-e81b-4923-958c-af6c7d6c5179/1d8334a0-0e47-4781-8a2e-765311aaceac.avif" alt="Algorithmus-Upgrade-bezogenes Diagramm 4" />
+</Frame>
+
+5. Während des Algorithmus-Flashing-Vorgangs wird die Kamera neu gestartet und die Kamera-ID in der Geräteliste auf der linken Seite verschwindet. Nach der erneuten Anzeige bedeutet dies, dass das Blinken erfolgreich war.
+
+<Frame>
+  <img src="/images/legacy/c7f8ce1b-993e-41a9-9918-25422fcacf16/ade34da0-16e3-40d8-9af0-542a5c13cbe5.avif" alt="Algorithmus-Upgrade-bezogenes Diagramm 5" />
+</Frame>
+
+6. Öffnen Sie nun die Lautstärkeerkennungssoftware erneut und die Geräteliste wird grün angezeigt.
+
+<Frame>
+  <img src="/images/legacy/65639621-cec1-4e58-9d25-b2c1147e6db8/7bc15af4-8e94-45ca-9181-e872410b5ccf.avif" alt="Algorithmus-Upgrade-bezogenes Diagramm 6" />
+</Frame>
+
+## 6. Softwareschnittstelle zur Volumenerkennung
+
+### 6.1 Starten Sie das Volumenerkennungsprogramm
+
+1. Doppelklicken Sie auf das Programm [**LxApplicationViewer.exe**], um die Software zur Volumenerkennung zu starten. Klicken Sie links in der Geräteliste auf die Online-Kamera, um das Kamerabild zu öffnen.
+
+<Frame>
+  <img src="/images/legacy/27aad056-f103-41e3-86f9-b9d876481dc6/cb274ae3-6877-40e8-ba2b-485fe835c0ec.avif" alt="Abbildungen zum Starten des Volumenerkennungsprogramms" />
+</Frame>
+
+2. Der aktuelle Benutzer wählt den Administrator und muss kein Passwort eingeben. Klicken Sie direkt auf „OK“, um in den Administratormodus zu gelangen (Einstellungen für die Lautstärkeerkennungsparameter können im Benutzermodus nicht vorgenommen werden). Der Administratormodus verfügt über mehr Optionen zur Lautstärkeerkennung und Kamerakonfiguration.
+
+<Frame>
+  <img src="/images/legacy/9078f3bd-2942-426e-98a8-ef4b43f40de7/29f2bf28-535d-4b1d-9aa6-03e03100d78a.avif" alt="Abbildung zum Starten des Volumenerkennungsprogramms 2" />
+</Frame>
+
+### 6.2 Grundlegende Werkzeuge
+
+Zu den grundlegenden Tools gehören hauptsächlich Benutzerumschaltung, ideale Erdung, externe Parametererdung, Anzeige mehrerer Lautstärkefelder, Auslösetaste, Exportieren und Speichern von Bildern, Verlaufswiedergabe und Lautstärkestatus.
+
+<Frame>
+  <img src="/images/legacy/a23bcd50-9098-47e0-84b8-3d47b3ca2610/4cdcef72-7639-4e7f-84c8-4380fbbed27f.avif" alt="Illustrationen zu grundlegenden Werkzeugen" />
+</Frame>
+
+| Grundlegende Werkzeuge | Funktionale Bedeutung |
+| --- | --- |
+| Benutzerwechsel | Berechtigungen wechseln, Benutzerberechtigungen: Nur Erkennungsergebnisse anzeigen. Administratorrechte: Kann die Kamerakonfiguration, die Konfiguration der Volumenerkennungsparameter usw. konfigurieren. |
+| Idealer Boden | Der Boden bezieht sich auf die horizontale Linie und kann ausgeschaltet werden. |
+| Externer Parameter Masse | Die horizontale Ebene, auf der die externen Parameter der Kamera kalibriert werden. Es kann ausgeschaltet werden. |
+| Anzeige der Lautstärkebox | Wenn im Erkennungsbereich mehrere Objekte erkannt werden, können verschiedene Volumenfelder umgeschaltet werden, um die Erkennungsergebnisse verschiedener Objekte anzuzeigen. |
+| Auslöseknopf | Nach der Einstellung auf den Triggermodus kann diese Triggertaste aufgerufen werden, um Bilder und Ergebnisse zu erhalten. |
+| Gespeicherte Bilder exportieren | Gespeicherte Bilder exportieren |
+| Verlaufswiedergabe | Sehen Sie sich RGB- und TOF-Bildprotokolle an. |
+| Anzeige der Ergebnisse der Volumenerkennung | Zeigen Sie die Erkennungsergebnisse, Anzahl der Objekte, Objektlänge, -breite und -höhe an. |
+
+### 6.3 Globale Konfiguration
+
+Wechseln Sie in den Arbeitsmodus der Kamera.
+
+<Frame>
+  <img src="/images/legacy/bb2afbde-b2d5-43ff-8673-d4922aa726b2/0c157f74-799a-4f32-9634-cdb91fc83228.avif" alt="Symbole für die globale Konfiguration" />
+</Frame>
+
+### 6.4 Volumenerkennung
+
+<Frame>
+  <img src="/images/legacy/fbce3fe9-69bd-4c1d-9a50-08aaec8f8a8a/e1a0e9a1-7371-4ad5-93df-9d1dd625aada.avif" alt="Symbole zur Lautstärkeerkennung" />
+</Frame>
+
+| Globale Konfiguration der Volumenerkennung | Funktionale Bedeutung |
+| --- | --- |
+| Versionsnummer des Algorithmus | Aktuelle Informationen zur Algorithmusversion. |
+| Triggermodus | Auslöseschaltertaste. Nachdem Sie den Triggermodus aktiviert haben, klicken Sie auf die Schaltfläche „Speichern und senden“, um ihn erfolgreich zu aktivieren. |
+| Aufwärtserkennung | Umkehrerkennung des Kamerakoordinatensystems (derzeit Erkennung nach unten, d. h. Erkennung des Abstands von der Ebene zur Objektoberfläche; nach dem Einschalten der Erkennung nach oben wird der Abstand von der Objektoberfläche zur Kamera erkannt). |
+| Erkennungshäufigkeit | Wie oft erkennt der Algorithmus. Das heißt, wie viele ms das Bild und die Ergebnisdaten aktualisiert werden müssen. |
+| Abstand der Erkennungsebene | Abstand der Kameraabstandserkennungsebene, dieser Abstand hängt mit der Messhöhe zusammen. Einheit: mm. |
+| Schwellenwert für Nachbaranzahl | Filterparameter, keine Änderungen erforderlich. Der Standardwert ist ausreichend. |
+| Schwellenwert für Nachbarschaftsentfernung | Filterparameter, keine Änderung erforderlich, Standardwerte sind ausreichend. |
+| Normaler Vektorfilterschwellenwert | Der Filterparameter „Objektkantenverrundung“ wird 60 empfohlen (im Allgemeinen ist keine Anpassung erforderlich). |
+| Normaler Vektorabstandsschwellenwert | Filterparameter, empfohlener Wert 20–30 (kompatibel mit den meisten erkannten Objekten). |
+| Mindestpunktzahl | Wenn die Objektpunktwolke größer als die Mindestpunktzahl ist, wird davon ausgegangen, dass ein Objekt vorhanden ist. |
+| Mindestens X | Die Mindestlänge des Objekts. Liegt er unter diesem Wert, kann er nicht erkannt werden. Einheit: mm. |
+| Minimales Y | Die Mindestbreite des Objekts. Liegt er unter diesem Wert, kann er nicht erkannt werden. Einheit: mm. |
+| Minimales Z | Die Mindesthöhe des Objekts. Liegt er unter diesem Wert, kann er nicht erkannt werden. Einheit: mm. |
+
+<Frame>
+  <img src="/images/legacy/e9733410-8173-4d09-95e5-334ba8ae58c0/d4d05111-3551-446e-a866-37f098c13e7d.avif" alt="Diagramm zur Volumenerkennung 2" />
+</Frame>
+
+| Konfiguration des Volumenerkennungsbereichs | Funktionale Bedeutung |
+| --- | --- |
+| Mindestens X | Minimaler Wert in X-Richtung des Volumenerkennungsrahmens |
+| Maximales X | Maximalwert in X-Richtung des Volumenerkennungsrahmens |
+| Minimales Y | Minimaler Wert in Y-Richtung des Volumenerkennungsrahmens |
+| Maximales Y | Maximalwert in Y-Richtung des Volumenerkennungsrahmens |
+| Minimales Z | Minimaler Wert in Z-Richtung des Volumenerkennungsrahmens |
+| Maximales Z | Maximalwert in Z-Richtung des Volumenerkennungsrahmens |
+
+### 6.5 Kamerakonfiguration
+
+<Frame>
+  <img src="/images/legacy/07b96b09-95e7-4251-938f-d1e35401e1ce/95f4513b-47df-41aa-ae24-5a02749888c1.avif" alt="Symbole für die Kamerakonfiguration" />
+</Frame>
+
+| Kameraeinstellungen | Funktionsbedeutung |
+| --- | --- |
+| Kameraname | Ändern Sie den Namen der aktuellen Kamera. Wenn mehrere Kameras vorhanden sind, können Sie dies anhand des Kameranamens beurteilen. |
+| Simulationsmodus | Interner Gebrauch, Benutzer müssen es nicht öffnen. |
+| Bildspeichermodus | Aktivieren Sie die algorithmische Bildspeicherung, um Bilddaten in der Kamera zu speichern. |
+| Aufnahmemodus | Der Aufnahmemodus ist in MDS und SDK unterteilt. Durch die Verwendung von MDS werden die Kameraberechtigungen nicht beansprucht und der Kamera-Hostcomputer kann normal geöffnet werden. Durch die Verwendung des SDK werden die Kameraberechtigungen beansprucht und der Host-Computer kann beim Ausführen des Algorithmus nicht geöffnet werden. |
+| x | Kamera kalibriert x-Position |
+| y | Die y-Position der Kamerakalibrierung |
+| z | Kalibrierte Kamerahöhe vom Boden |
+| rollen | Kamerakalibrierungswinkel |
+| Tonhöhe | Kamerakalibrierungswinkel |
+| gieren | Kamerakalibrierungswinkel |
+| Idealer Boden | Belassen Sie es einfach als Standard. |
+| Speichern und senden | Nachdem die externe Parameterkalibrierung abgeschlossen ist, klicken Sie zum Speichern auf die Schaltfläche [Speichern und senden], andernfalls werden die Parameter nicht wirksam |
+| Konfiguration von Kamera lesen | Aktuelle Konfigurationsparameter von der Kamera lesen |
+| Externe Parameterkalibrierung | Kalibrieren Sie die Höhe der Kamera vom Boden sowie die Kameraroll-, Nick- und Gierwinkel. |
+
+### 6.6 Sprache
+
+Wechseln Sie zwischen Chinesisch und Englisch.
+
+### 6.7 Statusleiste
+
+<Frame>
+  <img src="/images/legacy/3941c475-8f8f-45a1-94cc-2cf678831d53/706d6184-84a3-44cb-a6a6-6fb57cf36309.avif" alt="Symbole für die Statusleiste" />
+</Frame>
+
+| Statusleiste | Funktionale Bedeutung |
+| --- | --- |
+| RGB | Aktivieren Sie diese Option, um RGB-Bilder anzuzeigen |
+| Punktwolke | Sehen Sie sich nach der Überprüfung das Punktwolkenbild | an
+| Stop-Algorithmus | Nachdem Sie auf „Stoppen“ des Algorithmus geklickt haben, wird der Algorithmus erst beim nächsten Einschalten der Kamera gestartet. |
+| Firmware aktualisieren | Algorithmus-Firmware kann aktualisiert werden |
+| Kamera neu starten | Kamera neu starten. |
+
+### 7. Bereitstellungsprozess für die Volumenerkennung
+
+Nach dem Öffnen der Volumenerkennungssoftware ist die Standardeinstellung das RGB-Bild. Nachdem Sie auf geklickt haben, um zum Punktwolkenbild zu wechseln, ist das Bild schwarz. Sie müssen die Maus zum Bildanzeigebereich bewegen, mit dem Mausrad nach oben und unten gleiten und zum Bewegen die linke Maustaste gedrückt halten, dann werden die Punktwolkendaten angezeigt.
+
+<Frame>
+  <img src="/images/legacy/b2f80e70-7390-4713-9eda-f7b342eca918/38bf207d-97e3-4f22-9867-e59c1e252ef1.avif" alt="Abbildungen im Zusammenhang mit dem Bereitstellungsprozess der Volumenerkennung" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/0bea89d2-f83c-4deb-ab3c-0584a061302e/d91faf31-886e-442c-8ab5-b367a14db036.avif" alt="Abbildungen zum Bereitstellungsprozess für die Volumenerkennung 2" />
+</Frame>
+
+### 7.1 Kamera-Netzwerkkonfiguration
+
+Doppelklicken Sie am Beispiel des Win10-Systems auf die Systemsteuerung
+
+Klicken Sie nach dem Aufrufen der Systemsteuerung auf „**Netzwerkstatus und -aufgaben anzeigen**“.
+
+<Frame>
+  <img src="/images/legacy/d27495e0-56ba-43a1-84ca-eb6c209c6e94/95fb9d57-7f0c-4a1f-9376-14267dcb3f6c.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration" />
+</Frame>
+
+Rufen Sie die Benutzeroberfläche des Netzwerk- und Freigabecenters auf und klicken Sie auf „**Adaptereinstellungen ändern**“.
+
+<Frame>
+  <img src="/images/legacy/738c34bb-f38e-4457-826b-02ce8ef64a28/5181b10d-ae88-4a9d-9485-4deba6993533.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 2" />
+</Frame>
+
+Geben Sie die Netzwerkverbindungsschnittstelle ein und doppelklicken Sie mit der Maus, um das Ethernet auszuwählen, mit dem die Kamera verbunden ist.
+
+<Frame>
+  <img src="/images/legacy/a9e4f271-a49e-45ba-9c95-507da52dd6bc/44b2f404-5ef4-4ddf-8eef-a3ae1eed10d7.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 3" />
+</Frame>
+
+Überprüfen Sie den Ethernet-Status (es wird empfohlen, einen Gigabit-Netzwerkanschluss zu verwenden) und klicken Sie auf die Schaltfläche „**Eigenschaften**“.
+
+<Frame>
+  <img src="/images/legacy/f4e9e585-b466-4cfe-9073-3a51dd6f5a60/3f3596f1-39e4-4de8-8ba0-240b563ef8fb.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 4" />
+</Frame>
+
+Rufen Sie die Ethernet-Eigenschaftenoberfläche auf, suchen Sie nach „**Internet Protocol Version 4 (TCP/IPv4)**“ und doppelklicken Sie, um sie zu öffnen.
+
+<Frame>
+  <img src="/images/legacy/41593f67-f0f6-4fb0-a1f5-25b16aab42c9/58c00f3e-7ce4-4f9f-92a3-16fb4a3198a5.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 5" />
+</Frame>
+
+Geben Sie die Schnittstelle Internet Protocol Version 4 (TCP/IPv4) ein und wählen Sie „**Folgende IP-Adresse verwenden**“, um die IP-Adresse, die Subnetzmaske und das Standard-Gateway einzugeben.
+
+<Frame>
+  <img src="/images/legacy/f929004b-da3f-45e9-9220-2dffb173782e/9beedb39-c61d-481b-ac65-eae8966c7684.avif" alt="Diagramm zur Kameranetzwerkkonfiguration 6" />
+</Frame>
+
+IP-Adresseinstellung: 192.168.100.xxx Subnetzmaske: 255.255.255.0 Standard-Gateway: 192.168.100.1. Stellen Sie die IP wie unten gezeigt ein. Nachdem die Einstellung abgeschlossen ist, klicken Sie auf die Schaltfläche „OK“.
+
+<Frame>
+  <img src="/images/legacy/d45ed4aa-13c0-463a-b0e0-8bd35ad2cd32/917ecfab-67f5-4f53-8f98-756f33624e7c.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration 7" />
+</Frame>
+
+Nachdem Sie auf die Schaltfläche „OK“ geklickt haben, kehren Sie automatisch zur vorherigen Oberfläche zurück. Klicken Sie erneut auf „**OK**“, um die Netzwerkkonfiguration abzuschließen.
+
+<Frame>
+  <img src="/images/legacy/f56eefc8-af02-4633-8c35-7da0caa84905/395584ea-e679-44f5-818b-4dc6a76389da.avif" alt="Abbildungen zur Kameranetzwerkkonfiguration 8" />
+</Frame>
+
+### 7.2 Bestätigung des Herunterfahrens der Firewall
+
+1. Nachdem die Kamera fest installiert ist, erfordert der erste Schritt der Bereitstellung das Ausschalten der Firewall des Computers.
+
+2. Am Beispiel des Win10-Systems doppelklicken Sie auf dem Desktop auf [**Systemsteuerung**] und klicken nach der Eingabe auf [**System und Sicherheit**].
+
+<Frame>
+  <img src="/images/legacy/10f577ff-3207-45a6-ada2-d7e2d90da11b/03de5534-1fe9-4ffe-9db7-9309b05b73f0.avif" alt="Symbole zur Bestätigung des Herunterfahrens der Firewall" />
+</Frame>
+
+3. Klicken Sie auf die Schaltfläche [**Windows Defender Firewall**], um die Firewall-Seite aufzurufen
+
+<Frame>
+  <img src="/images/legacy/6480e38b-8e12-4d64-8c96-68612da23908/d61d5bac-33e8-4d46-ab22-1a55500a26ff.avif" alt="Symbol zur Bestätigung des Herunterfahrens der Firewall 2" />
+</Frame>
+
+4. Klicken Sie auf die Schaltfläche [**Windows Defender-Firewall aktivieren oder deaktivieren**], um die Seite zum Ein-/Ausschalten der Firewall aufzurufen.
+
+5. Wählen Sie [**Windows Defender-Firewall ausschalten**] für private und öffentliche Netzwerke und klicken Sie auf die Schaltfläche [**Bestätigen**], um die Firewall auszuschalten.
+
+<Frame>
+  <img src="/images/legacy/1a7789dc-c752-4106-9316-681f5c1a4afa/d8583eab-22db-413f-9a42-76dc0908b50b.avif" alt="Symbol zur Bestätigung des Herunterfahrens der Firewall 3" />
+</Frame>
+
+### 7.3 Kalibrierung externer Parameter zur Volumenerkennung
+
+1. Nachdem die IP-Konfiguration der Kamera abgeschlossen und die Firewall geschlossen ist, fahren Sie mit dem zweiten Schritt der Bereitstellung fort. Öffnen Sie die Software, um die externen Parameter des Algorithmus zu kalibrieren. Es ist notwendig, den spezifischen Referenzboden und die Winkelabweichung der Kamerainstallation zu kalibrieren.
+
+2. Klicken Sie auf die Kamerakonfiguration und wechseln Sie zur Parameterkalibrierungsoberfläche. Stellen Sie vor der Durchführung der externen Parameterkalibrierung sicher, dass x, y, z, Roll, Nick und Gier 0 sind. Wenn sie nicht 0 sind, müssen Sie alle Parameter auf 0 zurücksetzen und auf die Schaltfläche [**Speichern und Senden**] klicken. Nachdem die Parameter erfolgreich gespeichert wurden, kalibrieren Sie die externen Parameter neu.
+
+<Frame>
+  <img src="/images/legacy/8e7ce98c-d40b-4d33-8761-2567f011af39/5b0ac758-4684-43e9-83c5-65f9fc7f1c76.avif" alt="Abbildungen im Zusammenhang mit der externen Parameterkalibrierung der Volumenerkennung" />
+</Frame>
+
+3. Nachdem Sie bestätigt haben, dass alle Parameter 0 sind, klicken Sie auf die Schaltfläche [**Externe Parameterkalibrierung**]. Nachdem die Kalibrierung erfolgreich war, zeigt die Software eine Eingabeaufforderung an. Die kalibrierten Kameraparameter sehen Sie in der Parameterspalte rechts.
+
+<Frame>
+  <img src="/images/legacy/e6cf55ec-456a-4d76-9966-90c577dc843b/69fb9d8f-7938-4488-81c4-d817b5ac5b86.avif" alt="Abbildung im Zusammenhang mit der externen Parameterkalibrierung der Volumenerkennung 2" />
+</Frame>
+
+4. Nachdem Sie den „z“-Kamerahöhenwert aufgezeichnet haben, ändern Sie den z-Wert auf 0 und klicken Sie auf die Schaltfläche [**Speichern und senden**]. Die Kamerakalibrierungsparameter wurden erfolgreich gespeichert. (Der Z-Wert der Kamera muss während der Volumenerkennung im Abstand der Erkennungsebene eingestellt werden. Nachdem die Kamerakalibrierungshöhe aufgezeichnet wurde, muss sie auf 0 geändert werden, da es sonst zu Problemen bei der Erkennung kommt.)
+
+<Frame>
+  <img src="/images/legacy/68e62f9a-1684-46f5-bd66-a9eba060776d/291a7bc1-f174-4321-a322-3f7ab22dd720.avif" alt="Abbildung im Zusammenhang mit der externen Parameterkalibrierung der Volumenerkennung 3" />
+</Frame>
+
+5. Nachdem die kalibrierten Parameter gespeichert und verteilt wurden, ist die externe Parameterkalibrierung abgeschlossen. Der nächste Schritt besteht darin, die Parameter für die Volumenerkennung festzulegen.
+
+### 7.4 Abstandseinstellung der Volumenerkennungsebene
+
+1. Klicken Sie auf „Volumenerkennung“, wechseln Sie zur Einstellungsseite für die Volumenerkennungsparameter und legen Sie zunächst den „Abstand der Erkennungsebene“ fest, der sich auf die Darstellung des Erkennungsbereichs und die Erkennungsgenauigkeit bezieht.
+
+<Frame>
+  <img src="/images/legacy/7481f12c-1af6-4de4-bf05-2f48487bef85/a5609871-908c-45e6-a129-ff9e86dac5c6.avif" alt="Abbildungen zur Einstellung des Abstands der Volumenerkennungsebene" />
+</Frame>
+
+2. Tragen Sie den „z“-Höhenwert 2709, der während der externen Parameterkalibrierung erhalten wurde, in den Abstand der Erkennungsebene ein. Dies ist der tatsächliche Abstand zwischen der Kamera und der Erkennungsebene. Klicken Sie auf die Schaltfläche [**Speichern und senden**], um den eingestellten Höhenwert in die Kamera zu schreiben.
+
+<Frame>
+  <img src="/images/legacy/afb78eac-49f7-43ac-8c5d-b6963a53716b/fadaeebd-d48e-4ba2-90d9-87d9017926af.avif" alt="Abbildung im Zusammenhang mit der Einstellung des Abstands der Volumenerkennungsebene 2" />
+</Frame>
+
+3. Durch Verschieben der Punktwolken-Bilddaten können Sie erkennen, dass sich die Bodenhöhe geändert hat. Zu diesem Zeitpunkt kann der Volumenerkennungsbereich konfiguriert werden.
+
+<Frame>
+  <img src="/images/legacy/3cea221c-a39b-4f53-9965-41192272e8ed/3d8aeec7-d33b-48e8-a061-890a6ebed8fa.avif" alt="Abbildungen im Zusammenhang mit der Abstandseinstellung der Volumenerkennungsebene 3" />
+</Frame>
+
+### 7.5 Einstellung des Volumenerkennungsbereichs
+
+1. Stellen Sie den Erfassungsbereich ein. Um die Länge und Breite (xy) der Erkennung anzupassen, empfiehlt es sich, zunächst in die Auf- und Ab-Ansicht zu wechseln. Im Folgenden sind die Tastenkombinationen für jede Ansicht aufgeführt.
+
+<Frame>
+  <img src="/images/legacy/d328c397-8e2f-41ef-9f06-46ce32b2cf7f/30b799d3-964c-4adc-90cc-b0cca7ebe17a.avif" alt="Abbildungen zur Einstellung des Lautstärkeerkennungsbereichs" />
+</Frame>
+
+2. Verwenden Sie die Tastenkombinationen auf der Tastatur, um zur Auf- und Ab-Ansicht zu wechseln, wie in der Abbildung unten gezeigt. Das weiße Kästchen, auf das der rote Pfeil zeigt, zeigt die x-Richtung des Erfassungsbereichs an. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit sind der maximale und minimale Erkennungsbereich in x-Richtung auf 600 und -600 eingestellt.
+
+<Frame>
+  <img src="/images/legacy/e0d9e0ec-e8f1-493c-8262-3e6522ee4280/f81e0deb-e48b-4215-99cb-f49c5b0cc3ec.avif" alt="Abbildung zur Einstellung des Lautstärkeerkennungsbereichs 2" />
+</Frame>
+
+3. Das weiße Kästchen, auf das der grüne Pfeil zeigt, zeigt die Y-Richtung des Erfassungsbereichs an. Sie können den entsprechenden Wert ändern, indem Sie mit dem Mausrad scrollen, um die Anpassung der Länge und Breite des Erkennungsbereichs abzuschließen. Derzeit sind der maximale und minimale Erkennungsbereich in y-Richtung auf 480 und -580 eingestellt.
+
+<Frame>
+  <img src="/images/legacy/3bc64b36-13b3-4f5d-a14a-30ddb9509781/817b24b0-3bfc-4157-868f-43142cd956e4.avif" alt="Abbildung zur Einstellung des Lautstärkeerkennungsbereichs 3" />
+</Frame>
+
+4. Der blaue Pfeil zeigt auf die z-Richtung des Erfassungsbereichs. Der Wert kann durch Scrollen mit dem Mausrad geändert oder der Wert direkt eingegeben werden. Es wird empfohlen, den maximalen Z-Wert des aktuellen Erkennungsbereichs etwas höher einzustellen als den Abstand der Erkennungsebene. Der aktuelle Abstand der Erkennungsebene beträgt 2709 und der maximale Z-Wert ist auf 2690 eingestellt. Der minimale Erkennungsbereich wird entsprechend der Größe des Objekts festgelegt. Wenn die Höhe des Objekts den minimalen Z-Wert überschreitet, wird es vom Algorithmus nicht erkannt.
+
+<Frame>
+  <img src="/images/legacy/68123a29-8322-4773-8b0a-67c7c388b797/17fe8b13-04c3-4f75-9e9b-1a5843af9533.avif" alt="Abbildung zur Einstellung des Lautstärkeerkennungsbereichs 4" />
+</Frame>
+
+5. Nachdem Sie den Erkennungsbereich konfiguriert haben, klicken Sie auf die Schaltfläche [**Speichern und senden**], um die Parameter in der Kamera zu speichern.
+
+<Frame>
+  <img src="/images/legacy/630b6f2b-c6fe-4a60-b3c3-d77ebff70f00/18746efa-a7b4-4e85-98fd-b16bcc470536.avif" alt="Abbildungen zur Einstellung des Lautstärkeerkennungsbereichs 5" />
+</Frame>
+
+### 7.6 Ergebnisse der Volumenerkennung anzeigen
+
+1. Klicken Sie nach dem Einstellen der externen Parameterkalibrierung, der Volumenerkennungsparameter und des Volumenerkennungsbereichs auf „**Grundlegende Werkzeuge**“ und platzieren Sie Objekte im Erkennungsbereich, um die Ergebnisse anzuzeigen. Derzeit ist kein Objekt vorhanden und in der Grundfunktionsleiste wird kein Objekt angezeigt.
+
+<Frame>
+  <img src="/images/legacy/1d829501-eb9b-4ddf-9a4c-b8d6622ef5c8/909c8066-fa20-47ea-b78b-d97bf227cd3b.avif" alt="Zeigen Sie zugehörige Symbole für Volumentestergebnisse an" />
+</Frame>
+
+2. Nachdem das aktuelle Objekt platziert wurde, werden die Längen-, Breiten- und Höheninformationen des aktuellen Objekts in der Volumenstatus-Anzeigeleiste angezeigt.
+
+<Frame>
+  <img src="/images/legacy/c5e9a64a-ae7f-45d3-b755-901d823dd7c2/8f782245-62e5-4988-bfd1-ccea4c1d9b11.avif" alt="Volumentestergebnisse, siehe zugehöriges Diagramm 2" />
+</Frame>
+
+3. Wenn mehrere Objekte platziert werden, zeigt die Spalte mit den Ergebnissen der Volumenerkennung die Länge, Breite und Höhe mehrerer Objekte sowie die Anzahl der Objekte an.
+
+<Frame>
+  <img src="/images/legacy/3c57003c-871a-476b-a797-242644703cf8/1f873710-e793-47b1-aaa0-13b76302c457.avif" alt="Volumentestergebnisse, siehe zugehöriges Diagramm 3" />
+</Frame>
+
+### 7.7 Einzeltriggerfunktion zur Volumenerkennung
+
+1. Aktivieren Sie in der Einstellungsoberfläche für die Lautstärkeerkennung den Touch-Modus und klicken Sie auf die Schaltfläche [**Speichern und Senden**], um den Triggermodus erfolgreich zu aktivieren.
+
+<Frame>
+  <img src="/images/legacy/46b712f6-2daa-40c2-9a01-b8a18f6acc13/4bd31b14-3a53-479b-b2b1-e51ef03634ed.avif" alt="Abbildungen zur Einzeltriggerfunktion zur Volumenerkennung" />
+</Frame>
+
+2. Klicken Sie auf das Basistool und erhalten Sie Bilder und Ergebnisse, indem Sie auf die Schaltfläche [**Einzelauslöser**] klicken.
+
+<Frame>
+  <img src="/images/legacy/29f635b6-9707-4f17-b77d-a05883ffb7fd/e40f2f1f-6fb0-49bb-ae01-53b0627846fe.avif" alt="Abbildung im Zusammenhang mit der Einzeltriggerfunktion zur Volumenerkennung 2" />
+</Frame>
+
+## 8. Kommunikationsprotokoll
+
+### 8.1 TCP-Kommunikation
+
+1. Ergebnisse der Volumenerkennung können über die TCP-Kommunikation abgerufen werden. Über den Netzwerk-Debugging-Assistenten sendet die Remote-Kamera IP: 192.168.100.82, Port: 14951 RESULT\_UPDATE, um die zurückgegebenen Ergebnisinformationen zur Volumenerkennung anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/3268f158-13ec-4e80-b780-9c3dc39fc857/018ebf50-eeee-4ab6-b688-4cffbcc99987.avif" alt="Symbole für die TCP-Kommunikation" />
+</Frame>
+
+### 8.2 UDP-Kommunikation
+
+1. Ergebnisse der Volumenerkennung können über UDP-Kommunikation erhalten werden. Über den Netzwerk-Debugging-Assistenten sendet die Remote-Kamera IP: 192.168.100.82, Port: 14950 RESULT\_UPDATE, um die zurückgegebenen Ergebnisinformationen zur Volumenerkennung anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/17127c06-43af-4038-b287-8a42f8aa9ba7/905bafb7-3038-43f2-9c23-666327a4c4e0.avif" alt="Symbole für die UDP-Kommunikation" />
+</Frame>
+
+### 8.3 HTTP-Kommunikation
+
+1. Ergebnisse der Volumenerkennung können über HTTP-Kommunikation abgerufen werden, Portnummer: 14952.
+
+2. Das Oberschichtsystem (WMS) erhält das Signal aus dem visuellen Sendeergebnis und das Visual gibt eine Zeichenfolge im JSON-Format zurück.
+
+| WMS -> Vision | ㅤ |
+| --- | --- |
+| Ergebnis | Bedeutung |
+| RESULT_UPDATE | Visuelles Ergebnis-Rücksignal auslösen |
+| Vision -> WMS | ㅤ |
+| Ergebnis | Bedeutung |
+| IP | Datenquelle Kamera-IP |
+| TM | Status der Volumenerkennung |
+| Winkel | Winkel des ausgewählten Objekts |
+| cx | x-Koordinate des im Frame ausgewählten Objekts |
+| cy | Y-Koordinate des im Frame ausgewählten Objekts |
+| cz | Z-Koordinate des ausgewählten Objekts einrahmen |
+| Höhe | Objekthöhe |
+| Länge | Objektlänge |
+| Breite | Objektbreite |
+| gültig | false, wenn die Konfidenz zu niedrig ist, andernfalls true |
+| TM_DATA_TIME | Datenextraktionszeit für Volumenerkennung |
+| TM_RES_TIME | Ausgabezeit des Volumenerkennungsergebnisses |
+| Spitzname | Name der Volumenerkennungskamera, konfigurierbar in der Kamera |
+| ret_code | Rückkehrcode, 0 ist Erfolg |
+
+**9\.Anhang**
+
+```json
+{
+
+"IP":"192.168.100.82", // Camera IP
+
+"TM":\[{
+
+"angle":-6.821981430053711, // Bounding-box angle
+
+"cx":39.98405456542969, // Bounding-box x-coordinate
+
+"cy":257.008056640625, // Bounding-box y-coordinate
+
+"cz":2400.63818359375, // Bounding-box z-coordinate
+
+"height":616.723876953125, // Object height
+
+"length":525.5135498046875, // Object length
+
+"type":"","valid":true, // false when confidence is too low
+
+"width":419.761474609375}\], // Object width
+
+"TM_DATA_TIME":"2024_11_13_16_37_47.422", // Volume-detection data timestamp
+
+"TM_RES_TIME":"2024_11_13_16_37_48.209", // Volume-detection result timestamp
+
+"nick_name":"_default_", // Volume-detection camera name
+
+"ret_code":0 // Return code; 0 indicates success
+
+}
+```

@@ -1,0 +1,162 @@
+---
+title: "Hướng dẫn chỉ bản địa hóa V2"
+description: "Sử dụng giao diện web chỉ bản địa hóa V2 để lập bản đồ, bản địa hóa và quản lý bản đồ."
+hidden: true
+---
+## Mô tả giao diện
+
+Thanh menu màu đỏ: Nhấp để nhập chi tiết hoạt động chức năng tương ứng, chẳng hạn như bắt đầu lập bản đồ, di dời, quản lý bản đồ, v.v.
+
+Hộp màu xanh lam: hiển thị bằng bản đồ đường viền 2D đã tải và biểu tượng hiển thị định vị ô tô
+
+Hộp xanh: Hiển thị hình ảnh RGB thời gian thực của camera nhìn từ trên xuống
+
+Hộp màu vàng: hiển thị thời gian thực cường độ tín hiệu định vị (màu xanh lá cây: cường độ tuyệt vời, màu xanh lam: cường độ tốt, màu đỏ: cường độ kém); hiển thị thời gian thực tọa độ vị trí hiện tại của ô tô, tốc độ di chuyển hiện tại của ô tô và tọa độ vị trí chuột
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="Các biểu tượng liên quan đến mô tả giao diện" />
+</Frame>
+
+Hình 1 Mô tả giao diện
+
+## 1. Bắt đầu xây dựng bản đồ
+
+Nhấp vào nút **Bắt đầu xây dựng bản đồ** trên giao diện web, như minh họa trong hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="1. Hình ảnh minh họa liên quan đến việc bắt đầu xây dựng bản đồ" />
+</Frame>
+
+Nhập tên bản đồ (tên bản đồ bao gồm các chữ cái, số và dấu gạch dưới và không thể bắt đầu bằng số), như trong hình bên dưới:
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="1. Minh họa liên quan đến việc bắt đầu lập bản đồ 2" />
+</Frame>
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="1. Minh họa liên quan đến việc bắt đầu lập bản đồ 3" />
+</Frame>
+
+Đây là trang để bắt đầu lập bản đồ
+
+Sau đó di chuyển AGV để quét bản đồ trong khu vực hoạt động. Sau khi quét xong, nhấp vào thanh menu để kết thúc việc xây dựng bản đồ. Hãy kiên nhẫn chờ đợi (thời gian chờ đợi có liên quan đến kích thước của vùng quét).
+
+Khi ánh xạ thành công, dữ liệu ánh xạ có thể được nhìn thấy trong mục quản lý bản đồ.
+
+ánh xạ gia tăng
+
+Chức năng: Thêm các khu vực bản đồ mới dựa trên bản đồ hiện có, chẳng hạn như mở rộng bản đồ và bổ sung các điểm mù
+
+Điều kiện tiên quyết: Khi xây dựng bản đồ gia tăng, bạn cần đảm bảo rằng trang web đã hoàn tất việc di dời và bạn đã chuyển sang bản đồ cần bổ sung.
+
+(Hiện tại, yêu cầu HTTP thủ công được đưa ra)
+
+Địa chỉ [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
+
+Tham số Json
+
+```json
+{
+
+    "cmd":905, // 904 starts incremental mapping; 905 stops incremental mapping
+
+    "attach":{
+
+        "sub_command":0,
+
+        "param":""
+
+}
+
+}
+```
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="1. Minh họa liên quan đến việc bắt đầu lập bản đồ 4" />
+</Frame>
+
+Sau khi hoàn thành ánh xạ gia tăng, khu vực mới được ghi sẽ được thêm trực tiếp vào bản đồ gốc và bạn chỉ cần khởi động lại quá trình di dời.
+
+## 2. Quản lý bản đồ
+
+![2. Minh họa liên quan đến quản lý bản đồ](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif) Hình 2 Sơ đồ quản lý bản đồ
+
+Sau khi quá trình tạo bản đồ hoàn tất, hãy nhấp vào **Quản lý bản đồ** trên thanh menu. Bạn có thể xem tên bản đồ bạn vừa tạo trong danh sách bản đồ lưu trữ. Nhấp vào nút Áp dụng để chuyển sang bản đồ. Tương tự, nếu có nhiều bản đồ khu vực cần chuyển đổi thì bạn cũng cần sử dụng chức năng quản lý bản đồ để chuyển đổi. Nhấn nút Xóa để xóa bản đồ tương ứng; **Áp dụng bản đồ:** Sau khi nhấp vào Áp dụng, hãy nhớ khởi động lại máy chủ trước khi bản đồ được áp dụng và có hiệu lực, nếu không việc di dời sẽ không thể thực hiện được.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="2. Minh họa liên quan đến quản lý bản đồ 2" />
+</Frame>
+
+Hình 3 Sơ đồ sơ đồ ứng dụng
+
+## 3. Di dời
+
+Sau khi nhấp vào vị trí di chuyển, bạn có thể kéo chuột để tạo tư thế di chuyển gần đúng dựa trên dấu nhắc khớp của đám mây điểm laser và bản đồ đường viền laser để di chuyển;
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="3. Các biểu tượng liên quan đến di dời" />
+</Frame>
+
+Hình 4 Sơ đồ chức năng tái định vị
+
+Sau khi di chuyển thành công, ngoại lệ **hết thời gian chờ định vị** sẽ biến mất.
+
+di chuyển mã QR
+
+Khi xây dựng bản đồ, bạn có thể chọn dán mã Apritag vào một số vị trí để di dời. Khi mã QR hoàn chỉnh xuất hiện trong phối cảnh của thiết bị, nó sẽ tự động xác định bản đồ và vị trí mà mã đó đang bật, tự động chuyển đổi bản đồ và di chuyển.
+
+Website tạo mã QR [https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="3. Biểu tượng liên quan đến di dời 2" />
+</Frame>
+
+Chỉ cần đảm bảo rằng ID thẻ ở khu vực đặt thiết bị không bị lặp lại. TagFamily được cố định như hình trên.
+
+## 4. Cấu hình và hiển thị thông số
+
+Xem và định cấu hình các thông số bên ngoài laser và camera trong các thông số định vị khung gầm và giá trị hiệu chỉnh cảm biến của cấu hình robot
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="4. Cấu hình thông số và hiển thị các biểu tượng liên quan" />
+</Frame>
+
+Hình 5 Cấu hình tham số
+
+## 5. Chức năng xuất nhật ký
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="5. Hình minh họa liên quan đến chức năng xuất log" />
+</Frame>
+
+Hình 6 Chức năng nhập và xuất nhật ký
+
+Như minh họa trong hình trên, bạn có thể lọc nhật ký tương ứng theo khoảng thời gian, loại mô-đun và các tùy chọn khác. Nhật ký bên dưới là nhật ký truy xuất tương ứng, có thể xuất sau khi chọn.
+
+## 7. Cập nhật chương trình cơ sở
+
+Xem gói cục bộ: Nhập chương trình cơ sở cục bộ cần cập nhật (khung máy, bộ truyền động, chương trình cơ sở máy ảnh).
+
+Gói khôi phục: Ghi lại phiên bản chương trình cơ sở trước lần cập nhật cuối cùng. Nếu bạn cần quay lại, chỉ cần nhấp vào nó.
+
+![7. Các biểu tượng liên quan đến cập nhật firmware](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif) Hình 7 Cập nhật firmware
+
+Nâng cấp chương trình cơ sở máy chủ máy ảnh
+
+Bạn có thể sử dụng máy tính chủ thông thường để nâng cấp chương trình cơ sở. Phương pháp nâng cấp này không thể được khôi phục và bạn cần thận trọng khi nâng cấp. ![7. Các biểu tượng liên quan đến cập nhật firmware 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
+
+## 8. Dừng và khởi động lại ứng dụng chính
+
+Bấm vào điều khiển thích hợp. Trước khi bạn kết nối LxCameraViewer với máy ảnh, hãy dừng ứng dụng chính của robot. Nếu không, robot sẽ giữ quyền kiểm soát máy ảnh và ngăn LxCameraViewer kết nối. ![Điều khiển ứng dụng chính](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
+
+Hình 8. Các hàm ontology
+
+9. Truy vấn phiên bản
+
+Nhấp để truy vấn phiên bản ontology và phiên bản front-end.
+
+<Frame>
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="7. Các biểu tượng liên quan đến cập nhật firmware 4" />
+</Frame>
+
+Hình 9 Truy vấn phiên bản

@@ -1,0 +1,456 @@
+---
+title: "Benutzerhandbuch für die S2 Max-Kamera"
+description: "Spezifikationen, Installation, Anschluss, Softwarebetrieb und Vorsichtsmaßnahmen für die S2 Max-Kamera."
+hidden: true
+---
+## Revisionsverlauf
+
+| Datum | Version | Änderungen |
+| --- | --- | --- |
+| 30.01.2024 | V0.1 | Erstveröffentlichung |
+| 10.05.2024 | V1.0 | Aktualisierte Kameraparameter |
+| 17.06.2024 | V1.1 | 1. Die Pinbelegung wurde aktualisiert und elektrische Spezifikationen hinzugefügt. 2. Das Prüfzertifikat wurde dem Paketinhalt hinzugefügt. |
+| 25.11.2024 | V1.2 | Aktualisierte Kamera-Lagertemperatur |
+
+## 1. Produktübersicht
+
+Dieses Dokument beschreibt die von Zhejiang MRDVS Technology Co., Ltd. entwickelte S2 Max-Kamera, einschließlich ihrer Spezifikationen, Funktionen und Bedienungsanleitungen.
+
+Die S2 Max ist eine MRDVS ToF-Kamera mit einer Gigabit-Ethernet-Kommunikationsschnittstelle und einem 24-V-DC-Stromeingang.
+
+<Frame>
+  <img src="/images/legacy/45572af3-2354-454f-888e-e0bb33e392fc/35d2d756-9872-41d3-9ad6-b4114a07ccb1.avif" alt="S2 Max-Kamera" />
+</Frame>
+
+Abbildung 1.1. S2 Max-Kamera
+
+### 1.1 Funktionen
+
+- Integrierte 1 TOPS-Rechenkapazität; erfordert keine externe CPU
+
+- RGB-D-Ausgang
+
+- Eigenständige Hindernisvermeidung, Behältererkennung und Volumenmessung
+
+- Gigabit-Ethernet
+
+### 1.2 Nutzungsbedingungen
+
+**Beachten Sie bei der Verwendung folgende Anforderungen:**
+
+- Entfernen Sie keine Etiketten vom Produkt.
+
+- Zerlegen Sie das Produkt nicht. Andernfalls kann es beschädigt werden.
+
+- Benutzen Sie das Produkt nicht in einem starken Magnetfeld.
+
+- Verwenden Sie das Produkt nicht bei direkter Sonneneinstrahlung über 100 KLUX.
+
+- Reinigen Sie das Gehäuse mit einem weichen, fusselfreien Tuch, das mit etwas gereinigtem Wasser oder Alkohol angefeuchtet ist.
+
+- Bewahren Sie die Originalverpackung auf und verwenden Sie sie nach Möglichkeit für den Transport.
+
+* * *
+
+## 2. Produktspezifikationen
+
+### 2.1 Ranging-Prinzip
+
+Der S2 Max misst die Entfernung mithilfe der Flugzeit (ToF): Er misst die Zeit zwischen der Aussendung von Licht und dem Empfang der Reflexion von einem Objekt.
+
+Der S2 Max nutzt direkte Messungen für die Tiefenbildgebung, generiert hochwertige Tiefendaten mit minimalen Rechenressourcen und erstellt Tiefenszenen mit einer hohen Bildrate. ToF-Kameras werden wie LiDAR in gepulstes ToF (P\_ToF) und kontinuierliches ToF (CW\_ToF) unterteilt. P\_ToF sendet normalerweise unsichtbare Lichtimpulse aus und berechnet aus ihrer Umlaufzeit die Entfernung. CW\_ToF sendet moduliertes Dauerlicht aus und berechnet die Flugzeit aus der Phasendifferenz zwischen gesendetem und zurückgegebenem Licht.
+
+<Frame>
+  <img src="/images/legacy/d13d957f-1755-4775-bdce-6d2d62c500d0/879c7b69-7b9b-4f6f-a1ea-b82b5e739be8.avif" alt="ToF-Erkennungsprinzip" />
+</Frame>
+
+Abbildung 2.1. Erkennungsprinzip
+
+### 2.2 Spezifikationen
+
+Tabelle 2-1. Produktspezifikationen
+
+| Kamera | Parameter | Eagle-S2 Max |
+| --- | --- | --- |
+| Leistung | Chip | Sony-Chip |
+| ㅤ | Ranging-Methode | Flugzeit |
+| ㅤ | Betriebswellenlänge | 940nm |
+| ㅤ | TOF-Auflösung und Bildrate | 320×240 (typisch 12fps) |
+| ㅤ | TOF-Sichtfeld | 81°×61° |
+| ㅤ | RGB-Auflösung und Bildrate | 1920×1080 (typisch 12fps) |
+| ㅤ | RGB-Sichtfeld | 88°×56° |
+| ㅤ | Reichweite | 0,2–5 m (90 % Reflexionsvermögen), 0,2–2,5 m (10 % Reflexionsvermögen) |
+| ㅤ | Genauigkeit | ±3mm+0,5%×Tiefe |
+| Elektrik | Kommunikationsschnittstelle | Ethernet / CAN |
+| ㅤ | Stromschnittstelle | Industrieller 5-poliger Rundsteckverbinder |
+| ㅤ | Leistungsaufnahme | 24V DC / 2A |
+| ㅤ | Durchschnittlicher Stromverbrauch | 6,6W |
+| Mechanisch | Abmessungen | 88mm×47mm×47mm |
+| ㅤ | Gewicht | 333g |
+| ㅤ | IP-Schutzart | IP42 |
+| ㅤ | Betriebstemperatur | -20℃~60℃ |
+| ㅤ | Lagertemperatur | -40℃~85℃ |
+| ㅤ | Luftfeuchtigkeit | 10 % ~ 90 % relative Luftfeuchtigkeit, nicht kondensierend |
+| Andere | Umgebungslichtbeständigkeit | Bis zu 100Klux Sonnenlicht |
+| ㅤ | Schatten-Licht-Beständigkeit | Weniger als 1 cm Änderung über eine Schatten-Licht-Grenze von 100 Klux |
+| ㅤ | Softwareumgebung | C / C++ / ROS SDK |
+| ㅤ | Betriebssystemunterstützung | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Kühlung | Passiv |
+
+Hinweis: Das 3D-Modell definiert die Produktabmessungen.
+
+* * *
+
+## 3. Produkteigenschaften
+
+### 3.1 Elektrische Spezifikationen
+
+Tabelle 3-1. Elektrische Spezifikationen des Produkts
+
+| Parameter | Symbol | Zustand | Minimum | Typisch | Maximal | Einheit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Versorgungsspannung | VDD | ㅤ | 22 | 24 | 26 | V |
+| KANN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
+| Betriebstemperatur | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Betriebsfeuchtigkeit | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Lagerfeuchtigkeit | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Lagertemperatur | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### 3.2 Ausgangseigenschaften
+
+Standardmäßig gibt der S2 Max ein Tiefenbild (Abbildung 3.1), entsprechende Signalintensitätsdaten pro Pixel (Abbildung 3.2) und eine aus den Tiefendaten generierte Punktwolke aus (Abbildung 3.3). Bei dem abgebildeten Objekt handelt es sich um ein Aluminiumprofil.
+
+<Frame>
+  <img src="/images/legacy/4eca3d0d-b048-4bad-a96d-dc99750bf5f4/6463aba7-4fd0-49ee-a17b-2f5cae0b2a17.avif" alt="Tiefenbild" />
+</Frame>
+
+Abbildung 3.1. Tiefenbild
+
+<Frame>
+  <img src="/images/legacy/ceeedd36-984a-45eb-b363-06a3e1282a18/5b3058dc-d9b8-42f4-9601-c5a15a5efc8e.avif" alt="Intensitätsbild" />
+</Frame>
+
+Abbildung 3.2. Intensitätsbild
+
+<Frame>
+  <img src="/images/legacy/d6b15bf9-3220-4da7-aac1-e34f8c93cdc6/39d023fc-ce10-4ef7-ab77-5089c3b8d3f9.avif" alt="Punktwolke" />
+</Frame>
+
+Abbildung 3.3. Punktwolke
+
+Die Tiefenerkennung nutzt Alternating Frame High Dynamic Range (HDR), um den Messbereich zu erweitern. Der Sensor gibt zwei Tiefenrahmen mit unterschiedlichen Integrationszeiten und Kalibrierungsparametern aus. Für jedes Pixel wählt die Host-Software den Frame mit dem höheren Intensitätswert aus und kombiniert die Auswahl in der endgültigen Ausgabe, wodurch eine genaue Tiefe über alle Messbereiche hinweg bereitgestellt wird.
+
+### 3.3 Erfassungsbereich
+
+Abbildung 3.1 zeigt den S2 Max-Erkennungsbereich. Der horizontale Erfassungswinkel beträgt 81° und der vertikale Winkel 61°. Die Erkennungsentfernung hängt von der optischen Leistung ab. Eine höhere optische Leistung und ein höheres Zielreflexionsvermögen vergrößern die nahe Blindzone und verringern die ferne Blindzone. Eine geringere optische Leistung und ein geringeres Zielreflexionsvermögen verringern die nahe Blindzone und vergrößern die ferne Blindzone. Für Ziele mit einem Reflexionsvermögen von 10 % bis 90 % beträgt die S2 Max-Reichweite 0,2 bis 5 m. Über 5 m hinaus verursachen geringe reflektierte Signalstärke und Umgebungslichtstörungen erhebliche Entfernungsfehler.
+
+<Frame>
+  <img src="/images/legacy/095f0756-e2ee-46d7-9af4-e3fd8946f19b/76a7f229-87d7-4056-b5e6-eb43d952502e.avif" alt="Erfassungsbereich" />
+</Frame>
+
+Abbildung 3.4. Sichtfeld
+
+### 3.4 Reflektivitätsreferenz
+
+Das Reflexionsvermögen wird in dieser Spezifikation anhand einer Standard-Whiteboard-Tafel von Kodak gemessen. Es folgen typische Reflexionswerte für andere Materialien.
+
+Tabelle 3-2. Materielles Reflexionsvermögen
+
+| Nein. | Material | Reflexionsvermögen |
+| --- | --- | --- |
+| 1 | Schwarzer Gummi | 22 % |
+| 2 | Schwarze Keramiktasse | 34 % |
+| 3 | Schwarze Plastikfolie | 42 % |
+| 4 | Zeitung | 45 % |
+| 5 | Schwarzer Stoff | 78 % |
+| 6 | Undurchsichtige Plastikflasche | 85 % |
+| 7 | Glatte Holzplatte | 90 % |
+| 8 | Whitepaper | 90 % |
+| 9 | Kodak Standard-Whiteboard | 100 % |
+| 10 | Klares Glas | 140 % |
+| 11 | Glänzende helle Metalloberfläche | 150 % |
+
+### 3.5 Abmessungen
+
+<Frame>
+  <img src="/images/legacy/5ceeb341-2323-4842-abba-618e119408de/4357148a-af20-410f-bec4-ca97c60b9626.avif" alt="S2 Max-Abmessungen" />
+</Frame>
+
+Abbildung 3.5. S2 Max-Abmessungen
+
+### 3.6 Optisches Koordinatensystem und Ursprung
+
+**Optisches Koordinatensystem:**
+
+- Das optische Koordinatensystem umfasst das Kamerakoordinatensystem (CCS) und das Weltkoordinatensystem (WCS).
+
+- Das Kamerakoordinatensystem ist das 2D-Tiefenbildkoordinatensystem. Sein Ursprung ist das optische Zentrum.
+
+- Das Weltkoordinatensystem ist das 3D-Punktwolken-Koordinatensystem.
+
+- Verwenden Sie die Kamerafunktionen, um Tiefenbildkoordinaten in 3D-Punktwolkenkoordinaten umzuwandeln. Sehen Sie sich die SDK-Beispiele an.
+
+<Frame>
+  <img src="/images/legacy/7156ba2e-0f98-4049-8747-2a349ee174d8/2800e8c0-c543-4557-871f-c502a873803a.avif" alt="Optisches Koordinatensystem" />
+</Frame>
+
+Abbildung 3.6. Optisches Koordinatensystem
+
+**Der Kameraursprung ist wie folgt definiert:**
+
+1. Der X-Koordinatenursprung wird an der X-Achse des Produkts ausgerichtet.
+
+2. Der Y-Koordinatenursprung wird an der Y-Achse des Produkts ausgerichtet.
+
+3. Der Z-Koordinatenursprung liegt auf der Vorderseite der Kamera.
+
+<Frame>
+  <img src="/images/legacy/d9ca8b30-b791-4eb6-8741-43a30c38cdb5/99ecfb54-1960-4225-a297-502cfcb313aa.avif" alt="Kameraursprung" />
+</Frame>
+
+Abbildung 3.7. Kameraursprung
+
+### 3.7 Produktschnittstelle
+
+Der S2 Max 5-Pin-Port ist unten definiert. **Hinweis: Am Kabelausgang 35 mm für Installation und Biegeradius reservieren.**
+
+<Frame>
+  <img src="/images/legacy/53191efd-d932-4b71-b5fa-eea5e4f63c9f/9c33c457-56a3-427e-9534-1649875406f1.avif" alt="S2 Max 5-Pin-Schnittstelle" />
+</Frame>
+
+Tabelle 3-3. Pin-Definitionen
+
+| Hafen | Pin | Signal | Beschreibung | Hinweis |
+| --- | --- | --- | --- | --- |
+| Sockel | 1 | Fahrgestellnummer+ | Positiver 24-V-Stromeingang | Braun |
+| ㅤ | 2 | CAN_L | CAN_L | Weiß |
+| ㅤ | 3 | GND | Signalmasse | Blau |
+| ㅤ | 4 | VIN- | Negativer 24-V-Stromeingang | Schwarz |
+| ㅤ | 5 | CAN_H | CAN_H | Grau |
+
+### 3.8 Empfohlene Installation
+
+**Die folgenden drei Installationsmethoden werden empfohlen.**
+
+**Installation 1:** Weder die rechte Wand noch der Boden sind sichtbar. Platzieren Sie die Kamera in einer Ecke, sodass nur die Vorderwand sichtbar ist. Diese Konfiguration bietet eine gute Reichweite.
+
+<Frame>
+  <img src="/images/legacy/481825de-00a1-4edf-9c01-5735cbd8fc54/9954d920-5ca6-49fe-a087-61637f41106e.avif" alt="Empfohlene Installation 1" />
+</Frame>
+
+Abbildung 3.8. Installation 1
+
+**Installation 2:** Die rechte Wand ist sichtbar, der Boden jedoch nicht. Platzieren Sie die Kamera in einer Ecke, mindestens 20 cm von der rechten Wand entfernt. Die Entfernungsgenauigkeit kann ±15 mm erreichen.
+
+<Frame>
+  <img src="/images/legacy/89c815f7-580c-4a2d-bac3-49fec5a142da/9b2170dc-373b-41f0-a0fa-dc721eac6b76.avif" alt="Empfohlene Installation 2" />
+</Frame>
+
+Abbildung 3.9. Installation 2
+
+**Installation 3:** Der Boden ist sichtbar, die rechte Wand jedoch nicht. Montieren Sie die Kamera 10 bis 30 cm über dem Boden.
+
+<Frame>
+  <img src="/images/legacy/6ab7e1a0-2dad-4d2f-b882-5505ce42a774/e17dcb0c-11b4-4ee8-a363-cb796debb8ae.avif" alt="Empfohlene Installation 3" />
+</Frame>
+
+Abbildung 3.10. Installation 3
+
+In Bodennähe kann der Bereich, der der Kamera am nächsten liegt, durch Streulicht und Mehrwegreflexionen überbelichtet werden und andere Bereiche beeinträchtigen.
+
+<Frame>
+  <img src="/images/legacy/c214e979-a428-45c6-bb5a-4f135703040c/9babdcb0-d5ba-4fad-8488-12996f12361a.avif" alt="Bodennaher Mehrwegeeffekt" />
+</Frame>
+
+Abbildung 3.11. Bodennaher Mehrwegeeffekt
+
+In der Abbildungsoptik erscheint Streulicht vor allem als Geisterbilder und Streulicht.
+
+<Frame>
+  <img src="/images/legacy/29fb1769-ee47-415b-998b-eef6443852a8/f9653242-82bd-404e-8bac-fe57223b88e1.avif" alt="Geisterbilder und Streulicht" />
+</Frame>
+
+Abbildung 3.12. Geisterbilder und Streulicht
+
+**Verwenden Sie dieses Produkt nicht** in einer Installation, bei der sowohl die rechte Wand als auch der Boden sichtbar sind. Bodenstreulicht und Mehrwegreflexionen an der Wand erzeugen komplexe Entfernungsinterferenzen.
+
+<Frame>
+  <img src="/images/legacy/85209cfc-7b96-48eb-9f8c-c5682e3b9b4d/8d1d86d9-53ce-4544-8424-0c8db6720f11.avif" alt="Installation nicht empfohlen" />
+</Frame>
+
+Abbildung 3.13. Installation nicht empfohlen
+
+* * *
+
+## 4. Genauigkeit und Präzision
+
+### 4.1 Genauigkeit
+
+Durch die Kalibrierung wird ein fester Versatz zwischen Sensormessungen und tatsächlichen Werten beseitigt, indem eine Zuordnung zwischen ihnen erstellt wird. Montieren Sie beim S2 Max die Kamera auf einer Schiene gegenüber einer weißen Wand und ordnen Sie die Messung jedes Pixels dem Abstand zwischen der Kamera und dem abgebildeten Wandbereich zu. Die Korrektur von Messungen mit dieser Zuordnung liefert genauere Entfernungswerte, wie in Abbildung 4.1 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/1bf79e92-93f8-4dae-9b95-9853490d9888/e242df58-7178-48a9-a801-9f0513727e69.avif" alt="Kalibrierungs-Setup" />
+</Frame>
+
+Abbildung 4.1. Kalibrierung
+
+Der S2 Max verwendet aktive Entfernungsmessung. Installation und andere Faktoren können zu Mehrwegestörungen führen und die Genauigkeit beeinträchtigen.
+
+Dieser Effekt ist besonders ausgeprägt, wenn ein Ziel mit geringem Reflexionsvermögen neben einem stark reflektierenden Objekt gemessen wird. Die ideale Messung folgt dem blauen Pfad, aber Licht kann von der Wand zum Ziel und zurück zur Kamera reflektiert werden (grüner Pfad). Die Beleuchtung kann auch direkt vom nahe gelegenen Objekt mit hohem Reflexionsvermögen in die Kamera reflektiert werden (roter Pfad). Optische Mängel erzeugen Blendung, die die Entfernungsmessung beeinträchtigt, wie in Abbildung 4.2 dargestellt.
+
+<Frame>
+  <img src="/images/legacy/76e2a72b-ff76-468e-a3d5-2fba7dbde22f/724e3afa-0550-446f-b54a-22927891e33f.avif" alt="Lichtwege der Kamerainstallation" />
+</Frame>
+
+Abbildung 4.2. Kamerainstallation
+
+### 4.2 Präzision
+
+Präzision bedeutet normalerweise Einzelpunktvariation (1-σ). Als optoelektronisches Messgerät wird der S2 Max durch AD-Wandlung, Signal-Rausch-Verhältnis, Systemrauschen und andere Faktoren beeinflusst. Abbildung 4.3 zeigt den Zusammenhang zwischen Präzision und Signalstärke.
+
+<Frame>
+  <img src="/images/legacy/4bdfd3a0-f5b8-4136-a633-3990ef7e3408/636c60f8-d5d0-41b0-849f-9dacb9ad6bc0.avif" alt="Präzision und Signalstärke" />
+</Frame>
+
+Abbildung 4.3. Präzision und Signalstärke
+
+Der S2 Max wandelt optoelektronische Analogsignale in digitale Daten um. Der ADC quantisiert das analoge Signal bei minimaler Auflösung und führt Rauschen ein. Beispielsweise kann ein 1,1-V-Signal als 1 V gelesen werden, was einem Fehler von 10 % entspricht; 10,1 V können als 10 V gelesen werden, ein Fehler von 1 %; und 100,1 V können als 100 V gelesen werden. Die AD-Umwandlung führt daher bei geringer Signalstärke zu proportional mehr Rauschen und Fehlern. Das Signal-Rausch-Verhältnis einer ToF-Kamera hängt typischerweise mit der Integrationszeit t um SNR∝1/√t zusammen, sodass eine zunehmende Integrationszeit die Signalstärke erhöht.
+
+* * *
+
+## 5. Interferenz mit mehreren Kameras
+
+### 5.1 Parallelinterferenz
+
+Wenn zwei Kameras parallel montiert sind, empfängt jede Kamera sowohl von ihr selbst als auch von der anderen Kamera reflektiertes Licht, was die Tiefendaten beeinträchtigt. Parallele Interferenz ist der erhöhte Erkennungsfehler, der entsteht, wenn zwei S2 Max-Kameras in die gleiche Richtung zeigen.
+
+<Frame>
+  <img src="/images/legacy/a83df49c-2acc-4fde-98b2-f7c47bb80a10/5ab113bc-bb79-46fe-8695-fb9fae482ad0.avif" alt="Parallele Kamerainterferenz" />
+</Frame>
+
+Um parallele Interferenzen zu vermeiden, installieren Sie die Kameras in einem Winkel zur horizontalen Ebene. Wenn sie bei 0° installiert werden müssen, wenden Sie sich für eine benutzerdefinierte Konfiguration an MRDVS.
+
+* * *
+
+## 6. Softwareübersicht
+
+### 6.1 SDK
+
+Verwenden Sie das SDK, um die Kamera zu initialisieren und zu starten, Daten zu erfassen und die Kamera zu schließen. Verwenden Sie für andere Plattformen als Linux oder Windows die SDK-Quelle als Referenz beim Portieren der Kameraanwendung.
+
+Tabelle 6-1. SDK
+
+| Betriebssystem | Linux & Windows |
+| --- | --- |
+| Programmiersprache | C/C++ |
+| Datenformat | 16-Bit-Kurzschluss ohne Vorzeichen |
+| Integration | Gemeinsam genutzte Bibliothek (.so), Dynamic-Link-Bibliothek (.dll) oder SDK-Quelle |
+
+### 6.2 SDK-Ausgabereihenfolge
+
+<Frame>
+  <img src="/images/legacy/ae0a3b9d-5f56-424e-a3d0-559042c29d3c/fb9ad6ad-08cc-4bfa-843a-12ca2083d122.avif" alt="SDK-Ausgabereihenfolge" />
+</Frame>
+
+Abbildung 6.1. SDK-Ausgabereihenfolge
+
+Das SDK gibt Tiefen- und Intensitätsdaten Bild für Bild als eindimensionale Arrays mit der konfigurierten Auflösung aus. Das Pixel oben links ist der Ursprung und die Ausgabe erfolgt von links nach rechts und von oben nach unten. Abbildung 6.1 zeigt die X-Achsen-Ausgabe gefolgt von der Y-Achsen-Ausgabe:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Jedes Tiefenpixel ist ein 16-Bit-Kurzschluss ohne Vorzeichen, der den Abstand vom gemessenen Objekt zur Kameraebene darstellt.
+
+Jedes Intensitätspixel ist ein 16-Bit-Kurzschluss ohne Vorzeichen, der die zurückgegebene Signalintensität darstellt.
+
+### 6.3 IP-Adresse
+
+Die werkseitig voreingestellte IP-Adresse des S2 Max lautet 192.168.100.82. Verwenden Sie das MRDVS-Demotool, um die IP-Adresse zu ändern oder DHCP zu aktivieren.
+
+### 6.4 Demo-Software
+
+### 6.4.1 IP-Konfiguration
+
+Schließen Sie das Netzkabel an und verbinden Sie dann die Kamera mit einem Ethernet-Kabel mit dem Computer. Da die werkseitige Standard-IP der Kamera 192.168.100.82 lautet, konfigurieren Sie den Computer auf 192.168.100.x, ausgenommen 100.82, mit der Subnetzmaske 255.255.255.0. Öffnen Sie **Einstellungen** → **Ethernet** → **Adapteroptionen ändern**, klicken Sie mit der rechten Maustaste auf **Ethernet** und wählen Sie **Internet Protocol Version 4 (TCP/IPv4)**. Stellen Sie beispielsweise die IP-Adresse auf 192.168.100.20 und die Subnetzmaske auf 255.255.255.0 ein.
+
+### 6.4.2 Öffnen Sie die Software
+
+Laden Sie die Software herunter, installieren Sie sie und doppelklicken Sie dann auf das LxCameraViwer-Demosymbol. Die Host-Software wird geöffnet, sucht nach Kameras, öffnet die Kamera und startet die Erfassung automatisch, wenn eine Kamera angeschlossen ist.
+
+**Hinweis: Beim ersten Start müssen Sie bei einigen Systemen Firewall-Zugriff gewähren.**
+
+Die Software bietet Grundfunktionen, Bildauswahl, Kamerakonfiguration und Kamerainformationen. Zu den Kamerainformationen gehören die Kamera-IP, ID, MAC-Adresse, Seriennummer sowie Software- und Algorithmusversionen. Wählen Sie **Tiefe**, **Intensität**, **RGB** oder **Punktwolke**, um das entsprechende Bild anzuzeigen.
+
+<Frame>
+  <img src="/images/legacy/c3306c27-0c60-4bb5-aaf7-bba3cbd803cb/cfb52d99-146e-4e83-adef-65ea234990cf.avif" alt="LxCameraViewer-Bildanzeige" />
+</Frame>
+
+Abbildung 6.2. Bildanzeige
+
+### 6.4.3 Bilder speichern
+
+Klicken Sie auf **Speichern**, um die ausgewählten Bilder im Ordner `./data` im Softwareinstallationsverzeichnis zu speichern. Das Terminal druckt auch den Pfad aus, zum Beispiel: `save path= ./data/camera ID`.
+
+In den gespeicherten Dateien ist `_a` das Intensitätsbild, `_d` das Tiefenbild, `_r` das RGB-Bild (MONO) und `.pcd` die Punktwolke. Tiefen- und Intensitätsbilder verwenden PGM, RGB-Bilder verwenden PNG und Punktwolken verwenden PCD.
+
+<Frame>
+  <img src="/images/legacy/ccd9ecf9-7f66-4508-8658-5b058cca8433/9531ca7b-8f0c-45c8-86bf-ca7e29cf1f91.avif" alt="Gespeicherte Bilddateien" />
+</Frame>
+
+Abbildung 6.3. Gespeicherte Bilder
+
+### 6.4.4 IP-Adresse ändern
+
+Geben Sie die erforderliche IP-Adresse ein, z. B. 192.168.10.199. Geben Sie die Subnetzmaske 255.255.255.0 und das Gateway 192.168.10.1 ein. Das Gateway muss sich im selben Subnetz befinden wie die erforderliche IP und endet normalerweise mit 1. Bestätigen Sie die Änderung und schalten Sie die Kamera dann aus und wieder ein.
+
+<Frame>
+  <img src="/images/legacy/c000fc32-ef83-4838-b18b-9fadb3a0cbdd/e60b7d95-7424-4180-9982-28188b93bc9b.avif" alt="Ändern Sie die IP-Adresse der Kamera" />
+</Frame>
+
+* * *
+
+## 7. Hauptfunktionen
+
+### 7.1 Reichweite
+
+Die Reichweite des S2 Max beträgt 0,2 bis 5 m. Kontaktieren Sie MRDVS für ein individuelles Sortiment.
+
+### 7.2 Filtern
+
+Das MRDVS SDK bietet die folgenden Filter:
+
+- Medianfilter
+
+- Modusfilter
+
+- Entfernung fliegender Pixel
+
+* * *
+
+## 8. Vorsichtsmaßnahmen
+
+### 8.1 Laserschutzklasse
+
+<Frame>
+  <img src="/images/legacy/a4eaa95f-1ff4-4b06-ab6c-155a0ca35823/6d3c7113-6124-4a40-95d8-17de8e9e3ea2.avif" alt="Laserschutzklasse" />
+</Frame>
+
+### 8.2 Korrekter Betrieb
+
+Die S2 Max-Kamera verwendet eine 24-V-Gleichstromversorgung. Schließen Sie das Netzkabel an, bevor Sie Strom anlegen, und vertauschen Sie nicht die Plus- und Minuspole. Eine Verpolung kann das Produkt beschädigen.
+
+### 8.3 Betriebstemperatur
+
+Halten Sie die Umgebungstemperatur innerhalb des in den Produktspezifikationen angegebenen Bereichs (Tabelle 2-1). Montieren Sie das Produkt auf einer wärmeleitenden Komponente wie einer Metallhalterung, um die Wärmeableitung zu verbessern und eine optimale Leistung zu erzielen.
+
+* * *
+
+## 9. Fehlerbehebung
+
+Tabelle 9-1. Fehlerbehebung
+
+| Nein. | Problem | Auflösung |
+| --- | --- | --- |
+| 1 | Kamera reagiert beim Öffnen nicht | Stellen Sie sicher, dass die Firewall deaktiviert ist |
+| 2 | Host-Software erkennt mehrere IP-Adressen | Ein anderes Gerät im LAN verwendet dieselbe IP; Wählen Sie die gewünschte IP-Adresse aus |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernet-Kabel. Daten können über Fast Ethernet zunächst instabil sein |
+| 4 | Software-Installationsort | Eine Standardinstallation auf Laufwerk C kann von den Berechtigungseinstellungen | betroffen sein

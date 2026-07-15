@@ -1,0 +1,149 @@
+---
+title: "Cámara 3D serie M4-G"
+description: "Especificaciones, interfaces, dimensiones, soporte de software y aplicaciones para la cámara M4-G iToF RGB-D."
+---
+Para descargar el documento completo, obtenga el manual de usuario del producto en el [Centro de descargas](/es/resources/downloads/specifications-and-user-guides "Centro de descargas").
+
+## Descripción general del producto
+
+La MRDVS M4-G es una cámara RGB-D basada en tecnología iToF. Diseñado para la percepción de corto alcance en robots incorporados, proporciona una interfaz GMSL2. La cámara funciona desde 0,05-1 m con una precisión de distancia de hasta 4 mm. Genera sincrónicamente datos de profundidad e imágenes RGB de 1080P a hasta 30 fps para percepción de corto alcance, agarre de objetos de mesa y manipulación diestra.
+
+<Frame>
+  <img src="/images/legacy/0c305d49-25f8-4018-9ef2-c65a21cac289/0e5b76fc-5a62-461f-a3fb-6bcd0b2f8ec7.avif" alt="Descripción general del producto M4-G" />
+</Frame>
+
+## Tecnología y aplicaciones centrales
+
+- Detección de profundidad: utiliza tecnología ToF para generar datos de profundidad de corto alcance.
+
+- Operación con poca luz: utiliza iluminación activa para generar datos de profundidad por la noche o con poca luz.
+
+- Menos lagunas de datos: la iluminación activa reduce los datos faltantes y mejora la integridad de la profundidad.
+
+- Múltiples formatos de salida: genera de forma sincronizada imágenes RGB y de profundidad con alineación RGB.
+
+- Transmisión de datos: Proporciona una interfaz GMSL2 para distancias de transmisión más largas y conexiones resistentes a interferencias.
+
+**Aplicaciones principales:**
+
+La cámara se monta en una muñeca de robot humanoide (VLA) para agarrar objetos de mesa y realizar operaciones industriales diestras.
+
+- Agarre de objetos sobre una mesa: los robots humanoides identifican y agarran de forma autónoma objetos sobre una mesa para servicios domésticos, asistencia en la oficina y aplicaciones similares.
+
+- Manipulación diestra: la visión de alta precisión guía a los robots humanoides a través de la identificación, agarre y ensamblaje de piezas en tareas industriales como recolección aleatoria de contenedores, ensamblaje de precisión y cuidado de máquinas.
+
+## Especificaciones
+
+| Métrica de rendimiento | MRDVS M4-G |
+| --- | --- |
+| Principio de funcionamiento | iToF |
+| Formato de salida | Profundidad y RGB y nube de puntos |
+| Resolución TOF y velocidad de fotogramas | 640x480 (VGA), típico: 30 fps |
+| Campo de visión TOF | 90°×70°（±3°） |
+| Resolución RGB/velocidad de fotogramas | 1280×1056, 30 fps típicos |
+| Campo de visión RGB | 115°×100°（±3°） |
+| Tamaño de píxel RGB | 2,5um |
+| Proveedor de servicios de Internet RGB | Integrado |
+| RGBHDR | ≥100dB |
+| Apertura de lente RGB (F#) | 2.05 |
+| Distancia focal efectiva RGB (EFL) | 1,28 mm |
+| Rango de medición | 0,05 m ~ 1 m |
+| Precisión de distancia | 1% (hasta 4 mm a 1 m) |
+| Consumo de energía | 3W |
+| Láser | 940nm |
+| Dimensiones | 60×30×29mm |
+| Peso | &lt;200g |
+| Fuente de alimentación | 12 V CC/1 A |
+| Interfaz de comunicación | Serdas |
+| Temperatura de funcionamiento | -20 ℃ ~ 60 ℃ |
+| Temperatura de almacenamiento | -40 ℃ ~ 85 ℃ |
+| Entorno de software | C/C++/ROS SDK |
+| Sistemas operativos compatibles | Windows 7+, Linux, Arm Linux/ROS |
+| Refrigeración | Pasivo |
+| Seguridad ocular | CLASE I |
+
+## Estructura del producto y software
+
+### Dimensiones
+
+<Frame>
+  <img src="/images/legacy/40ea8153-cd48-468c-8c89-8fc2e3d775e1/953b2c43-da9e-4805-87b7-0867304253ac.avif" alt="Figura 1. Dimensiones de la cámara 3D M4-G" />
+</Frame>
+
+### SDK de software
+
+Consulte el manual del usuario de la aplicación host MRDVS y la guía de desarrollo del SDK.
+
+## Interfaz de hardware (deserialización GMSL)
+
+### Configuración del serializador
+
+| Serializador |  |
+| --- | --- |
+| Modelo | MAX96717 |
+| Dirección I2C | 0X40(7 bits) |
+| Tarifa GMSL | GMSL2(6Gbps) |
+| Modo | Modo Píxel |
+| Sincronización de fotogramas | Controlado por MAX96717 MFP0 |
+
+### Parámetros del sensor
+
+| Información de sensores |  |
+| --- | --- |
+| Resolución TOF | 2560*960(sin formato8) |
+| Tipo de datos | 0X2A |
+| Dirección TOF I2C | Reenviado por FPGA |
+| Canal virtual | VC0 |
+| Resolución RGB | 1280*1080 (YUV422 8 bits) |
+| Tipo de datos | 0X1E |
+| Dirección RGB I2C | Reenviado por FPGA |
+| Canal virtual | VC1 |
+
+### configuración FPGA
+
+| FPGA |  |
+| --- | --- |
+| Dirección I2C | 0X11(7 bits) |
+| MIPI | 4 carriles 1,2 Gbps |
+
+## Requisitos previos para capturar imágenes
+
+### Señal de disparo disponible
+
+Siga el manual 96717 para configurar la activación por hardware con un deserializador como MAX9672.
+
+<Frame>
+  <img src="/images/legacy/941f3e6f-8eb5-4b57-81a2-8f6ca90d32be/e7a99ea7-43eb-46b5-b7bb-f7fbea7b0e55.avif" alt="Figura 2. Transmisión de señal de sincronización de trama MAX96724/F/R" />
+</Frame>
+
+Para simular una señal de activación GPIO en MFP0 dentro del 96717, consulte `trig.c`.
+
+### Se recibió el comando de inicio de transmisión
+
+i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+
+Para 0x2000: 0 detiene la transmisión; 1 inicia la transmisión.
+
+0x11 es la dirección FPGA.
+
+## Guía de integración de productos
+
+| Artículo |  | Especificación |
+| --- | --- | --- |
+| Entorno operativo | Temperatura | -20 ℃-- 60 ℃ |
+|  | Iluminancia | 0KLUX--100KLUX |
+| Entorno de almacenamiento | Temperatura | -40℃--85℃ |
+|  | Humedad | Humedad relativa: Máx. 90% RH |
+| Aumento de la temperatura de funcionamiento normal |  | Aumento de temperatura del recinto &lt;25℃ |
+| Clasificación ESD |  | Descarga de contacto ±4KV, descarga de aire ±8KV |
+| Clasificación RE |  | Cumple con GB 9254 CLASE A |
+| Vida útil |  | 10 años |
+| Cumplimiento medioambiental |  | RoHS |
+
+## Estudios de caso
+
+[Cómo los montacargas autónomos de la Compañía F completan de forma segura más de 500 tareas cada día](/es/solutions/warehouse/cases/unmanned-forklift-500-tasks "Cómo los montacargas autónomos de la Compañía F completan de forma segura más de 500 tareas cada día")
+
+[Evitación de obstáculos AMR por debajo del recorrido A](/es/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Evitación de obstáculos AMR por debajo del recorrido A")
+
+[Evitación de obstáculos en 3D para un robot humanoide con ruedas](/es/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "Evitación de obstáculos en 3D para un robot humanoide con ruedas")
