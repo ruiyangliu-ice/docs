@@ -27,6 +27,17 @@ function linkForTab(tab) {
   return tab.closest('a') ?? tab.querySelector('a');
 }
 
+function tabFromClickEvent(event) {
+  if (event.target instanceof Element) {
+    const closestTab = event.target.closest(tabSelector);
+    if (closestTab) return closestTab;
+  }
+
+  return event
+    .composedPath()
+    .find((element) => element instanceof Element && element.matches(tabSelector));
+}
+
 function updateProductDocumentationTabLinks() {
   document.querySelectorAll(tabSelector).forEach((tab) => {
     if (!productDocumentationTabLabels.has(normalizedText(tab))) return;
@@ -46,19 +57,29 @@ new MutationObserver(updateProductDocumentationTabLinks).observe(document.docume
 document.addEventListener(
   'click',
   (event) => {
-    if (!(event.target instanceof Element)) return;
-
-    const tab = event.target.closest(tabSelector);
+    const tab = tabFromClickEvent(event);
     if (!tab || !productDocumentationTabLabels.has(normalizedText(tab))) return;
 
+    const destination = productOverviewPath();
     const link = linkForTab(tab);
-    if (link) {
-      link.setAttribute('href', productOverviewPath());
+    if (link) link.setAttribute('href', destination);
+
+    // Let the browser handle new-tab/window gestures using the updated href.
+    if (
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
       return;
     }
 
+    // Mintlify's client-side router retains the tab's original first-page route.
+    // Intercept normal clicks before that handler runs and use the overview route.
     event.preventDefault();
-    window.location.assign(productOverviewPath());
+    event.stopImmediatePropagation();
+    window.location.assign(destination);
   },
   true,
 );
