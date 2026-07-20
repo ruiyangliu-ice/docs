@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>README_V2_service_ROS2</title>
+</head>
+<body>
+<h1 id="623e9232-b8ad-48cd-a2ef-11035e09f59f">ROS2 版本的 lx_camera_ros 接口说明</h1><h2 id="69902da6-c9e0-40d6-89b9-5f8c287a4552">编译</h2><h3 id="71d4daa5-cedc-431c-ad47-1a92acbc0b12">1. 确保上位机中已经安装好Qt5，编译需要Qt5中的Core、Network等功能包</h3><pre><code class="language-bash">// 不同linux版本安装方式可能不同，在此提供安装示例：
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5</code></pre><h3 id="10e70e22-68a5-4373-9e16-b4694fb8d265">2. 安装libzip功能包</h3><p>在libzip官网下载源文件(https://libzip.org/download/)，之后按照官网教程编译。</p><h3 id="0f5a57e7-eb35-4b6e-874b-88482e366a25">3. 编译ros功能包</h3><p>在/lx_camera_ros 运行./build.sh (适用于ROS2版本)</p><h2 id="f74b8da7-4d30-4eb8-a1ce-4d01519914b3">运行</h2><p>yaml配置文件有改动需要重新编译才可生效</p><p>执行./start.sh</p><hr class="custom-horizontal-rule"><h2 id="0b53e971-4a2e-4892-95d4-49b26f6d3280">ROS2话题接口</h2><p>测试接口前需将相机本体开机(等待30s让本体程序启动)，开启ROS2 SDK节点(见上节)。</p><h3 id="7efc9947-e58b-48f3-a4f8-a14626c48cbc">接收定位位姿接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>ROS2持续接收从相机发出的定位值x, y, theta</p></li><li><p>发布定位值x, y 和四元数(由theta转换而来)到topic：<code>LxCamera_LocationPoseResult</code></p></li><li><p>将定位值和四元数通过TF变换广播出去</p></li></ol><pre><code class="language-cpp">ros2 topic echo /LxCamera_LocationPoseResult</code></pre><h3 id="d420cdf6-daf4-4889-8228-a2cba2f4cb0c">接收定位状态接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>ROS2持续接收(频率:1s)从相机发出的定位定位状态"<code>true/false</code>"，代表当前是否正常定位</p></li><li><p>ROS2将定位状态(<code>std_msgs::msg::Bool</code>类型的数据)发布到topic：<code>LxCamera_LocationResult</code></p></li><li><p>可通过订阅Topic来获得定位状态(当前是否定位成功)</p></li></ol><pre><code class="language-bash">//通过指令查看topic是否正常发布数据
+ros2 topic echo /LxCamera_LocationResult</code></pre><h3 id="1a7aaf99-63b7-4a6c-9c4e-75485d4511af">接收当前相机已使用空间接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>ROS2持续接收(频率:2s)从相机发出的存储空间使用占比</p></li><li><p>ROS2将占用状态(<code>std_msgs::msg::Float32</code>类型的数据)发布到topic：<code>LxCamera_Capacity_Status</code></p></li><li><p>可通过订阅Topic来获得占用状态占比</p></li></ol><pre><code class="language-bash">//通过指令查看topic是否正常发布数据
+ros2 topic echo /LxCamera_Capacity_Status</code></pre><h3 id="adab1476-d021-483d-9709-3980aa4b6064">接收当前出现故障的模块名字</h3><ol class="ordered-list" data-type="orderedList"><li><p>ROS2持续从相机发出的错误模块名</p></li><li><p>ROS2将占用状态(<code>std_msgs::msg::String</code>类型的数据)发布到topic：<code>LxCamera_Module_Error</code></p></li><li><p>可通过订阅Topic来获得异常模块名字</p></li></ol><pre><code class="language-bash">//通过指令查看topic是否正常发布数据
+ros2 topic echo /LxCamera_Module_Error</code></pre><h3 id="68d66dca-bb6d-4ff6-8d1a-5b876456f8f0">接收建图进度接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>开始建图后</p></li><li><p>ROS2将定位状态(<code>std_msgs::msg::Int32</code>类型的数据)发布到topic：<code>LxCamera_Mapping_Progress</code></p></li><li><p>可通过订阅Topic来获得建图进度 (0-100)</p></li></ol><pre><code class="language-bash">//通过指令查看topic是否正常发布数据
+ros2 topic echo /LxCamera_Mapping_Progress</code></pre><h3 id="8e1c2664-5874-413c-b421-aa75219de9ca">接收建图状态接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>开始建图后</p></li><li><p>ROS2将建图进度状态(<code>std_msgs::msg::Bool</code>类型的数据)发布到topic：<code>LxCamera_MappingState</code></p></li><li><p>可通过订阅Topic来获得建图状态的切换</p></li></ol><pre><code class="language-bash">//通过指令查看topic是否正常发布数据
+ros2 topic echo /LxCamera_MappingState</code></pre><p></p><h3 id="a5e8aeaf-c4e1-48e1-9524-07558f4fc40d">设置参数接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>用户发布<code>std_msgs::msg::String</code>类型消息到topic：<code>LxCamera_SetParam</code></p></li><li><p>消息格式为9个浮点数，使用英文逗号“,”分割，分别代表：<code>x,y,z,yaw,pitch,roll,x,y,yaw</code>，<strong>前6个参数是相机的位姿，后3个是激光雷达的位姿</strong>。</p></li><li><p>修改成功后，相机路径<code>/home/fr1511b/hontai/params/config_install_FL21500HAF.ini</code>文件中[Laser1]和[Camera1]中的相关参数会被设置</p></li></ol><pre><code class="language-bash">// 进入lx_camera_ros2_ws目录
+//开启终端
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"</code></pre><h3 id="2c29c325-df17-498c-92f7-6fd6015148b5">切换地图接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>用户发布<code>std_msgs::msg::String</code>类型消息到topic：<code>LxCamera_SwitchMap</code></p></li><li><p>消息格式为字符串，包含一个字段：表示地图名称(前提是在相机中已经建图完成)</p></li><li><p>如果相机的网页中显示的地图已经变化(刷新网页)，则切换成功</p></li></ol><pre><code class="language-bash">// 进入lx_camera_ros2_ws目录
+//开启终端
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"</code></pre><h3 id="aedba484-77cf-46b1-9e32-a6a923b88cfd">下载地图接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>用户发布<code>std_msgs::msg::String</code>类型消息到topic：<code>LxCamera_DownloadMap</code></p></li><li><p>消息格式为字符串，包含两个字段：save_path表示保存地址(上位机中的地址，使用绝对路径)，mapname表示地图名称(相机中已经完成建图的".zip"格式的文件名)</p></li><li><p>成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个<code>pgm地图文件</code>和一个<code>yaml配置文件</code></p></li></ol><pre><code class="language-bash">// 进入lx_camera_ros2_ws目录
+//开启终端
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"</code></pre><h3 id="96c73c59-6728-40db-a3ce-38b8fee9c9d3">上传里程计接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>用户发布<code>nav_msgs::msg::Odometry</code>类型数据到topic：<code>/sim/odom</code> (可修改)</p></li></ol><p>// 进入lx_camera_ros2_ws目录
+//开启终端
+source install/setup.bash
+ros2 topic pub /odom nav_msgs/msg/Odometry "header:
+  stamp: {sec: 0, nanosec: 0}
+  frame_id: 'odom'
+child_frame_id: 'base_link'
+pose:
+  pose:
+    position:
+      x: 1.0
+      y: 2.0
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+twist:
+  twist:
+    linear:
+      x: 0.5
+      y: 0.0
+      z: 0.0
+    angular:
+      x: 0.0
+      y: 0.0
+      z: 0.1
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"</p><h3 id="6bc56b28-3f4c-4749-93ea-111927dd6f9d">重定位接口</h3><ol class="ordered-list" data-type="orderedList"><li><p>用户发布<code>geometry_msgs::msg::PoseWithCovarianceStamped</code>类型的数据到topic：<code>LxCamera_UploadReloc</code></p></li><li><p>数据为激光位姿，包含：<code>x,y,yaw</code></p></li><li><p>相机网页上显示的本体位置更新为发送的位置则重定位成功</p></li></ol><pre><code class="language-bash">ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ,0.0 ,0.0]
+  }
+}"</code></pre><blockquote><p>测试时四元数有约束要求，不可随意填写。可使用<a target="_blank" type="icon" title="网页工具" href="https://www.itutool.com/tools/euler-quaternion-converter">网页工具</a>将<code>欧拉角yaw</code>转换成<code>四元数xyzw</code></p></blockquote><h3 id="43d00b63-57c2-4416-b676-f467cae5e45c">报文类型前缀</h3><p>上位机使用UDP与相机通信，通信发送的报文前4个字节为类型前缀，用以区分不同接口数据类型：</p><pre><code class="language-cpp">mapping_prefix = "aced220d";          // 建图使能
+setparam_prefix = "aced220e";         // 设置参数(相机和雷达)
+UploadScan_prefix = "aced2209";       // 上传激光扫描数据到相机
+odom_prefix = "aced0f0a";             // 里程计数据
+mapname_prefix = "aced220c";          // 切换地图
+map_request_prefix = "aced220f";      // 下载指定地图
+prefix_after_reloc = "aced0f0b";      // 重定位</code></pre><hr class="custom-horizontal-rule"><h2 id="03695ab9-9efc-447d-ac9c-81e2ba4b882f">ROS2服务接口</h2><p>建图、切图、下载地图、重定位四个功能在使用话题实现接口的同时也支持使用服务接口来通信，并通过V2主机返回的结果报文来反馈服务响应结果(操作是否成功)</p><ol class="ordered-list" data-type="orderedList"><li><p>通过ros2 service指令订阅服务接口</p></li><li><p>如果返回"true"则代表操作成功，返回"false"代表操作失败</p></li></ol><h3 id="842ba198-a00b-458e-b9f4-cb787ab520f4">建图</h3><p>服务名称：<code>/LxCamera_Mapping_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">bool status      # 是否开始建图 true:开始建图 false:停止建图
+string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result      # 操作结果 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"</code></pre><h3 id="66a30c9a-8034-4ebc-b329-0a677587d25f">切图</h3><p>服务名称：<code>/LxCamera_SwitchMap_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result       # 操作结果 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"</code></pre><h3 id="785b7d82-e327-4815-a12a-ee69e7594727">下载地图</h3><p>服务名称：<code>/LxCamera_DownloadMap_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">string mapname    # 地图名称,不能以数字开头,30个字符以内 
+string save_path   # 保存路径,例如"/home/lx/map"，最后不带"/"
+---
+bool result        # 操作结果 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"</code></pre><h3 id="77657adb-8cda-4f54-9873-b8ecab35115a">重定位</h3><p>服务名称：<code>/LxCamera_UploadReloc_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result        # 操作结果 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  "pose": {
+    "header": {
+      "stamp": {
+        "sec": 0,
+        "nanosec": 0
+      },
+      "frame_id": "map"
+    },
+    "pose": {
+      "pose": {
+        "position": {
+          "x": 4.5,
+          "y": -15.5,
+          "z": 0.0
+        },
+        "orientation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.694658,
+          "w": 0.71934
+        }
+      },
+      "covariance": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"</code></pre><h3 id="c262a44b-8663-4098-8726-60066271b1b7">获取当前地图名</h3><p>服务名称：<code>/LxCamera_GetCurMapname_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">bool get_cur_mapname # 获取地图标识
+---
+string mapname      # 当前地图名</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"</code></pre><h3 id="0c900b3d-93f5-48d3-80ec-456ef100e706">获取当前地图列表</h3><p>服务名称：<code>/LxCamera_GetMapList_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">bool get_map_list # 是否获取地图列表
+---
+string[] map_list # 地图列表</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"</code></pre><h3 id="3bb91072-ed60-4900-8705-cbb7c3006c34">退出建图</h3><p>服务名称：<code>/LxCamera_ExitMapping_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">bool exit_mapping # 是否退出建图
+---
+bool state        # 退出建图是否成功 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"</code></pre><h3 id="a45ca3c9-0fe5-4f0f-836a-13af62bbf36c">删除地图</h3><p>服务名称：<code>/LxCamera_EraseMap_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">string mapname    # 地图名称,不能以数字开头,30个字符以内 
+---
+bool result        # 删除地图是否成功 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"</code></pre><h3 id="33d8e17c-e2c2-4824-ae49-5db18c03a301">下载热力图</h3><p>服务名称：<code>/LxCamera_DownloadHeatMap_srv</code></p><p>服务格式定义：</p><pre><code class="language-bash">string mapname    # 地图名称,不能以数字开头,30个字符以内 
+string save_path   # 保存路径,例如"/home/lx/map"，最后不带"/"
+---
+bool result        # 操作结果 true:成功 false:失败</code></pre><p>指令调试：</p><pre><code class="language-bash">ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"</code></pre><pre><code>
+
+
+## 增量建图
+
+服务名称：`/LxCamera_IncMapping_srv`
+
+服务格式定义：
+
+```c++
+bool status      # 是否开始建图 1:开始建图 0:停止建图
+string mapname   # 地图名称,不能以数字开头,30个字符以内
+---
+bool result  </code></pre><p>指令调试：</p><pre><code class="language-c++">ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"</code></pre>
+</body>
+</html>
