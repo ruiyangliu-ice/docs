@@ -1,48 +1,42 @@
 ---
 title: "Linux 示例使用手册"
-description: "【迈尔微视自研相机 Linux 开发包】提供了多种示例程序，包括：C、JAVA(http 服务器)、ros 和 ros2。示例代码提供 SDK 的使用方法，以及一些基本的功能、方法，但具体功能的实现仍需要手动修改。本文主要介绍各个示例程序的用法、需要搭建的环境、以及一些注意事项。以下会用少量的…"
+description: "配置 MRDVS Camera SDK 的 Linux 开发环境，并编译和运行 C/C++、Java、ROS 和 ROS2 示例。"
 hidden: true
 legacyId: "019cbdb0-e0f6-773b-815c-a7697d918117"
 legacyUrls:
   - "/node/019cbdb0-e0f6-773b-815c-a7697d918117"
   - "/doc/editor/019cbdb0-e0f6-773b-815c-a7697d918117"
 ---
-```yaml
-version:
-  name: "V1.0"
-  revision_record:
-    - revision_date: "2024/10/12"
-      modified_by: "林雨"
-```
+<Info>
+  文档版本：V1.0；修订日期：2024-10-12。
+</Info>
 
-## 1. **概述**
+## 概述
 
-【迈尔微视自研相机 Linux 开发包】提供了多种示例程序，包括：C、JAVA(http 服务器)、ros 和 ros2。示例代码提供 SDK 的使用方法，以及一些基本的功能、方法，但具体功能的实现仍需要手动修改。本文主要介绍各个示例程序的用法、需要搭建的环境、以及一些注意事项。以下会用少量的篇幅介绍 JAVA、C、C++相关的代码功能介绍，用中量篇幅介绍环境相关的问题，用大量篇幅介绍 ROS 与 ROS2 相关的用法、环境、注意事项等。
+MRDVS Camera SDK Linux 开发包提供 C/C++、Java（HTTP 服务）、ROS 和 ROS2 示例。示例用于说明 SDK 的基础用法；请基于实际项目补充业务逻辑和异常处理。
 
-推荐优先顺序阅读第一至第三部分，在顺序阅读第一至第三部分之后，对于不同的需求，可以直接跳转到相关部分阅读，各个章节互相独立，不影响查阅。
+建议先完成环境准备、安装脚本和示例目录确认，再按目标语言阅读对应的编译与运行章节。附录提供常用依赖与测试包的安装方法。
 
-最后，本文提供一些相关应用与环境的安装方法与注意事项，如有需要可以查阅附录。
+## 系统与环境
 
-* * *
-
-## 2. **系统与环境**
-
-### 2.1 系统与环境介绍
+### 兼容的系统与依赖版本
 
 推荐使用以下几种 linux 系统，默认的程序版本见下表：
 
-| 系统版本 | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
+| 系统版本 | CMake / GCC | OpenCV | PCL | ROS | ROS2 |
 | --- | --- | --- | --- | --- | --- |
 | Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Kinetic | Ardent、Bouncy |
 | Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodic | Dashing、Eloquent、Crystal |
 | Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetic | Foxy、Galactic |
-| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、lron |
+| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、Iron |
 
-### 2.2 查看系统版本与应用版本
+### 查看系统与依赖版本
 
-#### 2.2.1 查看系统版本
+#### 查看系统版本
 
-命令：uname -a
+```bash
+uname -a
+```
 
 结果：
 
@@ -62,9 +56,11 @@ version:
 
 - **内核版本：**#107~20.0.4.1，通常所说的系统版本就是内核版本
 
-#### 2.2.2 查看 Cmake 版本
+#### 查看 CMake 版本
 
-命令：cmake -version
+```bash
+cmake --version
+```
 
 结果：
 
@@ -72,11 +68,13 @@ version:
   <img src="/images/legacy/a123bbcf-982b-47be-901f-3a1946d2fa7b/848d3c09-a031-4c4e-8a30-e455ba39d1a2.avif" alt="查看 Cmake 版本相关图示" />
 </Frame>
 
-代表 Cmake 的版本为 3.16.3
+示例中的 CMake 版本为 `3.16.3`。
 
-#### 2.2.3 查看 Gcc 版本
+#### 查看 GCC 版本
 
-命令：gcc -v
+```bash
+gcc -v
+```
 
 结果：
 
@@ -86,9 +84,11 @@ version:
 
 版本号在左下角的蓝色框内，此处版本为：9.4.0
 
-#### 2.2.4 查看 Opencv 版本
+#### 查看 OpenCV 版本
 
-命令：pkg-config --modversion opencv
+```bash
+pkg-config --modversion opencv
+```
 
 结果：
 
@@ -98,9 +98,11 @@ version:
 
 此处版本为 3.2.0
 
-#### 2.2.5 查看 Pcl 版本
+#### 查看 PCL 版本
 
-命令：dpkg -l libpcl-dev
+```bash
+dpkg -l libpcl-dev
+```
 
 结果：
 
@@ -110,9 +112,11 @@ version:
 
 此处版本为 1.8.1
 
-#### 2.2.6 查看 ROS 版本
+#### 查看 ROS 版本
 
-命令：rosversion -d
+```bash
+rosversion -d
+```
 
 结果：
 
@@ -128,11 +132,11 @@ version:
 
 此处版本为 noetic（Ubuntu20 对应的 ros1 版本）
 
-### 2.3 搭建基础开发环境
+### 安装基础开发环境
 
-在安装之前需要先更新安装列表：
-
-执行命令：sudo apt update
+```bash
+sudo apt update
+```
 
 结果如下：
 
@@ -140,79 +144,85 @@ version:
   <img src="/images/legacy/d475670b-1c59-4ad4-ae94-b665a89fc526/4cb741b1-3e4d-4ddc-bd52-e6113d7a61e5.avif" alt="搭建基础开发环境相关图示" />
 </Frame>
 
-#### 2.3.1 安装 Cmake
+#### 安装 CMake
 
-命令：sudo apt install cmake
+```bash
+sudo apt install cmake
+```
 
 <Frame>
   <img src="/images/legacy/202276f8-045b-4cef-a63e-cab724e49d29/127c6296-a6e1-4306-ace4-41dad406c2c1.avif" alt="安装 Cmake相关图示" />
 </Frame>
 
-#### 2.3.2 安装 Gcc
+#### 安装 GCC
 
-命令：sudo apt install build-essential
+```bash
+sudo apt install build-essential
+```
 
 <Frame>
   <img src="/images/legacy/e8f4c492-c1f6-44d9-bf50-6f10676f785e/f9aa4459-2cb5-4b23-8ca3-34098497abee.avif" alt="安装 Gcc相关图示" />
 </Frame>
 
-### 2.4 搭建可选开发环境
+### 安装可选开发依赖
 
-#### 2.4.1 安装 Opencv【可显示相机图像】
+#### 安装 OpenCV（用于显示相机图像）
 
-执行命令：sudo apt-get install libopencv-dev
+```bash
+sudo apt-get install libopencv-dev
+```
 
 <Frame>
   <img src="/images/legacy/d33099da-3dd6-4b5c-a34d-98774f9c1141/5b8609fe-3de6-4066-810d-2cb2d0f3f45c.avif" alt="安装 Opencv【可显示相机图像】相关图示" />
 </Frame>
 
-#### 2.4.2 安装 Pcl【可显示点云】
+#### 安装 PCL（用于显示点云）
 
-执行命令：sudo apt-get install libpcl-dev
+```bash
+sudo apt-get install libpcl-dev
+```
 
 <Frame>
   <img src="/images/legacy/fe2ed92e-0c06-4a7a-b1c5-c8c6608b367b/095f9e66-e712-479f-8f11-5d054af0aa74.avif" alt="安装 Pcl【可显示点云】相关图示" />
 </Frame>
 
-* * *
+## 准备示例代码
 
-## 3. **示例代码的介绍与运行准备**
+### 执行安装脚本
 
-### 3.1 执行安装脚本
-
-1.解压缩 Lanxin-MRDVS 文件，并进入 Lanxin-MRDVS 文件夹
+1. 解压 `Lanxin-MRDVS` 文件并进入该目录。
 
 <Frame>
   <img src="/images/legacy/ec64ca28-3d2f-4a1e-9c22-b73eaf23b1eb/d94065bf-30a9-4dc8-bcae-633a46963134.avif" alt="执行安装脚本相关图示" />
 </Frame>
 
-2.右键打开控制台
+2. 在该目录打开终端。
 
-3.执行 install.sh 脚本
+3. 执行 `install.sh`。
 
 <Frame>
   <img src="/images/legacy/02ce52d3-e986-469a-835d-71f328f976cd/00fc58f7-aec6-4922-8d95-83a97284b3db.avif" alt="执行安装脚本相关图示 2" />
 </Frame>
 
-4.进入/opt/目录检查是否安装成功
+4. 检查 `/opt/` 目录中是否存在安装目录。
 
 <Frame>
   <img src="/images/legacy/3e226372-2cc2-4f68-8cb5-cbf81484abb9/4663ae94-a3fb-45ed-a5f9-d5392851910a.avif" alt="执行安装脚本相关图示 3" />
 </Frame>
 
-5.若是能找到文件夹，则是安装成功
+5. 若目录存在，表示安装成功。
 
-6.若是安装失败，则需要手动添加到 opt 目录下
+6. 若安装失败，请手动将文件添加至 `/opt/` 目录。
 
-7.执行 set\_socket\_buffer\_size.sh 脚本
+7. 执行 `set_socket_buffer_size.sh`。
 
 <Frame>
   <img src="/images/legacy/0becfb0a-72d4-4964-a48b-1ab500b96f2c/45ce9170-fd29-4dea-8dcb-ad206233da6b.avif" alt="执行安装脚本相关图示 4" />
 </Frame>
 
-8.至此安装脚本全部执行完成！
+8. 安装完成。
 
-### 3.2 示例代码介绍
+### 示例目录
 
 进入到 Sample 目录下，目录内容如下：
 
@@ -220,15 +230,15 @@ version:
   <img src="/images/legacy/3dcd11f9-5cd7-49ab-8c7f-3a060e84a9b1/9200d671-9bde-4f8a-b0af-6003e1c9aa00.avif" alt="示例代码介绍相关图示" />
 </Frame>
 
-- C 文件夹中包含 C 与 C++相关的代码
+- `C`：C 与 C++ 示例。
 
-- Java 文件夹中包含一个 http 服务器，用于间接的调用 sdk
+- `Java`：HTTP 服务示例，用于间接调用 SDK。
 
-- Ros 文件夹中包含一个 ros 的示例
+- `Ros`：ROS 示例。
 
-- Ros2 文件夹中包含一个 ros2 的示例
+- `Ros2`：ROS2 示例。
 
-#### 3.2.1 C 与 C++示例代码
+#### C 与 C++ 示例
 
 进入 C 目录，目录内容如下：
 
@@ -236,7 +246,7 @@ version:
   <img src="/images/legacy/e3b253f3-6743-4945-b738-b8e9b8dfc7dc/9a255d61-eadf-4076-847d-65b29fe4eace.avif" alt="C 与 C++示例代码相关图示" />
 </Frame>
 
-含 9 个文件夹与 1 个 Cmakelist 文件，每个文件夹中包含一个 cpp 文件
+目录包含 9 个文件夹和 1 个 `CMakeLists.txt` 文件；每个示例文件夹包含一个 C++ 源文件。
 
 每个 cpp 大致实现的功能如下：
 
@@ -244,7 +254,7 @@ version:
 
 - application\_pallet：获取相机流数据并开启托盘算法，输出算法结果
 
-- arm\_local\_camera：在相机中【ARM】调用 SDK 并获取流数据
+- arm\_local\_camera：在相机 ARM 端调用 SDK 并获取流数据
 
 - frame\_callback：使用回调方式获取相机流数据
 
@@ -254,9 +264,9 @@ version:
 
 - single\_camera2：通过结构体方式获取帧数据
 
-可以根据不同需要选择不同的示例代码进行测试和修改
+根据目标功能选择对应示例进行测试和修改。
 
-#### 3.2.2 Java 示例代码
+#### Java 示例
 
 进入 java 目录，目录内容如下：
 
@@ -266,15 +276,15 @@ version:
 
 目录中包含 2 个文件夹以及一个 postman.json 文件和 README
 
-- Config：文件夹中存放着服务器相关的配置
+- `Config`：服务器配置。
 
-- Middleware：服务器主题
+- `Middleware`：服务器主体。
 
-- LxCamera.postman\_collection.json：postman 配置文件
+- `LxCamera.postman_collection.json`：Postman 集合文件。
 
-- README：java 虚拟服务器使用教程
+- `README`：Java 虚拟服务器说明。
 
-#### 3.2.3 ROS 示例代码
+#### ROS 示例
 
 进入 ros 目录中，目录内容如下：
 
@@ -282,11 +292,11 @@ version:
   <img src="/images/legacy/8528536f-739b-4793-80a5-1f0fecf758b6/042f03ed-0332-4ac2-92b8-9efce2029e00.avif" alt="ROS 示例代码相关图示" />
 </Frame>
 
-- lx\_camera\_node\_ws：文件夹中包含了一个标准的 ros 驱动
+- `lx_camera_node_ws`：标准 ROS 驱动。
 
-- README.EN：用英文说明了如何编译节点以及创建一个新的节点
+- `README.EN`：节点编译与创建说明。
 
-#### 3.2.4 ROS2 示例代码
+#### ROS2 示例
 
 进入 ros2 目录中，目录内容如下：
 
@@ -294,11 +304,11 @@ version:
   <img src="/images/legacy/90c830a3-78f2-44af-a51a-8f0d23bde64f/e2d32a99-ec9a-4276-bab4-ed66232c609e.avif" alt="ROS2 示例代码相关图示" />
 </Frame>
 
-- lx\_camera\_node\_ws：文件夹中包含了一个标准的 ros2 驱动
+- `lx_camera_node_ws`：标准 ROS2 驱动。
 
-- README.EN：用英文说明了如何编译节点以及创建一个新的节点
+- `README.EN`：节点编译与创建说明。
 
-#### 3.2.5 ros-v1pro 示例代码
+#### ROS V1 Pro 示例
 
 进入 ros-v1pro 目录中，目录内容如下：
 
@@ -306,17 +316,15 @@ version:
   <img src="/images/legacy/d752e5ea-2020-4da1-abe5-9856083df609/8df69cbb-cbb9-4229-ab4c-a8a1f50dd3ec.avif" alt="ros-v1pro 示例代码相关图示" />
 </Frame>
 
-- src：文件夹中包含了一个标准的 ros 驱动
+- `src`：标准 ROS 驱动。
 
-- README：说明了如何使用这个节点
+- `README`：节点使用说明。
 
-- README.pdf：说明了如何使用这个节点
+- `README.pdf`：节点使用说明。
 
-* * *
+## 编译并运行示例
 
-## 4. **示例代码的编译与运行**
-
-### 4.1 C 与 C++示例代码的编译与运行
+### C 与 C++ 示例
 
 进入示例中的 C 文件夹：
 
@@ -324,15 +332,14 @@ version:
   <img src="/images/legacy/9af1cca5-4fa3-4372-9f90-a6e2400ebf14/47b36fcb-bb11-46d8-a5c3-4f32d89d5e9e.avif" alt="C 与 C++示例代码的编译与运行相关图示" />
 </Frame>
 
-在 C 文件夹中打开一个终端，依次执行以下命令：
+在 `C` 目录中执行：
 
-- mkdir build
-
-- cd build
-
-- cmake ..
-
-- make
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
 
 成功执行后进入 build 文件夹中，应当如下：
 
@@ -348,9 +355,9 @@ version:
 
 除 arm 示例外，其余示例都会编译，可执行文件名与示例文件夹名相同，直接运行即可
 
-### 4.2 java 示例运行流程
+### Java 示例
 
-Java 与其他示例代码不相同，它不直接提供源码，它提供一个 http 服务器以及一个postman 示例，有需要通过 http 来实现间接控制相机的，可以选择 java 示例，进入 java 文件夹，文件夹内容如下：
+Java 示例提供 HTTP 服务与 Postman 集合，不直接提供业务源码。若需通过 HTTP 间接控制相机，可使用该示例。
 
 <Frame>
   <img src="/images/legacy/9fe48416-b016-422c-971b-188cd01aab9d/e0b5c957-1b1a-4656-97d9-343beb990da4.avif" alt="java 示例运行流程相关图示" />
@@ -358,23 +365,27 @@ Java 与其他示例代码不相同，它不直接提供源码，它提供一个
 
 运行流程如下：
 
-- 进入 config 文件夹中，修改 Configs.json 文件中的 http\_sever\_host 字段和http\_sever\_port 字段：
+- 在 `config` 目录中修改 `Configs.json` 的 `http_sever_host` 与 `http_sever_port` 字段。
 
 <Frame>
   <img src="/images/legacy/1a4b7a11-8ed8-4b33-a17a-ebe21216cbff/b1502b67-9dbc-4617-b2fa-ec3f9a3213e5.avif" alt="java 示例运行流程相关图示 2" />
 </Frame>
 
-- 进入 middleware 文件夹，执行 start.sh 脚本，即可启用中转服务器
+- 在 `middleware` 目录中执行 `start.sh`，启动中转服务器。
 
 <Frame>
   <img src="/images/legacy/aa511cbc-a62e-4ce9-8243-5f8d3a1f15cc/98d76161-6de9-41b4-8b51-5a1be024d259.avif" alt="java 示例运行流程相关图示 3" />
 </Frame>
 
-- 使用 postman 打开 LxCamera.postman\_collection.json 文件，即可向示例端口发送数据
+- 使用 Postman 打开 `LxCamera.postman_collection.json`，向示例端口发送请求。
 
-### 4.3 ROS 示例代码的编译与运行
+### ROS 示例
 
-进入 ROS 文件夹，开启一个控制台，执行：roscore
+在 `ROS` 目录打开终端并启动 ROS master：
+
+```bash
+roscore
+```
 
 <Frame>
   <img src="/images/legacy/17961e97-d809-43e8-81a6-91a847265fac/04993e81-2355-4753-bb64-8383cfc976f9.avif" alt="ROS 示例代码的编译与运行相关图示" />
@@ -384,7 +395,11 @@ Java 与其他示例代码不相同，它不直接提供源码，它提供一个
   <img src="/images/legacy/198c9361-7dbb-4f57-b1d3-cdc730257244/3555f417-f859-4936-9d68-34da9d387a71.avif" alt="ROS 示例代码的编译与运行相关图示 2" />
 </Frame>
 
-右键再开启一个控制台，进入 lx\_camera\_node\_ws 文件夹执行 catkin\_make
+在新的终端中进入 `lx_camera_node_ws` 目录并编译：
+
+```bash
+catkin_make
+```
 
 <Frame>
   <img src="/images/legacy/0f100d3a-6fcc-403a-a0d7-704f8c196cfa/2f053935-823b-4c96-a4fe-c994769bd2ba.avif" alt="ROS 示例代码的编译与运行相关图示 3" />
@@ -402,19 +417,24 @@ Java 与其他示例代码不相同，它不直接提供源码，它提供一个
   <img src="/images/legacy/aebae7ca-041d-4bf7-b06a-77b91eb62ad3/3f4f8499-2297-4ad3-8287-f6037afc7491.avif" alt="ROS 示例代码的编译与运行相关图示 5" />
 </Frame>
 
-执行 source devel/setup.bash 配置环境后使用 roslaunch 运行节点，命令如下：
+加载环境：
 
-- roslaunch lx\_camera\_ros lx\_camera\_ros.launch
+```bash
+source devel/setup.bash
+```
 
-- roslaunch lx\_camera\_ros obstacleV2.launch
+按需运行一个节点：
 
-- roslaunch lx\_camera\_ros obstacle.launch
+| 节点 | 启动命令 |
+| --- | --- |
+| 普通节点 | `roslaunch lx_camera_ros lx_camera_ros.launch` |
+| 避障算法 2 | `roslaunch lx_camera_ros obstacleV2.launch` |
+| 避障算法 | `roslaunch lx_camera_ros obstacle.launch` |
+| 托盘算法 | `roslaunch lx_camera_ros pallet.launch` |
 
-- roslaunch lx\_camera\_ros pallet.launch
+各节点不能同时启用。
 
-从上往下依次是：运行普通节点、运行避障算法 2 节点、运行避障算法节点、运行托盘算法节点，各节点不能同时启用。
-
-### 4.4 ROS2 示例代码的编译与运行
+### ROS2 示例
 
 进入 ros2 文件夹，文件夹内容如下：
 
@@ -422,17 +442,27 @@ Java 与其他示例代码不相同，它不直接提供源码，它提供一个
   <img src="/images/legacy/0cbdabe7-156c-4fb7-9996-e531e4da6fbf/86eb93f5-6cc3-4910-8a5b-a5c13ac199f4.avif" alt="ROS2 示例代码的编译与运行相关图示" />
 </Frame>
 
-示例 ros 节点采用 colcon 编译方式
+ROS2 示例节点使用 `colcon` 编译。
 
-首先需要安装编译工具，执行：sudo apt install python3-colcon-common-extensions
+```bash
+sudo apt install python3-colcon-common-extensions
+```
 
 <Frame>
   <img src="/images/legacy/789d5f33-560d-479e-88d1-da3800db324d/948dca59-04e6-4bff-ac53-7a4c7404faff.avif" alt="ROS2 示例代码的编译与运行相关图示 2" />
 </Frame>
 
-然后安装 ros-pcl 依赖包：sudo apt-get install ros-foxy\-pcl\*【红色字体部分需要替换为对应的 ros2 版本】
+安装 ROS PCL 依赖；将命令中的发行版名称替换为当前 ROS2 版本：
 
-安装完成后进入 lx\_camera\_node\_ws 目录编译项目，执行：colcon build
+```bash
+sudo apt-get install ros-foxy-pcl*
+```
+
+进入 `lx_camera_node_ws` 目录并编译：
+
+```bash
+colcon build
+```
 
 根据电脑性能不同，编译通常会需要 30 秒到 120 秒，成功编译后会显示如下：
 
@@ -446,57 +476,68 @@ Java 与其他示例代码不相同，它不直接提供源码，它提供一个
   <img src="/images/legacy/3c285ed6-e1f4-4ec5-9a38-8513b6c4132f/9bb9dda9-0dc9-4eac-9ecb-55e8ffdcd4f7.avif" alt="ROS2 示例代码的编译与运行相关图示 4" />
 </Frame>
 
-执行 source install/setup.bash 配置环境后使用 ros2 launch 运行节点，命令如下：
+加载环境：
 
-- ros2 launch lx\_camera\_ros lx\_camera\_ros\_launch.py
+```bash
+source install/setup.bash
+```
 
-- ros2 launch lx\_camera\_ros obstacleV2.launch.py
+按需运行一个节点：
 
-- ros2 launch lx\_camera\_ros obstacle.launch.py
+| 节点 | 启动命令 |
+| --- | --- |
+| 普通节点 | `ros2 launch lx_camera_ros lx_camera_ros_launch.py` |
+| 避障算法 2 | `ros2 launch lx_camera_ros obstacleV2.launch.py` |
+| 避障算法 | `ros2 launch lx_camera_ros obstacle.launch.py` |
+| 托盘算法 | `ros2 launch lx_camera_ros pallet.launch.py` |
 
-- ros2 launch lx\_camera\_ros pallet.launch.py
+各节点不能同时启用。
 
-从上往下依次是：运行普通节点、运行避障算法 2 节点、运行避障算法节点、运行托盘算法节点，各节点不能同时启用。
+### ROS V1 Pro 示例
 
-### 4.5 ros-v1pro 示例代码的编译与运行
-
-ros-v1pro 是 V1PRO 相机专用 ros 驱动，在 ros-v1pro 文件夹中有 README.pdf 对该驱动详细说明，本文档中只对其做简单介绍：
+`ros-v1pro` 是 V1 Pro 相机专用 ROS 驱动。请优先查阅该目录中的 `README.pdf`。
 
 <Frame>
   <img src="/images/legacy/205bd1e9-bec1-4781-8f86-51901fde8aa2/d76be474-b486-4fc0-9fd3-965cb0bd926e.avif" alt="ros-v1pro 示例代码的编译与运行相关图示" />
 </Frame>
 
-进入 ros-v1pro 文件夹中右键打开控制台，使用 catkin\_make 编译，编译完成后显示如下：
+进入 `ros-v1pro` 目录并编译：
+
+```bash
+catkin_make
+```
 
 <Frame>
   <img src="/images/legacy/7f93bb50-cd8f-438c-a93a-66881fcb008e/e7f8dfa5-f705-4a4f-8950-2dbef4d120ed.avif" alt="ros-v1pro 示例代码的编译与运行相关图示 2" />
 </Frame>
 
-进行环境配置：source devel/setup.bash
+加载环境：
+
+```bash
+source devel/setup.bash
+```
 
 <Frame>
   <img src="/images/legacy/c8ac9613-e2d7-4aa1-9f88-abb0e4203656/5c035d4d-90aa-448b-8b32-5db62d3a6296.avif" alt="ros-v1pro 示例代码的编译与运行相关图示 3" />
 </Frame>
 
-最后运行节点：
+按需运行一个节点：
 
-- roslaunch lx\_camera\_ros localization.launch
-
-- roslaunch lx\_camera\_ros mapping.launch
-
-- roslaunch lx\_camera\_ros sensor\_sim.launch
+| 节点 | 启动命令 |
+| --- | --- |
+| 定位节点 | `roslaunch lx_camera_ros localization.launch` |
+| 建图节点 | `roslaunch lx_camera_ros mapping.launch` |
+| 虚拟数据节点 | `roslaunch lx_camera_ros sensor_sim.launch` |
 
 从上往下依次是：运行定位节点，运行建图节点，运行虚拟数据节点，各节点不能同时启用。
 
-* * *
-
-## 5. **示例代码解释与说明**
+## 示例代码说明
 
 在这个部分中，所有代码与伪代码将会分成几个部分来讲，一般来说一个小节内的都属于同一个文件，除特殊文件做详细解释外，源码文件只解释大致模块，详细的解释在代码中有注释。
 
-### 5.1 C 与 C++
+### C 与 C++
 
-#### 5.1.1 CMakeLists
+#### CMakeLists.txt
 
 <Frame>
   <img src="/images/legacy/c85eb239-fd8d-4ef6-b773-381966e61fcd/3fe09247-995f-4fb5-88e0-dcdb7e432e24.avif" alt="CMakeLists相关图示" />

@@ -1,135 +1,80 @@
 ---
-title: "避障、托盘、滤波参数导入导出"
-description: "参数导出 。在“应用算法”下，选择对应的避障算法后，点开“避障设置”，配置好相机避障参数后，在下方找到“下发参数”，点击“执行”后即可保存参数文件到对应文件夹中。"
+title: "导入和导出相机参数"
+description: "在 LxCameraViewer 和 PalletPro 中备份、恢复避障、图像滤波和托盘识别参数。"
 legacyId: "019cb811-4b45-73ee-94c0-fd09cf63e625"
 legacyUrls:
   - "/node/019cb811-4b45-73ee-94c0-fd09cf63e625"
   - "/doc/editor/019cb811-4b45-73ee-94c0-fd09cf63e625"
 ---
-## 3D 避障算法参数导出及导入
 
-1.  参数导出 。在“应用算法”下，选择对应的避障算法后，点开“避障设置”，配置好相机避障参数后，在下方找到“下发参数”，点击“执行”后即可保存参数文件到对应文件夹中。
+在变更参数前导出已验证的配置。导入配置后，应在目标设备上检查相机型号、安装外参和实际成像，再投入运行。
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0f405f07-0275-42aa-a152-b1ec4c805eec.avif" alt="D 避障算法参数导出及导入相关图示" />
-</Frame>
+<Warning>
+  配置文件可能包含与安装位置相关的外参。不要直接将一台车的外参用于另一台车；导入后必须重新核对。
+</Warning>
 
-保存的参数，可以在安装路径下的params 文件夹中查看（如：D:\\Program Files\\Lanxin-MRDVS\\Tools\\params）
+## 避障参数
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2a495c06-b9aa-426b-bb59-25077b40f211.avif" alt="D 避障算法参数导出及导入相关图示 2" />
-</Frame>
+### 导出
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e95fc782-83fa-4fb2-b44a-4030ec22f948.avif" alt="D 避障算法参数导出及导入相关图示 3" />
-</Frame>
+<Steps>
+  <Step title="打开避障设置">
+    在 **应用算法** 中选择对应的避障算法，并完成避障区域和外参配置。
+  </Step>
+  <Step title="下发参数">
+    在 **避障设置** 中执行 **下发参数**。
+  </Step>
+  <Step title="找到配置文件">
+    在上位机安装目录的 `params` 文件夹中，打开对应相机 ID 的目录。`avoidance` 即为已保存的避障参数。
+  </Step>
+</Steps>
 
-在params 文件夹下，找到相机编号，里面的“avoidance”即为保存的避障参数。
+典型目录为：
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9a28eb98-ecd5-4333-8245-af2b623e9ab2.avif" alt="D 避障算法参数导出及导入相关图示 4" />
-</Frame>
+`D:\\Program Files\\Lanxin-MRDVS\\Tools\\params`
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2816a031-5177-4103-90bc-57d707d49233.avif" alt="D 避障算法参数导出及导入相关图示 5" />
-</Frame>
+### 导入
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6526600-13be-4b4d-8132-e7e0179b86c5.avif" alt="D 避障算法参数导出及导入相关图示 6" />
-</Frame>
-
-2、参数导入 若要使用之前保存过的配置，在“避障设置”中点击“从文件加载配置”后的“执行”，可以自动打开保存参数的文件夹，之后选择先前保存的避障参数文件进行配置。
+在 **避障设置** 中执行 **从文件加载配置**，选择之前导出的避障参数文件。完成后下发配置，并在点云和输出状态中验证区域。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb242c5f-095a-4ff3-b71f-c8115e04c9c2.avif" alt="D 避障算法参数导出及导入相关图示 7" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb242c5f-095a-4ff3-b71f-c8115e04c9c2.avif" alt="在避障设置中从文件加载配置" />
 </Frame>
+
+## 图像和滤波参数
+
+### 导出
+
+1. 在 **基础工具** 中完成图像和滤波参数配置。
+2. 先停止相机数据流；运行中无法保存配置。
+3. 在 **功能设置** 中执行 **导出配置到文件**，并为该配置创建独立文件夹。
+
+### 导入
+
+在 **功能设置** 中执行 **从文件加载配置**，选择之前导出的文件。导入后恢复数据流，并确认图像质量和滤波效果。
+
+## PalletPro 托盘参数
+
+PalletPro `1.4.6` 及以上版本可通过当前算法目录管理托盘识别外参。
+
+### 导入
+
+<Steps>
+  <Step title="打开相机目录">
+    启动 **PalletPro**，选择 **基础操作 → 相机操作 → 打开目录**，进入当前相机正在使用的算法目录。
+  </Step>
+  <Step title="替换参数文件">
+    将需要导入的托盘识别外参复制或拖入该目录，并确认替换对应文件。
+  </Step>
+  <Step title="重新标定">
+    导入成功后，重新执行托盘对接外参标定，再验证识别结果。
+  </Step>
+</Steps>
+
+### 导出
+
+完成并保存标定后，按相同路径打开当前算法目录，备份其中的托盘识别参数文件。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c80996f5-dfdf-445d-81f7-6f3c5121696e.avif" alt="D 避障算法参数导出及导入相关图示 8" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7c9857ce-50d7-47e4-871f-9534dd82c1f6.avif" alt="PalletPro 托盘参数保存位置示例" />
 </Frame>
-
-## 相机图像及滤波参数导出及导入
-
-1、参数导出 **在“基础工具”中配置好图像及滤波参数后，**先将相机“停流”（否则无法保存参**数）**，之后在“功能设置”下点击“导出配置到文件”后的“执行”。
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d00bfaf-2a7d-40cd-92a0-31c42f1a1cff.avif" alt="相机图像及滤波参数导出及导入相关图示" />
-</Frame>
-
-在打开的目录中新建一个文件夹，用于保存相机参数，（例如新建 camera parameter 文件夹，保存参数名为test1）
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e0a29491-8617-4b9c-b284-57ca196f3060.avif" alt="相机图像及滤波参数导出及导入相关图示 2" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5c216209-b509-4237-816d-ec0b3a62e34f.avif" alt="相机图像及滤波参数导出及导入相关图示 3" />
-</Frame>
-
-2、参数导入 在功能设置中点击“从文件加载配置”后的“执行”，打开先前保存相机参数的文件夹并选中需要的参数文件打开即可完成相机参数导入。
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3036085-78de-41de-8e0c-de2c6b0794de.avif" alt="相机图像及滤波参数导出及导入相关图示 4" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/210e9508-4477-4888-acd6-fdd1441523b3.avif" alt="相机图像及滤波参数导出及导入相关图示 5" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a5fdb55b-10eb-4c28-bb8d-17c64976332b.avif" alt="相机图像及滤波参数导出及导入相关图示 6" />
-</Frame>
-
-## 3 相机托盘参数导入导出
-
-## 1.托盘参数导入
-
-**双击桌面PalletPro打开托盘**识别**软件** （**PalletPro**需更新到**1.4.6**版本）
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8548ee93-e7fa-4afd-b66e-21e3659030e3.avif" alt="托盘参数导入相关图示" />
-</Frame>
-
-1.1 **打开主页面选择基础操作**→**相机操作**
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec97db6d-4f7b-4b4f-b01f-591adae9332a.avif" alt="托盘参数导入相关图示 2" />
-</Frame>
-
-1.2 **打开目录跳转到相机现应用的算法目录**
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c27f7acc-b681-46a7-a7a2-e9e7747366cf.avif" alt="托盘参数导入相关图示 3" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4151c7e-5bf4-4956-a53c-88112fec8166.avif" alt="托盘参数导入相关图示 4" />
-</Frame>
-
-1.3 **可将需要的托盘识别外参放到该目录即可，或是下图导入方法，直接将需要导入的托盘识别外参拖入到该目录替换**
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df24d7e1-87a3-41dd-b53a-79c3935ee2ce.avif" alt="托盘参数导入相关图示 5" />
-</Frame>
-
-1.4 **可见参数一栏被替换**
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f4d1ee0a-241a-4d1d-834b-837bb304019f.avif" alt="托盘参数导入相关图示 6" />
-</Frame>
-
-1.  托盘参数导出
-
-2.  将标定好的托盘参数保存 ![托盘参数导入相关图示 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7c9857ce-50d7-47e4-871f-9534dd82c1f6.avif)
-
-**2.打开主页面选择基础操作**→**相机操作**→**打开目录跳转到相机现应用的算法目录，可见文件**
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1caceb91-d9b0-4fc6-b65f-499f7328fe37.avif" alt="托盘参数导入相关图示 8" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0b03580e-8f4d-4d09-884a-edabfcd679b2.avif" alt="托盘参数导入相关图示 9" />
-</Frame>
-
-**3.**切记导入成功参数后还需再次标定托盘对接外参

@@ -7,140 +7,108 @@ legacyUrls:
   - "/node/019ce649-f8e9-738a-ad79-af748af75bda"
   - "/doc/editor/019ce649-f8e9-738a-ad79-af748af75bda"
 ---
-## ROS2 版本的 lx\_camera\_ros 接口说明
+## 概述
 
-### 编译
+本文介绍 V2 定位模块 `lx_camera_ros` 的 ROS2 话题与服务接口。
 
-#### 1. 确保上位机中已经安装好Qt5，编译需要Qt5中的Core、Network等功能包
+## 编译
+
+安装 Qt5 的 Core 和 Network 组件。不同 Linux 发行版的安装方式可能不同；以下为 Ubuntu 示例：
 
 ```bash
-// 不同linux版本安装方式可能不同，在此提供安装示例：
 sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
 ```
 
-#### 2. 安装libzip功能包
+从 [libzip 下载页](https://libzip.org/download/) 获取 `libzip` 源码，并按官方说明编译。
 
-在libzip官网下载源文件(https://libzip.org/download/)，之后按照官网教程编译。
+在 `/lx_camera_ros` 目录执行：
 
-#### 3. 编译ros功能包
+```bash
+./build.sh
+```
 
-在/lx\_camera\_ros 运行./build.sh (适用于ROS2版本)
+## 运行
 
-### 运行
+<Note>
+  修改 YAML 配置文件后，必须重新编译，修改才会生效。
+</Note>
 
-yaml配置文件有改动需要重新编译才可生效
+```bash
+./start.sh
+```
 
-执行./start.sh
+## ROS2 话题接口
 
-* * *
+测试接口前，请确认相机已上电并等待约 30 秒，且 ROS2 SDK 节点已启动。
 
-### ROS2话题接口
-
-测试接口前需将相机本体开机(等待30s让本体程序启动)，开启ROS2 SDK节点(见上节)。
+| 场景 | 相关话题 |
+| --- | --- |
+| 定位 | 位姿、定位状态、切换地图、重定位 |
+| 建图 | 建图状态、建图进度 |
+| 维护与配置 | 存储空间、故障模块、参数设置与地图下载 |
 
 #### 接收定位位姿接口
 
-1.  ROS2持续接收从相机发出的定位值x, y, theta
+ROS2 持续接收相机发送的定位值 `x`、`y`、`theta`，并将定位值及由 `theta` 转换得到的四元数发布至 `LxCamera_LocationPoseResult`。该位姿会通过 TF 广播。
 
-2.  发布定位值x, y 和四元数(由theta转换而来)到topic：`LxCamera_LocationPoseResult`
-
-3.  将定位值和四元数通过TF变换广播出去
-
-```cpp
+```bash
 ros2 topic echo /LxCamera_LocationPoseResult
 ```
 
 #### 接收定位状态接口
 
-1.  ROS2持续接收(频率:1s)从相机发出的定位定位状态"`true/false`"，代表当前是否正常定位
-
-2.  ROS2将定位状态(`std_msgs::msg::Bool`类型的数据)发布到topic：`LxCamera_LocationResult`
-
-3.  可通过订阅Topic来获得定位状态(当前是否定位成功)
+ROS2 以 1 Hz 接收相机发送的定位状态（`true/false`），并以 `std_msgs::msg::Bool` 发布至 `LxCamera_LocationResult`。
 
 ```bash
-//通过指令查看topic是否正常发布数据
 ros2 topic echo /LxCamera_LocationResult
 ```
 
 #### 接收当前相机已使用空间接口
 
-1.  ROS2持续接收(频率:2s)从相机发出的存储空间使用占比
-
-2.  ROS2将占用状态(`std_msgs::msg::Float32`类型的数据)发布到topic：`LxCamera_Capacity_Status`
-
-3.  可通过订阅Topic来获得占用状态占比
+ROS2 以 2 Hz 接收相机发送的存储空间使用占比，并以 `std_msgs::msg::Float32` 发布至 `LxCamera_Capacity_Status`。
 
 ```bash
-//通过指令查看topic是否正常发布数据
 ros2 topic echo /LxCamera_Capacity_Status
 ```
 
 #### 接收当前出现故障的模块名字
 
-1.  ROS2持续从相机发出的错误模块名
-
-2.  ROS2将占用状态(`std_msgs::msg::String`类型的数据)发布到topic：`LxCamera_Module_Error`
-
-3.  可通过订阅Topic来获得异常模块名字
+ROS2 接收相机发送的故障模块名称，并以 `std_msgs::msg::String` 发布至 `LxCamera_Module_Error`。
 
 ```bash
-//通过指令查看topic是否正常发布数据
 ros2 topic echo /LxCamera_Module_Error
 ```
 
 #### 接收建图进度接口
 
-1.  开始建图后
-
-2.  ROS2将定位状态(`std_msgs::msg::Int32`类型的数据)发布到topic：`LxCamera_Mapping_Progress`
-
-3.  可通过订阅Topic来获得建图进度 (0-100)
+开始建图后，ROS2 以 `std_msgs::msg::Int32` 将建图进度（`0–100`）发布至 `LxCamera_Mapping_Progress`。
 
 ```bash
-//通过指令查看topic是否正常发布数据
 ros2 topic echo /LxCamera_Mapping_Progress
 ```
 
 #### 接收建图状态接口
 
-1.  开始建图后
-
-2.  ROS2将建图进度状态(`std_msgs::msg::Bool`类型的数据)发布到topic：`LxCamera_MappingState`
-
-3.  可通过订阅Topic来获得建图状态的切换
+开始建图后，ROS2 以 `std_msgs::msg::Bool` 将建图状态发布至 `LxCamera_MappingState`。
 
 ```bash
-//通过指令查看topic是否正常发布数据
 ros2 topic echo /LxCamera_MappingState
 ```
 
 #### 设置参数接口
 
-1.  用户发布`std_msgs::msg::String`类型消息到topic：`LxCamera_SetParam`
-
-2.  消息格式为9个浮点数，使用英文逗号“,”分割，分别代表：`x,y,z,yaw,pitch,roll,x,y,yaw`，**前6个参数是相机的位姿，后3个是激光雷达的位姿**。
-
-3.  修改成功后，相机路径`/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`文件中\[Laser1\]和\[Camera1\]中的相关参数会被设置
+向 `LxCamera_SetParam` 发布 `std_msgs::msg::String` 消息。消息包含 9 个以英文逗号分隔的浮点数：`x,y,z,yaw,pitch,roll,x,y,yaw`。前 6 个为相机位姿，后 3 个为 LiDAR 位姿。设置成功后，会更新 `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` 中 `[Laser1]` 和 `[Camera1]` 的相关参数。
 
 ```bash
-// 进入lx_camera_ros2_ws目录
-//开启终端
 source install/setup.bash
 ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
 ```
 
 #### 切换地图接口
 
-1.  用户发布`std_msgs::msg::String`类型消息到topic：`LxCamera_SwitchMap`
-
-2.  消息格式为字符串，包含一个字段：表示地图名称(前提是在相机中已经建图完成)
-
-3.  如果相机的网页中显示的地图已经变化(刷新网页)，则切换成功
+向 `LxCamera_SwitchMap` 发布 `std_msgs::msg::String` 消息，内容为已完成建图的地图名称。刷新相机 Web 前端后，若当前地图名称已更新，则表示切换成功。
 
 ```bash
-// 进入lx_camera_ros2_ws目录
-//开启终端
 source install/setup.bash
 ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
 ```
@@ -196,9 +164,9 @@ ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStam
 
 #### 报文类型前缀
 
-上位机使用UDP与相机通信，通信发送的报文前4个字节为类型前缀，用以区分不同接口数据类型：
+上位机使用 UDP 与相机通信。发送报文的前 4 个字节为类型前缀，用于区分接口数据类型：
 
-```cpp
+```text
 mapping_prefix = "aced220d";          // 建图使能
 setparam_prefix = "aced220e";         // 设置参数(相机和雷达)
 UploadScan_prefix = "aced2209";       // 上传激光扫描数据到相机
@@ -210,13 +178,13 @@ prefix_after_reloc = "aced0f0b";      // 重定位
 
 * * *
 
-### ROS2服务接口
+## ROS2 服务接口
 
-建图、切图、下载地图、重定位四个功能在使用话题实现接口的同时也支持使用服务接口来通信，并通过V2主机返回的结果报文来反馈服务响应结果(操作是否成功)
+建图、切换地图、下载地图和重定位除支持话题方式外，也支持 ROS2 服务接口。服务响应中的 `true` 表示成功，`false` 表示失败。
 
-1.  通过ros2 service指令订阅服务接口
-
-2.  如果返回"true"则代表操作成功，返回"false"代表操作失败
+<Info>
+  以下命令均通过 `ros2 service call` 调用。地图名称不得以数字开头，且长度不超过 30 个字符。
+</Info>
 
 #### 建图
 
@@ -240,7 +208,7 @@ ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
 }"
 ```
 
-#### 切图
+#### 切换地图
 
 服务名称：`/LxCamera_SwitchMap_srv`
 
@@ -441,7 +409,7 @@ ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap 
 
 服务格式定义：
 
-```cpp
+```text
 bool status      # 是否开始建图 1:开始建图 0:停止建图
 string mapname   # 地图名称,不能以数字开头,30个字符以内
 ---
@@ -450,7 +418,7 @@ bool result
 
 指令调试：
 
-```cpp
+```bash
 ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
   status: true,
   mapname: 'test_map'

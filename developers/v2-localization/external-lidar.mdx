@@ -1,42 +1,50 @@
 ---
-title: "V2 使用外部激光协议"
-description: "配置 V2 定位模块接收外部激光数据，并检查 ROS1 与 ROS2 的激光话题。"
+title: "V2 使用外部 LiDAR"
+description: "将外部 LiDAR 的 LaserScan 数据发布到 V2 定位模块订阅的话题。"
 hidden: true
 legacyId: "019ce645-7795-7bb4-bf22-1dca31cb6032"
 legacyUrls:
   - "/node/019ce645-7795-7bb4-bf22-1dca31cb6032"
   - "/doc/editor/019ce645-7795-7bb4-bf22-1dca31cb6032"
 ---
-## 通用配置
 
-在本体中设置定位激光为UDP格式
+本页说明如何让 V2 定位模块订阅外部 LiDAR 的 ROS 激光话题。
 
-```text
+<Info>
+  外部 LiDAR 必须持续发布与配置一致的 `sensor_msgs/LaserScan` 消息；本页仅说明话题配置和订阅检查，不包含 LiDAR 驱动的安装与标定。
+</Info>
+
+## 配置定位激光话题
+
+在本体配置中将定位激光设为 UDP 输入，并指定 LaserScan 话题：
+
+```yaml
 LxCamera_UploadScan: "/sim/scan"
 ```
 
-## ROS1 激光发布
+将外部 LiDAR 的发布话题配置为同一名称，或按实际发布话题修改上述值。
 
-```text
-fr1511b@fr1511b-KPL-W0X:~/HZ_V2ROS_NEW/V2-ROS-SDK-service$ rostopic info /sim/scan
+## 验证 ROS 话题
 
-Type: sensor_msgs/LaserScan
+确认 V2 定位节点订阅了该话题，并检查消息类型为 `LaserScan`。
 
-Publishers: None
+<Tabs>
+  <Tab title="ROS1">
+    ```bash
+    rostopic info /sim/scan
+    ```
 
-Subscribers:
+    预期可见消息类型 `sensor_msgs/LaserScan`，并且订阅者列表包含 `/lx_localization_node`。
+  </Tab>
+  <Tab title="ROS2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
 
-* /lx_localization_node (http://fr1511b-KPL-W0X:41595/)
-```
+    预期可见消息类型 `sensor_msgs/msg/LaserScan`，并且订阅数量至少为 `1`。
+  </Tab>
+</Tabs>
 
-## ROS2 激光发布
-
-```text
-fr1511b@MRDVS:~/ros2_ws/lx_camera_ros$ ros2 topic info /sim/scan
-
-Type: sensor_msgs/msg/LaserScan
-
-Publisher count: 0
-
-Subscription count: 1
-```
+<Tip>
+  若订阅数量为 `0`，先检查话题名称、ROS 域配置和定位节点是否已启动；若发布数量为 `0`，检查外部 LiDAR 驱动。
+</Tip>

@@ -1,57 +1,65 @@
 ---
-title: "移动机器人3D视觉避障"
-description: "随着移动机器人在仓储物流、医疗健康等领域实现大规模应用，如何确保移动机器人在复杂环境下稳定可靠地实现避障功能，正成为当前面临的重要技术挑战。在实际应用中，避障功能不完善，容易导致碰撞、事故等安全隐患，可靠的避障要求机器人在运动过程中具备精确的环境感知能力和理解能力。"
+title: "移动机器人 3D 视觉避障"
+description: "使用 RGB-D 三维感知获取低矮、悬空和动态障碍物信息的移动机器人避障方案。"
 legacyId: "019cac83-82ad-79bb-a409-bed2f8492c11"
 legacyUrls:
   - "/node/019cac83-82ad-79bb-a409-bed2f8492c11"
   - "/doc/editor/019cac83-82ad-79bb-a409-bed2f8492c11"
 ---
-**移动机器人3D视觉避障**
 
-随着移动机器人在仓储物流、医疗健康等领域实现大规模应用，如何确保移动机器人在复杂环境下稳定可靠地实现避障功能，正成为当前面临的重要技术挑战。在实际应用中，避障功能不完善，容易导致碰撞、事故等安全隐患，可靠的避障要求机器人在运动过程中具备精确的环境感知能力和理解能力。
+移动机器人在仓储、医疗和服务等环境中运行时，需要识别行驶路径上的静态与动态障碍物。3D 视觉可同时提供深度和 RGB 信息，为障碍物检测、分类和避障策略提供输入。
 
 <Frame>
-  <img src="/images/legacy/9d683136-adcd-44ec-8fc9-aa4c75e7f265/48f940f4-8c51-4cdb-ace9-61a51ff1156b.avif" alt="移动机器人3D视觉避障相关图示" />
+  <img src="/images/legacy/9d683136-adcd-44ec-8fc9-aa4c75e7f265/48f940f4-8c51-4cdb-ace9-61a51ff1156b.avif" alt="移动机器人 3D 视觉避障示意" />
 </Frame>
 
-**2D激光雷达在避障方面有以下局限**
+## 2D LiDAR 的感知边界
 
-**· 缺乏高度信息**：2D激光雷达扫描范围通常局限在一个平面上，容易遗漏低矮或悬空障碍物。
+2D LiDAR 通常在单一平面内扫描，因此在避障任务中存在以下边界：
 
-**· 复杂场景表现不佳**：在复杂或动态环境中，2D激光雷达难以准确识别和应对多样化的障碍物形状与位置变化。
+- **缺少高度信息**：可能无法覆盖低矮或悬空障碍物。
+- **场景信息有限**：仅有平面轮廓时，难以表达障碍物的完整空间形态与纹理特征。
 
 <Frame>
-  <video controls src="/videos/legacy/298bfd94-4690-4c37-9277-d5385b9f48c5/75cc6be9-d96a-4301-bb2c-f593b4df9d31.mp4" title="移动机器人3D视觉避障媒体内容 1" alt="移动机器人3D视觉避障演示视频">
+  <video controls src="/videos/legacy/298bfd94-4690-4c37-9277-d5385b9f48c5/75cc6be9-d96a-4301-bb2c-f593b4df9d31.mp4" title="2D LiDAR 与三维视觉避障演示" alt="2D LiDAR 与三维视觉避障演示视频" aria-label="2D LiDAR 与三维视觉避障演示视频">
     您的浏览器不支持视频播放。
   </video>
 </Frame>
 
-## 解决方案概述
+## 方案概述
 
-迈尔微视作为国内首家专注于移动机器人视觉技术的公司，针对[移动机器人避障应用](https://www.mrdvs.cn/list-13.html "移动机器人避障应用")，推出了高性价比的RGB-D[多模态工业级避障相机S系列](https://www.mrdvs.cn/list-10.html "多模态工业级避障相机S系列")，现已批量应用于无人叉车、堆垛机、潜伏车、料箱车、工业清洁机器人，以及医疗和服务机器人等多种场景中。
+针对[移动机器人避障应用](https://www.mrdvs.cn/list-13.html "移动机器人避障应用")，MRDVS 提供基于 RGB-D 的[多模态工业级避障相机 S 系列](https://www.mrdvs.cn/list-10.html "多模态工业级避障相机 S 系列")。相机输出三维空间信息和 RGB 纹理信息，可用于检测低矮、悬空及其他场景障碍物；配套算法可将深度与 RGB 数据用于目标识别与分类。
 
-<Frame>
-  <img src="/images/legacy/f75157d6-e9ed-4ef9-bb21-f260d5259a83/0fb340d4-34af-4954-a02e-18fccd61af3a.avif" alt="解决方案概述相关图示" />
+<Frame caption="S 系列在移动机器人上的应用示意">
+  <img src="/images/legacy/f75157d6-e9ed-4ef9-bb21-f260d5259a83/0fb340d4-34af-4954-a02e-18fccd61af3a.avif" alt="S 系列 RGB-D 避障相机应用示意" />
 </Frame>
 
-S系列避障相机能够实时获取周围环境的三维信息和RGB纹理信息，可以很好感知到低矮、悬空障碍物，S系列避障相机自带的避障算法，通过结合RGB图像和深度图像，能更加全面地理解周围环境，实现高效的语义识别和分类，不仅可识别障碍物的位置和大小，还能理解其类型，如人或不同形状的物体等。相比于2D激光雷达，采用S系列避障相机能够更好地实现移动机器人的避障功能，让移动机器人运行**更安全、更稳定、更智能**。
+## 适用场景
 
-## 应用场景
+- 无人叉车、堆垛机和潜伏式 AMR
+- 料箱搬运与工业清洁机器人
+- 医疗及服务机器人
 
-<Frame>
-  <img src="/images/legacy/47be99f8-3341-4deb-9123-386c38a7f5b4/6d17035e-2cbc-4452-8ef9-b7c01833f599.avif" alt="应用场景相关图示" />
+<Frame caption="典型应用场景">
+  <img src="/images/legacy/47be99f8-3341-4deb-9123-386c38a7f5b4/6d17035e-2cbc-4452-8ef9-b7c01833f599.avif" alt="移动机器人三维视觉避障的典型应用场景" />
 </Frame>
 
-## 核心优势
+## 方案要点
 
-<Frame>
-  <img src="/images/legacy/7c086895-53b5-4a8e-866d-347c2fd0181f/cc91cc2d-f1a0-4918-abdf-ec491430bb8e.avif" alt="核心优势相关图示" />
+<Frame caption="三维视觉避障方案要点">
+  <img src="/images/legacy/7c086895-53b5-4a8e-866d-347c2fd0181f/cc91cc2d-f1a0-4918-abdf-ec491430bb8e.avif" alt="移动机器人三维视觉避障方案要点" />
 </Frame>
 
-**操作模式**
+### 操作模式
 
 <Frame>
-  <img src="/images/legacy/da150d49-4c03-4132-bb98-46732d993dd6/fa5c67f1-32ff-45c0-b1c8-fe460f95beeb.avif" alt="核心优势相关图示 2" />
+  <img src="/images/legacy/da150d49-4c03-4132-bb98-46732d993dd6/fa5c67f1-32ff-45c0-b1c8-fe460f95beeb.avif" alt="移动机器人三维视觉避障操作模式示意" />
 </Frame>
 
-[避障方案使用说明书](/developers/deployment/3d-obstacle-avoidance "避障方案使用说明书")
+<Card title="避障方案部署说明" icon="book-open" href="/developers/deployment/3d-obstacle-avoidance">
+  查看设备连接、软件配置和算法部署说明。
+</Card>
+
+<Warning>
+视觉感知是机器人安全链路的一个组成部分。请结合速度规划、制动能力、功能安全设计和现场风险评估，验证完整系统的安全性。
+</Warning>

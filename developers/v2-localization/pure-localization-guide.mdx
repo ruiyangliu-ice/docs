@@ -1,166 +1,191 @@
 ---
 title: "V2 纯定位版本操作手册"
-description: "介绍 V2 纯定位版本的 Web 界面、建图、定位和地图管理操作。"
+description: "使用 V2 纯定位版本的 Web 界面完成建图、定位、地图管理、日志导出和维护操作。"
 hidden: true
 legacyId: "019ce636-df3b-7c81-a9e8-0b9cacc9df27"
 legacyUrls:
   - "/node/019ce636-df3b-7c81-a9e8-0b9cacc9df27"
   - "/doc/editor/019ce636-df3b-7c81-a9e8-0b9cacc9df27"
 ---
-## 界面说明
 
-红色菜单栏：点击可进入相应的功能操作详情，如开始建图、重定位、地图管理等
+本页说明 V2 纯定位版本的 Web 界面操作。进行建图、切换地图或重定位前，确认车辆、相机和激光传感器已正常运行。
 
-蓝色框：可见使用加载的2D轮廓图以及小车定位显示图标
+<Warning>
+  地图切换、固件更新和本体程序重启会影响定位服务。请在车辆停止、现场安全且具备恢复条件时执行。
+</Warning>
 
-绿色框:显示顶视相机实时RGB图
+## 界面概览
 
-黄色框:实时显示重定位信号强度（绿色：强度优，蓝色：强度良好，红色：强度差）；实时显示小车当前的位置坐标，小车当前运动速度，以及鼠标位置坐标
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="界面说明相关图示" />
-</Frame>
-
-图 1界面说明
-
-## 一、开始建图
-
-web界面上点击**开始建图**按扭功能，如下图所示：
+| 区域 | 内容 |
+| --- | --- |
+| 菜单栏 | 建图、重定位、地图管理和维护功能。 |
+| 地图视图 | 已加载的 2D 轮廓图和车辆定位图标。 |
+| RGB 视图 | 顶视相机的实时 RGB 图像。 |
+| 状态区 | 重定位信号强度、车辆坐标、速度和鼠标位置坐标。信号颜色从优到差依次为绿色、蓝色、红色。 |
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="一、开始建图相关图示" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="V2 纯定位 Web 界面区域说明" />
 </Frame>
 
-输入地图名（地图名由字母、数字、下划线组成, 不能以数字开头），如下图所示：
+## 建图
+
+### 创建地图
+
+<Steps>
+  <Step title="开始建图">
+    在 Web 界面点击 **开始建图**。
+
+    <Frame>
+      <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="V2 纯定位界面的开始建图按钮" />
+    </Frame>
+  </Step>
+  <Step title="输入地图名称">
+    地图名只能包含英文字母、数字和下划线，且必须以英文字母开头。
+
+    <Columns cols={2}>
+      <Frame>
+        <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="输入地图名称" />
+      </Frame>
+      <Frame>
+        <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="开始建图页面" />
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="采集并结束建图">
+    驾驶 AGV 覆盖目标区域。采集完成后点击 **结束建图** 并等待处理完成；处理时间与采集区域大小相关。
+  </Step>
+  <Step title="确认地图">
+    建图成功后，在 **地图管理** 中确认新地图已出现。
+  </Step>
+</Steps>
+
+### 增量建图
+
+增量建图用于在已有地图上补充新区域。开始前，完成重定位并切换到需要补录的地图。
+
+<Info>
+  增量建图通过手动 HTTP 请求下发。接口地址为 [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD)。
+</Info>
+
+<Tabs>
+  <Tab title="开始增量建图">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="结束增量建图">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+结束后，新采集区域会写入当前地图；重启定位服务后生效。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="一、开始建图相关图示 2" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="V2 纯定位的增量建图操作" />
 </Frame>
+
+## 地图管理
+
+在 **地图管理** 中查看、应用或删除地图。多区域运行时，使用该页面切换当前地图。
+
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif" alt="V2 纯定位的地图管理页面" />
+  </Frame>
+  <Frame>
+    <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="在 V2 纯定位中应用地图" />
+  </Frame>
+</Columns>
+
+<Warning>
+  点击 **应用** 后，重启本体程序使新地图生效；未重启可能导致重定位失败。
+</Warning>
+
+## 重定位
+
+### 手动重定位
+
+点击 **重定位** 后，在地图视图中拖拽并提供车辆的大致位姿，使激光点云与轮廓图匹配。重定位成功后，**定位超时** 异常消失。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="一、开始建图相关图示 3" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="V2 纯定位的手动重定位界面" />
 </Frame>
 
-此为开始建图页面
+### AprilTag 重定位
 
-然后移动AGV在运行区域内扫图，扫图完成后点击菜单栏结束建图后，请耐心等待（等待时间与扫图区域大小相关）
+建图时可在指定位置布置 AprilTag。设备视野内出现完整标签时，系统会识别其地图和位姿，并自动切换地图后重定位。
 
-建图成功时，在地图管理项中能看到本次建图数据
-
-增量建图
-
-功能 ： 在已有地图的基础上增加新的地图区域 如地图扩建 ，补充死角
-
-前提 ： 增量建图的时候 需要确保网页端已经完成重定位 ，且确保已经切换到需要补录的地图
-
-（暂时为手动Http请求下发）
-
-地址 [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
-
-参数 Json
-
-```json
-{
-
-    "cmd":905, // 904为开始增量建图 905为结束增量建图
-
-    "attach":{
-
-        "sub_command":0,
-
-        "param":""
-
-}
-
-}
-```
+- 标签生成工具：[https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag)
+- 同一设备的可见区域内，Tag ID 不得重复。
+- Tag family 使用界面示例中的固定配置。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="一、开始建图相关图示 4" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="V2 纯定位的 AprilTag 重定位配置" />
 </Frame>
 
-增量建图完成后，会在原有地图上直接补冲上新补录的区域，只需重启重定位即可。
+## 参数和日志
 
-## 二、地图管理
+### 配置定位参数
 
-![二、地图管理相关图示](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif)图 2地图管理示意图
-
-建图完成后，点击菜单栏**地图管理**，可以在主机地图列表中看到刚才建的地图名，点击应用按扭，则将切换使用该地图，同理，如果存在多个区域地图的切换，也需要使用地图管理功能进行切换，点击删除按扭可以删除对应的地图； **应用地图：**点击应用后且记一定要重启本体后，地图才会应用生效，否之会重定位不上等情况
+在参数页面查看或设置底盘定位参数，以及传感器标定值中的激光和相机外参。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="二、地图管理相关图示 2" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="V2 纯定位的定位参数和传感器外参配置" />
 </Frame>
 
-图 3应用地图示意图
+### 导出日志
 
-## 三、重定位
-
-点击重定位后可通过鼠标拖拽以激光点云和激光轮廓图的匹配提示给定大致重定位位姿，进行重定位；
+按时间范围和模块类型筛选日志，选中结果后导出。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="三、重定位相关图示" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="V2 纯定位的日志筛选和导出界面" />
 </Frame>
 
-图 4重定位功能示意图
+## 维护操作
 
-重定位成功后**定位超时**异常消失。
+### 更新固件
 
-二维码重定位
+将本地固件包导入更新页面，可更新底盘、执行机构或相机固件。还原包记录上一次升级前的版本，可用于回退。
 
-建图的时候可以选择在一些位置贴上Apritag码来进行重定位，当设备视角内出现完整的二维码后，会自动识别该码处于哪张地图以及位置，自动切换地图并重定位。
+<Warning>
+  使用普通上位机升级相机固件的方式不可回退。确认升级包和当前版本后再执行。
+</Warning>
 
-二维码生成网站[https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif" alt="V2 纯定位的固件更新页面" />
+  </Frame>
+  <Frame>
+    <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif" alt="使用相机上位机升级相机固件" />
+  </Frame>
+</Columns>
+
+### 关闭或重启本体程序
+
+在本体功能页面执行关闭或重启。使用 LxCameraViewer 连接相机前，先关闭本体程序；否则相机可能被车辆占用，无法建立通信。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="三、重定位相关图示 2" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif" alt="V2 纯定位的本体程序关闭和重启功能" />
 </Frame>
 
-确保一个设备所处区域内的Tag ID不重复即可，TagFamily 为上图固定
+### 查询版本
 
-## 四、参数配置及显示
-
-查看和配置机器人配置的底盘定位参数与传感器标定值中的激光与相机外参
+在版本查询页面查看本体前端和后端版本。
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="四、参数配置及显示相关图示" />
+  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="V2 纯定位的版本查询页面" />
 </Frame>
-
-图 5参数配置
-
-## 五、日志导出功能
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="五、日志导出功能相关图示" />
-</Frame>
-
-图 6日志导入导出功能
-
-如上图所示，可以根据时间区间，模块类型等选项筛选对应日志，下方日志为对应检索日志，选中后即可导出。
-
-## 七、固件更新
-
-查看包本地：导入本地需要更新的固件（底盘、执行机构、相机固件）。
-
-还原包:记录上次更新前固件版本，如需回退点击即可。
-
-![七、固件更新相关图示](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif)图 7固件更新
-
-相机上位机固件升级
-
-可使用普通上位机进行固件升级，此升级方式不可回退 需谨慎升级。![七、固件更新相关图示 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
-
-八、本体程序关闭与重启
-
-点击执行相关操作，如需用上位机连接相机需关闭本体程序，不然相机被小车占用，无法用上位机与相机通讯 ![七、固件更新相关图示 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
-
-图 8本体功能
-
-九、版本查询
-
-点击即可查询本体版本前后端版本。
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="七、固件更新相关图示 4" />
-</Frame>
-
-图 9版本查询

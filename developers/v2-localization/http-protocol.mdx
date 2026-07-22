@@ -1,490 +1,216 @@
 ---
 title: "V2 视觉定位模块 HTTP 通信协议"
-description: "V2 视觉定位模块 HTTP 接口、请求参数和响应格式。"
+description: "V2 视觉定位模块的 HTTP 接口、请求参数和响应数据参考。"
 hidden: true
 legacyId: "019ce647-2821-7eda-bcec-09b910dec09e"
 legacyUrls:
   - "/node/019ce647-2821-7eda-bcec-09b910dec09e"
   - "/doc/editor/019ce647-2821-7eda-bcec-09b910dec09e"
 ---
-## Retrieve Global Information
 
-### Update Main Program
+本页列出 V2 视觉定位模块的 HTTP 接口。将下文地址中的 IP 占位符替换为模块 IP 地址。除非接口另有说明，响应中的 code 为 200 且 message 为 success 表示请求已成功处理。
 
-Request URL
+<Warning>
+  更新程序、部署或切换地图、重启程序和重启相机会中断定位服务。请在车辆停止且具备恢复条件时调用这些接口。
+</Warning>
 
-`http://<ip>:9998/tool/rob/quiet_update`
+## 程序和设备信息
 
-Request Example:
+### 更新主程序
 
-```json
-{
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/quiet_update</code>
 
-"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+<ParamField body="url" type="string" required>
+  主程序升级包的可访问 URL。
+</ParamField>
 
-}
-```
+### 设置相机高度
 
-### Set Camera height
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/setHeightRequest</code>
 
-Request URL `http://<ip>:9998/tool/rob/setHeightRequest` Example：
+<ParamField body="height" type="number" required>
+  相机高度。
+</ParamField>
 
-```json
-{
+### 查询程序版本
 
-"height": 1.3
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/getRobotVersion</code>
 
-}
-```
+该接口不需要请求参数。
 
-Response Example：
+<ResponseField name="code" type="integer" required>
+  响应状态码。
+</ResponseField>
 
-```json
-{
+<ResponseField name="data" type="string">
+  程序版本，例如 version 12313。
+</ResponseField>
 
-"code":200, "message":"success",
+### 查询车辆信息
 
-}
-```
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/getVehicle</code>
 
-## Retrieve Global Information
+该接口不需要请求参数。
 
-### Get Program Version
+<ResponseField name="data" type="object" required>
+  车辆信息对象。
+</ResponseField>
 
-Request URL
+<ResponseField name="vehicleId" type="string">
+  车辆 UUID。
+</ResponseField>
 
-`http://<ip>:9998/tool/rob/getRobotVersion`
+<ResponseField name="mapId" type="string">
+  当前地图。
+</ResponseField>
 
-Request Example: omitted
+<ResponseField name="vehicleType" type="string">
+  车辆类型。
+</ResponseField>
 
-Response Example：
+### 查询当前位姿
 
-```json
-{
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/getAGVPose</code>
 
-"code":200, "data":"version 12313", "message":"success"
+该接口不需要请求参数。
 
-}
-```
+<ResponseField name="pose" type="object" required>
+  当前位姿。
+</ResponseField>
 
-### Get Basic Vehicle Information
+<ResponseField name="x" type="number">
+  X 坐标。
+</ResponseField>
 
-Request URL
+<ResponseField name="y" type="number">
+  Y 坐标。
+</ResponseField>
 
-`http://<ip>:9998/tool/rob/getVehicle`
+<ResponseField name="yaw" type="number">
+  航向角。
+</ResponseField>
 
-Request Example: omitted
+### 重定位
 
-Response Example：
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/relocate</code>
 
-```json
-{
+请求头：Content-Type: application/json
 
-"code":200, "message":"success", "data":{
+<ParamField body="x" type="number" required>
+  X 坐标，单位为米。
+</ParamField>
 
-"vehicleId":"小车uuid",
+<ParamField body="y" type="number" required>
+  Y 坐标，单位为米。
+</ParamField>
 
-"mapId":"当前地图", "vehicleType":"车型"
+<ParamField body="angle" type="number" required>
+  姿态角。
+</ParamField>
 
-}
+<ParamField body="noisyX" type="number" required>
+  X 方向噪声，单位为米。
+</ParamField>
 
-}
-```
+<ParamField body="noisyY" type="number" required>
+  Y 方向噪声，单位为米。
+</ParamField>
 
-### Get Map Package From the Host
+<ParamField body="noisyAngle" type="number" required>
+  角度噪声。
+</ParamField>
 
-Request URL
+## 地图管理
 
-`http://<ip>:9998/tool/rob/getRunMapZip`
+### 下载当前运行地图包
 
-Request Parameters:
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/getRunMapZip</code>
 
-Content-Type: application/json
+请求头：Content-Type: application/json
 
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | Name | Map name |
+<ParamField body="Name" type="string" required>
+  地图名称。
+</ParamField>
 
-Response Example：
+响应为 ZIP 文件，内容类型为 application/zip。
 
-Returns a file with content-type: application/zip
+### 部署地图
 
-### GetAGVPose
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/deployRunMap</code>
 
-Request URL
+<ParamField body="id" type="string" required>
+  地图名称。
+</ParamField>
 
-`http://<ip>:9998/tool/rob/getAGVPose`
+### 应用地图
 
-Request Parameters: none
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/changeCurrentRunMap</code>
 
-Response Example：
+<ParamField body="name" type="string" required>
+  地图名称。
+</ParamField>
 
-```json
-{
+### 开始建图
 
-    "code": 200,
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/startMapping</code>
 
-    "pose": {
+<ParamField body="name" type="string" required>
+  地图名称。
+</ParamField>
 
-        "x": -1.4972912073135376,
+### 结束建图
 
-        "y": -0.57843643426895142,
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/stopMapping</code>
 
-        "yaw": 1.6737515926361084
+该接口不需要请求参数。
 
-    }
+### 开始或结束增量建图
 
-}
-```
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/sendCMD</code>
 
-- 1\. **Relocation(Go Online)**
+| 操作 | cmd | attach.sub_command | attach.param |
+| --- | --- | --- | --- |
+| 开始增量建图 | 904 | 0 | mapname |
+| 结束增量建图 | 905 | 0 | mapname |
 
-Request URL
+### 获取地图列表
 
-`http://<ip>:9998/tool/rob/relocate`
+推荐使用本机地图列表接口：
 
-Request Parameters:
+<code>http://&lt;ip&gt;:9998/tool/rob/getRunMapLists</code>
 
-Content-Type: application/json
+该接口不需要请求参数，响应中的 run_maps 为地图名数组。
 
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | x | X Position (meters) |
-| Yes | y | Y Position (meters) |
-| Yes | angle | – |
-| Yes | noisyX | Noisy (meters) |
-| Yes | noisyY | Noisy (meters) |
-| Yes | noisyAngle | Noisy (meters) |
+<Note>
+  后台地图列表接口 <code>http://&lt;ip&gt;:9998/tool/editor/getLocalMaps</code> 已标注为不推荐使用。
+</Note>
 
-Request Example: omitted
+### 上传地图包到相机
 
-Response Example：
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/uploadMapZip2RunMaps</code>
 
-```json
-{
-
-"code":200, "message":"success",
-
-}
-```
-
-## Map Operations
-
-### Deploy Map
-
-Request URL
-
-`http://<ip>:9998/tool/rob/deployRunMap`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | id | Map name |
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Apply Map
-
-Request URL
-
-`http://<ip>:9998/tool/rob/changeCurrentRunMap`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | name | Map name |
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Start Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/startMapping`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | name | Map name |
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Stop Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/stopMapping`
-
-Request Parameters: none
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Start Incremental Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/sendCMD`
-
-Request Example：
-
-```json
-{
-
-"cmd":904,
-
-"attach":{
-
-"sub_command":0,
-
-"param":"mapname"
-
-}
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Stop Incremental Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/sendCMD`
-
-Request Example：
-
-```json
-{
-
-"cmd":905,
-
-"attach":{
-
-"sub_command":0,
-
-"param":"mapname"
-
-}
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Get Local Map List (Backend)（获取后台地图列表 ， 不推荐）
-
-Request URL
-
-`http://<ip>:9998/tool/editor/getLocalMaps`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success", "data":\[
-
-{
-
-"id":"map name1",
-
-"name":"map name1",
-
-},
-
-{
-
-"id":"map name2",
-
-"name":"map name2",
-
-},
-
-\]
-
-}
-```
-
-### 获取本机地图列表（推荐）
-
-Request URL
-
-`http://<ip>:9998/tool/rob/getRunMapLists`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-    "code": 200,
-
-    "message": "成功",
-
-    "run_maps": \[
-
-        "chejianceshi",
-
-        "pf",
-
-        "xz9_test9",
-
-        "comm"
-
-    \]
-
-}
-```
-
-### Upload Map Package to Camera
-
-Request URL
-
-`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
-
-Request Parameters: none
-
-Request Example:
-
-```json
-{
-
-"url":"http://192.168.2.179:8080/map.zip"
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
+<ParamField body="url" type="string" required>
+  地图包的可访问 URL。
+</ParamField>
 
 ### 下载地图
 
-Request URL
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/downloadVisiomWithLaserMap</code>
 
-`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+<ParamField body="url" type="string" required>
+  地图包的可访问 URL。
+</ParamField>
 
-Request Parameters: none
+## 维护接口
 
-Request Example:
+### 重启相机程序
 
-```json
-{
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/restart</code>
 
-"url":"http://192.168.2.179:8080/map.zip"
+该接口不需要请求参数。
 
-}
-```
+### 重启相机
 
-Response Example：
+地址：<code>http://&lt;ip&gt;:9998/tool/rob/Reboot</code>
 
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-## Operation Interfaces
-
-### Restart Camera Program
-
-Request URL
-
-`http://<ip>:9998/tool/rob/restart`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Reboot Camera
-
-Request URL
-
-`http://<ip>:9998/tool/rob/Reboot`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
+该接口不需要请求参数。

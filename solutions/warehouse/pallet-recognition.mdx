@@ -1,77 +1,70 @@
 ---
 title: "智能叉车托盘识别"
-description: "随着工业4.0的推进，智能化物流设备的需求日益增长，智能叉车作为仓储物流系统的关键组成部分，要求具备高度自主性和高效的作业能力。要实现这一目标，叉车需要能够准确识别和操作托盘，确保物料搬运的精度与效率。"
+description: "使用 ToF 深度相机和托盘识别算法输出托盘的三维位置与姿态，辅助智能叉车完成对接。"
 legacyId: "019cb6ff-39ed-77dc-9026-c2b7e39dfd11"
 legacyUrls:
   - "/node/019cb6ff-39ed-77dc-9026-c2b7e39dfd11"
   - "/doc/editor/019cb6ff-39ed-77dc-9026-c2b7e39dfd11"
 ---
-随着工业4.0的推进，智能化物流设备的需求日益增长，智能叉车作为仓储物流系统的关键组成部分，要求具备高度自主性和高效的作业能力。要实现这一目标，叉车需要能够准确识别和操作托盘，确保物料搬运的精度与效率。
+
+智能叉车需要获取托盘的空间位置和姿态，才能在取放作业中完成对接。光照、背景、托盘形态和堆放密度会影响基于二维图像或单点测距的识别结果。
 
 <Frame>
-  <img src="/images/legacy/51a42627-25cb-4d98-80d9-d6fda767db70/1eb5b324-1c0a-4baf-8a9b-75bd378a4bf8.avif" alt="智能叉车托盘识别相关图示" />
+  <img src="/images/legacy/51a42627-25cb-4d98-80d9-d6fda767db70/1eb5b324-1c0a-4baf-8a9b-75bd378a4bf8.avif" alt="智能叉车托盘识别场景" />
 </Frame>
 
-## 2D视觉技术和激光雷达识别托盘的局限性
+## 方案概述
 
-- 复杂环境下的识别能力不足：传统的2D视觉系统在识别不同光照条件、复杂背景和高密度堆叠托盘时，表现出识别率低、误报率高的缺陷，难以应对三维空间中的位姿识别任务。
+PalletPro 托盘识别方案使用 ToF 深度相机采集托盘点云，并通过识别算法输出托盘的几何特征、位置和姿态。历史测试资料显示，在 **2 m** 工作距离内，距离误差可控制在 **±10 mm** 以内；实际表现需结合托盘类型、安装位置和现场条件验证。
 
-- 缺乏鲁棒性与灵活性：在实际应用中，托盘的形状、颜色和材质各异，这要求识别系统具有高度的自适应能力。传统技术在应对多样化的托盘和复杂环境变化时，往往需要大量的调试和人工干预，增加了运维成本。
+## 方案特点
 
-- 定位精度与速度的平衡难题：在工业应用中，托盘识别不仅要求高精度，还需要具备较快的响应速度以适应高效的物流需求。传统的定位系统在提升精度时，通常需要增加计算量，从而影响系统的实时性。
+- **三维位姿输出**：支持从初定位到精定位的托盘识别流程。
+- **适配多类托盘**：可面向不同形状、尺寸和材质的托盘进行配置。
+- **复杂场景识别**：利用深度数据降低复杂背景和光照变化对识别的影响。
+- **室外应用支持**：历史资料包含室外测试场景，实际部署前仍应完成现场验证。
 
-## 解决方案概述
-
-迈尔微视的托盘识别解决方案采用了ToF深度相机，并搭载自主研发的托盘识别算法。通过深度相机捕捉托盘的三维点云数据，该方案能够精准识别托盘的几何特征，确保即使在室外环境中也能稳定运行。
-
-## 核心优势
-
-- **精准定位，减少误差**：方案基于3D ToF相机开发，可以捕捉到托盘在空间中的精确位置和姿态，在2米工作距离范围内将距离误差控制在±10mm以内，使得智能叉车能够在复杂的仓储环境中，实现高精度的托盘操作，极大地降低了因定位误差而导致的操作失误。
-
-- **自适应多样化托盘**：结合迈尔微视自研算法，该解决方案能够识别不同形状、尺寸和材质的托盘，并进行自适应调整，无需额外的手动干预。这不仅提高了系统的通用性，也减少了因托盘差异带来的识别困难，适应性更强。
-
-- **实时响应，提高效率**：通过高效的图像处理算法，3D视觉系统能够在短时间内完成托盘的识别和定位，实现从初定位到精定位的全过程自动化操作，大幅提升了叉车的作业效率。
-
-## 识别图像
+## 识别结果示例
 
 <Frame>
-  <img src="/images/legacy/cd7c469c-6235-42b4-b8d5-011d20de6d2b/e2a21ba8-5eeb-4bbe-b88d-4ed5e439de14.avif" alt="识别图像相关图示" />
+  <img src="/images/legacy/cd7c469c-6235-42b4-b8d5-011d20de6d2b/e2a21ba8-5eeb-4bbe-b88d-4ed5e439de14.avif" alt="双托盘识别深度图" />
 </Frame>
 
-双托盘识别深度图像
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/legacy/f9a69134-78e5-4ad2-bf96-e0121e6a5eb5/cf468226-6167-4a93-949d-815837ac378f.avif" alt="多托盘识别点云图" />
+  </Frame>
+  <Frame>
+    <img src="/images/legacy/86c53853-a678-414e-b6f4-cf20ca3182cb/74192946-8d74-47eb-b80d-eeb537d92262.avif" alt="PalletPro 软件界面" />
+  </Frame>
+</Columns>
 
-![识别图像相关图示 2](/images/legacy/f9a69134-78e5-4ad2-bf96-e0121e6a5eb5/cf468226-6167-4a93-949d-815837ac378f.avif)![识别图像相关图示 3](/images/legacy/86c53853-a678-414e-b6f4-cf20ca3182cb/74192946-8d74-47eb-b80d-eeb537d92262.avif)
-
-多托盘识别点云图像 PalletPro软件界面
-
-## 方案动画演示
+## 演示与测试视频
 
 <Frame>
-  <video controls src="/videos/legacy/51a2999a-5026-4a80-9a1a-48fdf1ba011e/02584fac-4d47-4535-a364-e8cd1f158a25.mp4" title="方案动画演示媒体内容 1" alt="托盘识别方案动画演示">
+  <video controls src="/videos/legacy/51a2999a-5026-4a80-9a1a-48fdf1ba011e/02584fac-4d47-4535-a364-e8cd1f158a25.mp4" title="托盘识别方案动画演示" alt="托盘识别方案动画演示视频">
     您的浏览器不支持视频播放。
   </video>
 </Frame>
 
-## 实测视频
+<Tabs>
+  <Tab title="多种托盘测试">
+    <Frame>
+      <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113167506153159&amp;bvid=BV14AtZeNEuQ&amp;cid=259289270&amp;autoplay=0" title="多种托盘识别测试，包含黑色托盘" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
+    </Frame>
+  </Tab>
+  <Tab title="室外场景测试">
+    <Frame>
+      <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113167556419308&amp;bvid=BV1nYtoeREJD&amp;cid=259290594&amp;autoplay=0" title="托盘识别室外场景测试" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
+    </Frame>
+  </Tab>
+  <Tab title="长臂叉车测试">
+    <Frame>
+      <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113746135487002&amp;bvid=BV1g16JYLEjc&amp;cid=276246712&amp;autoplay=0" title="长臂叉车托盘识别测试" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
+    </Frame>
+  </Tab>
+</Tabs>
 
-> 多种托盘识别测试视频（包含黑色托盘）
-
-<Frame>
-  <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113167506153159&amp;bvid=BV14AtZeNEuQ&amp;cid=259289270&amp;autoplay=0" title="实测视频媒体内容 2" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
-</Frame>
-
-> 托盘识别场景实测（包含室外场景）
-
-<Frame>
-  <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113167556419308&amp;bvid=BV1nYtoeREJD&amp;cid=259290594&amp;autoplay=0" title="实测视频媒体内容 3" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
-</Frame>
-
-> 长臂叉车托盘识别
-
-<Frame>
-  <iframe src="https://player.bilibili.com/player.html?isOutside=true&amp;aid=113746135487002&amp;bvid=BV1g16JYLEjc&amp;cid=276246712&amp;autoplay=0" title="实测视频媒体内容 4" className="w-full aspect-video rounded-xl" allowFullScreen></iframe>
-</Frame>
-
-## 操作说明
-
-[PalletPro托盘识别操作说明](/developers/deployment/palletpro "PalletPro托盘识别操作说明")
+<Card title="PalletPro 托盘识别操作说明" icon="book-open" href="/developers/deployment/palletpro">
+  查看软件操作、标定和识别部署说明。
+</Card>
