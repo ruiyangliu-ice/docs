@@ -1,69 +1,46 @@
 ---
-title: "Manual forklift localization and bin-location detection"
-description: "Combine intelligent manual-forklift localization with bin-location status detection to improve warehouse operations."
+title: "Coordinated forklift localization and storage-location recognition"
+description: "Combine forklift pose and storage-location status data to support manual-forklift dispatch, load tracking, and location management."
 ---
-In traditional warehousing and logistics management, manual forklifts and warehouse location management are core links, but their efficient operation is often subject to multiple limitations:
 
-**• The path is not optimized and the efficiency is low**: The manual forklift driving path depends on the operator's experience, which not only increases the ineffective driving time, but also creates a high-intensity labor burden.
+Manual forklift operations often depend on driver experience, while storage-location records can lag behind the actual site. Path efficiency, location status, and safety in narrow aisles are common warehouse-management concerns.
 
-**• Lag location information and chaotic scheduling**: The lack of real-time location status updates leads to task allocation errors, reduces overall operating efficiency, and even causes safety hazards.
+## Solution architecture
 
-**• Safety hazards are difficult to control**: In narrow aisles and high-shelf environments, forklift collision accidents occur frequently, threatening the safety of personnel and equipment.
+The solution combines a manual-forklift localization system with a storage-location status system. The first provides forklift position and pose; the second provides occupancy and load status. Both data streams can be sent to a higher-level system for task dispatch and load tracking.
 
-In order to solve these problems, some projects have tried to introduce positioning solutions based on UWB technology to optimize forklift paths and improve safety. However, the UWB positioning system exposes multiple limitations in practical applications:
+## Manual forklift localization
 
-**1. The signal is susceptible to interference**: In metal shelves or complex accumulation environments, UWB signals are susceptible to interference and positioning data is unstable.
-
-**2. Limited accuracy and single function**: UWB positioning accuracy is only 20-50 cm, and it can only provide location data and cannot support angle information, making it difficult to meet the needs of refined management in warehousing scenarios.
-
-**3. Deployment and cost pressure**: In large warehouses, UWB requires the deployment of a large number of base stations and complex lines, and the deployment cost is as high as hundreds of thousands of yuan.
-
-**4. Limitations of cargo tracking**: UWB is difficult to directly track cargo location and usually needs to be combined with RFID and other technologies, further increasing system complexity and cost.
-
-## Solution
-
-Meyer Micro Vision has been focusing on the field of logistics and warehousing automation for many years, focusing deeply on the pain points of the industry, establishing strategic cooperation with many industry leading companies, and has delivered tens of thousands of 3D vision sensors in total, firmly staying at the forefront of the industry. Based on 3D vision sensors, Meyer Micro Vision has launched the **RTLS manual forklift positioning system** and **warehouse status identification system** to provide integrated intelligent solutions for warehousing and logistics.
-
-> **Manual forklift positioning system**
-
-The manual forklift positioning system installs a 3D vision camera on the top of the forklift to capture the natural features of the ceiling and walls to achieve high-precision positioning of 1-5 cm, which is significantly improved compared to UWB's 20-50 cm accuracy. At the same time, combined with **IMU-assisted positioning**, it ensures continuous and stable positioning in environments with occlusion or insufficient vision.
-
-The system not only provides real-time positioning support, but also effectively reduces the probability of forklift collisions and other safety accidents by reminding the driver of people, vehicles and potential dangers around him in real time and setting up automated no-go zones, providing a safer environment for operators and equipment.
+Mount a 3D vision camera on top of the forklift. The system localizes using natural features on the ceiling and walls, with IMU assistance. Project records report **1–5 cm** positioning accuracy; actual accuracy depends on site features, installation, and calibration.
 
 <Frame>
-  <img src="/images/legacy/a373125f-fe06-4abd-be5f-5171c2f5ebfe/270dd07d-ed65-4d22-9b1a-5d26d8f9e071.avif" alt="Solution related icons" />
+  <img src="/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif" alt="Manual forklift visual localization system" />
 </Frame>
 
-Meyer Micro Vision's solution based on **visual RTLS technology** provides higher accuracy, lower installation costs and faster deployment capabilities than existing RTLS solutions (such as Bluetooth and UWB) through precise positioning and flexible hardware support, making it an ideal choice for the intelligent upgrade of manual forklifts. At the same time, the positioning system can also cooperate with the warehouse status identification system to dynamically track the placement of goods, update the target warehouse status in real time, avoid invalid operations, and flexibly adjust task allocation and operation paths.
+The system can alert the driver to nearby people, vehicles, and potential risks and can be configured with restricted areas. Localization results can also be combined with location status to record load placement and help adjust task routes.
 
 <Frame>
-  <img src="/images/legacy/260e8a7d-2e35-4020-9f14-1de0a36193b3/5769d02e-80da-4530-93f6-42d3e8ef99cb.avif" alt="Solution Related Graphics 2" />
+  <img src="/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif" alt="Forklift localization and warehouse-operation coordination" />
 </Frame>
 
-> **Stock location status identification system**
+## Storage-location status recognition
 
-Meyer Micro Vision uses an **RGB-D camera** to provide three-dimensional data and color information of the warehouse location, and automatically identify the presence, standardization and abnormal occupancy of goods. Through the 3D visual intelligent AI system, this solution can also distinguish cargo categories and output data to the dispatching system to complete intelligent warehouse entry and exit operations.
+An RGB-D camera captures 3D and color information to identify whether a location contains a load, how it is placed, and whether occupancy is abnormal. The algorithm can distinguish load categories when required, and camera-side results can be sent to the dispatch system.
 
-**Core Features**
-
-**• Comprehensive monitoring**: Collect three-dimensional data and color information of the warehouse location, and combine it with AI technology to accurately identify the status of the warehouse location.
-
-**• Simple deployment**: The algorithm is placed on the camera side, no external industrial computer is needed, reducing deployment and maintenance costs.
-
-**• Flexible communication**: Supports TCP/IP, UDP, HTTP and other communication methods, and reports data to the control system in real time through JSON format.
-
-**• Efficient Scheduling**: Real-time transmission of location status information helps the scheduling system quickly allocate tasks and improve operating efficiency.
+| Feature | Description |
+| --- | --- |
+| 3D monitoring | Combine depth and color data to identify location status. |
+| On-camera processing | Reduce the need for an external industrial computer. |
+| Communication integration | Support TCP/IP, UDP, and HTTP, with JSON output. |
+| Dispatch coordination | Provide real-time location information for task assignment. |
 
 <Frame>
-  <img src="/images/legacy/cc751842-f12f-4363-8bd1-45ae117538e6/ab7ed27a-ab79-4d01-96a2-882622321756.avif" alt="Solution related graphics 3" />
+  <img src="/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif" alt="Storage-location status recognition system" />
 </Frame>
 
-## Collaboration between RTLS and location identification
+## Coordination workflow
 
-Through the in-depth collaboration between the RTLS positioning system and the warehouse status identification system, Myer Micro Vision solution realizes the unified management of forklifts, goods and warehouse locations, improving the accuracy and efficiency of job scheduling.
-
-- Integration of positioning and identification: The system synchronizes the forklift position and warehouse status in real time to realize dynamic tracking of goods and ensure the safety and accurate management of goods during operation; through the seamless integration of three-dimensional data and positioning information, the visualization ability of warehouse status is significantly improved.
-
-- Dynamically adjust task paths: Based on real-time updated cargo and warehouse location information, the system can flexibly adjust forklift operating paths to avoid warehouse location conflicts and misoperations; effectively reduce forklift no-load running time, improve overall operating efficiency, and reduce operating costs.
-
-- Optimize resource allocation: Through accurate data analysis, the system can comprehensively optimize the utilization of storage locations and equipment, and improve the utilization efficiency of warehouse space.
+1. The localization system continuously outputs forklift position and pose.
+2. The location camera reports occupancy and load status for the target location.
+3. The higher-level system associates vehicle, load, and location data to confirm pickup and placement tasks and record load positions.
+4. When location or vehicle status changes, the higher-level system can update task routes and resource allocation.

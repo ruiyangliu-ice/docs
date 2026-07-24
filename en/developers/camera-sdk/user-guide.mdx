@@ -3,53 +3,57 @@ title: "Camera SDK User Guide"
 description: "Integrate supported MRDVS cameras on x86 Windows or x86 and Arm Linux systems with the Camera SDK APIs."
 hidden: true
 ---
-## 1. **Overview**
+## Overview
 
-This document is mainly intended for developers related to camera device access (requires software development capabilities). Currently supports M4/M4 Mega/M4 Pro/V1Pro/S2/S2/H3 series products. The main purpose of this document is to explain how to use the API provided by the SDK. Camera SDK supports running on x86-based Windows operating systems, and X86 and Arm-based Linux operating systems.
+This guide is for developers integrating camera devices. It covers the Camera SDK APIs for M4, M4 Mega, M4 Pro, V1 Pro, S2, S2 Max, and H3 Series products. The SDK runs on x86 Windows and x86 or Arm Linux systems.
 
-Camera SDK provides a unified access control and parameter configuration interface, supporting synchronous or asynchronous acquisition of device data (including depth images, intensity images, point cloud images, RGB images). Some camera models support obstacle avoidance, docking, positioning and other data.
+The Camera SDK provides unified device-access and parameter-configuration APIs. It supports synchronous and asynchronous acquisition of depth, intensity, point cloud, and RGB data. Some camera models also provide obstacle-avoidance, docking, or localization data.
 
-This document provides development assistance to the greatest extent, and the content provided may be defective or incomplete.
+<Info>
+  Examples and API descriptions are based on the SDK version shipped with the product. Available parameters may vary by product, firmware, and SDK version.
+</Info>
+
+The examples are intended as development guidance and may not cover every device or use case.
 
 * * *
 
-## 2**. Environment setup**
+## Environment setup
 
-### 2.1 Host recommended system configuration
+### Recommended host configuration
 
-| Configuration items | Recommended configuration |
+| Configuration item | Recommended configuration |
 | --- | --- |
-| Operating system | Windows7 Windows10 Windows11<br />Ubuntu16.04 and above |
-| Memory | 4G and above |
-| CPU | 4-core Cortex-A57 or equivalent and above |
-| Network card | Gigabit and above |
+| Operating system | Windows 7, Windows 10, or Windows 11; Ubuntu 16.04 or later |
+| Memory | 4 GB or more |
+| CPU | Four-core Cortex-A57 or equivalent and above |
+| Network adapter | Gigabit Ethernet or faster |
 
-### 2.2 Environment setup
+### Connect and install
 
-#### 2.2.1 Hardware environment setup
+#### Hardware connection
 
 The camera is connected to an external 24V voltage and is connected to the host computer where the host computer is located using a network cable, as shown in Figure 2.1.
 
 <Frame>
-  <img src="/images/legacy/2c0d602c-834d-4780-beab-f69d6c37593c/9d585c4c-d229-4e71-8275-014d7a30f2eb.avif" alt="Illustrations related to hardware environment construction" />
+  <img src="/images/developers/camera-sdk-user-guide-hardware-environment-construction.avif" alt="Illustrations related to hardware environment construction" />
 </Frame>
 
 Figure 2.1 Camera connection diagram
 
-#### 2.2.2 Network environment setup
+#### Network configuration
 
 1. The default IP network segment of the camera is: 192.168.100.\*
 
 2. On the host computer, set the IP address of the network port connected to the camera to an address in the 192.168.100.x network segment and ensure that it does not conflict with the device. The subnet mask is 255.255.255.0, as shown in the figure below:
 
 <Frame>
-  <img src="/images/legacy/dda39d36-adb1-490c-a208-2b7221a9e628/68567bcb-79e9-4442-bade-9266bc2e6aba.avif" alt="Illustrations related to network environment construction" />
+  <img src="/images/developers/camera-sdk-user-guide-network-environment-construction.avif" alt="Illustrations related to network environment construction" />
 </Frame>
 
 3. When connecting to the camera, it is recommended to turn off the firewall to prevent the camera data packets from being intercepted by the host where the SDK is located, as shown in the following figure:
 
 <Frame>
-  <img src="/images/legacy/f3a9f7f1-d341-43d6-ac8d-4c1e5b6d1d50/9c5cfdd9-1dd2-4e9e-873f-08625c29e9dc.avif" alt="Illustrations related to network environment construction 2" />
+  <img src="/images/developers/camera-sdk-user-guide-network-environment-construction-2.avif" alt="Illustrations related to network environment construction 2" />
 </Frame>
 
 4. The network configuration of Linux system is the same as that of Windows. The method of turning off the firewall may be different in different systems. Take Ubuntu as an example:
@@ -58,29 +62,29 @@ Figure 2.1 Camera connection diagram
 
 - Disable the firewall service: sudo systemctl disable ufw.service Check whether the firewall service is turned off: sudo ufw status
 
-#### 2.2.3 Software environment construction
+#### Install the SDK
 
-##### 2.2.3.1 Windows system installation:
+##### Windows
 
 Open the installation package and install Lanxin-MRDVS-xxx.exe. If you need to install it for all users, you need administrator rights to run the installation package. The figure below shows the installation process.
 
 <Frame>
-  <img src="/images/legacy/0a7392e3-bf32-471b-aa31-8fa8fce6cced/06c7291e-7290-4c3d-8a90-88bd2bff7be6.avif" alt="Windows System Installation: Related Illustrations" />
+  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation.avif" alt="Windows System Installation: Related Illustrations" />
 </Frame>
 
 <Frame>
-  <img src="/images/legacy/18efed64-f390-4fe3-8540-f5509c3af2d4/84f19e25-ae92-4889-bc34-e8fb6f09bf53.avif" alt="Windows System Installation: Related Illustration 2" />
+  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-2.avif" alt="Windows System Installation: Related Illustration 2" />
 </Frame>
 
 <Frame>
-  <img src="/images/legacy/a5542933-3960-4d25-b48d-6d1f41153f9a/8e13b104-d47a-4fd6-be41-ae61441048c3.avif" alt="Windows System Installation: Related Illustration 3" />
+  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-3.avif" alt="Windows System Installation: Related Illustration 3" />
 </Frame>
 
 <Frame>
-  <img src="/images/legacy/d2995663-9902-43ef-9556-d02e800b725b/eab5e847-062d-4fbd-a23b-503ec60e26b2.avif" alt="Windows System Installation: Related Illustrations 4" />
+  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-4.avif" alt="Windows System Installation: Related Illustrations 4" />
 </Frame>
 
-##### 2.2.3.2 Linux system installation:
+##### Linux
 
 1. Unzip and execute the installation script
 
@@ -104,14 +108,14 @@ For terminal sessions that have been opened before installation, you need to exe
 
 * * *
 
-## 3**. Camera SDK usage instructions**
+## Use the Camera SDK
 
-### 3.1 Camera SDK directory structure
+### Directory structure
 
 The contents of the Camera SDK directory include the following images:
 
 <Frame>
-  <img src="/images/legacy/e63ed7f0-5413-49e4-ae83-5b1ca5701c3f/c8513558-20e0-42d9-8a4a-cf788fbddee2.avif" alt="Camera SDK directory structure related diagram" />
+  <img src="/images/developers/camera-sdk-user-guide-camera-sdk-directory-structure-related-diagram.avif" alt="Camera SDK directory structure related diagram" />
 </Frame>
 
 - Document contains various documentation for the SDK
@@ -122,29 +126,29 @@ The contents of the Camera SDK directory include the following images:
 
 - SDK includes the header files and library files of Camera SDK
 
-### 3.2 Development process
+### Development workflow
 
-#### 3.2.1 Project configuration
+#### Configure the project
 
 C/C++ is recommended as the main secondary development programming language to integrate the SDK, and the CMakeLists.txt script for building projects through the Cmake tool is provided; at the same time, the Sample folder provides examples of development methods in different languages. For details, please refer to the information under Sample and the "Linux Sample Program Instructions".
 
-#### 3.2.2 Synchronous interface calling process
+#### Synchronous call flow
 
 <Frame>
-  <img src="/images/legacy/821c0e91-5da0-4bb9-ad44-9aff7d3e5b4f/5d92b8cc-615b-4948-aeea-4dd0e96daed5.avif" alt="Synchronous mode interface call flow chart" />
+  <img src="/images/developers/camera-sdk-user-guide-synchronous-mode-interface-call-flow-chart.avif" alt="Synchronous mode interface call flow chart" />
 </Frame>
 
-#### 3.2.3 Asynchronous interface calling process
+#### Asynchronous call flow
 
 <Frame>
-  <img src="/images/legacy/b7bf7592-9337-4597-9443-807edf3803b1/7d62fa56-8dd8-4fdb-bdfe-4c9e4b249429.avif" alt="Asynchronous mode interface call flow chart" />
+  <img src="/images/developers/camera-sdk-user-guide-asynchronous-mode-interface-call-flow-chart.avif" alt="Asynchronous mode interface call flow chart" />
 </Frame>
 
 * * *
 
-## 4. **Camera SDK calling notes**
+## Calling requirements
 
-### 4.1 General principles of Camera SDK interface calling
+### Parameter types and corresponding APIs
 
 1. For enumeration types prefixed with LX\_INT, use DcSetIntValue or DcGetIntValue to set or get INT type parameters;
 
@@ -158,7 +162,11 @@ C/C++ is recommended as the main secondary development programming language to i
 
 6. For enumeration types prefixed with LX\_PTR, use DcGetPtrValue to obtain pointer type results;
 
-### 4.2 Camera SDK interface part calling preconditions
+### API preconditions
+
+<Warning>
+  When streaming is active, or when `LX_INT_WORK_MODE` is set to always-on mode, do not set the functions listed below.
+</Warning>
 
 **1. When the flow is started or the working mode (LX\_INT\_WORK\_MODE) is normally open mode, the following functions are not allowed to be set:**
 
@@ -224,7 +232,7 @@ Setting the 3D automatic exposure maximum value (LX\_INT\_3D\_AUTO\_EXPOSURE\_MA
 
 - LX\_INT\_FILTER\_TIME\_LEVEL
 
-<br />8.**When turning on 2D anti-distortion, RGBD alignment must be turned on first:**
+<br />8.**When turning on 2D anti-distortion, RGB-D alignment must be turned on first:**
 
 - LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH
 
@@ -238,7 +246,7 @@ Setting the 3D automatic exposure maximum value (LX\_INT\_3D\_AUTO\_EXPOSURE\_MA
 
 * * *
 
-## 5. **Data type description**
+## Data types
 
 ### 5.1 LX\_STATE
 
@@ -365,7 +373,7 @@ Function: Various readable and writable parameters
 | LX_INT_CODE_MODE | Structural light camera encoding mode, refer to CODE_MODE (supported by some models) |
 | LX_INT_WORK_MODE | Working mode, refer to LX_CAMERA_WORK_MODE |
 | LX_INT_LINK_SPEED | The negotiated network card speed is 100-100 Mbit/s, 1000-1000 Mbit/s, only supports acquisition and cannot be set |
-| LX_INT_TOF_GLOBAL_OFFSET | TOF depth data offset |
+| LX_INT_TOF_GLOBAL_OFFSET | ToF depth data offset |
 | LX_INT_ALGORITHM_MODE | Built-in algorithm enable mode, supported by some models, the corresponding values ​​refer to LX_ALGORITHM_MODE |
 | LX_INT_TRIGGER_MODE | Trigger mode, the corresponding value refers to LX_TRIGGER_MODE |
 | LX_INT_MODBUS_ADDR | modbus address, some models support MODBUS protocol output through the serial port |
@@ -456,10 +464,10 @@ Function: Various readable and writable parameters
 | LX_BOOL_ENABLE_2D_STREAM | Turn on/off RGB |
 | LX_BOOL_ENABLE_2D_AUTO_EXPOSURE | 2D automatic exposure enable |
 | LX_BOOL_ENABLE_2D_UNDISTORT | 2D anti-distortion enable |
-| LX_BOOL_ENABLE_2D_TO_DEPTH | RGBD coordinate alignment enable |
+| LX_BOOL_ENABLE_2D_TO_DEPTH | RGB-D coordinate alignment enable |
 | LX_BOOL_ENABLE_MULTI_MACHINE | Multi-machine mode enabled, supported by some models |
 | LX_BOOL_ENABLE_MULTI_EXPOSURE_HDR | HDR (multi-exposure high dynamic range mode) enabled |
-| LX_BOOL_ENABLE_SYNC_FRAME | Whether to enable forced frame synchronization, the default data real-time priority is given, if RGBD synchronization is required, <br /> needs to enable this mode |
+| LX_BOOL_ENABLE_SYNC_FRAME | Whether to enable forced frame synchronization, the default data real-time priority is given, if RGB-D synchronization is required, <br /> needs to enable this mode |
 
 #### 5.8.4 string type parameters
 
@@ -604,7 +612,11 @@ Function: Data frame information structure
 
 * * *
 
-## 6**. API Description**
+## API reference
+
+<Info>
+  API prototypes are defined by the SDK headers and the shipped SDK version. Unless noted otherwise, `LX_SUCCESS` indicates a successful call.
+</Info>
 
 ### 6.1 Find, connect and close the camera
 
@@ -613,7 +625,7 @@ Function: Data frame information structure
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/574fb5b6-8cf7-4a0b-b362-47859b5a7bbe/8b322247-9b7e-4131-b5ee-10120e5a5bae.avif" alt="DcGetDeviceList related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetdevicelist.avif" alt="DcGetDeviceList related icons" />
 </Frame>
 
 **Function function:**
@@ -637,7 +649,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/f628bf77-caf9-4975-8bcd-c810744df8ad/fecb1fc4-7432-4b45-8a6c-85e3c236dffb.avif" alt="DcOpenDevice related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcopendevice.avif" alt="DcOpenDevice related icons" />
 </Frame>
 
 **Function function:**
@@ -665,7 +677,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/71d93c55-6e7c-4c44-b488-4e83dfb49edd/3450f411-98f1-4c8f-8ae9-90d6544d38b5.avif" alt="DcCloseDevice related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcclosedevice.avif" alt="DcCloseDevice related icons" />
 </Frame>
 
 **Function function:**
@@ -689,7 +701,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/39b2d399-7df6-4e9d-bff4-4a0a5c6746c6/b1907a64-3f0e-4dde-b25a-49e376793bd4.avif" alt="DcStartStream related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcstartstream.avif" alt="DcStartStream related icons" />
 </Frame>
 
 **Function:**Open data stream
@@ -709,7 +721,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/9fc6dd98-36e4-4462-888b-658e9c590504/7e6b2b0d-3094-431b-8e8b-400ed269710f.avif" alt="DcStopStream related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcstopstream.avif" alt="DcStopStream related icons" />
 </Frame>
 
 **Function:**Close data flow
@@ -731,7 +743,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/6d8c8c16-79bf-4053-a7d6-0df27577a5d2/7f58b2cf-096a-47fe-a512-d821284fcf54.avif" alt="DcSetIntValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetintvalue.avif" alt="DcSetIntValue related icons" />
 </Frame>
 
 **Function function:**
@@ -757,7 +769,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/6de18c97-e83c-490b-8075-43fbb4fbae45/b64ee220-a648-459f-9d9f-6d9e388285a7.avif" alt="DcGetIntValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetintvalue.avif" alt="DcGetIntValue related icons" />
 </Frame>
 
 **Function function:**
@@ -783,7 +795,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/6a7513d0-16c8-4013-8e53-ef59f5207840/9a31bf61-c101-40aa-867a-57dd5756517a.avif" alt="DcSetFloatValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetfloatvalue.avif" alt="DcSetFloatValue related icons" />
 </Frame>
 
 **Function function:**
@@ -809,7 +821,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/e7d8d4fe-6cc2-4323-a4c3-a8481c1ae7ef/a3d3272e-4c3e-4949-8166-79918b3268bc.avif" alt="DcGetFloatValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetfloatvalue.avif" alt="DcGetFloatValue related icons" />
 </Frame>
 
 **Function function:**
@@ -835,7 +847,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/87940dfa-c21f-41c3-aedf-4da82823857a/56fae64f-16a3-47db-9672-09edabbbf90d.avif" alt="DcSetBoolValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetboolvalue.avif" alt="DcSetBoolValue related icons" />
 </Frame>
 
 **Function function:**
@@ -861,7 +873,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/fdf6d572-85d6-450f-a32b-57a3666971e2/da68f6d4-8396-4940-bee4-e8fc3298b957.avif" alt="DcGetBoolValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetboolvalue.avif" alt="DcGetBoolValue related icons" />
 </Frame>
 
 **Function function:**
@@ -887,7 +899,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/3deec81d-fab8-4ed1-8aaf-2c1828fdc6f3/52abe248-6d06-4f2a-b2ef-ec92e1ec0a13.avif" alt="DcSetStringValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetstringvalue.avif" alt="DcSetStringValue related icons" />
 </Frame>
 
 **Function function:**
@@ -913,7 +925,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/b7ce6c7f-8fa6-4f4e-be45-6da51924afe3/feb87fff-fcaa-4556-8615-5ff6cf782778.avif" alt="DcGetStringValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetstringvalue.avif" alt="DcGetStringValue related icons" />
 </Frame>
 
 **Function function:**
@@ -939,7 +951,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/71e88e0b-fc25-496e-8a5a-70999dcdeee6/87125244-175a-4688-b868-32f52ecd7106.avif" alt="DcGetPtrValue related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetptrvalue.avif" alt="DcGetPtrValue related icons" />
 </Frame>
 
 **Function function:**
@@ -965,7 +977,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/48722082-f1c2-42fe-91ba-0aa517a0607e/d5ec99a5-a579-4740-b90b-75da81714ae6.avif" alt="DcSetCmd related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetcmd.avif" alt="DcSetCmd related icons" />
 </Frame>
 
 **Function function:**
@@ -991,7 +1003,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/294db837-9ec7-4c6c-8964-991eaccf5737/6a2ad8e7-fad9-4104-b44e-544c6e5ee322.avif" alt="DcSaveXYZ related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsavexyz.avif" alt="DcSaveXYZ related icons" />
 </Frame>
 
 **Function function:**
@@ -1017,7 +1029,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/464ec28f-aded-4bb0-b1a8-21510aea51b8/4c95d60d-5677-4cee-9aa8-99c636ab3b34.avif" alt="DcSpecialControl related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcspecialcontrol.avif" alt="DcSpecialControl related icons" />
 </Frame>
 
 **Function function:**
@@ -1045,7 +1057,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/e5d10918-25dd-463c-afb0-164434434e85/fa418b0e-69d4-47d4-9af9-784af13f7387.avif" alt="DcSetRoI related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetroi.avif" alt="DcSetRoI related icons" />
 </Frame>
 
 **Function function:**
@@ -1079,7 +1091,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/04d3cb25-46d7-4698-b58a-3912be71be4c/6995c86c-31e7-4bf4-b3e8-1eeb18a0170d.avif" alt="DcSetCameraIp related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetcameraip.avif" alt="DcSetCameraIp related icons" />
 </Frame>
 
 **Function function:**
@@ -1109,7 +1121,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/0caa9bec-1869-40f0-aa97-300ad1b74751/8b7829b0-af3b-44cb-a05a-9998373a2072.avif" alt="DcGetApiVersion related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcgetapiversion.avif" alt="DcGetApiVersion related icons" />
 </Frame>
 
 **Function function:**
@@ -1129,7 +1141,7 @@ char pointer data.
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/a28e3b3b-9399-48a2-adbc-79724aaf8ba1/8d807a90-2d59-4619-903c-8544768c1004.avif" alt="DcSetInfoOutput related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif" alt="DcSetInfoOutput related icons" />
 </Frame>
 
 **Function function:**
@@ -1157,7 +1169,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/e8c65075-57c0-46b8-979b-88da89690207/aad615f7-a4e3-4d86-9ee0-61e129664cfe.avif" alt="DcLog related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dclog.avif" alt="DcLog related icons" />
 </Frame>
 
 **Function function:**
@@ -1179,7 +1191,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/2c7da0a7-d94a-4dd1-8882-97c453121aee/d6580ec0-bde6-499f-9e75-089e327989fb.avif" alt="DcRegisterFrameCallback related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif" alt="DcRegisterFrameCallback related icons" />
 </Frame>
 
 **Function function:**
@@ -1205,7 +1217,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/f1d5c426-1b39-47e9-8cbe-e5a942557600/e97dda1c-88b0-4860-928d-d92008d680f8.avif" alt="DcUnregisterFrameCallback related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif" alt="DcUnregisterFrameCallback related icons" />
 </Frame>
 
 **Function function:**
@@ -1229,7 +1241,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/1ff6db5a-98b2-4ab9-b138-5d72450dad30/a641903d-04eb-4cde-8a36-b3b460be7a3f.avif" alt="DcRegisterCameraStatusCallback related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif" alt="DcRegisterCameraStatusCallback related icons" />
 </Frame>
 
 **Function function:**
@@ -1251,7 +1263,7 @@ Register the camera status callback function, which is automatically called when
 **Function prototype:**
 
 <Frame>
-  <img src="/images/legacy/162713c3-9690-4a16-a1ab-ee8d902a5270/a139a7a4-b7b6-4156-8cc3-c0ed4f8db165.avif" alt="DcUnregisterCameraStatusCallback related icons" />
+  <img src="/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif" alt="DcUnregisterCameraStatusCallback related icons" />
 </Frame>
 
 **Function function:**
@@ -1270,7 +1282,7 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 
 * * *
 
-## 7. **Versions and Updates**
+## Versions and updates
 
 | Version number | Update instructions |
 | --- | --- |
@@ -1278,17 +1290,3 @@ Int data, this value is equal to LX\_SUCCESS, indicating that the interface call
 | 2.4.9 | 1. Optimize and add some functions and configuration parameters 2. Change the timestamp to us |
 | 2.4.2 | Support M4/M4 Mega/M4 Pro/V1Pro/S2/H3 cameras |
 | 2.0.2 | Fix some known issues, adjust some interfaces and parameters |
-
-* * *
-
-Welcome to contact us through the following methods:
-
-- If you have not purchased the product yet, please [Click me](https://work.weixin.qq.com/ca/cawcdef7e3228b9372 "Click me") to add a pre-sales engineer/sales enterprise WeChat account
-
-- Users who have purchased products, please [click me](https://work.weixin.qq.com/ca/cawcdefa8ca5967bca "click me") to add after-sales technical support enterprise WeChat
-
-[https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe](https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe "https://zcnt5g3o2989.feishu.cn/sync/MCiIdhQTos6RzzbwxUtcyOX0nNe")
-
-* * *
-
-Use this documentation to learn more about MRDVS products and solutions.

@@ -1,227 +1,157 @@
 ---
-title: "V2 ROS 1 interface reference"
-description: "Build and run the V2 localization ROS 1 SDK, and use its topics and services."
+title: "V2 ROS1 interface reference"
+description: "Build and run the V2 localization ROS1 SDK, then use its topics and services for mapping, localization, and map management."
 hidden: true
 ---
-## 1: Compile
 
-### 1. Make sure QT5 has been installed on the host computer. Compilation requires Core, Network and other functional packages in QT5.
+## Compile
 
-```cpp
-// Installation differs by Linux distribution. This example uses:
+Install the Qt5 Core and Network components. Installation commands vary by Linux distribution; the following example uses Ubuntu:
+
+```bash
 sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
 ```
 
-### 2. Install libzip function package
+Download and compile `libzip` from the [libzip download page](https://libzip.org/download/) according to the official instructions.
 
-Download the source file (https://libzip.org/download/) from the libzip official website, and then compile it according to the official website tutorial.
+Compile the ROS package from `/V2-ROS-SDK-service`, which is at the same level as `src`:
 
-### 3. Compile ros function package
+```bash
+catkin_make
+```
 
-Compile using the instruction `catkin_make` in the /V2-ROS-SDK-service path (same level as /src).
+## Run
 
-## 2: Run
+<Warning>
+  If ROS master/slave settings are enabled on the camera, disable them before running the ROS sample. After powering on the camera, wait about 20 seconds before starting the sample.
+</Warning>
 
-Before running the ROS example, if the ROS master-slave has been deployed in the camera, you need to turn off the ROS master-slave related settings first, otherwise ROS-related communication exceptions will occur. If there is a ROS environment in the camera, you need to wait for about 20 seconds after powering on the camera before running the ROS sample program.
+From `home/username/V2_ROS_SDK`, which is at the same level as `src`, run:
 
-ROS node creation steps:
+```bash
+catkin_make
+source devel/setup.bash
+```
 
-1. Enter the sample program code file directory `home/username/V2_ROS_SDK`, and run the command at the same level as the src folder
+## ROS topic interfaces
 
-2.  catkin\_make
+Before testing an interface, power on the camera and wait about 30 seconds for the built-in program to start. Then start the ROS SDK node.
 
-3.  source devel/setup.bash
+| Use case | Related topics |
+| --- | --- |
+| Localization | Pose, localization status, map switching, and relocalization |
+| Mapping | Mapping status and progress |
+| Maintenance and configuration | Storage usage, faulty modules, parameter settings, and map upload/download |
 
-## Three: ROS topic interface
+### Receive localization pose
 
-Classification according to function is as follows:
+ROS continuously receives the camera's `x`, `y`, and `theta` values, publishes these values and the quaternion converted from `theta` to `LxCamera_LocationPoseResult`, and broadcasts the pose through TF.
 
-Mapping stage:
-
-1. Mapping enablement interface
-
-2. Receive mapping status interface
-
-3. Receive mapping progress interface
-
-Positioning stage:
-
-1. Relocation interface
-
-    2. Receive positioning status interface
-
-2. Switch map interface
-
-Exceptions, parameter configuration and other interfaces:
-
-1. Set parameter interface
-
-2. Obtain the hard disk space interface currently used by the camera
-
-3. Receive the current faulty module name
-
-4. Download contour map interface (laser contour only)
-
-5. Upload map file zip interface (new)
-
-Before testing the interface, you need to turn on the camera body (wait 30 seconds for the body program to start) and open the ROS SDK node (see the previous section).
-
-### Receive positioning and posture interface
-
-1. ROS continues to receive the positioning values x, y, theta sent from the camera.
-
-2. Publish the positioning values x, y and quaternion (converted from theta) to topic: `LxCamera_LocationPoseResult`
-
-3. Broadcast the positioning value and quaternion through TF transformation
-
-```cpp
+```bash
 rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
 ```
 
-### Receive positioning status interface
+### Receive localization status
 
-1. ROS continues to receive \*\*(frequency: 1s)\*\* the positioning status "`true/false`" sent from the camera, indicating whether the current positioning is normal.
+ROS receives the camera's localization status (`true` or `false`) at 1 Hz and publishes it as `std_msgs::Bool` on `LxCamera_LocationResult`.
 
-2. ROS publishes the positioning status (data of type `std_msgs::Bool`) to topic: `LxCamera_LocationResult`
-
-3. You can obtain the positioning status by subscribing to Topic (whether the current positioning is successful)
-
-```cpp
-//Use this command to verify that the topic publishes data
+```bash
 rostopic echo /lx_localization_node/LxCamera_LocationResult
 ```
 
-### Receive the hard disk space interface used by the current camera
+### Receive camera storage usage
 
-1. ROS continues to receive\*\*(frequency: 2s)\*\*the storage space usage ratio sent from the camera.
+ROS receives the camera's storage usage ratio at 2 Hz and publishes it as `std_msgs::Float32` on `LxCamera_Capacity_Status`.
 
-2. ROS publishes the occupancy status (`std_msgs::Float32` type data) to topic: `LxCamera_Capacity_Status`
-
-3. You can obtain the occupied status proportion by subscribing to Topic
-
-```cpp
-//Use this command to verify that the topic publishes data
+```bash
 rostopic echo /lx_localization_node/LxCamera_Capacity_Status
 ```
 
-### Receive the current faulty module name
+### Receive the faulty module name
 
-1. ROS keeps sending wrong module names from the camera.
+ROS receives the name of a faulty module from the camera and publishes it as `std_msgs::String` on `LxCamera_Module_Error`.
 
-2. ROS publishes the occupancy status (`std_msgs::String` type data) to topic: `LxCamera_Module_Error`
-
-3. You can obtain the exception module name by subscribing to Topic
-
-```cpp
-//Use this command to verify that the topic publishes data
+```bash
 rostopic echo /lx_localization_node/LxCamera_Module_Error
 ```
 
-### Receive mapping status interface
+### Receive mapping status
 
-1. After starting to build the map
+After mapping starts, ROS publishes the mapping status as `std_msgs::Bool` on `LxCamera_MappingState`.
 
-2. ROS publishes the positioning status (data of type `std_msgs::Bool`) to topic: `LxCamera_MappingState`
-
-3. You can switch the mapping status by subscribing to Topic.
-
-```cpp
-//Use this command to verify that the topic publishes data
+```bash
 rostopic echo /lx_localization_node/LxCamera_MappingState
 ```
 
-#### Receive mapping progress interface
+### Receive mapping progress
 
-1. After starting to build the map
-
-2. ROS2 publishes the positioning status (data of type `std_msgs::Int32`) to topic: `LxCamera_Mapping_Progress`
-
-3. You can get the map construction progress (0-100) by subscribing to Topic
+After mapping starts, ROS publishes the mapping progress (`0–100`) as `std_msgs::Int32` on `LxCamera_Mapping_Progress`.
 
 ```bash
-//Use this command to verify that the topic publishes data
 rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
 ```
 
-### Setting parameter interface
+### Set parameters
 
-1. The user publishes a message of type `std_msgs/String` to topic: `LxCamera_SetParam`
+Publish a `std_msgs/String` message to `LxCamera_SetParam`. The message contains nine floating-point values separated by commas: `x,y,z,yaw,pitch,roll,x,y,yaw`. The first six values define the camera pose; the last three define the LiDAR pose. After a successful update, the corresponding values in the `[Laser1]` and `[Camera1]` sections of `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` are updated.
 
-2. The message format is 9 floating point numbers, separated by English commas ",", which respectively represent: `x,y,z,yaw,pitch,roll,x,y,yaw`, **The first 6 parameters are the pose of the camera, and the last 3 are the pose of the lidar**.
-
-3. After the modification is successful, the relevant parameters in \[Laser1\] and \[Camera1\] in the camera path `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` file will be set. Example:
-
-```cpp
-// Enter the lx_camera_udp directory
-//Open a terminal
+```bash
 source devel/setup.bash
 rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
 ```
 
-### Switch map interface
+### Switch maps
 
-1. The user publishes a message of type `std_msgs/String` to topic: `LxCamera_SwitchMap`
+Publish a `std_msgs/String` message containing the name of a completed map to `LxCamera_SwitchMap`. Refresh the camera web interface. If the displayed map name changes, the switch succeeded.
 
-2. The message format is a map name (**provided that the map construction has been completed in the camera**)
-
-3. If the map displayed in the camera's web page has changed (refresh the web page), the switch is successful.
-
-```cpp
-// Enter the lx_camera_udp directory
-//Open a terminal
+```bash
 source devel/setup.bash
 rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
 ```
 
-### Upload odometer
+### Upload odometry
 
-1. The user publishes `nav_msgs::Odometry` type data to topic: `/sim/odom` (can be modified)
+1. Publish `nav_msgs::Odometry` data to `/sim/odom` (the topic can be changed).
 
-rostopic pub /odom nav\_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame\_id: 'odom' child\_frame\_id: 'base\_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
+```text
+rostopic pub /odom nav_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
 
-```cpp
-// Enter the lx_camera_udp directory
-//Open a terminal
+```bash
+# Enter the lx_camera_udp directory.
 source devel/setup.bash
 rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
 ```
 
-### Download outline map interface
+### Download the contour map
 
-1. The user publishes a message of type `std_msgs/String` to topic: `LxCamera_DownloadMap`
+1. Publish a `std_msgs/String` message to `LxCamera_DownloadMap`.
+2. The message contains an absolute host path and a map name, separated by a comma. The map name is the `.zip` file name of a completed map on the camera.
+3. After a successful download, the specified host path contains the map archive. Extract it to obtain a `PGM` map file and a `YAML` configuration file.
 
-2. The message format is a save address and a map name, separated by commas ",". The address is the address in the host computer, using an absolute path; the map name is the file name in ".zip" format that has completed mapping in the camera.
-
-3. After success, there will be a compressed package with the specified map name under the path specified by your host computer. After decompression, you will get a `PGM map file` and a `YAML configuration file`.
-
-```cpp
-// Enter the lx_camera_udp directory
-//Open a terminal
+```bash
+# Enter the lx_camera_udp directory.
 source devel/setup.bash
 rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
 ```
 
-### Upload map file zip interface (new)
+### Upload a map ZIP file (new)
 
-1. The user publishes a message of type `std_msgs/String` to topic: `LxCamera_UploadMapZip`
+1. Publish a `std_msgs/String` message to `LxCamera_UploadMapZip`.
+2. The message contains the path to the map archive to upload, for example `/home/fr1511b/map.zip`. Use an archive downloaded through the map download interface.
+3. If the map is found, the SDK sends it to the camera. The camera extracts it to `/home/fr1511b/hontai/map/`.
 
-2. The message content is the **map compressed package path** that needs to be uploaded, for example: "/home/fr1511b/map.zip", and the compressed package downloaded from the download interface needs to be uploaded.
-
-3. If the map file is found, package it and send it to the camera. After receiving it, the camera will decompress it to the specified path: `/home/fr1511b/hontai/map/`
-
-```cpp
+```bash
 rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
 ```
 
-### Relocation interface
+### Relocalize
 
-1. The user publishes data of type `geometry_msgs::PoseWithCovarianceStamped` to topic: `LxCamera_UploadReloc`
+1. Publish `geometry_msgs::PoseWithCovarianceStamped` data to `LxCamera_UploadReloc`.
+2. The pose contains the LiDAR pose: `x`, `y`, and `yaw`.
+3. Relocalization succeeds when the position shown in the camera web interface updates to the sent pose.
 
-2. The data is laser pose, including: `x,y,yaw`
-
-3. If the body position displayed on the camera web page is updated to the sent position, the relocation is successful.
-
-```cpp
+```bash
 rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
 header:
   frame_id: ''
@@ -239,117 +169,89 @@ pose:
   covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
 ```
 
-> Quaternions have constraint requirements during testing and cannot be filled in at will. You can use [Web Tool](https://www.itutool.com/tools/euler-quaternion-converter "Web tool") to convert `Euler yaw angle` into `quaternion x/y/z/w`
+> Quaternions are constrained and must not be filled in arbitrarily. Use the [Euler-to-quaternion converter](https://www.itutool.com/tools/euler-quaternion-converter "Web tool") to convert an `Euler yaw` angle to quaternion `xyzw` values.
 
-## ROS service interface:
+## ROS service interfaces
 
-While the four functions of mapping, switching maps, downloading maps, and relocating are implemented using the above topic (ROS TOPIC), it also supports using the service (ROS SERVICE) interface to communicate and feedback service response results (whether the operation is successful). Compared with TOPIC, it is recommended to use the following service interfaces in priority
+Mapping, map switching, map downloading, and relocalization are also available through ROS services. A service response of `true` indicates success; `false` indicates failure. For operations that require confirmation, prefer the service interface.
 
-1. Subscribe to the service interface through the rosservice command
+<Info>
+  Use `rosservice call` for the following commands. Map names must not start with a number and must be no longer than 30 characters.
+</Info>
 
-2. If "true" is returned, it means the operation is successful, and if "false" is returned, it means the operation failed.
-
-Classification according to function is as follows:
-
-Mapping stage:
-
-1. Mapping
-
-2. Exit mapping
-
-3. Incremental mapping (that is, incremental mapping on existing maps and automatic merging)
-
-Positioning stage:
-
-1. Relocation interface
-
-2. Switch maps
-
-Other interfaces:
-
-1. Get the current map name
-
-2. Download the map
-
-3. Get the current map list
-
-4. Delete map
-
-5. Download the heat map
-
-###Mapping
+### Build a map
 
 Service name: `/lx_localization_node/LxCamera_Mapping_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-bool status      # Whether to map: 1 starts mapping; 0 stops mapping
-string mapname   # Map name; must not start with a digit; maximum 30 characters
+```text
+bool status      # Start mapping: 1; stop mapping: 0
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
 mapname: 'test_map'"
 ```
 
-### Switch map
+### Switch maps
 
 Service name: `/lx_localization_node/LxCamera_SwitchMap_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-string mapname   # Map name; must not start with a digit; maximum 30 characters
+```text
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
 ```
 
-### Download map
+### Download a map
 
 Service name: `/lx_localization_node/LxCamera_DownloadMap_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-string mapname    # Map name; must not start with a digit; maximum 30 characters
-string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
+string save_path  # Absolute save path, for example "/home/lx/map"; omit the trailing slash
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
 save_path: '/home/fr1511b/T/TEST'"
 ```
 
-### Relocation
+### Relocalize
 
 Service name: `/lx_localization_node/LxCamera_UploadReloc_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
+```text
 geometry_msgs/PoseWithCovarianceStamped pose
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
   header:
     seq: 0
@@ -368,24 +270,24 @@ rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
         y: 0.0
         z: 0.694658
         w: 0.71934
-    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
 ```
 
 ### Get the current map name
 
 Service name: `/lx_localization_node/LxCamera_GetCurMapname_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-bool get_cur_mapname #Retrieve the current map identifier
+```text
+bool get_cur_mapname # Get the map identifier
 ---
-string mapname     #Current map name
+string mapname      # Current map name
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
 ```
 
@@ -393,85 +295,91 @@ rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapnam
 
 Service name: `/lx_localization_node/LxCamera_GetMapList_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-bool get_map_list # Whether to retrieve the map list
+```text
+bool get_map_list # Get the map list
 ---
 string[] map_list # Map list
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
 ```
 
-### Exit mapping (customized interface)
+### Exit mapping (custom interface)
 
 Service name: `/lx_localization_node/LxCamera_ExitMapping_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-bool exit_mapping #Whether to exit mapping
+```text
+bool exit_mapping # Exit mapping
 ---
-bool state #Whether mapping exited successfully
+bool state        # true: success; false: failure
 ```
 
-Instruction debugging:
+Call the service:
 
-rosservice call /lx\_localization\_node/LxCamera\_ExitMapping\_srv "exit\_mapping: true"
+```bash
+rosservice call /lx_localization_node/LxCamera_ExitMapping_srv "exit_mapping: true"
+```
 
-### Delete map
+### Delete a map
 
 Service name: `/lx_localization_node/LxCamera_EraseMap_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-string mapname    # Map name; must not start with a digit; maximum 30 characters
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
 ---
-bool result #Whether the map was deleted successfully
+bool result       # true: success; false: failure
 ```
 
-Instruction debugging:
+Call the service:
 
-rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "mapname: 'TEST888'"
+```bash
+rosservice call /lx_localization_node/LxCamera_EraseMap_srv "mapname: 'TEST888'"
+```
 
-### Download heat map
+### Download a heat map
 
 Service name: `/lx_localization_node/LxCamera_DownloadMap_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-string mapname    # Map name; must not start with a digit; maximum 30 characters
-string save_path  # Save path, for example "/home/lx/map"; omit the trailing slash
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
+string save_path  # Absolute save path, for example "/home/lx/map"; omit the trailing slash
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-rosservice call /lx\_localization\_node/LxCamera\_DownloadHeatMap\_srv "mapname: 'TEST\_999' save\_path: '/home/fr1511b/T/TEST'"
+```bash
+rosservice call /lx_localization_node/LxCamera_DownloadHeatMap_srv "mapname: 'TEST_999' save_path: '/home/fr1511b/T/TEST'"
+```
 
 ### Incremental mapping
 
 Service name: `/lx_localization_node/LxCamera_IncMapping_srv`
 
-Service format definition:
+Service definition:
 
-```cpp
-bool status      # Whether to map: 1 starts mapping; 0 stops mapping
-string mapname   # Map name; must not start with a digit; maximum 30 characters
+```text
+bool status      # Start mapping: 1; stop mapping: 0
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
 ---
 bool result
 ```
 
-Instruction debugging:
+Call the service:
 
-```cpp
+```bash
 rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
 mapname: 'test_map'"
 ```

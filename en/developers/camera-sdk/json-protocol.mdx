@@ -1,35 +1,52 @@
 ---
 title: "JSON communication protocol"
-description: "TCP Socket JSON message format and field reference for communication between the camera and a robot or PLC."
+description: "TCP Socket JSON message format and field reference for communication between a camera and a robot or PLC."
 hidden: true
 ---
-## Interface
 
-- TCP Socket server. The camera acts as the server. The default port is `5501`.
+## Overview
 
-- Message content: Text format with ASCII support. JSON is recommended.
+The camera runs as a TCP Socket server and listens on port `5501` by default. Messages are text; ASCII is supported, and JSON encoding is recommended.
 
-## Request and response
+<Info>
+  Use this protocol when a robot or PLC triggers a 3D vision task and reads the result returned by the camera.
+</Info>
 
-**1. Robot (PLC) —> vision system**
+## Request message
+
+Send the following message to trigger a 3D vision task:
 
 ```json
-{"action": "3D"}
+{"action":"3D"}
 ```
 
-This request triggers a 3D vision task.
+## Response message
 
-**2. Vision system —> robot (PLC)**
+After the camera finishes, it returns a JSON object.
 
-The camera returns the detection result with these fields:
+<ResponseField name="result" type="integer" required>
+  Detection status. `0` indicates localization failure or no result. Any other integer indicates success and gives the number of returned results.
+</ResponseField>
 
-| Field | Required | Description |
-| --- | --- | --- |
-| result | Yes | Integer detection status. `0` indicates that localization failed and no result is available. Any other value indicates success and specifies the number of results returned. |
-| pos | Yes | X, Y, Z, RX, RY, and RZ pose values for the detected object in the robot coordinate system. Units are millimeters and degrees. `-180° ≤ RZ ≤ 180°`. All values are set to `0` when detection fails. |
+<ResponseField name="pos" type="number[]" required>
+  Array of object poses. Each result contains `X`, `Y`, `Z`, `RX`, `RY`, and `RZ` in the robot coordinate system. Position is in mm and angles are in °; `−180° ≤ RZ ≤ 180°`. All values are `0` when detection fails.
+</ResponseField>
 
-**Examples**
+### Response examples
 
-| Detection succeeded | `{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}` |
-| --- | --- |
-| Detection failed | `{"result":0,"pos":[0,0,0,0,0,0]}` |
+<Tabs>
+  <Tab title="Success">
+
+```json
+{"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}
+```
+
+  </Tab>
+  <Tab title="Failure">
+
+```json
+{"result":0,"pos":[0,0,0,0,0,0]}
+```
+
+  </Tab>
+</Tabs>

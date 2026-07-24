@@ -1,49 +1,71 @@
 ---
-title: "Mobile robot visual SLAM localization"
-description: "Localize and navigate mobile robots in complex environments with overhead 3D vision and SLAM algorithms."
+title: "Mobile robot SLAM visual localization"
+description: "Build maps, localize, and relocalize mobile robots by fusing a top-view camera, 2D LiDAR, and IMU."
 ---
-## Solution Overview
 
-In modern industrial automation, precise positioning and navigation technology are core elements to improve production efficiency and ensure safe operation. Meyer Micro Vision's top-view positioning solution uses 3D vision technology, combined with advanced AI algorithms and hardware integration, to provide an efficient, flexible and reliable positioning method, which is especially suitable for navigation needs in complex environments.
+Top-view SLAM mounts the camera on the mobile robot and uses the ceiling, walls, and other stable environmental features for mapping and localization. This approach reduces dependence on floor markers and suits indoor sites with changing layouts, floor occlusion, or multiple vehicles.
 
-Meyer MicroVision’s top-view navigation solution is based on a 3D vision camera, which is mounted on top of a mobile robot and positions itself by capturing the natural features of walls and ceilings. This system does not require markings on the ground or walls, and avoids the impact of changes in the ground environment on positioning stability. Combined with self-developed navigation algorithms, the system can provide accurate positioning and navigation services in dynamic and complex industrial environments.
+## How it works
 
-## Core Advantages
+The V2 Pro navigation controller fuses data from a top-view camera, 2D LiDAR, and IMU:
 
-**1. Natural positioning and wide-area coverage** Meyer Micro Vision’s top-view navigation system locates by identifying natural features on the ceiling and surroundings, getting rid of dependence on external markers such as reflectors, and greatly improves environmental adaptability and flexibility. The system has a wide measurement range of 1 to 12 meters and can adapt to complex industrial scenarios including high-rise rooftops, large open workshops, and floor-type warehouses. In workshops with frequent dynamic changes or warehouses with many objects blocking the system, the system can still maintain positioning stability and wide-area coverage capabilities.
+- The top-view camera captures overhead features.
+- 2D LiDAR supplies planar contour information.
+- The IMU provides vehicle-motion data.
+- The controller outputs data for mapping, localization, and relocalization.
 
-**2. High accuracy and reliability** The system has built-in high-performance computing power, provides millisecond-level response, and supports repeated positioning accuracy up to ±1 cm, ensuring high-precision navigation and operations. This high-precision performance is particularly suitable for tasks that require precise operations such as automatic handling and precise docking. Even in complex environments where multiple vehicles are operating, it can still maintain stable navigation effects and a high degree of accuracy.
+<Info>
+Top-view localization depends on observable environmental features. Validate mapping and localization before deployment in open areas, repetitive scenes, or zones with long-term occlusion or frequent structural changes.
+</Info>
 
-**3. Dynamic environment adaptability** The top-view navigation camera has strong light resistance and can work stably under 100Klux strong light conditions. It also supports high dynamic exposure mode and adapts to various lighting conditions. From direct sunlight to low-light lighting, the system can provide reliable environment perception and positioning services to ensure operational stability in complex environments.
+## Solution characteristics
 
-> **Navigation Camera Hardware Highlights**
+### Natural-feature localization
 
-**1. Built-in computing power, simplified deployment** V2Pro is the industry's first navigation camera with built-in 6.0 Tops computing power. It has the ability to directly run navigation and positioning algorithms, getting rid of dependence on external industrial computers, greatly simplifying the installation process, and reducing equipment deployment and usage costs.
+The controller localizes by recognizing natural features overhead and around the vehicle, reducing the need for fixed markers such as reflectors or magnetic strips. See the [product documentation](/en/products/v-series/v2-pro-overview) for the V2 Pro top-view camera's working range and ambient-light conditions.
 
-**2. Dual positioning to improve reliability** V2Pro integrates an inertial navigation unit (IMU) and combines 3D visual data to achieve dual positioning. Even when there is little environmental visual information, it can still ensure high-precision positioning, with repeated positioning accuracy up to ±1cm.
+### Multi-sensor fusion
 
-**3. Dual network port design to improve compatibility** The camera is equipped with dual network ports, which can connect AGV and lidar at the same time, improving the compatibility and stability of the integrated system and reducing network resource conflicts.
+The camera, LiDAR, and IMU provide complementary data for map construction and vehicle-pose estimation. Results still depend on sensor extrinsics, vehicle motion, environmental features, and map quality.
 
-> **Software Highlights**
+### On-device mapping and integration
 
-**1. Automatic mapping, easy to operate** The upper computer software of the top-view navigation system has an automatic mapping function. By scanning environmental features with the camera, maps can be quickly generated and support subsequent map management, switching and uploading, greatly simplifying the deployment process.
+The controller includes a computing platform and supports mapping and map management through the host software. SDK, HTTP API, UDP, and ROS interfaces are available for system integration.
 
-**2. Multiple development interfaces** V2Pro provides rich SDK, API and ROS topic interfaces to facilitate users' flexible integration, greatly improves development efficiency and system compatibility, and meets different development needs.
+## Typical scenarios
 
-## Application scenarios
+| Scenario | Requirement | Top-view localization focus |
+| --- | --- | --- |
+| Warehouse logistics | Goods, carts, and aisle layouts can change. | Validate overhead-feature coverage and map-update workflows. |
+| Manufacturing workshop | People and vehicles share dense equipment and workstations. | Plan the installation position and avoid blockage from the vehicle or load. |
+| Floor-stacked warehouse or long corridor | Floor features change or paths are narrow. | Evaluate overhead features, LiDAR contours, and relocalization points. |
 
-**1. Warehousing and logistics** In large warehousing and logistics centers, especially in environments with frequently changing layouts, V2Pro can effectively avoid occlusion problems when multiple AGVs run at the same time, ensuring the stability of positioning and the accuracy of multi-vehicle operation.
+## Deployment workflow
 
-**2. Manufacturing** The demand for automated transportation in manufacturing factories is increasing day by day. With its high precision and environmental adaptability, the top-view navigation solution helps companies improve the efficiency of intelligent logistics handling and promote the smooth operation of production lines.
+<Steps>
+  <Step title="Install and connect">
+    Mount the controller on top of the vehicle. Keep the top-view camera and LiDAR clear of the chassis, cables, and load, then connect power, network, and required vehicle interfaces.
+  </Step>
+  <Step title="Configure extrinsics and vehicle parameters">
+    Configure sensor extrinsics and vehicle-localization parameters in the host software, then check the data streams.
+  </Step>
+  <Step title="Capture and deploy a map">
+    Capture environmental data along the target route, generate a map, deploy it to the device, and verify localization and relocalization in representative areas.
+  </Step>
+  <Step title="Connect the higher-level system">
+    Read localization data through the SDK, HTTP API, UDP, or ROS interface as required, and implement exception handling and runtime monitoring.
+  </Step>
+</Steps>
 
-**3. Complex warehousing environment** For floor-type warehouses, corridors or high-rise roofs, the V2Pro system locates by identifying the natural features of the ceiling, which is especially suitable for unmanned operations in large areas and complex environments.
+<Columns cols={2}>
+  <Card title="V2 Pro product documentation" icon="camera" href="/en/products/v-series/v2-pro-overview">
+    See controller specifications, interfaces, installation, and mapping instructions.
+  </Card>
+  <Card title="V2 localization development guide" icon="code" href="/en/developers/v2-localization/pure-localization-guide">
+    See pure-localization mode and integration resources.
+  </Card>
+</Columns>
 
-## Workflow
-
-**1. Camera installation and connection** Install the V2Pro camera on the mobile device and establish connections with devices such as lidar and odometer.
-
-**2. Environmental mapping and mapping** The camera starts to scan the environmental data, generates a visual map and imports it into the system as the basis for subsequent navigation.
-
-**3. Real-time positioning and navigation** During the operation, the camera captures the characteristics of the ceiling and surrounding environment to provide precise positioning and navigation of the equipment in real time.
-
-Meyer Micro Vision's **Top View Navigation Solution** provides high-precision and high-stability industrial automated logistics navigation technology through comprehensive innovation of software and hardware. Whether it is in a warehousing and logistics environment with complex lighting or a manufacturing scene with high-precision requirements, Myer Microvision's solutions can bring intelligent and unmanned logistics operations to enterprises.
+<Warning>
+The localization controller outputs vehicle pose. It does not replace obstacle detection, functional safety, task scheduling, or the complete system required for autonomous forklift operation. Complete a site risk assessment and vehicle-level validation before launch.
+</Warning>

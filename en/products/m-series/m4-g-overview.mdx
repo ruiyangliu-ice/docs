@@ -1,149 +1,126 @@
 ---
-title: "M4-G Series 3D camera"
-description: "Specifications, interfaces, dimensions, software support, and applications for the M4-G iToF RGB-D camera."
+title: "M4-G 3D camera"
+description: "Specifications, GMSL2 interface configuration, and integration requirements for the M4-G iToF RGB-D camera."
 ---
-To download the full document, get the product user manual from the [Download center](/en/resources/downloads/specifications-and-user-guides "Download center").
 
-## Product overview
+M4-G is an iToF RGB-D camera for close-range perception. It uses a GMSL2 interface and can output depth, RGB, and point-cloud data at a typical 30 fps within a 0.05–1 m range. Typical applications include robot wrists, tabletop grasping, and precision manipulation.
 
-The MRDVS M4-G is an RGB-D camera based on iToF technology. Designed for close-range perception on embodied robots, it provides a GMSL2 interface. The camera operates from 0.05-1m with distance accuracy up to 4mm. It synchronously outputs depth data and 1080P RGB images at up to 30fps for close-range perception, tabletop object grasping, and dexterous manipulation.
+<Info>
+  Download complete product documentation from the [Download center](/en/resources/downloads/specifications-and-user-guides).
+</Info>
 
 <Frame>
-  <img src="/images/legacy/0c305d49-25f8-4018-9ef2-c65a21cac289/0e5b76fc-5a62-461f-a3fb-6bcd0b2f8ec7.avif" alt="M4-G product overview" />
+  <img src="/images/products/m-series-m4-g-overview-m4-g-product-overview.avif" alt="M4-G camera for close-range robot perception" />
 </Frame>
 
-## Core technology and applications
+## Key features
 
-- Depth sensing: Uses ToF technology to output close-range depth data.
-
-- Low-light operation: Uses active illumination to output depth data at night or in low light.
-
-- Fewer data gaps: Active illumination reduces missing data and improves depth completeness.
-
-- Multiple output formats: Synchronously outputs depth and RGB images with RGB alignment.
-
-- Data transmission: Provides a GMSL2 interface for longer transmission distances and interference-resistant connections.
-
-**Primary applications:**
-
-The camera mounts on a humanoid robot wrist (VLA) for tabletop object grasping and dexterous industrial operations.
-
-- Tabletop object grasping: Humanoid robots autonomously identify and grasp objects on a tabletop for home service, office assistance, and similar applications.
-
-- Dexterous manipulation: High-precision vision guides humanoid robots through part identification, grasping, and assembly in industrial tasks such as random bin picking, precision assembly, and machine tending.
+- **Close-range iToF depth sensing:** Outputs depth data within a 0.05–1 m range.
+- **Synchronized RGB-D output:** Provides depth maps, RGB images, and point clouds with RGB alignment.
+- **Low-light performance:** Active illumination supports targets with low illumination or limited texture.
+- **GMSL2 transmission:** Provides a long-distance, interference-resistant data link for system integration.
 
 ## Specifications
 
-| Performance metric | MRDVS M4-G |
+| Parameter | M4-G |
 | --- | --- |
 | Operating principle | iToF |
-| Output format | Depth & RGB & point cloud |
-| TOF resolution and frame rate | 640x480(VGA), typical: 30fps |
-| TOF field of view | 90°×70°（±3°） |
-| RGB resolution/frame rate | 1280×1056, typical 30fps |
-| RGB field of view | 115°×100°（±3°） |
-| RGB pixel size | 2.5um |
+| Output data | Depth map, RGB image, point cloud |
+| ToF resolution and frame rate | 640 × 480; typical 30 fps |
+| ToF field of view | 90° × 70°, ±3° |
+| RGB resolution and frame rate | 1280 × 1056; typical 30 fps |
+| RGB field of view | 115° × 100°, ±3° |
+| RGB pixel size | 2.5 μm |
 | RGB ISP | Integrated |
-| RGB HDR | ≥100dB |
-| RGB lens aperture (F#) | 2.05 |
-| RGB effective focal length (EFL) | 1.28mm |
-| Measurement range | 0.05m~1m |
-| Distance accuracy | 1% (up to 4mm@1m) |
-| Power consumption | 3W |
-| Laser | 940nm |
-| Dimensions | 60×30×29mm |
-| Weight | &lt;200g |
-| Power supply | 12V DC/1A |
-| Communication interface | Serdes |
-| Operating temperature | -20℃~60℃ |
-| Storage temperature | -40℃~85℃ |
-| Software environment | C/C++/ROS SDK |
-| Supported operating systems | Windows 7+, Linux, Arm Linux/ROS |
+| RGB HDR | ≥ 100 dB |
+| RGB lens | F/2.05; effective focal length 1.28 mm |
+| Working range | 0.05–1 m |
+| Distance accuracy | 1%, up to 4 mm at 1 m |
+| Laser | 940 nm |
+| Power consumption | 3 W |
+| Dimensions (L × W × H) | 60 × 30 × 29 mm |
+| Weight | &lt; 200 g |
+| Power supply | 12 VDC / 1 A |
+| Communication interface | SerDes (GMSL2) |
+| Operating temperature | −20–60 °C |
+| Storage temperature | −40–85 °C |
+| SDK | C/C++, ROS |
+| Supported operating systems | Windows 7 or later, Linux, Arm Linux, ROS |
 | Cooling | Passive |
-| Eye safety | CLASS I |
+| Eye safety | Class 1 |
 
-## Product structure and software
-
-### Dimensions
+## Product dimensions
 
 <Frame>
-  <img src="/images/legacy/40ea8153-cd48-468c-8c89-8fc2e3d775e1/953b2c43-da9e-4805-87b7-0867304253ac.avif" alt="Figure 1. M4-G 3D camera dimensions" />
+  <img src="/images/products/m-series-m4-g-overview-1-m4-g-3d-camera-dimensions.avif" alt="M4-G camera dimensions" />
 </Frame>
 
-### Software SDK
-
-See the MRDVS host application user manual and SDK development guide.
-
-## Hardware interface (GMSL deserialization)
+## GMSL2 interface
 
 ### Serializer configuration
 
-| Serializer |  |
+| Item | Parameter |
 | --- | --- |
-| Model | MAX96717 |
-| I2C address | 0X40(7bit) |
-| GMSL Rate | GMSL2(6Gbps) |
-| Mode | Pixel Mode |
-| Frame Sync | Controlled by MAX96717 MFP0 |
+| Serializer | MAX96717 |
+| I²C address | `0x40` (7-bit) |
+| GMSL rate | GMSL2, 6 Gbps |
+| Operating mode | Pixel mode |
+| Frame synchronization | Controlled by MAX96717 MFP0 |
 
-### Sensor parameters
+### Video stream parameters
 
-| Sensor information |  |
-| --- | --- |
-| TOF resolution | 2560*960(raw8) |
-| Data type | 0X2A |
-| TOF I2C address | Forwarded by FPGA |
-| Virtual channel | VC0 |
-| RGB resolution | 1280*1080 (YUV422 8bit) |
-| Data type | 0X1E |
-| RGB I2C address | Forwarded by FPGA |
-| Virtual channel | VC1 |
+| Stream | Resolution and format | Data type | Control and virtual channel |
+| --- | --- | --- | --- |
+| ToF | 2560 × 960, RAW8 | `0x2A` | I²C forwarded by FPGA; VC0 |
+| RGB | 1280 × 1080, YUV422, 8-bit | `0x1E` | I²C forwarded by FPGA; VC1 |
 
 ### FPGA configuration
 
-| FPGA |  |
+| Item | Parameter |
 | --- | --- |
-| I2C address | 0X11(7bit) |
-| MIPI | 4Lane 1.2Gbps |
+| I²C address | `0x11` (7-bit) |
+| MIPI output | 4 lanes, 1.2 Gbps |
 
-## Prerequisites for capturing images
+## Start streaming
 
-### Trigger signal available
+Image capture requires both hardware frame synchronization and stream control.
 
-Follow the 96717 manual to configure hardware triggering with a deserializer such as MAX9672.
+<Steps>
+  <Step title="Provide a frame synchronization signal">
+    Configure frame synchronization between MAX96717 and the selected deserializer according to the hardware manuals. MAX96717 MFP0 can be configured as a GPIO trigger output.
 
-<Frame>
-  <img src="/images/legacy/941f3e6f-8eb5-4b57-81a2-8f6ca90d32be/e7a99ea7-43eb-46b5-b7bb-f7fbea7b0e55.avif" alt="Figure 2. MAX96724/F/R Frame Sync signal transmission" />
-</Frame>
+    <Frame>
+      <img src="/images/products/m-series-m4-g-overview-2-max96724-f-r-frame-sync-signal-transmission.avif" alt="MAX96724 series frame synchronization signal transmission" />
+    </Frame>
+  </Step>
+  <Step title="Send the stream-start command">
+    Write `1` to FPGA register `0x2000` to start streaming, or write `0` to stop streaming.
 
-To simulate a GPIO trigger signal on MFP0 inside the 96717, see `trig.c`.
+    ```bash
+    i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+    ```
 
-### Stream-start command received
+    In this example, `0x11` is the FPGA I²C address.
+  </Step>
+</Steps>
 
-i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+## Integration requirements
 
-For 0x2000: 0 stops the stream; 1 starts the stream.
+| Item | Requirement |
+| --- | --- |
+| Operating temperature | −20–60 °C |
+| Operating illuminance | 0–100 kLux |
+| Storage temperature | −40–85 °C |
+| Storage humidity | Maximum 90% RH |
+| Normal operating temperature rise | Enclosure temperature rise &lt; 25 °C |
+| ESD | Contact discharge ±4 kV; air discharge ±8 kV |
+| Radiated emissions | Complies with GB 9254 Class A |
+| Environmental compliance | RoHS |
 
-0x11 is the FPGA address.
+## Related case studies
 
-## Product integration guide
-
-| Item |  | Specification |
-| --- | --- | --- |
-| Operating environment | Temperature | -20℃-- 60℃ |
-|  | Illuminance | 0KLUX--100KLUX |
-| Storage environment | Temperature | -40℃--85℃ |
-|  | Humidity | Relative humidity: Max 90% RH |
-| Normal operating temperature rise |  | Enclosure temperature rise &lt;25℃ |
-| ESD rating |  | Contact discharge ±4KV, air discharge ±8KV |
-| RE rating |  | Complies with GB 9254 CLASS A |
-| Service life |  | 10 years |
-| Environmental compliance |  | RoHS |
-
-## Case studies
-
-[How Company F's autonomous forklifts safely complete over 500 tasks every day](/en/solutions/warehouse/cases/unmanned-forklift-500-tasks "How Company F's autonomous forklifts safely complete over 500 tasks every day")
-
-[Under-ride AMR obstacle avoidance A](/en/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance "Under-ride AMR obstacle avoidance A")
-
-[3D obstacle avoidance for a wheeled humanoid robot](/en/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance "3D obstacle avoidance for a wheeled humanoid robot")
+<Columns cols={3}>
+  <Card title="Unmanned forklift task case" icon="forklift" href="/en/solutions/warehouse/cases/unmanned-forklift-500-tasks" />
+  <Card title="Under-ride AMR obstacle avoidance" icon="robot" href="/en/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance" />
+  <Card title="Wheeled humanoid robot obstacle avoidance" icon="person-walking" href="/en/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance" />
+</Columns>

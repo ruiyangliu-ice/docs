@@ -1,1152 +1,541 @@
 ---
-title: "Deploy MRDVS detection algorithms"
-description: "Install, configure, calibrate, and use the detection algorithms available on MRDVS cameras."
+title: "Deploy detection algorithms and integrate results"
+description: "Deploy human, storage-location, and volume-detection algorithms, configure camera extrinsics and parameters, and retrieve results through TCP, UDP, HTTP, or Modbus TCP."
 ---
-MRDVS Algorithm Detection Function User Manual
 
-## 1. Introduction
+This guide covers deployment, calibration, configuration, and result integration for MRDVS human, storage-location, and volume-detection algorithms. The algorithm runs on the camera; the algorithm host application is used for configuration, upgrades, and result inspection.
 
-This article mainly introduces the deployment and use of Meyer Micro Vision application algorithms.
+<Info>
+  Algorithm firmware and the algorithm host application are delivered per project. Before flashing algorithm firmware, confirm that the camera is running an MDS firmware version. Obtain an installation package that matches the project and camera model.
+</Info>
 
-## 2. Detection system composition
+## Supported scope
 
-The system includes a camera, algorithm host computer software and an industrial computer.
+### System components
 
-## 3. Camera hardware deployment
-
-### Use camera type
-
-|  |  |
+| Component | Function |
 | --- | --- |
-| Camera Type | S10Pro 3D Camera |
-| Camera User Manual ↓ [S10Pro ToF Camera](/en/products/s-series/s10-overview) | |
+| 3D camera | Captures RGB images and point clouds and runs the detection algorithm on the camera. |
+| Algorithm host application | Configures algorithms, calibrates extrinsics, displays results, and upgrades algorithm firmware. |
+| Industrial PC or upper-layer system | Runs the host application or reads results through a network interface. |
+| LiDAR | `mid360`, used for the original radar-based solution configuration. |
 
-#### Camera algorithm support
+### Algorithms and cameras
 
-|  |  |  |  |
-| --- | --- | --- | --- |
-|  | M4pro | S10 | S10 Pro |
-| Human detection | √ | | |
-| Storage location detection | | | √ |
-| Volume detection | | √ | √ |
-
-### Radar
-
-|  |  |
+| Algorithm | Supported camera |
 | --- | --- |
-| Radar type | mid360 |
+| Human detection | M4 Pro |
+| Storage-location detection | S10 Pro |
+| Volume detection | S10 and S10 Pro |
 
-### Camera installation method
+For product information, see the [S10 3D camera product page](/en/products/s-series/s10-overview).
 
-The camera needs to be fixed with a bracket. You can use the installation method and camera bracket shown in the figure below to install the camera. The following figure shows the installation diagram.
+### Host application environment
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ed7d4ff9-ebc7-456e-9382-c1bbad17757e.avif" alt="Illustrations related to camera installation methods" />
-</Frame>
-
-Installation diagram
-
-The human detection function is generally installed at an inclined (less than 30°) or horizontal angle.
-
-### Camera connection
-
-1. The camera is powered by 24V and connected through a Category 6e/Category 7 network cable. After the camera is installed and deployed, open the warehouse location detection host computer software through a laptop to calibrate the external parameters of the camera and set the detection range. The algorithm runs inside the camera in real time.
-
-2. When deploying multiple cameras, they need to be connected through a Gigabit switch. According to the installation height planned in the CAD, the 3D vision camera is installed in a fixed position through the mounting bracket to ensure that the camera is firmly fixed. After the camera is installed, connect it to the 24V regulated DC power supply and use the corresponding network cable to connect it to the switch or main control.
-
-3. After the preparation is completed, place the goods in the warehouse within the camera's field of view and proceed with software deployment.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5be1e0db-e949-477f-bfb4-5c89a0debd78.avif" alt="Edit" />
-</Frame>
-
-### Camera network configuration
-
-1. Take Win10 system as an example, double-click the control panel
-
-2. After entering the control panel, click "**View network status and tasks**".
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d0ad7fd5-7f9c-43fb-8c8e-fb45f83fcf98.avif" alt="Illustrations related to camera network configuration" />
-</Frame>
-
-3. Enter the Network and Sharing Center interface and click "**Change Adapter Settings**".
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4c7f569d-7ce6-4c16-a926-03cfd5e42d13.avif" alt="Camera network configuration related diagram 2" />
-</Frame>
-
-4. Enter the network connection interface, double-click the mouse to select the Ethernet to which the camera is connected.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8a8ff254-6ffc-4a84-9cbe-19c42f984c93.avif" alt="Camera network configuration related diagram 3" />
-</Frame>
-
-5. Check the Ethernet status (it is recommended to use a Gigabit network port) and click the "**Properties**" button.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b59f551e-1741-4f24-b4ff-8b77bbf16981.avif" alt="Camera network configuration related diagram 4" />
-</Frame>
-
-6. Enter the Ethernet properties interface, find "**Internet Protocol Version 4 (TCP/IPv4)**", and double-click to open it.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b166daac-7f5c-45c6-9595-2861ff9f2633.avif" alt="Camera network configuration related diagram 5" />
-</Frame>
-
-7. Enter the Internet Protocol version 4 (TCP/IPv4) interface, select "**Use the following IP address**" to write the IP address, subnet mask and default gateway.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1798a3b3-d233-4cd1-90a8-77416cf0160f.avif" alt="Camera network configuration related diagram 6" />
-</Frame>
-
-8. IP address setting: 192.168.100.xxx Subnet mask: 255.255.255.0 Default gateway: 192.168.100.1. Set the IP as shown below. After the setting is completed, click the "OK" button.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ec8d1e2-5747-4f79-8976-d3bf0256e8d1.avif" alt="Illustrations related to camera network configuration 7" />
-</Frame>
-
-9. After clicking the OK button, it will automatically return to the previous interface. Click "**OK**" again to complete the network configuration.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a22760b-a0a6-44d1-b3ce-5e73bddcac75.avif" alt="Illustrations related to camera network configuration 8" />
-</Frame>
-
-### Firewall shutdown confirmation
-
-1. After the camera is fixedly installed and deployed, the computer’s firewall needs to be turned off.
-
-2. Taking Win10 system as an example, double-click [**Control Panel**] on the desktop, and click [**System and Security**] after entering.
-
-|  |  |
+| Item | Recommended configuration |
 | --- | --- |
-| <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3354b940-7e03-4c38-a151-af6d75808642.avif" alt="Firewall configuration" /> | <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2d360745-c9b5-48a6-8139-e6cc2f673a9d.avif" alt="Firewall configuration 2" /> |
+| Operating system | Windows 10 or later |
+| CPU | Intel® Core™ i5 (7th generation) or later |
+| Memory | 8 GB or more |
+| GPU | Intel® UHD Graphics or a higher-performance integrated or discrete GPU |
 
-1. Click the [**Windows Defender Firewall**] button to enter the firewall page.
+## Hardware and network deployment
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0cff2eb6-5667-497b-bd7b-780f02c8ad68.avif" alt="Firewall shutdown confirmation related icon 3" />
-</Frame>
+### Install the camera
 
-1. Click the [**Enable or turn off Windows Defender Firewall**] button to enter the firewall on/off page.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1a7157a-348a-48ea-b574-a175a2a39356.avif" alt="Firewall shutdown confirmation related icon 4" />
-</Frame>
-
-1. Select [**Turn off Windows Defender Firewall**] for both private and public networks, and click the [**Confirm**] button to turn off the firewall. q
+Use a rigid bracket to prevent movement or vibration after installation. Human detection normally uses a horizontal installation or an installation with an angle of no more than 30°.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d1dd2137-e249-4193-a4ee-3e095b5171f7.avif" alt="Firewall shutdown confirmation related icon 5" />
+  <img src="/images/developers/deployment-algorithm-detection-camera-installation-methods.avif" alt="Camera bracket installation examples" />
 </Frame>
 
-## 4. Camera software installation guide
+### Connect the devices
 
-### Software installation process
+<Steps>
+  <Step title="Connect power and the network">
+    Power the camera with a regulated 24 V DC supply. Use a Cat6A or Cat7 cable to connect the camera to a gigabit switch or controller.
+  </Step>
+  <Step title="Deploy multiple cameras">
+    Install each camera at the height and position specified in the CAD plan. Connect all cameras through a gigabit switch and verify power and link status for each one.
+  </Step>
+  <Step title="Prepare test targets">
+    Place the people, pallets, or goods to be detected in the camera view before calibrating extrinsics and configuring regions.
+  </Step>
+</Steps>
 
-- When using the software for the first time, you can follow the following process to complete the operation.
+### Configure the host network
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c8922d3a-2b74-4582-9b3d-119ba6be460d.avif" alt="Picture 2" />
-</Frame>
+Put the host computer and camera on the same subnet. The original example uses the following plan:
 
-### Algorithm host computer software operating environment requirements
-
-It is recommended to run the upper computer equipment for warehouse location detection to meet the requirements.
-
-|  |  |
+| Item | Example |
 | --- | --- |
-| Operating system | Windows10 and above |
-| CPU | Recommended Intel® Core™ i5 7th generation and above |
-| Memory | 8G and above |
-| GPU | Intel® UHD Graphics/core display or above |
+| Host IP address | `192.168.100.xxx` |
+| Subnet mask | `255.255.255.0` |
+| Default gateway | `192.168.100.1` |
 
-### Install camera host software
+<Steps>
+  <Step title="Open adapter settings">
+    In Windows, open **Control Panel → Network and Sharing Center → Change adapter settings**, then select the Ethernet adapter connected to the camera.
+  </Step>
+  <Step title="Configure IPv4">
+    Open **Internet Protocol Version 4 (TCP/IPv4)**, select **Use the following IP address**, and enter an unused static address on the camera's subnet.
+  </Step>
+  <Step title="Confirm the connection">
+    Save the settings, confirm a gigabit link, and use the host application to discover or open the camera.
+  </Step>
+</Steps>
 
-1. Download the camera host software from the MRDVS knowledge base: [Software download](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Software download")
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/developers/deployment-algorithm-detection-camera-network-configuration.avif" alt="Windows Network and Sharing Center" />
+  </Frame>
+  <Frame>
+    <img src="/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif" alt="Windows IPv4 static address settings" />
+  </Frame>
+</Columns>
+
+<Warning>
+  Do not leave the firewall disabled on a production network. If the host application cannot connect, create a rule for the required application or port first. Temporarily disable the firewall only on a trusted debugging network, then restore protection.
+</Warning>
+
+## Install and upgrade software
+
+### Install the host applications
+
+1. Obtain the camera host application from the [software downloads](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Software downloads") page.
+2. Install the camera host application outside the system drive.
+3. Copy the project-delivered algorithm host application files into the `Tools` folder under the camera host application directory. Replace files with the same name, then double-click the executable to start it.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30f8b131-71f1-468d-bbe5-20ee85bf684b.avif" alt="Illustrations related to installing the camera host software" />
+  <img src="/images/developers/deployment-algorithm-detection-picture-2.avif" alt="Camera host application installation" />
 </Frame>
 
-1. Double-click to install the Lanxin-MRDVS host computer software. The host computer needs to be installed outside the c drive.
+To upgrade only the algorithm host application, replace its `.exe` file with the delivered version.
+
+### Upgrade algorithm firmware
+
+<Warning>
+  The camera restarts during flashing. Do not disconnect power or the network or close the host application. The package must match the camera model, MDS firmware version, and project algorithm.
+</Warning>
+
+<Tabs>
+  <Tab title="Camera host application">
+    1. Start `LxCameraViewer.exe` and open the camera.
+    2. Select **Basic tools → Function settings → Firmware upgrade**.
+    3. Choose the delivered detection algorithm file and select **Run**.
+  </Tab>
+  <Tab title="Algorithm host application">
+    1. Select the target camera in the device list.
+    2. Select **Upgrade firmware**, choose the detection algorithm file, and open it.
+    3. Wait for the camera to appear in the device list again.
+  </Tab>
+</Tabs>
+
+When the camera appears again after reboot, flashing is complete. A green camera background in the algorithm host application means that the camera is connected and the algorithm is available.
+
+## Algorithm host application
+
+### Startup and status
+
+Start `LxApplicationViewer.exe`. A green icon in the device list indicates a connected camera. Select a device to switch the current view between RGB and point-cloud modes. Standard users can view results; administrators can modify camera and algorithm parameters.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8dcb4047-56e6-40a1-8b31-96a7222e187d.avif" alt="Illustrations related to installing the camera host software 2" />
-</Frame>
-
-1. After selecting the language to use, click [**OK**], select an installation directory other than the C drive, and click [**Next**].
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f68ebcb-d10d-4601-9cb4-aa816f1e1efc.avif" alt="Illustrations related to installing the camera host software 3" />
-</Frame>
-
-1. Check [**Create desktop shortcut**] and click [**Next**].
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/35e66c38-ebb9-47d9-a0f5-1c2bcad9a357.avif" alt="Illustrations related to installing the camera host software 4" />
-</Frame>
-
-1. Click the [**Install**] button to start installing the software.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c659d00-a437-4e7a-b17f-e90c008c78d0.avif" alt="Illustrations related to installing the camera host software 5" />
-</Frame>
-
-1. After the installation is complete, you can run the camera host software.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/62cfa35a-c531-43e9-a9f8-56b8bdf06649.avif" alt="Illustrations related to installing the camera host software 6" />
-</Frame>
-
-### Install algorithm host computer software
-
-1. Copy the obtained algorithm host computer software to the camera host computer \\Lanxin-MRDVS\\Tools.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cb41b49-454e-4400-8181-44dbc75bdd48.avif" alt="Illustrations related to installing the algorithm host computer software" />
-</Frame>
-
-1. When replacing, select [**Replace files in target**].
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/276f9cf3-d080-4af9-800c-871e99488471.avif" alt="Illustrations related to installing the algorithm host computer software 2" />
-</Frame>
-
-1. Double-click to open the software to run it.
-
-2. In the device list bar on the left, the camera status is yellow, which means the camera has not started the detection algorithm.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/61ad5b70-d5ee-43b1-86fa-d63010b7d237.avif" alt="Illustrations related to installing the algorithm host computer software 3" />
-</Frame>
-
-### Algorithm PC software upgrade
-
-To upgrade the algorithm host computer software, only the "**.exe**" file needs to be replaced.
-
-### Algorithm upgrade
-
-Note: Before upgrading the algorithm firmware, you need to ensure that the camera firmware is the MDS version.
-
-#### Camera host computer
-
-1. To upgrade the camera algorithm, you need to open the camera host software and double-click [**LxCameraViewer.exe**].
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7aebe7e0-a511-4443-bcc4-23df3ece2209.avif" alt="Illustrations related to the camera host computer" />
-</Frame>
-
-1. Click the [**Open**] button to view the camera image.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/74ff1e45-932d-4b06-b1f3-9034f41bcbb6.avif" alt="Illustrations related to the camera host computer 2" />
-</Frame>
-
-1. Click Basic Tools→Function Settings→[**Firmware Upgrade**] to flash the detection algorithm. (Please ask technical support personnel to obtain the algorithm)
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1d2f22cd-74da-44b4-909a-fed4c986507e.avif" alt="Illustrations related to camera host computer 3" />
-</Frame>
-
-1. After clicking the [**Execute**] button, select "Detection Algorithm" and click the [**Open**] button to start algorithm flashing.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Illustrations related to camera host computer 4" />
-</Frame>
-
-#### Algorithm host computer
-
-1. Use the algorithm host computer software to upgrade the firmware, and you need to select a camera. First click on the camera that needs to be upgraded in the device list on the left, and then click [**Upgrade Firmware**].
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d3d76226-6572-4c82-8754-8bd0bf34a713.avif" alt="wwwww" />
-</Frame>
-
-1. Select "Detection Algorithm" and click the [**Open**] button to start algorithm flashing.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6f058d-e882-4500-ae6f-1965aa43921f.avif" alt="Algorithm host computer related diagram 2" />
-</Frame>
-
-#### Upgrade results
-
-1. During the algorithm flashing process, the camera will restart and the camera ID in the device list on the left will disappear. After it is redisplayed, it means the flashing is successful.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e847d737-d14d-4e55-b756-1377aa6ef832.avif" alt="Illustrations related to upgrade results" />
-</Frame>
-
-1. After the upgrade is completed, the corresponding camera background is displayed in green on the algorithm host computer software.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b43d8cd7-58e6-467f-abcc-ff8c9cc1af4e.avif" alt="Upgrade result related icon 2" />
-</Frame>
-
-## 5. Algorithm host computer software interface
-
-### Algorithm host computer program startup
-
-1. Double-click the [**LxApplicationViewer.exe**] program to start the algorithm host computer software.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4e40bb9a-d669-45ad-bf6a-557496333fda.avif" alt="Administrator" />
-</Frame>
-
-Device list. The green icon indicates that the camera is connected normally. Click to switch to the perspective of the corresponding camera.
-
-Information list. This list will display all camera-related operation records and their results.
-
-Display mode switching. Selecting RGB mode will display a 2D image, while selecting point cloud mode will display a 3D point cloud.
-
-Function menu. In this menu, you can switch the current display algorithm, adjust the basic settings of the algorithm, configure camera parameters, or change the interface language.
-
-Basic functions. Can be switched to manage algorithm parameters, ordinary users only have viewing permissions. Different algorithms will exhibit additional parameters and control options here. Additionally, administrators can switch the currently executing algorithm.
-
-Camera operation. You can perform some operations directly on the camera.
-
-1. The current user selects the administrator and does not need to enter a password. Click Confirm directly to enter the administrator mode (the algorithm parameters cannot be set in user mode).
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/34efc169-ddf1-4544-bf3a-43f7e249e6f4.avif" alt="Screenshot 2025-03-04 111733" />
+  <img src="/images/developers/deployment-algorithm-detection-administrator.avif" alt="Algorithm host application main window" />
 </Frame>
 
 ### Basic tools
 
-Basic tools mainly include user switching, ideal ground, external parameter ground, display cache, algorithm display, exported image storage, and historical playback.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7480b2d4-a30a-4a88-b067-f004930c84f8.avif" alt="2" />
-</Frame>
-
-|  |  |
+| Function | Description |
 | --- | --- |
-| Basic tools | Functional meaning |
-| User switching | Switch permissions, user permissions: only view detection results. Administrator rights: can configure camera, detection algorithm parameters, etc. |
-| Ideal Ground | The ground refers to the horizontal line and can be turned off. |
-| External parameter ground | The horizontal plane at which the camera’s external parameters are calibrated. It can be turned off. |
-| Display cache | No modification required. |
-| Display algorithm | The currently used algorithm. |
-| Export stored images | Export stored images. |
-| History playback | View RGB and TOF image logs. |
-| Application algorithm switching | Select the algorithm to be used. Ordinary administrators can execute at most one algorithm at the same time. After selecting, click Save and Issue |
-| Detection result display | Displays the detection results of the currently displayed algorithm. |
+| User switching | Switch permission levels. Administrators can configure camera and algorithm parameters. |
+| Ideal ground | Show or hide the reference horizontal plane. |
+| Extrinsic ground | Show or hide the ground calculated from extrinsic calibration. |
+| Display cache | Leave unchanged. |
+| Display algorithm | Show the currently enabled algorithm. |
+| Export saved images | Export saved images. |
+| Historical playback | View RGB images and ToF data logs. |
+| Switch application algorithm | Choose the algorithm to run, then select **Save and send**. |
+| Display detection results | Show the output from the current algorithm. |
 
-### Language
+### Status bar and playback
 
-Switch between Chinese and English.
-
-### Status bar
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/50568f80-85ac-45cc-8aa6-330262048ac9.avif" alt="25909893521\_171648620291\_Screenshot 2025-03-05 134432" />
-</Frame>
-
-|  |  |
+| Function | Description |
 | --- | --- |
-| Status bar | Functional meaning |
-| RGB | Check to view RGB images |
-| Point cloud | After checking, view the point cloud image |
-| Stop algorithm | After clicking to stop the algorithm, the algorithm will not be started until the next time the camera is powered on. |
-| Upgrade firmware | Perform algorithm firmware upgrade. |
-| Restart camera | Restart camera. |
+| RGB | Show the RGB image. |
+| Point cloud | Show the point cloud. |
+| Stop algorithm | Stop the current algorithm. It does not restart automatically until the camera is powered on again. |
+| Upgrade firmware | Open the algorithm firmware upgrade workflow. |
+| Restart camera | Restart the selected camera. |
 
-### Play back and view
+When the status changes, the software saves one RGB frame and point-cloud data. Playback data is not shared between algorithms. Playback time uses the camera's internal clock, not the host computer's system time.
 
-Each time the state switches, a frame of data is saved, which is saved as a frame of RGB image and point cloud data at the moment of switching. The playback between different algorithms is not interoperable. The time standard is the camera's internal system time. Please do not judge based on the computer system time.
+If the device background is yellow, or it is green but the image does not update, enable automatic refresh to resume image acquisition.
 
-Click to view the playback. The left side of the pop-up window shows the playback pictures. Click on any item to open the playback data of the corresponding date. You can view RGB pictures or TOF data.
-
-**![Playback RGB](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0537bd17-ebb2-44f8-819d-1ab86f6c5db0.avif)![Playback TOF](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4fe3d671-26ad-4b45-9bb6-36e13bf879dd.avif)**
-
-### Global functions
-
-Please ensure that the algorithm has been activated in the camera, and that the camera fails after configuring parameters through the camera host computer under normal use conditions. The auto-refresh feature should be enabled in the following situations.
-
-(1) If the background of the corresponding camera in the device list is displayed in yellow, this indicates that the algorithm encounters a blockage during the image acquisition process.
-
-(2) If the background of the corresponding camera in the device list is green, but the image is not updated, this also means that the algorithm is blocked in the image acquisition process. Although the communication is normal, the system continues to send cached data.
-
-## 6. Camera external parameter calibration
+## Extrinsic calibration
 
 ### Camera configuration
 
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9000666e-1285-403f-941b-5cbcfd74305c.avif" alt="kappframework-SImIQI(1)(1)" />
-</Frame>
-
-|  |  |
+| Configuration | Description |
 | --- | --- |
-| Camera settings | Function meaning |
-| Camera name | Modify the name of the current camera. When there are multiple cameras, you can judge by the camera name. |
-| Simulation mode | Internal use, users do not need to open it. |
-| Image saving mode | Turn on algorithmic image saving to store image data inside the camera. |
-| Capture mode | Capture mode is divided into MDS and SDK. Using MDS will not occupy the camera permissions and can open the camera host computer normally. Using SDK will occupy the camera permissions and the host computer cannot be opened when running the algorithm. |
-| x | camera calibrated x position |
-| y | The y position of the camera calibration |
-| z | Camera calibrated height z from the ground |
-| roll | camera calibration angle |
-| pitch | camera calibration angle |
-| yaw | camera calibration angle |
-| Ideal ground | Just leave it as default. |
-| Save and send | After the external parameter calibration is completed, click the [Save and send] button to save, otherwise the parameters will not take effect |
-| Read configuration from camera | Read current configuration parameters from camera |
-| External parameter calibration | Calibrate the height of the camera from the ground, camera roll, pitch, and yaw angles. |
+| Camera name | Identifies a camera in a multi-camera deployment. |
+| Simulation mode | Internal function; leave disabled. |
+| Image-save mode | Saves algorithm image data on the camera. |
+| Image-acquisition mode | `MDS` does not occupy camera access. `SDK` does; the host application cannot open the camera while the algorithm is running. |
+| `x`, `y`, `z` | Camera extrinsic position; `z` is the camera height above the ground. |
+| `roll`, `pitch`, `yaw` | Camera extrinsic orientation angles. |
+| Ideal ground | Keep the default value. |
+| Read configuration from camera | Reads the current camera configuration. |
+| Save and send | Writes changes to the camera. Unsaved parameters do not take effect. |
+| Extrinsic calibration | Calibrates camera height and orientation. |
 
-### Vertical installation of external parameters calibration
+<Tabs>
+  <Tab title="Vertical installation">
+    1. Open **Camera configuration**. Before calibration, set `x`, `y`, `z`, `roll`, `pitch`, and `yaw` to `0`, then select **Save and send**.
+    2. Select **Extrinsic calibration**. After calibration succeeds, verify the result in the parameter panel.
 
-1. Click the camera configuration and switch to the parameter calibration interface. Before performing external parameter calibration, make sure that x, y, z, roll, pitch, and yaw are 0. If they are not 0, you need to return all parameters to 0 and click the [**Save and Send**] button. After the parameters are successfully saved, re-calibrate the external parameters.
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif" alt="Extrinsic calibration for a vertical installation" />
+    </Frame>
+  </Tab>
+  <Tab title="Horizontal installation">
+    1. Open **Camera configuration** and enter the parameter-calibration page.
+    2. Align the point-cloud ground with the coordinate system: the red `X` and green `Y` axes lie on the ground, while the blue `Z` axis is perpendicular to and points up from the ground.
+    3. Usually adjust only `roll` and `z` first; set the other values to `0`. Select **Save and send** after verification.
+
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-1.avif" alt="Extrinsic calibration result for a horizontal installation" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Algorithm parameter reference
+
+Select **Save and send** after changing any algorithm parameter. Keep filter parameters at their defaults unless an on-site test shows that adjustment is required.
+
+<Tabs>
+  <Tab title="Human detection">
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif" alt="Global human-detection configuration" />
+    </Frame>
+
+    | Parameter | Description |
+    | --- | --- |
+    | Algorithm version | Current algorithm version. |
+    | Detection frequency | Refresh frequency for images and results. |
+    | Temporal filter | With `3`, three consecutive identical results are required before a result is considered valid. |
+    | Kernel size | Kernel size for 2D morphological operations. Larger values shrink targets and expand the background. |
+    | Distance threshold | Determines whether points are similar or belong to the same class. |
+    | Minimum point count | Minimum point-cloud count required for semantic clustering. |
+    | Minimum non-semantic point count | Minimum point-cloud count required for non-semantic clustering. |
+    | Neighborhood size | Defines point-neighborhood range and affects clustering granularity. |
+    | Rotation detection | Match the camera installation direction; use the logo-down orientation as the `0°` reference. |
+
+    | Region parameter | Description |
+    | --- | --- |
+    | Add / delete region | Create or delete a human-detection region. |
+    | Current box | Select the active detection region. |
+    | Minimum / maximum `X`, `Y`, `Z` | Define the region's 3D boundaries. |
+    | ID | Region name used to distinguish multiple regions. |
+    | Drag to adjust region | Drag with the left mouse button along `x` and `y`; drag with the right button along `z`. |
+
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif" alt="Human-detection region configuration" />
+    </Frame>
+  </Tab>
+  <Tab title="Storage-location detection">
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif" alt="Global storage-location detection configuration" />
+    </Frame>
+
+    | Parameter | Description |
+    | --- | --- |
+    | Algorithm version | Current algorithm version. |
+    | AI filter | Semantic segmentation; not currently available. |
+    | Detection frequency | Result refresh frequency. |
+    | Alignment angle | Maximum allowed cargo angle offset when alignment checking is enabled. |
+    | Alignment check | Checks angle offset and boundary status. Detected objects are shown with yellow volume boxes. |
+    | Temporal filter | Outputs a valid state only after several consecutive consistent results. |
+    | Minimum point count | Objects with fewer points than this value are ignored. |
+
+    | Region mode | Configuration |
+    | --- | --- |
+    | 2D RGB | Use minimum and maximum pixel `X` and `Y` to define the storage location. Semantic mode and a semantic model are required. |
+    | 3D point cloud | Use minimum and maximum `X`, `Y`, and `Z` to define the location. Drag with the left mouse button along `x` and `y`, or with the right button along `z`. |
+
+    | Advanced feature | Description |
+    | --- | --- |
+    | Copy current box | Copy the active storage-location region. |
+    | Direction, spacing, count | Define evenly spaced copies along the `X`, `Y`, or `Z` axis. |
+    | Run | Generate multiple regions from the configuration. |
+    | QR Code calibration | Enter the location width, length, `Z_MIN`, and `Z_MAX`, then calibrate with a QR code. |
+
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif" alt="3D storage-location region configuration" />
+    </Frame>
+  </Tab>
+  <Tab title="Volume detection">
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif" alt="Global volume-detection configuration" />
+    </Frame>
+
+    | Parameter | Description |
+    | --- | --- |
+    | Algorithm version | Current algorithm version. |
+    | Trigger mode | When enabled, acquire one image and result for each trigger. |
+    | Upward detection | Detect using the reverse camera coordinate system. |
+    | Detection frequency | Refresh frequency for images and results. |
+    | Detection-plane distance | Reference position of the object's lower surface, in mm. |
+    | Neighborhood count / distance threshold | Filter parameters; keep the defaults in most deployments. |
+    | Normal-vector filter threshold | Filters tilted point-cloud planes. The original recommendation is `60`. |
+    | Normal-vector distance threshold | Filter parameter. The original recommended range is `20–30`. |
+    | Minimum point count | Objects with fewer points than this value are ignored. |
+    | Minimum `X`, `Y`, `Z` | Minimum length, width, and height thresholds, in mm. |
+
+    | Region parameter | Description |
+    | --- | --- |
+    | Minimum / maximum `X`, `Y`, `Z` | Defines the 3D boundaries of the volume-detection region. |
+
+    <Frame>
+      <img src="/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif" alt="Volume-detection region configuration" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Deploy an algorithm
+
+Switch to point-cloud mode and scroll over the image area to display point-cloud data.
+
+### Human detection
+
+<Steps>
+  <Step title="Calibrate a horizontal installation">
+    Align the `X` and `Y` axes with the ground point cloud. The `Z` axis must be perpendicular to and point up from the ground.
+  </Step>
+  <Step title="Set global parameters">
+    Open **Human detection**. Usually only **Rotation detection** needs to be set. Clockwise camera rotation supports `0°`, `90°`, `180°`, and `270°`.
+  </Step>
+  <Step title="Create the detection region">
+    Select **Add detection region**, set minimum and maximum `X`, `Y`, and `Z`, and move the region over the target. The original example uses a `1000 × 1000 × 2000 mm` region.
+  </Step>
+  <Step title="Save and verify">
+    Select **Save and send**, run a person-through-area test, and verify the result in the status bar or historical playback.
+  </Step>
+</Steps>
+
+| Matching rule | No person | Person | Obstacle | Person and obstacle |
+| --- | --- | --- | --- | --- |
+| Depth only | `0` | `2` | `2` | `2` |
+| Semantic plus depth | `0` | `1` | `0` | `1` |
+
+Depth-only mode reports every object in the region. Semantic-plus-depth mode reports only clusters classified as people.
+
+### Storage-location detection
+
+<Steps>
+  <Step title="Calibrate the camera">
+    Follow the extrinsic-calibration procedure. Align `X` and `Y` with the ground and keep `Z` perpendicular and pointing up.
+  </Step>
+  <Step title="Configure global parameters">
+    Set **Alignment check**, **Alignment angle**, and **Minimum point count** for the site. Enable alignment checking when cargo must be placed at a defined angle.
+  </Step>
+  <Step title="Create storage locations">
+    In point-cloud mode, select **Add storage location**, switch to the top view, and press `X` to start or stop drawing. Drag the rectangle over the pallet and adjust the `X`, `Y`, and `Z` boundaries. Press `X` again to exit drawing mode.
+  </Step>
+  <Step title="Save and verify">
+    Select **Save and send**. Configure locations in 2D RGB or 3D point-cloud mode and check `Result` in the status bar.
+  </Step>
+</Steps>
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/528da252-dee3-4e31-9d54-07c406b80e8e.avif" alt="Illustrations related to vertical installation of external parameter calibration" />
+  <img src="/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif" alt="Drawing a storage-location region in point-cloud mode" />
 </Frame>
 
-1. After confirming that the parameters are all 0, click the [**External Parameter Calibration**] button. After the calibration is successful, the software will pop up a prompt box. You can see the calibrated camera parameters in the parameter column on the right. Different algorithms will have corresponding alignment schemes.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4795bbe1-801c-4fa8-82f8-3a9c5e461f95.avif" alt="Illustrations related to vertical installation of external parameter calibration 2" />
-</Frame>
-
-### Horizontal installation external parameter calibration
-
-Click camera configuration to switch to the parameter calibration interface. When installing horizontally, you need to manually align the ground point cloud to the coordinate system. Generally, you only need to adjust the roll and Z size. Others are set to 0 by default. At the same time, make sure that the X axis (red) and Y axis (green) coincide with the ground point cloud, and the Z axis (blue) is perpendicular to the ground point cloud and faces upward.
-
-After completing the adjustment, click Save and Submit. ![3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/549297ef-b224-4d08-a1fb-633301a4ed18.avif)![2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/45ad1ad0-f171-463c-b789-790f4cbec1b2.avif)
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/abfab570-cb25-4850-acd9-924bd891853c.avif" alt="1" />
-</Frame>
-
-## 7. Meaning of algorithm parameters
-
-### Human body detection
-
-#### Global configuration of human detection
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Illustrations related to global configuration of human detection" />
-</Frame>
-
-|  |  |
+| Storage-location state | `Result` |
 | --- | --- |
-| Human detection global configuration | Functional meaning |
-| Algorithm version number | Current algorithm version information. |
-| Detection frequency | Algorithm detection frequency. That is, how many ms to refresh the image + result data. |
-| Time domain filtering | Filter parameter, when the parameter value is set to 3, the system requires that the detection results of three consecutive times are completely consistent before it will be judged as valid data. |
-| Kernel Size | Corrosion expands the kernel size on a 2D image. Large kernels will significantly shrink the target or expand the background, while small kernels will retain more details. Change as needed. |
-| Distance threshold | Used to determine whether two data points are "similar" or "belong to the same category". If the result is less than the threshold, it is considered a match or similar type. |
-| Minimum number of points | The minimum number of point clouds required for semantic clustering. |
-| Unsemantic minimum number of points | Unsemantic minimum number of point clouds required for clustering. |
-| Domain size | Determines which points are considered "neighboring points", directly affecting the granularity and accuracy of the clustering results. Modify as needed. |
-| Rotation detection | According to the installation position of the camera, the front 0° logo is at the bottom, adjust accordingly. |
+| Empty | `0` |
+| Occupied, or occupied and aligned | `1` |
+| Occupied with an angle beyond the alignment threshold | `2` |
+| Occupied and outside the location boundary | `3` |
 
-#### Human detection area configuration
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/30812d41-81b0-48aa-8e5b-87b2d0c273b4.avif" alt="25909893521\_171648566990\_Human detection configuration parameters (1)" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Human detection area configuration | Functional meaning |
-| Add area | Add human detection area. |
-| Delete area | Delete the human detection area. |
-| Current frame | Frame selects the current human detection area. |
-| Minimum X | The minimum value in the X direction of the human detection frame. |
-| Maximum X | The maximum value in the X direction of the human detection frame. |
-| Minimum Y | The minimum value in the Y direction of the human detection frame. |
-| Maximum Y | The maximum value in the Y direction of the human detection frame. |
-| Minimum Z | The minimum value in the Z direction of the human detection frame. |
-| Maximum Z | The maximum value in the Z direction of the human detection frame. |
-| ID | The name of the human detection frame. When drawing multiple human detection areas, they can be distinguished by modifying the ID names. |
-| Drag the mouse to adjust the area | In the adjustment area, press and hold the left button to drag the human detection area to translate in the x and y directions. Right-click and hold to drag the human detection area to move in the z direction. |
-
-### Storage location detection
-
-#### Global configuration of location detection
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ab2707-a23e-4f52-9a27-32a5d1de9579.avif" alt="Illustrations related to global configuration of storage location detection" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Global configuration of storage location detection | Functional meaning |
-| Algorithm version number | Current algorithm version information. |
-| AI filtering | Supports semantics and can segment people without detection. (Not open yet) |
-| Detection frequency | Algorithm detection frequency. |
-| Alignment Angle | The maximum offset angle allowed for an object relative to the location (valid when the alignment effect is turned on). |
-| Alignment effect | After the alignment effect is turned on, the current object angular offset and whether it exceeds the drawn detection area will be detected. The detected object will have a yellow volume box. |
-| Time domain filtering | Filter parameter, when the parameter value is set to 3, the system requires that the detection results of three consecutive times are completely consistent before it will be judged as valid data. |
-| Minimum number of points | When the object point cloud is greater than the minimum number of points, it is considered that there is an object. |
-
-#### Storage location detection area configuration (2D RGB)
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/54021f59-b55a-4174-b5bb-3efbdb872c60.avif" alt="2D location creation parameters" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Storage location detection area configuration | Functional meaning |
-| Add a location | Add a location detection area. |
-| Delete location | Delete location detection area. |
-| Current box | Frame the current location detection area. |
-| Minimum X | The minimum value in the X direction of the location detection frame. (unit pixel) |
-| Maximum X | The maximum value in the X direction of the location detection frame. (unit pixel) |
-| Minimum Y | Minimum value in the Y direction of the location detection frame. (unit pixel) |
-| Maximum Y | The maximum value in the Y direction of the location detection frame. (unit pixel) |
-| ID | The name of the location detection box. When drawing multiple storage location detection areas, you can distinguish them by modifying the ID names. |
-
-#### Storage location detection area configuration (3D point cloud)
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ef7ad2be-87a8-4336-a4f8-870e78fef268.avif" alt="Illustrations related to storage location detection area configuration (3D point cloud)" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Storage location detection area configuration | Functional meaning |
-| Add a location | Add a location detection area. |
-| Delete location | Delete location detection area. |
-| Current box | Frame the current location detection area. |
-| Minimum X | The minimum value in the X direction of the location detection frame. |
-| Maximum X | The maximum value in the X direction of the location detection frame. |
-| Minimum Y | Minimum value in the Y direction of the location detection frame. |
-| Maximum Y | The maximum value in the Y direction of the location detection frame. |
-| Minimum Z | The minimum value in the Z direction of the location detection frame. |
-| Maximum Z | The maximum value in the Z direction of the storage location detection frame. |
-| ID | The name of the location detection box. When drawing multiple storage location detection areas, you can distinguish them by modifying the ID names. |
-| Drag the mouse to adjust the area | In the adjustment area, press and hold the left button to drag the location detection area to translate in the x and y directions. Right-click and hold to drag the location detection area to move in the z direction. |
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ffc444e5-62c6-4098-a750-9be912ee5023.avif" alt="Illustrations related to storage location detection area configuration (3D point cloud) 2" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Advanced function of location detection - location frame copy | Functional meaning |
-| Copy current frame | The currently selected location detection area can be copied. |
-| What you need to know about copying and panning | Tips on copying and panning content. |
-| Direction | The direction of the copy location detection area, there are three directions: X, Y, and Z. |
-| Spacing | The distance between the location detection area and the copy area. |
-| Quantity | The quantity of the copy location detection area. |
-| Execute | After clicking the Execute button, copy multiple inspection locations with the same spacing. |
-
-|  |  |
-| --- | --- |
-| Advanced function of storage location detection - QR Code calibration | Functional meaning |
-| What you need to know about QR Code calibration | QR Code calibration content tips. |
-| X | Location width. |
-| Y | Location length. |
-| Z_MIN | The minimum depth of the location. |
-| Z_MAX | The highest detection position of the warehouse. |
-| Calibration | Click the calibration button to calibrate the warehouse location for QR code verification. |
+For a regular layout, use **Copy current box** to create locations at a fixed direction and spacing. If QR-code verification is required, use **QR Code calibration** to configure location dimensions and the depth range.
 
 ### Volume detection
 
-#### Volume detection global configuration
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/85a006a7-b982-48a6-a38a-e0c6029c1629.avif" alt="Illustrations related to global configuration of volume detection" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Volume detection global configuration | Functional meaning |
-| Algorithm version number | Current algorithm version information. |
-| Trigger mode | Trigger switch button. After turning on the trigger mode, click the "Save and Send" button to turn it on successfully. |
-| Upward detection | Camera coordinate system reverse detection. |
-| Detection frequency | How often the algorithm detects. That is, how many ms to refresh the image + result data. |
-| Detect plane distance | Confirm the position of the lower surface of the object. Unit: mm. |
-| Neighbor number threshold | Filter parameters, no changes required. The default value is sufficient. |
-| Neighborhood distance threshold | Filtering parameters, no need to change, default values are sufficient. |
-| Normal vector filter threshold | Object edge fillet filter parameter, used to filter the point cloud tilt plane. If the measured volume is smaller than the actual value, the value can be adjusted to a larger value. 60 is recommended (generally no adjustment is required). |
-| Normal vector distance threshold | Filter parameter, recommended value 20-30 (compatible with most detected objects). |
-| Minimum number of points | When the object point cloud is greater than the minimum number of points, it is considered that there is an object. |
-| Minimum X | The minimum length of the object. If less than this value is measured, the algorithm will filter the object. Unit: mm. |
-| Minimum Y | The minimum width of the object. If less than this value is measured, the algorithm will filter the object. Unit: mm. |
-| Minimum Z | The minimum height of the object. If less than this value is measured, the algorithm will filter the object. Unit: mm. |
-
-#### Volume detection area configuration
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/60bf86ae-e1e2-45f0-b30a-b260d8aff036.avif" alt="Illustration related to volume detection area configuration" />
-</Frame>
-
-|  |  |
-| --- | --- |
-| Volume detection area configuration | Functional meaning |
-| Minimum X | Minimum value in the X direction of the volume detection frame |
-| Maximum X | Maximum value in the X direction of the volume detection frame |
-| Minimum Y | Minimum value in the Y direction of the volume detection frame |
-| Maximum Y | Maximum value in the Y direction of the volume detection frame |
-| Minimum Z | Minimum value in the Z direction of the volume detection frame |
-| Maximum Z | Maximum value in the Z direction of the volume detection frame |
-
-## 8. Algorithm deployment process
-
-Note: After opening the algorithm host computer software, switch to the point cloud view, move the mouse to the image display area, and slide the mouse wheel to display the point cloud data.
-
-### 8.1 Human detection deployment process
-
-#### Human body detection - external parameter calibration
-
-For details, see 6.3 External parameter calibration for horizontal installation.
-
-After the calibration is completed, make sure that the X-axis (red arrow) and Y-axis (green arrow) coincide with the ground point cloud, and the Z-axis (blue arrow) is perpendicular to the ground point cloud and points upward.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Storage location external parameter calibration diagram" />
-</Frame>
-
-#### Human detection - global settings
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7be5cd79-40be-429a-a05b-ca9ccd043fd9.avif" alt="Human detection - global settings related icons" />
-</Frame>
-
-1. Click Human Detection to enter parameter settings, mainly adjust global rotation detection, and leave other parameters as default. Rotation detection is related to the camera installation angle, and clockwise rotation of the camera is limited to 0°, 90°, 180°, and 270°.
-
-2. After the global configuration settings are completed, click the [**Save and Send**] button to save the parameters to the camera.
-
-#### Human Detection—Region Configuration
-
-1. To set the detection range and adjust the length and width (xy) of the detection, it is recommended to switch to the upper and lower views first. The following are the shortcut keys for each view. ![Human Detection—Illustrations related to regional configuration](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif)
-
-2. Click the [**Add detection area**] button. Under the detection area configuration, the number of detection areas and the ID name of the detection area will be added. ![123](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d97865c8-086f-46d1-b41f-c3a63ed994ff.avif)
-
-3. Modifying the maximum XYZ axis size of the created detection area can directly confirm the size of a detection area. As shown in the figure below, a detection area of ​​1000\*1000\*2000 is created (unit mm). ![Human detection area creation](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a1d33db3-1c36-4cb6-8235-7ecbb302fe0e.avif)
-
-1. Drag the created detection area to the target detection area by dragging the mouse in the marking area.
-
-![Human detection area moves front](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7e9db737-c5b8-4532-9235-33750006cfce.avif)![Human detection area moves back](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3a1abc56-d148-47ef-8c05-c510f4ef981d.avif)
-
-5. After configuring the detection area, click the [Save and Send] button to save the parameters into the camera and start detecting the current area.
-
-#### View human test results
-
-1. After setting the external parameter calibration, human detection parameters, and human detection area, click "**Basic Tools**" and test by walking around the detection area to view the results. There is no one in the current detection area, and no target is detected in the basic function bar.
-
-![The front is not in the detection frame (point cloud)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d03e2dc2-9450-4b40-a0b3-bb443a97d9b2.avif)![The front is not in the detection frame (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a5cd29e-9132-46b6-8705-5d00994b9cc5.avif)
-
-1. When someone walks into the area, the designated target is detected in the human detection status display column. At the bottom of the software, the **Result** result will be displayed. 1 represents someone.
-
-![25909893521\_171673957420\_Front person in detection area (point cloud)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8ef7d562-faa1-40a1-9224-c71063f17c46.avif)![25909893521\_171674018465\_Front person in detection area (RGB)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/508a3e95-86a5-4433-9396-bab02f0fba4b.avif)
-
-#### View human detection log
-
-When the human body detection status changes, click on the history playback and click on the time you want to view on the left to view the changes in objects within the effective field of view at that time. See 5.5 playback for details.
-
-#### Determination of human body test results
-
-1. The matching rule will detect all objects in the case of depth only, and in the case of semantic plus depth, only clusters whose semantics are people will be judged.
-
-2. The following table shows the output results of Result under different circumstances.
-
-|  |  |  |  |  |
-| --- | --- | --- | --- | --- |
-| | No one | Someone | There are obstacles | People + obstacles |
-| depth only | 0 | 2 | 2 | 2 |
-| Semantic plus depth | 0 | 1 | 0 | 1 |
-
-### Storage location detection and deployment process
-
-#### Storage location detection - external parameter calibration
-
-For details, see 6. Camera external parameter calibration.
-
-After calibration, make sure that the X-axis (red arrow) and Y-axis (green arrow) coincide with the ground, and the Z-axis (blue arrow) is perpendicular to the ground and upward.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5f029b8f-950a-4c1a-a224-85933c341bc9.avif" alt="Storage location external parameter calibration diagram" />
-</Frame>
-
-#### Storage location detection - global settings
-
-1. Click on the location detection to switch to the location detection parameter setting page. In the global configuration, you need to pay attention to the alignment angle, alignment effect, and minimum number of points.
-
-2. If the placement of items in the storage location needs to follow a specific angle, it is recommended to turn on the alignment effect and set the corresponding alignment angle. Once the object angle exceeds the preset threshold, the system will output the corresponding detection result.
-
-|  |  |
-| --- | --- |
-| Status | Result |
-| No object | 0 |
-| There is an object | 1 |
-| The angle of an object exceeds the alignment angle (turn on the alignment effect) | 2 |
-| An object exceeds the location selection range (turn on the alignment effect) | 3 |
-
-1. When identifying small and medium-sized goods in a warehouse, if there are identification concerns or risks of misjudgment, it is recommended to use the "minimum point quantity" parameter for screening. This parameter specifies the minimum point cloud number threshold required to recognize an object. When an object is detected but its point cloud number does not reach this threshold, the object will be excluded from the recognition results.
-
-2. After the global configuration settings are completed, click the [**Save and Send**] button to save the parameters to the camera.
-
-#### Storage location detection - storage location configuration
-
-##### Point cloud mode location setting
-
-1. Set the detection range. To adjust the length and width (xy) of the detection, it is recommended to switch to the up and down view first. The following are the shortcut keys for each view.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Illustrations related to location setting in point cloud mode" />
-</Frame>
-
-1. Put the pallet in the field of view and click the [**Add Location**] button. Under the location configuration, the number of locations and the ID name of the location will be added. We can modify the ID, which is currently modified to "Location Test 1".
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427a2154-d262-4c8c-acf6-92c912f3ada1.avif" alt="Illustrations related to point cloud mode location setting 2" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/47d79ced-617b-41cd-8a4b-aa086f289789.avif" alt="Illustrations related to point cloud mode location setting 3" />
-</Frame>
-
-1. After clicking "Add Storage Location", switch the point cloud to the bottom view, click the point cloud image with the mouse, and press the [X] key on the keyboard to draw the storage location area. When pressing [X], the "Add Storage Location" button will turn gray, which means that the storage location area can be drawn in the image display area. (The x key on the keyboard starts the function of drawing the warehouse location and section number of warehouse locations. Press once to start drawing, and press once to end the drawing.)
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/846b9c20-37c5-4847-b10d-82b766443aab.avif" alt="Illustrations related to point cloud mode location setting 4" />
-</Frame>
-
-1. At this time, you can zoom in on the image by sliding the wheel, hold down the left mouse button, and draw a rectangular frame that wraps the entire pallet. Release the left mouse button, and the current location detection area will be automatically drawn. Press the [X] button on the keyboard to cancel the drawing of the detection area. At this time, you can confirm the size range of the area by adjusting the maximum and minimum
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/997b81b0-165a-441c-b2e2-51ea8799ec7f.avif" alt="Illustrations related to location setting in point cloud mode 5" />
-</Frame>
-
-1. Use keyboard shortcuts to switch to the lower view, as shown in the figure below. The red arrow points to the x-direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently the x direction is slightly larger than the tray width.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/98bf259d-d459-4ed7-8a73-0448576f14bc.avif" alt="Illustrations related to location setting in point cloud mode 6" />
-</Frame>
-
-1. The green arrow indicates the y direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently the y direction is slightly larger than the pallet length.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d8990bab-9614-4f97-8561-6ae7076c7b20.avif" alt="Illustrations related to location setting in point cloud mode 7" />
-</Frame>
-
-1. The blue arrow points to the z direction of the detection range. The value can be modified by scrolling with the mouse wheel, or the value can be entered directly. It is recommended that the minimum z value of the current detection range be set slightly higher than the ground distance to prevent the ground from being mistakenly detected. Set the max z to 1500 and the max height based on the size of the object. If the object height exceeds the maximum z value, the algorithm will not detect it.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/07ff02c7-8418-4913-a62e-3728b54839c5.avif" alt="Illustrations related to point cloud mode location setting 8" />
-</Frame>
-
-1. After configuring the detection area, click the [**Save and Send**] button to save the parameters into the camera, and then start detecting whether there are goods in the current warehouse location.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e4263bf6-5cd5-40f1-b0e2-696906ee4502.avif" alt="Illustrations related to point cloud mode location setting 9" />
-</Frame>
-
-##### RGB mode library location setting
-
-1. Switch to RGB display mode, click to add a storage location, and move the mouse to the RGB image, ![2D storage location creation](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/595aef48-fd89-41ce-93c9-fcd89622f141.avif)
-
-Click the left mouse button on the detection area to create a 2D location detection area, and right-click to exit the 2D location creation mode.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1f38061e-4044-4ce8-ac8d-98adf248ffd8.avif" alt="2D location created successfully" />
-</Frame>
-
-2. If you need to delete a warehouse location, select the box ID that needs to be deleted in the current box. The corresponding warehouse location ID will be displayed on the image. Click to delete the warehouse location. ![2D location creation extension (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7f9c485c-f591-4e95-8bc6-45df833eb341.avif)
-
-3. Place the mouse in the middle of the storage location detection area (blue arrow position) to drag the detection area to move, place the mouse to the four corners of the storage location detection area (red arrow position) and drag with the left button of the mouse to modify the size of the detection area. ![2D location creation extension (1)](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/71096a08-65a6-45f9-b033-59d9a5ae9fa6.avif)
-
-4. After confirming the location, you need to click [Save and Send] to save the location to the camera before it will take effect. Confirm whether the save is successful and check whether the location status is saved. If not saved, it will be not saved. ![6cec7d56ad74e8745f624af0e0ce582c\_compress](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b3e11ff5-e79e-4141-8f4d-71c2474caa70.avif)
-
-5. 2D storage location detection only supports semantic mode and needs to be matched with a semantic model for detection.
-
-#### Storage location detection - advanced settings
-
-##### Advanced function - copy location
-
-1. Click [**Needs to Know About Copy and Panning**], and you will be prompted with panning-related information. Copying the location allows users to design the location based on CAD drawings during actual deployment, and then draw a location area to make multiple copies without having to manually draw it again.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/575918bf-cf7e-428a-a302-c365284da6bc.avif" alt="Advanced function - copy location-related icons" />
-</Frame>
-
-1. The current setting is the X direction, the spacing is 10, and the quantity is 2. Click the Execute button and you will be prompted to confirm whether to execute the copy translation.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a52afac-6e72-4cfb-8acb-fa7910288287.avif" alt="Advanced function - copy location-related icons 2" />
-</Frame>
-
-1. After clicking yes, two bins of the same size will be generated in the positive x direction with a spacing of 10. In the bin location list box, you can see that the generated bin area has the suffix increased by (0) and (1) based on the original bin location detection ID.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e213b2fb-9331-48e5-beda-2afb91fc4fa8.avif" alt="Advanced function - copy location-related icons 3" />
-</Frame>
-
-1. Set to Y direction, spacing to -40, and quantity to 3. Click the execute button to generate 3 storage locations with the same size in the negative y direction. The IDs of the location list box are added (2), (3), and (4) on the basis of the original (0) and (1).
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cc9aab42-e06f-4910-869a-fa8335d089a6.avif" alt="Advanced function - copy location-related icons 4" />
-</Frame>
-
-1. After copying the location, you need to click the [**Save and Release**] button to save the parameters, otherwise the parameters will not take effect.
-
-##### Advanced function - QR calibration (QR code calibration)
-
-1. QR (QR code) calibration can simulate actual warehouse deployment scenarios and continue automatic drawing of warehouse areas without manual drawing, allowing users to deploy conveniently. The QR code board is recommended to be 1m×1m or more. Click [**QR Code Calibration Needs to Know**] and the calibration process will be prompted.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1c2767a5-5a42-41b0-85aa-5257d6bdf3f1.avif" alt="Advanced function - QR calibration (QR code calibration) related icons" />
-</Frame>
-
-1. Place the QR code calibration plate in the target area, switch to the RGB image, and ensure that the QR code can be seen in the RGB field of view.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/427f065c-f102-49fc-a996-dd04d2f4cece.avif" alt="Advanced function - QR calibration (QR code calibration) related icons 2" />
-</Frame>
-
-1. After the QR code is in the center of the field of view, switch to the point cloud image and find the [**QR Code**] calibration bar. Pre-enter the location size X (location width), Y (location length), Z\_min (minimum depth of location), Z\_max (maximum depth of location),
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9e83a1a-50be-4664-8f4c-9a02ffaa752e.avif" alt="Advanced function - QR calibration (QR code calibration) related icons 3" />
-</Frame>
-
-1. Then click the [**Calibration**] button to automatically draw the warehouse location based on the X, Y, and Z set in the QR, which can be viewed through the warehouse location configuration area box. QR\_BOX is the area box set for the QR code.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/19c0bec5-7ba4-444b-9da6-4b0e919a86ed.avif" alt="Advanced function - QR calibration (QR code calibration) related icons 4" />
-</Frame>
-
-1. After the QR Code calibration is completed, you need to click the [**Save and Send**] button, otherwise the parameters will not take effect.
-
-#### Check the location detection results
-
-1. After setting the external parameter calibration, storage location detection parameters, and storage location detection area, click "**Basic Tools**" and place objects in the detection area to view the results. There is currently no object, and no object will be displayed in the basic function bar. ![View relevant icons for storage location detection results](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/481feb15-bd76-46db-9025-f17efcef2c71.avif)
-
-2. After placing the pallet, the inventory status display column will show that the current location is in stock. At the bottom of the software, the Result will be displayed, with 1 indicating that it is in stock. ![Image related to viewing the storage location detection results 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5b066a5a-b7e9-4a11-9fc5-01a2e8842be2.avif)
-
-3. After turning on the alignment effect, the Result result will be displayed at the bottom of the software. 2 means there is goods but there is an angular offset. ![Location is not aligned](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95d79300-5e45-45d6-8c84-a0486a90a94b.avif)
-
-4. After the alignment verification is turned on, the Result result will be displayed at the bottom of the software. 3 means that there is goods but it exceeds the storage location detection area. The red box indicates the storage location detection area, and the yellow box indicates the detected object. ![Location alignment is on and out of bounds](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/cb1688c5-d897-4a0c-8014-e03f6eea2be9.avif)
-
-#### View the storage location detection log
-
-When the status of the storage location changes, click on the historical playback and click on the time you want to view on the left to view the changes in objects within the effective field of view at that time. See 5.5 playback for details.
-
-#### Determination of storage location detection results
-
-1. Draw the detection area to determine the existence, offset angle and cross-border status of the goods.
-
-2. Judge the status of the goods through the obtained Result results.
-
-|  |  |
-| --- | --- |
-| Status | Results |
-| Out of stock | 0 |
-| In stock | 1 |
-| In stock and aligned (turn on alignment validation) | 1 |
-| In stock and not aligned (turn on alignment validation) | 2 |
-| In stock and out of bounds (turn on alignment validation) | 3 |
-
-1. With the alignment verification function enabled, place the object at the boundary of the detection area. The Result output is 3. This result indicates that the goods have exceeded the boundary and occupied the storage space.
-
-**![Illustration related to the determination of storage location detection results](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/daa582c1-5052-4756-be13-e015f9c9fd86.avif)**
-
-### Volume detection deployment process
-
-#### Volume detection - external parameter calibration
-
-1. For details, see 6.2 Vertical installation external parameter calibration
-
-2. After the calibration is completed, make sure that the coordinate axis Z axis (blue arrow) is vertically downward, the X (red arrow) axis and Y (green arrow) axis form a plane parallel to the ground, and the volume detection algorithm detection method is from top to bottom.
-
-![Top view of volume detection external parameter calibration](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/81e5f706-27db-4c18-87bb-3d3320387374.avif)![Side view of volume detection external parameter calibration](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96891baa-0237-440c-84bd-8840d0c91c86.avif)
-
-#### Volume detection - global settings
-
-1. Click Volume Detection. After entering the parameter setting interface, you need to focus on setting the "detection plane distance" (used to determine the position of the object's lower surface and calculate the volume) and the minimum XYZ size.
-
-2. Check the plane settings. If the goods are placed directly on the ground, the detection plane distance is set to the height of the ground;
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a9e91e37-7a17-4f1c-8ac5-066ef8fe859c.avif" alt="The ground point cloud coincides with the detection plane 1" />
-</Frame>
-
-If there is a pallet and only the area of the goods on the pallet needs to be calculated, the detection plane needs to coincide with the pallet point cloud. ![The detection plane is on the pallet](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0ed32689-0326-4afb-93c7-6880e62385ea.avif)
-
-1. Minimum XYZ settings. Used to set the lower limit of the length, width and height of the detected object (unit: pixels). When any one of the detected object's length, width, or center dimensions is smaller than the threshold, the system will automatically ignore the object. ![Pictures can be detected](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d35dea57-dec2-4d30-863d-73ee462daabb.avif)![Goods can be detected](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4a596eae-f1c2-45c1-9882-4cea9f374156.avif)
-
-After you increase the value, the object is ignored. ![Parameters that prevent detection](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c2014538-6ac1-440f-9238-860c2da3f04b.avif)
-
-1. After the global configuration settings are completed, click the [**Save and Send**] button to save the parameters to the camera.
-
-#### Volume detection - range setting
-
-1. Set the detection range. To adjust the length and width (xy) of the detection, it is recommended to switch to the up and down view first. The following are the shortcut keys for each view.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0c7d1df9-b6a4-43d8-9495-0068463e3a55.avif" alt="Volume detection - range setting related icons" />
-</Frame>
-
-1. Use the keyboard shortcut keys to switch to the up and down view, as shown in the figure below. The white box pointed by the red arrow indicates the x direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently, the maximum and minimum detection range in the x direction are set to 600 and -600.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/78cf7eed-d5ba-4969-8be3-3579a41f49a1.avif" alt="Volume detection - range setting related diagram 2" />
-</Frame>
-
-1. The white box pointed by the green arrow indicates the y direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently, the maximum and minimum detection range in the y direction are set to 480 and -580.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9c1c97b6-76f9-490d-a262-0ec7de2d4e83.avif" alt="Volume detection - range setting related diagram 3" />
-</Frame>
-
-1. The blue arrow points to the z direction of the detection range. It is recommended that the detection plane be consistent with the maximum z value. The minimum detection range is set according to the size of the object. If the height of the object exceeds the minimum z value, the algorithm will filter it.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/66d82c1c-cb72-4c8e-805e-a8356b7a8103.avif" alt="Volume detection - range setting related diagram 4" />
-</Frame>
-
-1. After configuring the detection area, click the [**Save and Send**] button to save the parameters into the camera.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d5aa71bc-e458-4195-835a-45bd4150ff99.avif" alt="Volume detection - range setting related diagram 5" />
-</Frame>
-
-#### View volume test results
-
-1. After configuring the detection area, click the [**Save and Send**] button to save the parameters into the camera.
-
-2. After setting the external parameter calibration, volume detection parameters, and volume detection area, click "**Basic Tools**" and place objects in the detection area to view the results. There is currently no object, and no object will be displayed in the basic function bar.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ca238803-1d9a-4ad8-993f-d9c37dae9ad5.avif" alt="no object" />
-</Frame>
-
-1. After placing an object, the current object length, width, and height information will be displayed in the volume status display bar.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3c4511ff-69fa-4ea8-9918-c657aa999752.avif" alt="Volumetric detection of a single object" />
-</Frame>
-
-4. When multiple objects are placed, the volume detection result display bar will display the length, width, and height of multiple objects, and the number of objects will be displayed. ![Volume detection of multiple objects](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f33c8bf-37d0-4b5b-a84a-4e1f1814eeba.avif)
-
-#### Volume detection single trigger function
-
-1. In the volume detection setting interface, turn on the trigger mode and click the [**Save and Send**] button to successfully turn on the trigger mode.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/48d2348e-0816-4231-9f14-03a426584e4e.avif" alt="Illustrations related to volume detection single trigger function" />
-</Frame>
-
-1. Click on the basic tool and obtain images and results by clicking the [**Single Trigger**] button.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f3dfaf70-6664-4a9e-9451-a5ccf693367b.avif" alt="single trigger" />
-</Frame>
-
-## Communication protocol
-
-The single trigger mode included in volume detection sends TM\_TRIGGER through TCP or UDP, which allows the camera to execute the volume detection algorithm once and return the result once.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/52ec9bc8-1c02-4ce3-9ed5-2333ac4d8961.avif" alt="Volume detection UDP TM\_TRIGGER" />
-</Frame>
-
-###TCP communication
-
-Results are available via TCP communication. Through the network debugging assistant, the remote camera IP: 192.168.100.83, port: 14951, send RESULT\_UPDATE to see the returned result information.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/13faa673-1d57-4ae0-8db9-c5258d95ae77.avif" alt="IMG\_256" />
-</Frame>
-
-### UDP communication
-
-The location detection results can be obtained through UDP communication. Through the network debugging assistant, the remote camera IP: 192.168.100.83, port: 14950, send RESULT\_UPDATE to see the returned location detection result information.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76326c8d-54d2-491e-b315-b7681e6aef72.avif" alt="IMG\_256" />
-</Frame>
-
-### HTTP communication
-
-1. The algorithm detection results can be obtained through HTTP communication, port number: 14952.
-
-2. The upper-layer system (WMS) sends the result signal to the vision, and the vision returns a string in JSON format.
-
-3. Operational procedures
-
-Set Headers first
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d26e7a0a-afc0-4df4-bca6-c63f5e0b3c2e.avif" alt="Operation 1" />
-</Frame>
-
-Then set the Body parameter to RESULT\_UPDATE
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a833cf86-a300-4097-839e-7b233edba3f8.avif" alt="Operation 2" />
-</Frame>
-
-Click Send to get the result![Operation 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2f9c2553-db2b-4646-b101-bf7b9c1ca543.avif)
-
-|  |  |
-| --- | --- |
-| WMS → Vision | |
-| Result | Meaning |
-| RESULT_UPDATE | Trigger visual result return signal |
-| Vision → WMS (Human Detection) | |
-| Result | Meaning |
-| IP | Data source camera IP |
-| SG | Human body detection status, 0 is empty, 1 means there is someone, and 2 means the frame matching rule is to detect objects only at depth. __object_details contains all detected cluster coordinates |
-| SG_DATA_TIME | Detection data extraction time |
-| SG_RES_TIME | Test result output time |
-| nick_name | Camera name, configurable in camera |
-| ret_code | Return code, 0 is success |
-| Vision → WMS (Stock Location Detection) | |
-| IP | Data source camera IP |
-| SS | Storage location detection status, 0 means the storage location is not occupied, 1 means the storage location is occupied, 2 means the storage location is occupied and the goods angle offset exceeds the preset parameter, 3 means the storage location is occupied and out of bounds X__object_details is the specific information of the X storage location, containing the volume box size of the actual occupied object |
-| SG_DATA_TIME | Detection data extraction time |
-| SG_RES_TIME | Test result output time |
-| nick_name | Camera name, configurable in camera |
-| ret_code | Return code, 0 is success |
-| Vision → WMS (Volume Detection) | |
-| IP | Data source camera IP |
-| TM | Each item is a complete volume box detected within the region |
-| SG_DATA_TIME | Detection data extraction time |
-| SG_RES_TIME | Test result output time |
-| nick_name | Camera name, configurable in camera |
-| ret_code | Return code, 0 is success |
-
-### modbus-tcp (library location detection)
-
-The detection results are automatically sorted according to the location ID, and only the first 16 location results will be returned.
-
-#### Slave configuration parameters
-
-##### Basic communication configuration
-
-1. \****Port number***\*: 16502
-
-2. \****Listening Address***\*: All network interfaces (0.0.0.0)
-
-3. \****Number of registers***\*: 16
-
-4. \****Register starting address***\*: 0x100
-
-5. \****Byte order***\*: Big-Endian mode (Big-Endian)
-
-##### Register storage rules
-
-|  |  |  |
-| --- | --- | --- |
-| Register address**** | Storage content**** | Data format**** |
-| *0x100 + ID* | Location detection result + marker detection result | *2 bytes (uint16_t)* |
-| *Split Rules* | | |
-| *Byte 0 (high 8 bits)* | Location status code | *0-2 (see definition below)* |
-| *Byte 1 (lower 8 bits)* | Marker status code (not yet open, the content is consistent with the location status code) | *0-2 (see definition below)* |
-
-#### Status code definition
-
-##### Location status code
-
-|  |  |  |
-| --- | --- | --- |
-| Encoding | Physical meaning | Trigger conditions |
-| *0* | Unoccupied | *No goods/pallets* |
-| *1* | Normal occupancy | *Standard goods are placed correctly* |
-| *2* | Abnormal occupancy | *Cargo size/position offset* |
-
-##### Marker status code
-
-|  |  |  |
-| --- | --- | --- |
-| Encoding**** | Physical meaning**** | Trigger condition**** |
-| *0* | No marker detected | |
-| *1* | Marker detected | |
-| *2* | Detect anomalies | |
-
-#### Example
-
-\****Read the status of the 4th location***\*
-
-##### 1. Client request message
-
-hex
-
-1.  \[01\]\[00\]\[00\]\[00\]\[06\]\[FF\]\[03\]\[01\]\[03\]\[00\]\[01\]
-
-|  |  |  |  |
+<Steps>
+  <Step title="Calibrate a vertical installation">
+    Volume detection works from top to bottom. After calibration, the `Z` axis points down and the `X`/`Y` plane is parallel to the ground.
+  </Step>
+  <Step title="Set the detection plane">
+    For goods placed directly on the floor, set the detection plane to the floor height. To measure only goods on a pallet, align the plane with the pallet point cloud.
+  </Step>
+  <Step title="Set minimum dimensions and the region">
+    Set minimum `X`, `Y`, and `Z` values to filter small targets. Then set the region boundaries according to the detection plane and cargo dimensions.
+  </Step>
+  <Step title="Save and verify">
+    Select **Save and send**, place one or more objects in the region, and verify the returned length, width, height, and count.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif" alt="Floor detection plane for volume detection" />
+  </Frame>
+  <Frame>
+    <img src="/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif" alt="Single-object volume-detection result" />
+  </Frame>
+</Columns>
+
+To use single-trigger acquisition, enable **Trigger mode** in **Volume detection** and select **Save and send**. Then select **Single trigger** in **Basic tools**, or send `TM_TRIGGER` over TCP or UDP.
+
+## Communication interfaces
+
+<Note>
+  The IP address in the examples is illustrative. Replace it with the camera address at the site, then verify the network, algorithm state, and result format before integrating with an upper-layer system.
+</Note>
+
+### Transport methods
+
+| Protocol | Port | Request | Use |
 | --- | --- | --- | --- |
-| *Field name* | *Value (HEX)* | *Length in bytes* | *Description* |
-| *Message sequence number* | *00 01* | *2 bytes* | *Transaction identifier (incrementing sequence number)* |
-| *Protocol identifier* | *00 00* | *2 bytes* | *Modbus/TCP fixed value* |
-| *Data length* | *00 06* | *2 bytes* | *Total subsequent data length (6 bytes)* |
-| *Unit identifier* | *FF* | *1 byte* | *Broadcast mode (0xFF) or device address* |
-| *Function code* | *03* | *1 byte* | *Read holding register (standard function code)* |
-| *Register starting address* | *01 03* | *2 bytes* | *Starting address=0x100 + 4 (decimal)* |
-| *Number of registers* | *00 01* | *2 bytes* | *Read 1 register (2 bytes)* |
+| TCP | `14951` | `RESULT_UPDATE` | Get the current algorithm result. |
+| UDP | `14950` | `RESULT_UPDATE` | Get the current algorithm result. |
+| HTTP | `14952` | `RESULT_UPDATE` | Get the algorithm result as JSON. |
+| TCP / UDP | Result port | `TM_TRIGGER` | Run one triggered volume detection and return the result. |
+| Modbus TCP | `16502` | Read holding registers | Read storage-location status. |
 
-##### 2. Device response message
+### HTTP result request
 
-hex
+The upper-layer system sends a result request to the vision endpoint, which returns a JSON string. Use the project-delivered request headers in your HTTP client and the following request body.
 
-1.  \[05\]\[00\]\[01\]\[00\]\[00\]\[00\]\[02\]\[00\]\[02\]
+<ParamField body="command" type="string" required default="RESULT_UPDATE">
+  Triggers the camera to return the current algorithm result.
+</ParamField>
 
-|  |  |  |  |
-| --- | --- | --- | --- |
-| *Field name* | *Value (HEX)* | *Length in bytes* | *Description* |
-| *Message sequence number* | *00 05* | *2 bytes* | *Consistent with the request message* |
-| *Protocol identifier* | *00 00* | *2 bytes* | *Modbus/TCP fixed value* |
-| *Data length* | *00 02* | *2 bytes* | *Total length of subsequent data (2 bytes)* |
-| *Unit identifier* | *FF* | *1 byte* | *Consistent with the request message* |
-| *Function code* | *03* | *1 byte* | *Read holding register response* |
-| *Return data length* | *02* | *1 byte* | *Actual return data length (2 bytes)* |
-| *Status data* | *00 02* | *2 bytes* | *Status value of the 4th location* |
+### Common response fields
 
-### Appendix (return json parsing)
+<ResponseField name="IP" type="string" required>
+  IP address of the camera that produced the data.
+</ResponseField>
 
-#### Human body detection
+<ResponseField name="nick_name" type="string" required>
+  Camera name; change it in camera configuration.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Return code; `0` indicates success.
+</ResponseField>
+
+<Tabs>
+  <Tab title="Human detection (SG)">
+    <ResponseField name="SG" type="object" required>
+      Status object keyed by detection-region ID: `0` means no target, `1` means a person was detected, and `2` means an object was detected only by the depth rule.
+    </ResponseField>
+    <ResponseField name="__object_details" type="string[]">
+      Cluster details. Each item is a JSON string that must be deserialized again.
+    </ResponseField>
+    <ResponseField name="SG_DATA_TIME" type="string">Human-detection data timestamp.</ResponseField>
+    <ResponseField name="SG_RES_TIME" type="string">Human-detection result timestamp.</ResponseField>
+
+    Cluster details include `rbx2d`, `rby2d`, `tlx2d`, and `tly2d` (2D box coordinates), `semantic_index`, `traceID`, and `x_min`, `x_max`, `y_min`, `y_max`, `z_min`, and `z_max` (3D box boundaries).
+  </Tab>
+  <Tab title="Storage-location detection (SS)">
+    <ResponseField name="SS" type="object" required>
+      Status object keyed by location ID: `0` empty, `1` occupied, `2` occupied with an angle offset, and `3` occupied and out of bounds.
+    </ResponseField>
+    <ResponseField name="X__detail__info" type="number[]">
+      Details for location `X`: center `x`, `y`, and `z`, length, width, height, and angle offset from the bounding box. A location created in 2D returns all `-1` values.
+    </ResponseField>
+    <ResponseField name="SS_DATA_TIME" type="string">Storage-location data timestamp.</ResponseField>
+    <ResponseField name="SS_RES_TIME" type="string">Storage-location result timestamp.</ResponseField>
+  </Tab>
+  <Tab title="Volume detection (TM)">
+    <ResponseField name="TM" type="object[]" required>Array of complete volume boxes in the detection region.</ResponseField>
+    <ResponseField name="angle" type="number">Volume-box angle offset.</ResponseField>
+    <ResponseField name="cx" type="number">Volume-box center `x` coordinate.</ResponseField>
+    <ResponseField name="cy" type="number">Volume-box center `y` coordinate.</ResponseField>
+    <ResponseField name="cz" type="number">Volume-box center `z` coordinate.</ResponseField>
+    <ResponseField name="length" type="number">Object length.</ResponseField>
+    <ResponseField name="width" type="number">Object width.</ResponseField>
+    <ResponseField name="height" type="number">Object height.</ResponseField>
+    <ResponseField name="type" type="string">Semantic type.</ResponseField>
+    <ResponseField name="valid" type="boolean">Whether the result is valid.</ResponseField>
+    <ResponseField name="TM_DATA_TIME" type="string">Volume-detection data timestamp.</ResponseField>
+    <ResponseField name="TM_RES_TIME" type="string">Volume-detection result timestamp.</ResponseField>
+  </Tab>
+</Tabs>
+
+### Human-detection response example
 
 ```json
-{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SG"**: {         **"1"**: **1**,// Target detected in detection box 1         **"2"**: **0**,// No target detected in detection box 2         **"__object_details"**: \[ // Each item is a JSON string that must be deserialized again; each item represents one cluster
-
-            **"{\\"rbx2d\\":584.0,\\"rby2d\\":500.0,\\"semantic_index\\":-1,\\"tlx2d\\":234.0,\\"tly2d\\":386.0,\\"traceID\\":\\"\\",\\"x_max\\":33.46769714355469,\\"x_min\\":-130.08856201171875,\\"y_max\\":28.804279327392578,\\"y_min\\":9.872406005859375,\\"z_max\\":170.76319885253906,\\"z_min\\":70.43941497802734}"**,             **"{\\"rbx2d\\":405.0,\\"rby2d\\":333.0,\\"semantic_index\\":0,\\"tlx2d\\":159.0,\\"tly2d\\":11.0,\\"traceID\\":\\"IoXSYuQ0rM34LYqL\\",\\"x_max\\":-201.1272430419922,\\"x_min\\":-395.1332702636719,\\"y_max\\":99.76918029785156,\\"y_min\\":-228.9674530029297,\\"z_max\\":611.3909912109375,\\"z_min\\":233.85450744628906}"**         \]     },     **"SG_DATA_TIME"**: **"2023_03_02_21_52_11.408"**, // Human-detection data timestamp     **"SG_RES_TIME"**: **"2023_03_02_21_52_11.689"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
 ```
 
-"\_\_object\_details" : //Single item explanation
+### Modbus TCP (storage-location detection)
 
-```json
-{     **"rbx2d"**: **405**, // x-coordinate of the lower-left corner of the 2D cluster box     **"rby2d"**: **333**, // y-coordinate of the lower-left corner of the 2D cluster box     **"semantic_index"**: **0**, // Model index when semantic data exists; otherwise -1     **"tlx2d"**: **159**, // x-coordinate of the upper-right corner of the 2D cluster box     **"tly2d"**: **11**,// y-coordinate of the upper-right corner of the 2D cluster box     **"traceID"**: **"IoXSYuQ0rM34LYqL"**,// Each detected class has a unique ID for matching the object across frames     **"x_max"**: **\-201.1272430419922**,// 3D point-cloud cluster-box coordinate     **"x_min"**: **\-395.1332702636719**,// 3D point-cloud cluster-box coordinate     **"y_max"**: **99.76918029785156**,// 3D point-cloud cluster-box coordinate     **"y_min"**: **\-228.9674530029297**,// 3D point-cloud cluster-box coordinate     **"z_max"**: **611.3909912109375**,// 3D point-cloud cluster-box coordinate     **"z_min"**: **233.85450744628906**// 3D point-cloud cluster-box coordinate }
+Results are ordered by storage-location ID; at most the first 16 locations are returned.
+
+| Configuration | Value |
+| --- | --- |
+| Port | `16502` |
+| Listen address | `0.0.0.0` (all network interfaces) |
+| Register count | `16` |
+| Start address | `0x0100` |
+| Byte order | Big-endian |
+
+| Register | Content | Data format |
+| --- | --- | --- |
+| `0x0100 + ID` | Storage-location and marker detection results | 2-byte `uint16_t` |
+| High 8 bits | Storage-location status code | `0–2` |
+| Low 8 bits | Marker status code | `0–2`; this feature is not currently available, so it has the same meaning as the location status code. |
+
+| Location status | Meaning | Condition |
+| --- | --- | --- |
+| `0` | Empty | No goods or pallet. |
+| `1` | Occupied normally | Goods are placed as required. |
+| `2` | Occupied abnormally | Cargo size or position is outside the requirement. |
+
+| Marker status | Meaning |
+| --- | --- |
+| `0` | Marker not detected. |
+| `1` | Marker detected. |
+| `2` | Marker detection error. |
+
+#### Read the fourth storage location
+
+The following example uses transaction ID `0x0001` to read one holding register at address `0x0104`. The response contains status `0x0002`.
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
 ```
 
-#### Storage location detection
+| Field | Request value | Description |
+| --- | --- | --- |
+| Transaction identifier | `00 01` | Client sequence number; the response must match it. |
+| Protocol identifier | `00 00` | Fixed Modbus/TCP value. |
+| Length | `00 06` | Number of bytes in the following request fields. |
+| Unit identifier | `FF` | Broadcast mode or device address. |
+| Function code | `03` | Read holding registers. |
+| Start address | `01 04` | `0x0100 + 4`. |
+| Register count | `00 01` | Read one register. |
 
-```json
-{     **"IP"**: **"192.168.100.83"**, // Camera IP     **"SS"**: { X_detail_info contains cargo data detected in storage location X         **"1"**: **1**,// Storage location 1 is occupied         **"2"**: **1**,// Storage location 2 is occupied         **"3"**: **3**,// Storage location 3 is occupied and the object extends outside it         **"1__detail__info"**: \[             **\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**,**\-1**         \],         **"2__detail__info"**:             **\-7**,**258**,**261**,**545**,**403**,**204**,**89**         \],         **"3__detail__info"**: \[             **114**,**73**,**37**,**92**,**42**,**75**, **\-88**         \]     },     **"SS_DATA_TIME"**: **"2023_03_02_22_13_01.286"**, // Human-detection data timestamp     **"SS_RES_TIME"**: **"2023_03_02_22_13_01.572"**, // Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
-```
+## Troubleshooting
 
-"X\_\_detail\_\_info": //Single explanation, X is the unique ID of the location
-
-**“2\_\_detail\_\_info”**: \[             **\-7**,// Center-point x-coordinate
-
-**258**,//Center point coordinate y
-
-**261**,//Center point coordinate z
-
-**545**,//long
-
-**403**,//width
-
-**204**,//High
-
-**89** //Offset angle compared to bounding box \]
-
-**"1\_\_detail\_\_info"**: \[//This case is the location detection range created by 2D inspection for location 1, the values are all -1                                                                                                      
-
-#### Volume detection
-
-```json
-{     **"IP"**: **"192.168.100.83"**,// Camera IP     **"TM"**: \[ // Each item is a complete volume box detected within the detection area         {             **"angle"**: **\-81.56423950195313**,             **"cx"**: **\-287**,             **"cy"**: **88**,             **"cz"**: **2887**,             **"height"**: **224**,             **"length"**: **320**,             **"type"**: **""**,             **"valid"**: **true**,             **"width"**: **174**         }     \],     **"TM_DATA_TIME"**: **"2023_03_02_21_01_31.769"**, // Human-detection data timestamp     **"TM_RES_TIME"**: **"2023_03_02_21_01_31.987"**,// Human-detection result timestamp     **"nick_name"**: **"Unknown"**, // Human-detection camera name     **"ret_code"**: **0** // Return code; 0 indicates success }
-```
-
-The `TM` object contains these fields:
-
-- `angle`: Offset angle.
-- `cx`, `cy`, and `cz`: Center-point coordinates.
-- `height`, `length`, and `width`: Object dimensions.
-- `type`: Semantic type.
-- `valid`: Whether the detection result is valid.
+| Symptom | Priority checks |
+| --- | --- |
+| Camera not found | Confirm that the host and camera share a subnet, the network adapter is gigabit, and power and switch links are healthy. |
+| Parameters do not take effect | Confirm that **Save and send** was selected after the change. |
+| No algorithm result | Confirm that the correct algorithm firmware was flashed, the device is green, and the algorithm is enabled. |
+| Empty or stale point cloud | Scroll over the point-cloud area to display data; enable automatic refresh if needed. |
+| Abnormal location or volume results | Recheck extrinsic-axis directions, detection plane, and region boundaries, then retest with site objects. |

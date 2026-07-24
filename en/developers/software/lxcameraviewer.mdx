@@ -1,358 +1,240 @@
 ---
 title: "LxCameraViewer user guide"
-description: "Install and use the Windows LxCameraViewer application with MRDVS cameras and the C or C++ Camera SDK."
+description: "Use LxCameraViewer to connect and configure MRDVS 3D cameras and view images, point clouds, and application algorithm results."
 ---
-Download the latest version of the manual PDF version:
+LxCameraViewer searches for and connects to cameras, displays images and point clouds, configures camera parameters, and provides application algorithm maintenance tools.
 
-[LxCameraViewer User Manual.pdf](/files/legacy/eb7e3080-2d7f-4d21-9acf-fdce85d40a91/f734e513-b541-4ccd-9c4f-650b54dc966c.pdf)
+<Info>
+  Full PDF manual: [LxCameraViewer User Manual](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/lxcameraviewer_user_manual.pdf).
+</Info>
 
-## 1. Overview
+## Overview
 
-LxCameraViewer is a Windows host computer software developed based on Blue Core's self-developed camera products and camera SDK C or C++ development kit, hereafter referred to as this software.
+LxCameraViewer is based on the MRDVS Camera SDK and supports Windows and Linux. Use it to view and save depth, intensity, point cloud, and RGB images; read and set camera and application algorithm parameters; and access IP configuration, packet capture, communication, and network-card configuration tools.
 
-This software provides camera users with simple and fast functions such as view, camera settings, algorithm settings, IP configuration, point cloud viewing, packet capture tools, communication tools, firewall configuration and other functions. Currently, this software supports the opening and viewing of multiple devices, supports viewing the output of depth images, intensity images, point cloud images, and RGB images. It also supports the reading and setting of parameters such as basic camera functions and basic configuration of algorithms.
+## Installation and network configuration
 
-Through this application, users can view and save high-precision image data obtained from the camera, camera configuration, and algorithm detailed data, etc.
+### Recommended system configuration
 
-## 2. Installation
+| Configuration item | Windows | Linux |
+| --- | --- | --- |
+| Operating system | Windows 10 (64-bit) or Windows 11 (64-bit) | Ubuntu (64-bit) |
+| Memory | 4 GB or more | 4 GB or more |
+| Network adapter and cable | Gigabit Ethernet or faster | Gigabit Ethernet or faster |
 
-### 2.1 Recommended system configuration
+### IP address and gateway configuration
 
-| Configuration items | Recommended configuration |
-| --- | --- |
-| Operating System | Windows10 (64-bit) Windows11 (64-bit) |
-| Memory | 4G and above |
-| Network card/network cable | Gigabit and above |
+The camera uses a static IP address. Its default IP address is `192.168.100.82`, and the default gateway may be left blank. Use subnet mask `255.255.0.0` on Windows and `255.255.255.0` on Linux.
 
-| Configuration items | Recommended configuration |
-| --- | --- |
-| Operating System | Ubuntu (64-bit) |
-| Memory | 4G and above |
-| Network card/network cable | Gigabit and above |
-
-### 2.2 IP address and gateway configuration
-
-- The connection method is a fixed IP address connection. If you need to modify the IP, you can modify it through this software.
-
-- The camera's default IP address is: 192.168.100.82.
-
-- Default gateway can be empty.
-
-- The subnet mask is 255.255.0.0, 255.255.255.0 under Linux platform
-
-- Set the IP address of the Ethernet connected to the camera on the host computer to 192.168.100.x. x represents any number between 3 and 254. The host computer IP and the camera IP cannot be the same.
-
-- For example, when the camera IP is 192.168.100.12, the host computer IP address is set to 192.168.100.89, and the subnet mask is 255.255.0.0 as shown in the figure below:
+Set the host computer's Ethernet adapter connected to the camera to `192.168.100.x`, where `x` is any number from `3` to `254` and does not match the camera IP. For example, when the camera IP is `192.168.100.12`, set the host computer IP to `192.168.100.89`.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7147dc86-d32e-4afb-8575-65f404e42d47.avif" alt="Illustration related to IP address and gateway configuration" />
+  <img src="/images/developers/software-lxcameraviewer-ip-address-and-gateway-configuration.avif" alt="Illustration related to IP address and gateway configuration" />
 </Frame>
 
-### 2.3 Host computer installation
+### Install the software
 
-- Double-click to open the host computer installation package Lanxin-MRDVS-x.x.x.xxxx.exe
-
-- Click to allow the app to make changes to the device
-
-- Select the language to be used during installation (Figure 1)
-
-- Select the installation path, it is recommended to use the default installation path (Figure 2)
-
-- Check [Create desktop shortcut] (Figure 3)
-
-- After the installation is completed, uncheck [Run Lanxin-MRDVS] and click Finish (Figure 4)
-
-- When opening the host computer for the first time, you need to use administrator rights to open it. Right-click the desktop software icon and click [Run as administrator] (Figure 5)
+<Steps>
+  <Step title="Start the installer">
+    Double-click `Lanxin-MRDVS-x.x.x.xxxx.exe` and allow the application to make changes to the device.
+  </Step>
+  <Step title="Choose the language and installation path">
+    Select the installation language and path. Keep the default path unless you have a specific requirement, and select **Create desktop shortcut**.
+  </Step>
+  <Step title="Start the software for the first time">
+    After installation, right-click the desktop icon and select **Run as administrator**.
+  </Step>
+</Steps>
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8b8740cd-5d09-4b72-bfb0-58675ea2cda1.avif" alt="Illustrations related to the installation of the host computer" />
+  <img src="/images/developers/software-lxcameraviewer-the-installation-of-the-host-computer.avif" alt="Illustrations related to the installation of the host computer" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/33d54828-e95f-45b1-9c2c-ba58053fe1e1.avif" alt="Illustrations related to host computer installation 2" />
+  <img src="/images/developers/software-lxcameraviewer-host-computer-installation-2.avif" alt="Illustrations related to host computer installation 2" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/96ac4701-9de1-4083-a2f4-6a75ab387aeb.avif" alt="Illustrations related to host computer installation 3" />
+  <img src="/images/developers/software-lxcameraviewer-host-computer-installation-3.avif" alt="Illustrations related to host computer installation 3" />
 </Frame>
 
 Figure 3
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a26f6a36-047d-46c6-95a8-d60e1335433c.avif" alt="Illustrations related to host computer installation 4" />
+  <img src="/images/developers/software-lxcameraviewer-host-computer-installation-4.avif" alt="Illustrations related to host computer installation 4" />
 </Frame>
 
 Figure 4
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7d1860fc-2d7f-4069-a405-26b39933f032.avif" alt="Illustrations related to host computer installation 5" />
+  <img src="/images/developers/software-lxcameraviewer-host-computer-installation-5.avif" alt="Illustrations related to host computer installation 5" />
 </Frame>
 
 Figure 5
 
-### 2.4 Firewall configuration
+### Configure the firewall
 
-To open the camera, you need to turn off the firewall. The setting process is as shown in the figure below (taking WIN10 as an example):
+If the software cannot open the camera, temporarily disable the firewall for the camera adapter on a trusted debugging network. The following example uses Windows 10.
 
-Open this software and click the [Other Tools] button above
+Open the software and click **Other Tools**.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1a1d2044-52c3-4094-aee5-ba2e74529e6c.avif" alt="Firewall configuration related icons" />
+  <img src="/images/developers/software-lxcameraviewer-firewall-configuration.avif" alt="Firewall configuration related icons" />
 </Frame>
 
 Figure 1
 
-Select [Network Card Configuration Tool] in the pop-up bar on the right
+Select **Network Card Configuration Tool** in the panel on the right.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/347b75c7-d48d-449f-a4db-a17d48d7b801.avif" alt="Firewall configuration related diagram 2" />
+  <img src="/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-2.avif" alt="Firewall configuration related diagram 2" />
 </Frame>
 
 Figure 2
 
-In the network card configuration tool, click the button below [Open/Close]
+In the network-card configuration tool, click **Open/Close**.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/14eb74a6-5be7-4aed-a5f1-d0ae5c8f149f.avif" alt="Firewall configuration related diagram 3" />
+  <img src="/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-3.avif" alt="Firewall configuration related diagram 3" />
 </Frame>
 
-![Firewall configuration related icon 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/df0eba42-c3b8-4230-87ba-b4676ab32e37.avif)Figure 3
+![Firewall configuration related icon 4](/images/developers/software-lxcameraviewer-firewall-configuration-4.avif)Figure 3
 
-When the pop-up is shown in Figure 4, the firewall is on. When the pop-up is as shown in Figure 5 and Figure 6 is pop-up in the lower right corner, the firewall is off.
+The pop-up shown in Figure 4 indicates that the firewall is enabled. The pop-up shown in Figure 5, together with the notification in the lower-right corner shown in Figure 6, indicates that it is disabled.
 
-![Firewall configuration related icon 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/079270ad-0c8d-4a96-9ffa-096bc980f692.avif) ![Firewall configuration related icon 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5ebbf202-28ae-4474-93df-85549c0bd78c.avif)
+![Firewall configuration related icon 5](/images/developers/software-lxcameraviewer-firewall-configuration-5.avif) ![Firewall configuration related icon 6](/images/developers/software-lxcameraviewer-firewall-configuration-6.avif)
 
 Figure 4 Figure 5
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6ba5fc85-0e0f-46e4-80b0-a23e2551cf85.avif" alt="Firewall configuration related diagram 7" />
+  <img src="/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-7.avif" alt="Firewall configuration related diagram 7" />
 </Frame>
 
 Figure 6
 
-If the above method does not work, you can click the [Firewall Configuration Page] button as shown below and wait for the page to open.
+If this method does not work, click **Firewall Configuration Page** and wait for the page to open.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b807be23-6a9f-4930-bf30-5919fa9e8349.avif" alt="Firewall configuration related diagram 8" />
+  <img src="/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-8.avif" alt="Firewall configuration related diagram 8" />
 </Frame>
 
 Figure 7
 
-**Firewall needs to be turned off**
+<Warning>
+  Do not leave the firewall disabled on a production network. Restore protection after debugging or create a rule for the required application.
+</Warning>
 
-## 3. LxCameraViewer Instructions for Use
+## Use LxCameraViewer
 
-### 3.1 Overview of software interface
+### Software interface overview
 
-#### 3.1.1 Overview of the software interface (without opening the camera)
+#### Camera not opened
 
-The initial interface of this software is divided into 3 major sections:
+The initial interface contains the following areas:
 
-- List bar (number 1 blue area):
-
-    - Device list
-
-    - Current information
-
-    - Device information
-
-- Menu bar (number 2 green area):
-
-    - Three right toolbar buttons
-
-    - Interface language switching button
-
-- Image display bar (number 4 red area):
-
-    - Point cloud display
-
-    - Depth map display
-
-    - Intensity graph display
-
-    - RGB image display
-
-- Double-click in the menu bar area to maximize/minimize, hold down the left mouse button and move the mouse to drag the interface
+- **List panel**: Device list, current information, and device information.
+- **Top menu bar**: Tools and interface language selection.
+- **Image display area**: Point cloud, depth, intensity, and RGB views.
+- Double-click the menu bar to maximize or restore the window. Drag the menu bar to move the window.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7b8b763b-d8a2-4e74-ac00-1e7f5ca4fff6.avif" alt="Software interface overview (camera not opened) related icons" />
+  <img src="/images/developers/software-lxcameraviewer-software-interface-overview-camera-not-opened.avif" alt="Software interface overview (camera not opened) related icons" />
 </Frame>
 
-#### 3.1.2 Software interface overview (camera turned on)
+#### Camera opened
 
-After opening the camera, there is an additional function bar on the right side of the interface (number 3 rouge area)
+After you open a camera, the function bar appears on the right.
 
-- Basic tools that provide the following functions:
-
-- Image display settings
-
-    - 2D settings
-
-    - 3D settings
-
-    - filtering
-
-    - Hardware interface
-
-    - Collection settings
-
-    - Function settings
-
-- Apply algorithms to provide the following functions:
-
-    - Working mode settings
-
-    - Algorithm mode settings
-
-    - Algorithm version display
-
-    - Algorithm detailed settings
-
-- Others, providing the following functions:
-
-    - Load local point cloud
-
-    - IP configuration tool
-
-    - Packet capture tool
-
-    - Network card configuration tool
-
-    - Communication tools
-
-    - GPU enabled
-
-    - Log level
+- **Basic tools**: Image display settings, 2D settings, 3D settings, filtering, hardware interface, collection settings, and function settings.
+- **Application algorithms**: Working mode settings, algorithm mode settings, algorithm version, and detailed algorithm settings.
+- **Other tools**: Load local point clouds, IP configuration, packet capture, network-card configuration, communication, GPU enablement, and log level.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e2f50c2a-95f2-4019-a47b-215f46aeb5b4.avif" alt="Software interface overview (camera turned on) related icons" />
+  <img src="/images/developers/software-lxcameraviewer-software-interface-overview-camera-turned-on.avif" alt="Software interface overview (camera turned on) related icons" />
 </Frame>
 
-### 3.2 Turning the device on and off
+### Open and close devices
 
-#### 3.2.1 Device list
+#### Device list
 
-- The device list is located in the upper left corner of the interface (in the red box in Figure 1)
-
-- The [Refresh] button is located next to the device list (in the red box in Figure 2)
-
-- The device list collapsing/expanding button is located to the right of the refresh button (green box in Figure 2). After collapsing, see Figure 3.
-
-- Three properties will be displayed in the device list bar:
-
-    - Whether the camera is turned on (in the rouge box in Figure 2, device one is turned on, but device two is not turned on)
-
-    - Camera ID (inside the yellow box in Figure 2)
-
-    - Camera IP, hover the mouse over the camera ID to view (shown in the red box in Figure 4 is the IP of the second camera)
-
-- The device list sets a button for each camera found. Click the text [On] or [Close] to turn on or off the camera (in the blue box in Figure 2). The button will also display the current status information of the camera (Figure 5)
-
-- The font of the selected camera in the device list bar is blue, and the font of other cameras is white (as shown in Figure 6, the second camera is selected but not opened, and the first camera is opened but not selected)
-
-- Multiple devices can be opened in the device list at the same time (as shown in Figure 7), but you need to pay attention to whether the network bandwidth is sufficient. Click the camera ID to switch to view different cameras.
+- The device list is in the upper-left corner. Use **Refresh** to search for cameras and the adjacent button to collapse or expand the list.
+- Each device shows its open state, camera ID, and IP address. Hover over a camera ID to view its IP address.
+- Click **Open** or **Close** to control a connection. The button also shows the current state.
+- The selected device is shown in blue. You can open multiple devices if the network has enough bandwidth; click a camera ID to switch between devices.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/8cfcca2f-d122-4354-a8cf-5efa532028c2.avif" alt="Device list related icons" />
+  <img src="/images/developers/software-lxcameraviewer-device-list.avif" alt="Device list related icons" />
 </Frame>
 
 Figure 1
 
-![Device list related icon 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/720170de-c154-457f-b05e-50ad20a1a722.avif) ![Device list related icon 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76d9c825-e6ea-4d68-bd83-d6e550f8ea75.avif)
+![Device list related icon 2](/images/developers/software-lxcameraviewer-device-list-2.avif) ![Device list related icon 3](/images/developers/software-lxcameraviewer-device-list-3.avif)
 
 Figure 2 Figure 3
 
-![Device list related icon 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b6fceb9c-d6e4-4051-a48f-3336850ecd35.avif) ![Device list related icon 5](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c9a2fd72-e489-4e66-ab3b-805c320d1e96.avif)
+![Device list related icon 4](/images/developers/software-lxcameraviewer-device-list-4.avif) ![Device list related icon 5](/images/developers/software-lxcameraviewer-device-list-5.avif)
 
 Figure 4 Figure 5
 
-![Device list related icon 6](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3794ca81-4a2e-4eef-95b2-113facaeefd2.avif) ![Device list related icon 7](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1964dd45-e345-45af-9348-04b1ba499c94.avif)
+![Device list related icon 6](/images/developers/software-lxcameraviewer-device-list-6.avif) ![Device list related icon 7](/images/developers/software-lxcameraviewer-device-list-7.avif)
 
 Figure 6 Figure 7
 
-### 3.3 Application information
+### Current information
 
-- The device list is located in the middle of the left side of the interface (in the red box in Figure 1)
-
-- The device list will display the following information:
-
-    - All information about the camera (red box in Figure 2)
-
-    - Software operation (green box in Figure 2)
-
-    - Operation results (blue box in Figure 2)
-
-    - Flow acquisition results (rouge color box in Figure 4)
-
-- When the text is too long, you can drag the blue scroll bar below to view the complete text (as shown in Figure 3, there is an extra blue scroll bar at the bottom)
-
-- The current information displays up to 25 related information, which can be scrolled using the mouse wheel. Old information will be overwritten.
-
-- Click the Collapse button to collapse the current information (in the yellow box in Figure 2)
+- The current information area is in the middle-left of the interface. It displays camera information, software operations, operation results, and stream results.
+- Use the bottom scrollbar or mouse wheel to view long content. The area keeps up to 25 entries; older entries are overwritten.
+- Click the collapse button to hide the area.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f399ea28-827f-487f-85b7-7e9897b3a32a.avif" alt="Application information related icons" />
+  <img src="/images/developers/software-lxcameraviewer-application-information.avif" alt="Application information related icons" />
 </Frame>
 
 Figure 1
 
-![Image related to application information 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/150dd70b-5072-4fd8-957f-a0d198ed3155.avif) ![Image related to application information 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/95953500-0432-4510-b0ac-e20b95894bb5.avif) ![Image related to application information 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/223211b0-34d8-4b8a-a775-2cf65b18db6c.avif)
+![Image related to application information 2](/images/developers/software-lxcameraviewer-application-information-2.avif) ![Image related to application information 3](/images/developers/software-lxcameraviewer-application-information-3.avif) ![Image related to application information 4](/images/developers/software-lxcameraviewer-application-information-4.avif)
 
 Figure 2 Figure 3 Figure 4
 
-### 3.4 Device information
+### Device information
 
-- The device information is located in the lower left corner of the interface (in the red box in Figure 1)
-
-- Device information displays relevant information about the device currently selected in the device list. The information is as follows:
-
-    - Serial number: unique identifier of the device
-
-    - Camera ID: The unique identifier of the device. You can use SKD to open the device according to the camera ID.
-
-    - IP address: IP address of the device
-
-    - Physical address: MAC address of the device
-
-    - Software version: device built-in software version
-
-    - Algorithm version: device built-in algorithm version (displayed after opening the camera)
-
-    - Network card network speed: When the device is not turned on, it is disconnected. After it is turned on, the network card network cable determines whether it is 100 Mbit or Gigabit.
-
-    - Camera type: device model
-
-    - Mirror version: device built-in mirror version (displayed after opening the camera)
-
-- Click the fold button to fold the device information (in the yellow box in Figure 2)
-
-- Right-click an item in the device information to copy the information (as shown in Figure 3, copy the network card speed information)
+- The device information area is in the lower-left corner and shows the selected device's:
+  - Serial number
+  - Camera ID, which the SDK uses to open the device
+  - IP address
+  - MAC address
+  - Software version
+  - Algorithm version (shown after the camera is opened)
+  - Network speed (disconnected when closed; 100 Mbps or Gigabit when open, depending on the adapter and cable)
+  - Camera model
+  - Image version (shown after the camera is opened)
+- Click the collapse button to hide the area. Right-click an item to copy its value.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9652a7cc-2a78-4f7a-94cb-35a679b171a5.avif" alt="Device information related icons" />
+  <img src="/images/developers/software-lxcameraviewer-device-information.avif" alt="Device information related icons" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b2b1e261-dd83-4d61-82da-e82008fefa83.avif" alt="Device information related icon 2" />
+  <img src="/images/developers/software-lxcameraviewer-device-information-2.avif" alt="Device information related icon 2" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d9a413f8-5329-4057-92b2-3da999a09560.avif" alt="Device information related icon 3" />
+  <img src="/images/developers/software-lxcameraviewer-device-information-3.avif" alt="Device information related icon 3" />
 </Frame>
 
 Figure 3
 
-### 3.5 Image and data and saving
+### Image preview and saving
 
-#### 3.5.1 Preview
+#### Preview
 
 - The middle area of the image and image data and image related operation software (inside the red box in Figure 1)
 
@@ -363,18 +245,18 @@ Figure 3
 - The white font at the bottom is camera and image data (as shown in Figure 2)
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fa05fb01-9d59-4202-992c-e770002d078d.avif" alt="Preview related icons" />
+  <img src="/images/developers/software-lxcameraviewer-preview.avif" alt="Preview related icons" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/007f900d-d780-4883-b875-b6370bbd87a7.avif" alt="Preview related icon 2" />
+  <img src="/images/developers/software-lxcameraviewer-preview-2.avif" alt="Preview related icon 2" />
 </Frame>
 
 Figure 2
 
-#### 3.5.2 Image (flow) control
+#### Image stream control
 
 - [Start/stop flow] button: Click to start or stop the flow of the device
 
@@ -403,18 +285,18 @@ Figure 2
 - In Figure 3, the device stops flowing and no type of picture can be seen.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/10bcfd4f-2447-44fb-9229-60922e39b3a3.avif" alt="Image (flow) control related icons" />
+  <img src="/images/developers/software-lxcameraviewer-image-flow-control.avif" alt="Image (flow) control related icons" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/0732a8cf-e7fa-4a4d-bc1e-27e92d99234d.avif" alt="Image (flow) control related diagram 2" />
+  <img src="/images/developers/software-lxcameraviewer-image-flow-control-related-diagram-2.avif" alt="Image (flow) control related diagram 2" />
 </Frame>
 
 Figure 3
 
-#### 3.5.3 Image data
+#### Image data
 
 - Display camera temperature (red box in Figure 4)
 
@@ -437,12 +319,12 @@ Figure 3
 - When the frame rate is higher than 12, the background color is green, if it is greater than 6 and less than 12, it is orange, and if it is less than 6, it is red.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/066e6c1a-c11a-463d-9173-f8d8a0c9df32.avif" alt="Image data related icons" />
+  <img src="/images/developers/software-lxcameraviewer-image-data.avif" alt="Image data related icons" />
 </Frame>
 
 Figure 4
 
-#### 3.5.4 Image display
+#### Image display
 
 - You can choose different display methods:
 
@@ -458,15 +340,15 @@ Figure 4
 
 - Left-click the image to select pixels, and the arrow keys can move the selected pixels (Figure 6)
 
-![Image related to image display](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/038be00d-997d-47ea-8c6e-3da9cb2f5737.avif)![Image related to image display 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a3715e8b-c3fa-417a-bccd-c819ea029b5a.avif)
+![Image related to image display](/images/developers/software-lxcameraviewer-image-display.avif)![Image related to image display 2](/images/developers/software-lxcameraviewer-image-display-2.avif)
 
 Figure 5 Figure 6
 
-![Image related to image display 3](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/320369a9-49ff-4524-8019-622ada69f7c5.avif)![Image related to image display 4](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08a8e2a6-a3ee-4d1b-8b6c-a2c30d3d60f2.avif)
+![Image related to image display 3](/images/developers/software-lxcameraviewer-image-display-3.avif)![Image related to image display 4](/images/developers/software-lxcameraviewer-image-display-4.avif)
 
 Figure 7 Figure 8
 
-#### 3.5.5 Point cloud image operation
+#### Point cloud operations
 
 - Press and hold the left button on the point cloud image and drag to rotate the camera perspective
 
@@ -499,7 +381,7 @@ Figure 7 Figure 8
 | . | Use the average center point as the focus to switch to the top view, which is not supported in obstacle avoidance mode |
 | / | Use the average center point as the focus to turn to the upward view, which is not supported in obstacle avoidance mode |
 
-### 3.6 Menu bar
+### Menu bar
 
 - The menu bar includes [Basic Functions] [Application Algorithm] [Others] [Language] (Figure 1)
 
@@ -512,38 +394,38 @@ Figure 7 Figure 8
 - Click [Language] to display as shown in Figure 5
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e35d1c41-3e31-4595-92e6-4168ccb63928.avif" alt="Menu bar related icons" />
+  <img src="/images/developers/software-lxcameraviewer-menu-bar.avif" alt="Menu bar related icons" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/5d0d806a-9d20-4881-b74d-f5f6261d6b6c.avif" alt="Menu bar related icons 2" />
+  <img src="/images/developers/software-lxcameraviewer-menu-bar-2.avif" alt="Menu bar related icons 2" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ec624ff5-e5e5-4399-8f0a-122fa54b23de.avif" alt="Menu bar related icons 3" />
+  <img src="/images/developers/software-lxcameraviewer-menu-bar-3.avif" alt="Menu bar related icons 3" />
 </Frame>
 
 Figure 3
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d18452fe-8cbe-4826-95f9-3429617c8b1d.avif" alt="Menu bar related icons 4" />
+  <img src="/images/developers/software-lxcameraviewer-menu-bar-4.avif" alt="Menu bar related icons 4" />
 </Frame>
 
 Figure 4
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6bb109ee-e3fc-4d19-8013-65a21fda8286.avif" alt="Menu bar related icons 5" />
+  <img src="/images/developers/software-lxcameraviewer-menu-bar-5.avif" alt="Menu bar related icons 5" />
 </Frame>
 
 Figure 5
 
-### 3.7 Function bar
+### Function bar
 
-#### 3.7.1 Display function
+#### Display functions
 
 - Collapse the right column (red box in Figure 1)
 
@@ -556,12 +438,12 @@ Figure 5
 - Expanded state and collapsed state (2D in Figure 1 is set to the expanded state, others are set to the collapsed state)
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/08dceb49-92e5-4dba-8ea9-422242ae540a.avif" alt="Display function related icons" />
+  <img src="/images/developers/software-lxcameraviewer-display-function.avif" alt="Display function related icons" />
 </Frame>
 
 Figure 1
 
-#### 3.7.2 Basic tools
+#### Basic tools
 
 - Click [Basic Tools] on the menu bar to see the relevant settings of the basic tools on the right side of the interface (Figure 1)
 
@@ -570,18 +452,18 @@ Figure 1
 - The function name and enumeration value corresponding to the interface are displayed in the blue box below (Figure 2)
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/1634ffda-c43e-49ce-a3c1-6d327b4c1397.avif" alt="Illustrations related to basic tools" />
+  <img src="/images/developers/software-lxcameraviewer-basic-tools.avif" alt="Illustrations related to basic tools" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c1bdfe8e-e7d0-47fa-8171-1f9b73c84073.avif" alt="Illustrations related to basic tools 2" />
+  <img src="/images/developers/software-lxcameraviewer-basic-tools-2.avif" alt="Illustrations related to basic tools 2" />
 </Frame>
 
 Figure 2
 
-##### 3.7.2.1 Image display settings
+##### Image display settings
 
 - [Display camera model] Display (Figure 4) or not display (Figure 5) the camera model on the point cloud image
 
@@ -602,24 +484,24 @@ Figure 2
 - [Maximum intensity] Modify the maximum intensity of the depth map and point cloud image displayed on the interface, and the camera output remains unchanged.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3631db86-23a0-4ed3-a73a-1748d1a97727.avif" alt="Image display settings related icons" />
+  <img src="/images/developers/software-lxcameraviewer-image-display-settings.avif" alt="Image display settings related icons" />
 </Frame>
 
 Figure 3
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fe564767-2b53-4033-b8b7-d50612a5f49b.avif" alt="Illustrations related to image display settings 2" />
+  <img src="/images/developers/software-lxcameraviewer-image-display-settings-2.avif" alt="Illustrations related to image display settings 2" />
 </Frame>
 
 Figure 4
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2adbbdfb-2ddf-4b3d-a201-00feab5b6348.avif" alt="Illustrations related to image display settings 3" />
+  <img src="/images/developers/software-lxcameraviewer-image-display-settings-3.avif" alt="Illustrations related to image display settings 3" />
 </Frame>
 
 Figure 5
 
-##### 3.7.2.2 2D settings
+##### 2D settings
 
 - [RGB Width] RGB image pixel width, determined by the device model and cannot be set
 
@@ -638,12 +520,12 @@ Figure 5
 - [Gain] Manual gain, can be set when automatic exposure is turned off
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/7a6dbead-0b0e-475a-b5a1-389f486de155.avif" alt="2D settings related icons" />
+  <img src="/images/developers/software-lxcameraviewer-2d-settings.avif" alt="2D settings related icons" />
 </Frame>
 
 Figure 6
 
-##### 3.7.2.3 3D settings
+##### 3D settings
 
 - [3D Width] The width of the point cloud image is determined by the device model and cannot be set.
 
@@ -694,12 +576,12 @@ Figure 6
 - [3D Frame Rate] Set the point cloud frame rate within the device frame rate range
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b1dcad39-ddcd-4db3-9940-9a6776a8e5ef.avif" alt="3D settings related icons" />
+  <img src="/images/developers/software-lxcameraviewer-3d-settings.avif" alt="3D settings related icons" />
 </Frame>
 
 Figure 7
 
-##### 3.7.2.4 Filter settings
+##### Filter settings
 
 - [Minimum depth] The lower limit of the depth map's false color or distance. Below this value, the false color is displayed as black and is forcibly set to zero.
 
@@ -722,12 +604,12 @@ Figure 7
 - Note: Setting the smoothing level, noise level, and time domain level to 0 means turning off filtering.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6178fcc4-ee41-41dd-b01e-42b877764fd9.avif" alt="Illustrations related to filter settings" />
+  <img src="/images/developers/software-lxcameraviewer-filter-settings.avif" alt="Illustrations related to filter settings" />
 </Frame>
 
 Figure 8
 
-##### 3.7.2.5 Hardware interface
+##### Hardware interface
 
 - [IO output mode] You can set the IO interface output format
 
@@ -744,12 +626,12 @@ Figure 8
 - [Get IO status] Get the current IO interface return status
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f6a48416-31fc-41c0-869f-d745b3c54c99.avif" alt="Hardware interface diagram" />
+  <img src="/images/developers/software-lxcameraviewer-hardware-interface-diagram.avif" alt="Hardware interface diagram" />
 </Frame>
 
 Figure 9
 
-##### 3.7.2.6 Collection settings
+##### Collection settings
 
 - [Frame synchronization] Control the environmental conditions of each type of image capture to be consistent when saving images
 
@@ -759,7 +641,7 @@ Figure 9
 
     - Regular (unordered point cloud): The number of point clouds remains unchanged, width = width\*height, height = 1, as shown in Figure 3
 
-    - Ordered point cloud: The number of point clouds remains unchanged, width = TOF width, height = TOF height, as shown in Figure 4
+    - Ordered point cloud: The number of point clouds remains unchanged, width = ToF width, height = ToF height, as shown in Figure 4
 
 - [Point cloud saving format] Set the data format for saving point clouds
 
@@ -776,12 +658,12 @@ Figure 9
 Note: For a 640\*480 image, the ascii saving time is about 6.6s, and the binary saving time is about 32ms. The binary saving speed is 206 times that of ascii. It is recommended to save in binary format.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/571ef290-056a-4f5a-8c4a-cee7c35fd78c.avif" alt="Collection settings related icons" />
+  <img src="/images/developers/software-lxcameraviewer-collection-settings.avif" alt="Collection settings related icons" />
 </Frame>
 
 Figure 10
 
-##### 3.7.2.7 Function Settings
+##### Function settings
 
 - [Select configuration] You can select the camera parameter configuration that has been set
 
@@ -806,12 +688,12 @@ Figure 10
 - [Camera Restart] Restart the camera. The camera will not turn off automatically, but it will enter the reconnection state. Please do not do other operations when reconnecting.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/18de7052-ce07-4e34-8108-d51560225d1e.avif" alt="Function settings related icons" />
+  <img src="/images/developers/software-lxcameraviewer-function-settings.avif" alt="Function settings related icons" />
 </Frame>
 
 Figure 11
 
-#### 3.7.3 Application algorithm
+#### Application algorithms
 
 - Click [Apply Algorithm] on the menu bar to see the relevant settings of the application algorithm on the right side of the interface (Figure 1)
 
@@ -828,30 +710,30 @@ Figure 11
 - [Algorithm version] displays the version number of the currently selected algorithm
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/fb61c0f8-1d50-40eb-abe4-45d837a52c48.avif" alt="Illustrations related to application algorithms" />
+  <img src="/images/developers/software-lxcameraviewer-application-algorithms.avif" alt="Illustrations related to application algorithms" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/d876d359-e0a8-404d-8287-5871e2c4ce18.avif" alt="Application algorithm related diagram 2" />
+  <img src="/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-2.avif" alt="Application algorithm related diagram 2" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/a21b97d3-250e-4c14-b41e-68c62e02919a.avif" alt="Application algorithm related diagram 3" />
+  <img src="/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-3.avif" alt="Application algorithm related diagram 3" />
 </Frame>
 
 Figure 3
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/f7fb3525-ef8a-4a2e-9bb2-ca68a77a5a9d.avif" alt="Application algorithm related diagram 4" />
+  <img src="/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-4.avif" alt="Application algorithm related diagram 4" />
 </Frame>
 
 Figure 4
 
-##### 3.7.3.1 Obstacle avoidance algorithm
+##### Obstacle avoidance algorithm
 
 - Set the application algorithm to obstacle avoidance algorithm, and obstacle avoidance related configurations will be displayed.
 
@@ -893,7 +775,7 @@ Figure 4
 
 - For detailed obstacle avoidance settings, please see the obstacle avoidance documentation.
 
-##### 3.7.3.3 Pallet positioning
+##### Pallet positioning
 
 - Set the application algorithm to pallet positioning, and obstacle avoidance related configurations will be displayed.
 
@@ -943,7 +825,7 @@ Figure 4
 
 - For detailed settings of pallet detection, please refer to the pallet detection function documentation.
 
-#### 3.7.4 Other tools
+#### Other tools
 
 - [Load local point cloud] You can open point cloud files in .pcl, .png format and view them. Please refer to the tool description for details.
 
@@ -960,18 +842,18 @@ Figure 4
 - [Log Level] Control the detail level of log printing information
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/b8797c14-d930-417a-a6bd-85d45c22adbd.avif" alt="Other tools related icons" />
+  <img src="/images/developers/software-lxcameraviewer-other-tools.avif" alt="Other tools related icons" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/51669a0b-c3c1-4878-98e0-e436ceed6807.avif" alt="Other tools related icons 2" />
+  <img src="/images/developers/software-lxcameraviewer-other-tools-2.avif" alt="Other tools related icons 2" />
 </Frame>
 
 Figure 2
 
-## 4. Access the camera system
+## Access the camera system
 
 - Connect via ssh to the camera's IP address, port 22
 
@@ -992,44 +874,44 @@ Figure 2
 **Note: Please do not modify the system's built-in configuration at will, as it may cause the system to crash**
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/611909af-41f3-4eab-a4b0-74221d61b2f4.avif" alt="4. Access camera system related icons" />
+  <img src="/images/developers/software-lxcameraviewer-4-access-camera-system.avif" alt="4. Access camera system related icons" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6198bda7-f6e3-4a6c-a8e8-8782066d5fbf.avif" alt="4. Illustrations related to accessing the camera system 2" />
+  <img src="/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-2.avif" alt="4. Illustrations related to accessing the camera system 2" />
 </Frame>
 
 Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/40ff82ed-4595-4753-842c-48c471c5fbf9.avif" alt="4. Illustrations related to accessing the camera system 3" />
+  <img src="/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-3.avif" alt="4. Illustrations related to accessing the camera system 3" />
 </Frame>
 
 Figure 3
 
-## Tool description
+## Tool descriptions
 
-### 5.1 IP configuration tool
+### IP configuration tool
 
 - After opening the [IP Configuration Tool], as shown in Figure 1
 
 - Double-click the information after the MAC address to copy, double-click the information after the IP address, subnet mask, and gateway to write, click other options to cancel the modification, and press Enter to confirm the modification, as shown in Figure 2
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db8cd5ed-0942-4a8d-9719-a2401e268c52.avif" alt="Windows IPv4 network settings interface" />
+  <img src="/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface.avif" alt="Windows IPv4 network settings interface" />
 </Frame>
 
 Figure 1
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4eca7e7e-b50d-43ac-ae67-ca82cd2062e3.avif" alt="Windows IPv4 network settings interface 2" />
+  <img src="/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface-2.avif" alt="Windows IPv4 network settings interface 2" />
 </Frame>
 
 Figure 2
 
-### 5.2 Communication tools
+### Communication tools
 
 - Open [Communication Tools] as shown in Figure 1
 
@@ -1038,12 +920,12 @@ Figure 2
 - Communication tools support multiple opening of different tabs
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3f776879-9244-4d03-be34-a4b1ed20fffa.avif" alt="Illustrations related to communication tools" />
+  <img src="/images/developers/software-lxcameraviewer-communication-tools.avif" alt="Illustrations related to communication tools" />
 </Frame>
 
 Figure 1
 
-### 5.3 Network card configuration tool
+### Network-card configuration tool
 
 - After opening the [Local Point Cloud Tool], as shown in Figure 1
 
@@ -1060,12 +942,12 @@ Figure 1
 - Language automatically follows this software
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/76495e2c-d92d-4f17-b2f8-21d1bb7b9072.avif" alt="Illustrations related to the network card configuration tool" />
+  <img src="/images/developers/software-lxcameraviewer-the-network-card-configuration-tool.avif" alt="Illustrations related to the network card configuration tool" />
 </Frame>
 
 Figure 1
 
-## Frequently Asked Questions and Solutions
+## Troubleshooting
 
 |  |  |
 | --- | --- |
@@ -1082,18 +964,18 @@ Figure 1
 
 ## Help
 
-### 7.1 About
+### About
 
 Click [About] in the upper right corner, or in the current information when the software is first started, you can view the software version number, SDK version number and other related information. Click the [Open Help Document] button to open this document, as shown in the figure below:
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/c3d926d9-7023-4d79-83d6-1a51ce88ad55.avif" alt="About related icons" />
+  <img src="/images/developers/software-lxcameraviewer-about.avif" alt="About related icons" />
 </Frame>
 
-### 7.2 User Manual
+### User manual
 
 Right-click the shortcut of this software → open the file location → return to the upper directory → you can view all related documents in Document, as shown in the figure below:
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9cbee533-fab9-4664-8a6b-0b6ea4bb2a34.avif" alt="User manual related icons" />
+  <img src="/images/developers/software-lxcameraviewer-user-manual.avif" alt="User manual related icons" />
 </Frame>

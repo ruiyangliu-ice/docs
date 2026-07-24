@@ -1,56 +1,42 @@
 ---
-title: "Case study: Bin-location status detection in an automated warehouse"
-sidebarTitle: "Library location status identification"
-description: "See how real-time bin-location status detection keeps AGV instructions accurate in a warehouse with mixed manual and automated handling."
+title: "Case study: Storage-location status recognition in an automated warehouse"
+sidebarTitle: "Storage-location status recognition"
+description: "An automated warehouse in southern China synchronized on-site storage-location data with its WMS using an RGB-D recognition system."
 ---
+
 ## Project background
 
+An automated warehouse in southern China uses multiple AGVs for material handling. Manual put-away and retrieval can leave the system's recorded occupancy behind the actual site state, which may affect AGV pickup and placement tasks.
+
 <Frame>
-  <img src="/images/external/c60631c163bf9220037d5aed.avif" alt="Warehouse display" />
+  <img src="/images/solutions/warehouse-cases-bin-location-status-warehouse-display.avif" alt="Automated warehouse site" />
 </Frame>
 
-An automated warehouse in South China deployed multiple AGVs to optimize the cargo handling process. However, in the daily operation of the warehouse, manual handling of goods inevitably occurs, causing the storage location occupancy status information obtained by the system to be updated untimely. Information lag may cause the AGV to receive wrong operating instructions, which not only reduces operating efficiency, but may also cause safety risks.
+## Solution selection
 
-To address this issue, the project uses a bin-location status detection system that monitors every location and sends current status information to the WMS in real time. This enables **digital management of bin locations** and helps AGVs pick and place goods more efficiently, reliably, and safely.
+The project needed both location occupancy and load-height information. Single-point laser ranging can miss gaps between loads, while an RGB camera cannot directly provide height. The final solution uses an RGB-D camera to capture color, depth, and point-cloud data and runs the location-recognition algorithm on the camera.
 
-## Solution
+## System implementation
 
-### Selection of storage location status recognition sensors
+- Capture 3D and color data from each location to identify occupancy and load height.
+- Send results to the WMS or dispatch system in JSON over TCP/IP, UDP, or HTTP.
+- Project records report more than one hundred sensors deployed for location-status monitoring.
 
-**•Single-point lidar:** Single-point lidar can only emit one laser beam at a time to form a point on the surface of an object. This ranging method can easily ignore the gaps between cartons or pallets, and then identify the current warehouse location as lacking goods or empty, causing stacking accidents.
+## On-site installation
 
-**•RGB camera:** When detecting the target area through deep learning, once an object outside the training set enters the warehouse, it may cause misdetection and give wrong warehouse location determination information. In addition, when judging warehouse locations with cargo stacking requirements, the information given by the RGB camera lacks cargo height information, making it difficult to arrange stacking tasks.
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/solutions/warehouse-cases-bin-location-status-real-shots-of-on-site-installation.avif" alt="Storage-location status sensor installation" />
+  </Frame>
+  <Frame>
+    <img src="/images/solutions/warehouse-cases-bin-location-status-real-shots-of-on-site-installation-2.avif" alt="Storage-location status equipment installation" />
+  </Frame>
+</Columns>
 
-**•Meier Micro Vision RGB-D Camera:** Can provide three-dimensional data and color information of warehouse locations, with built-in computing power and no need for an external industrial computer.
+## Results
 
-At the same time, Myer Micro Vision provides an integrated solution of warehouse location status recognition software and hardware, as well as professional model training and deployment guidance and other service support. Considering that the entire solution is cost-effective and easy to deploy, hundreds of sensors were deployed throughout the warehouse to implement comprehensive real-time monitoring of the warehouse location status.
-
-### Detailed introduction of the plan
-
-Meyer Micro Vision's 3D visual warehouse location status identification solution developed based on RGB-D cameras achieves accurate warehouse location identification by collecting 3D point cloud data and RGB data of the warehouse location. It monitors the occupancy status and cargo height information of each warehouse location in real time, provides detailed data support for mobile robots, realizes digital management of warehouse locations, and ensures accurate pick-and-place operations. The storage location identification algorithm is built into the camera, eliminating the need to add external computing units, reducing deployment complexity and reducing project costs.
-
-**•Comprehensive monitoring:** Accurately identify storage location status through three-dimensional data and color information collection, combined with AI technology.
-
-**•Easy deployment:** The storage location status recognition algorithm is placed on the camera side to reduce deployment and maintenance costs.
-
-**•Flexible communication:** Supports multiple communication methods such as TCP/IP, UDP, HTTP, etc., and reports data to the control system in JSON format in real time.
-
-**•Improve efficiency:** Transmit warehouse location information in real time to assist the dispatch system in allocating tasks quickly and accurately.
-
-### Actual photos of on-site installation
+The system synchronizes on-site location status with the higher-level system and provides data for AGV task assignment.
 
 <Frame>
-  <img src="/images/legacy/2205f92a-9651-4428-92f9-3dc89c626c4d/4666c929-7170-41d0-bb44-319bf524af8d.avif" alt="Illustrations related to real shots of on-site installation" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/4732a9df-998e-43d3-8c33-bb513dbae5b7/d676b314-f2e6-42a6-a1ae-7a2efe7d0ab9.avif" alt="Illustrations related to real shots of on-site installation 2" />
-</Frame>
-
-## Effect display
-
-As an expert in mobile robots and logistics warehousing automation visual solutions, Myer Micro Vision not only provides software and hardware integrated visual technology solutions, but also provides full-service support. It is committed to helping partners improve the level of logistics automation and achieve more stable, safer and smarter warehousing management.
-
-<Frame>
-  <img src="/images/legacy/fa40f906-8e87-498d-937b-34023ee6d188/312bce43-1a15-443e-8d8f-d9ce466d3b13.avif" alt="Effect display related icons" />
+  <img src="/images/solutions/warehouse-cases-bin-location-status-effect-display.avif" alt="Storage-location status recognition results" />
 </Frame>

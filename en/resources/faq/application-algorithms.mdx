@@ -1,184 +1,188 @@
 ---
 title: "Application algorithm FAQs"
-description: "Troubleshoot pallet recognition, obstacle avoidance, and other application algorithms."
+description: "Troubleshoot pallet recognition, obstacle avoidance, and application algorithm deployment issues."
 ---
-## FAQ
+
+Before troubleshooting, confirm that the camera data stream, host software, and algorithm firmware use compatible versions. Record the current configuration before changing parameters so you can restore it if needed.
+
+## Pallet recognition and obstacle avoidance
 
 <AccordionGroup>
-<Accordion title="Black pallet recognition fails">
+<Accordion title="Pallet recognition fails for a black pallet">
 
-**Possible reasons**
+**Possible cause**
 
-Black pallet imaging is incomplete
-
-**Resolution**
-
-1. Change "High Exposure" in "3D Settings" in the LxCameraViewer to 1400;<br />2. Set "Low Signal Threshold" in "Filter" to 20;<br />3. Set "Small Signal Detection" in "Filter" to 1
-
-</Accordion>
-
-<Accordion title="palletpro test is normal but the car body receives abnormal or failed test results">
-
-**Possible reasons**
-
-Software and embedded versions are not unified
+The point cloud for the black pallet is incomplete.
 
 **Resolution**
 
-Update embedded algorithm firmware
+1. In **3D Settings** in the host software, set **High Exposure** to `1400`.<br />2. In **Filter**, set **Low Signal Threshold** to `20`.<br />3. Set **Small Signal Detection** to `1`.
 
 </Accordion>
 
-<Accordion title="External parameter calibration error shows that the ground is not detected">
+<Accordion title="PalletPro works in the test tool, but the vehicle receives abnormal or failed results">
 
-**Possible reasons**
+**Possible cause**
 
-Ground point cloud not imaged
+The host software and embedded algorithm firmware versions do not match.
 
 **Resolution**
 
-Open the camera in the PC software, change the high exposure in the 3D settings to 1400, set the low signal threshold in the filter settings to 10, perform external parameter calibration, and modify it back to the original parameters after the calibration is completed.
+Update the embedded algorithm firmware.
 
 </Accordion>
 
-<Accordion title="Proximal external parameter calibration failed">
+<Accordion title="External-parameter calibration reports that the ground was not detected">
+
+**Possible cause**
+
+The ground point cloud was not captured.
 
 **Resolution**
 
-1. Check whether the pallet imaging is complete<br />2. Whether the distance between the pallet and the camera is about 1300mm
+Open the camera. Set **High Exposure** to `1400` in **3D Settings**, set **Low Signal Threshold** to `10` in **Filter**, and run external-parameter calibration. Restore the original values after calibration.
 
 </Accordion>
 
-<Accordion title="The pallet recognition result returns failed-1 or -11">
-
-**Possible reasons**
-
-No data or insufficient data
+<Accordion title="Near-field external-parameter calibration fails">
 
 **Resolution**
 
-Use the LxCameraViewer to confirm whether the camera produces pictures normally, or whether the filter is larger and filters out more point clouds.
+1. Check that the pallet point cloud is complete.<br />2. Check that the pallet is approximately `1300 mm` from the camera.
 
 </Accordion>
 
-<Accordion title="The pallet recognition result returns failed-2 or -12 or -16">
+<Accordion title="Pallet recognition returns `failed-1` or `failed-11`">
 
-**Possible reasons**
+**Possible cause**
 
-There is too little point cloud data and no pallet legs are detected.
+No data or insufficient data was received.
 
 **Resolution**
 
-Possible reasons<br />1. The lifting height of the camera or fork arm changes<br />2. The legs are blocked<br />3. The camera or fork arm tilts greatly<br />4. Insufficient leg imaging<br />5. The reflective column is too close to the pallet leg to affect the camera imaging<br />It is recommended to adjust the configuration parameters, adjust the reflective column, or adjust the forklift posture after confirmation through the palletpro software
+Use the host software to confirm that the camera produces images and that the filter settings are not removing too much point-cloud data.
 
 </Accordion>
 
-<Accordion title="The pallet recognition result returns failed-3 or -13">
+<Accordion title="Pallet recognition returns `failed-2`, `failed-12`, or `failed-16`">
 
-**Possible reasons**
+**Possible cause**
 
-The pallet leg size is sufficient or no pallet leg is detected
+There is not enough point-cloud data to detect the pallet legs.
 
 **Resolution**
 
-The special features of the pallet legs exceed the recognition range (the leg width or pallet width range can be adjusted)
+Check for the following conditions:<br />1. The camera or fork-arm lift height changed.<br />2. The pallet legs are blocked.<br />3. The camera or fork arms have excessive pitch.<br />4. The pallet legs are not imaged clearly.<br />5. A reflective post is too close to a pallet leg and affects imaging.<br />
+
+Use PalletPro to confirm the condition, then adjust the configuration, reflective post, or forklift pose as needed.
 
 </Accordion>
 
-<Accordion title="The pallet recognition result returns failed-4 or -14">
+<Accordion title="Pallet recognition returns `failed-3` or `failed-13`">
 
-**Possible reasons**
+**Possible cause**
 
-Camera installation height is not set
+The pallet-leg dimensions do not meet the configured limits, or no pallet leg was detected.
 
 **Resolution**
 
-Set installation height parameters or perform external parameter calibration
+The pallet-leg features are outside the recognition range. Adjust the leg-width or pallet-width range if appropriate.
 
 </Accordion>
 
-<Accordion title="The pallet recognition result returns failed-5 or -15">
+<Accordion title="Pallet recognition returns `failed-4` or `failed-14`">
 
-**Possible reasons**
+**Possible cause**
 
-The pallet verification failed; the pallet beam detection is abnormal or the pallet inclination angle is too large
+The camera installation height is not configured.
 
 **Resolution**
 
-The crossbar is not recognized. It is recommended to turn off the host computer to remove flying pixels, or adjust the docking distance to make the camera closer to the pallet, or change the crossbar detection ratio.
+Set the installation-height parameter or run external-parameter calibration.
 
 </Accordion>
 
-<Accordion title="Tray identification result returned failed-7">
+<Accordion title="Pallet recognition returns `failed-5` or `failed-15`">
 
-**Possible reasons**
+**Possible cause**
 
-The pallet leg width difference in the field of view is too large
+Pallet verification failed because the crossbar was not detected or the pallet pitch angle is too large.
 
 **Resolution**
 
-Check whether the pallet area has reflective pillars or is close to the wall, affecting the edge leg imaging.
+Use the host software to disable flying-pixel removal, move the camera closer by changing the docking distance, or adjust the crossbar detection ratio.
 
 </Accordion>
 
-<Accordion title="Tray identification result returned failed-8">
+<Accordion title="Pallet recognition returns `failed-7`">
 
-**Possible reasons**
+**Possible cause**
 
-The heading angle of the pallet in the field of view is too tilted (>30°)
+The pallet-leg widths differ too much within the field of view.
 
 **Resolution**
 
-Straighten pallet detection
+Check whether a reflective post is near the pallet or whether the pallet is close to a wall and its edge legs are not imaged correctly.
 
 </Accordion>
 
-<Accordion title="Communication or IO switches the obstacle avoidance configuration, but the obstacle avoidance configuration on the LxCameraViewer remains unchanged">
+<Accordion title="Pallet recognition returns `failed-8`">
+
+**Possible cause**
+
+The pallet heading angle in the field of view is too large (`> 30°`).
 
 **Resolution**
 
-1. Confirm whether the obstacle avoidance configuration of the standby switchover has been set up in advance<br />2. Confirm whether the flow is stopped and started, and then observe whether there is any change.
+Straighten the pallet before detection.
 
 </Accordion>
 
-<Accordion title="The software displays abnormal obstacle avoidance output results (example: 1000)">
-
-**Possible reasons**
-
-Algorithm version mismatch
+<Accordion title="Switching the obstacle-avoidance profile through communication or IO does not update the host software">
 
 **Resolution**
 
-Upgrade algorithm firmware
+1. Confirm that the target obstacle-avoidance profile has been configured in advance.<br />2. Stop and restart the data stream, then check whether the profile updates.
 
 </Accordion>
 
-<Accordion title="IO no output">
+<Accordion title="The obstacle-avoidance output shown in the software is abnormal, such as `1000`">
 
-**Possible reasons**
+**Possible cause**
 
-1. Confirm whether S2/S2max is a pull-up connection<br />2. Confirm the firmware version of S10/S10pro
+The algorithm version does not match the product.
 
 **Resolution**
 
-1. S2/S2max is connected to a pull-up resistor according to customer conditions<br />2. S10/S10pro is upgraded to the algorithm firmware version after V1.1.050E06_250527
+Upgrade the algorithm firmware.
 
 </Accordion>
 
-<Accordion title="There are no obstacles in the space ahead, avoid obstacles and trigger obstacle alarm">
+<Accordion title="IO has no output">
+
+**Possible causes**
+
+For S2/S2 Max, the pull-up wiring may be missing. For S10/S10 Pro, the algorithm firmware may be too old.
 
 **Resolution**
 
-1. Check the LxCameraViewer version<br />2. Check the camera firmware version<br />3. Check whether the obstacle avoidance parameter configuration has been issued
+1. Add a pull-up resistor for S2/S2 Max as required by the vehicle system.<br />2. Upgrade S10/S10 Pro algorithm firmware to `V1.1.050E06_250527` or later.
 
 </Accordion>
 
-<Accordion title="Library location detection, volume detection, and human body detection cannot open the camera after applying the algorithm software after updating the firmware">
+<Accordion title="Obstacle alarms trigger even though the space ahead is clear">
 
 **Resolution**
 
-Restart the camera again and turn on real-time refresh in the global settings of the application algorithm software.
+1. Check the host software version.<br />2. Check the camera firmware version.<br />3. Check that the obstacle-avoidance configuration was applied to the camera.
 
 </Accordion>
 
+<Accordion title="After a firmware update, the application algorithm software cannot open the camera">
+
+**Resolution**
+
+Restart the camera, then enable real-time refresh in **Global Settings** in the application algorithm software.
+
+</Accordion>
 </AccordionGroup>

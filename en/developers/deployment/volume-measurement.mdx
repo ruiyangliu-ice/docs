@@ -1,584 +1,158 @@
 ---
 title: "Deploy volume measurement"
-description: "Deploy MRDVS M Series cameras for static or dynamic volume measurement without an external industrial computer."
+description: "Deploy volume measurement with M Series cameras, including installation, extrinsic calibration, region configuration, and result integration."
 hidden: true
 ---
-## 1. Introduction
 
-The volume detection algorithm is developed by Meyer Micro Vision (MRDVS) and is specifically used in volume measurement scenarios. It is used in self-developed M series cameras in logistics, express delivery, coal yards, warehousing and other scenarios. The volume detection algorithm runs inside the camera, eliminating the need for an external industrial computer. The algorithm supports static and dynamic detection.
+The volume-measurement algorithm runs on the camera and measures the length, width, and height of static or moving objects. Deployment requires a rigid installation, network connection, extrinsic calibration, and detection-region configuration. Connect multiple cameras to the same network through a gigabit switch.
 
-The software only requires the user to calibrate the external parameters of the camera and draw the detection range, and then it can detect and measure single/multiple objects. External parameter calibration can automatically obtain calibration results and support multi-camera splicing detection.
+<Info>
+  This is a hidden historical deployment guide. Algorithm firmware and the dedicated host application are delivered per project. Confirm that the camera, firmware, and software versions match before deployment.
+</Info>
 
-This article mainly introduces the deployment and use of Meyer micro-vision volume detection function.
+## Scope
 
-## 2. Volume detection application scenarios
+This workflow applies to logistics, parcel, warehousing, and bulk-material volume-measurement projects using M Series cameras. The algorithm measures one or more objects in the detection region. Object identification, weight collection, and business-system association are handled by the upper-layer system.
 
-### 2.1 Logistics industry
+See the [M Series ToF cameras](/en/products/m-series/m4-overview "M Series ToF cameras") for product information.
 
-1. By obtaining information such as the volume and weight of goods, we can achieve refined operations, which will help improve vehicle loading rates, reduce vehicle costs, transportation costs and labor costs, and achieve cost reduction and efficiency improvement throughout the entire process.
+## Installation and system preparation
 
-2. It can quickly detect the volume and weight of goods/boxes and calculate freight with one click. Together with the floor scale, it can also effectively measure trucks and container trucks to ensure that the entire vehicle is not overweight.
+### Hardware installation
 
-### 2.2 Express Industry
-
-When sending and receiving express delivery, with the help of intelligent volume measurement equipment, information such as the volume and weight of the goods can be quickly obtained. The data is connected to the internal system for easy search and review, which not only avoids the problem of data loss, but also effectively reduces manual investment and improves work efficiency.
-
-### 2.3 Coal mining industry
-
-Traditional methods for measuring the volume of large coal ore piles usually use total stations and RTK single-point measurement methods, and require manual extraction of feature points accurately. However, because large coal ore piles are usually inconvenient to climb, it is extremely difficult to extract precise feature points. At the same time, the single-point measurement method has low data density and cannot accurately obtain the volume of coal ore piles, resulting in extremely low operating efficiency.
-
-### 2.4 Warehousing Industry
-
-In logistics, warehousing and even general industrial industries, AGVs carry goods, and the volume and weight of goods need to be checked when entering and exiting the warehouse.
-
-### 3. Solve the problem
-
-In industrial industries such as logistics and warehousing, obtaining the volume and quantity of items and mastering the entry and exit of items are of great significance to production inventory management. However, traditional solutions always face problems such as lack of technical means, large measurement errors, low efficiency of manual management, and difficulty in supervision.
-
-Meyer Micro Vision ToF camera volume detection has more advantages than radar, structured light, and 2D cameras. Meyer Micro Vision cameras are simple to deploy and only require camera firmware brackets, power cords, and network cables. The algorithm runs inside the camera without the need for redundant industrial computer configurations. It is more convenient to use and lower in cost than radar.
-
-## 4. Camera Hardware Deployment Guide
-
-### 4.1 Using camera types
-
-Camera type: M series camera
-
-Camera user manual: [M Series ToF Camera](/en/products/m-series/m4-overview "M Series ToF Camera")
+- Use a rigid bracket to mount the M4 camera with the face parallel to and pointing toward the detection plane.
+- Power the camera with `24 VDC`. Use a Cat6A or Cat7 cable to connect the camera to the host or a gigabit switch.
+- For multiple cameras, assign each camera a unique network address and verify its power state.
 
 <Frame>
-  <img src="/images/legacy/5dd130cc-7499-4f38-bf97-dbd56dbb0e11/a28f58f9-2432-4605-aee2-c8811c0fe221.avif" alt="Use camera type related icons" />
+  <img src="/images/developers/deployment-volume-measurement-camera-installation-methods.avif" alt="M4 camera installed facing downward for volume measurement" />
 </Frame>
 
-### 4.2 Camera installation method
+### Host requirements
 
-The volume detection camera M4 adopts a fixed installation method. The camera takes pictures downwards and tries to ensure that the camera mirror is parallel to the ground. The following figure is a schematic diagram of the installation.
-
-<Frame>
-  <img src="/images/legacy/03510465-d902-4781-bf31-9e5c152f5bd2/18837b64-6a77-4a60-9ce3-b8fa0647c995.avif" alt="Illustrations related to camera installation methods" />
-</Frame>
-
-Figure 4.1 Installation diagram
-
-### 4.3 Camera connection
-
-The camera is powered by 24V and connected through a Category 6e/Category 7 network cable. After the camera is installed and deployed, open the volume detection host computer software through a laptop to perform external parameter calibration and detection range setting of the camera. The algorithm will run inside the camera in real time. When multiple cameras are deployed, they need to be connected through a Gigabit switch.
-
-<Frame>
-  <img src="/images/legacy/f9ab7dc5-20d0-4693-a41f-1b6a56c4e50f/317bd48f-8fa4-4e0a-989d-6366de6f91e0.avif" alt="Camera connection related icons" />
-</Frame>
-
-## 5. Camera software installation guide
-
-### 5.1 Software installation process
-
-When using the software for the first time, you can follow the following process to complete the operation.
-
-<Frame>
-  <img src="/images/legacy/e1da8232-f39e-4e11-a71f-86726a19262d/0cda21b0-286e-4778-a352-23fc6dd977a5.avif" alt="Illustrations related to software installation process" />
-</Frame>
-
-### 5.2 Volume detection host computer operating environment requirements
-
-It is recommended to run the volume detection host computer equipment to meet the requirements.
-
-| Operating system | Windows10 and above |
+| Item | Recommended configuration |
 | --- | --- |
-| CPU | Recommended Intel Core i5 7th generation and above |
-| Memory | 8G and above |
-| GPU | Intel(R) UHD Graphics/core display or above |
+| Operating system | Windows 10 or later |
+| CPU | Intel® Core™ i5 (7th generation) or later |
+| Memory | 8 GB or more |
+| GPU | Intel® UHD Graphics or a higher-performance integrated or discrete GPU |
 
-### 5.3 Install camera host computer software
+First install [LxCameraViewer](/en/developers/software/lxcameraviewer "Software download"), then place the project-delivered volume-measurement application in the `Lanxin-MRDVS\\Tools` directory. Replace files when prompted by the delivery instructions.
 
-1. Download the camera host software from the MRDVS knowledge base: [Software download](/en/developers/software/lxcameraviewer "Software download")
+<Warning>
+  The camera restarts during firmware upgrades. Use only the project-delivered algorithm package and back up verified configuration before upgrading.
+</Warning>
 
-2. Double-click to install the Lanxin-MRDVS host computer software. The host computer needs to be installed outside the c drive.
+## Deployment workflow
 
-<Frame>
-  <img src="/images/legacy/8a1a3bb1-c6dd-434d-af79-709f37313844/cabcc88e-3d26-401e-aaeb-a01cd4a2b1d3.avif" alt="Illustrations related to installing the camera host software" />
-</Frame>
+### 1. Configure the network
 
-3. After selecting the language to use, click [**OK**], select an installation directory other than the C drive, and click [**Next**].
+Put the host and camera on the same subnet. The original deployment example uses:
 
-<Frame>
-  <img src="/images/legacy/b4e46f8b-825a-4d64-a3ee-1d10704f7fba/348dee6d-9f34-4f8d-88fb-6c8b00c6b902.avif" alt="Illustrations related to installing the camera host software 2" />
-</Frame>
-
-4. Check [**Create desktop shortcut**] and click [**Next**].
-
-<Frame>
-  <img src="/images/legacy/aa1145f9-d860-4751-aec1-c5e8384963ae/ce1b8ead-e096-4834-ba4c-261facc55082.avif" alt="Illustrations related to installing the camera host software 3" />
-</Frame>
-
-5. Click the [**Install**] button to start installing the software.
-
-<Frame>
-  <img src="/images/legacy/0694d88e-a2ac-497d-b731-0a0e71cd331a/c7a2bf1d-a332-4fab-919a-4d7cbb96b716.avif" alt="Illustrations related to installing the camera host software 4" />
-</Frame>
-
-6. After the installation is completed, you can run the camera host computer software.
-
-<Frame>
-  <img src="/images/legacy/764b4e79-f161-44ca-ac5c-4000190d08d5/dac8ba59-4e9f-4a33-89b1-e60678f4605f.avif" alt="Illustrations related to installing the camera host software 5" />
-</Frame>
-
-### 5.4 Install volume detection host computer software
-
-1. Copy the obtained volume detection host computer software to the camera host computer \\Lanxin-MRDVS\\Tools.
-
-<Frame>
-  <img src="/images/legacy/5d8d5ae7-8e2b-4519-9d9b-3440cb83d1ee/e36c0214-2d47-413e-ba9e-aad7d6b841a2.avif" alt="Illustrations related to installing the volume detection host computer software" />
-</Frame>
-
-2. When replacing, select [**Replace files in target**].
-
-<Frame>
-  <img src="/images/legacy/5f862ff0-6785-435b-a335-5f6a6d4a2c8c/7cf0179a-1fde-4763-9cd6-ff223c820762.avif" alt="Illustrations related to installing the volume detection host computer software 2" />
-</Frame>
-
-3. Double-click to open the software to run it.
-
-4. In the device list bar on the left, the camera status is [**Unknown**], which means the camera does not have a volume detection algorithm.
-
-<Frame>
-  <img src="/images/legacy/b1e28a85-544d-4cd7-83a0-b19e5567aeac/154d1261-0517-48a5-87fb-b4d8b8771f2d.avif" alt="Illustrations related to installing the volume detection host computer software 3" />
-</Frame>
-
-### 5.5 Volume detection software upgrade
-
-To upgrade the volume detection software, only the "**.exe**" file needs to be replaced.
-
-### 5.6 Algorithm upgrade
-
-1. To upgrade the camera algorithm, you need to open the camera host software and double-click [**LxCameraViewer**].
-
-<Frame>
-  <img src="/images/legacy/98da739f-2f77-46e6-9fc2-698a1b288371/c9790445-b910-4441-8867-78bf594deaa3.avif" alt="Illustrations related to algorithm upgrade" />
-</Frame>
-
-2. Click the [**Open**] button to view the camera imaging.
-
-<Frame>
-  <img src="/images/legacy/2fb54986-038d-4d1c-a52d-6e08488ca0c4/b4750100-e4b5-4111-a0d9-7fc89c344c98.avif" alt="Algorithm upgrade related diagram 2" />
-</Frame>
-
-3. Click Basic Tools → Function Settings → [**Firmware Upgrade**] to flash the volume detection algorithm. (Please ask technical support personnel to obtain the algorithm)
-
-<Frame>
-  <img src="/images/legacy/94042d12-537e-4ecf-9bf7-096e88053035/cb352cff-1854-476a-a179-9b5c0f5b229e.avif" alt="Algorithm upgrade related diagram 3" />
-</Frame>
-
-4. After clicking the [**Execute**] button, select "Volume Detection Algorithm" and click the [**Open**] button to start algorithm flashing.
-
-<Frame>
-  <img src="/images/legacy/88ed6bb9-e81b-4923-958c-af6c7d6c5179/1d8334a0-0e47-4781-8a2e-765311aaceac.avif" alt="Algorithm upgrade related diagram 4" />
-</Frame>
-
-5. During the algorithm flashing process, the camera will restart and the camera ID in the device list on the left will disappear. After it is redisplayed, it means that the flashing is successful.
-
-<Frame>
-  <img src="/images/legacy/c7f8ce1b-993e-41a9-9918-25422fcacf16/ade34da0-16e3-40d8-9af0-542a5c13cbe5.avif" alt="Algorithm upgrade related diagram 5" />
-</Frame>
-
-6. At this time, open the volume detection software again, and the device list will be displayed in green.
-
-<Frame>
-  <img src="/images/legacy/65639621-cec1-4e58-9d25-b2c1147e6db8/7bc15af4-8e94-45ca-9181-e872410b5ccf.avif" alt="Algorithm upgrade related diagram 6" />
-</Frame>
-
-## 6. Volume detection software interface
-
-### 6.1 Start the volume detection program
-
-1. Double-click the [**LxApplicationViewer.exe**] program to start the volume detection software. Click the online camera in the device list on the left to open the camera image.
-
-<Frame>
-  <img src="/images/legacy/27aad056-f103-41e3-86f9-b9d876481dc6/cb274ae3-6877-40e8-ba2b-485fe835c0ec.avif" alt="Illustrations related to starting the volume detection program" />
-</Frame>
-
-2. The current user selects the administrator and does not need to enter a password. Click OK directly to enter the administrator mode (volume detection parameter settings cannot be performed in user mode). Administrator mode will have more volume detection and camera configuration options.
-
-<Frame>
-  <img src="/images/legacy/9078f3bd-2942-426e-98a8-ef4b43f40de7/29f2bf28-535d-4b1d-9aa6-03e03100d78a.avif" alt="Illustration related to starting the volume detection program 2" />
-</Frame>
-
-### 6.2 Basic tools
-
-Basic tools mainly include user switching, ideal ground, external parameter ground, multiple volume box display, trigger button, export and save image, history playback, and volume status.
-
-<Frame>
-  <img src="/images/legacy/a23bcd50-9098-47e0-84b8-3d47b3ca2610/4cdcef72-7639-4e7f-84c8-4380fbbed27f.avif" alt="Illustrations related to basic tools" />
-</Frame>
-
-| Basic tools | Functional meaning |
+| Item | Example |
 | --- | --- |
-| User switching | Switch permissions, user permissions: only view detection results. Administrator rights: can configure camera configuration, volume detection parameter configuration, etc. |
-| Ideal Ground | The ground refers to the horizontal line and can be turned off. |
-| External parameter ground | The horizontal plane at which the camera’s external parameters are calibrated. It can be turned off. |
-| Volume box display | When there are multiple objects detected in the detection area, different volume boxes can be switched to view the detection results of different objects. |
-| Trigger button | After setting to trigger mode, this trigger button can be called to obtain images and results. |
-| Export stored images | Export stored images |
-| History playback | View RGB and TOF image logs. |
-| Volume detection result display | Display the detection results, number of objects, object length, width and height. |
+| Host IP | `192.168.100.xxx` |
+| Subnet mask | `255.255.255.0` |
+| Default gateway | `192.168.100.1` |
 
-### 6.3 Global configuration
+In the Windows Ethernet adapter properties, select **Internet Protocol Version 4 (TCP/IPv4)** and set a static address. Allow the application through the debugging network's firewall rules; do not permanently disable a production firewall.
 
-Switch camera working mode.
+### 2. Calibrate extrinsics
 
-<Frame>
-  <img src="/images/legacy/bb2afbde-b2d5-43ff-8673-d4922aa726b2/0c157f74-799a-4f32-9634-cdb91fc83228.avif" alt="Global configuration related icons" />
-</Frame>
+<Steps>
+  <Step title="Restore the calibration state">
+    Open **Camera configuration**. Confirm that `x`, `y`, `z`, `roll`, `pitch`, and `yaw` are `0`. If historical values exist, reset them and select **Save and send**.
+  </Step>
+  <Step title="Run calibration">
+    Select **Extrinsic calibration**, confirm the success message, and record the resulting `z` value.
+  </Step>
+  <Step title="Save the pose parameters">
+    Set `z` back to `0` and select **Save and send**. In this workflow, the actual camera height is used as the detection-plane distance in the next step.
+  </Step>
+</Steps>
 
-### 6.4 Volume detection
+### 3. Set the detection plane and region
 
-<Frame>
-  <img src="/images/legacy/fbce3fe9-69bd-4c1d-9a50-08aaec8f8a8a/e1a0e9a1-7371-4ad5-93df-9d1dd625aada.avif" alt="Volume detection related icons" />
-</Frame>
+In **Volume detection**, enter the recorded `z` value as **Detection-plane distance**, then save and send. Configure the detection-region boundaries from the point-cloud view:
 
-| Volume detection global configuration | Functional meaning |
+| Parameter | Meaning |
 | --- | --- |
-| Algorithm version number | Current algorithm version information. |
-| Trigger mode | Trigger switch button. After turning on the trigger mode, click the "Save and Send" button to turn it on successfully. |
-| Upward detection | Camera coordinate system reverse detection (currently downward detection, that is, detecting the distance from the plane to the object surface, after turning on upward detection, it will detect the distance from the object surface to the camera). |
-| Detection frequency | How often the algorithm detects. That is, how many ms to refresh the image + result data. |
-| Detection plane distance | Camera distance detection plane distance, this distance is related to the measurement height. Unit: mm. |
-| Neighbor number threshold | Filter parameters, no changes required. The default value is sufficient. |
-| Neighborhood distance threshold | Filtering parameters, no need to change, default values are sufficient. |
-| Normal vector filter threshold | Object edge fillet filter parameter, 60 is recommended (generally no need to adjust). |
-| Normal vector distance threshold | Filter parameter, recommended value 20-30 (compatible with most detected objects). |
-| Minimum number of points | When the object point cloud is greater than the minimum number of points, it is considered that there is an object. |
-| Minimum X | The minimum length of the object. If it is less than this value, it cannot be detected. Unit: mm. |
-| Minimum Y | The minimum width of the object. If it is less than this value, it cannot be detected. Unit: mm. |
-| Minimum Z | The minimum height of the object. If it is less than this value, it cannot be detected. Unit: mm. |
+| Minimum / maximum X | X boundaries of the detection box |
+| Minimum / maximum Y | Y boundaries of the detection box |
+| Minimum / maximum Z | Z boundaries of the detection box |
 
-<Frame>
-  <img src="/images/legacy/e9733410-8173-4d09-95e5-334ba8ae58c0/d4d05111-3551-446e-a866-37f098c13e7d.avif" alt="Volume detection related diagram 2" />
-</Frame>
+The detection-plane distance defines the floor reference; set the Z upper limit slightly above this distance. The lower limit must cover the object heights to measure. Select **Save and send** after configuration.
 
-| Volume detection area configuration | Functional meaning |
+### 4. Verify results
+
+View volume status in **Basic tools**. Place an object in the detection region and confirm that its count and length, width, and height match the site. For multiple objects, switch between volume boxes to inspect each result.
+
+For single-shot measurement, enable **Trigger mode** in **Volume detection**, save the configuration, and select **Single trigger** in **Basic tools** to acquire one frame and result.
+
+## Key interface and parameters
+
+### Volume-detection parameters
+
+| Parameter | Description |
 | --- | --- |
-| Minimum X | Minimum value in the X direction of the volume detection frame |
-| Maximum X | Maximum value in the X direction of the volume detection frame |
-| Minimum Y | Minimum value in the Y direction of the volume detection frame |
-| Maximum Y | Maximum value in the Y direction of the volume detection frame |
-| Minimum Z | Minimum value in the Z direction of the volume detection frame |
-| Maximum Z | Maximum value in the Z direction of the volume detection frame |
+| Trigger mode | When enabled, the algorithm outputs results only after a trigger. |
+| Upward detection | Reverses the detection direction; the default workflow detects downward. |
+| Detection frequency | Image and result refresh period. |
+| Detection-plane distance | Distance from the camera to the detection plane, in `mm`. |
+| Neighborhood count / distance threshold | Point-cloud filtering parameters; keep the project defaults in most cases. |
+| Normal-vector filter / distance threshold | Edge and point-cloud filtering parameters; preserve the original configuration before changing them. |
+| Minimum point count | Minimum number of points required for a valid object. |
+| Minimum X / Y / Z | Minimum detectable object dimensions, in `mm`. |
 
-### 6.5 Camera configuration
+### Camera configuration
 
-<Frame>
-  <img src="/images/legacy/07b96b09-95e7-4251-938f-d1e35401e1ce/95f4513b-47df-41aa-ae24-5a02749888c1.avif" alt="Camera configuration related icons" />
-</Frame>
-
-| Camera settings | Function meaning |
+| Item | Description |
 | --- | --- |
-| Camera name | Modify the name of the current camera. When there are multiple cameras, you can judge by the camera name. |
-| Simulation mode | Internal use, users do not need to open it. |
-| Image saving mode | Turn on algorithmic image saving to store image data inside the camera. |
-| Capture mode | Capture mode is divided into MDS and SDK. Using MDS will not occupy the camera permissions and can open the camera host computer normally. Using SDK will occupy the camera permissions and the host computer cannot be opened when running the algorithm. |
-| x | camera calibrated x position |
-| y | The y position of the camera calibration |
-| z | Calibrated camera height from the ground |
-| roll | camera calibration angle |
-| pitch | camera calibration angle |
-| yaw | camera calibration angle |
-| Ideal ground | Just leave it as default. |
-| Save and send | After the external parameter calibration is completed, click the [Save and send] button to save, otherwise the parameters will not take effect |
-| Read configuration from camera | Read current configuration parameters from camera |
-| External parameter calibration | Calibrate the height of the camera from the ground, camera roll, pitch, and yaw angles. |
+| Camera name | Distinguishes cameras in a multi-camera deployment. |
+| Image-save mode | Saves algorithm images on the camera. |
+| Image-acquisition mode | `MDS` does not occupy camera access. `SDK` does; the host application cannot open the camera while it is running. |
+| Extrinsics | `x`, `y`, `z`, `roll`, `pitch`, and `yaw`. |
+| Save and send | Writes the current extrinsics and algorithm configuration to the camera. |
 
-### 6.6 Language
+## Result interface
 
-Switch between Chinese and English.
+TCP, UDP, and HTTP use the `RESULT_UPDATE` command to request volume results.
 
-### 6.7 Status bar
+| Protocol | Port | Use |
+| --- | ---: | --- |
+| TCP | `14951` | Request a volume-detection result |
+| UDP | `14950` | Request a volume-detection result |
+| HTTP | `14952` | Request the volume result as JSON |
 
-<Frame>
-  <img src="/images/legacy/3941c475-8f8f-45a1-94cc-2cf678831d53/706d6184-84a3-44cb-a6a6-6fb57cf36309.avif" alt="Status bar related icons" />
-</Frame>
+<ParamField body="command" type="string" required default="RESULT_UPDATE">
+  Requests the current volume-detection result from the camera.
+</ParamField>
 
-| Status bar | Functional meaning |
+Top-level HTTP response fields:
+
+<ResponseField name="IP" type="string" required>IP address of the camera that produced the data.</ResponseField>
+<ResponseField name="TM" type="object[]" required>List of detected objects.</ResponseField>
+<ResponseField name="TM_DATA_TIME" type="string">Time when volume data was captured.</ResponseField>
+<ResponseField name="TM_RES_TIME" type="string">Time when the result was output.</ResponseField>
+<ResponseField name="nick_name" type="string">Camera name.</ResponseField>
+<ResponseField name="ret_code" type="integer" required>Return code; `0` indicates success.</ResponseField>
+
+Each `TM` object can contain:
+
+<ResponseField name="angle" type="number">Object-box angle.</ResponseField>
+<ResponseField name="cx" type="number">Object-center X coordinate.</ResponseField>
+<ResponseField name="cy" type="number">Object-center Y coordinate.</ResponseField>
+<ResponseField name="cz" type="number">Object-center Z coordinate.</ResponseField>
+<ResponseField name="height" type="number">Object height.</ResponseField>
+<ResponseField name="length" type="number">Object length.</ResponseField>
+<ResponseField name="width" type="number">Object width.</ResponseField>
+<ResponseField name="valid" type="boolean">Whether the result is valid. `false` indicates insufficient confidence.</ResponseField>
+
+## Troubleshooting
+
+| Symptom | Recommended action |
 | --- | --- |
-| RGB | Check to view RGB images |
-| Point cloud | After checking, view the point cloud image |
-| Stop algorithm | After clicking to stop the algorithm, the algorithm will not be started until the next time the camera is powered on. |
-| Upgrade firmware | Algorithm firmware can be upgraded |
-| Restart camera | Restart camera. |
-
-### 7. Volume detection deployment process
-
-After opening the volume detection software, the default is the RGB image. After clicking to switch to the point cloud image, the image will be black. You need to move the mouse to the image display area, slide up and down with the mouse wheel, and hold down the left mouse button to move, then the point cloud data will be displayed.
-
-<Frame>
-  <img src="/images/legacy/b2f80e70-7390-4713-9eda-f7b342eca918/38bf207d-97e3-4f22-9867-e59c1e252ef1.avif" alt="Illustrations related to the volume detection deployment process" />
-</Frame>
-
-<Frame>
-  <img src="/images/legacy/0bea89d2-f83c-4deb-ab3c-0584a061302e/d91faf31-886e-442c-8ab5-b367a14db036.avif" alt="Illustrations related to volume detection deployment process 2" />
-</Frame>
-
-### 7.1 Camera network configuration
-
-Taking the Win10 system as an example, double-click the Control Panel
-
-After entering the control panel, click "**View network status and tasks**".
-
-<Frame>
-  <img src="/images/legacy/d27495e0-56ba-43a1-84ca-eb6c209c6e94/95fb9d57-7f0c-4a1f-9376-14267dcb3f6c.avif" alt="Illustrations related to camera network configuration" />
-</Frame>
-
-Enter the Network and Sharing Center interface and click "**Change Adapter Settings**".
-
-<Frame>
-  <img src="/images/legacy/738c34bb-f38e-4457-826b-02ce8ef64a28/5181b10d-ae88-4a9d-9485-4deba6993533.avif" alt="Camera network configuration related diagram 2" />
-</Frame>
-
-Enter the network connection interface, double-click the mouse to select the Ethernet to which the camera is connected.
-
-<Frame>
-  <img src="/images/legacy/a9e4f271-a49e-45ba-9c95-507da52dd6bc/44b2f404-5ef4-4ddf-8eef-a3ae1eed10d7.avif" alt="Camera network configuration related diagram 3" />
-</Frame>
-
-Check the Ethernet status (it is recommended to use a Gigabit network port) and click the "**Properties**" button.
-
-<Frame>
-  <img src="/images/legacy/f4e9e585-b466-4cfe-9073-3a51dd6f5a60/3f3596f1-39e4-4de8-8ba0-240b563ef8fb.avif" alt="Camera network configuration related diagram 4" />
-</Frame>
-
-Enter the Ethernet properties interface, find "**Internet Protocol Version 4 (TCP/IPv4)**", and double-click to open it.
-
-<Frame>
-  <img src="/images/legacy/41593f67-f0f6-4fb0-a1f5-25b16aab42c9/58c00f3e-7ce4-4f9f-92a3-16fb4a3198a5.avif" alt="Camera network configuration related diagram 5" />
-</Frame>
-
-Enter the Internet Protocol version 4 (TCP/IPv4) interface, select "**Use the following IP address**" to write the IP address, subnet mask and default gateway.
-
-<Frame>
-  <img src="/images/legacy/f929004b-da3f-45e9-9220-2dffb173782e/9beedb39-c61d-481b-ac65-eae8966c7684.avif" alt="Camera network configuration related diagram 6" />
-</Frame>
-
-IP address setting: 192.168.100.xxx Subnet mask: 255.255.255.0 Default gateway: 192.168.100.1. Set the IP as shown below. After the setting is completed, click the "OK" button.
-
-<Frame>
-  <img src="/images/legacy/d45ed4aa-13c0-463a-b0e0-8bd35ad2cd32/917ecfab-67f5-4f53-8f98-756f33624e7c.avif" alt="Illustrations related to camera network configuration 7" />
-</Frame>
-
-After clicking the OK button, it will automatically return to the previous interface. Click "**OK**" again to complete the network configuration.
-
-<Frame>
-  <img src="/images/legacy/f56eefc8-af02-4633-8c35-7da0caa84905/395584ea-e679-44f5-818b-4dc6a76389da.avif" alt="Illustrations related to camera network configuration 8" />
-</Frame>
-
-### 7.2 Firewall shutdown confirmation
-
-1. After the camera is fixedly installed, the first step of deployment requires turning off the computer's firewall.
-
-2. Taking Win10 system as an example, double-click [**Control Panel**] on the desktop, and click [**System and Security**] after entering.
-
-<Frame>
-  <img src="/images/legacy/10f577ff-3207-45a6-ada2-d7e2d90da11b/03de5534-1fe9-4ffe-9db7-9309b05b73f0.avif" alt="Firewall shutdown confirmation related icons" />
-</Frame>
-
-3. Click the [**Windows Defender Firewall**] button to enter the firewall page
-
-<Frame>
-  <img src="/images/legacy/6480e38b-8e12-4d64-8c96-68612da23908/d61d5bac-33e8-4d46-ab22-1a55500a26ff.avif" alt="Firewall shutdown confirmation related icon 2" />
-</Frame>
-
-4. Click the [**Enable or turn off Windows Defender Firewall**] button to enter the firewall on/off page.
-
-5. Select [**Turn off Windows Defender Firewall**] for both private and public networks, and click the [**Confirm**] button to turn off the firewall.
-
-<Frame>
-  <img src="/images/legacy/1a7789dc-c752-4106-9316-681f5c1a4afa/d8583eab-22db-413f-9a42-76dc0908b50b.avif" alt="Firewall shutdown confirmation related icon 3" />
-</Frame>
-
-### 7.3 Volume detection external parameter calibration
-
-1. After the camera IP configuration is completed and the firewall is closed, proceed to the second step of deployment. Open the software to calibrate the external parameters of the algorithm. It is necessary to calibrate the specific reference ground and camera installation angle deviation.
-
-2. Click on the camera configuration and switch to the parameter calibration interface. Before performing external parameter calibration, make sure that x, y, z, roll, pitch, and yaw are 0. If they are not 0, you need to return all parameters to 0 and click the [**Save and Send**] button. After the parameters are saved successfully, re-calibrate the external parameters.
-
-<Frame>
-  <img src="/images/legacy/8e7ce98c-d40b-4d33-8761-2567f011af39/5b0ac758-4684-43e9-83c5-65f9fc7f1c76.avif" alt="Illustrations related to volume detection external parameter calibration" />
-</Frame>
-
-3. After confirming that the parameters are all 0, click the [**External Parameter Calibration**] button. After the calibration is successful, the software will pop up a prompt box. You can see the calibrated camera parameters in the parameter column on the right.
-
-<Frame>
-  <img src="/images/legacy/e6cf55ec-456a-4d76-9966-90c577dc843b/69fb9d8f-7938-4488-81c4-d817b5ac5b86.avif" alt="Illustration related to volume detection external parameter calibration 2" />
-</Frame>
-
-4. After recording the "z" camera height value, change the z value to 0, and click the [**Save and Send**] button. The camera calibration parameters are saved successfully. (The camera z value needs to be set in the detection plane distance during volume detection, so after the camera calibration height is recorded, it needs to be changed to 0, otherwise there will be problems with the detection)
-
-<Frame>
-  <img src="/images/legacy/68e62f9a-1684-46f5-bd66-a9eba060776d/291a7bc1-f174-4321-a322-3f7ab22dd720.avif" alt="Illustration related to volume detection external parameter calibration 3" />
-</Frame>
-
-5. After the calibrated parameters are saved and distributed, the external parameter calibration is completed. The next step is to set the volume detection parameters.
-
-### 7.4 Volume detection plane distance setting
-
-1. Click Volume Detection, switch to the volume detection parameter setting page, and first set the "Detection Plane Distance", which is related to drawing the detection area and detection accuracy.
-
-<Frame>
-  <img src="/images/legacy/7481f12c-1af6-4de4-bf05-2f48487bef85/a5609871-908c-45e6-a129-ff9e86dac5c6.avif" alt="Illustrations related to volume detection plane distance setting" />
-</Frame>
-
-2. Fill in the "z" height value 2709 obtained during the external parameter calibration into the detection plane distance. This is the actual distance between the camera and the detection plane. Click the [**Save and Send**] button to write the set height value to the camera.
-
-<Frame>
-  <img src="/images/legacy/afb78eac-49f7-43ac-8c5d-b6963a53716b/fadaeebd-d48e-4ba2-90d9-87d9017926af.avif" alt="Illustration related to volume detection plane distance setting 2" />
-</Frame>
-
-3. By moving the point cloud image data, you can see that the ground height has changed. At this time, the volume detection area can be configured.
-
-<Frame>
-  <img src="/images/legacy/3cea221c-a39b-4f53-9965-41192272e8ed/3d8aeec7-d33b-48e8-a061-890a6ebed8fa.avif" alt="Illustrations related to volume detection plane distance setting 3" />
-</Frame>
-
-### 7.5 Volume detection range setting
-
-1. Set the detection range. To adjust the length and width (xy) of the detection, it is recommended to switch to the up and down view first. The following are the shortcut keys for each view.
-
-<Frame>
-  <img src="/images/legacy/d328c397-8e2f-41ef-9f06-46ce32b2cf7f/30b799d3-964c-4adc-90cc-b0cca7ebe17a.avif" alt="Illustrations related to volume detection range setting" />
-</Frame>
-
-2. Use the shortcut keys on the keyboard to switch to the up and down view, as shown in the figure below. The white box pointed by the red arrow indicates the x direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently, the maximum and minimum detection range in the x direction are set to 600 and -600.
-
-<Frame>
-  <img src="/images/legacy/e0d9e0ec-e8f1-493c-8262-3e6522ee4280/f81e0deb-e48b-4215-99cb-f49c5b0cc3ec.avif" alt="Illustration related to volume detection range setting 2" />
-</Frame>
-
-3. The white box pointed by the green arrow indicates the y direction of the detection range. You can modify the corresponding value by scrolling the mouse wheel to complete the adjustment of the length and width of the detection range. Currently, the maximum and minimum detection range in the y direction are set to 480 and -580.
-
-<Frame>
-  <img src="/images/legacy/3bc64b36-13b3-4f5d-a14a-30ddb9509781/817b24b0-3bfc-4157-868f-43142cd956e4.avif" alt="Illustration related to volume detection range setting 3" />
-</Frame>
-
-4. The blue arrow points to the z direction of the detection range. The value can be modified by scrolling with the mouse wheel, or the value can be input directly. It is recommended that the maximum z value of the current detection range be set slightly higher than the detection plane distance. The current detection plane distance is 2709, and the maximum z value is set to 2690. The minimum detection range is set according to the size of the object. If the height of the object exceeds the minimum z value, the algorithm will not detect it.
-
-<Frame>
-  <img src="/images/legacy/68123a29-8322-4773-8b0a-67c7c388b797/17fe8b13-04c3-4f75-9e9b-1a5843af9533.avif" alt="Illustration related to volume detection range setting 4" />
-</Frame>
-
-5. After configuring the detection area, click the [**Save and Send**] button to save the parameters into the camera.
-
-<Frame>
-  <img src="/images/legacy/630b6f2b-c6fe-4a60-b3c3-d77ebff70f00/18746efa-a7b4-4e85-98fd-b16bcc470536.avif" alt="Illustrations related to volume detection range setting 5" />
-</Frame>
-
-### 7.6 View volume detection results
-
-1. After setting the external parameter calibration, volume detection parameters, and volume detection area, click "**Basic Tools**" and place objects in the detection area to view the results. There is currently no object, and no object will be displayed in the basic function bar.
-
-<Frame>
-  <img src="/images/legacy/1d829501-eb9b-4ddf-9a4c-b8d6622ef5c8/909c8066-fa20-47ea-b78b-d97bf227cd3b.avif" alt="View related icons for volume testing results" />
-</Frame>
-
-2. After the current object is placed, the length, width, and height information of the current object will be displayed in the volume status display bar.
-
-<Frame>
-  <img src="/images/legacy/c5e9a64a-ae7f-45d3-b755-901d823dd7c2/8f782245-62e5-4988-bfd1-ccea4c1d9b11.avif" alt="Volume test results view related diagram 2" />
-</Frame>
-
-3. When multiple objects are placed, the volume detection result display column will display the length, width, and height of multiple objects, and the number of objects will be displayed.
-
-<Frame>
-  <img src="/images/legacy/3c57003c-871a-476b-a797-242644703cf8/1f873710-e793-47b1-aaa0-13b76302c457.avif" alt="Volume test results view related diagram 3" />
-</Frame>
-
-### 7.7 Volume detection single trigger function
-
-1. In the volume detection setting interface, turn on the touch mode and click the [**Save and Send**] button to successfully turn on the trigger mode.
-
-<Frame>
-  <img src="/images/legacy/46b712f6-2daa-40c2-9a01-b8a18f6acc13/4bd31b14-3a53-479b-b2b1-e51ef03634ed.avif" alt="Illustrations related to volume detection single trigger function" />
-</Frame>
-
-2. Click on the basic tool and obtain images and results by clicking the [**Single Trigger**] button.
-
-<Frame>
-  <img src="/images/legacy/29f635b6-9707-4f17-b77d-a05883ffb7fd/e40f2f1f-6fb0-49bb-ae01-53b0627846fe.avif" alt="Illustration related to volume detection single trigger function 2" />
-</Frame>
-
-## 8. Communication protocol
-
-### 8.1 TCP communication
-
-1. Volume detection results can be obtained through TCP communication. Through the network debugging assistant, the remote camera IP: 192.168.100.82, port: 14951, send RESULT\_UPDATE to see the returned volume detection result information.
-
-<Frame>
-  <img src="/images/legacy/3268f158-13ec-4e80-b780-9c3dc39fc857/018ebf50-eeee-4ab6-b688-4cffbcc99987.avif" alt="TCP communication related icons" />
-</Frame>
-
-### 8.2 UDP communication
-
-1. Volume detection results can be obtained through UDP communication. Through the network debugging assistant, the remote camera IP: 192.168.100.82, port: 14950, send RESULT\_UPDATE to see the returned volume detection result information.
-
-<Frame>
-  <img src="/images/legacy/17127c06-43af-4038-b287-8a42f8aa9ba7/905bafb7-3038-43f2-9c23-666327a4c4e0.avif" alt="UDP communication related icons" />
-</Frame>
-
-### 8.3 HTTP communication
-
-1. Volume detection results can be obtained through HTTP communication, port number: 14952.
-
-2. The upper-layer system (WMS) obtains the signal from the visual sending result, and the visual returns a string in JSON format.
-
-| WMS -> Vision | ㅤ |
-| --- | --- |
-| Result | Meaning |
-| RESULT_UPDATE | Trigger visual result return signal |
-| Vision -> WMS | ㅤ |
-| Result | Meaning |
-| IP | Data source camera IP |
-| TM | Volume detection status |
-| angle | Angle of the selected object |
-| cx | x coordinate of frame-selected object |
-| cy | y coordinate of frame-selected object |
-| cz | Frame selected object z coordinate |
-| height | object height |
-| length | object length |
-| width | object width |
-| valid | false if the confidence is too low, true otherwise |
-| TM_DATA_TIME | Volume detection data extraction time |
-| TM_RES_TIME | Volume detection result output time |
-| nick_name | Volume detection camera name, configurable in the camera |
-| ret_code | Return code, 0 is success |
-
-**9\.Appendix**
-
-```json
-{
-
-"IP":"192.168.100.82", // Camera IP
-
-"TM":\[{
-
-"angle":-6.821981430053711, // Bounding-box angle
-
-"cx":39.98405456542969, // Bounding-box x-coordinate
-
-"cy":257.008056640625, // Bounding-box y-coordinate
-
-"cz":2400.63818359375, // Bounding-box z-coordinate
-
-"height":616.723876953125, // Object height
-
-"length":525.5135498046875, // Object length
-
-"type":"","valid":true, // false when confidence is too low
-
-"width":419.761474609375}\], // Object width
-
-"TM_DATA_TIME":"2024_11_13_16_37_47.422", // Volume-detection data timestamp
-
-"TM_RES_TIME":"2024_11_13_16_37_48.209", // Volume-detection result timestamp
-
-"nick_name":"_default_", // Volume-detection camera name
-
-"ret_code":0 // Return code; 0 indicates success
-
-}
-```
+| Point-cloud view is empty or hard to inspect | Scroll and drag in the point-cloud area and confirm that the camera outputs data. |
+| Detection is abnormal after calibration | Confirm that extrinsic `z` was reset to `0` and that the recorded calibration height was entered as the detection-plane distance. |
+| Objects are not detected | Check region boundaries, minimum dimensions, minimum point count, and whether the object is fully in view. |
+| LxCameraViewer cannot open | Check whether `SDK` image-acquisition mode is selected; it occupies camera access. |

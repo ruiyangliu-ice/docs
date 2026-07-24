@@ -1,6 +1,6 @@
 ---
-title: "S10 camera user guide"
-description: "Product specifications and selected design details for developers who integrate and use the S10 camera."
+title: "S10 Camera User Guide"
+description: "Product specifications, interfaces, installation, first use, and troubleshooting for the S10 camera."
 hidden: true
 ---
 ## Revision history
@@ -8,20 +8,20 @@ hidden: true
 | Date | Version | Changes |
 | --- | --- | --- |
 | 2025/01/13 | V1.0 | Initial release |
-| 2025/02/27 | V1.1 | Updated TOF field of view |
+| 2025/02/27 | V1.1 | Updated ToF field of view |
 | ㅤ | ㅤ | ㅤ |
 | ㅤ | ㅤ | ㅤ |
 | ㅤ | ㅤ | ㅤ |
 
-## 1. Introduction
+## Product overview
 
-### 1.1 Purpose and scope
+### Purpose and scope
 
 This document describes the S10 camera specifications and selected design details for developers who integrate and use the product.
 
-### 1.2 Terminology
+### Terminology
 
-| RGBD camera | A camera that outputs synchronized and spatially aligned RGB and depth images |
+| RGB-D camera | A camera that outputs synchronized and spatially aligned RGB and depth images |
 | --- | --- |
 | Depth | A video stream similar to a color or monochrome stream, where each pixel represents its distance from the camera |
 | FOV | Field of view: the angular range of a scene captured by a camera, including horizontal (HFOV), vertical (VFOV), and diagonal (DFOV) fields of view |
@@ -29,46 +29,46 @@ This document describes the S10 camera specifications and selected design detail
 | RGB camera | A color camera |
 | Depth camera | A camera whose depth module typically includes a dot projector, an IR camera, and a depth processor; its color module is typically an RGB camera |
 | SoC | System on a chip used for image processing, depth calculation, and application algorithms |
-| DTOF | Distance-sensing technology based on time-of-flight measurement |
+| dToF | Direct time-of-flight depth-sensing technology |
 
-### 1.3 Operating principle
+### Operating principle
 
-This product is a DTOF 3D depth camera with long range, good accuracy, low cost, strong interference resistance, and stable data. An integrated RGB module captures color images. The camera aligns RGB and depth images internally.
+This product is a dToF 3D depth camera with long range, good accuracy, strong interference resistance, and stable data. An integrated RGB module captures color images. The camera aligns RGB and depth images internally.
 
-## 2. Product overview
+### Product details
 
-This compact industrial RGBD camera provides depth data from 0.3m to 8m. It spatially and temporally aligns RGB and depth images. Its integrated SoC outputs depth, intensity, RGB, point cloud, and obstacle-detection results. In addition to Ethernet, two IO inputs and two IO outputs switch among four obstacle-avoidance zones and output emergency-stop, slowdown, and safe-state signals.
+This compact industrial RGB-D camera provides depth data from 0.3m to 8m. It spatially and temporally aligns RGB and depth images. Its integrated SoC outputs depth, intensity, RGB, point cloud, and obstacle-detection results. In addition to Ethernet, two IO inputs and two IO outputs switch among four obstacle-avoidance zones and output emergency-stop, slowdown, and safe-state signals.
 
 * * *
 
-### 2.1 Product appearance
+### Product appearance
 
-![S10 camera](/images/legacy/d8fe7795-4b75-4d81-94af-6f289a882959/2c97188f-6d7c-4869-b8ff-6248fb1d9677.avif) 
+![S10 camera](/images/products/s-series-s10-user-guide-s10-camera.avif) 
 
 Figure 1. S10 camera
 
-### 2.2 Features
+### Features
 
-- Low DTOF power consumption and compact size
+- Low dToF power consumption and compact size
 
 - Integrated processing that outputs obstacle-detection results for plug-and-play operation
 
-- Strong environmental adaptability: resists 100KLUX sunlight and operates from darkness to bright light, indoors and outdoors
+- Strong environmental adaptability: resists 100 kLux sunlight and operates from darkness to bright light, indoors and outdoors
 
 - Wide 0.3-8m measurement range
 
 * * *
 
-## 3. Specifications
+## Specifications
 
-### 3.1 Basic specifications
+### Basic specifications
 
 | Product model | S10 |
 | --- | --- |
-| Operating principle | DTOF depth camera |
+| Operating principle | dToF depth camera |
 | Output format | Depth & RGB & Amplitude Map |
-| TOF resolution and frame rate | 240x160 @Max. 20fps, typical 15fps |
-| TOF field of view | 90°*61° |
+| ToF resolution and frame rate | 240 × 160; up to 20 fps, typical 15 fps |
+| ToF field of view | 90° × 61° |
 | RGB resolution and frame rate | 1920×1080 @Max. 20fps, typical 15fps |
 | RGB field of view | 90°*70° |
 | Range | 0.3-8m (@90% ref), 0.3-3m (@5%) |
@@ -88,24 +88,24 @@ Figure 1. S10 camera
 
 Note: The 3D model defines the product dimensions.
 
-### 3.2 Interface definitions
+### Interface definitions
 
 Camera-side interfaces:
 
 The camera has three interfaces: a DC24V power connector, a Fast Ethernet connector, and an 8-pin IO connector.
 
 <Frame>
-  <img src="/images/legacy/2f68a2bd-bc14-4c73-b379-d31aafcd7115/894ea96b-60b4-403d-a323-7e5fc0953a3a.avif" alt="Camera interface definitions" />
+  <img src="/images/products/s-series-s10-user-guide-camera-interface-definitions.avif" alt="Camera interface definitions" />
 </Frame>
 
 Cable pinout:
 
 <Frame>
-  <img src="/images/legacy/2da0244d-bd18-4079-8da0-f961ad329cf7/ca8623b7-dddc-4838-831f-694517b997ed.avif" alt="Cable pinout" />
+  <img src="/images/products/s-series-s10-user-guide-cable-pinout.avif" alt="Cable pinout" />
 </Frame>
 
 <Frame>
-  <img src="/images/legacy/aaeb3028-1487-4482-9d4f-71f072bdeca2/6817aab4-edcc-496c-b893-d601693e9558.avif" alt="Cable pinout detail" />
+  <img src="/images/products/s-series-s10-user-guide-cable-pinout-detail.avif" alt="Cable pinout detail" />
 </Frame>
 
 | Cable | P1 pin | Color | Description |
@@ -121,10 +121,10 @@ Cable pinout:
 | Power cable | 1 | Red | 24V+ |
 | ㅤ | G | Black | 24V- |
 
-### 3.3 Camera components
+### Camera components
 
 <Frame>
-  <img src="/images/legacy/18384afe-225b-4323-9db6-d0c73d834939/72337ebe-c9ff-472f-96a7-59b745b0c3d1.avif" alt="Camera components" />
+  <img src="/images/products/s-series-s10-user-guide-camera-components.avif" alt="Camera components" />
 </Frame>
 
 | VCSEL | Laser emitter |
@@ -133,37 +133,37 @@ Cable pinout:
 | RGB | RGB module |
 | Power indicator | Flashes slowly after power-on |
 
-## 4. Camera integration guide
+## Integration requirements
 
-### 4.1 Mechanical design
+### Mechanical design
 
-### 4.1.1 Camera field of view
+### Camera field of view
 
 <Frame>
-  <img src="/images/legacy/d34d0d01-0d92-4a84-bb6e-852a226c2a9c/b3ffb78f-2d37-419f-8562-0f892b9a667c.avif" alt="Camera field of view" />
+  <img src="/images/products/s-series-s10-user-guide-camera-field-of-view.avif" alt="Camera field of view" />
 </Frame>
 
 Figure 3. Camera field of view
 
-### 4.1.2 Camera dimensions
+### Camera dimensions
 
 <Frame>
-  <img src="/images/legacy/ae02629e-b39f-4693-98d5-0ec2bec59110/453b3abe-ce7a-4cb0-b397-f2d24ee1da38.avif" alt="Camera dimensions" />
+  <img src="/images/products/s-series-s10-user-guide-camera-dimensions.avif" alt="Camera dimensions" />
 </Frame>
 
-### 4.2 Software SDK
+### Software SDK
 
 See the MRDVS host software user guide and MRDVS SDK development guide.
 
 * * *
 
-## 5. Environment and reliability
+### Environment and reliability
 
 | Item | ㅤ | Specification |
 | --- | --- | --- |
 | Operating environment | Temperature | -20℃--60℃ |
 | ㅤ | Humidity | 0%–95% RH, non-condensing |
-| ㅤ | Illumination | 0KLUX--100KLUX |
+| ㅤ | Illumination | 0–100 kLux |
 | Storage environment | Temperature | -40℃--85℃ |
 | ㅤ | Humidity | 10%–95% RH, non-condensing |
 | Temperature rise during normal operation | ㅤ | Enclosure temperature rise &lt;25℃ |
@@ -174,13 +174,9 @@ See the MRDVS host software user guide and MRDVS SDK development guide.
 
 * * *
 
-## 6. Quickstart
+## First use
 
-### 6.1 Connection test
-
-<Frame>
-  <img src="/images/legacy/cb764c04-73c2-4cdd-9381-98fe1c201737/24cb2351-298f-4381-8170-c34cf1444269.avif" alt="Connection test" />
-</Frame>
+### Connection test
 
 1.  Connect the camera to a 24V/2A DC supply. A slowly flashing blue power indicator confirms normal power-on.
 
@@ -194,7 +190,7 @@ See the MRDVS host software user guide and MRDVS SDK development guide.
 
 6.  Contact MRDVS sales or technical support to obtain the host software.
 
-### 6.2 IO wiring
+### I/O wiring
 
 | Interface | Type | Notes |
 | --- | --- | --- |
@@ -206,17 +202,17 @@ See the MRDVS host software user guide and MRDVS SDK development guide.
 
 * * *
 
-## 7. Precautions
+## Safety and common questions
 
-### 7.1 Laser safety class
+### Laser safety class
 
 <Frame>
-  <img src="/images/legacy/c21ed6f7-18a6-421c-b32a-ea57c5a4e055/0be0f98e-b32a-4253-b8d7-c0284280cc65.avif" alt="Laser safety class" />
+  <img src="/images/products/s-series-s10-user-guide-laser-safety-class.avif" alt="Laser safety class" />
 </Frame>
 
 * * *
 
-## 8. Troubleshooting
+### Troubleshooting
 
 | No. | Problem | Resolution |
 | --- | --- | --- |

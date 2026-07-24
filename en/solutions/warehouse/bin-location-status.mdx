@@ -1,89 +1,67 @@
 ---
-title: "Bin-location status detection"
-description: "Detect occupied and empty warehouse locations in real time so the WMS can issue accurate, safe instructions to AGVs."
+title: "Storage-location status recognition"
+description: "Use an RGB-D camera to identify occupancy, load status, and height, then synchronize the result with a warehouse or dispatch system."
 ---
-## Background introduction
 
-Challenge: In most warehouses where AGVs have been applied, items are still stacked manually. This will cause the WMS system to be unable to judge the actual occupancy of each warehouse location in real time, resulting in inaccurate information provided by the WMS to the AGVs. If the occupied warehouse cannot be identified in time, the AGV may receive wrong instructions, which not only reduces operating efficiency, but also easily collides with other goods or equipment. In severe cases, it may even cause a safety accident and endanger the safety of personnel and equipment.
+## Application background
 
-Therefore, the warehouse status identification system came into being. Through functions such as automatic positioning, real-time data synchronization, and precise inventory control, the system optimizes the allocation of warehouse resources, reduces human errors, and improves operational efficiency.
-
-<Frame>
-  <img src="/images/legacy/b8e92a99-9044-4228-bc87-0ff0f64ad6df/a1c8f0e7-3d9f-42e2-b250-12b1f8c64152.avif" alt="Illustrations related to background introduction" />
-</Frame>
-
-* * *
-
-**Two common pain points of storage location status recognition sensors:**
-
-- The storage location information transmitted by single-point lidar is not accurate enough and can easily cause stacking accidents.
-
-Some warehouses use single-point lidar for storage location detection, but this ranging radar can only emit one laser beam at a time to form a point on the surface of an object. It may ignore the gaps between cartons or pallets, leading to misidentification of the storage location status, thereby causing stacking accidents.
-
-- The calibration method of pure RGB cameras is single, and there is a risk of misjudgment and missing information.
-
-There are the following disadvantages when using RGB cameras to determine the location status:
-
-- When using deep learning to detect targets, objects outside the training set entering the warehouse may cause false detections and give wrong information.
-
-- Lack of cargo height information makes it difficult to arrange stacking tasks.
-
-- Ultra-wide-angle fisheye cameras have edge distortion problems in warehouse location determination, which affects the accuracy of model training and prediction, and increases server costs.
-
-* * *
-
-## Solution Overview
-
-Meyer Micro Vision uses an **RGB-D camera** to provide three-dimensional data and color information of warehouse locations, and automatically identify the presence, placement specifications and abnormal occupancy of goods. It can also distinguish cargo categories through the 3D vision intelligent AI system and output it to the dispatching system to achieve intelligent inbound and outbound inspection. The camera has built-in computing power and does not require an external industrial computer. At the same time, Meyer Micro Vision provides integrated software and hardware solutions for warehouse status identification, as well as professional model training and deployment guidance and other service support.
+In an AGV warehouse, manual put-away and retrieval can leave WMS location data out of sync with the site. If an occupied location is not detected in time, the dispatch system may issue an unsuitable retrieval or put-away task.
 
 <Frame>
-  <img src="/images/legacy/cc79bcea-1ede-422f-a072-54e7f48bc49e/a76fdfe2-3848-47e4-a0fc-e97d97879d7c.avif" alt="Solution overview related graphics" />
+  <img src="/images/solutions/warehouse-bin-location-status-background-introduction.avif" alt="Storage-location status recognition application" />
 </Frame>
 
-## Core Advantages
+## Recognition-method comparison
 
-- Comprehensive monitoring: Accurately identify storage location status through three-dimensional data and color information collection, combined with AI technology.
+| Method | Available information | Typical limitation |
+| --- | --- | --- |
+| Single-point laser ranging | One distance value | Gaps between cartons or pallets can be missed, making it difficult to represent the full location status. |
+| RGB camera | Color and texture | Sensitive to targets outside the training set, lighting, and edge distortion; cannot directly provide load height. |
+| RGB-D camera | Color, depth, and point cloud | 3D data can be used to determine occupancy, placement, and load height. |
 
-- Simple deployment: The storage location status recognition algorithm is placed on the camera side to reduce deployment and maintenance costs.
+## Solution overview
 
-- Flexible communication: supports TCP/IP, UDP, HTTP and other communication methods, and reports data to the control system in JSON format in real time.
-
-- Improve efficiency: Real-time transmission of warehouse location information helps the dispatch system allocate tasks quickly and accurately.
-
-## Scene demonstration
+The solution captures color and 3D data from storage locations to identify whether a load is present, how it is placed, and whether occupancy is abnormal. Camera-side algorithms can also distinguish load categories when required by the project. Results can be sent to the dispatch system to support warehouse operations.
 
 <Frame>
-  <img src="/images/legacy/c1a3c8e5-f742-49c5-b9dd-ef5ce1ceb6c7/607dc6a7-6055-4434-a416-9e8914631393.avif" alt="Illustrations related to scene demonstration" />
+  <img src="/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif" alt="RGB-D storage-location status recognition solution" />
 </Frame>
 
-Storage location status recognition scenario demonstration
+## Solution characteristics
 
-## Job description
+- **3D status assessment:** Combine depth and color data to identify occupancy and load status.
+- **On-camera processing:** Run the algorithm on the camera to reduce external compute requirements.
+- **Result reporting:** Support TCP/IP, UDP, and HTTP communication, with JSON output to the control system.
+- **Dispatch coordination:** Provide real-time location data to support task assignment.
 
-> **Camera selection suggestions: S10Pro**
+## Deployment notes
 
-> **Camera installation method**
-
-Fixed installation: When the camera is installed on a column or ceiling, it is recommended to install it directly above the storage location to be monitored.
+<Columns cols={2}>
+  <Card title="Installation position" icon="camera">
+    Mount the camera on a column or ceiling and aim it at the monitored locations. Confirm installation height and field of view against the location dimensions.
+  </Card>
+  <Card title="Environmental requirements" icon="triangle-exclamation">
+    Avoid heavy dust and condensation. The mounting bracket must provide sufficient rigidity and stability.
+  </Card>
+</Columns>
 
 <Frame>
-  <img src="/images/legacy/13530b5b-265b-4977-b960-e3987b55083e/a9108d02-119f-4e4d-a995-d99ef3400339.avif" alt="Illustrations related to work instructions" />
+  <img src="/images/solutions/warehouse-bin-location-status-scene-demonstration.avif" alt="Storage-location status recognition demonstration" />
 </Frame>
 
-> **Specific workflow**
+<Steps>
+  <Step title="Receive a location task">
+    The higher-level controller sends a task while the camera captures image and depth data for the target location.
+  </Step>
+  <Step title="Recognize and report the result">
+    The camera outputs the location status and reports it to the higher-level system in JSON.
+  </Step>
+</Steps>
 
-Step1: The upper-level control system sends task instructions, and the 3D vision camera collects images and accurately obtains the specified warehouse status;
+<Frame>
+  <img src="/images/solutions/warehouse-bin-location-status-work-instructions.avif" alt="Storage-location status recognition camera installation" />
+</Frame>
 
-Step 2: The storage location detection results are reported to the upper-layer system through JSON to assist the dispatching system in realizing intelligent inbound and outbound management.
-
-Communication method: TCP, UDP, HTTP
-
-> **Deployment Notes**
-
-Application environment: It is necessary to avoid harsh environments with severe dust and condensation;
-
-Installation requirements: Ensure the rigidity and stability of the camera mounting bracket;
-
-[Bin-location status detection deployment guide](/en/developers/deployment/algorithm-detection "Bin-location status detection deployment guide")
-
-* * *
+<Card title="Storage-location detection deployment guide" icon="book-open" href="/en/developers/deployment/algorithm-detection">
+  See algorithm deployment, interfaces, and debugging instructions.
+</Card>

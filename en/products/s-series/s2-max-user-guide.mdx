@@ -1,6 +1,6 @@
 ---
-title: "S2 Max camera product user guide"
-description: "S2 Max camera specifications, installation, connection, software operation, and usage precautions."
+title: "S2 Max user guide"
+description: "Specifications, installation, SDK, host application operation, and usage notes for the S2 Max camera."
 hidden: true
 ---
 ## Revision history
@@ -12,14 +12,14 @@ hidden: true
 | 2024/06/17 | V1.1 | 1. Updated the pinout and added electrical specifications. 2. Added the inspection certificate to the package contents. |
 | 2024/11/25 | V1.2 | Updated camera storage temperature |
 
-## 1. Product overview
+## Product overview
 
 This document describes the S2 Max camera developed by Zhejiang MRDVS Technology Co., Ltd., including its specifications, features, and operating instructions.
 
 The S2 Max is an MRDVS ToF camera with a Gigabit Ethernet communication interface and 24V DC power input.
 
 <Frame>
-  <img src="/images/legacy/45572af3-2354-454f-888e-e0bb33e392fc/35d2d756-9872-41d3-9ad6-b4114a07ccb1.avif" alt="S2 Max camera" />
+  <img src="/images/products/s-series-s2-max-user-guide-s2-max-camera.avif" alt="S2 Max camera" />
 </Frame>
 
 Figure 1.1. S2 Max camera
@@ -44,7 +44,7 @@ Figure 1.1. S2 Max camera
 
 - Do not use the product in a strong magnetic field.
 
-- Do not use the product in direct sunlight above 100KLUX.
+- Do not use the product in direct sunlight above 100 kLux.
 
 - Clean the enclosure with a soft lint-free cloth dampened with a small amount of purified water or alcohol.
 
@@ -52,21 +52,21 @@ Figure 1.1. S2 Max camera
 
 * * *
 
-## 2. Product specifications
+## Ranging principle and specifications
 
-### 2.1 Ranging principle
+### Ranging principle
 
 The S2 Max measures distance using time of flight (ToF): it measures the time between emitting light and receiving the reflection from an object.
 
 The S2 Max uses direct measurement for depth imaging, generating high-quality depth data with minimal compute resources and building depth scenes at a high frame rate. Like LiDAR, ToF cameras are divided into pulsed ToF (P\_ToF) and continuous-wave ToF (CW\_ToF). P\_ToF emits light pulses, usually invisible, and calculates distance from their round-trip time. CW\_ToF emits modulated continuous light and calculates flight time from the phase difference between transmitted and returned light.
 
 <Frame>
-  <img src="/images/legacy/d13d957f-1755-4775-bdce-6d2d62c500d0/879c7b69-7b9b-4f6f-a1ea-b82b5e739be8.avif" alt="ToF detection principle" />
+  <img src="/images/products/s-series-s2-max-user-guide-tof-detection-principle.avif" alt="ToF detection principle" />
 </Frame>
 
 Figure 2.1. Detection principle
 
-### 2.2 Specifications
+### Product specifications
 
 Table 2-1. Product specifications
 
@@ -75,8 +75,8 @@ Table 2-1. Product specifications
 | Performance | Chip | Sony chip |
 | ㅤ | Ranging method | Time of flight |
 | ㅤ | Operating wavelength | 940nm |
-| ㅤ | TOF resolution and frame rate | 320×240 (typical 12fps) |
-| ㅤ | TOF field of view | 81°×61° |
+| ㅤ | ToF resolution and frame rate | 320 × 240 (typical 12 fps) |
+| ㅤ | ToF field of view | 81° × 61° |
 | ㅤ | RGB resolution and frame rate | 1920×1080 (typical 12fps) |
 | ㅤ | RGB field of view | 88°×56° |
 | ㅤ | Range | 0.2~5m (90% reflectivity), 0.2~2.5m (10% reflectivity) |
@@ -91,8 +91,8 @@ Table 2-1. Product specifications
 | ㅤ | Operating temperature | -20℃~60℃ |
 | ㅤ | Storage temperature | -40℃~85℃ |
 | ㅤ | Humidity | 10%~90% RH, non-condensing |
-| Other | Ambient-light resistance | Up to 100Klux sunlight |
-| ㅤ | Shadow-to-light resistance | Less than 1cm change across a 100Klux shadow-light boundary |
+| Other | Ambient-light resistance | Up to 100 kLux sunlight |
+| ㅤ | Shadow-to-light resistance | Less than 1cm change across a 100 kLux shadow-light boundary |
 | ㅤ | Software environment | C / C++ / ROS SDK |
 | ㅤ | Operating system support | Windows 7/8/10/11, Linux, Arm Linux/ROS |
 | ㅤ | Cooling | Passive |
@@ -101,9 +101,9 @@ Note: The 3D model defines the product dimensions.
 
 * * *
 
-## 3. Product characteristics
+## Output, detection, and structure
 
-### 3.1 Electrical specifications
+### Electrical characteristics
 
 Table 3-1. Product electrical specifications
 
@@ -116,36 +116,36 @@ Table 3-1. Product electrical specifications
 | Storage humidity | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
 | Storage temperature | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
 
-### 3.2 Output characteristics
+### Output data
 
 By default, the S2 Max outputs a depth image (Figure 3.1), corresponding per-pixel signal intensity data (Figure 3.2), and a point cloud generated from the depth data (Figure 3.3). The object shown is an aluminum profile.
 
 <Frame>
-  <img src="/images/legacy/4eca3d0d-b048-4bad-a96d-dc99750bf5f4/6463aba7-4fd0-49ee-a17b-2f5cae0b2a17.avif" alt="Depth image" />
+  <img src="/images/products/s-series-s2-max-user-guide-depth-image.avif" alt="Depth image" />
 </Frame>
 
 Figure 3.1. Depth image
 
 <Frame>
-  <img src="/images/legacy/ceeedd36-984a-45eb-b363-06a3e1282a18/5b3058dc-d9b8-42f4-9601-c5a15a5efc8e.avif" alt="Intensity image" />
+  <img src="/images/products/s-series-s2-max-user-guide-intensity-image.avif" alt="Intensity image" />
 </Frame>
 
 Figure 3.2. Intensity image
 
 <Frame>
-  <img src="/images/legacy/d6b15bf9-3220-4da7-aac1-e34f8c93cdc6/39d023fc-ce10-4ef7-ab77-5089c3b8d3f9.avif" alt="Point cloud" />
+  <img src="/images/products/s-series-s2-max-user-guide-point-cloud.avif" alt="Point cloud" />
 </Frame>
 
 Figure 3.3. Point cloud
 
 Depth detection uses alternating-frame high dynamic range (HDR) to extend the measurement range. The sensor outputs two depth frames with different integration times and calibration parameters. For each pixel, the host software selects the frame with the higher intensity value and combines the selections into the final output, providing accurate depth across the measurement ranges.
 
-### 3.3 Detection range
+### Detection range
 
 Figure 3.1 shows the S2 Max detection region. The horizontal detection angle is 81°, and the vertical angle is 61°. Detection distance depends on optical power. Higher optical power and target reflectivity increase the near blind zone and reduce the far blind zone. Lower optical power and target reflectivity reduce the near blind zone and increase the far blind zone. For targets with 10%~90% reflectivity, the S2 Max range is 0.2~5m. Beyond 5m, low reflected-signal strength and ambient-light interference cause substantial ranging errors.
 
 <Frame>
-  <img src="/images/legacy/095f0756-e2ee-46d7-9af4-e3fd8946f19b/76a7f229-87d7-4056-b5e6-eb43d952502e.avif" alt="Detection range" />
+  <img src="/images/products/s-series-s2-max-user-guide-detection-range.avif" alt="Detection range" />
 </Frame>
 
 Figure 3.4. Field of view
@@ -173,7 +173,7 @@ Table 3-2. Material reflectivity
 ### 3.5 Dimensions
 
 <Frame>
-  <img src="/images/legacy/5ceeb341-2323-4842-abba-618e119408de/4357148a-af20-410f-bec4-ca97c60b9626.avif" alt="S2 Max dimensions" />
+  <img src="/images/products/s-series-s2-max-user-guide-s2-max-dimensions.avif" alt="S2 Max dimensions" />
 </Frame>
 
 Figure 3.5. S2 Max dimensions
@@ -191,7 +191,7 @@ Figure 3.5. S2 Max dimensions
 - Use the camera intrinsics to transform depth-image coordinates into 3D point-cloud coordinates. See the SDK examples.
 
 <Frame>
-  <img src="/images/legacy/7156ba2e-0f98-4049-8747-2a349ee174d8/2800e8c0-c543-4557-871f-c502a873803a.avif" alt="Optical coordinate system" />
+  <img src="/images/products/s-series-s2-max-user-guide-optical-coordinate-system.avif" alt="Optical coordinate system" />
 </Frame>
 
 Figure 3.6. Optical coordinate system
@@ -205,7 +205,7 @@ Figure 3.6. Optical coordinate system
 3.  The Z-coordinate origin is on the camera's front surface.
 
 <Frame>
-  <img src="/images/legacy/d9ca8b30-b791-4eb6-8741-43a30c38cdb5/99ecfb54-1960-4225-a297-502cfcb313aa.avif" alt="Camera origin" />
+  <img src="/images/products/s-series-s2-max-user-guide-camera-origin.avif" alt="Camera origin" />
 </Frame>
 
 Figure 3.7. Camera origin
@@ -215,7 +215,7 @@ Figure 3.7. Camera origin
 The S2 Max 5-pin port is defined below. **Note: Reserve 35mm at the cable exit for installation and bend radius.**
 
 <Frame>
-  <img src="/images/legacy/53191efd-d932-4b71-b5fa-eea5e4f63c9f/9c33c457-56a3-427e-9534-1649875406f1.avif" alt="S2 Max 5-pin interface" />
+  <img src="/images/products/s-series-s2-max-user-guide-s2-max-5-pin-interface.avif" alt="S2 Max 5-pin interface" />
 </Frame>
 
 Table 3-3. Pin definitions
@@ -235,7 +235,7 @@ Table 3-3. Pin definitions
 **Installation 1:** Neither the right wall nor floor is visible. Place the camera in a corner with only the front wall in view. This configuration provides good ranging.
 
 <Frame>
-  <img src="/images/legacy/481825de-00a1-4edf-9c01-5735cbd8fc54/9954d920-5ca6-49fe-a087-61637f41106e.avif" alt="Recommended installation 1" />
+  <img src="/images/products/s-series-s2-max-user-guide-recommended-installation-1.avif" alt="Recommended installation 1" />
 </Frame>
 
 Figure 3.8. Installation 1
@@ -243,7 +243,7 @@ Figure 3.8. Installation 1
 **Installation 2:** The right wall is visible but the floor is not. Place the camera in a corner at least 20cm from the right wall. Ranging accuracy can meet ±15mm.
 
 <Frame>
-  <img src="/images/legacy/89c815f7-580c-4a2d-bac3-49fec5a142da/9b2170dc-373b-41f0-a0fa-dc721eac6b76.avif" alt="Recommended installation 2" />
+  <img src="/images/products/s-series-s2-max-user-guide-recommended-installation-2.avif" alt="Recommended installation 2" />
 </Frame>
 
 Figure 3.9. Installation 2
@@ -251,7 +251,7 @@ Figure 3.9. Installation 2
 **Installation 3:** The floor is visible but the right wall is not. Mount the camera 10cm~30cm above the floor.
 
 <Frame>
-  <img src="/images/legacy/6ab7e1a0-2dad-4d2f-b882-5505ce42a774/e17dcb0c-11b4-4ee8-a363-cb796debb8ae.avif" alt="Recommended installation 3" />
+  <img src="/images/products/s-series-s2-max-user-guide-recommended-installation-3.avif" alt="Recommended installation 3" />
 </Frame>
 
 Figure 3.10. Installation 3
@@ -259,7 +259,7 @@ Figure 3.10. Installation 3
 Near the floor, the area closest to the camera can be overexposed and affect other regions because of stray light and multipath reflections.
 
 <Frame>
-  <img src="/images/legacy/c214e979-a428-45c6-bb5a-4f135703040c/9babdcb0-d5ba-4fad-8488-12996f12361a.avif" alt="Near-floor multipath effect" />
+  <img src="/images/products/s-series-s2-max-user-guide-near-floor-multipath-effect.avif" alt="Near-floor multipath effect" />
 </Frame>
 
 Figure 3.11. Near-floor multipath effect
@@ -267,7 +267,7 @@ Figure 3.11. Near-floor multipath effect
 In imaging optics, stray light primarily appears as ghosting and flare.
 
 <Frame>
-  <img src="/images/legacy/29fb1769-ee47-415b-998b-eef6443852a8/f9653242-82bd-404e-8bac-fe57223b88e1.avif" alt="Ghosting and flare" />
+  <img src="/images/products/s-series-s2-max-user-guide-ghosting-and-flare.avif" alt="Ghosting and flare" />
 </Frame>
 
 Figure 3.12. Stray-light ghosting and flare
@@ -275,21 +275,21 @@ Figure 3.12. Stray-light ghosting and flare
 **Do not use this product** in an installation where both the right wall and floor are visible. Floor stray light and wall multipath reflections create complex ranging interference.
 
 <Frame>
-  <img src="/images/legacy/85209cfc-7b96-48eb-9f8c-c5682e3b9b4d/8d1d86d9-53ce-4544-8424-0c8db6720f11.avif" alt="Installation not recommended" />
+  <img src="/images/products/s-series-s2-max-user-guide-installation-not-recommended.avif" alt="Installation not recommended" />
 </Frame>
 
 Figure 3.13. Installation not recommended
 
 * * *
 
-## 4. Accuracy and precision
+## Accuracy, precision, and multi-camera interference
 
 ### 4.1 Accuracy
 
 Calibration removes a fixed offset between sensor measurements and actual values by establishing a mapping between them. For the S2 Max, mount the camera on a rail facing a white wall and map each pixel's measurement to the distance between the camera and the imaged wall region. Correcting measurements with this mapping provides more accurate distance values, as shown in Figure 4.1.
 
 <Frame>
-  <img src="/images/legacy/1bf79e92-93f8-4dae-9b95-9853490d9888/e242df58-7178-48a9-a801-9f0513727e69.avif" alt="Calibration setup" />
+  <img src="/images/products/s-series-s2-max-user-guide-calibration-setup.avif" alt="Calibration setup" />
 </Frame>
 
 Figure 4.1. Calibration
@@ -299,7 +299,7 @@ The S2 Max uses active ranging. Installation and other factors can introduce mul
 This effect is especially pronounced when measuring a low-reflectivity target beside a highly reflective object. The ideal measurement follows the blue path, but light can reflect from the wall to the target and back to the camera (green path). Illumination can also reflect directly from the nearby high-reflectivity object into the camera (red path). Optical imperfections create glare that interferes with ranging, as shown in Figure 4.2.
 
 <Frame>
-  <img src="/images/legacy/76e2a72b-ff76-468e-a3d5-2fba7dbde22f/724e3afa-0550-446f-b54a-22927891e33f.avif" alt="Camera installation light paths" />
+  <img src="/images/products/s-series-s2-max-user-guide-camera-installation-light-paths.avif" alt="Camera installation light paths" />
 </Frame>
 
 Figure 4.2. Camera installation
@@ -309,7 +309,7 @@ Figure 4.2. Camera installation
 Precision usually means single-point variation (1-σ). As an optoelectronic measurement device, the S2 Max is affected by AD conversion, signal-to-noise ratio, system noise, and other factors. Figure 4.3 shows the relationship between precision and signal strength.
 
 <Frame>
-  <img src="/images/legacy/4bdfd3a0-f5b8-4136-a633-3990ef7e3408/636c60f8-d5d0-41b0-849f-9dacb9ad6bc0.avif" alt="Precision and signal strength" />
+  <img src="/images/products/s-series-s2-max-user-guide-precision-and-signal-strength.avif" alt="Precision and signal strength" />
 </Frame>
 
 Figure 4.3. Precision and signal strength
@@ -318,21 +318,21 @@ The S2 Max converts optoelectronic analog signals into digital data. ADC quantiz
 
 * * *
 
-## 5. Multi-camera interference
+### Multi-camera interference
 
 ### 5.1 Parallel interference
 
 When two cameras are mounted in parallel, each camera receives light returned from both itself and the other camera, interfering with depth data. Parallel interference is the increased detection error caused when two S2 Max cameras point in the same direction.
 
 <Frame>
-  <img src="/images/legacy/a83df49c-2acc-4fde-98b2-f7c47bb80a10/5ab113bc-bb79-46fe-8695-fb9fae482ad0.avif" alt="Parallel camera interference" />
+  <img src="/images/products/s-series-s2-max-user-guide-parallel-camera-interference.avif" alt="Parallel camera interference" />
 </Frame>
 
 To avoid parallel interference, install the cameras at an angle to the horizontal plane. If they must be installed at 0°, contact MRDVS for a custom configuration.
 
 * * *
 
-## 6. Software overview
+## SDK and host application
 
 ### 6.1 SDK
 
@@ -349,7 +349,7 @@ Table 6-1. SDK
 ### 6.2 SDK output order
 
 <Frame>
-  <img src="/images/legacy/ae0a3b9d-5f56-424e-a3d0-559042c29d3c/fb9ad6ad-08cc-4bfa-843a-12ca2083d122.avif" alt="SDK output order" />
+  <img src="/images/products/s-series-s2-max-user-guide-sdk-output-order.avif" alt="SDK output order" />
 </Frame>
 
 Figure 6.1. SDK output order
@@ -381,7 +381,7 @@ Download and install the software, then double-click the LxCameraViwer demo icon
 The software provides basic functions, image selection, camera configuration, and camera information. Camera information includes the camera IP, ID, MAC address, serial number, and software and algorithm versions. Select **Depth**, **Intensity**, **RGB**, or **Point cloud** to display the corresponding image.
 
 <Frame>
-  <img src="/images/legacy/c3306c27-0c60-4bb5-aaf7-bba3cbd803cb/cfb52d99-146e-4e83-adef-65ea234990cf.avif" alt="LxCameraViewer image display" />
+  <img src="/images/products/s-series-s2-max-user-guide-lxcameraviewer-image-display.avif" alt="LxCameraViewer image display" />
 </Frame>
 
 Figure 6.2. Image display
@@ -393,7 +393,7 @@ Click **Save** to save the selected images to the `./data` folder in the softwar
 In the saved files, `_a` is the intensity image, `_d` is the depth image, `_r` is the RGB (MONO) image, and `.pcd` is the point cloud. Depth and intensity images use PGM, RGB images use PNG, and point clouds use PCD.
 
 <Frame>
-  <img src="/images/legacy/ccd9ecf9-7f66-4508-8658-5b058cca8433/9531ca7b-8f0c-45c8-86bf-ca7e29cf1f91.avif" alt="Saved image files" />
+  <img src="/images/products/s-series-s2-max-user-guide-saved-image-files.avif" alt="Saved image files" />
 </Frame>
 
 Figure 6.3. Saved images
@@ -403,12 +403,12 @@ Figure 6.3. Saved images
 Enter the required IP address, such as 192.168.10.199. Enter subnet mask 255.255.255.0 and gateway 192.168.10.1. The gateway must be on the same subnet as the required IP and normally ends in 1. Confirm the change, then power-cycle the camera.
 
 <Frame>
-  <img src="/images/legacy/c000fc32-ef83-4838-b18b-9fadb3a0cbdd/e60b7d95-7424-4180-9982-28188b93bc9b.avif" alt="Change the camera IP address" />
+  <img src="/images/products/s-series-s2-max-user-guide-change-the-camera-ip-address.avif" alt="Change the camera IP address" />
 </Frame>
 
 * * *
 
-## 7. Main functions
+## Main functions
 
 ### 7.1 Range
 
@@ -426,12 +426,12 @@ The MRDVS SDK provides the following filters:
 
 * * *
 
-## 8. Precautions
+## Safety and troubleshooting
 
 ### 8.1 Laser safety class
 
 <Frame>
-  <img src="/images/legacy/a4eaa95f-1ff4-4b06-ab6c-155a0ca35823/6d3c7113-6124-4a40-95d8-17de8e9e3ea2.avif" alt="Laser safety class" />
+  <img src="/images/products/s-series-s2-max-user-guide-laser-safety-class.avif" alt="Laser safety class" />
 </Frame>
 
 ### 8.2 Correct operation
@@ -444,7 +444,7 @@ Keep the ambient temperature within the range in the product specifications (Tab
 
 * * *
 
-## 9. Troubleshooting
+### Troubleshooting
 
 Table 9-1. Troubleshooting
 

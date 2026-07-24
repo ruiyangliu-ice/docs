@@ -1,162 +1,187 @@
 ---
 title: "V2 localization-only guide"
-description: "Use the V2 localization-only web interface for mapping, localization, and map management."
+description: "Use the V2 localization-only web interface to build maps, localize, manage maps, export logs, and perform maintenance operations."
 hidden: true
 ---
-## Interface description
 
-Red menu bar: Click to enter the corresponding function operation details, such as starting mapping, relocation, map management, etc.
+This page describes the V2 localization-only web interface. Before building a map, switching maps, or relocalizing, make sure the vehicle, camera, and LiDAR are operating normally.
 
-Blue box: visible using the loaded 2D contour map and the car positioning display icon
+<Warning>
+  Switching maps, updating firmware, and restarting the built-in application affect localization services. Perform these operations only with the vehicle stopped, the work area safe, and a recovery procedure available.
+</Warning>
 
-Green box: Displays the real-time RGB image of the top-view camera
+## Interface overview
 
-Yellow box: real-time display of relocation signal strength (green: excellent strength, blue: good strength, red: poor strength); real-time display of the car's current position coordinates, the car's current movement speed, and the mouse position coordinates
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/177bf884-64a0-442b-83a2-772180d1ee53.avif" alt="Interface description related icons" />
-</Frame>
-
-Figure 1 Interface description
-
-## 1. Start building the map
-
-Click the **Start Building Map** button on the web interface, as shown in the figure below:
+| Area | Contents |
+| --- | --- |
+| Menu bar | Mapping, relocalization, map management, and maintenance functions. |
+| Map view | The loaded 2D contour map and the vehicle localization icon. |
+| RGB view | The live RGB image from the top-view camera. |
+| Status area | Relocalization signal strength, vehicle coordinates, speed, and cursor coordinates. Signal quality is shown from best to worst as green, blue, and red. |
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4bb3eee5-75cd-4d29-b989-3c7c6d3fa88f.avif" alt="1. Illustrations related to starting to build a map" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-interface-description.avif" alt="V2 localization-only web interface areas" />
 </Frame>
 
-Enter the map name (the map name consists of letters, numbers, and underscores, and cannot start with numbers), as shown in the figure below:
+## Build a map
+
+### Create a map
+
+<Steps>
+  <Step title="Start mapping">
+    Click **Start Mapping** in the web interface.
+
+    <Frame>
+      <img src="/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif" alt="Start Mapping button in the V2 localization-only interface" />
+    </Frame>
+  </Step>
+  <Step title="Enter a map name">
+    A map name may contain only letters, numbers, and underscores, and must start with a letter.
+
+    <Columns cols={2}>
+      <Frame>
+        <img src="/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif" alt="Map name entry dialog" />
+      </Frame>
+      <Frame>
+        <img src="/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif" alt="Start mapping page" />
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="Capture the area and stop mapping">
+    Drive the AGV through the target area. When capture is complete, click **Stop Mapping** and wait for processing to finish. Processing time depends on the size of the captured area.
+  </Step>
+  <Step title="Confirm the map">
+    After mapping succeeds, open **Map Management** and confirm that the new map is listed.
+  </Step>
+</Steps>
+
+### Incremental mapping
+
+Use incremental mapping to add an area to an existing map. Before starting, complete relocalization and switch to the map that you want to extend.
+
+<Info>
+  Incremental mapping is started and stopped with a manual HTTP request at [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD).
+</Info>
+
+<Tabs>
+  <Tab title="Start incremental mapping">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Stop incremental mapping">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+After the operation completes, the newly captured area is written to the current map. Restart the localization service for the change to take effect.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/e400ede7-1ffa-49d1-b62a-e94692079e92.avif" alt="1. Illustrations related to starting mapping 2" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif" alt="Incremental mapping operation in the V2 localization-only interface" />
 </Frame>
+
+## Map management
+
+Use **Map Management** to view, apply, or delete maps. When operating in multiple areas, use this page to switch the active map.
+
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/developers/v2-localization-pure-localization-guide-2-map-management.avif" alt="Map Management page in the V2 localization-only interface" />
+  </Frame>
+  <Frame>
+    <img src="/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif" alt="Applying a map in the V2 localization-only interface" />
+  </Frame>
+</Columns>
+
+<Warning>
+  After clicking **Apply**, restart the built-in application for the new map to take effect. Without a restart, relocalization may fail.
+</Warning>
+
+## Relocalization
+
+### Manual relocalization
+
+Click **Relocalization**, then drag in the map view to provide an approximate vehicle pose so that the LiDAR point cloud matches the contour map. The **Localization timeout** fault disappears after relocalization succeeds.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/248b2f19-f53b-4ab5-ad99-b826ab1b139d.avif" alt="1. Illustrations related to starting mapping 3" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-3-relocation.avif" alt="Manual relocalization in the V2 localization-only interface" />
 </Frame>
 
-This is the page to start mapping
+### AprilTag relocalization
 
-Then move the AGV to scan the map in the operating area. After the scan is completed, click the menu bar to end the map construction. Please wait patiently (the waiting time is related to the size of the scan area).
+You can place AprilTags at selected locations while building a map. When a complete tag enters the device field of view, the system identifies its map and pose, switches maps if necessary, and relocalizes automatically.
 
-When the mapping is successful, the mapping data can be seen in the map management item.
-
-incremental mapping
-
-Function: Add new map areas based on existing maps, such as map expansion and supplement blind spots
-
-Prerequisite: When building incremental maps, you need to ensure that the web page has completed relocation and that you have switched to the map that needs to be added.
-
-(For the time being, manual HTTP request is issued)
-
-Address [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD "http://192.168.100.201:9998/tool/rob/sendCMD")
-
-Parameter Json
-
-```json
-{
-
-    "cmd":905, // 904 starts incremental mapping; 905 stops incremental mapping
-
-    "attach":{
-
-        "sub_command":0,
-
-        "param":""
-
-}
-
-}
-```
+- Generate tags with [the AprilTag generator](https://chaitanyantr.github.io/apriltag).
+- Tag IDs must be unique within the visible area of a device.
+- Use the fixed tag family shown in the interface example.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9adb8596-660f-4594-a846-eb2db5771d4f.avif" alt="1. Illustrations related to starting mapping 4" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif" alt="AprilTag relocalization configuration" />
 </Frame>
 
-After the incremental mapping is completed, the newly recorded area will be directly added to the original map, and you only need to restart the relocation.
+## Parameters and logs
 
-## 2. Map management
+### Configure localization parameters
 
-![2. Illustrations related to map management](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9b855ff4-d2b8-4a0b-9031-3b1343a848df.avif) Figure 2 Schematic diagram of map management
-
-After the map creation is completed, click **Map Management** on the menu bar. You can see the name of the map you just created in the host map list. Click the Apply button to switch to the map. Similarly, if there are multiple regional maps to switch, you also need to use the map management function to switch. Click the Delete button to delete the corresponding map; **Apply Map:** After clicking Apply, be sure to restart the host before the map will be applied and take effect, otherwise the relocation will not be possible.
+Use the parameter page to view or configure chassis localization parameters and the LiDAR and camera extrinsic parameters in the sensor calibration values.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/9536c86d-4216-43cf-99e4-a314bca1e053.avif" alt="2. Illustrations related to map management 2" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif" alt="Localization parameters and sensor extrinsic calibration" />
 </Frame>
 
-Figure 3 Schematic diagram of application map
+### Export logs
 
-## 3. Relocation
-
-After clicking on the relocation, you can drag the mouse to give the approximate relocation pose based on the matching prompt of the laser point cloud and the laser contour map for relocation;
+Filter logs by time range and module type. Select the results that you need and export them.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/2e74ee5f-e192-4fce-8e8e-8f402988dcad.avif" alt="3. Relocation related icons" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif" alt="Log filtering and export page" />
 </Frame>
 
-Figure 4 Schematic diagram of relocation function
+## Maintenance
 
-After the relocation is successful, the **positioning timeout** exception disappears.
+### Update firmware
 
-QR code relocation
+Import a local firmware package on the update page to update the chassis, actuator, or camera firmware. A restore package records the version before the previous update and can be used to roll back.
 
-When building a map, you can choose to paste the Apritag code in some locations for relocation. When the complete QR code appears in the device's perspective, it will automatically identify which map and location the code is on, automatically switch the map and relocate.
+<Warning>
+  Camera firmware upgraded through the standard host-computer workflow cannot be rolled back. Verify the package and current version before updating.
+</Warning>
 
-QR code generation website [https://chaitanyantr.github.io/apriltag](https://chaitanyantr.github.io/apriltag "https://chaitanyantr.github.io/apriltag")
+<Columns cols={2}>
+  <Frame>
+    <img src="/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif" alt="Firmware update page for the V2 localization-only system" />
+  </Frame>
+  <Frame>
+    <img src="/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif" alt="Camera firmware update through the host computer" />
+  </Frame>
+</Columns>
+
+### Stop or restart the built-in application
+
+Use the built-in application controls to stop or restart the application. Stop the built-in application before connecting LxCameraViewer to the camera; otherwise, the vehicle may retain control of the camera and prevent communication.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/ebf28b54-9559-4452-afbe-06e5827fb7d0.avif" alt="3. Relocation related icons 2" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif" alt="Built-in application stop and restart controls" />
 </Frame>
 
-Just make sure that the Tag ID in the area where a device is located is not repeated. TagFamily is fixed as shown above.
+### Check versions
 
-## 4. Parameter configuration and display
-
-View and configure the laser and camera external parameters in the chassis positioning parameters and sensor calibration values of the robot configuration
+Open the version page to view the built-in frontend and backend versions.
 
 <Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/03488e22-d914-486b-a776-658645388d62.avif" alt="4. Parameter configuration and display related icons" />
+  <img src="/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif" alt="Version information page" />
 </Frame>
-
-Figure 5 Parameter configuration
-
-## 5. Log export function
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/3cbd3c40-cb19-4d52-ab9f-6b23a49456a2.avif" alt="5. Illustrations related to the log export function" />
-</Frame>
-
-Figure 6 Log import and export function
-
-As shown in the figure above, you can filter the corresponding logs according to time interval, module type and other options. The log below is the corresponding retrieval log, which can be exported after selection.
-
-## 7. Firmware update
-
-View package local: Import local firmware that needs to be updated (chassis, actuator, camera firmware).
-
-Restore package: Record the firmware version before the last update. If you need to go back, just click it.
-
-![7. Firmware update related icons](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/db55e5fb-c925-4105-bef1-84ac12f05997.avif) Figure 7 Firmware update
-
-Camera host firmware upgrade
-
-You can use an ordinary host computer to upgrade the firmware. This upgrade method cannot be rolled back and you need to upgrade with caution. ![7. Firmware update related icons 2](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/4ec2ec9c-5285-4a4d-b91e-0fea462d9bed.avif)
-
-## 8. Stop and restart the main application
-
-Click the appropriate control. Before you connect LxCameraViewer to the camera, stop the robot's main application. Otherwise, the robot retains control of the camera and prevents LxCameraViewer from connecting. ![Main application controls](/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/6a00c674-61ac-4cde-8af7-c7e9389ccc6d.avif)
-
-Figure 8 Ontology functions
-
-9. Version query
-
-Click to query the ontology version and front-end version.
-
-<Frame>
-  <img src="/images/legacy/c450a63a-7b1c-4291-9e40-4cb352361b6e/de740848-b03d-4262-9943-259865580ffc.avif" alt="7. Firmware update related icons 4" />
-</Frame>
-
-Figure 9 Version query

@@ -1,486 +1,156 @@
 ---
-title: "V2 HTTP protocol"
-description: "Use the V2 visual localization module HTTP endpoints, request parameters, and response formats."
+title: "V2 visual localization HTTP protocol"
+description: "Reference for V2 visual localization HTTP endpoints, request parameters, and response fields."
 hidden: true
 ---
-## Retrieve Global Information
 
-### Update Main Program
+This page lists the HTTP endpoints provided by the V2 visual localization module. Replace the IP placeholder in each address with the module IP address. Unless an endpoint states otherwise, `code: 200` and `message: success` indicate that the request was processed successfully.
 
-Request URL
+<Warning>
+  Updating software, deploying or switching maps, restarting the program, and rebooting the camera interrupt localization. Call these endpoints only while the vehicle is stopped and recovery is available.
+</Warning>
 
-`http://<ip>:9998/tool/rob/quiet_update`
+## Program and device information
 
-Request Example:
+### Update the main program
 
-```json
-{
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/quiet_update</code>
 
-"url":"http://192.168.2.179:8080/hontai_2.1.20211114.zip"
+<ParamField body="url" type="string" required>
+  Reachable URL of the main-program upgrade package.
+</ParamField>
 
-}
-```
+### Set camera height
 
-### Set Camera height
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/setHeightRequest</code>
 
-Request URL `http://<ip>:9998/tool/rob/setHeightRequest` Example：
+<ParamField body="height" type="number" required>
+  Camera height.
+</ParamField>
 
-```json
-{
+### Get program version
 
-"height": 1.3
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/getRobotVersion</code>
 
-}
-```
+This endpoint requires no request parameters.
 
-Response Example：
+<ResponseField name="code" type="integer" required>Response status code.</ResponseField>
+<ResponseField name="data" type="string">Program version, such as `version 12313`.</ResponseField>
 
-```json
-{
+### Get vehicle information
 
-"code":200, "message":"success",
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/getVehicle</code>
 
-}
-```
+This endpoint requires no request parameters.
 
-## Retrieve Global Information
+<ResponseField name="data" type="object" required>Vehicle information object.</ResponseField>
+<ResponseField name="vehicleId" type="string">Vehicle UUID.</ResponseField>
+<ResponseField name="mapId" type="string">Current map.</ResponseField>
+<ResponseField name="vehicleType" type="string">Vehicle type.</ResponseField>
 
-### Get Program Version
+### Get the current pose
 
-Request URL
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/getAGVPose</code>
 
-`http://<ip>:9998/tool/rob/getRobotVersion`
+This endpoint requires no request parameters.
 
-Request Example: omitted
+<ResponseField name="pose" type="object" required>Current pose.</ResponseField>
+<ResponseField name="x" type="number">X coordinate.</ResponseField>
+<ResponseField name="y" type="number">Y coordinate.</ResponseField>
+<ResponseField name="yaw" type="number">Heading angle.</ResponseField>
 
-Response Example：
+### Relocate
 
-```json
-{
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/relocate</code>
 
-"code":200, "data":"version 12313", "message":"success"
+Request header: `Content-Type: application/json`
 
-}
-```
+<ParamField body="x" type="number" required>X coordinate in meters.</ParamField>
+<ParamField body="y" type="number" required>Y coordinate in meters.</ParamField>
+<ParamField body="angle" type="number" required>Pose angle.</ParamField>
+<ParamField body="noisyX" type="number" required>X-axis noise in meters.</ParamField>
+<ParamField body="noisyY" type="number" required>Y-axis noise in meters.</ParamField>
+<ParamField body="noisyAngle" type="number" required>Angular noise.</ParamField>
 
-### Get Basic Vehicle Information
+## Map management
 
-Request URL
+### Download the current running map package
 
-`http://<ip>:9998/tool/rob/getVehicle`
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/getRunMapZip</code>
 
-Request Example: omitted
+Request header: `Content-Type: application/json`
 
-Response Example：
+<ParamField body="Name" type="string" required>Map name.</ParamField>
 
-```json
-{
+The response is a ZIP file with content type `application/zip`.
 
-"code":200, "message":"success", "data":{
+### Deploy a map
 
-"vehicleId":"vehicle UUID",
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/deployRunMap</code>
 
-"mapId":"current map", "vehicleType":"vehicle model"
+<ParamField body="id" type="string" required>Map name.</ParamField>
 
-}
+### Apply a map
 
-}
-```
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/changeCurrentRunMap</code>
 
-### Get Map Package From the Host
+<ParamField body="name" type="string" required>Map name.</ParamField>
 
-Request URL
+### Start mapping
 
-`http://<ip>:9998/tool/rob/getRunMapZip`
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/startMapping</code>
 
-Request Parameters:
+<ParamField body="name" type="string" required>Map name.</ParamField>
 
-Content-Type: application/json
+### Stop mapping
 
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | Name | Map name |
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/stopMapping</code>
 
-Response Example：
+This endpoint requires no request parameters.
 
-Returns a file with content-type: application/zip
+### Start or stop incremental mapping
 
-### GetAGVPose
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/sendCMD</code>
 
-Request URL
+| Operation | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | ---: | ---: | --- |
+| Start incremental mapping | `904` | `0` | `mapname` |
+| Stop incremental mapping | `905` | `0` | `mapname` |
 
-`http://<ip>:9998/tool/rob/getAGVPose`
+### Get the map list
 
-Request Parameters: none
+Use the local map-list endpoint:
 
-Response Example：
+<code>http://&lt;ip&gt;:9998/tool/rob/getRunMapLists</code>
 
-```json
-{
+This endpoint requires no request parameters. The response `run_maps` is an array of map names.
 
-    "code": 200,
+<Note>
+  The backend map-list endpoint <code>http://&lt;ip&gt;:9998/tool/editor/getLocalMaps</code> is deprecated and not recommended.
+</Note>
 
-    "pose": {
+### Upload a map package to the camera
 
-        "x": -1.4972912073135376,
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/uploadMapZip2RunMaps</code>
 
-        "y": -0.57843643426895142,
+<ParamField body="url" type="string" required>Reachable URL of the map package.</ParamField>
 
-        "yaw": 1.6737515926361084
+### Download a map
 
-    }
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/downloadVisiomWithLaserMap</code>
 
-}
-```
+<ParamField body="url" type="string" required>Reachable URL of the map package.</ParamField>
 
-- 1\. **Relocation(Go Online)**
+## Maintenance endpoints
 
-Request URL
+### Restart the camera program
 
-`http://<ip>:9998/tool/rob/relocate`
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/restart</code>
 
-Request Parameters:
+This endpoint requires no request parameters.
 
-Content-Type: application/json
+### Reboot the camera
 
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | x | X Position (meters) |
-| Yes | y | Y Position (meters) |
-| Yes | angle | – |
-| Yes | noisyX | Noisy (meters) |
-| Yes | noisyY | Noisy (meters) |
-| Yes | noisyAngle | Noisy (meters) |
+Address: <code>http://&lt;ip&gt;:9998/tool/rob/Reboot</code>
 
-Request Example: omitted
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success",
-
-}
-```
-
-## Map Operations
-
-### Deploy Map
-
-Request URL
-
-`http://<ip>:9998/tool/rob/deployRunMap`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | id | Map name |
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Apply Map
-
-Request URL
-
-`http://<ip>:9998/tool/rob/changeCurrentRunMap`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | name | Map name |
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Start Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/startMapping`
-
-Request Parameters
-
-|  |  |  |
-| --- | --- | --- |
-| Required | Parameters | Description |
-| Yes | name | Map name |
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Stop Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/stopMapping`
-
-Request Parameters: none
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Start Incremental Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/sendCMD`
-
-Request Example：
-
-```json
-{
-
-"cmd":904,
-
-"attach":{
-
-"sub_command":0,
-
-"param":"mapname"
-
-}
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Stop Incremental Mapping
-
-Request URL
-
-`http://<ip>:9998/tool/rob/sendCMD`
-
-Request Example：
-
-```json
-{
-
-"cmd":905,
-
-"attach":{
-
-"sub_command":0,
-
-"param":"mapname"
-
-}
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Get Local Map List (Backend) (Get the background map list, not recommended)
-
-Request URL
-
-`http://<ip>:9998/tool/editor/getLocalMaps`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success", "data":\[
-
-{
-
-"id":"map name1",
-
-"name":"map name1",
-
-},
-
-{
-
-"id":"map name2",
-
-"name":"map name2",
-
-},
-
-\]
-
-}
-```
-
-### Get the local map list (recommended)
-
-Request URL
-
-`http://<ip>:9998/tool/rob/getRunMapLists`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-    "code": 200,
-
-    "message": "success",
-
-    "run_maps": \[
-
-        "chejianceshi",
-
-        "pf",
-
-        "xz9_test9",
-
-        "comm"
-
-    \]
-
-}
-```
-
-### Upload Map Package to Camera
-
-Request URL
-
-`http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
-
-Request Parameters: none
-
-Request Example:
-
-```json
-{
-
-"url":"http://192.168.2.179:8080/map.zip"
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Download map
-
-Request URL
-
-`http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
-
-Request Parameters: none
-
-Request Example:
-
-```json
-{
-
-"url":"http://192.168.2.179:8080/map.zip"
-
-}
-```
-
-Response Example：
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-## Operation Interfaces
-
-### Restart Camera Program
-
-Request URL
-
-`http://<ip>:9998/tool/rob/restart`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
-
-### Reboot Camera
-
-Request URL
-
-`http://<ip>:9998/tool/rob/Reboot`
-
-Request Parameters: none
-
-Response Example:
-
-```json
-{
-
-"code":200, "message":"success"
-
-}
-```
+This endpoint requires no request parameters.

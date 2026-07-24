@@ -1,38 +1,46 @@
 ---
 title: "Use an external LiDAR with V2"
-description: "Configure the V2 localization module to receive external LiDAR data and verify the ROS 1 or ROS 2 laser topic."
+description: "Publish external LiDAR LaserScan data to the topic subscribed to by the V2 localization module."
 hidden: true
 ---
-## General configuration
 
-Set the positioning laser to UDP format in the body
+This page explains how to configure the V2 localization module to subscribe to an external LiDAR ROS laser topic.
 
-```text
+<Info>
+  The external LiDAR must continuously publish `sensor_msgs/LaserScan` messages that match the configured topic. This page covers topic configuration and subscription checks only; it does not cover LiDAR driver installation or calibration.
+</Info>
+
+## Configure the localization laser topic
+
+Set the localization laser input to UDP in the body configuration and specify the LaserScan topic:
+
+```yaml
 LxCamera_UploadScan: "/sim/scan"
 ```
 
-## ROS1 Laser Release
+Configure the external LiDAR to publish on the same topic, or change the value above to match the actual topic.
 
-```text
-fr1511b@fr1511b-KPL-W0X:~/HZ_V2ROS_NEW/V2-ROS-SDK-service$ rostopic info /sim/scan
+## Verify the ROS topic
 
-Type: sensor_msgs/LaserScan
+Confirm that the V2 localization node subscribes to the topic and that its message type is `LaserScan`.
 
-Publishers: None
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
 
-Subscribers:
+    The output should show `sensor_msgs/LaserScan` and include `/lx_localization_node` in the subscriber list.
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
 
-* /lx_localization_node (http://fr1511b-KPL-W0X:41595/)
-```
+    The output should show `sensor_msgs/msg/LaserScan` and a subscription count of at least `1`.
+  </Tab>
+</Tabs>
 
-## ROS2 Laser Release
-
-```text
-fr1511b@MRDVS:~/ros2_ws/lx_camera_ros$ ros2 topic info /sim/scan
-
-Type: sensor_msgs/msg/LaserScan
-
-Publisher count: 0
-
-Subscription count: 1
-```
+<Tip>
+  If the subscription count is `0`, check the topic name, ROS domain configuration, and localization node status. If the publisher count is `0`, check the external LiDAR driver.
+</Tip>

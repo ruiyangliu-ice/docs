@@ -1,125 +1,87 @@
 ---
 title: "AGV forklift bin stacking"
-description: "Use 3D vision to guide AGV forklifts during precise bin detection, docking, and multi-layer stacking."
+description: "Use 3D vision to estimate bin pose and guide an AGV forklift through bin pickup, placement, and multi-level stacking."
 ---
-Giving AGV the ability to accurately dock baskets, pallets, etc. is a rigid requirement in the field of mobile robot vision. It can not only improve the operating efficiency of mobile robots, but also achieve flexible manufacturing through accurate docking of mobile robots at different workstations. Currently, realizing the AGV forklift basket stacking function still faces a series of technical challenges:
 
-**Difficulty One: High Precision Requirements**
+Bin stacking requires the forklift to align position and orientation within a limited tolerance. More stacking levels, bin types, load shapes, and changing lighting increase the difficulty of recognition and docking.
 
-The stacking tolerance of the upper and lower cages is small, which does not allow friction between the material and the container. As the number of stacked layers increases, ensuring safety requires high-precision positioning and review.
+## Solution overview
 
-**Difficulty 2: Diversified cages and goods**
+The solution uses a 3D camera mounted on the smart forklift to estimate the relative pose of the bin on the forks and the target bin. Position and angle offsets are sent to the forklift controller to guide pickup and stacking. The solution suits bins, pallets, and other precision-docking tasks.
 
-For the 3D vision positioning system, it needs to adapt to different types of cages and goods, and carry out precise adaptation and adaptive adjustment according to actual application requirements to meet the needs of various application scenarios.
+## Verified capabilities
 
-**Difficulty Three: Complex and Changing Industrial and Logistics Scenarios**
-
-The lighting and working environment of different industrial scenes may interfere with docking work, so complex and changing environmental conditions need to be dealt with.
-
-## Solution Overview
-
-Meyer's micro-vision basket stacking solution is based on 3D vision technology and is specially designed for smart forklifts. It uses high-precision 3D cameras to intelligently identify the position and orientation information of the baskets on the forklift and the baskets in the warehouse, calculate the relative position and posture difference, and guide the forklift to complete precise and flexible stacking operations. This solution effectively improves the automation level and operating efficiency of stacking operations, and is suitable for scenarios such as smart warehousing and logistics distribution.
-
-## Core Advantages
-
-**1. High-precision recognition**: Based on the deviation value recognized by the camera, the forklift can flexibly adjust the stacking attitude, with positioning accuracy of ±5mm, angle accuracy of up to 0.1°, and cage offset recognition range of ±15°;
-
-2. Intelligent identification of material cages: Self-developed AI algorithm directly outputs real-time relative position information of the upper and lower material cages, and adjusts the forklift posture in real time;
-
-**3. Real-time data processing**: The system’s data processing time per frame is less than 100 milliseconds, ensuring the efficient operation of forklift operations;
-
-4. Multi-layer stacking: supports 1-4 layers of stacking, 2\*2 stacking mode
+- Positioning accuracy up to **±5 mm** and angle accuracy up to **0.1°**.
+- Bin-offset recognition range of **±15°**.
+- Per-frame processing time below **100 ms**.
+- Support for **1–4 levels** and `2 × 2` stacking.
 
 <Frame>
-  <img src="/images/legacy/296770eb-776f-4dbb-a0d6-8bf43ccd6710/f463210e-deb3-443b-87f7-d6ef9290e20d.avif" alt="Illustrations related to core strengths" />
+  <img src="/images/solutions/warehouse-bin-stacking-core-strengths.avif" alt="Point-cloud data for upper and lower bin docking" />
 </Frame>
 
-Point cloud data during the docking process of loading and unloading cages
+## Installation options
 
-## Animation demonstration
+<Tabs>
+  <Tab title="Single-camera setup">
+    Mount the camera on the lifting mechanism and point it horizontally at the bins on both forks. Keep the camera **35–55 cm** from the lower edge of the forks; the lifting mechanism position error should not exceed **1 cm**.
+
+    <Frame>
+      <img src="/images/solutions/warehouse-bin-stacking-work-instructions.avif" alt="Single-camera bin-stacking installation" />
+    </Frame>
+  </Tab>
+  <Tab title="Dual-camera setup">
+    Mount one camera on each side of the forklift, **30–40 cm** from the fork surface, at **45°** to the ground. Each camera recognizes the bin on its corresponding side.
+
+    <Frame>
+      <img src="/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif" alt="Dual-camera bin-stacking installation" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+The M Series, such as the M4 Pro or M4 Mega, is recommended. Select the model based on working distance, field of view, and bin dimensions.
+</Info>
+
+## Communication data
+
+The system communicates with the forklift controller over TCP/IP. The controller requests the bin's `X`, `Y`, and `θ`; the camera returns the following fields.
+
+| Field | Description |
+| --- | --- |
+| `X`, `Y` | Relative bin coordinates in mm, represented as 32-bit floating-point values. |
+| `Theta` | Angular offset from **−90° to 90°**. |
+| `Error Code` | `0`: success; `-1`: camera fault; `-2`: localization failure; `-3`: algorithm error. |
+
+## Workflow
+
+<Tabs>
+  <Tab title="Pickup">
+    <Steps>
+      <Step title="Pre-position">Move the forklift to **2.4–2.6 m** from the front edge of the bin.</Step>
+      <Step title="Recognize the bin">Raise the forks to the configured position and trigger the camera to capture the bin pose.</Step>
+      <Step title="Adjust the pose">Use the returned offsets to adjust forklift position and angle.</Step>
+      <Step title="Pick up the bin">After the position meets the requirement, perform the pickup.</Step>
+    </Steps>
+  </Tab>
+  <Tab title="Stacking">
+    <Steps>
+      <Step title="Pre-position">Move to about **80 cm** in front of the target bin and raise the forks to **50 cm** from its top surface.</Step>
+      <Step title="Recognize the offset">Use the camera output to obtain left-right and angular offsets.</Step>
+      <Step title="Align precisely">Fine-tune the forklift until the configured thresholds are met.</Step>
+      <Step title="Complete stacking">Lower the forks and place the bin.</Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+Avoid heavy dust and humid environments. Keep the camera bracket rigid and stable, and clean the lens regularly to maintain a clear field of view.
+</Warning>
 
 <Frame>
-  <img src="/images/legacy/1701bfc3-a9c4-4767-923a-e7034a195513/46987e2e-f3c5-48c9-b12d-112c3b5ddabc.avif" alt="Illustrations related to animation demonstration" />
+  <img src="/images/solutions/warehouse-bin-stacking-animation-demonstration.avif" alt="AGV forklift bin-stacking demonstration" />
 </Frame>
-
-## Job description
-
-> **Camera Selection Suggestions**
-
-M series: M4Pro, M4mega (specific needs to be determined according to needs, please contact MRDVS technical support for assistance in selection)
-
-> **Camera installation method**
-
-**• Installation method 1: Single camera solution**
-
-**•Position**: The camera is fixed on the lifting mechanism, shooting horizontally, and is responsible for the identification of the fork arm loading baskets on both sides.
-
-**•Height requirements**: The camera is 35-55cm away from the lower edge of the fork arm, ensuring that the position error of the lifting mechanism does not exceed 1cm.
-
-**• Features**: A single camera is responsible for identifying the basket legs on the left and right fork arms at the same time.
 
 <Frame>
-  <img src="/images/legacy/2455a499-e74f-459d-8f80-b6dd0f9f9e9a/72824b55-1af1-44b8-97b7-e20e4908d18b.avif" alt="Illustrations related to work instructions" />
+  <img src="/images/solutions/warehouse-bin-stacking-work-description-3.avif" alt="Bin-stacking recognition result" />
 </Frame>
-
-**• Installation method 2: Dual camera solution**
-
-**• Position**: The camera is fixedly installed on both sides of the forklift, 30-40cm away from the fork arm surface, and the shooting angle is 45° to the ground.
-
-**• Features**: The left camera takes a picture of the left fork arm, and the right camera takes a picture of the right side, respectively identifying the baskets on both sides to achieve accurate stacking.
-
-<Frame>
-  <img src="/images/legacy/26796314-c886-40df-a983-da918d896fc3/ef85b979-fd41-4452-9218-a16363c78210.avif" alt="Work description related graphics 2" />
-</Frame>
-
-> **Communication Solution**
-
-The system uses **TCP/IP protocol** for data transmission between the forklift and the 3D camera:
-
-**• Request information**: Send a request to obtain the X, Y coordinates and angle (θ) of the material basket.
-
-**•Return information**:
-
-**• X, Y coordinates**: The unit is millimeters, 32-bit floating point type.
-
-**•Theta Angle**: Range -90° to 90°, accurately identifies deviations.
-
-**• Error Code**: Recognition status (0: Success, -1: Camera abnormality, -2: Positioning failure, -3: Algorithm error).
-
-> **Specific workflow**
-
-**Pickup process**:
-
-**1. Positioning**: Move the forklift to a position 2.4-2.6 meters away from the front edge of the basket.
-
-**2. Camera recognition**: The fork arm is raised to the set position, triggering the 3D camera to recognize the basket posture.
-
-**3. Adjust position**: The forklift adjusts its angle and position based on the deviation information output by the camera.
-
-**4. Pick-up operation**: After the forklift confirms that the position of the material basket is correct, the fork arm performs the pick-up operation.
-
-**Stacking process**:
-
-**1. Pre-positioning**: The forklift moves to about 80cm in front of the material basket to be stacked, and the fork arm is raised to a position 50cm away from the upper surface of the material basket.
-
-**2. Camera recognition**: The system outputs the deviation value through the 3D camera to fine-tune the left, right and angle.
-
-**3. Precise alignment**: After confirming that the angle and position meet the threshold, the forklift completes the alignment through fine adjustment.
-
-**4. Completion of stacking**: After confirmation, the fork arm descends to complete the stacking operation.
-
-> **Deployment Notes**
-
-**1. Environmental requirements**: Avoid severe dust and humid environments to avoid affecting camera performance.
-
-**2. Installation requirements**: Ensure the rigidity and stability of the 3D camera bracket to avoid affecting the recognition accuracy.
-
-**3. Regular maintenance**: Clean the camera lens regularly to prevent dust coverage and ensure a clear view of the camera.
-
-> **Recognition effect display**
-
-<Frame>
-  <img src="/images/legacy/c0179ee8-b6fb-4c8f-92cf-0c590ea45ce3/20031c64-666e-41d2-862f-74b10bba8a8f.avif" alt="Illustrations related to work description 3" />
-</Frame>
-
-* * *
