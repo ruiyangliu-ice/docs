@@ -56,11 +56,13 @@ Figure 2.1 Camera connection diagram
   <img src="/images/developers/camera-sdk-user-guide-network-environment-construction-2.avif" alt="Illustrations related to network environment construction 2" />
 </Frame>
 
-4. The network configuration of Linux system is the same as that of Windows. The method of turning off the firewall may be different in different systems. Take Ubuntu as an example:
+4. The network configuration of Linux is the same as that of Windows. Firewall commands vary by distribution. On Ubuntu, run:
 
-- Stop the firewall service: sudo systemctl stop ufw.service
-
-- Disable the firewall service: sudo systemctl disable ufw.service Check whether the firewall service is turned off: sudo ufw status
+```bash
+sudo systemctl stop ufw.service
+sudo systemctl disable ufw.service
+sudo ufw status
+```
 
 #### Install the SDK
 
@@ -86,25 +88,27 @@ Open the installation package and install Lanxin-MRDVS-xxx.exe. If you need to i
 
 ##### Linux
 
-1. Unzip and execute the installation script
+1. Unzip the package and run the installation script:
 
-- tar xvf Lanxin-MRDVS-xxx.tar.gz
+```bash
+tar xvf Lanxin-MRDVS-xxx.tar.gz
+cd Lanxin-MRDVS
+sudo su root
+chmod +x install.sh
+./install.sh
+```
 
-- cd Lanxin-MRDVS
+The installation script installs the SDK in `/opt/Lanxin-MRDVS` and sets environment variables for the current user. If the program runs as another user, rerun the script for that user or add the following line to that user's `~/.bashrc`:
 
-2. Because installation requires root permissions, if the current user is not root, you need to switch to the root user
+```bash
+export LD_LIBRARY_PATH=/opt/Lanxin-MRDVS/lib/:$LD_LIBRARY_PATH
+```
 
-- sudo su root
+For terminal sessions that were open before installation, run the following command before starting the program:
 
-3. Then perform the installation
-
-- chmod +x install.sh
-
-- ./install.sh
-
-The installation script will install the sdk to the /opt/Lanxin-MRDVS directory and set the environment variables. It should be noted that the environment variables set in the script are the environment variables of the current user. If the running program is not the root user, you need to re-run the install.sh script to set the environment variables or manually add export LD\_LIBRARY\_PATH=/opt/Lanxin-MRDVS/lib/:$LD\_LIBRARY\_PATH at the end of ~/.bashrc of the current user.
-
-For terminal sessions that have been opened before installation, you need to execute source ~/.bashrc to update the LD\_LIBRARY\_PATH environment variable before running the program.
+```bash
+source ~/.bashrc
+```
 
 * * *
 
@@ -130,7 +134,7 @@ The contents of the Camera SDK directory include the following images:
 
 #### Configure the project
 
-C/C++ is recommended as the main secondary development programming language to integrate the SDK, and the CMakeLists.txt script for building projects through the Cmake tool is provided; at the same time, the Sample folder provides examples of development methods in different languages. For details, please refer to the information under Sample and the "Linux Sample Program Instructions".
+C/C++ is recommended for SDK integration. The SDK includes a `CMakeLists.txt` file for CMake builds, and the `Sample` folder contains examples in multiple languages. For details, see the examples in `Sample` and the [Linux examples user guide](/en/developers/camera-sdk/linux-examples).
 
 #### Synchronous call flow
 
