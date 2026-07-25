@@ -1,0 +1,46 @@
+---
+title: V2で外部LiDARを使用する
+description: V2ローカライゼーションモジュールが購読するトピックに、外部LiDARのLaserScanデータを公開します。
+hidden: true
+---
+
+このページでは、V2ローカライゼーションモジュールが外部LiDARのROSレーザートピックを購読するための設定を説明します。
+
+<Info>
+  外部LiDARは、設定済みトピックに一致する`sensor_msgs/LaserScan`メッセージを継続的に公開する必要があります。このページではトピック設定と購読の確認のみを扱い、LiDARドライバーのインストールやキャリブレーションは扱いません。
+</Info>
+
+## ローカライゼーション用レーザートピックを設定する
+
+ボディ設定でローカライゼーションレーザー入力をUDPに設定し、LaserScanトピックを指定します。
+
+```yaml
+LxCamera_UploadScan: "/sim/scan"
+```
+
+外部LiDARが同じトピックに公開するよう設定するか、上記の値を実際のトピックに合わせて変更します。
+
+## ROSトピックを確認する
+
+V2ローカライゼーションノードがトピックを購読しており、メッセージ型が`LaserScan`であることを確認します。
+
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
+
+    出力に`sensor_msgs/LaserScan`が表示され、購読者リストに`/lx_localization_node`が含まれていることを確認します。
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
+
+    出力に`sensor_msgs/msg/LaserScan`が表示され、購読数が少なくとも`1`であることを確認します。
+  </Tab>
+</Tabs>
+
+<Tip>
+  購読数が`0`の場合は、トピック名、ROSドメイン設定、ローカライゼーションノードの状態を確認してください。公開者数が`0`の場合は、外部LiDARドライバーを確認してください。
+</Tip>

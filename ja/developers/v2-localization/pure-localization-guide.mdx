@@ -1,0 +1,190 @@
+---
+title: V2ローカライゼーション専用ガイド
+description: V2ローカライゼーション専用Webインターフェースで、マップ作成、ローカライゼーション、マップ管理、ログ出力、保守操作を行います。
+hidden: true
+---
+
+このページでは、V2ローカライゼーション専用Webインターフェースについて説明します。マップ作成、マップ切り替え、再ローカライゼーションの前に、車両、カメラ、LiDARが正常に動作していることを確認してください。
+
+<Warning>
+  マップ切り替え、ファームウェア更新、内蔵アプリケーションの再起動はローカライゼーションサービスに影響します。車両を停止し、作業エリアの安全を確保して、復旧手順を実行できる状態でのみ操作してください。
+</Warning>
+
+## インターフェース概要
+
+| エリア | 内容 |
+| --- | --- |
+| メニューバー | マッピング、再ローカライゼーション、マップ管理、保守機能。 |
+| マップビュー | 読み込まれた2D輪郭マップと車両ローカライゼーションアイコン。 |
+| RGBビュー | トップビューカメラのライブRGB画像。 |
+| ステータスエリア | 再ローカライゼーション信号強度、車両座標、速度、カーソル座標。信号品質は良い順に緑、青、赤で表示されます。 |
+
+<Frame>
+  ![V2ローカライゼーション専用Webインターフェースの各エリア](/images/developers/v2-localization-pure-localization-guide-interface-description.avif)
+</Frame>
+
+## マップを作成する
+
+### マップを作成する
+
+<Steps>
+  <Step title="マッピングを開始する">
+    Webインターフェースで**Start Mapping**をクリックします。
+
+    <Frame>
+      ![V2ローカライゼーション専用インターフェースのStart Mappingボタン](/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif)
+    </Frame>
+  </Step>
+  <Step title="マップ名を入力する">
+    マップ名には英字、数字、アンダースコアのみを使用でき、先頭文字は英字にする必要があります。
+
+    <Columns cols={2}>
+      <Frame>
+        ![マップ名入力ダイアログ](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif)
+      </Frame>
+
+      <Frame>
+        ![マッピング開始ページ](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif)
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="エリアを取得してマッピングを停止する">
+    AGVを対象エリア内で走行させます。取得が完了したら**Stop Mapping**をクリックし、処理が完了するまで待ちます。処理時間は取得エリアの規模によって異なります。
+  </Step>
+  <Step title="マップを確認する">
+    マッピングが成功したら、**Map Management**を開き、新しいマップが一覧にあることを確認します。
+  </Step>
+</Steps>
+
+### 差分マッピング
+
+既存マップにエリアを追加するには差分マッピングを使用します。開始前に再ローカライゼーションを完了し、拡張するマップに切り替えてください。
+
+<Info>
+  差分マッピングは、[http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD)への手動HTTPリクエストで開始および停止します。
+</Info>
+
+<Tabs>
+  <Tab title="差分マッピングを開始">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="差分マッピングを停止">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+操作の完了後、新たに取得したエリアが現在のマップに書き込まれます。変更を反映するには、ローカライゼーションサービスを再起動してください。
+
+<Frame>
+  ![V2ローカライゼーション専用インターフェースでの差分マッピング操作](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif)
+</Frame>
+
+## マップ管理
+
+**Map Management**では、マップの表示、適用、削除を行えます。複数エリアを運用する場合は、このページでアクティブなマップを切り替えます。
+
+<Columns cols={2}>
+  <Frame>
+    ![V2ローカライゼーション専用インターフェースのMap Managementページ](/images/developers/v2-localization-pure-localization-guide-2-map-management.avif)
+  </Frame>
+
+  <Frame>
+    ![V2ローカライゼーション専用インターフェースでマップを適用](/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  **Apply**をクリックした後、新しいマップを反映するために内蔵アプリケーションを再起動してください。再起動しない場合、再ローカライゼーションに失敗することがあります。
+</Warning>
+
+## 再ローカライゼーション
+
+### 手動再ローカライゼーション
+
+**Relocalization**をクリックし、マップビュー上をドラッグして車両のおおよその姿勢を指定します。LiDARポイントクラウドが輪郭マップに一致するよう調整してください。再ローカライゼーションに成功すると、**Localization timeout**の異常は消えます。
+
+<Frame>
+  ![V2ローカライゼーション専用インターフェースでの手動再ローカライゼーション](/images/developers/v2-localization-pure-localization-guide-3-relocation.avif)
+</Frame>
+
+### AprilTag再ローカライゼーション
+
+マップ作成時に、選択した位置へAprilTagを配置できます。完全なタグがデバイスの視野に入ると、システムはマップと姿勢を識別し、必要に応じてマップを切り替えて自動的に再ローカライゼーションします。
+
+- [AprilTag generator](https://chaitanyantr.github.io/apriltag)でタグを生成します。
+- タグIDは、1台のデバイスの可視エリア内で一意である必要があります。
+- インターフェース例に示される固定のタグファミリーを使用します。
+
+<Frame>
+  ![AprilTag再ローカライゼーション設定](/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif)
+</Frame>
+
+## パラメータとログ
+
+### ローカライゼーションパラメータを設定する
+
+パラメータページでは、シャーシのローカライゼーションパラメータ、およびセンサーキャリブレーション値に含まれるLiDARとカメラの外部パラメータを確認または設定します。
+
+<Frame>
+  ![ローカライゼーションパラメータとセンサー外部パラメータキャリブレーション](/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif)
+</Frame>
+
+### ログをエクスポートする
+
+時間範囲とモジュール種別でログをフィルターします。必要な結果を選択してエクスポートします。
+
+<Frame>
+  ![ログのフィルタリングとエクスポートページ](/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif)
+</Frame>
+
+## 保守
+
+### ファームウェアを更新する
+
+更新ページでローカルファームウェアパッケージをインポートし、シャーシ、アクチュエーター、またはカメラのファームウェアを更新します。復元パッケージには前回更新前のバージョンが記録されており、ロールバックに使用できます。
+
+<Warning>
+  標準のホストコンピュータワークフローで更新したカメラファームウェアはロールバックできません。更新前にパッケージと現在のバージョンを確認してください。
+</Warning>
+
+<Columns cols={2}>
+  <Frame>
+    ![V2ローカライゼーション専用システムのファームウェア更新ページ](/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif)
+  </Frame>
+
+  <Frame>
+    ![ホストコンピュータによるカメラファームウェア更新](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif)
+  </Frame>
+</Columns>
+
+### 内蔵アプリケーションを停止または再起動する
+
+内蔵アプリケーションのコントロールで、アプリケーションを停止または再起動します。LxCameraViewerをカメラに接続する前に、内蔵アプリケーションを停止してください。停止しないと車両がカメラの制御を保持し、通信できないことがあります。
+
+<Frame>
+  ![内蔵アプリケーションの停止および再起動コントロール](/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif)
+</Frame>
+
+### バージョンを確認する
+
+バージョンページを開き、内蔵フロントエンドとバックエンドのバージョンを確認します。
+
+<Frame>
+  ![バージョン情報ページ](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif)
+</Frame>

@@ -1,0 +1,185 @@
+---
+title: S10 Ultra 3Dカメラ
+description: S10 Ultra dToF RGB-Dカメラの仕様、IMU、SLAM統合、設置、操作手順。
+---
+
+<Info>
+  完全な製品資料は[ダウンロードセンター](/ja/resources/downloads/specifications-and-user-guides)から取得できます。
+</Info>
+
+## 製品概要
+
+S10 Ultraは、屋内外の中長距離3D認識向け産業用dToF RGB-Dカメラです。RGBと深度データを同期し、最大200 HzのIMUを統合しています。
+
+本カメラはFastLioや[FastLio2](https://github.com/Lanxin-MRDVS/MRDVS-S10Ultra_Mapping)などのSLAMアルゴリズムと連携し、ソフトウェアトリガーおよびMIPIモジュールに対応します。
+
+<Frame>
+  ![S10 Ultraカメラ](/images/products/s-series-s10-ultra-overview-s10-ultra-camera.avif)
+</Frame>
+
+## 特長と用途
+
+- **中長距離dToF認識：** 0.2～42 mの測距範囲により、モバイル機器の環境認識、ローカライゼーション、ナビゲーションをサポートします。
+- **同期データ出力：** RGB-Dアラインメントされた深度、RGB、IR振幅データを出力します。
+- **コンパクトなソリッドステート設計：** 可動部を持たず、寸法は106 × 69 × 43 mmです。
+- **IMUとSLAM開発：** ビジュアル・慣性ローカライゼーションおよびマッピング用に200 HzのIMUデータを提供します。
+
+代表的な用途は、ロボット芝刈り機、産業用四足歩行ロボット、マルチロータードローンです。
+
+<Frame>
+  ![四足歩行ロボットに搭載されたS10 Ultra](/images/products/s-series-s10-ultra-overview-1-s10-ultra-on-an-embodied-quadruped-robot.avif)
+</Frame>
+
+<Frame>
+  ![ロボット芝刈り機に搭載されたS10 Ultra](/images/products/s-series-s10-ultra-overview-2-s10-ultra-on-a-lawn-mower.avif)
+</Frame>
+
+<Frame>
+  ![マルチロータードローンにおけるS10 Ultra](/images/products/s-series-s10-ultra-overview-3-multirotor-drone-application.avif)
+</Frame>
+
+## 仕様
+
+| パラメータ | S10 Ultra |
+| --- | --- |
+| 使用環境 | 屋内 / 屋外 |
+| 深度技術 | dToF |
+| レーザー波長 | 940 nm |
+| 動作距離 | 0.2～42 m（反射率90%）、0.2～30 m（反射率10%） |
+| 測距正確度 | ≤ 4 cm |
+| 出力データ | 深度マップ、RGB画像、IR振幅画像、点群 |
+| 深度解像度とフレームレート | 240 × 160、最大10 fps、標準10 fps |
+| 深度視野角 | 120° × 80° ± 3° |
+| RGB解像度とフレームレート | 1280 × 1080、最大20 fps、標準10 fps |
+| RGB視野角 | 120° × 110° ± 3° |
+| RGB-Dアラインメント | 対応 |
+| 通信インターフェース | Ethernet |
+| 動作温度 | −20～75 °C |
+| 保存温度 | −40～85 °C |
+| 時刻同期 | PTP |
+| 保護等級 | IP67 |
+| 眼の安全性 | クラス1 |
+| 寸法 | 106 × 69 × 43 mm |
+| 重量 | 約440 g |
+| 消費電力 | \< 9 W |
+| 電源 | 12～27 VDC |
+| ソフトウェア環境 | C/C\+\+/ROS SDK |
+| 対応システム | Windows 7/8/10/11、Linux、Arm Linux/ROS |
+| 周囲光耐性 | 100 kLux |
+| IMU出力レート | 200 Hz |
+
+## 機械設計と統合
+
+### 寸法と検出範囲
+
+<Frame>
+  ![S10 Ultraの寸法](/images/products/s-series-s10-ultra-overview-s10-ultra-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![S10 Ultraの検出範囲](/images/products/s-series-s10-ultra-overview-camera-detection-range.avif)
+</Frame>
+
+### 環境要件
+
+| 項目 | 要件 |
+| --- | --- |
+| 動作温度 | −20～75 °C |
+| 動作照度 | 0～100 kLux |
+| 保存温度 | −40～85 °C |
+| 保存湿度 | 最大90% RH |
+
+### SDK
+
+MRDVS上位アプリケーションおよびSDKで設定・開発します。SLAM用途では、選択したアルゴリズムに従ってカメラ、IMU、ホストのクロックを同期してください。
+
+## 設置要件
+
+<Warning>
+  図示されたクリアランス領域に障害物を入れないでください。この領域に入る部品は点群に干渉し、ノイズ、誤検出、誤停止の原因となる場合があります。
+</Warning>
+
+<Frame>
+  ![S10 Ultraの推奨設置とクリアランス領域](/images/products/s-series-s10-ultra-overview-recommended-installation.avif)
+</Frame>
+
+### 避けるべき条件
+
+- **視野の遮り：** フレーム、リブ、開口部、偏心した取付けは、死角や近距離の誤ターゲットを生じる場合があります。
+- **近距離反射とマルチパス：** 狭い空間、研磨金属、鏡は距離を歪めたり、局所領域を飽和させたりする場合があります。
+- **窓材による光学干渉：** 一般的なガラス、アクリル、ほこり、結露は、アーティファクト、信号減衰、S/N比低下の原因になります。保護窓を追加する前に設置を検証してください。
+- **取付け応力または放熱不足：** 締め過ぎは光軸に影響する場合があります。密閉空間では、測距安定性を保つため放熱経路を確保してください。
+
+## 初回接続
+
+<Steps>
+  <Step title="デバイスを接続する">
+    12～27 VDC / 3 A電源でカメラに給電し、Cat 6以上のEthernetケーブルでコンピュータに接続します。青色インジケータがゆっくり点滅していれば、電源は正常です。
+  </Step>
+  <Step title="ネットワークを設定する">
+    カメラの工場出荷時IPアドレスは`192.168.100.82`です。コンピュータを同じサブネットに設定し、ファイアウォールがデバイス通信を遮断していないことを確認してください。
+  </Step>
+  <Step title="ストリームを確認する">
+    上位アプリケーションでカメラを開き、画像が鮮明でストリームが安定していることを確認します。必要に応じて画像、アルゴリズム、その他のデバイスパラメータを設定します。
+  </Step>
+</Steps>
+
+## LxCameraViewerインターフェース
+
+LxCameraViewerでは、深度、IR振幅、点群、RGB画像を表示し、カメラとアルゴリズムの基本パラメータを設定できます。
+
+<Frame>
+  ![カメラを開く前のLxCameraViewer](/images/products/s-series-s10-ultra-overview-interface-before-opening-a-camera.avif)
+</Frame>
+
+<Frame>
+  ![カメラを開いた状態のLxCameraViewer](/images/products/s-series-s10-ultra-overview-interface-with-an-open-camera.avif)
+</Frame>
+
+- デバイス一覧でカメラを選択し、**Open**または**Close**をクリックします。
+- **Capture**でストリーミングを開始または停止し、**Save frame**で有効なストリームを保存します。
+- **Depth**、**Intensity**、**RGB**、**Point cloud**を選択して表示データを切り替えます。
+- **Basic tools**、**Application algorithms**、**Other**でデバイス機能を設定します。
+
+## 安全とトラブルシューティング
+
+### レーザー安全
+
+<Frame>
+  ![S10 Ultraレーザー安全ラベル](/images/products/s-series-s10-ultra-overview-laser-safety-class.avif)
+</Frame>
+
+安全ラベルを完全で判読可能な状態に保ち、ラベルおよび製品資料の安全要件に従ってください。
+
+### トラブルシューティング
+
+| 問題 | 確認事項 |
+| --- | --- |
+| カメラを開いても応答しない | ファイアウォールが通信を遮断していないか確認し、コンピュータとカメラが同じサブネットにあることを確認します。 |
+| 上位アプリケーションで複数のIPアドレスが検出される | LAN上のIP競合を解消し、正しいデバイスアドレスを選択します。 |
+| ストリームが不安定 | ギガビットEthernetケーブルを使用してください。Fast Ethernetでは初期データ転送が不安定になる場合があります。 |
+| ソフトウェアが正しく起動しない | インストール先ディレクトリの権限を確認してください。 |
+
+## 関連情報
+
+### IROS 2025
+
+S10 UltraはIROS 2025で代表製品として展示されました。
+
+<Frame>
+  ![IROS 2025で展示されたS10 Ultra](/images/products/s-series-s10-ultra-overview-s10-ultra-at-iros-2025.avif)
+</Frame>
+
+<Columns cols={3}>
+  <Card title="自律フォークリフト事例" icon="forklift" href="/ja/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+    自律フォークリフト向け3D認識の適用例を確認します。
+  </Card>
+
+  <Card title="潜り込み型AMR事例" icon="route" href="/ja/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+    低い障害物を回避する適用例を確認します。
+  </Card>
+
+  <Card title="車輪型ヒューマノイドロボット事例" icon="accessibility" href="/ja/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+    車輪型ヒューマノイドロボット向け3D障害物回避の適用例を確認します。
+  </Card>
+</Columns>

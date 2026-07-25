@@ -1,0 +1,213 @@
+---
+title: V2視覚ローカライゼーションHTTPプロトコル
+sidebarTitle: V2 HTTPプロトコル
+description: V2視覚ローカライゼーションのHTTPエンドポイント、リクエストパラメータ、レスポンスフィールドのリファレンス。
+hidden: true
+---
+
+このページでは、V2視覚ローカライゼーションモジュールが提供するHTTPエンドポイントを一覧します。各アドレスのIPプレースホルダーはモジュールのIPアドレスに置き換えてください。特記がない限り、`code: 200`および`message: success`はリクエストが正常に処理されたことを示します。
+
+<Warning>
+  ソフトウェア更新、マップのデプロイまたは切り替え、プログラム再起動、カメラ再起動を行うとローカライゼーションが中断します。車両を停止し、復旧手順を実行できる状態でのみ、これらのエンドポイントを呼び出してください。
+</Warning>
+
+## プログラムおよびデバイス情報
+
+### メインプログラムを更新する
+
+Address: `http://<ip>:9998/tool/rob/quiet_update`
+
+<ParamField body="url" type="string" required>
+  到達可能なメインプログラム更新パッケージのURL。
+</ParamField>
+
+### カメラ高さを設定する
+
+Address: `http://<ip>:9998/tool/rob/setHeightRequest`
+
+<ParamField body="height" type="number" required>
+  カメラ高さ。
+</ParamField>
+
+### プログラムバージョンを取得する
+
+Address: `http://<ip>:9998/tool/rob/getRobotVersion`
+
+このエンドポイントにリクエストパラメータは不要です。
+
+<ResponseField name="code" type="integer" required>
+  レスポンスステータスコード。
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  `version 12313`などのプログラムバージョン。
+</ResponseField>
+
+### 車両情報を取得する
+
+Address: `http://<ip>:9998/tool/rob/getVehicle`
+
+このエンドポイントにリクエストパラメータは不要です。
+
+<ResponseField name="data" type="object" required>
+  車両情報オブジェクト。
+</ResponseField>
+
+<ResponseField name="vehicleId" type="string">
+  車両UUID。
+</ResponseField>
+
+<ResponseField name="mapId" type="string">
+  現在のマップ。
+</ResponseField>
+
+<ResponseField name="vehicleType" type="string">
+  車両タイプ。
+</ResponseField>
+
+### 現在の姿勢を取得する
+
+Address: `http://<ip>:9998/tool/rob/getAGVPose`
+
+このエンドポイントにリクエストパラメータは不要です。
+
+<ResponseField name="pose" type="object" required>
+  現在の姿勢。
+</ResponseField>
+
+<ResponseField name="x" type="number">
+  X座標。
+</ResponseField>
+
+<ResponseField name="y" type="number">
+  Y座標。
+</ResponseField>
+
+<ResponseField name="yaw" type="number">
+  方位角。
+</ResponseField>
+
+### 再ローカライゼーション
+
+Address: `http://<ip>:9998/tool/rob/relocate`
+
+リクエストヘッダー：`Content-Type: application/json`
+
+<ParamField body="x" type="number" required>
+  メートル単位のX座標。
+</ParamField>
+
+<ParamField body="y" type="number" required>
+  メートル単位のY座標。
+</ParamField>
+
+<ParamField body="angle" type="number" required>
+  姿勢角。
+</ParamField>
+
+<ParamField body="noisyX" type="number" required>
+  メートル単位のX軸ノイズ。
+</ParamField>
+
+<ParamField body="noisyY" type="number" required>
+  メートル単位のY軸ノイズ。
+</ParamField>
+
+<ParamField body="noisyAngle" type="number" required>
+  角度ノイズ。
+</ParamField>
+
+## マップ管理
+
+### 現在使用中のマップパッケージをダウンロードする
+
+Address: `http://<ip>:9998/tool/rob/getRunMapZip`
+
+リクエストヘッダー：`Content-Type: application/json`
+
+<ParamField body="Name" type="string" required>
+  マップ名。
+</ParamField>
+
+レスポンスはコンテンツタイプ`application/zip`のZIPファイルです。
+
+### マップをデプロイする
+
+Address: `http://<ip>:9998/tool/rob/deployRunMap`
+
+<ParamField body="id" type="string" required>
+  マップ名。
+</ParamField>
+
+### マップを適用する
+
+Address: `http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+<ParamField body="name" type="string" required>
+  マップ名。
+</ParamField>
+
+### マッピングを開始する
+
+Address: `http://<ip>:9998/tool/rob/startMapping`
+
+<ParamField body="name" type="string" required>
+  マップ名。
+</ParamField>
+
+### マッピングを停止する
+
+Address: `http://<ip>:9998/tool/rob/stopMapping`
+
+このエンドポイントにリクエストパラメータは不要です。
+
+### 差分マッピングを開始または停止する
+
+Address: `http://<ip>:9998/tool/rob/sendCMD`
+
+| 操作 | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | --: | --: | --- |
+| 差分マッピングを開始 | `904` | `0` | `mapname` |
+| 差分マッピングを停止 | `905` | `0` | `mapname` |
+
+### マップ一覧を取得する
+
+ローカルのマップ一覧エンドポイントを使用します。
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+このエンドポイントにリクエストパラメータは不要です。レスポンスの`run_maps`はマップ名の配列です。
+
+<Note>
+  バックエンドのマップ一覧エンドポイント`http://<ip>:9998/tool/editor/getLocalMaps`は非推奨です。使用しないでください。
+</Note>
+
+### マップパッケージをカメラにアップロードする
+
+Address: `http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+<ParamField body="url" type="string" required>
+  到達可能なマップパッケージのURL。
+</ParamField>
+
+### マップをダウンロードする
+
+Address: `http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+<ParamField body="url" type="string" required>
+  到達可能なマップパッケージのURL。
+</ParamField>
+
+## メンテナンス用エンドポイント
+
+### カメラプログラムを再起動する
+
+Address: `http://<ip>:9998/tool/rob/restart`
+
+このエンドポイントにリクエストパラメータは不要です。
+
+### カメラを再起動する
+
+Address: `http://<ip>:9998/tool/rob/Reboot`
+
+このエンドポイントにリクエストパラメータは不要です。

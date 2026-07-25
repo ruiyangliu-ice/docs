@@ -1,0 +1,152 @@
+---
+title: 開発 FAQ
+description: Camera SDKのエラーコード、デバイス接続、ストリーミング、開発環境に関する問題を解決します。
+---
+
+エラーコードはSDK、接続、データストリームの問題を特定する手掛かりになります。トラブルシューティング前に、エラーコード、SDKバージョン、カメラモデル、デバイスログを記録してください。
+
+<Warning>
+  SDKバージョンだけを変更して問題を切り分けないでください。カメラファームウェア、データ処理ライブラリ、開発環境の互換性も確認します。
+</Warning>
+
+## SDKエラーコードと開発環境
+
+<AccordionGroup>
+  <Accordion title="LX_ERROR = -1">
+    **原因** 不明なエラーです。**対処** デバイスログをエクスポートし、MRDVS技術サポートへ送信します。
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_SUPPORT = -2">
+    **原因** 機能がサポートされていません。**対処** 現在のデバイスはこの機能をサポートしていません。
+  </Accordion>
+
+  <Accordion title="LX_E_NETWORK_ERROR = -3">
+    **原因** ネットワーク通信エラーです。**対処** IP設定、ネットワークケーブル、スイッチ、パケット損失を確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_INPUT_ILLEGAL = -4">
+    **原因** 入力パラメーターが無効です。**対処** インターフェースへ渡したパラメーターを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_RECONNECTING = -5">
+    **原因** デバイスが再接続中です。**対処**
+
+    1. 接続が復旧するまで少し待って再試行します。<br />2. カメラの電源とネットワーク接続が正常であることを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_ERROR = -6">
+    **原因** デバイスが故障している、または応答していません。**対処** アプリケーションまたはカメラを再起動して再試行します。
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+    **原因** デバイスバージョンが古すぎます。**対処** ファームウェアを更新します。
+  </Accordion>
+
+  <Accordion title="LX_E_API_NEED_UPDATE = -8">
+    **原因** APIバージョンが古すぎます。**対処** SDKを更新します。
+  </Accordion>
+
+  <Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+    **原因** 排他制御権限を取得できません。**対処** カメラを制御できるプライマリクライアントは1つだけです。カメラを正常終了しなかった場合は、権限が解放されるまで `3–5 s` 待ちます。
+  </Accordion>
+
+  <Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+    **原因** デバイス情報を読み取れません。**対処** デバイスのファームウェアバージョンを確認するか、MRDVSサポートへお問い合わせください。
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+    **原因** 要求した画像サイズがストリームと一致しません。**対処** デバイスを閉じて再度開きます。
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+    **原因** 多くの場合ピクセル形式が正しくないため、画像解析に失敗しました。**対処** デバイスを再度開きます。
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+    **原因** カメラが接続されていません。**対処** アプリケーションが未オープンのカメラを使用しようとしています。呼び出し順序を確認し、カメラが正常に開いたことを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+    **原因** カメラの初期化に失敗しました。**対処** カメラを再度開きます。
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+    **原因** カメラ、または一致するカメラが見つかりません。**対処** インターフェースへ渡したカメラハンドルが有効であることを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_FILE_INVALID = -16">
+    **原因** ファイル名、種類、形式、パスが無効であるか、ファイルを開けません。**対処** パスが正しく、手動でファイルを開けることを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+    **原因** アップロードまたはダウンロード中にCRCまたはMD5検証に失敗しました。**対処** 転送を再試行します。
+  </Accordion>
+
+  <Accordion title="LX_E_TIME_OUT = -18">
+    **原因** リクエストがタイムアウトしました。**対処** 再試行します。パケット損失またはカメラの低フレームレートが原因の可能性があります。
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_LOSS = -19">
+    **原因** 多くはコールバックモードでフレームが失われました。**対処** 散発的な損失では対応不要な場合があります。頻発する場合はネットワーク帯域とバッファリングを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+    **原因** 要求したストリーム構成を有効にできません。**対処** `2.4.9` より前のバージョンでは全ストリームを無効にできません。このエラーコードは後のバージョンでは廃止されています。
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+    **原因** ストリームデータを受信していません。**対処** データストリームがない場合のカメラオープン手順に従って確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+    **原因** ストリームは開始したものの解析できません。**対処** ファームウェアバージョンを確認するか、MRDVSサポートへお問い合わせください。
+  </Accordion>
+
+  <Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+    **原因** 画像処理に失敗しました。**対処** `Dataprocess` 画像処理ライブラリのバージョンに互換性があることを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+    **原因** 要求した設定は連続モードでは許可されません。**対処** 連続モードでは、ROI、マルチカメラモード、アラインメントなどストリーム関連の設定を変更する前にストリームを停止します。先にカメラモードを設定してから設定を適用します。
+  </Accordion>
+
+  <Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+    **原因** 画像処理ライブラリを読み込めません。**対処** `Dataprocess` の動的ライブラリ／共有オブジェクトが存在し、ライブラリパスに含まれることを確認します。`source install.sh` を実行します。
+  </Accordion>
+
+  <Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+    **原因** 関数の呼び出し順序または前提条件のロジックが無効です。**対処** SDKログを確認して呼び出し順序を調整します。主な例：<br />1. 画像サイズを変更する設定は、ストリーム停止後に変更します。<br />2. 連続モードで画像サイズを変更しません。<br />3. アルゴリズムアップロードと内蔵アプリケーションアルゴリズムは排他的です。<br />4. HDR有効時に自動露光を有効にしません。<br />5. 自動露光パラメーターは自動露光状態に依存します。<br />6. トリガーパラメーターはトリガーモードに依存します。
+  </Accordion>
+
+  <Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+    **原因** IPアドレスへ到達できない、またはネットワーク設定が誤っています。**対処** SDKホストからカメラへpingできることを確認します。
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+    **原因** RGBとToFのフレームがタイムアウト時間内に同期しませんでした。**対処** RGB-D同期が有効な場合、アプリケーションで同期とリアルタイム性のどちらを優先するかに応じて、フレームを破棄するか警告を無視するかを選択します。
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+    **原因** フレームに別のカメラからの干渉信号が含まれます。**対処** アプリケーションに応じてフレームを破棄するか、警告を無視します。
+  </Accordion>
+
+  <Accordion title="エラー `-25` または `LxDataProcess` の読み込みに失敗する">
+    **原因** Linuxでライブラリが環境パスに含まれていません。**対処** `source install.sh` を実行します。
+  </Accordion>
+
+  <Accordion title="取得画像が3つの領域に分割される">
+    **原因** 表示画像のアスペクト比が正しくありません。
+  </Accordion>
+
+  <Accordion title="ROS 2とSDKライブラリが競合する">
+    **対処** `util` ディレクトリのラッパーを使用します。カメラSDKを間接的にリンクし、直接のライブラリ競合を回避します。
+  </Accordion>
+
+  <Accordion title="LiteカメラとRGB対応標準カメラを識別する方法">
+    **対処** `DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb)` を呼び出します。Liteカメラでは、この機能が未サポートであることが返されます。
+  </Accordion>
+
+  <Accordion title="時刻同期はどのように処理されるか">
+    **対処** SDKは各インターフェース呼び出し時にPTPと自動同期します。追加のトリガーは不要です。
+  </Accordion>
+</AccordionGroup>

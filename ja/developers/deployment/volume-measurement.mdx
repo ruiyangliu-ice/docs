@@ -1,0 +1,199 @@
+---
+title: 容積計測の導入
+sidebarTitle: 容積計測の導入
+description: Mシリーズカメラによる容積計測を導入します。設置、外部パラメータ校正、領域設定、結果連携を説明します。
+hidden: true
+---
+
+容積計測アルゴリズムはカメラ上で動作し、静止または移動中の対象物の長さ、幅、高さを計測します。導入には剛性のある設置、ネットワーク接続、外部パラメータ校正、検出領域の設定が必要です。複数台のカメラはギガビットスイッチを介して同じネットワークに接続します。
+
+<Info>
+  これは非表示の旧版導入ガイドです。アルゴリズムファームウェアと専用上位アプリケーションはプロジェクトごとに提供されます。導入前にカメラ、ファームウェア、ソフトウェアのバージョンが一致していることを確認してください。
+</Info>
+
+## 対象範囲
+
+本ワークフローは、Mシリーズカメラを使用する物流、宅配、倉庫、ばら物の容積計測プロジェクトに適用します。アルゴリズムは検出領域内の1個以上の対象物を計測します。対象物の識別、重量収集、業務システムとの関連付けは上位システムで処理します。
+
+製品情報は [MシリーズToFカメラ](/ja/products/m-series/overview "MシリーズToFカメラ") を参照してください。
+
+## 設置とシステム準備
+
+### ハードウェアの設置
+
+- 剛性のあるブラケットを使用し、検出平面と平行で、その平面に向くようにM4カメラを取り付けます。
+- カメラには `24 VDC` を供給します。Cat6AまたはCat7ケーブルでカメラをホストまたはギガビットスイッチに接続します。
+- 複数台の場合は、各カメラに固有のネットワークアドレスを設定し、電源状態を確認します。
+
+<Frame>
+  ![容積計測用に下向きに設置したM4カメラ](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
+</Frame>
+
+### ホストの要件
+
+| 項目 | 推奨構成 |
+| --- | --- |
+| オペレーティングシステム | Windows 10以降 |
+| CPU | Intel® Core™ i5（第7世代）以降 |
+| メモリ | 8 GB以上 |
+| GPU | Intel® UHD Graphics、またはより高性能な統合GPU／ディスクリートGPU |
+
+最初に [LxCameraViewer](/ja/developers/software/lxcameraviewer "ソフトウェアのダウンロード") をインストールし、プロジェクト提供の容積計測アプリケーションを `Lanxin-MRDVS\\Tools` ディレクトリに配置します。提供手順で指示された場合はファイルを置き換えてください。
+
+<Warning>
+  ファームウェアのアップグレード中にカメラは再起動します。プロジェクト提供のアルゴリズムパッケージのみを使用し、アップグレード前に検証済みの設定をバックアップしてください。
+</Warning>
+
+## 導入手順
+
+### 1. ネットワークを設定する
+
+ホストとカメラを同じサブネットに配置します。元の導入例では次の値を使用します。
+
+| 項目 | 例 |
+| --- | --- |
+| ホストIP | `192.168.100.xxx` |
+| サブネットマスク | `255.255.255.0` |
+| デフォルトゲートウェイ | `192.168.100.1` |
+
+WindowsのEthernetアダプターのプロパティで **Internet Protocol Version 4 (TCP/IPv4)** を選択し、固定アドレスを設定します。デバッグネットワークではアプリケーションをファイアウォール規則で許可してください。本番環境のファイアウォールを恒久的に無効化しないでください。
+
+### 2. 外部パラメータを校正する
+
+<Steps>
+  <Step title="校正状態を復元する">
+    **Camera configuration** を開き、`x`、`y`、`z`、`roll`、`pitch`、`yaw` がすべて `0` であることを確認します。過去の値がある場合はリセットし、**Save and send** を選択します。
+  </Step>
+  <Step title="校正を実行する">
+    **Extrinsic calibration** を選択し、成功メッセージを確認して、算出された `z` 値を記録します。
+  </Step>
+  <Step title="姿勢パラメータを保存する">
+    `z` を `0` に戻して **Save and send** を選択します。このワークフローでは、実際のカメラ高を次の手順で検出平面距離として使用します。
+  </Step>
+</Steps>
+
+### 3. 検出平面と領域を設定する
+
+**Volume detection** で、記録した `z` 値を **Detection-plane distance** として入力し、保存して送信します。点群ビューから検出領域の境界を設定します。
+
+| パラメータ | 意味 |
+| --- | --- |
+| Minimum / maximum X | 検出ボックスのX方向境界 |
+| Minimum / maximum Y | 検出ボックスのY方向境界 |
+| Minimum / maximum Z | 検出ボックスのZ方向境界 |
+
+検出平面距離は床面の基準を定義します。Z上限はこの距離よりわずかに大きく設定します。下限は計測対象の高さをカバーする必要があります。設定後に **Save and send** を選択してください。
+
+### 4. 結果を検証する
+
+**Basic tools** で容積状態を確認します。対象物を検出領域に置き、個数と長さ、幅、高さが現場の値と一致することを確認します。複数の対象物がある場合は、容積ボックスを切り替えて各結果を確認します。
+
+単発計測では、**Volume detection** の **Trigger mode** を有効にし、設定を保存します。次に **Basic tools** で **Single trigger** を選択し、1フレームと結果を取得します。
+
+## 主な画面とパラメータ
+
+### 容積検出パラメータ
+
+| パラメータ | 説明 |
+| --- | --- |
+| Trigger mode | 有効にすると、アルゴリズムはトリガー後にのみ結果を出力します。 |
+| Upward detection | 検出方向を反転します。既定のワークフローでは下向きに検出します。 |
+| Detection frequency | 画像と結果の更新周期です。 |
+| Detection-plane distance | カメラから検出平面までの距離（`mm`）です。 |
+| Neighborhood count / distance threshold | 点群フィルタリングのパラメータです。通常はプロジェクトの既定値を維持します。 |
+| Normal-vector filter / distance threshold | エッジおよび点群フィルタリングのパラメータです。変更前に元の設定を保存してください。 |
+| Minimum point count | 有効な対象物に必要な最小点数です。 |
+| Minimum X / Y / Z | 検出可能な対象物の最小寸法（`mm`）です。 |
+
+### カメラ設定
+
+| 項目 | 説明 |
+| --- | --- |
+| Camera name | 複数カメラ構成でカメラを識別します。 |
+| Image-save mode | アルゴリズム画像をカメラに保存します。 |
+| Image-acquisition mode | `MDS` はカメラアクセスを占有しません。`SDK` は占有するため、動作中は上位アプリケーションでカメラを開けません。 |
+| Extrinsics | `x`、`y`、`z`、`roll`、`pitch`、`yaw`。 |
+| Save and send | 現在の外部パラメータとアルゴリズム設定をカメラに書き込みます。 |
+
+## 結果インターフェース
+
+TCP、UDP、HTTPでは `RESULT_UPDATE` コマンドを使用して容積結果を要求します。
+
+| プロトコル | ポート | 用途 |
+| --- | --: | --- |
+| TCP | `14951` | 容積検出結果を要求 |
+| UDP | `14950` | 容積検出結果を要求 |
+| HTTP | `14952` | 容積結果をJSON形式で要求 |
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  カメラから現在の容積検出結果を要求します。
+</ParamField>
+
+HTTPレスポンスの最上位フィールドは次のとおりです。
+
+<ResponseField name="IP" type="string" required>
+  データを生成したカメラのIPアドレスです。
+</ResponseField>
+
+<ResponseField name="TM" type="object[]" required>
+  検出された対象物のリストです。
+</ResponseField>
+
+<ResponseField name="TM_DATA_TIME" type="string">
+  容積データを取得した時刻です。
+</ResponseField>
+
+<ResponseField name="TM_RES_TIME" type="string">
+  結果を出力した時刻です。
+</ResponseField>
+
+<ResponseField name="nick_name" type="string">
+  カメラ名です。
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  戻りコードです。`0` は成功を示します。
+</ResponseField>
+
+各 `TM` オブジェクトには次のフィールドを含めることができます。
+
+<ResponseField name="angle" type="number">
+  対象物ボックスの角度です。
+</ResponseField>
+
+<ResponseField name="cx" type="number">
+  対象物中心のX座標です。
+</ResponseField>
+
+<ResponseField name="cy" type="number">
+  対象物中心のY座標です。
+</ResponseField>
+
+<ResponseField name="cz" type="number">
+  対象物中心のZ座標です。
+</ResponseField>
+
+<ResponseField name="height" type="number">
+  対象物の高さです。
+</ResponseField>
+
+<ResponseField name="length" type="number">
+  対象物の長さです。
+</ResponseField>
+
+<ResponseField name="width" type="number">
+  対象物の幅です。
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  結果が有効かどうかを示します。`false` は信頼度不足を示します。
+</ResponseField>
+
+## トラブルシューティング
+
+| 症状 | 推奨される対処 |
+| --- | --- |
+| 点群ビューが空、または確認しにくい | 点群エリアでスクロールとドラッグを行い、カメラがデータを出力していることを確認します。 |
+| 校正後に検出が異常になる | 外部パラメータの `z` を `0` に戻し、記録した校正高を検出平面距離として入力したことを確認します。 |
+| 対象物を検出できない | 領域境界、最小寸法、最小点数、および対象物全体が視野内にあるかを確認します。 |
+| LxCameraViewerで開けない | `SDK` の画像取得モードが選択されていないか確認します。このモードはカメラアクセスを占有します。 |

@@ -1,0 +1,410 @@
+---
+title: V2 ROS2インターフェースリファレンス
+description: V2ローカライゼーション用ROS2 SDKをビルドして実行し、トピックとサービスでマッピング、自己位置推定、マップ管理を行います。
+hidden: true
+---
+
+## 概要
+
+このページでは、V2ローカライゼーションモジュールの `lx_camera_ros` が提供するROS2トピックとサービスについて説明します。
+
+## コンパイル
+
+Qt5のCoreおよびNetworkコンポーネントをインストールします。インストールコマンドはLinuxディストリビューションにより異なります。次の例ではUbuntuを使用します。
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+[libzipのダウンロードページ](https://libzip.org/download/) から `libzip` のソースを取得し、公式手順に従ってコンパイルします。
+
+`/lx_camera_ros` で次のコマンドを実行します。
+
+```bash
+./build.sh
+```
+
+## 実行
+
+<Note>
+  YAML設定ファイルを変更した場合は再コンパイルしてください。プロジェクトを再ビルドするまで変更は反映されません。
+</Note>
+
+```bash
+./start.sh
+```
+
+## ROS2トピックインターフェース
+
+インターフェースをテストする前にカメラの電源を入れ、約30秒待ってからROS2 SDKノードを起動します。
+
+| 用途 | 関連トピック |
+| --- | --- |
+| ローカライゼーション | 姿勢、自己位置推定状態、マップ切替、再ローカライゼーション |
+| マッピング | マッピング状態と進捗 |
+| 保守と設定 | ストレージ使用量、障害モジュール、パラメータ設定、マップダウンロード |
+
+#### ローカライゼーション姿勢を受信する
+
+ROS2はカメラの `x`、`y`、`theta` を継続的に受信し、値と `theta` から変換したクォータニオンを `LxCamera_LocationPoseResult` に公開します。姿勢はTFでもブロードキャストされます。
+
+```bash
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### ローカライゼーション状態を受信する
+
+ROS2はカメラのローカライゼーション状態（`true` または `false`）を1 Hzで受信し、`std_msgs::msg::Bool` として `LxCamera_LocationResult` に公開します。
+
+```bash
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### カメラのストレージ使用量を受信する
+
+ROS2はカメラのストレージ使用率を2 Hzで受信し、`std_msgs::msg::Float32` として `LxCamera_Capacity_Status` に公開します。
+
+```bash
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### 障害モジュール名を受信する
+
+ROS2はカメラから障害モジュール名を受信し、`std_msgs::msg::String` として `LxCamera_Module_Error` に公開します。
+
+```bash
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### マッピング進捗を受信する
+
+マッピング開始後、ROS2は進捗（`0–100`）を `std_msgs::msg::Int32` として `LxCamera_Mapping_Progress` に公開します。
+
+```bash
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### マッピング状態を受信する
+
+マッピング開始後、ROS2はマッピング状態を `std_msgs::msg::Bool` として `LxCamera_MappingState` に公開します。
+
+```bash
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### パラメータを設定する
+
+`std_msgs::msg::String` メッセージを `LxCamera_SetParam` に公開します。メッセージにはカンマ区切りの9つの浮動小数点値 `x,y,z,yaw,pitch,roll,x,y,yaw` を含めます。最初の6つはカメラ姿勢、最後の3つはLiDAR姿勢を定義します。更新に成功すると、`/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` の `[Laser1]` および `[Camera1]` セクションの対応値が更新されます。
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### マップを切り替える
+
+完成済みマップ名を含む `std_msgs::msg::String` メッセージを `LxCamera_SwitchMap` に公開します。カメラのWebインターフェースを更新します。表示されるマップ名が変われば切替成功です。
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### マップをダウンロードする
+
+1. `std_msgs::msg::String` メッセージを `LxCamera_DownloadMap` に公開します。
+2. メッセージには2つのフィールドがあります。`save_path` はホスト上の絶対パス、`mapname` はカメラ上の完成済みマップの `.zip` ファイル名です。
+3. ダウンロードに成功すると、指定したホストパスにマップアーカイブが保存されます。展開して `PGM` マップファイルと `YAML` 設定ファイルを取得します。
+
+```bash
+# Enter the lx_camera_ros2_ws directory.
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### オドメトリを送信する
+
+`nav_msgs::msg::Odometry` データを `/sim/odom` に公開します（トピックは変更できます）。
+
+```bash
+# Enter the lx_camera_ros2_ws directory.
+source install/setup.bash
+ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### 再ローカライゼーションする
+
+1. `geometry_msgs::msg::PoseWithCovarianceStamped` データを `LxCamera_UploadReloc` に公開します。
+2. 姿勢にはLiDARの姿勢 `x`、`y`、`yaw` を含めます。
+3. カメラのWebインターフェースで表示される位置が送信した姿勢に更新されれば、再ローカライゼーションは成功です。
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}"
+```
+
+> クォータニオンには制約があり、任意の値を入力できません。[Euler-to-quaternion converter](https://www.itutool.com/tools/euler-quaternion-converter "Web tool") を使用して、`Euler yaw` 角をクォータニオンの `xyzw` 値に変換してください。
+
+#### メッセージ種別プレフィックス
+
+ホストコンピューターはUDPでカメラと通信します。各メッセージの先頭4バイトはインターフェースのデータ種別を識別します。
+
+```text
+mapping_prefix = "aced220d";          // Enable mapping
+setparam_prefix = "aced220e";         // Set camera and LiDAR parameters
+UploadScan_prefix = "aced2209";       // Upload laser scan data to the camera
+odom_prefix = "aced0f0a";             // Odometry data
+mapname_prefix = "aced220c";          // Switch maps
+map_request_prefix = "aced220f";      // Download a specified map
+prefix_after_reloc = "aced0f0b";      // Relocalization
+```
+
+---
+
+## ROS2サービスインターフェース
+
+マッピング、マップ切替、マップダウンロード、再ローカライゼーションはROS2サービスでも利用できます。サービス応答の `true` は成功、`false` は失敗を示します。
+
+<Info>
+  次のコマンドには `ros2 service call` を使用します。マップ名は数字で始めず、30文字以内にしてください。
+</Info>
+
+#### マップを作成する
+
+サービス名：`/LxCamera_Mapping_srv`
+
+サービス定義：
+
+```text
+bool status      # Start mapping: true; stop mapping: false
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
+---
+bool result      # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### マップを切り替える
+
+サービス名：`/LxCamera_SwitchMap_srv`
+
+サービス定義：
+
+```text
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
+---
+bool result      # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### マップをダウンロードする
+
+サービス名：`/LxCamera_DownloadMap_srv`
+
+サービス定義：
+
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
+string save_path  # Absolute save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result       # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### 再ローカライゼーションする
+
+サービス名：`/LxCamera_UploadReloc_srv`
+
+サービス定義：
+
+```text
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result       # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  \"pose\": {
+    \"header\": {
+      \"stamp\": {\"sec\": 0, \"nanosec\": 0},
+      \"frame_id\": \"map\"
+    },
+    \"pose\": {
+      \"pose\": {
+        \"position\": {\"x\": 4.5, \"y\": -15.5, \"z\": 0.0},
+        \"orientation\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.694658, \"w\": 0.71934}
+      },
+      \"covariance\": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### 現在のマップ名を取得する
+
+サービス名：`/LxCamera_GetCurMapname_srv`
+
+サービス定義：
+
+```text
+bool get_cur_mapname # Get the map identifier
+---
+string mapname      # Current map name
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### 現在のマップ一覧を取得する
+
+サービス名：`/LxCamera_GetMapList_srv`
+
+サービス定義：
+
+```text
+bool get_map_list # Get the map list
+---
+string[] map_list # Map list
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### マッピングを終了する
+
+サービス名：`/LxCamera_ExitMapping_srv`
+
+サービス定義：
+
+```text
+bool exit_mapping # Exit mapping
+---
+bool state        # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### マップを削除する
+
+サービス名：`/LxCamera_EraseMap_srv`
+
+サービス定義：
+
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
+---
+bool result       # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### ヒートマップをダウンロードする
+
+サービス名：`/LxCamera_DownloadHeatMap_srv`
+
+サービス定義：
+
+```text
+string mapname    # Map name; must not start with a number and must be no longer than 30 characters
+string save_path  # Absolute save path, for example "/home/lx/map"; omit the trailing slash
+---
+bool result       # true: success; false: failure
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## 増分マッピング
+
+サービス名：`/LxCamera_IncMapping_srv`
+
+サービス定義：
+
+```text
+bool status      # Start mapping: true; stop mapping: false
+string mapname   # Map name; must not start with a number and must be no longer than 30 characters
+---
+bool result
+```
+
+サービスを呼び出します。
+
+```bash
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

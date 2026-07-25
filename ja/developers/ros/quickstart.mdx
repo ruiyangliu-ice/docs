@@ -1,0 +1,166 @@
+---
+title: ROSクイックスタート
+description: V2視覚ローカライゼーション用ROS SDKを設定・実行し、地図作成、地図切替、再位置推定、ローカライゼーション結果の購読を行います。
+hidden: true
+---
+
+## 概要
+
+V2ローカライゼーションモジュールは、UDP経由でホストコンピューターのROS SDKと通信します。内蔵Webインターフェースでは、地図作成、ローカライゼーション、パラメータ設定を行えます。ROS SDKでも、地図作成、再位置推定、地図ダウンロードを含む同等の機能を利用できます。
+
+<Frame>
+  ![V2ローカライゼーションモジュールとROS SDKの通信アーキテクチャ](/images/developers/ros-quickstart-preface.avif)
+</Frame>
+
+<Info>
+  デフォルトのWebインターフェースは`192.168.100.201:9998`で利用できます。カメラとROS SDKの両方で宛先IPアドレスとポートを設定し、値が一致していることを確認してください。
+</Info>
+
+## 前提条件
+
+Qt5のCoreおよびNetworkコンポーネントと、依存ライブラリ`libzip`をインストールします。以下はUbuntuの例です。
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+`libzip`は[libzipのインストール手順](https://blog.csdn.net/iamhuanyu/article/details/129603632)に従って導入します。その後、`src`と同じ階層にある`/V2-ROS-SDK-service`からROSパッケージをコンパイルします。
+
+```bash
+catkin_make
+```
+
+## ノードを設定して起動する
+
+<Steps>
+  <Step title="ROS SDKの設定を確認する">
+    `/V2-ROS-SDK-service/src/lx_camera_ros/launch/mapping.launch`を開きます。デフォルトのカメラIPアドレスは`192.168.100.201`です。カメラIPを変更した場合は、このファイルも更新してください。ポートは`8001`に設定します。
+
+    <Frame>
+      ![mapping.launch内のカメラ接続設定](/images/developers/ros-quickstart-operation-2.avif)
+    </Frame>
+  </Step>
+  <Step title="ネットワークとモジュールパラメータを確認する">
+    カメラとホストコンピューターを同じスイッチおよびネットワークセグメントに接続します。Webインターフェースで**Parameter Configuration**を開き、`portCode`を`8987`に設定します。`portName`には、ROS SDKを実行するホストのネットワークアダプターのIPアドレスを設定します。
+
+    <Frame>
+      ![Webインターフェースのパラメータ設定入口](/images/developers/ros-quickstart-operation-3.avif)
+    </Frame>
+
+    <Frame>
+      ![WebインターフェースのUDPポートと宛先アドレス設定](/images/developers/ros-quickstart-operation-4.avif)
+    </Frame>
+  </Step>
+  <Step title="ROSノードを起動する">
+    ```bash
+    cd /V2-ROS-SDK-service
+    source devel/setup.bash
+    roslaunch lx_camera_ros mapping.launch
+    ```
+
+    ノードが正常に起動すると、ターミナルに起動情報が表示されます。
+
+    <Frame>
+      ![ROSノードの正常起動後に表示されるターミナル出力](/images/developers/ros-quickstart-operation-5.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+## 通信を確認する
+
+新しいターミナルを開き、`/V2-ROS-SDK-service`へ移動して環境を読み込みます。
+
+```bash
+source devel/setup.bash
+```
+
+ストレージ状態トピックを購読して通信リンクを確認します。このトピックはハートビートとしても利用でき、2 Hzで発行されます。
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+<Frame>
+  ![ストレージ状態トピックのターミナル出力](/images/developers/ros-quickstart-debugging.avif)
+</Frame>
+
+次のサービスを呼び出すと、現在の地図名も取得できます。
+
+```bash
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+<Frame>
+  ![現在の地図名の取得結果](/images/developers/ros-quickstart-debugging-2.avif)
+</Frame>
+
+## 地図を作成してローカライズする
+
+カメラの電源を入れ、内蔵プログラムが起動するまで約30秒待ってから、データ転送ノードを起動します。
+
+<Steps>
+  <Step title="地図作成を開始する">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
+    ```
+
+    サービスが`true`を返したら、対象エリア内でプラットフォームを移動させて地図を取得します。
+
+    <Frame>
+      ![地図作成開始後のWebインターフェースの状態](/images/developers/ros-quickstart-basic-operating-procedures.avif)
+    </Frame>
+  </Step>
+  <Step title="地図作成を停止する">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
+    ```
+
+    サービスが`true`を返したら、地図作成の完了を確認します。
+
+    <Frame>
+      ![地図作成停止後のWebインターフェースの状態](/images/developers/ros-quickstart-basic-operating-procedures-2.avif)
+    </Frame>
+  </Step>
+  <Step title="新しい地図へ切り替える">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
+    ```
+  </Step>
+  <Step title="再位置推定ポーズを送信する">
+    `orientation.x`、`orientation.y`、`orientation.z`、`orientation.w`は姿勢クォータニオンです。ROSメッセージ形式に従って設定します。
+
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'map'
+      pose:
+        pose:
+          position: {x: 4.5, y: -15.5, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
+        covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    ```
+  </Step>
+  <Step title="リアルタイムのローカライゼーション結果を購読する">
+    ```bash
+    rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+    ```
+  </Step>
+</Steps>
+
+## トラブルシューティング
+
+<AccordionGroup>
+  <Accordion title="ROSプログラムをコンパイルできない">
+    Qt5と`libzip`が完全にインストールされていることを確認してから、`catkin_make`を再実行します。
+  </Accordion>
+
+  <Accordion title="メッセージ送信後にROS SDKが応答しない">
+    カメラとホストコンピューターが同一ネットワークセグメントにあり、カメラ用ホストソフトウェアからカメラを開けることを確認します。続いて、カメラ側とROS SDKの設定を確認してください。
+  </Accordion>
+
+  <Accordion title="ROSデバッグメッセージを送信できない">
+    ROSメッセージの形式は厳密です。例のフィールド構造を維持し、テストに必要な値だけを変更してください。
+  </Accordion>
+</AccordionGroup>

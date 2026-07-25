@@ -1,0 +1,2480 @@
+---
+title: Linux SDK サンプル
+sidebarTitle: Linux SDK サンプル
+description: MRDVS Camera SDK for Linux に含まれる C、Java、ROS、ROS 2 サンプルの環境構築、ビルド、実行方法を説明します。
+hidden: true
+---
+
+<Info>
+  文書バージョン: V1.0、改訂日: 2024-10-12。
+</Info>
+
+## 概要
+
+MRDVS Camera SDK for Linux には、C/C\+\+、Java（HTTP サービス）、ROS、ROS 2 のサンプルが含まれます。サンプルでは SDK の基本的なワークフローを示します。プロジェクトでは、用途に応じたロジックとエラー処理を追加してください。
+
+まず、環境設定、インストールスクリプト、サンプルディレクトリの確認を完了します。次に、対象言語のコンパイルと実行の手順に従ってください。付録には、一般的な依存関係とテストパッケージのインストール方法を示します。
+
+---
+
+## システムと環境
+
+### 対応システムと依存関係のバージョン
+
+以下の Linux システムに対応しています。既定のプログラムバージョンを以下に示します。
+
+| System version | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
+| --- | --- | --- | --- | --- | --- |
+| Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Kinetic | Ardent、Bouncy |
+| Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodic | Dashing、Eloquent、Crystal |
+| Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetic | Foxy、Galactic |
+| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、lron |
+
+### 2.2 システム・アプリケーションのバージョンを確認する
+
+#### 2.2.1 システムバージョンを確認する
+
+```bash
+uname -a
+```
+
+出力:
+
+<Frame>
+  ![システムバージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-system-version.avif)
+</Frame>
+
+オペレーティングシステムのリリースバージョン: 5.15.0
+
+- **メジャーバージョン:** 5
+- **バージョン番号:** 15 \[奇数は開発版、偶数は安定版\]
+- **リビジョン番号:** 0 \[変更回数\]
+- **このバージョンのリビジョン:** 97
+- **カーネルバージョン:** #107~20.0.4.1。通常、システムバージョンはカーネルバージョンです。
+
+#### 2.2.2 CMake バージョンを確認する
+
+```bash
+cmake --version
+```
+
+result:
+
+<Frame>
+  ![CMake バージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-cmake-version.avif)
+</Frame>
+
+CMake 3.16.3 のバージョン情報を示します。
+
+#### 2.2.3 GCC バージョンを確認する
+
+```bash
+gcc -v
+```
+
+出力:
+
+<Frame>
+  ![GCC バージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-gcc-version.avif)
+</Frame>
+
+バージョン番号は左下の青い枠内に表示されます。この例のバージョンは 9.4.0 です。
+
+#### 2.2.4 OpenCV バージョンを確認する
+
+```bash
+pkg-config --modversion opencv
+```
+
+出力:
+
+<Frame>
+  ![OpenCV バージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-opencv-version.avif)
+</Frame>
+
+この例のバージョンは 3.2.0 です。
+
+#### 2.2.5 PCL バージョンを確認する
+
+```bash
+dpkg -l libpcl-dev
+```
+
+出力:
+
+<Frame>
+  ![PCL バージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-pcl-version.avif)
+</Frame>
+
+この例のバージョンは 1.8.1 です。
+
+#### 2.2.6 ROS バージョンを確認する
+
+```bash
+rosversion -d
+```
+
+出力:
+
+<Frame>
+  ![ROS バージョンの確認画面](/images/developers/camera-sdk-linux-examples-view-ros-version.avif)
+</Frame>
+
+この例のバージョンは eloquent です（Ubuntu 18.04 に対応する ROS 2 バージョン）。
+
+<Frame>
+  ![別の ROS バージョン確認画面](/images/developers/camera-sdk-linux-examples-view-ros-version-2.avif)
+</Frame>
+
+この例のバージョンは noetic です（Ubuntu 20 に対応する ROS 1 バージョン）。
+
+### 2.3 基本開発環境を構築する
+
+インストール前にパッケージリストを更新します。
+
+```bash
+sudo apt update
+```
+
+出力例:
+
+<Frame>
+  ![基本開発環境の構築画面](/images/developers/camera-sdk-linux-examples-building-a-basic-development-environment.avif)
+</Frame>
+
+#### 2.3.1 CMake をインストールする
+
+```bash
+sudo apt install cmake
+```
+
+<Frame>
+  ![CMake のインストール画面](/images/developers/camera-sdk-linux-examples-installation-cmake.avif)
+</Frame>
+
+#### 2.3.2 GCC をインストールする
+
+```bash
+sudo apt install build-essential
+```
+
+<Frame>
+  ![GCC のインストール画面](/images/developers/camera-sdk-linux-examples-install-gcc.avif)
+</Frame>
+
+### 2.4 任意の開発環境を構築する
+
+#### 2.4.1 OpenCV をインストールする \[カメラ画像を表示可能\]
+
+```bash
+sudo apt-get install libopencv-dev
+```
+
+<Frame>
+  ![OpenCV のインストール画面](/images/developers/camera-sdk-linux-examples-install-opencv-can-display-camera-images.avif)
+</Frame>
+
+#### 2.4.2 PCL をインストールする \[点群を表示可能\]
+
+```bash
+sudo apt-get install libpcl-dev
+```
+
+<Frame>
+  ![PCL のインストール画面](/images/developers/camera-sdk-linux-examples-install-pcl-can-display-point-cloud.avif)
+</Frame>
+
+---
+
+## サンプルコードを準備する
+
+### 3.1 インストールスクリプトを実行する
+
+1. Lanxin-MRDVS ファイルを展開し、Lanxin-MRDVS フォルダーに移動します。
+
+<Frame>
+  ![Illustrations related to executing the installation script](/images/developers/camera-sdk-linux-examples-executing-the-installation-script.avif)
+</Frame>
+
+2. 右クリックしてコンソールを開きます。
+3. `install.sh` スクリプトを実行します。
+
+<Frame>
+  ![Illustration related to executing the installation script 2](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-2.avif)
+</Frame>
+
+4. `/opt/` ディレクトリに移動し、インストールが成功したか確認します。
+
+<Frame>
+  ![Illustration related to executing the installation script 3](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-3.avif)
+</Frame>
+
+5. フォルダーが見つかれば、インストールは成功です。
+6. インストールに失敗した場合は、`opt` ディレクトリに手動で追加してください。
+7. `set_socket_buffer_size.sh` スクリプトを実行します。
+
+<Frame>
+  ![Illustrations related to executing the installation script 4](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-4.avif)
+</Frame>
+
+8. 以上でインストールスクリプトの実行は完了です。
+
+### 3.2 サンプルコードの概要
+
+`Sample` ディレクトリに移動します。ディレクトリの内容は次のとおりです。
+
+<Frame>
+  ![Illustrations related to sample code introduction](/images/developers/camera-sdk-linux-examples-sample-code-introduction.avif)
+</Frame>
+
+- `C` フォルダーには C および C\+\+ 関連のコードが含まれます。
+- `Java` フォルダーには、SDK を間接的に呼び出す HTTP サーバーが含まれます。
+- `Ros` フォルダーには ROS のサンプルが含まれます。
+- `Ros2` フォルダーには ROS 2 のサンプルが含まれます。
+
+#### 3.2.1 C および C\+\+ サンプルコード
+
+`C` ディレクトリに移動します。内容は次のとおりです。
+
+<Frame>
+  ![Illustrations related to C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-c-and-c-sample-code.avif)
+</Frame>
+
+9 つのフォルダーと 1 つの `CMakeLists` ファイルがあり、各フォルダーには CPP ファイルが含まれます。
+
+各 CPP の主な機能は次のとおりです。
+
+- `application_obstacle`: カメラストリームを取得し、障害物回避アルゴリズムを有効にして結果を出力します。
+- `application_pallet`: カメラストリームを取得し、パレットアルゴリズムを有効にして結果を出力します。
+- `arm_local_camera`: カメラ上の SDK \[ARM\] を呼び出し、ストリームデータを取得します。
+- `frame_callback`: コールバック方式でカメラストリームデータを取得します。
+- `multi_cameras`: 複数のカメラを開き、ストリームデータを取得します。
+- `single_camera`: 1 台のカメラを開き、ストリームデータを取得します。
+- `single_camera2`: 構造体を介してフレームデータを取得します。
+
+用途に応じて、テストおよび変更するサンプルコードを選択してください。
+
+#### 3.2.2 Java サンプルコード
+
+`java` ディレクトリに移動します。内容は次のとおりです。
+
+<Frame>
+  ![Illustrations related to Java sample code](/images/developers/camera-sdk-linux-examples-java-sample-code.avif)
+</Frame>
+
+ディレクトリには 2 つのフォルダー、`postman.json` ファイル、README が含まれます。
+
+- `Config`: サーバー関連の設定を格納します。
+- `Middleware`: サーバー本体です。
+- `LxCamera.postman_collection.json`: Postman 設定ファイルです。
+- `README`: Java 仮想サーバーの使用チュートリアルです。
+
+#### 3.2.3 ROS サンプルコード
+
+`ros` ディレクトリに移動します。内容は次のとおりです。
+
+<Frame>
+  ![Illustrations related to ROS sample code](/images/developers/camera-sdk-linux-examples-ros-sample-code.avif)
+</Frame>
+
+- `lx_camera_node_ws`: 標準 ROS ドライバーを含むフォルダーです。
+- `README.EN`: ノードのコンパイル方法と新しいノードの作成方法を英語で説明します。
+
+#### 3.2.4 ROS 2 サンプルコード
+
+`ros2` ディレクトリに移動します。内容は次のとおりです。
+
+<Frame>
+  ![ROS2 sample code related images](/images/developers/camera-sdk-linux-examples-ros2-sample-code.avif)
+</Frame>
+
+- `lx_camera_node_ws`: 標準 ROS 2 ドライバーを含むフォルダーです。
+- `README.EN`: ノードのコンパイル方法と新しいノードの作成方法を英語で説明します。
+
+#### 3.2.5 ros-v1pro サンプルコード
+
+`ros-v1pro` ディレクトリに移動します。内容は次のとおりです。
+
+<Frame>
+  ![Illustrations related to ros-v1pro sample code](/images/developers/camera-sdk-linux-examples-ros-v1pro-sample-code.avif)
+</Frame>
+
+- `src`: 標準 ROS ドライバーを含むフォルダーです。
+- `README`: このノードの使用方法を説明します。
+- `README.pdf`: このノードの使用方法を説明します。
+
+---
+
+## サンプルをコンパイルして実行する
+
+### 4.1 C および C\+\+ サンプルコードのコンパイルと実行
+
+サンプル内の `C` フォルダーに移動します。
+
+<Frame>
+  ![Illustrations related to compiling and running C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code.avif)
+</Frame>
+
+`C` フォルダーでターミナルを開き、次を実行します。
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+実行に成功したら、`build` フォルダーを開きます。内容は次のとおりです。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-2.avif)
+</Frame>
+
+実行ファイルは `bin` ディレクトリにあります。内容は次のとおりです。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-3.avif)
+</Frame>
+
+`arm` サンプルを除くすべてのサンプルがビルドされます。実行ファイル名はサンプルフォルダー名と同じで、直接実行できます。
+
+### 4.2 Javaサンプルの実行手順
+
+Javaサンプルはソースコードを直接提供せず、HTTPサーバーとPostmanサンプルを提供します。HTTP経由でカメラを制御する場合は、`java` フォルダーを使用します。内容は次のとおりです。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process.avif)
+</Frame>
+
+実行手順は次のとおりです。
+
+- `config` フォルダーで `Configs.json` の `http_sever_host` と `http_sever_port` を変更します。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-java-sample-running-process-2.avif)
+</Frame>
+
+- `middleware` フォルダーで `start.sh` を実行し、転送サーバーを起動します。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process-3.avif)
+</Frame>
+
+- Postmanで `LxCamera.postman_collection.json` を開き、サンプルのポートへデータを送信します。
+
+### 4.3 ROSサンプルコードのビルドと実行
+
+`ROS` フォルダーでコンソールを開き、次のコマンドを実行します。
+
+```bash
+roscore
+```
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code.avif)
+</Frame>
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-2.avif)
+</Frame>
+
+右クリックしてコンソールを開き、`lx_camera_node_ws` フォルダーで次のコマンドを実行します。
+
+```bash
+catkin_make
+```
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-3.avif)
+</Frame>
+
+実行に成功すると、次のように表示されます。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-4.avif)
+</Frame>
+
+この時点で、フォルダー内に `devel` と `build` が生成されます。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-5.avif)
+</Frame>
+
+次のコマンドで環境を読み込み、`roslaunch` でノードを起動します。
+
+```bash
+source devel/setup.bash
+roslaunch lx_camera_ros lx_camera_ros.launch
+roslaunch lx_camera_ros obstacleV2.launch
+roslaunch lx_camera_ros obstacle.launch
+roslaunch lx_camera_ros pallet.launch
+```
+
+上から順に通常ノード、障害物回避アルゴリズム2、障害物回避アルゴリズム、パレットアルゴリズムのノードです。複数のノードを同時には有効にできません。
+
+### 4.4 ROS2サンプルコードのビルドと実行
+
+`ros2` フォルダーを開きます。内容は次のとおりです。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code.avif)
+</Frame>
+
+ROSサンプルノードは `colcon` でビルドします。
+
+まず、ビルドツールをインストールします。
+
+```bash
+sudo apt install python3-colcon-common-extensions
+```
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-2.avif)
+</Frame>
+
+次に `ros-pcl` 依存パッケージをインストールします。`foxy` は使用中のROS 2ディストリビューションに置き換えてください。
+
+```bash
+sudo apt-get install ros-foxy-pcl*
+```
+
+インストール後、`lx_camera_node_ws` ディレクトリでプロジェクトをビルドします。
+
+```bash
+colcon build
+```
+
+コンピューター性能により、ビルドには通常30〜120秒かかります。成功すると次のように表示されます。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-3.avif)
+</Frame>
+
+一部の警告はバージョン互換性によるもので、対応不要です。ビルド後のフォルダー内容は次のとおりです。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-4.avif)
+</Frame>
+
+次のコマンドで環境を読み込み、`ros2 launch` でノードを起動します。
+
+```bash
+source install/setup.bash
+ros2 launch lx_camera_ros lx_camera_ros_launch.py
+ros2 launch lx_camera_ros obstacleV2.launch.py
+ros2 launch lx_camera_ros obstacle.launch.py
+ros2 launch lx_camera_ros pallet.launch.py
+```
+
+上から順に通常ノード、障害物回避アルゴリズム2、障害物回避アルゴリズム、パレットアルゴリズムのノードです。複数のノードを同時には有効にできません。
+
+### 4.5 ros-v1proサンプルコードのビルドと実行
+
+`ros-v1pro` はV1PROカメラ専用のROSドライバーです。`ros-v1pro` フォルダーの `README.pdf` に詳細があります。ここでは概要のみを説明します。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code.avif)
+</Frame>
+
+`ros-v1pro` フォルダーでビルドします。
+
+```bash
+catkin_make
+```
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-2.avif)
+</Frame>
+
+環境を読み込みます。
+
+```bash
+source devel/setup.bash
+```
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-3.avif)
+</Frame>
+
+最後にノードを実行します。
+
+- roslaunch lx\_camera\_ros localization.launch
+- roslaunch lx\_camera\_ros mapping.launch
+- roslaunch lx\_camera\_ros sensor\_sim.launch
+
+上から順に位置決めノード、マッピングノード、仮想データノードです。複数のノードを同時には有効にできません。
+
+---
+
+## サンプルコードリファレンス
+
+この節では、コードと疑似コードを複数の部分に分けて示します。通常、同じ節の内容は同一ファイルに属します。詳細に説明する特別なファイルを除き、ソースコードでは主要モジュールのみを説明し、詳細はコード内コメントを参照してください。
+
+### 5.1 C and C\+\+
+
+#### 5.1.1 CMakeLists
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-cmakelists.avif)
+</Frame>
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-cmakelists-2.avif)
+</Frame>
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-cmakelists-3.avif)
+</Frame>
+
+#### 5.1.2 application\_obstacle と application\_pallet
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-application-obstacle-and-application-pallet.avif)
+</Frame>
+
+#### 5.1.3 arm\_local\_camera
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-arm-local-camera.avif)
+</Frame>
+
+#### 5.1.4 frame\_callback
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-frame-callback.avif)
+</Frame>
+
+#### 5.1.5 multi\_cameras
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-multi-cameras.avif)
+</Frame>
+
+#### 5.1.6 single\_camera
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-single-camera.avif)
+</Frame>
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-single-camera-2.avif)
+</Frame>
+
+#### 5.1.7 single\_camera2
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-single-camera2.avif)
+</Frame>
+
+### 5.2 java
+
+JavaサンプルはHTTPサーバーのみを提供するため、ここではインターフェースとメッセージ形式を説明します。Postmanでサンプルファイルを開きます。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-java.avif)
+</Frame>
+
+メッセージはすべてPOST方式です。送信前にIPアドレスをサーバーIPへ変更してください。URLはサーバーにハードコードされているため変更しません。応答メッセージの形式と内容は `body` に含まれます。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-java-2.avif)
+</Frame>
+
+1. `DcGetApiVersion`：SDKのバージョン番号を取得します。入力パラメータはありません。
+
+<Frame>
+  ![サンプルコードとROS設定の画面](/images/developers/camera-sdk-linux-examples-java-3.avif)
+</Frame>
+
+2. `DcSetInfoOutput`：SDKログの出力先を設定します。パラメータは次のとおりです。
+
+- `log_path`：ログの出力先パスです。
+- `print_level`：ログ出力レベルです。
+- `enable_screen_print`：コンソールへログを出力するかを指定します。
+
+3. `DcLog`：SDKログへ出力します。入力内容はSDKログに記録されます。
+4. `DcGetDeviceList`：デバイス一覧を取得します。入力パラメータはなく、結果はJSONで返されます。
+5. `DcOpenDevice`：デバイスを開きます。次の値を入力します。
+
+<Frame>
+  ![ROS設定とメッセージの画面](/images/developers/camera-sdk-linux-examples-java-4.avif)
+</Frame>
+
+- `open_mode`：カメラを開くモードです。
+- `param`：カメラを開くためのパラメータです。
+
+6. `DcStartStream`：指定したカメラのストリーミングを開始します。入力パラメータは次のとおりです。
+
+<Frame>
+  ![ROS設定とメッセージの画面](/images/developers/camera-sdk-linux-examples-java-5.avif)
+</Frame>
+
+- `handle`：`DcOpenDevice` で返されるカメラハンドルです。
+
+7. `DcSetCmd`：カメラにコマンドを送信します。
+
+<Frame>
+  ![ROS設定とメッセージの画面](/images/developers/camera-sdk-linux-examples-java-6.avif)
+</Frame>
+
+- `handle`：設定対象のカメラハンドルです。
+- `cmd`：コマンド番号です。
+
+8. `DcGetPtrValue`：画像やパラメータなどのポインター型データを取得します。
+
+- `handle`：設定対象のカメラハンドルです。
+- `cmd`：コマンド番号です。
+
+9. `DcSetIntValue`：カメラの `int` 型パラメータを設定します。
+
+<Frame>
+  ![ROS設定とメッセージの画面](/images/developers/camera-sdk-linux-examples-java-7.avif)
+</Frame>
+
+- `handle`：設定対象のカメラハンドルです。
+- `cmd`：コマンド番号です。
+- `value`：設定する値です。
+
+10. `DcGetIntValue`：デバイスの `int` 型パラメータを取得します。
+
+- `handle`：設定対象のカメラハンドルです。
+- `cmd`：コマンド番号です。
+
+11. その他の説明は次の表を参照してください。
+
+| Send | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | Receive | `{"errCode" : 0 }` |
+| --- | --- | --- | --- |
+| Send | `{"open_mode" : 0, "param" : "0"<br />}` | Receive | `{"algor_ver" : "VER_1.0.2.230315", "dev_type" : "M4 camera", "errCode" : 0,<br />"firmware_ver" : "V1.0.0.3_230315",<br />"handle" : 174539057817095, "id" : "f13141144bb1",<br />"ip" : "192.168.100.16:3956",<br />"mac" : "9e:be:0a:8a:66:07",<br />"name" :"camera_M4_192.168.100.16_3956",<br />"sn" : "9a5ed62d22b34bb1"<br />}` |
+| Send | `{"handle" :174539057817<br />095,<br />"cmd" : 6001<br />}` | Receive | `{"errCode" : 0,<br />"value" :"\u0011\u0001\u0014\u0001..." }` |
+
+### 5.3 ROS1 & ROS2
+
+ROSではドライバーソースコードではなく、launchファイルの設定、設定の調整、メッセージの送受信を扱います。提供されるROSノードには主要機能が含まれるため、ソースコードを直接変更することは推奨しません。特別な要件がある場合は、先にC\+\+サンプルのコードフローを確認してください。
+
+**ROSドライバーを実行する前に、システム既定パス上のOpenCVおよびPCLのバージョンが一意であることを確認してください。複数バージョンがあるとROSライブラリのリンクでエラーが発生し、ビルド失敗や実行時クラッシュの原因になります。**
+
+#### 5.3.1 ROS1 launchファイルの説明
+
+##### 5.3.1.1 すべてのlaunchファイル
+
+1. `src/launch` フォルダーには次のファイルがあります。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-all-launch-file.avif)
+</Frame>
+
+- `localization.launch`：視覚位置決めノードの実行ファイルです。
+- `lx_camera_ros.launch`：通常ノードの実行ファイルです。
+- `mapping.launch`：視覚位置決めマッピングの実行ファイルです。
+- `obstacle.launch`：障害物回避アルゴリズムの実行ファイルです。
+- `obstacleV2.launch`：障害物回避アルゴリズムV2の実行ファイルです。
+- `pallet.launch`：パレットアルゴリズムの実行ファイルです。
+- `sensor_sim.launch`：位置決めデータをシミュレーションする実行ファイルです。
+
+2. launchファイルを切り替えることで、ノードの異なる機能を実行できます。\*\*localization、mapping、sensorを除き、すべてのノードでパラメータ項目は同じですが、設定値は異なります。\*\*詳細は後続の節で説明します。localization、mapping、sensorの3つのlaunchファイルのパラメータについては、ros-v1proノードの説明を参照してください。
+
+##### 5.3.1.2 カメラIP、ストリーム、動作モード、点群単位などの設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other.avif)
+</Frame>
+
+- `ip`：接続するカメラIPです。`0` の場合は最初に検出したカメラへ接続します。
+- `log_path`：SDKログの保存先です。絶対パスを指定します。
+- `is_xyz`：点群データを送信するか指定します。
+- `is_depth`：深度データを送信するか指定します。
+- `is_amp`：強度マップを送信するか指定します。
+- `is_rgb`：RGB画像を送信するか指定します。
+- `lx_work_mode`：動作モードです。
+- `lx_application`：アルゴリズムを有効にするか指定します。`0`：無効、`1`：障害物回避、`2`：パレット、`3`：位置決め、`4`：障害物回避V2。
+- `lx_tof_unit`：点群の単位です。`1` はメートル、`0` はミリメートルです。RVizで表示する場合は `1` に設定してください。
+
+##### 5.3.1.3 カメラ姿勢の設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-camera-pose-configuration.avif)
+</Frame>
+
+点群の回転角と並進ベクトルを設定できます。
+
+- `X`：点群中心に対するカメラのX方向並進量です。
+- `Y`：点群中心に対するカメラのY方向並進量です。
+- `Z`：点群中心に対するカメラのZ方向並進量です。
+- `Yaw`：点群のZ軸回りの回転角です。
+- `Roll`：点群のX軸回りの回転角です。
+- `Pitch`：点群のY軸回りの回転角です。
+
+##### 5.3.1.4 launch設定を使用するか
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration.avif)
+</Frame>
+
+launchファイル内のカメラパラメータ設定を使用するか選択できます。
+
+- `raw_param`：`0` はカメラ内の構成、`1` はlaunchファイル内の構成を使用します。
+
+このパラメータが `0` と `1` のどちらであっても、このパラメータより前のすべての項目は設定されます。`0` と `1` の違いは、このパラメータより後の項目にのみ適用されます。
+
+##### 5.3.1.5 2Dパラメータ設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration.avif)
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+- `lx_2d_undistort`：2D歪み補正です。`0`：無効、`1`：有効。
+- `lx_2d_undistort_scale`：2D歪み補正係数です。
+- `lx_2d_auto_exposure`：2D自動露出です。`0`：無効、`1`：有効。
+- `lx_2d_auto_exposure_value`：2D自動露出の目標強度です。
+- `lx_2d_exposure`：2D露出値です。
+- `lx_2d_gain`：2Dゲインです。
+
+##### 5.3.1.6 3Dパラメータ設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration.avif)
+</Frame>
+
+- `lx_rgb_to_tof`：RGBアライメントです。
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+- `lx_mulit_mode`：マルチマシンモードです。複数機器間の干渉を抑制します。`0`：無効、`1`：有効。
+- `lx_3d_undistort`：3D歪み補正です。`0`：無効、`1`：有効。
+- `lx_3d_undistort_scale`：3D歪み補正係数です。
+- `lx_hdr`：HDRです。`0`：無効、`1`：有効。
+- `lx_3d_auto_exposure`：3D自動露出です。`0`：無効、`1`：有効。
+- `lx_3d_auto_exposure_value`：3D自動露出の目標強度です。
+- `lx_3d_first_exposure`：3D高点露出です。
+- `lx_3d_second_exposure`：3D低点露出です。
+- `lx_3d_gain`：3Dゲインです。
+
+##### 5.3.1.7 深度の最小値と最大値
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth.avif)
+</Frame>
+
+- `lx_min_depth`：最小深度です。
+- `lx_max_depth`：最大深度です。
+
+#### 5.3.2 ROS2 launchファイルの説明
+
+##### 5.3.2.1 すべてのlaunchファイル
+
+`src/launch` フォルダーには次のファイルがあります。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-all-launch-file-02.avif)
+</Frame>
+
+- `localization.launch.py`：視覚位置決めノードの実行ファイルです。
+- `lx_camera_ros.launch.py`：通常ノードの実行ファイルです。
+- `mapping.launch.py`：視覚位置決めマッピングの実行ファイルです。
+- `obstacle.launch.py`：障害物回避アルゴリズムの実行ファイルです。
+- `obstacleV2.launch.py`：障害物回避アルゴリズムV2の実行ファイルです。
+- `pallet.launch.py`：パレットアルゴリズムの実行ファイルです。
+- `sensor_sim.launch.py`：位置決めデータをシミュレーションする実行ファイルです。
+
+launchファイルを切り替えることで、ノードの異なる機能を実行できます。\*\*localization、mapping、sensorを除き、すべてのノードでパラメータ項目は同じですが、設定値は異なります。\*\*詳細は後続の節で説明します。localization、mapping、sensorの3つのlaunchファイルのパラメータについては、ros-v1proノードの説明を参照してください。
+
+##### 5.3.2.2 カメラIP、ストリーム、動作モード、点群単位などの設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other-02.avif)
+</Frame>
+
+- `ip`：接続するカメラIPです。`0` の場合は最初に検出したカメラへ接続します。
+- `log_path`：SDKログの保存先です。絶対パスを指定します。
+- `is_xyz`：点群データを送信するか指定します。
+- `is_depth`：深度データを送信するか指定します。
+- `is_amp`：強度マップを送信するか指定します。
+- `is_rgb`：RGB画像を送信するか指定します。
+- `lx_work_mode`：動作モードです。
+- `lx_application`：アルゴリズムを有効にするか指定します。`0`：無効、`1`：障害物回避、`2`：パレット、`3`：位置決め、`4`：障害物回避V2。
+- `lx_tof_unit`：点群の単位です。`1` はメートル、`0` はミリメートルです。RVizで表示する場合は `1` に設定してください。
+
+##### 5.3.2.3 カメラ姿勢の設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-camera-pose-configuration-02.avif)
+</Frame>
+
+点群の回転角と並進ベクトルを設定できます。
+
+- `X`：点群中心に対するカメラのX方向並進量です。
+- `Y`：点群中心に対するカメラのY方向並進量です。
+- `Z`：点群中心に対するカメラのZ方向並進量です。
+- `Yaw`：点群のZ軸回りの回転角です。
+- `Roll`：点群のX軸回りの回転角です。
+- `Pitch`：点群のY軸回りの回転角です。
+
+##### 5.3.2.4 launch設定を使用するか
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration-02.avif)
+</Frame>
+
+launchファイル内のカメラパラメータ設定を使用するか選択できます。
+
+- `raw_param`：`0` はカメラ内の構成、`1` はlaunchファイル内の構成を使用します。
+
+このパラメータが `0` と `1` のどちらであっても、このパラメータより前のすべての項目は設定されます。`0` と `1` の違いは、このパラメータより後の項目にのみ適用されます。
+
+##### 5.3.2.5 2Dパラメータ設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration-02.avif)
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+- `lx_2d_undistort`：2D歪み補正です。`0`：無効、`1`：有効。
+- `lx_2d_undistort_scale`：2D歪み補正係数です。
+- `lx_2d_auto_exposure`：2D自動露出です。`0`：無効、`1`：有効。
+- `lx_2d_auto_exposure_value`：2D自動露出の目標強度です。
+- `lx_2d_exposure`：2D露出値です。
+- `lx_2d_gain`：2Dゲインです。
+
+##### 5.3.2.6 3Dパラメータ設定
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration-02.avif)
+</Frame>
+
+- `lx_rgb_to_tof`：RGBアライメントです。
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+- `lx_mulit_mode`：マルチマシンモードです。複数機器間の干渉を抑制します。`0`：無効、`1`：有効。
+- `lx_3d_undistort`：3D歪み補正です。`0`：無効、`1`：有効。
+- `lx_3d_undistort_scale`：3D歪み補正係数です。
+- `lx_hdr`：HDRです。`0`：無効、`1`：有効。
+- `lx_3d_auto_exposure`：3D自動露出です。`0`：無効、`1`：有効。
+- `lx_3d_auto_exposure_value`：3D自動露出の目標強度です。
+- `lx_3d_first_exposure`：3D高点露出です。
+- `lx_3d_second_exposure`：3D低点露出です。
+- `lx_3d_gain`：3Dゲインです。
+
+##### 5.3.2.7 深度の最小値と最大値
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth-02.avif)
+</Frame>
+
+- `lx_min_depth`：最小深度です。
+- `lx_max_depth`：最大深度です。
+
+#### 5.3.3 独自トピックの説明
+
+ROS1とROS2の独自トピック型は同じため、ここではROS1を例にします。`src/msg` フォルダーには次のファイルがあります。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-unique-theme-descriptions.avif)
+</Frame>
+
+##### 5.3.3.1 FrameRate.msg
+
+このノードはフレームレート情報を出力します。メッセージ形式は次のとおりです。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-framerate-msg.avif)
+</Frame>
+
+- `header`：現在のデータのフレーム情報とタイムスタンプです。
+- `depth`：深度マップ有効時の深度マップフレームレートです。
+- `amp`：強度マップ有効時の強度マップフレームレートです。
+- `rgb`：RGB有効時のRGBフレームレートです。
+- `temperature`：カメラ温度です。
+
+ノードを起動後（視覚位置決め関連ノードを除く）、`LxCamera_FrameRate` ノードを購読して関連情報を取得できます。出力は次のとおりです。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-framerate-msg-2.avif)
+</Frame>
+
+##### 5.3.3.2 Obstacle.msg
+
+`obstacle` は障害物回避アルゴリズムの結果を出力します。メッセージ形式は次のとおりです。
+
+<Frame>
+  ![ROS launch設定の画面](/images/developers/camera-sdk-linux-examples-obstacle-msg.avif)
+</Frame>
+
+- `header`：現在のデータのフレーム情報とタイムスタンプです。
+- `status`：障害物回避から返される状態情報です。
+
+0：正常な障害物回避です。
+
+-1：地面が設定されていません。
+
+-2：入力が設定されていません。
+
+-3：範囲内に点群がありません。
+
+-4：地面フィルタリング後に点群が空です。
+
+-5：半径フィルタリング後に点群が空です。
+
+-6：セグメンテーション結果を取得できませんでした。
+
+-99：未定義のエラーです。
+
+- `io_output`：IOインターフェースから出力される障害物回避情報です。
+
+0：正常
+
+1：警告
+
+2：停止
+
+- `box_number`：障害物の数です。
+- `box`：障害物情報です。可変長配列で、長さは `box_number` で決まります。
+
+ノードを起動後（障害物回避アルゴリズムを有効にする必要があります）、`LxCamera_Obstacel` ノードを購読して関連情報を取得できます。出力は次のとおりです（図のデータはシミュレーションデータです）。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-obstacle-msg-2.avif)
+</Frame>
+
+##### 5.3.3.3 Obstacle\_box.msg
+
+`obstacle_box` は障害物関連情報を出力します。メッセージ形式は次のとおりです。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-obstacle-box-msg.avif)
+</Frame>
+
+- `center`：点群内の障害物の重心です。
+- `rotation`：障害物点群の回転行列です。
+- `translation`：障害物点群の並進ベクトルです。
+- `width`：障害物ボックスの幅です。
+- `height`：障害物ボックスの高さです。
+- `depth`：障害物ボックスの奥行きです。
+
+ノードを起動後（障害物回避アルゴリズムを有効にする必要があります）、`LxCamera_Obstacel` ノードを購読して関連情報を取得できます。出力は次のとおりです。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-obstacle-box-msg-2.avif)
+</Frame>
+
+##### 5.3.3.4 Result.msg
+
+ノード内のサービスへコマンドメッセージを送信したときの戻り値は `Result` に格納されます。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-result-msg.avif)
+</Frame>
+
+- `ret`：SDK実行時の戻り値です。
+- `msg`：SDK実行時の戻り値の説明です。
+
+##### 5.3.3.5 Pallet.msg
+
+パレットノードはパレットアルゴリズムの結果を出力します。メッセージ形式は次のとおりです。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-pallet-msg.avif)
+</Frame>
+
+- `header`：現在のデータのフレーム情報とタイムスタンプです。
+- `status`：パレット認識から返される状態情報です。
+
+0：検出に成功しました。
+
+-1：地面を検出できません。
+
+-2：パレット脚を検出できません。
+
+-3：パレット間の距離が大きすぎます。
+
+-4：不明なエラーです。
+
+- `x`：パレットとカメラ光学中心のX方向距離です。
+- `y`：パレットとカメラ光学中心のY方向距離です。
+- `yaw`：パレット中心とカメラ光学中心の角度です。
+
+ノードを起動後（パレットアルゴリズムを有効にする必要があります）、`LxCamera_Pallet` ノードを購読して関連情報を取得できます。出力は次のとおりです。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-pallet-msg-2.avif)
+</Frame>
+
+#### 5.3.4 独自サービスの説明
+
+ROS1とROS2の独自サービス型は同じため、ここではROS1を例にします。`src/srv` フォルダーには次のファイルがあります。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-unique-service-descriptions.avif)
+</Frame>
+
+これらのメッセージは、カメラのパラメータ値を設定または取得するために使用します。
+
+`---` より上が送信データ、下が返却データです。
+
+##### 5.3.4.1 LxBool.srv
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-lxbool-srv.avif)
+</Frame>
+
+- `cmd`：取得または設定するパラメータ番号です。
+- `val`：設定時に指定する値です。
+- `is_set`：パラメータを設定するかを指定します。`true` の場合は `val` をカメラに設定し、`false` の場合はパラメータ値をカメラから読み出して表示します。
+- `val`：取得または設定後に返されるカメラの現在のパラメータ値です。
+- `result`：SDKインターフェース呼び出しで返る値と情報です。
+
+##### 5.3.4.2 LxCmd.srv
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-lxcmd-srv.avif)
+</Frame>
+
+- `cmd`：取得または設定するパラメータ番号です。`0` の場合はすべてのパラメータ番号を返します。
+- `result`：SDKインターフェース呼び出しで返る値と情報です。`cmd` により複数の値が返る場合があります。
+
+##### 5.3.4.3 LxFloat.srv
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-lxfloat-srv.avif)
+</Frame>
+
+- `cmd`：取得または設定するパラメータ番号です。
+- `val`：設定時に指定する値です。
+- `is_set`：パラメータを設定するかを指定します。`true` の場合は `val` をカメラに設定し、`false` の場合はパラメータ値をカメラから読み出して表示します。
+- `max_value`：このパラメータに設定可能な最大値です。
+- `min_value`：このパラメータに設定可能な最小値です。
+- `cur_value`：カメラ内の現在のパラメータ値です。
+- `available`：このパラメータが設定に対応するかを示します。
+- `result`：SDKインターフェース呼び出しで返る値と情報です。
+
+##### 5.3.4.4 LxInt.srv
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-lxint-srv.avif)
+</Frame>
+
+- `cmd`：取得または設定するパラメータ番号です。
+- `val`：設定時に指定する値です。
+- `is_set`：パラメータを設定するかを指定します。`true` の場合は `val` をカメラに設定し、`false` の場合はパラメータ値をカメラから読み出して表示します。
+- `max_value`：このパラメータに設定可能な最大値です。
+- `min_value`：このパラメータに設定可能な最小値です。
+- `cur_value`：カメラ内の現在のパラメータ値です。
+- `available`：このパラメータが設定に対応するかを示します。
+- `result`：SDKインターフェース呼び出しで返る値と情報です。
+
+##### 5.3.4.5 LxString.srv
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-lxstring-srv.avif)
+</Frame>
+
+- `cmd`：取得または設定するパラメータ番号です。
+- `val`：設定時に指定する値です。
+- `is_set`：パラメータを設定するかを指定します。`true` の場合は `val` をカメラに設定し、`false` の場合はパラメータ値をカメラから読み出して表示します。
+- `val`：取得または設定後に返されるカメラの現在のパラメータ値です。
+- `result`：SDKインターフェース呼び出しで返る値と情報です。
+
+#### 5.3.5 トピック購読方式の説明
+
+##### 5.3.5.1 フレームレート、パレット、障害物回避アルゴリズム出力を購読する
+
+**フレームレートを購読する**
+
+`lx_camera_node_ws` ディレクトリで `bash rate.sh` を実行します。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data.avif)
+</Frame>
+
+`lx_camera_node` の画像が正常に動作して更新されると、次の情報を確認できます。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-2.avif)
+</Frame>
+
+**パレットアルゴリズム出力を購読する**
+
+`lx_camera_node_ws` ディレクトリで `bash pallet.sh` を実行します。
+
+<Frame>
+  ![ROSメッセージとサービスの画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-3.avif)
+</Frame>
+
+`lx_camera_node` の画像が正常に動作して更新されると、次の情報を確認できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-4.avif)
+</Frame>
+
+**障害物回避アルゴリズム出力を購読する**
+
+`lx_camera_node_ws` ディレクトリで `bash obstacle.sh` を実行します。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-5.avif)
+</Frame>
+
+`lx_camera_node` の画像が正常に動作して更新されると、次の情報を確認できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data-6.avif)
+</Frame>
+
+##### 5.3.5.2 画像データを購読する（ROS1）
+
+ノードが出力する画像情報は、ROS付属の画像ツールで確認できます。
+
+コンソールで `rqt_image_view` を実行します。
+
+コマンドを実行すると、次のウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros1.avif)
+</Frame>
+
+赤枠で各ノードの画像を選択できます。図ではMRDVSカメラのRGB画像を選択しています。ストリームが有効なら、深度マップまたは強度マップも選択できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-2.avif)
+</Frame>
+
+最初の赤枠は位置決めアルゴリズムノードが出力するRGB情報です。残りは通常ノードの画像情報です。`amp` は強度マップ、`depth` は深度マップ、`rgb` はRGB画像を表します。
+
+項目を切り替えて画像を確認するか、`rviz` で画像データを確認できます。コンソールで `rviz` を実行すると、次のウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-3.avif)
+</Frame>
+
+左下の **Add** をクリックすると、ウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-4.avif)
+</Frame>
+
+目的の画像トピックを選択し、**Image** を選んで右下の **OK** をクリックします。メイン画面左側で画像データを確認できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-5.avif)
+</Frame>
+
+##### 5.3.5.3 画像データを購読する（ROS2）
+
+ノードが出力する画像情報は、ROS2付属の画像ツールで確認できます。コンソールで `rqt` を実行します。
+
+コマンドを実行すると、次のウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros2.avif)
+</Frame>
+
+メニューバー下部の2番目の項目で、最初の **Image View** を選択します。次の画面が表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-2.avif)
+</Frame>
+
+赤枠で各ノードの画像を選択できます。図ではMRDVSカメラのRGB画像を選択しています。ストリームが有効なら、深度マップや強度マップも選択できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-3.avif)
+</Frame>
+
+図の最初の赤枠は位置決めアルゴリズムノードが出力するRGB情報です。残りの3つは通常ノードの画像情報です。`amp` は強度マップ、`depth` は深度マップ、`rgb` はRGB画像を表します。
+
+項目を選択して画像を切り替えるか、`rviz2` で画像データを確認できます。コンソールで `rviz2` を実行すると、次のウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-4.avif)
+</Frame>
+
+左下の **Add** をクリックすると、ウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-5.avif)
+</Frame>
+
+目的の画像トピックを選択し、**Image** を選んで右下の **OK** をクリックします。次のようにメイン画面左側で画像データを確認できます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-6.avif)
+</Frame>
+
+**一部のシステムでは、画像を表示するために上図の `map` に `mrdvs` を入力する必要があります。**
+
+##### 5.3.5.4 点群データを購読する
+
+ノードが出力する点群情報は、ROSまたはROS2付属の点群ツールで確認できます。
+
+コマンド：ROS1では `rviz`、ROS2では `rviz2`
+
+コマンドを実行すると、次のウィンドウが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data.avif)
+</Frame>
+
+赤枠のボタンをクリックすると、次のダイアログが表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-2.avif)
+</Frame>
+
+2番目のタブを選択します。`lx_camera_node` ノード内の `LxCamera_Cloud` トピックを開き、`PointCloud2` メッセージを選択して **OK** をクリックします。完了後の画面は次のとおりです。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-3.avif)
+</Frame>
+
+（ROS1画面）
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-4.avif)
+</Frame>
+
+（ROS2画面）
+
+この時点で点群が正しく表示されない場合は、上図の赤枠・緑枠の `map` に `mrdvs` を入力します。点群は次のように表示されます。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-5.avif)
+</Frame>
+
+ROSの既定の点群単位はメートルです。`rviz` で確認する場合は、launchファイルの `lx_tof_unit` を `1` に設定します（既定値も `1`）。
+
+#### 5.3.6 サービス通信方式
+
+ROS1ではTabキーでコマンド全体を補完できます。ROS2ではトピックのみ補完され、メッセージ部分は手入力します。
+
+**ROS1では補完形式で入力できます。ROS2ではYAML形式で入力してください。**
+
+ノード起動後、`lx_camera_node_ws` フォルダーでターミナルを開き、環境を設定して `source devel/setup.bash` を実行します。
+
+##### 5.3.6.1 すべてのパラメータ番号を取得する（Lx\_Cmd）
+
+**ros1**
+
+ターミナルで次のコマンドを実行します：`rosservice call /lx_camera_node/LxCamera_LxCmd "cmd: 0"`
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-2.avif)
+</Frame>
+
+`ret` はパラメータ番号です。`msg` にはパラメータの型と説明が含まれます。たとえば `1001` は `int` 型で、1つ目の露出値の取得と変更に使用します。
+
+**ros2**
+
+ターミナルで次のコマンドを実行します：`ros2 service call /LxCamera_LxCmd lx_camera_ros/srv/LxCmd 'cmd: 0'`
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-3.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![ROSサービスと購読の画面](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-4.avif)
+</Frame>
+
+ROS2ではパラメータ詳細を確認しにくいため、すべてのパラメータの番号、型、説明を次の表に示します。
+
+| 番号 | 型 | ROSでの説明 | 詳細 |
+| --- | --- | --- | --- |
+| 1001 | INT | FIRST\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1002 | INT | SECOND\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1003 | INT | THIRD\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1004 | INT | FOURTH\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1005 | INT | GAIN | パラメータの設定または状態を示します。 |
+| 1011 | INT | MIN\_DEPTH | パラメータの設定または状態を示します。 |
+| 1012 | INT | MAX\_DEPTH | パラメータの設定または状態を示します。 |
+| 1013 | INT | MIN\_AMPLITUDE | パラメータの設定または状態を示します。 |
+| 1014 | INT | MAX\_AMPLITUDE | パラメータの設定または状態を示します。 |
+| 1016 | INT | CODE\_MODE | パラメータの設定または状態を示します。 |
+| 1018 | INT | WORK\_MODE | パラメータの設定または状態を示します。 |
+| 1019 | INT | LINK\_SPEED | パラメータの設定または状態を示します。 |
+| 1021 | INT | 3D\_IMAGE\_WIDTH | パラメータの設定または状態を示します。 |
+| 1022 | INT | 3D\_IMAGE\_HEIGHT | パラメータの設定または状態を示します。 |
+| 1023 | INT | 3D\_IMAGE\_OFFSET\_X | パラメータの設定または状態を示します。 |
+| 1024 | INT | 3D\_IMAGE\_OFFSET\_Y | パラメータの設定または状態を示します。 |
+| 1025 | INT | 3D\_BINNING\_MODE | パラメータの設定または状態を示します。 |
+| 1026 | INT | 3D\_DEPTH\_DATA\_TYPE | パラメータの設定または状態を示します。 |
+| 1031 | INT | 3D\_AMPLITUDE\_CHANNEL | パラメータの設定または状態を示します。 |
+| 1032 | INT | 3D\_AMPLITUDE\_GET\_TYPE | パラメータの設定または状態を示します。 |
+| 1033 | INT | 3D\_AMPLITUDE\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1034 | INT | 3D\_AMPLITUDE\_INTENSITY | パラメータの設定または状態を示します。 |
+| 1035 | INT | 3D\_AMPLITUDE\_DATA\_TYPE | パラメータの設定または状態を示します。 |
+| 1036 | INT | 3D\_AUTO\_EXPOSURE\_LEVEL | パラメータの設定または状態を示します。 |
+| 1041 | INT | 2D\_IMAGE\_WIDTH | パラメータの設定または状態を示します。 |
+| 1042 | INT | 2D\_IMAGE\_HEIGHT | パラメータの設定または状態を示します。 |
+| 1043 | INT | 2D\_IMAGE\_OFFSET\_X | パラメータの設定または状態を示します。 |
+| 1044 | INT | 2D\_IMAGE\_OFFSET\_Y | パラメータの設定または状態を示します。 |
+| 1045 | INT | 2D\_BINNING\_MODE | パラメータの設定または状態を示します。 |
+| 1046 | INT | 2D\_IMAGE\_CHANNEL | パラメータの設定または状態を示します。 |
+| 1047 | INT | 2D\_IMAGE\_DATA\_TYPE | パラメータの設定または状態を示します。 |
+| 1051 | INT | 2D\_MANUAL\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1052 | INT | 2D\_MANUAL\_GAIN | パラメータの設定または状態を示します。 |
+| 1053 | INT | 2D\_ENCODE\_TYPE | パラメータの設定または状態を示します。 |
+| 1054 | INT | 2D\_AUTO\_EXPOSURE\_LEVEL | パラメータの設定または状態を示します。 |
+| 1061 | INT | TOF\_GLOBAL\_OFFSET | パラメータの設定または状態を示します。 |
+| 1062 | INT | 3D\_UNDISTORT\_SCALE | パラメータの設定または状態を示します。 |
+| 1065 | INT | ALGORITHM\_MODE | パラメータの設定または状態を示します。 |
+| 1066 | INT | MODBUS\_ADDR | パラメータの設定または状態を示します。 |
+| 1067 | INT | HEART\_TIME | パラメータの設定または状態を示します。 |
+| 1068 | INT | GVSP\_PACKET\_SIZE | パラメータの設定または状態を示します。 |
+| 1069 | INT | TRIGGER\_MODE | パラメータの設定または状態を示します。 |
+| 1070 | INT | CALCULATE\_UP | パラメータの設定または状態を示します。 |
+| 1072 | INT | CAN\_BAUD\_RATE | パラメータの設定または状態を示します。 |
+| 1073 | INT | MAX\_3D\_AUTO\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 1074 | INT | CUSTOM\_PARAM\_GROUP | パラメータの設定または状態を示します。 |
+| 2001 | FLOAT | FILTER\_LEVEL | パラメータの設定または状態を示します。 |
+| 2002 | FLOAT | EST\_OUT\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 2003 | FLOAT | LIGHT\_INTENSITY | パラメータの設定または状態を示します。 |
+| 2004 | FLOAT | 3D\_DEPTH\_FPS | パラメータの設定または状態を示します。 |
+| 2005 | FLOAT | 3D\_AMPLITUDE\_FPS | パラメータの設定または状態を示します。 |
+| 2006 | FLOAT | 2D\_IMAGE\_FPS | パラメータの設定または状態を示します。 |
+| 2007 | FLOAT | DEVICE\_TEMPERATURE | パラメータの設定または状態を示します。 |
+| 3001 | BOOL | CONNECT\_STATE | パラメータの設定または状態を示します。 |
+| 3002 | BOOL | ENABLE\_3D\_DEPTH\_STREAM | パラメータの設定または状態を示します。 |
+| 3003 | BOOL | ENABLE\_3D\_AMP\_STREAM | パラメータの設定または状態を示します。 |
+| 3006 | BOOL | ENABLE\_3D\_AUTO\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 3007 | BOOL | ENABLE\_3D\_UNDISTORT | パラメータの設定または状態を示します。 |
+| 3008 | BOOL | ENABLE\_ANTI\_FLICKER | パラメータの設定または状態を示します。 |
+| 3011 | BOOL | ENABLE\_2D\_STREAM | パラメータの設定または状態を示します。 |
+| 3012 | BOOL | ENABLE\_2D\_AUTO\_EXPOSURE | パラメータの設定または状態を示します。 |
+| 3015 | BOOL | ENABLE\_2D\_UNDISTORT | パラメータの設定または状態を示します。 |
+| 3016 | BOOL | ENABLE\_2D\_TO\_DEPTH | パラメータの設定または状態を示します。 |
+| 3017 | BOOL | ENABLE\_BACKGROUND\_AMP | パラメータの設定または状態を示します。 |
+| 3018 | BOOL | ENABLE\_MULTI\_MACHINE | パラメータの設定または状態を示します。 |
+| 3019 | BOOL | ENABLE\_MULTI\_EXPOSURE\_HDR | パラメータの設定または状態を示します。 |
+| 3020 | BOOL | ENABLE\_SYNC\_FRAME | パラメータの設定または状態を示します。 |
+| 4001 | STRING | DEVICE\_VERSION | パラメータの設定または状態を示します。 |
+| 4002 | STRING | DEVICE\_LOG\_NAME | パラメータの設定または状態を示します。 |
+| 4003 | STRING | FIRMWARE\_NAME | パラメータの設定または状態を示します。 |
+| 4004 | STRING | FILTER\_PARAMS | パラメータの設定または状態を示します。 |
+| 4005 | STRING | ALGORITHM\_PARAMS | パラメータの設定または状態を示します。 |
+| 4006 | STRING | ALGORITHM\_VERSION | パラメータの設定または状態を示します。 |
+| 4007 | STRING | DEVICE\_OS\_VERSION | パラメータの設定または状態を示します。 |
+| 0 | CMD | GET\_PARAM\_LIST | パラメータの設定または状態を示します。 |
+| 1 | CMD | START\_STREAM | パラメータの設定または状態を示します。 |
+| 2 | CMD | STOP\_STREAM | パラメータの設定または状態を示します。 |
+| 5001 | CMD | GET\_NEW\_FRAME | パラメータの設定または状態を示します。 |
+| 5002 | CMD | RETURN\_VERSION | パラメータの設定または状態を示します。 |
+| 5003 | CMD | RESTART\_DEVICE | パラメータの設定または状態を示します。 |
+| 5004 | CMD | WHITE\_BALANCE | パラメータの設定または状態を示します。 |
+| 5007 | CMD | RESET\_PARAM | パラメータの設定または状態を示します。 |
+
+**一部のパラメータはストリーミング停止後に設定する必要があるか、設定順序があります。詳細は技術サポートへお問い合わせください。**
+
+##### 5.3.6.2 Intパラメータを取得する (Lx\_Int)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+val: 0
+
+is\_set: false"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-of-int-parameters-lx-int.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-2.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+<br />
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-3.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.3 Intパラメータを設定する (Lx\_Int)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+val: 2000
+
+is\_set: true"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-int-parameters-lx-int.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+<br />
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-4-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.4 Floatパラメータを取得する (Lx\_Float)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+val: 0.0
+
+is\_set: false"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-of-float-parameters-lx-float.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-2.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-obtain-of-float-parameters-lx-float-3.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.5 Floatパラメータを設定する (Lx\_Float)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+val: 5.0
+
+is\_set: true"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-float-parameters-lx-float.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-float-parameters-lx-float.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.6 Boolパラメータを取得する (Lx\_Bool)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: false
+
+is\_set: false"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-of-bool-parameters-lx-bool.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-2.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+<br />
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-3.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.7 Boolパラメータを設定する (Lx\_Bool)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: true
+
+is\_set: true"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+<br />
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.8 Stringパラメータを取得する (Lx\_String)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: ''
+
+is\_set: false"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-of-string-parameters-lx-string.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-2.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+<br />
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-3.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-get-the-of-string-parameter-lx-string-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+##### 5.3.6.9 Stringパラメータを設定する (Lx\_String)
+
+**ROS1**
+
+ターミナルで次のコマンドを実行します： rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: 'put:\\"123\\"'
+
+is\_set: true"
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-string-parameters-lx-string.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+**ROS2**
+
+ターミナルで次のコマンドを実行します： `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-string-parameters-lx-string.avif)
+</Frame>
+
+出力は次のとおりです。
+
+<Frame>
+  ![サービス通信の実行結果](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string-4.avif)
+</Frame>
+
+返り値は赤枠に表示されます。最大値、最小値、現在値、設定可否、APIの戻り値、およびメッセージを確認してください。
+
+**String型の値を設定する場合、ROS2の先頭の二重引用符およびROS1の先頭の単一引用符を除き、単一・二重引用符をエスケープしてください。たとえば `PUT”123”` は `PUT\”123\”` と入力します。**
+
+---
+
+## ROSの推奨ハードウェアとリソース使用量
+
+### 6.1 推奨ハードウェア構成
+
+推奨構成はCPUコア数、CPU使用率、メモリ容量に基づきます。\*\*これは最小要件ではなく推奨構成です。\*\*性能が不足する場合でも、ストリーム出力の削減、点群計算の無効化、アルゴリズム負荷の低減により安定動作することがあります。\*\*利用可能なリソースを超える負荷では、ROSコアまたはUbuntuがクラッシュするおそれがあります。\*\*以下の使用量データを参照し、環境に適した構成を選択してください。**本データはM4 Proを使用したVM環境で収集しました。**
+
+**Ubuntu16.04**
+
+| ROSバージョン | CPU | メモリ | 帯域幅 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[Quad-core\] | 4G | 1000M |
+
+**Ubuntu18.04**
+
+| ROSバージョン | CPU | メモリ | 帯域幅 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[Quad-core\] | 4G | 1000M |
+| ros2 | AMD64 \[Quad-core\] | 4G | 1000M |
+
+**Ubuntu20.04**
+
+| ROSバージョン | CPU | メモリ | 帯域幅 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[Quad-core\] | 4G | 1000M |
+| ros2 | AMD64 \[Quad-core\] | 4G | 1000M |
+
+**Ubuntu22.04**
+
+| ROSバージョン | CPU | メモリ | 帯域幅 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[Quad-core\] | 4G | 1000M |
+
+### 6.2 CPUの詳細
+
+この節では、各動作条件におけるノードのCPU使用量を示します。テスト環境は **AMD64（8コア）、メモリ8 GB**、カメラは **M4 Pro**、アルゴリズムは **パレットアルゴリズム**です。2D解像度は `1280×960`、3D解像度は `640×480` です。測定はVM環境で実施しているため、実機では値が変動する場合があります。S2など、上位機で一部のアルゴリズムを計算するカメラでは、リソース使用量が大きくなることがあります。<br />
+
+**1. 用語**
+
+- 単一ストリーム：RGB、深度、強度のいずれか1つを有効にした状態です。
+- デュアルストリーム：RGB、深度、強度のいずれか2つを有効にした状態です。
+- 3ストリーム：RGB、深度、強度の3つをすべて有効にした状態です。
+- 4ストリーム：RGB、深度、強度、点群をすべて有効にした状態です。
+
+**2. アルゴリズムとストリームの依存関係**
+
+- パレットアルゴリズムには深度ストリームが必要です。
+- 障害物回避アルゴリズムには深度ストリームが必要です。
+- 位置決めアルゴリズムにはRGBストリームが必要です。
+
+<br />
+
+表の水色の行は点群を有効にした構成、無色の行は点群を無効にした構成です。**以下の測定では既定でアルゴリズムを下位機へ移行しています。S2シリーズでは一部のアルゴリズムが上位機で実行されるため、測定値が小さくなる場合があります。**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 10.59 | 0.0~26.7 |
+| デュアルストリーム | 14.13 | 0.0~60.0 |
+| 3ストリーム | 16.56 | 0.0~37.5 |
+| 4ストリーム | 108.25 | 93.8~162.5 |
+| 点群 \+ depth | 105.13 | 93.8~153.3 |
+| アルゴリズム \+ 深度 | 5.44 | 0.0~43.0 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 104.39 | 93.8~120.0 |
+| アルゴリズム \+ 深度 \+ RGB | 13.15 | 6.2~40.0 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 105.96 | 93.8~146.7 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 109.29 | 93.8~162.5 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 10.31 | 0.0~27.5 |
+| デュアルストリーム | 12.81 | 5.9~27.8 |
+| 3ストリーム | 16.23 | 5.9~37.5 |
+| 4ストリーム | 105.95 | 88.2~131.2 |
+| 点群 \+ depth | 103.55 | 88.2~156.2 |
+| アルゴリズム \+ 深度 | 56.32 | 0.0~43.8 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 104.07 | 78.3~43.8 |
+| アルゴリズム \+ 深度 \+ RGB | 15.22 | 5.9~70.6 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 104.56 | 93.8~125.0 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 105.52 | 61.5~204.8 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 19.19 | 5.9~88.2 |
+| デュアルストリーム | 23.17 | 6.2~109.1 |
+| 3ストリーム | 30.59 | 9.1~125.0 |
+| 4ストリーム | 108.44 | 44.4~158.6 |
+| 点群 \+ depth | 102.19 | 37.5~143.9 |
+| アルゴリズム \+ 深度 | 6.44 | 0.0~26.7 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 104.45 | 79.2~176.5 |
+| アルゴリズム \+ 深度 \+ RGB | 14.82 | 5.9~50.0 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 106.89 | 94.1~137.5 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 108.41 | 94.1~162.5 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 11.46 | 0.0~50.0 |
+| デュアルストリーム | 14.62 | 6.2~66.7 |
+| 3ストリーム | 18.46 | 6.2~50.0 |
+| 4ストリーム | 43.64 | 25.0~143.8 |
+| 点群 \+ depth | 28.37 | 12.5~75.0 |
+| アルゴリズム \+ 深度 | 6.53 | 0.0~43.8 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 29.28 | 13.3~100 |
+| アルゴリズム\+深度\+RGB | 13.79 | 0.0~50.0 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 40.64 | 25.0~81.2 |
+| アルゴリズム\+深度\+強度\+RGB\+Point Cloud | 44.44 | 25.0~75.0 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 8.07 | 0.0~20.0 |
+| デュアルストリーム | 11.25 | 0.0~33.3 |
+| 3ストリーム | 16.18 | 6.2~62.5 |
+| 4ストリーム | 33.77 | 0.0~86.7 |
+| 点群 \+ depth | 27.45 | 12.5~81.2 |
+| アルゴリズム \+ 深度 | 6.13 | 0.0~68.8 |
+| アルゴリズム \+ depth \+ point cloud | 31.11 | 12.5~56.2 |
+| アルゴリズム\+深度\+RGB | 11.75 | 0.0~68.8 |
+| アルゴリズム \+ 深度 \+ RGB \+ Point Cloud | 38.04 | 6.2~75.0 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 40.85 | 18.8~106.2 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 8.05 | 0.0~23.5 |
+| デュアルストリーム | 11.99 | 0.0~75.0 |
+| 3ストリーム | 18.08 | 0.0~100 |
+| 4ストリーム | 50.06 | 6.2~200 |
+| 点群 \+ depth | 33.92 | 0.0~106.2 |
+| アルゴリズム \+ 深度 | 7.70 | 0.0~43.8 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 36.20 | 6.2~131.2 |
+| アルゴリズム \+ 深度 \+ RGB | 14.46 | 6.2~37.5 |
+| アルゴリズム \+ 深度 \+ RGB \+ Point Cloud | 39.07 | 18.8~94.1 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 45.61 | 12.5~93.8 |
+
+### 6.3 メモリの詳細
+
+この節では、各動作条件におけるノードのメモリ使用量を示します。テスト環境は **AMD64（8コア）、メモリ8 GB**、カメラは **M4 Pro**、アルゴリズムは **パレットアルゴリズム**です。2D解像度は `1280×960`、3D解像度は `640×480` です。測定はVM環境で実施しているため、実機では値が変動する場合があります。S2など、上位機で一部のアルゴリズムを計算するカメラでは、リソース使用量が大きくなることがあります。<br />
+
+**1. 用語**
+
+- 単一ストリーム：RGB、深度、強度のいずれか1つを有効にした状態です。
+- デュアルストリーム：RGB、深度、強度のいずれか2つを有効にした状態です。
+- 3ストリーム：RGB、深度、強度の3つをすべて有効にした状態です。
+- 4ストリーム：RGB、深度、強度、点群をすべて有効にした状態です。
+
+**2. アルゴリズムとストリームの依存関係**
+
+- パレットアルゴリズムには深度ストリームが必要です。
+- 障害物回避アルゴリズムには深度ストリームが必要です。
+- 位置決めアルゴリズムにはRGBストリームが必要です。
+
+3. 表の水色の行は点群を有効にした構成、無色の行は点群を無効にした構成です。**以下の測定では既定でアルゴリズムを下位機へ移行しています。S2シリーズでは一部のアルゴリズムが上位機で実行されるため、測定値が小さくなる場合があります。**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 0.60 | 0.6~0.7 |
+| デュアルストリーム | 0.61 | 0.6~0.8 |
+| 3ストリーム | 0.66 | 0.6~0.8 |
+| 4ストリーム | 0.79 | 0.7~0.9 |
+| 点群 \+ depth | 0.60 | 0.5~0.7 |
+| アルゴリズム \+ 深度 | 0.50 | 0.5~0.5 |
+| アルゴリズム \+ depth \+ point cloud | 0.60 | 0.5~0.7 |
+| アルゴリズム \+ 深度 \+ RGB | 0.62 | 0.6~0.8 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 0.71 | 0.6~0.9 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 0.79 | 0.7~0.9 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 1.01 | 1.1~1.2 |
+| デュアルストリーム | 1.10 | 1.1~1.2 |
+| 3ストリーム | 1.10 | 1.1~1.2 |
+| 4ストリーム | 1.19 | 1.1~1.3 |
+| 点群 \+ depth | 1.09 | 0.9~1.2 |
+| アルゴリズム \+ 深度 | 0.90 | 0.9~1.0 |
+| アルゴリズム \+ depth \+ point cloud | 1.09 | 0.9~1.2 |
+| アルゴリズム \+ 深度 \+ RGB | 1.10 | 1.1~1.2 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 1.19 | 1.1~1.3 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 1.20 | 1.1~1.4 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 1.19 | 1.1~1.2 |
+| デュアルストリーム | 1.27 | 1.1~1.3 |
+| 3ストリーム | 1.29 | 1.2~1.3 |
+| 4ストリーム | 1.57 | 1.3~1.6 |
+| 点群 \+ depth | 1.20 | 1.1~1.3 |
+| アルゴリズム \+ 深度 | 0.90 | 0.9~0.9 |
+| アルゴリズム \+ depth \+ point cloud | 1.10 | 1.0~1.2 |
+| アルゴリズム \+ 深度 \+ RGB | 1.10 | 1.1~1.2 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 1.30 | 1.3~1.4 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 1.41 | 1.3~1.6 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 1.21 | 1.2~1.4 |
+| デュアルストリーム | 1.30 | 1.3~1.4 |
+| 3ストリーム | 1.30 | 1.3~1.4 |
+| 4ストリーム | 1.33 | 1.3~1.5 |
+| 点群 \+ depth | 1.21 | 1.2~1.4 |
+| アルゴリズム \+ 深度 | 1.19 | 1.1~1.2 |
+| アルゴリズム \+ depth \+ point cloud | 1.22 | 1.2~1.4 |
+| アルゴリズム \+ 深度 \+ RGB | 1.30 | 1.3~1.4 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 1.32 | 1.3~1.5 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 1.33 | 1.3~1.5 |
+
+<br />
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 1.20 | 1.2~1.3 |
+| デュアルストリーム | 1.20 | 1.2~1.3 |
+| 3ストリーム | 1.30 | 1.3~1.4 |
+| 4ストリーム | 1.64 | 1.4~1.7 |
+| 点群 \+ depth | 1.36 | 1.1~1.4 |
+| アルゴリズム \+ 深度 | 1.10 | 1.1~1.1 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 1.19 | 1.1~1.3 |
+| アルゴリズム \+ 深度 \+ RGB | 1.40 | 1.4~1.4 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 1.58 | 1.4~1.7 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 1.60 | 1.5~1.7 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 実行構成 | 平均 % | 範囲 % |
+| 単一ストリーム | 1.28 | 1.1~1.3 |
+| デュアルストリーム | 1.29 | 1.2~1.3 |
+| 3ストリーム | 1.20 | 1.2~1.3 |
+| 4ストリーム | 1.49 | 1.4~1.6 |
+| 点群 \+ depth | 1.11 | 1.1~1.2 |
+| アルゴリズム \+ 深度 | 1.00 | 1.0~1.0 |
+| アルゴリズム \+ 深度 \+ Point Cloud | 1.11 | 1.1~1.2 |
+| アルゴリズム \+ 深度 \+ RGB | 1.20 | 1.2~1.3 |
+| アルゴリズム \+ depth \+ RGB \+ point cloud | 1.55 | 1.3~1.6 |
+| アルゴリズム \+ depth \+ intensity \+ RGB \+ point cloud | 1.51 | 1.3~1.7 |
+
+---
+
+## 付録
+
+この付録では、いくつかのツールのインストール方法を説明します。手順を実行するには、Linux の基礎知識が必要です。PC ごとに環境が異なるため、ここで示す手順ですべての環境に正常にインストールできることを保証するものではありません。ここに記載されていない問題が発生した場合は、原因と解決方法を個別に調査してください。
+
+### 1. 指定バージョンの CMake をインストールする
+
+[CMake のダウンロードページ](https://cmake.org/download/)から必要なバージョンを取得します。ダウンロードしたパッケージを `tar -zxvf cmake-XXX.tar.gz` で展開し、展開先のディレクトリでコンパイルと設定を実行します。
+
+./bootstrap
+
+make
+
+sudo make install
+
+次のコマンドで CMake のバージョンを確認し、インストールが完了したことを確認します。
+
+cmake --version
+
+### 2. 指定バージョンの OpenCV をインストールする
+
+1. [OpenCV Releases](https://opencv.org/releases/ "Releases-OpenCV")から必要なバージョンをダウンロードします。
+
+<Frame>
+  ![指定バージョンの OpenCV をインストールする画面](/images/developers/camera-sdk-linux-examples-the-installation-method-of-the-specified-version-of-opencv.avif)
+</Frame>
+
+2. 環境を準備します。次のコマンドを順に実行します。
+
+sudo apt-get install build-essential
+
+sudo apt-getinstallcmake gitlibgtk2.0-devpkg-config libavcodec-dev
+
+libavformat-dev libswscale-dev
+
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev
+
+libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+
+3. `opencv` ディレクトリを作成し、ダウンロードしたソースコードをそのディレクトリに展開します。
+4. 次のコマンドを順に実行します。
+5.   cd opencv
+6.   mkdir build && cd build
+7.   sudocmake-DCMAKE\_BUILD\_TYPE=Release-D
+8.   CMAKE\_INSTALL\_PREFIX=/usr/local ..
+9.   sudo make -j4
+10. `sudo make install` を実行し、インストールが完了するまで待ちます。
+
+### 3. 指定バージョンの PCL をインストールする
+
+1. インストール可能な PCL のバージョンを確認します。
+
+apt-cache madison libpcl-dev
+
+2. 指定した PCL バージョンをインストールします。`1.10.0` は必要なバージョン番号に置き換えてください。
+
+sudo apt-get install libpcl-dev=1.10.0
+
+### 4. ROS をインストールする
+
+**Ubuntu16.04**
+
+1. ソフトウェアソースを追加し、キーを設定します。
+
+sudo sh -c 'echo "deb [http://packages.ros.org/ros/ubuntu](http://packages.ros.org/ros/ubuntu) \$(lsb\_release -sc) main" \>
+
+/etc/apt/sources.list.d/ros-latest.list'
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. キーを追加します。
+
+curl -sSL
+
+'[http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654](http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654)' | sudo apt-key add -
+
+3. ソースを更新します。
+
+sudo apt-get update
+
+4. ROS の完全版をインストールします。
+
+sudo apt-get install ros-kinetic-desktop-full
+
+5. 環境変数を設定します。
+
+echo "source /opt/ros/kinetic/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+6. ROS 関連ツールをインストールします。
+
+sudoaptinstallpython-rosinstallpython-rosinstall-generatorpython-wstool
+
+build-essential
+
+7. ROS1 のインストール後、付属のサンプルを実行して正しくインストールされたか確認します。
+
+ターミナルを開き、`roscore` を実行します。
+
+別のターミナルで `rosrun turtlesim turtlesim\_node` を実行します。
+
+さらに別のターミナルで `rosrun turtlesim turtle\_teleop\_key` を実行します。
+
+3 つ目のターミナルで、矢印キーを使ってタートルを操作できます。
+
+次のように正常に動作すれば、ROS は正しくインストールされています。
+
+![ROS のインストール結果](/images/developers/camera-sdk-linux-examples-installation-ros.avif)
+
+<br />
+
+**Ubuntu18.04**
+
+1. ソフトウェアソースを設定します。
+
+sudo sh -c '. /etc/lsb-release && echo "deb [http://mirrors.ustc.edu.cn/ros/ubuntu/](http://mirrors.ustc.edu.cn/ros/ubuntu/)
+
+\`lsb\_release -cs\` main" \> /etc/apt/sources.list.d/ros-latest.list'
+
+2. 公開鍵を設定します。
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+3. パッケージリストを更新します。
+
+sudo apt update
+
+4. Ubuntu 18.04 向けの ROS1 をインストールします。
+
+sudo apt install ros-melodic-desktop-full
+
+5. 環境変数を設定します。
+
+echo "source /opt/ros/melodic/setup.bash" \>\> ~/.bashrc
+
+zsh を使用している場合は、次を実行します。
+
+echo "source /opt/ros/melodic/setup.bash" \>\> ~/.zshrc
+
+source ~/.zshrc
+
+6. ROS 関連ツールをインストールします。
+
+sudoaptinstallpython-rosdeppython-rosinstallpython-rosinstall-generator
+
+python-wstool build-essential
+
+7. ROS1 のインストール後、付属のサンプルを実行して正しくインストールされたか確認します。
+
+ターミナルを開き、`roscore` を実行します。
+
+別のターミナルで `rosrun turtlesim turtlesim\_node` を実行します。
+
+さらに別のターミナルで `rosrun turtlesim turtle\_teleop\_key` を実行します。
+
+3 つ目のターミナルで、矢印キーを使ってタートルを操作できます。
+
+次のように正常に動作すれば、ROS は正しくインストールされています。
+
+<Frame>
+  ![ROS のインストール結果 2](/images/developers/camera-sdk-linux-examples-installation-ros-2.avif)
+</Frame>
+
+**Ubuntu20.04**
+
+1. 公開鍵を設定します。
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. サーバーに接続できない、またはタイムアウトする場合は、先にパッケージリストを更新します。
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+3. 公開鍵を設定した後、パッケージリストを再度更新して ROS をインストールします。
+
+sudo apt-get update install ros:
+
+sudo apt install ros-noetic-desktop-full
+
+4. 環境変数を設定します。
+
+echo "source /opt/ros/noetic/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+5. ROS ツールをインストールします。
+
+sudo apt install python3-rosinstall python3-rosinstall-generator python3-wstool
+
+build-essential
+
+6. ROS1 のインストール後、付属のサンプルを実行して正しくインストールされたか確認します。
+
+ターミナルを開き、`roscore` を実行します。
+
+別のターミナルで `rosrun turtlesim turtlesim\_node` を実行します。
+
+さらに別のターミナルで `rosrun turtlesim turtle\_teleop\_key` を実行します。
+
+3 つ目のターミナルで、矢印キーを使ってタートルを操作できます。
+
+次のように正常に動作すれば、ROS は正しくインストールされています。
+
+<Frame>
+  ![ROS のインストール結果 3](/images/developers/camera-sdk-linux-examples-installation-ros-3.avif)
+</Frame>
+
+**Ubuntu 22.04**
+
+Ubuntu 22.04 での ROS1 のインストールは推奨しません。公式にはサポートされておらず、多数の依存関係の問題が発生する可能性があります。
+
+### 5. ROS でテストパッケージを作成する
+
+1. `ws` ディレクトリを作成し、その中に `src` ディレクトリを作成します。`src` に移動して次を実行します。
+
+catkin\_create\_pkg example std\_msgs rospy roscpp
+
+2. `example` という新しいパッケージが作成されます。このパッケージは `std\_msgs`、`rospy`、`roscpp` に依存します。
+3. `catkin\_make` でパッケージをコンパイルします。この時点では空のパッケージであり、実行可能プログラムは含まれません。
+4. 次に、`Hello world` を出力するパッケージを作成します。
+5. 作成したパッケージの `src` ディレクトリに移動し、`main.cpp` を作成します。パスに注意してください。
+
+<Frame>
+  ![ROS でテストパッケージを作成する手順](/images/developers/camera-sdk-linux-examples-illustration-of-how-to-create-a-new-test-package-in-ros.avif)
+</Frame>
+
+6. `main.cpp` に次のコードを入力します。
+
+<Frame>
+  ![ROS テストパッケージの作成例 2](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-2.avif)
+</Frame>
+
+7. パッケージ直下の `CMakeLists.txt` を編集し、末尾に `add\_executable(example src/main.cpp)` を追加します。
+
+<Frame>
+  ![ROS テストパッケージの作成例 3](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-3.avif)
+</Frame>
+
+8. `ws` ディレクトリに戻り、`catkin\_make` を実行してコンパイルします。
+
+<Frame>
+  ![ROS テストパッケージの作成例 4](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-4.avif)
+</Frame>
+
+9. この表示が出れば、コンパイルは成功です。
+10. 次に環境を設定します。
+
+source devel/setup.bash
+
+<Frame>
+  ![ROS テストパッケージの作成例 5](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-5.avif)
+</Frame>
+
+11. 次のコマンドでプログラムを実行し、出力を確認します。
+
+rosrun example example
+
+<Frame>
+  ![ROS テストパッケージの作成例 6](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-6.avif)
+</Frame>
+
+### 6. ROS2 をインストールする
+
+**Ubuntu16.04**
+
+1. キーを追加します。
+
+sudo apt-get update && sudo apt-get install curl
+
+curl [http://repo.ros2.org/repos.key](http://repo.ros2.org/repos.key) | sudo apt-key add -
+
+2. 必要なツールをインストールします。
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+curl-shttps://raw.githubusercontent.com/ros/rosdistro/master/ros.asc|sudo
+
+apt-key add -
+
+3. この手順でエラーが発生する場合は、ネットワーク接続を確認して URL をブラウザーで開き、内容を `ros.asc` という新規ファイルに保存します。保存後の状態は次のとおりです。
+
+<Frame>
+  ![ROS2 のインストール手順](/images/developers/camera-sdk-linux-examples-installation-ros2.avif)
+</Frame>
+
+4. 次に `sudo apt-key add ros.asc` を実行します。
+5. 続けて次を実行します。
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
+
+main" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. ROS2 をインストールします。
+
+sudo apt update
+
+sudo apt install ros-ardent-desktop
+
+7. 環境変数を設定します。
+
+source /opt/ros/ardent/setup.bash
+
+8. 関連パッケージをインストールします。
+
+sudo apt-get update
+
+sudo apt-get install ros-ardent-ros1-bridge sudo apt-get install ros-ardent-turtlebot2-\*
+
+9. サンプルプログラムを試します。ターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+10. 別のターミナルで次を実行します。
+
+source~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+11. 次のターミナル出力が表示されれば、インストールは成功です。
+
+<Frame>
+  ![ROS2 のインストール結果 2](/images/developers/camera-sdk-linux-examples-installation-ros2-2.avif)
+</Frame>
+
+**Ubuntu 18.04**
+
+1. ソフトウェアソースを追加します。
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+curl -s [https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc](https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc)
+
+sudo apt-key add ros.asc
+
+2. この手順で次のエラーが発生した場合:
+
+<Frame>
+  ![ROS2 のインストール時のエラー例](/images/developers/camera-sdk-linux-examples-installation-ros2-3.avif)
+</Frame>
+
+3. ネットワーク接続を確認して URL をブラウザーで開き、内容を `ros.asc` という新規ファイルに保存します。保存後の状態は次のとおりです。
+
+<Frame>
+  ![ROS2 のインストール手順 4](/images/developers/camera-sdk-linux-examples-installation-ros2-4.avif)
+</Frame>
+
+4. 次に `sudo apt-key add ros.asc` を実行します。
+5. 続けて次を実行します。
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
+
+main" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. 完了後、ROS2 をダウンロードします。赤字部分は対象バージョンに置き換えてください（上表を参照）。
+
+sudo apt update
+
+sudo apt install ros-eloquent-desktop
+
+7. インストール完了後、Python ライブラリをインストールします。`sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete` を実行します。
+
+続けて環境変数を設定します。
+
+echo "source /opt/ros/eloquent/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+8. サンプルプログラムを試します。ターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+9. 別のターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+10. 次のターミナル出力が表示されれば、インストールは成功です。
+
+<Frame>
+  ![ROS2 のインストール結果 5](/images/developers/camera-sdk-linux-examples-installation-ros2-5.avif)
+</Frame>
+
+**Ubuntu20.04**
+
+1. ソフトウェアソースを追加します。
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o](https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o)
+
+/usr/share/keyrings/ros-archive-keyring.gpg
+
+2. `raw.githubusercontent.com` のポート 443 への接続に失敗するエラーが発生した場合:
+
+<Frame>
+  ![ROS2 の接続エラー例](/images/developers/camera-sdk-linux-examples-installation-ros2-6.avif)
+</Frame>
+
+sudo vi /etc/hosts
+
+3. 次のエントリを追加します。
+
+185.199.108.133raw.githubusercontent.com
+
+4. 追加後のファイルは次のとおりです。
+
+<Frame>
+  ![ROS2 の hosts 設定例](/images/developers/camera-sdk-linux-examples-installation-ros2-7.avif)
+</Frame>
+
+echo"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
+
+5. 続けて次を実行します。
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionicmain" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. 完了後、ROS2 をダウンロードします。
+
+sudo apt update
+
+sudo apt install ros-foxy-desktop
+
+7. インストール完了後、Python ライブラリをインストールします。`sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete` を実行します。
+8. 続けて環境変数を設定します。
+
+echo "source /opt/ros/foxy/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+9. サンプルプログラムを試します。ターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+10. 別のターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+11. 次のターミナル出力が表示されれば、インストールは成功です。
+
+<Frame>
+  ![ROS2 のインストール結果 8](/images/developers/camera-sdk-linux-examples-installation-ros2-8.avif)
+</Frame>
+
+**Ubuntu 22.04**
+
+1. ソフトウェアソースを追加します。
+
+sudo apt update && sudo apt install curl gnupg lsb-release
+
+sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key](https://raw.githubusercontent.com/ros/rosdistro/master/ros.key) -o /usr/share/keyrings/ros-archive-keyring.gpgecho"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
+
+2. `raw.githubusercontent.com` のポート 443 への接続に失敗するエラーが発生した場合:
+
+<Frame>
+  ![ROS2 の接続エラー例 9](/images/developers/camera-sdk-linux-examples-installation-ros2-9.avif)
+</Frame>
+
+`sudo vi /etc/hosts` を実行し、次のエントリを追加します。
+
+185.199.108.133raw.githubusercontent.com
+
+追加後のファイルは次のとおりです。
+
+<Frame>
+  ![ROS2 の hosts 設定例 10](/images/developers/camera-sdk-linux-examples-installation-ros2-10.avif)
+</Frame>
+
+3. 完了後、`sudo apt update` を実行して ROS2 をダウンロードします。
+
+sudo apt install ros-humble-desktop
+
+4. インストール完了後、Python ライブラリをインストールします。`sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete` を実行します。
+5. 続けて環境変数を設定します。
+
+echo "source /opt/ros/humble/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+6. サンプルプログラムを試します。ターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+7. 別のターミナルで次を実行します。
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+8. 次のターミナル出力が表示されれば、インストールは成功です。
+
+<Frame>
+  ![ROS2 のインストール結果 11](/images/developers/camera-sdk-linux-examples-installation-ros2-11.avif)
+</Frame>
+
+### 7. ROS2 でテストパッケージを作成する
+
+1. 次のコマンドを実行します。
+
+mkdir example\_ws && cd example\_ws
+
+ros2 pkg create --build-type ament\_cmake --node-name example\_n example\_p
+
+colcon build
+
+source install/setup.bash
+
+ros2 run example\_p example\_n
+
+2. `example\_p` という新しいパッケージと `example\_n` というノードが作成されます。実行すると `hello world example\_p package` が出力されます。
+
+<br />
+
+<br />

@@ -1,0 +1,106 @@
+---
+title: ホワイトペーパー：スマート物流向けパレット認識
+sidebarTitle: パレット認識ホワイトペーパー
+description: 無人フォークリフト向けの技術課題、PalletProワークフロー、ドッキング方式、公開事例を解説します。
+---
+
+パレットのずれ、仕様差、反射面、低反射率の材料は、無人フォークリフトのドッキングや搬送に影響します。本記事では、パレット認識の技術課題、PalletProの認識・ドッキングワークフロー、公開されている適用事例を説明します。
+
+倉庫物流では、AMRや無人フォークリフトが反復的な搬送作業を実行できます。ただし、安全な運用、自己位置推定、信頼性の高いパレットドッキングには、車両、知覚、制御、現場管理を含むシステム全体が必要です。
+
+移動機器に関するリスクは、車両制御、障害物検出、運用手順、現場管理によって管理する必要があります。[英国安全衛生庁による2023/24年の移動車両の致命的衝突に関するデータ](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-Jb3Ud6FjFojVYjxwKLvcgju4nRf "資料1") は、業界の参考情報となります。
+
+## 倉庫自動化の背景
+
+大規模倉庫では、仕分け、搬送、ピッキングにロボットが使用されています。公開されている [Amazon Roboticsの情報](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-DIAmd4kfsoNLNGxTGxDcM65unyf "資料2") は、ロボットシステムが通常、知覚、車両制御、スケジューリング、現場安全機構を組み合わせることを示しています。無人フォークリフトでは、安定したパレット認識と姿勢認識が重要な入力です。
+
+## パレット認識の技術課題
+
+無人フォークリフトは、ドッキング経路を調整するために車両に対するパレットの相対姿勢を必要とします。実際には、横方向のずれ、方位、構造、表面反射率が変化します。周囲光や遮蔽もセンサーデータ品質に影響します。
+
+<Frame>
+  ![無人フォークリフトのパレット認識に影響する要因](/images/resources/insights-pallet-recognition-whitepaper-the-importance-of-pallet-identification-in-unmanned-forklifts.avif)
+</Frame>
+
+## 認識アプローチ
+
+PalletProは3D ToF深度データからパレット脚部やクロスバーなどの点群特徴を抽出し、車両がドッキングに使用する姿勢を出力します。ラベルや2D LiDARが有効な環境もありますが、適合性はパレット構造、設置、現場条件に依存します。
+
+## PalletProパレット認識システム
+
+PalletProは3Dカメラとパレット認識アルゴリズムを組み合わせ、パレットの位置と向きを車両制御システムへ提供します。
+
+- **統合処理と出力**: アルゴリズムはカメラ上で深度データを処理し、認識結果を **10 FPS** で出力します。
+- **デプロイとドッキング**: カメラはフォークリフトのフォーク間に設置できます。自動キャリブレーションにより、カメラ、車両、パレット間の座標関係を確立します。標準的な二脚・四脚パレットおよび積層パレットは現場で評価できます。脚のないパレットや特殊なパレットはプロジェクト評価が必要です。
+- **統合**: システムはリアルタイムの認識結果を提供します。プロジェクトドキュメントに従って、インターフェース、車両設置、ドッキング戦略を構成します。
+
+<Frame>
+  ![PalletProの3Dビジョンおよびパレット認識ワークフロー](/images/resources/insights-pallet-recognition-whitepaper-mrdvs-pallet-recognition-system-palletpro-relevant-illustrations-to-solve-the-p.avif)
+</Frame>
+
+- **環境適応**: 強い周囲光または低反射率のパレットでは、カメラモデル、取付距離、露光、フィルターパラメーターを現場で検証します。
+
+[MRDVS屋外パレット認識フィールドテストをBilibiliで見る](https://www.bilibili.com/video/BV1nYtoeREJD/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=11 "屋外パレット認識フィールドテスト")
+
+黒色パレットなどの低反射率対象物では、点群品質が低下することがあります。フィールドテスト動画と現場データを使用して認識性能を評価してください。
+
+[MRDVS黒色パレット認識フィールドテストをBilibiliで見る](https://www.bilibili.com/video/BV14AtZeNEuQ/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=7 "黒色パレット認識フィールドテスト")
+
+## 認識とドッキング
+
+Mシリーズカメラはフォークリフトのフォーク間に設置でき、パレットの深度データを取得して認識アルゴリズムからパレット姿勢を出力します。
+
+標準的なワークフローでは、車両はまずパレットから約 `2 m` の位置で姿勢を取得して方位を補正します。次に、約 `1.5 m` で精密位置決めと横方向補正を行います。実際の距離と制御戦略は、車両、速度、現場に合わせて検証してください。
+
+<Frame>
+  ![パレット認識とフォークリフトドッキングのワークフロー](/images/resources/insights-pallet-recognition-whitepaper-relevant-for-identification-and-docking.avif)
+</Frame>
+
+車両制御システムは、作業フローに応じて **二段階ドッキング** または **リアルタイムドッキング** を使用できます。
+
+### 二段階ドッキング
+
+1. **遠距離位置決め**: パレットから `1,800–2,800 mm` の位置で認識結果を取得し、方位と横方向のずれを補正します。
+2. **近距離検証**: フォーク先端がパレット前縁から約 `200 mm` の位置で再度結果を取得し、フォーク挿入要件を満たすか確認します。
+3. **フォーク挿入**: 検証後にパレットへフォークを挿入します。検証に失敗した場合は車両を調整して再度検証します。
+
+### リアルタイムドッキング
+
+認識結果を連続的に取得して車両姿勢を調整します。パレット前縁から約 `200 mm` で微調整してフォーク挿入を完了します。制御システムは、遅延を処理するためにデータのタイムスタンプを使用する必要があります。
+
+## 通信
+
+このソリューションはTCP、UDP、CAN、RS-485、APIなどのインターフェースをサポートします。利用可否とメッセージ形式は、該当する製品およびデプロイメントドキュメントで確認してください。プロジェクト構成に応じて認識アルゴリズムと障害物回避アルゴリズムを切り替えます。
+
+## 導入事例
+
+### 事例1：光ファイバー通信会社向けパレット・ケーブルドラム穴認識
+
+**プロジェクト背景**: Company Fは物流作業に無人スタッカーを使用しています。本プロジェクトでは、パレットおよびケーブルドラム穴の認識・搬送を対象としています。
+
+**ソリューション**: PalletProはパレットの深度・姿勢情報を提供し、車両コントローラーがスタッカー姿勢を調整できるようにします。3Dビジョンはケーブルドラム穴も認識します。
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_1.mp4" title="事例1：無人スタッカーのパレット・ケーブルドラム穴認識" alt="無人スタッカーのパレット認識事例動画1" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_2.mp4" title="事例1：ケーブルドラム穴認識" alt="無人スタッカーのパレット認識事例動画2" />
+</Frame>
+
+### 事例2：ガラス繊維業界の非標準パレット認識
+
+<Frame>
+  ![ガラス繊維業界における非標準パレット認識プロジェクト](/images/resources/insights-pallet-recognition-whitepaper-case-2-the-non-standard-pallet-identification-project-in-the-fiberglass-industr.avif)
+</Frame>
+
+**プロジェクト背景**: 中国巨石グループの桐郷拠点は、生産現場の自動搬送向けに無人フォークリフトを導入しました。
+
+**課題**: 構内物流では形状や設置角度が異なるカスタム金属パレットを使用するため、認識とフォーク挿入が難しくなります。
+
+**ソリューション**: 無人フォークリフトはPalletProでパレット深度データを取得し、パレットの位置と向きをリアルタイムに補正します。
+
+## 出典
+
+1. [UK Health and Safety Executive](https://www.hse.gov.uk/statistics/fatals.htm)
+2. [The Robot Report](https://www.therobotreport.com/a-decade-after-acquiring-kiva-amazon-unveils-its-first-amr/)

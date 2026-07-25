@@ -1,0 +1,141 @@
+---
+title: S2 Max 2.0カメラ クイックスタート
+description: S2 Max 2.0の開梱確認、電源・ネットワーク設定、最初の取得を完了します。
+hidden: true
+---
+
+<Info>
+  このページはアーカイブ済みのクイックスタートです。インターフェース、電気仕様、安全要件については、[S2 Max 2.0 製品ユーザーガイド](/ja/products/s-series/s2-max-2-user-guide)を参照してください。
+</Info>
+
+## パッケージを確認
+
+製品を受け取ったら、カメラ本体と付属品がすべてそろい、破損がないことを確認してください。不足または破損がある場合は、MRDVS テクニカルサポートにお問い合わせください。
+
+## パッケージ内容
+
+### カメラ
+
+<Frame>
+  ![S2 Max 2.0 カメラ](/images/products/s-series-s2-max-2-quickstart-s2-max-camera.avif)
+</Frame>
+
+### 5 ピンカメラケーブル
+
+<Frame>
+  ![S2 Max 2.0 5 ピンカメラケーブル](/images/products/s-series-s2-max-2-quickstart-5-pin-camera-cable.avif)
+</Frame>
+
+### 出荷検査証明書
+
+<Frame>
+  ![S2 Max 2.0 出荷検査証明書](/images/products/s-series-s2-max-2-quickstart-factory-inspection-certificate.avif)
+</Frame>
+
+### 絶縁ねじ
+
+<Frame>
+  ![S2 Max 2.0 絶縁ねじ](/images/products/s-series-s2-max-2-quickstart-m4-insulating-screw.avif)
+</Frame>
+
+[絶縁ねじの使用条件](https://zcnt5g3o2989.feishu.cn/wiki/C1eHwMaJAiKkuAkOMo7cxsmjn5d?from=from_copylink)を参照してください。
+
+### クイックスタートガイド
+
+<Frame>
+  ![S2 Max 2.0 クイックスタートガイド](/images/products/s-series-s2-max-2-quickstart-quickstart-guide.avif)
+</Frame>
+
+## 初回接続
+
+<Steps>
+  <Step title="設置方向を確認する">
+    設置時および使用時にレンズを遮らないでください。以下の正しい設置例に従い、周囲の構造物がカメラの視野に入らないようにしてください。
+
+    <Frame>
+      ![正しい S2 Max 2.0 カメラの設置](/images/products/s-series-s2-max-2-quickstart-correct-s2-max-2-0-camera-installation.avif)
+    </Frame>
+
+    <Frame>
+      ![誤った S2 Max 2.0 カメラの設置](/images/products/s-series-s2-max-2-quickstart-incorrect-s2-max-2-0-camera-installation.avif)
+    </Frame>
+  </Step>
+  <Step title="電源を接続する">
+    付属の電源ケーブルを接続し、**24 VDC / 2 A** の電源を使用します。約 2 秒ごとに青色インジケーターがゆっくり点滅すれば、電源は正常です。
+  </Step>
+  <Step title="ネットワークを接続する">
+    Cat 6 以上の Ethernet ケーブルでカメラをコンピューターに接続します。
+
+    <Frame>
+      ![S2 Max 2.0 の電源・ネットワーク接続](/images/products/s-series-s2-max-2-quickstart-s2-max-2-0-ethernet-connection.avif)
+    </Frame>
+  </Step>
+  <Step title="IP アドレスを設定する">
+    カメラの工場出荷時 IP アドレスは `192.168.100.82` です。コンピューターを `192.168.100.xxx` サブネットに設定し、両方の機器が同一サブネットにあること、およびローカルファイアウォールでカメラ通信が許可されていることを確認してください。
+  </Step>
+</Steps>
+
+### Windowsのネットワーク設定
+
+**コントロール パネル**で、**ネットワークとインターネット** → **ネットワークと共有センター** → **アダプターの設定の変更** → **Ethernet** → **インターネット プロトコル バージョン 4 (TCP/IPv4)** を開きます。**次の IP アドレスを使う**を選択し、同じサブネットのアドレスとサブネットマスク `255.255.0.0` を入力します。
+
+<Frame>
+  ![Windows の IPv4 ネットワーク設定](/images/products/s-series-s2-max-2-quickstart-windows-ipv4-network-settings.avif)
+</Frame>
+
+## LxCameraViewerを使用
+
+### ソフトウェアを入手
+
+LxCameraViewer では、画像の表示、カメラパラメーターの設定、および内蔵の障害物回避、パレット、ナビゲーション、把持アルゴリズムの設定ができます。Windows ではホストアプリケーションを使用し、Linux と ROS ではサンプルを実行して RViz でデータを確認できます。
+
+- [CameraSDK GitHub リポジトリ](https://github.com/Lanxin-MRDVS/CameraSDK)
+- [LxCameraViewer の Windows 版をダウンロード](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/software/MRDVS-2.4.60.260321_SP.exe)
+
+### ストリーミングを開始
+
+<Steps>
+  <Step title="ソフトウェアを起動する">
+    LxCameraViewer をインストールして起動します。デバイスリストにカメラ ID が表示されることを確認してください。
+
+    - デバイスが一覧に表示されない場合は、インジケーターが正常に点滅していることを確認し、ネットワークを確認してください。
+    - インジケーターが点灯し続ける場合は、MRDVS テクニカルサポートにお問い合わせください。
+    - インジケーターが消灯している場合は、**24 VDC / 2 A** 電源を確認してください。
+
+    <Frame>
+      ![LxCameraViewer のデバイスリスト](/images/products/s-series-s2-max-2-quickstart-lxcameraviewer-device-list.avif)
+    </Frame>
+  </Step>
+  <Step title="カメラを開く">
+    **Open** をクリックしてストリーミングを開始します。ボタン表示が **Close** に変われば、ストリーミングは開始されています。深度、IR 振幅、点群ビューは既定で有効です。RGB を有効にするには、対応するオプションを選択してください。
+
+    <Frame>
+      ![LxCameraViewer のストリーム制御](/images/products/s-series-s2-max-2-quickstart-lxcameraviewer-stream-controls.avif)
+    </Frame>
+  </Step>
+  <Step title="パラメーターとアルゴリズムを設定する">
+    右側のパネルを展開してカメラパラメーターを設定します。**Application algorithms** をクリックして、アルゴリズムと動作モードを選択してください。
+
+    <Frame>
+      ![LxCameraViewer のカメラパラメーターパネル](/images/products/s-series-s2-max-2-quickstart-lxcameraviewer-camera-parameters.avif)
+    </Frame>
+
+    <Frame>
+      ![LxCameraViewer のアプリケーションアルゴリズムパネル](/images/products/s-series-s2-max-2-quickstart-lxcameraviewer-application-algorithms.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+操作の詳細は、[LxCameraViewer ホストアプリケーションユーザーガイド](/ja/developers/software/lxcameraviewer)を参照してください。
+
+## 使用上および安全上の注意
+
+<Warning>
+  誤った操作は内部部品の損傷につながるおそれがあります。カメラは不可視のレーザー光を照射します。レンズを強い日光に向けず、製品を分解、改造、または自身で修理しないでください。
+</Warning>
+
+- 落下、衝撃、機械的な負荷を避けてください。
+- カメラ内部のファイルを変更したり、レンズに触れたりしないでください。指紋は画質に影響することがあります。
+- 長時間の動作中は本体が温かくなる場合があります。カメラはパッシブ冷却方式です。金属製の取付板を使用して放熱性を高めてください。
+- カメラが検出されない場合は、**24 VDC / 2 A** 電源と Ethernet ケーブルを確認してください。
+- 目視で損傷が確認できるカメラの電源は入れないでください。

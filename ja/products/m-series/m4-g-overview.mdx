@@ -1,0 +1,131 @@
+---
+title: M4-G 3Dカメラ
+description: M4-G iToF RGB-Dカメラの仕様、GMSL2インターフェース設定、統合要件。
+---
+
+M4-Gは近距離認識向けiToF RGB-Dカメラです。GMSL2インターフェースを採用し、0.05～1 mの範囲で深度、RGB、点群データを標準30 fpsで出力できます。ロボットリスト、卓上把持、精密マニピュレーションなどに適しています。
+
+<Info>
+  完全な製品ドキュメントは[ダウンロードセンター](/ja/resources/downloads/specifications-and-user-guides)から取得できます。
+</Info>
+
+<Frame>
+  ![近距離ロボット認識向けM4-Gカメラ](/images/products/m-series-m4-g-overview-m4-g-product-overview.avif)
+</Frame>
+
+## 主な特長
+
+- **近距離iToF深度センシング：** 0.05～1 mの範囲で深度データを出力します。
+- **同期RGB-D出力：** RGBにアラインした深度マップ、RGB画像、点群を提供します。
+- **低照度性能：** アクティブ照明により、低照度またはテクスチャの少ない対象をサポートします。
+- **GMSL2伝送：** システム統合向けに、長距離かつ耐干渉性の高いデータリンクを提供します。
+
+## 仕様
+
+| パラメータ | M4-G |
+| --- | --- |
+| 動作原理 | iToF |
+| 出力データ | 深度マップ、RGB画像、点群 |
+| ToF解像度とフレームレート | 640 × 480、標準30 fps |
+| ToF視野角 | 90° × 70°、±3° |
+| RGB解像度とフレームレート | 1280 × 1056、標準30 fps |
+| RGB視野角 | 115° × 100°、±3° |
+| RGBピクセルサイズ | 2.5 μm |
+| RGB ISP | 統合 |
+| RGB HDR | ≥ 100 dB |
+| RGBレンズ | F/2.05、有効焦点距離1.28 mm |
+| 動作距離 | 0.05～1 m |
+| 距離正確度 | 1%、1 m時最大4 mm |
+| レーザー | 940 nm |
+| 消費電力 | 3 W |
+| 寸法（L × W × H） | 60 × 30 × 29 mm |
+| 重量 | \< 200 g |
+| 電源 | 12 VDC / 1 A |
+| 通信インターフェース | SerDes（GMSL2） |
+| 動作温度 | −20～60 °C |
+| 保存温度 | −40～85 °C |
+| SDK | C/C\+\+、ROS |
+| 対応OS | Windows 7以降、Linux、Arm Linux、ROS |
+| 冷却方式 | 自然空冷 |
+| 眼の安全性 | クラス1 |
+
+## 製品寸法
+
+<Frame>
+  ![M4-Gカメラ寸法](/images/products/m-series-m4-g-overview-1-m4-g-3d-camera-dimensions.avif)
+</Frame>
+
+## GMSL2インターフェース
+
+### シリアライザ設定
+
+| 項目 | パラメータ |
+| --- | --- |
+| シリアライザ | MAX96717 |
+| I²Cアドレス | `0x40`（7ビット） |
+| GMSLレート | GMSL2、6 Gbps |
+| 動作モード | ピクセルモード |
+| フレーム同期 | MAX96717 MFP0で制御 |
+
+### ビデオストリームパラメータ
+
+| ストリーム | 解像度と形式 | データタイプ | 制御および仮想チャネル |
+| --- | --- | --- | --- |
+| ToF | 2560 × 960、RAW8 | `0x2A` | FPGAがI²Cを転送、VC0 |
+| RGB | 1280 × 1080、YUV422、8ビット | `0x1E` | FPGAがI²Cを転送、VC1 |
+
+### FPGA設定
+
+| 項目 | パラメータ |
+| --- | --- |
+| I²Cアドレス | `0x11`（7ビット） |
+| MIPI出力 | 4レーン、1.2 Gbps |
+
+## ストリーミングを開始する
+
+画像取得には、ハードウェアフレーム同期とストリーム制御の両方が必要です。
+
+<Steps>
+  <Step title="フレーム同期信号を供給する">
+    ハードウェアマニュアルに従い、MAX96717と選択したデシリアライザのフレーム同期を設定します。MAX96717 MFP0はGPIOトリガー出力として設定できます。
+
+    <Frame>
+      ![MAX96724シリーズのフレーム同期信号伝送](/images/products/m-series-m4-g-overview-2-max96724-f-r-frame-sync-signal-transmission.avif)
+    </Frame>
+  </Step>
+  <Step title="ストリーム開始コマンドを送信する">
+    FPGAレジスタ`0x2000`に`1`を書き込むとストリーミングを開始し、`0`を書き込むと停止します。
+
+    ```bash
+    i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+    ```
+
+    この例の`0x11`はFPGAのI²Cアドレスです。
+  </Step>
+</Steps>
+
+## 統合要件
+
+| 項目 | 要件 |
+| --- | --- |
+| 動作温度 | −20～60 °C |
+| 動作照度 | 0～100 kLux |
+| 保存温度 | −40～85 °C |
+| 保存湿度 | 最大90% RH |
+| 通常動作時の温度上昇 | 筐体温度上昇 \< 25 °C |
+| ESD | 接触放電 ±4 kV、気中放電 ±8 kV |
+| 放射エミッション | GB 9254 Class Aに適合 |
+| 環境適合性 | RoHS |
+
+## 関連する導入事例
+
+<Columns cols={3}>
+  <Card title="無人フォークリフトのタスク事例" icon="forklift" href="/ja/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+  </Card>
+
+  <Card title="潜り込み型AMRの障害物回避" icon="robot" href="/ja/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+  </Card>
+
+  <Card title="車輪型ヒューマノイドロボットの障害物回避" icon="person-walking" href="/ja/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+  </Card>
+</Columns>

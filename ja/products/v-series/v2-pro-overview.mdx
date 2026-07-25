@@ -1,0 +1,351 @@
+---
+title: V2 Proユーザーガイド
+description: V2 Proナビゲーションコントローラの仕様、インターフェース、設置、マッピング、位置推定手順。
+---
+
+V2 Pro は、モバイルロボットおよび手動フォークリフトの位置推定用ナビゲーションコントローラーです。上向きカメラ、2D LiDAR、IMU のデータを融合し、マッピング、自己位置推定、再位置推定を行います。
+
+<Info>
+  完全な製品資料は[ダウンロードセンター](/ja/resources/downloads/specifications-and-user-guides)から入手できます。
+</Info>
+
+<Frame caption="V2 Pro ナビゲーションコントローラー">
+  ![V2 Pro ナビゲーションコントローラー](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller.avif)
+</Frame>
+
+## 製品概要
+
+### 動作の仕組み
+
+コントローラーには演算プラットフォームが統合されており、外部の産業用コンピューターは不要です。ロボットが対象エリアを移動すると、上向きカメラが環境特徴を取得し、2D LiDAR が平面輪郭を、IMU が運動データを提供します。コントローラーはこれらを融合して地図を作成し、位置推定結果を出力します。
+
+### 主な特長
+
+- `108° × 57°` の上向きカメラ、`270°` の 2D LiDAR スキャン、IMU を融合します。
+- `6 TOPS` の NPU 性能と、マッピング・地図管理用の視覚的インターフェースを提供します。
+- Wi-Fi 6 と音声出力を統合し、手動フォークリフトの位置データ、音声案内、アラートに対応します。
+- モバイルロボット、AGV、手動フォークリフト向けの屋内位置推定とナビゲーション統合をサポートします。
+
+### 代表的な用途
+
+- **工場物流:** 倉庫、荷役場、作業場におけるロボットの位置推定とナビゲーション。
+- **手動フォークリフトの高度化:** 既存フォークリフトに位置推定機能を追加し、その位置データを上位システムに提供します。
+
+<Frame caption="V2 Pro の用途">
+  ![モバイルロボットとフォークリフトにおける V2 Pro の用途](/images/products/v-series-v2-pro-overview-v2-pro-applications.avif)
+</Frame>
+
+## 仕様
+
+### 基本仕様
+
+| モジュール | パラメーター | 仕様 |
+| --- | --- | --- |
+| 上向きカメラ | 動作範囲 | 1–15 m（環境照度 0–10 kLux） |
+| 上向きカメラ | 視野角 | 108°（H）× 57°（V）、±3° |
+| 上向きカメラ | フレームレート | 20 fps |
+| 上向きカメラ | 干渉耐性 | グレアおよび環境光への耐性 |
+| 2D LiDAR | スキャン周波数 | 15–25 Hz、切替可能 |
+| 2D LiDAR | 水平視野角 | 270° |
+| 2D LiDAR | 角度分解能 | 0.25° |
+| 2D LiDAR | 検出範囲 | 反射率 10% で 15 m、反射率 90% で 40 m |
+| 2D LiDAR | 測距精度 | ±30 mm（標準） |
+| メインシステム | 統合モジュール | IMU（慣性計測装置） |
+| メインシステム | プロセッサー | Rockchip 8 コア Arm プラットフォーム |
+| メインシステム | NPU 性能 | 6 TOPS |
+| メインシステム | 通信インターフェース | Ethernet 1 点、CAN 1 点、I/O 4 点（入力 2 点、出力 2 点） |
+| メインシステム | 電源 | 24 VDC（±4.8 V） |
+| メインシステム | 消費電力 | 平均 6.6 W、最大 15.3 W |
+| メインシステム | 無線モジュール | Wi-Fi 6 |
+| メインシステム | 音声出力 | 3 ピン音声出力 1 点（L/R/GND） |
+| メインシステム | 外形寸法 | 146.5 mm × 66.3 mm × 89.4 mm |
+| メインシステム | 保護等級 | IP54 |
+| メインシステム | 動作温度 | −20–60 °C |
+| メインシステム | 保存温度 | −40–80 °C |
+
+<Tip>
+  寸法は製品の 3D モデルと納入されたハードウェアを基準にしてください。設置前に、確保できるスペース、電源条件、ケーブル曲げ半径を確認してください。
+</Tip>
+
+### インターフェース定義
+
+コントローラーには、電源、Ethernet、CAN、I/O、音声出力インターフェースがあります。
+
+<Frame caption="V2 Pro のインターフェース位置">
+  ![V2 Pro の Ethernet、CAN、I/O、電源、音声インターフェース](/images/products/v-series-v2-pro-overview-v2-pro-interface-definitions.avif)
+</Frame>
+
+| ポート | 定義 | 説明 |
+| --- | --- | --- |
+| CN6 | Ethernet | RJ45 メスコネクター |
+| CN7 | CAN | ピンク: CAN\_H、ライトグリーン: CAN\_L、黒: GND |
+| CN8 | I/O | I/O 4 チャンネル（入力 2 点、出力 2 点）。ピン配置は以下を参照。 |
+| CN9 | 電源 | 24 VDC / 3 A、1: 正極、G: 負極 |
+| CN10 | 音声出力 | 3.5 mm オーディオプラグ |
+
+#### CN8 I/Oピン配置
+
+| ピン | 信号 | ピン | 信号 |
+| --- | --- | --- | --- |
+| 1 | IN1\+ | 2 | IN1− |
+| 3 | IN2\+ | 4 | IN2− |
+| 5 | OUT1\+ | 6 | OUT1− |
+| 7 | OUT2\+ | 8 | OUT2− |
+
+- 入力: 5–24 V で High アクティブ。
+- 出力: 24 V / 100 mA 駆動に対応するプッシュプル出力。
+
+## 製品構造
+
+### 外観と寸法
+
+<Frame caption="V2 Pro の外観">
+  ![V2 Pro ナビゲーションコントローラーの外観](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller-02.avif)
+</Frame>
+
+<Frame caption="V2 Pro の外形図">
+  ![V2 Pro の外形図](/images/products/v-series-v2-pro-overview-v2-pro-mechanical-drawing.avif)
+</Frame>
+
+### 構成部品
+
+<Frame caption="V2 Pro の構成部品（前面）">
+  ![2D LiDAR、上向きカメラ、照明、Wi-Fi アンテナコネクターを示す V2 Pro 前面](/images/products/v-series-v2-pro-overview-v2-pro-components.avif)
+</Frame>
+
+<Frame caption="V2 Pro の構成部品（背面）">
+  ![取付穴、ケーブル、銘板を示す V2 Pro 背面](/images/products/v-series-v2-pro-overview-v2-pro-component-details.avif)
+</Frame>
+
+| No. | 構成部品 |
+| --- | --- |
+| 1 | 2D LiDAR の照射窓 |
+| 2 | 上向きカメラのレンズ窓 |
+| 3 | 上向きカメラの照明 |
+| 4 | Wi-Fi アンテナコネクター |
+| 5 | M3 取付穴 4 箇所 |
+| 6 | コントローラーケーブル: Ethernet、電源、CAN、I/O、音声 |
+| 7 | 銘板位置 |
+
+### 無線通信モジュール
+
+コントローラーには、MU-MIMO と 2 ストリーム伝送に対応した `2T2R` 無線アダプターが搭載されています。Wi-Fi は `2.400–2.4835 GHz` ISM 帯で動作します。実際のスループットは、ネットワーク構成、現場の干渉、接続デバイスに依存します。
+
+| パラメーター | 仕様 |
+| --- | --- |
+| Wi-Fi 規格 | IEEE 802.11ax/ac/a/b/g/n（2T2R） |
+| Bluetooth バージョン | Bluetooth 5.3、5.0、4.2、4.1、4.0 LE、3.0\+HS、2.1\+EDR |
+| Wi-Fi データレート | 802.11b: 11 Mbps、802.11a/g: 54 Mbps、802.11n: MCS0–15、802.11ac: MCS0–9、802.11ax: HE0–11 |
+| Bluetooth データレート | 1 Mbps、2 Mbps、最大 3 Mbps |
+| 動作帯域 | 2.400–2.4835 GHz ISM 帯、5 GHz は非対応 |
+
+## 統合と設置
+
+### 検出範囲と座標系
+
+<Frame caption="上向きカメラの検出範囲と座標系">
+  ![V2 Pro 上向きカメラの検出範囲と座標系](/images/products/v-series-v2-pro-overview-camera-detection-range-and-coordinate-system.avif)
+</Frame>
+
+### 設置
+
+<Frame caption="V2 Pro の設置">
+  ![ロボットに設置した V2 Pro](/images/products/v-series-v2-pro-overview-camera-installation.avif)
+</Frame>
+
+上向きカメラと LiDAR の視野に、車体、ケーブル、その他の構造物が入らないようにしてください。設置後に、シャーシ位置推定パラメーターとセンサー外部パラメーターを設定します。
+
+### 上位アプリケーションとSDK
+
+ホストアプリケーションで、上向きカメラ画像、LiDAR 輪郭、位置推定状態を確認できます。統合については、MRDVS ホストアプリケーションガイドおよび Camera SDK 開発ガイドを参照してください。
+
+### 環境条件と信頼性
+
+| 項目 | 仕様 |
+| --- | --- |
+| 動作温度 | −20–60 °C |
+| 動作照度 | 0–50 kLux |
+| 保存温度 | −40–85 °C |
+| 保存湿度 | 最大 90% RH |
+| 通常動作時の温度上昇 | 筐体温度上昇 \< 25 °C |
+| ESD | 接触放電 ±4 kV、気中放電 ±8 kV |
+| RE | GB 9254 Class A 準拠 |
+| 耐用年数 | 3 年超 |
+| 環境認証 | RoHS |
+
+## クイックスタート
+
+### パッケージ内容
+
+| No. | 品目 |
+| --- | --- |
+| 1 | V2 Pro コントローラー |
+| 2 | 2 ピン電源ケーブル |
+
+### デバイスの接続と確認
+
+<Frame caption="V2 Pro の接続テスト">
+  ![V2 Pro の電源・Ethernet 接続](/images/products/v-series-v2-pro-overview-connection-test.avif)
+</Frame>
+
+<Steps>
+  <Step title="電源を接続する">
+    電源ケーブルをコントローラーの DC 入力に接続し、`24 V / 3 A` の DC 電源を接続します。青色インジケーターがゆっくり点滅すれば、電源は正常です。
+
+    インジケーターが消灯しているか赤色のままの場合は、電源コネクターとアダプターを確認してください。
+  </Step>
+  <Step title="ネットワークを設定する">
+    Cat 6 ケーブルでコントローラーの Ethernet インターフェースをコンピューターに直接接続します。工場出荷時 IP は `192.168.100.201` です。コンピューターを同じサブネットに設定し、ファイアウォールでデバイス通信を許可してください。
+
+    LAN 上のブラウザーで `http://192.168.100.201:9998` を開くと、パスワードなしで Web インターフェースにアクセスできます。
+  </Step>
+  <Step title="データストリームを確認する">
+    ホストアプリケーションを起動し、上向きカメラ画像が鮮明で、アーティファクトやコマ落ちがないことを確認します。複数の IP アドレスが検出された場合は、LAN の競合を解消して正しいデバイスを選択してください。
+  </Step>
+</Steps>
+
+### インターフェース概要
+
+<Frame caption="V2 Pro ホストアプリケーションのインターフェース">
+  ![メニュー、輪郭地図、上向きビュー、位置推定状態を示す V2 Pro ホストアプリケーション](/images/products/v-series-v2-pro-overview-v2-pro-interface.avif)
+</Frame>
+
+1. **赤色領域:** マッピング、再位置推定、地図管理などの機能メニュー。
+2. **青色領域:** 読み込んだ 2D 輪郭地図と車両位置推定アイコン。
+3. **緑色領域:** 上向きカメラのライブ RGB 画像。
+4. **黄色領域:** 再位置推定信号強度、車両位置・速度、カーソル座標。信号色は緑（良好）、青（通常）、赤（不良）です。
+
+### マップを作成
+
+<Steps>
+  <Step title="マッピングを開始する">
+    メニューで **Start mapping** を選択します。
+
+    <Frame>
+      ![V2 Pro ホストアプリケーションでマッピングを開始](/images/products/v-series-v2-pro-overview-start-mapping.avif)
+    </Frame>
+  </Step>
+  <Step title="地図名を入力する">
+    地図名には英字、数字、アンダースコアを使用できますが、数字で始めることはできません。
+  </Step>
+  <Step title="地図データを取得する">
+    並進速度を `0.5 m/s` 以下、角速度を `20°/s` 以下に保ちます。インターフェースには LiDAR 輪郭と上向きカメラ画像が表示されます。
+
+    <Frame caption="マッピングインターフェース">
+      ![LiDAR 輪郭と上向き画像を表示する V2 Pro マッピングインターフェース](/images/products/v-series-v2-pro-overview-mapping-interface.avif)
+    </Frame>
+
+    できれば `0.2 m/s` 未満で、ゆっくり安定して走行します。直線経路と直角の旋回を使用し、同じ経路の反復やランダムな振動を避けてください。同方向の経路は約 3 分の 1 を重ね、平行経路の間隔は約 `2 m` とします。対象エリアまたは車両経路を可能な限り網羅してください。
+
+    <Frame caption="Recommended mapping path">
+      ![Recommended parallel path for V2 Pro mapping](/images/products/v-series-v2-pro-overview-recommended-mapping-path.avif)
+    </Frame>
+  </Step>
+  <Step title="マッピングを完了する">
+    エリアをスキャンした後、メニューで **Finish mapping** を選択します。処理時間はスキャンしたエリアにより異なります。
+  </Step>
+</Steps>
+
+### マップを配置して適用
+
+<Steps>
+  <Step title="背景地図をデプロイする">
+    **Map management** を開き、背景地図リストで新しい地図を見つけて **Deploy** を選択します。ホストで使用するすべての地図をデプロイしてください。背景地図は編集、エクスポート、削除できます。
+
+    <Frame caption="背景地図管理">
+      ![V2 Pro の背景地図管理インターフェース](/images/products/v-series-v2-pro-overview-background-map-management.avif)
+    </Frame>
+  </Step>
+  <Step title="ホスト地図を適用する">
+    **Host maps** で **Apply** を選択します。地図を適用した後、反映させるためにコントローラーを再起動してください。ホスト地図はエクスポートまたは削除できます。
+
+    <Frame caption="ホスト地図管理">
+      ![V2 Pro のホスト地図管理インターフェース](/images/products/v-series-v2-pro-overview-host-map-management.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+### 再ローカライズとパラメータ設定
+
+<Frame caption="再位置推定インターフェース">
+  ![LiDAR 点群と輪郭地図を使用した V2 Pro の再位置推定](/images/products/v-series-v2-pro-overview-relocalization.avif)
+</Frame>
+
+**Relocalization** でマウスをドラッグし、おおよその車両姿勢を指定して LiDAR 点群を輪郭地図に一致させます。再位置推定に成功すると、位置推定タイムアウトのメッセージは消えます。
+
+<Frame caption="パラメーター設定インターフェース">
+  ![V2 Pro のシャーシ位置推定・センサー外部パラメーター設定](/images/products/v-series-v2-pro-overview-parameter-configuration.avif)
+</Frame>
+
+シャーシ位置推定パラメーター、および LiDAR と上向きカメラの外部キャリブレーション値を確認・設定してください。
+
+## トラブルシューティング
+
+| 問題 | 推奨する対処 |
+| --- | --- |
+| デバイスを開いても応答しない | ファイアウォール規則を確認し、コントローラー通信がブロックされていないことを確認します。 |
+| ホストアプリケーションで複数の IP アドレスが検出される | LAN の IP 競合を解消し、正しいデバイスアドレスを選択します。 |
+| ストリームが不安定 | 適切な Gigabit Ethernet ケーブルを使用してください。低速なケーブルでは、初期データ転送が不安定になることがあります。 |
+| ホストアプリケーションが正しく起動しない | 読み取り・書き込み権限のあるディレクトリにソフトウェアをインストールします。 |
+
+## 安全と適合性
+
+### レーザー安全
+
+<Warning>
+  本機器は動作中に不可視のレーザー光を照射します。照射部を目で見ないでください。安全ラベルは明瞭で損傷のない状態に保ってください。
+</Warning>
+
+- 本製品は Class 1 レーザーを使用しています。
+- 通常の使用条件では、EN 60825 に従って使用する限り、照射レーザーは人体に危険を及ぼしません。
+- 設置、保守、トラブルシューティングでは、現場のレーザー安全手順に従ってください。光学部品を分解または改造しないでください。
+
+<Frame caption="レーザー安全ラベル">
+  ![V2 Pro のレーザー安全ラベル](/images/products/v-series-v2-pro-overview-laser-safety.avif)
+</Frame>
+
+### リチウム電池を含む
+
+<Warning>
+  本機器にはリチウム電池が内蔵されています。損傷、短絡、圧壊、穿刺、火気への接近は、火災などの危険を引き起こすおそれがあります。
+</Warning>
+
+- 内蔵電池を自身で分解、改造、交換しないでください。
+- 本機器を強い衝撃、圧壊、穿刺、高温、火気から保護してください。
+- リチウム電池を含む機器の輸送、廃棄、リサイクルでは、地域の要件に従ってください。
+
+<Frame caption="リチウム電池ラベル">
+  ![V2 Pro のリチウム電池ラベル](/images/products/v-series-v2-pro-overview-lithium-battery-notice.avif)
+</Frame>
+
+## 関連ドキュメント
+
+<Columns cols={2}>
+  <Card title="V2 純粋位置推定操作ガイド" icon="book-open" href="/ja/developers/v2-localization/pure-localization-guide">
+    V2 純粋位置推定バージョンの設定と使用方法を確認します。
+  </Card>
+
+  <Card title="V2 Pro UDP 通信プロトコル" icon="network" href="/ja/developers/v2-localization/udp-protocol">
+    UDP で位置推定データとデバイスデータを取得します。
+  </Card>
+
+  <Card title="V2 外部 LiDAR プロトコル" icon="scan-line" href="/ja/developers/v2-localization/external-lidar">
+    外部 LiDAR デバイスを統合します。
+  </Card>
+
+  <Card title="V2 ビジュアル位置推定 HTTP プロトコル" icon="globe" href="/ja/developers/v2-localization/http-protocol">
+    HTTP で位置推定モジュールと通信します。
+  </Card>
+
+  <Card title="V2 Service ROS1" icon="box" href="/ja/developers/ros/v2-ros1">
+    V2 Service ROS1 のサンプルです。
+  </Card>
+
+  <Card title="V2 Service ROS2" icon="box" href="/ja/developers/ros/v2-ros2">
+    V2 Service ROS2 のサンプルです。
+  </Card>
+
+  <Card title="最小構成 ROS ガイド" icon="rocket" href="/ja/developers/ros/quickstart">
+    ROS 統合をすばやく開始します。
+  </Card>
+</Columns>

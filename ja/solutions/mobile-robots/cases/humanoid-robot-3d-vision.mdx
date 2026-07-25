@@ -1,0 +1,47 @@
+---
+title: "導入事例: ヒューマノイドロボット向け 3D ビジョン"
+sidebarTitle: ヒューマノイドロボットの 3D ビジョン
+description: VersaBot の事例。MRDVS のビジョンコンポーネントが、ナビゲーション、障害物認識、把持をどのように支えるかを紹介します。
+---
+
+VersaBot は、産業および物流用途向けのヒューマノイドロボットです。本事例では、経路ナビゲーション、障害物認識、マテリアルハンドリングに MRDVS の 3D ビジョンコンポーネントをどのように使用しているかを紹介します。
+
+<Frame>
+  <iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=113184803397479&bvid=BV1u5smeKEJ4&cid=25968184528&p=1&spaceId=d7fcd0d4-0c05-4f75-837f-194a5fede831" title="VersaBot ヒューマノイドロボットのビジョンデモ" className="w-full aspect-video rounded-xl" allowFullScreen />
+</Frame>
+
+<Frame>
+  ![VersaBot ヒューマノイドロボットの 3D 認識システム](/images/solutions/mobile-robots-cases-humanoid-robot-3d-vision-case-sharing-3d-vision-solution-empowers-humanoid-robots-precise-grasping.avif)
+</Frame>
+
+## Visual SLAM ナビゲーション
+
+ロボットは、経路計画とナビゲーション時のマッピングおよび自己位置推定に T シリーズの Visual SLAM カメラを使用します。
+
+- **マッピングと自己位置推定:** 稼働中に環境の特徴を取得し、地図を生成してロボットの姿勢を推定します。
+- **動的環境への適応:** 人、設備、通路の変化に応じて、経路計画用の環境データを提供します。
+- **長距離認識:** 元のプロジェクト資料では、認識距離は `30 m` とされています。実用距離は、設置条件、環境特徴、現地検証に基づいて確認してください。
+
+## RGB-D 障害物認識
+
+人と設備が共存する作業空間で、ロボットは S シリーズ RGB-D センサーを使用し、3D 環境データとテクスチャデータを取得します。
+
+- **障害物認識:** 深度データと RGB データから、障害物の位置、カテゴリ、属性を検出します。
+- **回避用入力:** 認識結果を上位ポリシーに渡し、迂回、減速、停止に利用します。
+- **複数ロボットの導入:** カメラの設置位置、視野の重なり、現地での干渉を検証してください。
+
+## 3D 把持認識
+
+ロボットは H シリーズの構造化光カメラを使用し、把持時の物体形状および姿勢推定用に点群を取得します。
+
+- **3D 位置推定:** 把持に必要な位置と姿勢を推定します。
+- **複雑な物体:** 不規則な物体や積み重ねられた物体の 3D 認識に対応します。
+- **照明条件:** 実際の性能は、材質、表面反射率、環境光、カメラ設置条件に依存します。
+
+<Frame>
+  ![VersaBot の 3D 把持とビジョン認識](/images/solutions/mobile-robots-cases-humanoid-robot-3d-vision-case-sharing-3d-vision-solution-empowers-humanoid-robots-precise-grasping-02.avif)
+</Frame>
+
+<Info>
+  このページでは、本事例における認識機能の役割を説明します。モーション制御、タスク計画、機能安全、およびロボット全体のシステムレベルの受入れは、ロボットプラットフォーム側が担当します。
+</Info>

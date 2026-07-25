@@ -1,0 +1,593 @@
+---
+title: 検出アルゴリズムの導入と結果連携
+sidebarTitle: 検出アルゴリズムの導入
+description: 人物、保管場所、体積検出アルゴリズムを導入し、カメラ外部パラメータと各種設定を行い、TCP、UDP、HTTP、Modbus TCPで結果を取得します。
+---
+
+このガイドでは、MRDVSの人物検出、保管場所検出、体積検出アルゴリズムについて、導入、校正、設定、結果連携を説明します。アルゴリズムはカメラ上で動作し、アルゴリズム用上位アプリケーションは設定、アップグレード、結果確認に使用します。
+
+<Info>
+  アルゴリズムファームウェアとアルゴリズム用上位アプリケーションはプロジェクトごとに提供されます。アルゴリズムファームウェアを書き込む前に、カメラでMDSファームウェアが動作していることを確認してください。プロジェクトおよびカメラモデルに対応するインストールパッケージを使用します。
+</Info>
+
+## 対応範囲
+
+### システム構成
+
+| コンポーネント | 機能 |
+| --- | --- |
+| 3Dカメラ | RGB画像と点群を取得し、検出アルゴリズムをカメラ上で実行します。 |
+| アルゴリズム用上位アプリケーション | アルゴリズム設定、外部パラメータ校正、結果表示、アルゴリズムファームウェアのアップグレードを行います。 |
+| 産業用PCまたは上位システム | 上位アプリケーションを実行するか、ネットワークインターフェースで結果を取得します。 |
+| LiDAR | `mid360`。元のレーダーベースソリューションの設定で使用します。 |
+
+### アルゴリズムとカメラ
+
+| アルゴリズム | 対応カメラ |
+| --- | --- |
+| 人物検出 | M4 Pro |
+| 保管場所検出 | S10 Pro |
+| 体積検出 | S10およびS10 Pro |
+
+製品情報は[S10 3Dカメラ製品ページ](/ja/products/s-series/s10-overview)を参照してください。
+
+### 上位アプリケーションの動作環境
+
+| 項目 | 推奨構成 |
+| --- | --- |
+| オペレーティングシステム | Windows 10以降 |
+| CPU | Intel® Core™ i5（第7世代）以降 |
+| メモリ | 8 GB以上 |
+| GPU | Intel® UHD Graphics、またはそれ以上の性能を持つ内蔵・外付けGPU |
+
+## ハードウェアとネットワークの導入
+
+### カメラを設置する
+
+設置後の移動や振動を防ぐため、剛性のあるブラケットを使用してください。人物検出では通常、水平設置または角度が30°以下の設置を使用します。
+
+<Frame>
+  ![カメラブラケットの設置例](/images/developers/deployment-algorithm-detection-camera-installation-methods.avif)
+</Frame>
+
+### デバイスを接続する
+
+<Steps>
+  <Step title="電源とネットワークを接続する">
+    安定化した24 V DC電源をカメラへ供給します。Cat6AまたはCat7ケーブルで、カメラをギガビットスイッチまたはコントローラーに接続します。
+  </Step>
+  <Step title="複数カメラを導入する">
+    CAD図面で指定された高さと位置に各カメラを設置します。すべてのカメラをギガビットスイッチ経由で接続し、各カメラの電源およびリンク状態を確認します。
+  </Step>
+  <Step title="テスト対象を準備する">
+    外部パラメータの校正と領域設定の前に、検出対象の人物、パレット、または荷物をカメラ視野内に配置します。
+  </Step>
+</Steps>
+
+### ホストネットワークを設定する
+
+ホストコンピューターとカメラを同じサブネットに配置します。元の例では次の設定を使用します。
+
+| 項目 | 例 |
+| --- | --- |
+| ホストIPアドレス | `192.168.100.xxx` |
+| サブネットマスク | `255.255.255.0` |
+| デフォルトゲートウェイ | `192.168.100.1` |
+
+<Steps>
+  <Step title="アダプター設定を開く">
+    Windowsで**Control Panel → Network and Sharing Center → Change adapter settings**を開き、カメラに接続したEthernetアダプターを選択します。
+  </Step>
+  <Step title="IPv4を設定する">
+    \*\*Internet Protocol Version 4 (TCP/IPv4)\*\*を開き、**Use the following IP address**を選択して、カメラのサブネット内で未使用の固定アドレスを入力します。
+  </Step>
+  <Step title="接続を確認する">
+    設定を保存し、ギガビットリンクを確認してから、上位アプリケーションでカメラを検索または開きます。
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Windowsのネットワークと共有センター](/images/developers/deployment-algorithm-detection-camera-network-configuration.avif)
+  </Frame>
+
+  <Frame>
+    ![WindowsのIPv4固定アドレス設定](/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  本番ネットワークでファイアウォールを無効にしたままにしないでください。上位アプリケーションが接続できない場合は、先に必要なアプリケーションまたはポートの規則を作成します。ファイアウォールの一時無効化は信頼できるデバッグネットワークでのみ行い、後で保護を復元してください。
+</Warning>
+
+## ソフトウェアのインストールとアップグレード
+
+### 上位アプリケーションをインストールする
+
+1. [ソフトウェアダウンロード](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "ソフトウェアダウンロード")ページからカメラ用上位アプリケーションを取得します。
+2. カメラ用上位アプリケーションはシステムドライブ以外にインストールします。
+3. プロジェクト提供のアルゴリズム用上位アプリケーションファイルを、カメラ用上位アプリケーションディレクトリ内の`Tools`フォルダーへコピーします。同名ファイルを置き換え、実行ファイルをダブルクリックして起動します。
+
+<Frame>
+  ![カメラ用上位アプリケーションのインストール](/images/developers/deployment-algorithm-detection-picture-2.avif)
+</Frame>
+
+アルゴリズム用上位アプリケーションのみを更新する場合は、`.exe`ファイルを提供版へ置き換えます。
+
+### アルゴリズムファームウェアをアップグレードする
+
+<Warning>
+  書き込み中はカメラが再起動します。電源やネットワークを切断したり、上位アプリケーションを閉じたりしないでください。パッケージはカメラモデル、MDSファームウェアバージョン、プロジェクトのアルゴリズムに対応している必要があります。
+</Warning>
+
+<Tabs>
+  <Tab title="カメラ用上位アプリケーション">
+    1. `LxCameraViewer.exe`を起動し、カメラを開きます。
+    2. **Basic tools → Function settings → Firmware upgrade**を選択します。
+    3. 提供された検出アルゴリズムファイルを選択し、**Run**を実行します。
+  </Tab>
+  <Tab title="アルゴリズム用上位アプリケーション">
+    1. デバイス一覧で対象カメラを選択します。
+    2. **Upgrade firmware**を選択し、検出アルゴリズムファイルを開きます。
+    3. カメラが再びデバイス一覧に表示されるまで待ちます。
+  </Tab>
+</Tabs>
+
+再起動後にカメラが再表示されれば、書き込みは完了です。アルゴリズム用上位アプリケーションでカメラ背景が緑色の場合、カメラが接続済みでアルゴリズムを使用できます。
+
+## アルゴリズム用上位アプリケーション
+
+### 起動と状態
+
+`LxApplicationViewer.exe`を起動します。デバイス一覧の緑色アイコンは接続済みカメラを示します。デバイスを選択すると、現在のビューをRGBモードと点群モードで切り替えられます。標準ユーザーは結果を表示でき、管理者はカメラとアルゴリズムのパラメータを変更できます。
+
+<Frame>
+  ![アルゴリズム用上位アプリケーションのメインウィンドウ](/images/developers/deployment-algorithm-detection-administrator.avif)
+</Frame>
+
+### 基本ツール
+
+| 機能 | 説明 |
+| --- | --- |
+| ユーザー切替 | 権限レベルを切り替えます。管理者はカメラとアルゴリズムのパラメータを設定できます。 |
+| Ideal ground | 基準水平面を表示または非表示にします。 |
+| Extrinsic ground | 外部パラメータ校正から計算した地面を表示または非表示にします。 |
+| Display cache | 変更しないでください。 |
+| Display algorithm | 現在有効なアルゴリズムを表示します。 |
+| Export saved images | 保存済み画像をエクスポートします。 |
+| Historical playback | RGB画像とToFデータログを表示します。 |
+| Switch application algorithm | 実行するアルゴリズムを選択し、**Save and send**を選択します。 |
+| Display detection results | 現在のアルゴリズム出力を表示します。 |
+
+### ステータスバーと再生
+
+| 機能 | 説明 |
+| --- | --- |
+| RGB | RGB画像を表示します。 |
+| Point cloud | 点群を表示します。 |
+| Stop algorithm | 現在のアルゴリズムを停止します。カメラを再度起動するまで自動再開しません。 |
+| Upgrade firmware | アルゴリズムファームウェアのアップグレード手順を開きます。 |
+| Restart camera | 選択したカメラを再起動します。 |
+
+状態が変化すると、ソフトウェアは RGB フレーム 1 枚と点群データを保存します。再生データはアルゴリズム間で共有されません。再生時刻には、ホストコンピューターのシステム時刻ではなく、カメラの内部クロックが使用されます。
+
+デバイスの背景が黄色の場合、または緑色でも画像が更新されない場合は、自動更新を有効にして画像取得を再開してください。
+
+## Extrinsic calibration
+
+### カメラ設定
+
+| 設定 | 説明 |
+| --- | --- |
+| カメラ名 | 複数カメラの導入時にカメラを識別します。 |
+| Simulation mode | 内部機能です。無効のままにしてください。 |
+| Image-save mode | アルゴリズム画像データをカメラに保存します。 |
+| Image-acquisition mode | `MDS`はカメラアクセスを占有しません。`SDK`は占有するため、アルゴリズム実行中は上位アプリケーションからカメラを開けません。 |
+| `x`、`y`、`z` | カメラの外部位置。`z`は地面からのカメラ高さです。 |
+| `roll`、`pitch`、`yaw` | カメラ外部パラメータの姿勢角。 |
+| Ideal ground | デフォルト値を維持します。 |
+| Read configuration from camera | 現在のカメラ設定を読み取ります。 |
+| Save and send | 変更をカメラに書き込みます。未保存のパラメータは反映されません。 |
+| Extrinsic calibration | カメラ高さと姿勢を校正します。 |
+
+<Tabs>
+  <Tab title="垂直設置">
+    1. **Camera configuration**を開きます。校正前に`x`、`y`、`z`、`roll`、`pitch`、`yaw`を`0`に設定し、**Save and send**を選択します。
+    2. **Extrinsic calibration**を選択します。校正に成功したら、パラメータパネルで結果を確認します。
+
+    <Frame>
+      ![垂直設置の外部パラメータ校正](/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif)
+    </Frame>
+  </Tab>
+  <Tab title="水平設置">
+    1. **Camera configuration**を開き、パラメータ校正ページへ移動します。
+    2. 点群の地面を座標系に合わせます。赤い`X`軸と緑の`Y`軸は地面上にあり、青い`Z`軸は地面に垂直で上向きです。
+    3. 通常は`roll`と`z`のみを先に調整し、他の値は`0`にします。確認後に**Save and send**を選択します。
+
+    <Frame>
+      ![水平設置の外部パラメータ校正結果](/images/developers/deployment-algorithm-detection-1.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## アルゴリズムパラメータリファレンス
+
+アルゴリズムパラメータを変更した後は、**Save and send**を選択します。現場テストで調整が必要と確認されない限り、フィルターパラメータはデフォルト値を維持してください。
+
+<Tabs>
+  <Tab title="人物検出">
+    <Frame>
+      ![人物検出のグローバル設定](/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif)
+    </Frame>
+
+    | パラメータ | 説明 |
+    | --- | --- |
+    | アルゴリズムバージョン | 現在のアルゴリズムバージョン。 |
+    | 検出頻度 | 画像と結果の更新頻度。 |
+    | 時間フィルター | `3`の場合、同一結果が3回連続して初めて有効とみなします。 |
+    | カーネルサイズ | 2Dモルフォロジー演算のカーネルサイズ。値を大きくするとターゲットが縮小し、背景が拡大します。 |
+    | 距離しきい値 | 点が類似するか、同じクラスに属するかを判定します。 |
+    | 最小点数 | セマンティッククラスタリングに必要な最小点群数。 |
+    | 非セマンティック最小点数 | 非セマンティッククラスタリングに必要な最小点群数。 |
+    | 近傍サイズ | 点近傍の範囲を定義し、クラスタリングの粒度に影響します。 |
+    | 回転検出 | カメラ設置方向に合わせます。ロゴが下向きの向きを`0°`の基準にします。 |
+
+    | 領域パラメータ | 説明 |
+    | --- | --- |
+    | 領域の追加 / 削除 | 人物検出領域を作成または削除します。 |
+    | Current box | 有効な検出領域を選択します。 |
+    | `X`、`Y`、`Z`の最小値 / 最大値 | 領域の3D境界を定義します。 |
+    | ID | 複数領域を区別するための領域名。 |
+    | ドラッグで領域を調整 | 左マウスボタンで`x`・`y`方向へ、右ボタンで`z`方向へドラッグします。 |
+
+    <Frame>
+      ![人物検出領域の設定](/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif)
+    </Frame>
+  </Tab>
+  <Tab title="保管場所検出">
+    <Frame>
+      ![保管場所検出のグローバル設定](/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif)
+    </Frame>
+
+    | パラメータ | 説明 |
+    | --- | --- |
+    | アルゴリズムバージョン | 現在のアルゴリズムバージョン。 |
+    | AIフィルター | セマンティックセグメンテーション。現在は利用できません。 |
+    | 検出頻度 | 結果の更新頻度。 |
+    | 整列角度 | 整列チェック有効時に許容する荷物の最大角度ずれ。 |
+    | 整列チェック | 角度ずれと境界状態を確認します。検出物は黄色の体積ボックスで表示されます。 |
+    | 時間フィルター | 一貫した結果が複数回連続した場合にのみ有効状態を出力します。 |
+    | 最小点数 | この値未満の点数の物体は無視します。 |
+
+    | Region mode | Configuration |
+    | --- | --- |
+    | 2D RGB | ピクセル `X` と `Y` の最小値・最大値で保管位置を定義します。セマンティックモードとセマンティックモデルが必要です。 |
+    | 3D 点群 | `X`、`Y`、`Z` の最小値・最大値で位置を定義します。左マウスボタンで `x`・`y` 方向に、右ボタンで `z` 方向にドラッグします。 |
+
+    | 高度な機能 | 説明 |
+    | --- | --- |
+    | Copy current box | 有効な保管位置領域をコピーします。 |
+    | Direction, spacing, count | `X`、`Y`、または `Z` 軸に沿って等間隔のコピーを定義します。 |
+    | Run | 設定から複数の領域を生成します。 |
+    | QR Code calibration | 位置の幅、長さ、`Z_MIN`、`Z_MAX` を入力し、QR コードで校正します。 |
+
+    <Frame>
+      ![3D storage-location region configuration](/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Volume detection">
+    <Frame>
+      ![Global volume-detection configuration](/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif)
+    </Frame>
+
+    | パラメーター | 説明 |
+    | --- | --- |
+    | アルゴリズムバージョン | 現在のアルゴリズムバージョン。 |
+    | トリガーモード | 有効にすると、トリガーごとに 1 枚の画像と結果を取得します。 |
+    | 上向き検出 | 逆向きのカメラ座標系を使用して検出します。 |
+    | 検出頻度 | 画像と結果の更新頻度。 |
+    | 検出平面距離 | 物体の下面の基準位置（mm）。 |
+    | 近傍数 / 距離しきい値 | フィルターパラメーターです。ほとんどの導入では既定値を維持してください。 |
+    | 法線ベクトルフィルターしきい値 | 傾いた点群平面をフィルタリングします。元の推奨値は `60` です。 |
+    | 法線ベクトル距離しきい値 | フィルターパラメーターです。元の推奨範囲は `20–30` です。 |
+    | 最小点数 | この値より点数が少ない物体は無視されます。 |
+    | 最小 `X`、`Y`、`Z` | 長さ、幅、高さの最小しきい値（mm）。 |
+
+    | 領域パラメーター | 説明 |
+    | --- | --- |
+    | 最小 / 最大 `X`、`Y`、`Z` | 体積検出領域の 3D 境界を定義します。 |
+
+    <Frame>
+      ![Volume-detection region configuration](/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## アルゴリズムをデプロイする
+
+点群モードに切り替え、画像エリア上でスクロールして点群データを表示します。
+
+### 人物検出
+
+<Steps>
+  <Step title="水平設置を校正する">
+    `X` 軸と `Y` 軸を地面の点群に合わせます。`Z` 軸は地面に垂直で、上向きでなければなりません。
+  </Step>
+  <Step title="グローバルパラメーターを設定する">
+    **Human detection** を開きます。通常は **Rotation detection** のみを設定します。カメラの時計回り回転は `0°`、`90°`、`180°`、`270°` に対応します。
+  </Step>
+  <Step title="検出領域を作成する">
+    **Add detection region** を選択し、`X`、`Y`、`Z` の最小値と最大値を設定して、領域をターゲット上に移動します。元の例では `1000 × 1000 × 2000 mm` の領域を使用しています。
+  </Step>
+  <Step title="保存して確認する">
+    **Save and send** を選択し、人物が領域を通過するテストを実施して、ステータスバーまたは履歴再生で結果を確認します。
+  </Step>
+</Steps>
+
+| Matching rule | No person | Person | Obstacle | Person and obstacle |
+| --- | --- | --- | --- | --- |
+| Depth only | `0` | `2` | `2` | `2` |
+| Semantic plus depth | `0` | `1` | `0` | `1` |
+
+深度のみモードでは、領域内のすべての物体を報告します。セマンティック＋深度モードでは、人として分類されたクラスターのみを報告します。
+
+### 保管位置検出
+
+<Steps>
+  <Step title="カメラを校正する">
+    外部パラメーター校正手順に従います。`X` と `Y` を地面に合わせ、`Z` を垂直かつ上向きに保ちます。
+  </Step>
+  <Step title="グローバルパラメーターを設定する">
+    現場に合わせて **Alignment check**、**Alignment angle**、**Minimum point count** を設定します。荷物を指定角度で配置する必要がある場合は、アラインメントチェックを有効にしてください。
+  </Step>
+  <Step title="保管位置を作成する">
+    点群モードで **Add storage location** を選択し、上面図に切り替えて `X` を押すと描画を開始または停止できます。パレット上で矩形をドラッグし、`X`、`Y`、`Z` の境界を調整します。`X` をもう一度押すと描画モードを終了します。
+  </Step>
+  <Step title="保存して確認する">
+    **Save and send** を選択します。2D RGB または 3D 点群モードで位置を設定し、ステータスバーの `Result` を確認します。
+  </Step>
+</Steps>
+
+<Frame>
+  ![Drawing a storage-location region in point-cloud mode](/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif)
+</Frame>
+
+| 保管位置状態 | `Result` |
+| --- | --- |
+| 空 | `0` |
+| 占有、または占有かつ整列済み | `1` |
+| アラインメントしきい値を超える角度で占有 | `2` |
+| 占有かつ位置境界外 | `3` |
+
+規則的なレイアウトでは、**Copy current box** を使用して、固定方向・固定間隔で位置を作成します。QR コード検証が必要な場合は、**QR Code calibration** を使用して位置寸法と深度範囲を設定します。
+
+### 体積検出
+
+<Steps>
+  <Step title="垂直設置を校正する">
+    体積検出は上から下へ実行します。キャリブレーション後、`Z` 軸は下向きになり、`X`/`Y` 平面は地面と平行になります。
+  </Step>
+  <Step title="検出平面を設定する">
+    床に直接置かれた物品では、検出平面を床の高さに設定します。パレット上の物品だけを測定するには、平面をパレット点群に合わせます。
+  </Step>
+  <Step title="最小寸法と領域を設定する">
+    小さなターゲットを除外するため、`X`、`Y`、`Z` の最小値を設定します。次に、検出平面と荷物の寸法に応じて領域境界を設定します。
+  </Step>
+  <Step title="保存して確認する">
+    **Save and send** を選択し、領域内に 1 つ以上の物体を置いて、返される長さ、幅、高さ、個数を確認します。
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Floor detection plane for volume detection](/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif)
+  </Frame>
+
+  <Frame>
+    ![Single-object volume-detection result](/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif)
+  </Frame>
+</Columns>
+
+単一トリガー取得を使用するには、**Volume detection** で **Trigger mode** を有効にして **Save and send** を選択します。次に、**Basic tools** で **Single trigger** を選択するか、TCP または UDP で `TM_TRIGGER` を送信します。
+
+## 通信インターフェース
+
+<Note>
+  例中の IP アドレスは説明用です。現場のカメラアドレスに置き換え、上位システムに統合する前に、ネットワーク、アルゴリズム状態、結果形式を確認してください。
+</Note>
+
+### 転送方法
+
+| プロトコル | ポート | リクエスト | 用途 |
+| --- | --- | --- | --- |
+| TCP | `14951` | `RESULT_UPDATE` | Get the current algorithm result. |
+| UDP | `14950` | `RESULT_UPDATE` | Get the current algorithm result. |
+| HTTP | `14952` | `RESULT_UPDATE` | Get the algorithm result as JSON. |
+| TCP / UDP | Result port | `TM_TRIGGER` | Run one triggered volume detection and return the result. |
+| Modbus TCP | `16502` | Read holding registers | Read storage-location status. |
+
+### HTTP 結果リクエスト
+
+上位システムはビジョンエンドポイントに結果リクエストを送信し、エンドポイントは JSON 文字列を返します。HTTP クライアントではプロジェクト提供のリクエストヘッダーと、以下のリクエスト本文を使用してください。
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  カメラに現在のアルゴリズム結果を返すよう要求します。
+</ParamField>
+
+### 共通レスポンスフィールド
+
+<ResponseField name="IP" type="string" required>
+  データを生成したカメラの IP アドレス。
+</ResponseField>
+
+<ResponseField name="nick_name" type="string" required>
+  カメラ名。カメラ設定で変更できます。
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  リターンコード。`0` は成功を示します。
+</ResponseField>
+
+<Tabs>
+  <Tab title="Human detection (SG)">
+    <ResponseField name="SG" type="object" required>
+      検出領域 ID をキーとする状態オブジェクト。`0` はターゲットなし、`1` は人物検出、`2` は深度ルールのみで物体を検出したことを示します。
+    </ResponseField>
+
+    <ResponseField name="__object_details" type="string[]">
+      クラスターの詳細。各項目は JSON 文字列であり、再度デシリアライズする必要があります。
+    </ResponseField>
+
+    <ResponseField name="SG_DATA_TIME" type="string">
+      人物検出データのタイムスタンプ。
+    </ResponseField>
+
+    <ResponseField name="SG_RES_TIME" type="string">
+      人物検出結果のタイムスタンプ。
+    </ResponseField>
+
+    クラスター詳細には、`rbx2d`、`rby2d`、`tlx2d`、`tly2d`（2D ボックス座標）、`semantic_index`、`traceID`、`x_min`、`x_max`、`y_min`、`y_max`、`z_min`、`z_max`（3D ボックス境界）が含まれます。
+  </Tab>
+  <Tab title="Storage-location detection (SS)">
+    <ResponseField name="SS" type="object" required>
+      位置 ID をキーとする状態オブジェクト。`0` は空、`1` は占有、`2` は角度ずれありで占有、`3` は占有かつ境界外を示します。
+    </ResponseField>
+
+    <ResponseField name="X__detail__info" type="number[]">
+      位置 `X` の詳細: 中心 `x`、`y`、`z`、長さ、幅、高さ、バウンディングボックスからの角度ずれ。2D で作成した位置はすべて `-1` を返します。
+    </ResponseField>
+
+    <ResponseField name="SS_DATA_TIME" type="string">
+      保管位置データのタイムスタンプ。
+    </ResponseField>
+
+    <ResponseField name="SS_RES_TIME" type="string">
+      保管位置結果のタイムスタンプ。
+    </ResponseField>
+  </Tab>
+  <Tab title="Volume detection (TM)">
+    <ResponseField name="TM" type="object[]" required>
+      検出領域内の完全な体積ボックスの配列。
+    </ResponseField>
+
+    <ResponseField name="angle" type="number">
+      体積ボックスの角度オフセット。
+    </ResponseField>
+
+    <ResponseField name="cx" type="number">
+      体積ボックス中心の `x` 座標。
+    </ResponseField>
+
+    <ResponseField name="cy" type="number">
+      体積ボックス中心の `y` 座標。
+    </ResponseField>
+
+    <ResponseField name="cz" type="number">
+      体積ボックス中心の `z` 座標。
+    </ResponseField>
+
+    <ResponseField name="length" type="number">
+      物体の長さ。
+    </ResponseField>
+
+    <ResponseField name="width" type="number">
+      物体の幅。
+    </ResponseField>
+
+    <ResponseField name="height" type="number">
+      物体の高さ。
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      セマンティックタイプ。
+    </ResponseField>
+
+    <ResponseField name="valid" type="boolean">
+      結果が有効かどうか。
+    </ResponseField>
+
+    <ResponseField name="TM_DATA_TIME" type="string">
+      体積検出データのタイムスタンプ。
+    </ResponseField>
+
+    <ResponseField name="TM_RES_TIME" type="string">
+      体積検出結果のタイムスタンプ。
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+### 人物検出レスポンス例
+
+```json
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
+```
+
+### Modbus TCP（保管位置検出）
+
+結果は保管位置 ID 順に並び、先頭 16 件までが返されます。
+
+| 設定 | 値 |
+| --- | --- |
+| ポート | `16502` |
+| リッスンアドレス | `0.0.0.0`（すべてのネットワークインターフェース） |
+| レジスタ数 | `16` |
+| 開始アドレス | `0x0100` |
+| バイト順序 | ビッグエンディアン |
+
+| レジスター | 内容 | データ形式 |
+| --- | --- | --- |
+| `0x0100 + ID` | 保管位置とマーカーの検出結果 | 2 バイト `uint16_t` |
+| 上位 8 ビット | 保管位置の状態コード | `0–2` |
+| 下位 8 ビット | マーカー状態コード | `0–2`。この機能は現在利用できないため、保管位置状態コードと同じ意味です。 |
+
+| 保管位置状態 | 意味 | 条件 |
+| --- | --- | --- |
+| `0` | 空 | 物品またはパレットがありません。 |
+| `1` | 正常に占有 | 物品が要件どおりに配置されています。 |
+| `2` | 異常に占有 | 荷物のサイズまたは位置が要件外です。 |
+
+| マーカー状態 | 意味 |
+| --- | --- |
+| `0` | マーカー未検出。 |
+| `1` | マーカー検出。 |
+| `2` | マーカー検出エラー。 |
+
+#### 4 番目の保管位置を読み取る
+
+以下の例では、トランザクション ID `0x0001` を使用して、アドレス `0x0104` の保持レジスタを 1 つ読み取ります。レスポンスにはステータス `0x0002` が含まれます。
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
+```
+
+| フィールド | リクエスト値 | 説明 |
+| --- | --- | --- |
+| トランザクション識別子 | `00 01` | クライアントのシーケンス番号。レスポンスは一致する必要があります。 |
+| プロトコル識別子 | `00 00` | 固定の Modbus/TCP 値。 |
+| Length | `00 06` | Number of bytes in the following request fields. |
+| Unit identifier | `FF` | Broadcast mode or device address. |
+| Function code | `03` | Read holding registers. |
+| 開始アドレス | `01 04` | `0x0100 + 4`。 |
+| Register count | `00 01` | Read one register. |
+
+## トラブルシューティング
+
+| Symptom | Priority checks |
+| --- | --- |
+| カメラが見つからない | ホストとカメラが同一サブネットにあること、ネットワークアダプターが Gigabit であること、電源とスイッチのリンクが正常であることを確認します。 |
+| パラメーターが反映されない | 変更後に **Save and send** を選択したことを確認します。 |
+| No algorithm result | Confirm that the correct algorithm firmware was flashed, the device is green, and the algorithm is enabled. |
+| 点群が空、または古い | 点群エリア上でスクロールしてデータを表示します。必要に応じて自動更新を有効にしてください。 |
+| Abnormal location or volume results | Recheck extrinsic-axis directions, detection plane, and region boundaries, then retest with site objects. |

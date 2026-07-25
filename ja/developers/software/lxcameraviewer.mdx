@@ -1,0 +1,824 @@
+---
+title: LxCameraViewerユーザーガイド
+description: LxCameraViewerでMRDVS 3Dカメラに接続して設定し、画像、点群、アプリケーションアルゴリズムの結果を確認します。
+---
+
+LxCameraViewerはカメラの検索と接続、画像と点群の表示、カメラパラメータの設定、アプリケーションアルゴリズムの保守ツールを提供します。
+
+<Info>
+  完全版PDFマニュアル：[LxCameraViewerユーザーマニュアル](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/lxcameraviewer_user_manual.pdf)。
+</Info>
+
+## 概要
+
+LxCameraViewerはMRDVS Camera SDKをベースとし、WindowsとLinuxに対応します。深度、強度、点群、RGB画像の表示・保存、カメラおよびアプリケーションアルゴリズムのパラメータ読出し・設定、IP設定、パケットキャプチャ、通信、ネットワークカード設定ツールへのアクセスに使用します。
+
+## インストールとネットワーク設定
+
+### 推奨システム構成
+
+| 構成項目 | Windows | Linux |
+| --- | --- | --- |
+| オペレーティングシステム | Windows 10（64ビット）またはWindows 11（64ビット） | Ubuntu（64ビット） |
+| メモリ | 4 GB以上 | 4 GB以上 |
+| ネットワークアダプターとケーブル | ギガビットEthernet以上 | ギガビットEthernet以上 |
+
+### IPアドレスとゲートウェイの設定
+
+カメラは固定IPアドレスを使用します。既定IPアドレスは `192.168.100.82` で、既定ゲートウェイは空欄にできます。サブネットマスクはWindowsで `255.255.0.0`、Linuxで `255.255.255.0` を使用します。
+
+カメラに接続するホストコンピューターのEthernetアダプターを `192.168.100.x` に設定します。`x` は `3`～`254` の任意の数値で、カメラIPと重複してはいけません。たとえばカメラIPが `192.168.100.12` の場合、ホストIPは `192.168.100.89` に設定します。
+
+<Frame>
+  ![IPアドレスとゲートウェイの設定](/images/developers/software-lxcameraviewer-ip-address-and-gateway-configuration.avif)
+</Frame>
+
+### ソフトウェアをインストールする
+
+<Steps>
+  <Step title="インストーラーを起動する">
+    `Lanxin-MRDVS-x.x.x.xxxx.exe` をダブルクリックし、アプリによるデバイスへの変更を許可します。
+  </Step>
+  <Step title="言語とインストール先を選択する">
+    インストール言語とパスを選択します。特別な要件がなければ既定パスを使用し、**デスクトップショートカットを作成** を選択します。
+  </Step>
+  <Step title="初回起動する">
+    インストール後、デスクトップアイコンを右クリックし、**管理者として実行** を選択します。
+  </Step>
+</Steps>
+
+<Frame>
+  ![ホストPCへのインストール](/images/developers/software-lxcameraviewer-the-installation-of-the-host-computer.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![ホストPCへのインストール（2）](/images/developers/software-lxcameraviewer-host-computer-installation-2.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![ホストPCへのインストール（3）](/images/developers/software-lxcameraviewer-host-computer-installation-3.avif)
+</Frame>
+
+図3
+
+<Frame>
+  ![ホストPCへのインストール（4）](/images/developers/software-lxcameraviewer-host-computer-installation-4.avif)
+</Frame>
+
+図4
+
+<Frame>
+  ![ホストPCへのインストール（5）](/images/developers/software-lxcameraviewer-host-computer-installation-5.avif)
+</Frame>
+
+図5
+
+### ファイアウォールを設定する
+
+ソフトウェアでカメラを開けない場合は、信頼できるデバッグネットワーク上でカメラ用アダプターのファイアウォールを一時的に無効にします。以下ではWindows 10を例にします。
+
+ソフトウェアを開き、**その他のツール** をクリックします。
+
+<Frame>
+  ![ファイアウォール設定](/images/developers/software-lxcameraviewer-firewall-configuration.avif)
+</Frame>
+
+図1
+
+右側のパネルで **ネットワークカード設定ツール** を選択します。
+
+<Frame>
+  ![ファイアウォール設定（2）](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-2.avif)
+</Frame>
+
+図2
+
+ネットワークカード設定ツールで **開く／閉じる** をクリックします。
+
+<Frame>
+  ![ファイアウォール設定（3）](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-3.avif)
+</Frame>
+
+<img src="/images/developers/software-lxcameraviewer-firewall-configuration-4.avif" alt="ファイアウォール設定（4）" />図3
+
+図4のポップアップはファイアウォールが有効であることを示します。図5のポップアップと図6の右下通知が表示される場合は無効です。
+
+![ファイアウォール設定（5）](/images/developers/software-lxcameraviewer-firewall-configuration-5.avif)
+
+![ファイアウォール設定（6）](/images/developers/software-lxcameraviewer-firewall-configuration-6.avif)
+
+図4、図5
+
+<Frame>
+  ![ファイアウォール設定（7）](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-7.avif)
+</Frame>
+
+図6
+
+この方法で解決しない場合は **ファイアウォール設定ページ** をクリックし、ページが開くまで待ちます。
+
+<Frame>
+  ![ファイアウォール設定（8）](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-8.avif)
+</Frame>
+
+図7
+
+<Warning>
+  本番ネットワークでファイアウォールを無効のままにしないでください。デバッグ後に保護を復元するか、必要なアプリケーション用の規則を作成してください。
+</Warning>
+
+## LxCameraViewerを使用する
+
+### ソフトウェア画面の概要
+
+#### カメラを開く前
+
+初期画面には次の領域があります。
+
+- **List panel**：デバイス一覧、現在の情報、デバイス情報。
+- **Top menu bar**：ツールと画面言語の選択。
+- **画像表示エリア**：点群、深度、強度、RGBビュー。
+- メニューバーをダブルクリックするとウィンドウを最大化または復元できます。メニューバーをドラッグしてウィンドウを移動します。
+
+<Frame>
+  ![ソフトウェア画面の概要（カメラを開く前）](/images/developers/software-lxcameraviewer-software-interface-overview-camera-not-opened.avif)
+</Frame>
+
+#### カメラを開いた後
+
+カメラを開くと、右側に機能バーが表示されます。
+
+- **Basic tools**：画像表示設定、2D設定、3D設定、フィルタリング、ハードウェアインターフェース、取得設定、機能設定。
+- **Application algorithms**：動作モード、アルゴリズムモード、アルゴリズムバージョン、詳細アルゴリズム設定。
+- **Other tools**：ローカル点群の読込み、IP設定、パケットキャプチャ、ネットワークカード設定、通信、GPU有効化、ログレベル。
+
+<Frame>
+  ![ソフトウェア画面の概要（カメラを開いた後）](/images/developers/software-lxcameraviewer-software-interface-overview-camera-turned-on.avif)
+</Frame>
+
+### デバイスを開閉する
+
+#### デバイス一覧
+
+- デバイス一覧は左上にあります。**Refresh** でカメラを検索し、隣のボタンで一覧を折りたたみまたは展開します。
+- 各デバイスには開閉状態、カメラID、IPアドレスが表示されます。カメラIDにカーソルを置くとIPアドレスを確認できます。
+- **Open** または **Close** をクリックして接続を制御します。ボタンには現在の状態も表示されます。
+- 選択中のデバイスは青色で表示されます。ネットワーク帯域が十分なら複数デバイスを開けます。カメラIDをクリックしてデバイスを切り替えます。
+
+<Frame>
+  ![デバイス一覧](/images/developers/software-lxcameraviewer-device-list.avif)
+</Frame>
+
+図1
+
+![デバイス一覧（2）](/images/developers/software-lxcameraviewer-device-list-2.avif)
+
+![デバイス一覧（3）](/images/developers/software-lxcameraviewer-device-list-3.avif)
+
+図2、図3
+
+![デバイス一覧（4）](/images/developers/software-lxcameraviewer-device-list-4.avif)
+
+![デバイス一覧（5）](/images/developers/software-lxcameraviewer-device-list-5.avif)
+
+図4、図5
+
+![デバイス一覧（6）](/images/developers/software-lxcameraviewer-device-list-6.avif)
+
+![デバイス一覧（7）](/images/developers/software-lxcameraviewer-device-list-7.avif)
+
+図6、図7
+
+### 現在の情報
+
+- 現在の情報エリアは画面左中央にあり、カメラ情報、ソフトウェア操作、操作結果、ストリーム結果を表示します。
+- 長い内容は下部スクロールバーまたはマウスホイールで確認します。このエリアは最大25件を保持し、古い項目は上書きされます。
+- 折りたたみボタンをクリックするとエリアを非表示にできます。
+
+<Frame>
+  ![アプリケーション情報](/images/developers/software-lxcameraviewer-application-information.avif)
+</Frame>
+
+図1
+
+![Image related to application information 2](/images/developers/software-lxcameraviewer-application-information-2.avif)
+
+![Image related to application information 3](/images/developers/software-lxcameraviewer-application-information-3.avif)
+
+![Image related to application information 4](/images/developers/software-lxcameraviewer-application-information-4.avif)
+
+図2、図3、図4
+
+### デバイス情報
+
+- デバイス情報エリアは左下にあり、選択したデバイスの次の情報を表示します。
+
+  - シリアル番号
+  - SDKがデバイスを開くために使用するカメラID
+  - IPアドレス
+  - MACアドレス
+  - ソフトウェアバージョン
+  - アルゴリズムバージョン（カメラを開いた後に表示）
+  - ネットワーク速度（閉じているときは切断、開いているときはアダプターとケーブルに応じて100 Mbpsまたはギガビット）
+  - カメラモデル
+  - 画像バージョン（カメラを開いた後に表示）
+- 折りたたみボタンでエリアを非表示にできます。項目を右クリックすると値をコピーできます。
+
+<Frame>
+  ![デバイス情報](/images/developers/software-lxcameraviewer-device-information.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![デバイス情報（2）](/images/developers/software-lxcameraviewer-device-information-2.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![デバイス情報（3）](/images/developers/software-lxcameraviewer-device-information-3.avif)
+</Frame>
+
+図3
+
+### 画像のプレビューと保存
+
+#### プレビュー
+
+- 中央の赤枠は画像、画像データ、画像操作の領域です（図1）。
+- \[Start/Stop Flow\]、\[Single Save\]、\[Depth Map\]、\[Intensity Map\]、\[RGB\]、\[Point Cloud\] は画像操作コントロールです。
+- 中央にはデバイスから取得した深度画像、強度画像、点群画像、RGB画像が表示されます。
+- 下部の白文字はカメラおよび画像データです（図2）。
+
+<Frame>
+  ![プレビュー](/images/developers/software-lxcameraviewer-preview.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![プレビュー（2）](/images/developers/software-lxcameraviewer-preview-2.avif)
+</Frame>
+
+図2
+
+#### 画像ストリーム制御
+
+- \[Start/stop flow\]：デバイスのストリームを開始または停止します。
+- \[Single Save\]：有効なストリームデータの画像を保存します。
+
+  - たとえば図2では深度画像と点群画像のみが保存されます。RGB画像と強度画像は有効でないため保存されません。
+  - 深度・強度画像の拡張子は `.pgm`、RGB画像は `.png`、点群画像は `.pcd` です。
+  - 保存される深度、強度、点群画像は疑似カラーを付加しない元画像です。
+  - 連続保存のため複数回クリックできますが、連続保存は最大3回です。
+- \[Depth Map\]：深度マップを表示（有効化）するかを指定します。
+- \[Intensity graph\]：強度マップを表示（有効化）するかを指定します。
+- \[Point Cloud\]：点群画像を表示（有効化）するかを指定します。
+- \[RGB\]：RGB画像を有効化するかを指定します。
+- RGB／強度マップの選択を解除すると、デバイスはRGB／強度画像の取得を停止します。深度データの取得は、深度マップと点群マップを同時に無効にした場合にのみ停止します。
+- 図2では、デバイスがストリーミングを開始し、深度、点群、RGB、強度の各画像を表示しています。
+- 図3では、デバイスがストリーミングを停止し、画像は表示されません。
+
+<Frame>
+  ![画像ストリーム制御](/images/developers/software-lxcameraviewer-image-flow-control.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![画像ストリーム制御（2）](/images/developers/software-lxcameraviewer-image-flow-control-related-diagram-2.avif)
+</Frame>
+
+図3
+
+#### 画像データ
+
+- カメラ温度を表示します（図4の赤枠）。
+- 深度マップ選択時に深度マップのフレームレートを表示します（図4の緑枠）。
+- 強度マップ選択時に強度マップのフレームレートを表示します（図4の青枠）。
+- RGB画像選択時にRGB画像のフレームレートを表示します（図4の赤紫枠）。
+- RGB画像選択時に、選択したRGB画素の値を表示します（図4の黒枠）。
+- 深度マップ選択時に、選択した深度画素の値を表示します（図4の黄枠）。
+- 強度マップ選択時に、選択した強度画素の値を表示します（図4の橙枠）。
+- 点群マップ選択時に、深度画像で選択した画素に対応する点群値を表示します（図4の紫枠）。
+- 画素を選択していない場合は、既定で `(0,0)` の画素が選択されます。
+- フレームレートが12を超える場合は背景が緑、6を超えて12未満の場合は橙、6未満の場合は赤になります。
+
+<Frame>
+  ![画像データ](/images/developers/software-lxcameraviewer-image-data.avif)
+</Frame>
+
+図4
+
+#### 画像表示
+
+- 次の表示方法を選択できます。
+
+  - 単画面：4種類の画像のうち1つを選択すると単画面表示になります（図5）。
+  - 2画面：2つを選択すると2画面表示になります（図6）。
+  - 3画面：3つを選択すると3画面表示になります（図7）。
+  - 4画面：すべて選択すると4画面表示になります（図8）。
+- 画像上にマウスを置き、ホイールでその位置を中心に拡大・縮小できます。左ボタンを押したままドラッグすると画像を移動できます（図5、図6）。
+- 画像を左クリックして画素を選択し、矢印キーで選択画素を移動できます（図6）。
+
+![画像表示](/images/developers/software-lxcameraviewer-image-display.avif)
+
+![画像表示（2）](/images/developers/software-lxcameraviewer-image-display-2.avif)
+
+図5、図6
+
+![画像表示（3）](/images/developers/software-lxcameraviewer-image-display-3.avif)
+
+![画像表示（4）](/images/developers/software-lxcameraviewer-image-display-4.avif)
+
+図7、図8
+
+#### 点群操作
+
+- 点群画像上で左ボタンを押したままドラッグすると視点を回転できます。
+- 中ボタンを押したままドラッグすると焦点を移動できます。
+- 右ボタンを押したまま上下にドラッグするか、マウスホイールで点群を拡大・縮小できます。
+- 点群画像のショートカットキーは次のとおりです。
+
+|  |  |
+| --- | --- |
+| ショートカットキー | 機能 |
+| W | グリッド表示。Sキーで切り替え |
+| R | カメラビューをリセット |
+| S | サーフェス表示。Wキーで切り替え |
+| P | 線分、サーフェス、メッシュをすべて非表示。WまたはSキーで復元 |
+| U | ユーザー定義関数を呼び出す（無効） |
+| O | 魚眼効果を除去。再度押すと復元 |
+| F | マウス位置へズームし、その位置を回転中心に設定 |
+| G | スケールバーと目盛りを表示。再度押すと非表示 |
+|  |
+| M | 点群の境界ボックスを表示。再度押すと点群を表示 |
+| A | 点群の太さを最小値の1まで減少 |
+| D | 点群の太さを最大6まで増加 |
+| E | 初期視点に戻る |
+| \[ | 平均中心点を焦点に前方ビューへ移動（障害物回避モードでは非対応） |
+| \] | 平均中心点を焦点に後方ビューへ移動（障害物回避モードでは非対応） |
+| ; | 平均中心点を焦点に左側ビューへ移動（障害物回避モードでは非対応） |
+| ‘ | 平均中心点を焦点に右側ビューへ移動（障害物回避モードでは非対応） |
+| . | 平均中心点を焦点に上面ビューへ切り替え（障害物回避モードでは非対応） |
+| / | 平均中心点を焦点に上向きビューへ切り替え（障害物回避モードでは非対応） |
+
+### メニューバー
+
+- メニューバーには \[基本機能\]、\[アプリケーションアルゴリズム\]、\[その他\]、\[言語\] があります（図1）。
+- \[基本機能\] をクリックすると図2のメニューが表示されます。
+- \[アプリケーションアルゴリズム\] をクリックすると図3のメニューが表示されます。
+- \[その他のツール\] をクリックすると図4のメニューが表示されます。
+- \[言語\] をクリックすると図5のメニューが表示されます。
+
+<Frame>
+  ![メニューバー](/images/developers/software-lxcameraviewer-menu-bar.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![メニューバー（2）](/images/developers/software-lxcameraviewer-menu-bar-2.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![メニューバー（3）](/images/developers/software-lxcameraviewer-menu-bar-3.avif)
+</Frame>
+
+図3
+
+<Frame>
+  ![メニューバー（4）](/images/developers/software-lxcameraviewer-menu-bar-4.avif)
+</Frame>
+
+図4
+
+<Frame>
+  ![メニューバー（5）](/images/developers/software-lxcameraviewer-menu-bar-5.avif)
+</Frame>
+
+図5
+
+### 機能バー
+
+#### 表示機能
+
+- 右側の列を折りたたみます（図1の赤枠）。
+- すべて展開またはすべて折りたたみます（図1の青枠で、上側のアイコンはすべて折りたたみ、下側のアイコンはすべて展開です）。
+- 機能名をクリックすると、対応するSDKの設定情報を表示します（図1下部の青枠）。
+
+  - たとえば図では、2D設定の歪み補正（緑枠）をクリックすると、APIと列挙値が青枠に表示されます。
+- 展開状態と折りたたみ状態（図1では2D設定のみ展開、その他は折りたたみ）。
+
+<Frame>
+  ![表示機能](/images/developers/software-lxcameraviewer-display-function.avif)
+</Frame>
+
+図1
+
+#### 基本ツール
+
+- メニューバーの \[基本ツール\] をクリックすると、画面右側に基本ツールの設定が表示されます（図1）。
+- 基本ツールには \[画像表示設定\]、\[2D設定\]、\[3D設定\]、\[フィルタリング\]、\[ハードウェアインターフェース\]、\[取得設定\]、\[機能設定\] があります（図2）。
+- 選択した項目の機能名と列挙値は下部の青枠に表示されます（図2）。
+
+<Frame>
+  ![基本ツール](/images/developers/software-lxcameraviewer-basic-tools.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![基本ツール（2）](/images/developers/software-lxcameraviewer-basic-tools-2.avif)
+</Frame>
+
+図2
+
+##### 画像表示設定
+
+- \[カメラモデルを表示\]：点群画像にカメラモデルを表示（図4）または非表示（図5）にします。
+- \[疑似カラーを表示\]：点群に深度の疑似カラーを表示します。RGBアライメントを有効にするとRGBカラーを表示します。
+- \[点群表示を安定化\]：一部のコンピューターで適応処理により点群が消える場合、点群表示を安定させます。
+- \[強制画像同期\]：画面上の深度マップと点群マップの最小深度を変更します。カメラ出力は変わりません。
+- \[干渉フレームを保持\]：画面上の深度マップと点群マップの最大深度を変更します。カメラ出力は変わりません。
+- \[最小深度\]：画面上の深度マップと点群マップの最小深度を変更します。カメラ出力は変わりません。
+- \[最大深度\]：画面上の深度マップと点群マップの最大深度を変更します。カメラ出力は変わりません。
+- \[最小強度\]：画面上の深度マップと点群画像の最小強度を変更します。カメラ出力は変わりません。
+- \[最大強度\]：画面上の深度マップと点群画像の最大強度を変更します。カメラ出力は変わりません。
+
+<Frame>
+  ![画像表示設定](/images/developers/software-lxcameraviewer-image-display-settings.avif)
+</Frame>
+
+図3
+
+<Frame>
+  ![画像表示設定（2）](/images/developers/software-lxcameraviewer-image-display-settings-2.avif)
+</Frame>
+
+図4
+
+<Frame>
+  ![画像表示設定（3）](/images/developers/software-lxcameraviewer-image-display-settings-3.avif)
+</Frame>
+
+図5
+
+##### 2D設定
+
+- \[RGB幅\]：RGB画像の画素幅です。機種で決まり、設定できません。
+- \[RGB高さ\]：RGB画像の画素高さです。機種で決まり、設定できません。
+- \[ピクセルビニング\]：1\*1、2\*2、またはN\*Nの画素値を集約してビニング画像を生成します。画像サイズは横・縦ともビニングサイズに応じて縮小されます。
+- \[歪み補正\]：内部パラメータの歪み係数を用いて、画面表示の歪みを補正します。
+- \[歪み補正係数\]：歪み補正の強さを調整します。
+- \[自動露出\]：RGB露出値の自動設定を有効または無効にします。
+- \[露出\]：手動露出値です。自動露出が無効な場合に設定できます。
+- \[ゲイン\]：手動ゲインです。自動露出が無効な場合に設定できます。
+
+<Frame>
+  ![2D設定](/images/developers/software-lxcameraviewer-2d-settings.avif)
+</Frame>
+
+図6
+
+##### 3D設定
+
+- \[3D幅\] 点群画像の幅です。機種で決まり、設定できません。
+- \[3D高さ\] 点群画像の高さです。機種で決まり、設定できません。
+- \[ピクセルビニング\] 画素を集約してビニング画像を生成します。ストリーミング停止後に変更できます。
+- \[RGBアライメント\] 深度、強度、点群、RGB画像を位置合わせします。ストリーミング停止後に変更できます。
+- \[マルチカメラモード\] 複数カメラ使用時に他カメラからの干渉を抑制します。ストリーミング停止後に変更できます。
+- \[複数機器アルゴリズム感度\] 機種で決まる内部パラメータで、設定できません。
+- \[歪み補正\] 内部パラメータの歪み係数を用いて画面表示の歪みを補正します。
+- \[歪み補正係数\] 歪み補正の強さを調整します。
+- \[周波数モード\] 機種で決まる内部パラメータです。一部のカメラでは周波数が固定されています。
+- \[HDR有効\] 明暗差が大きいシーンで画像の視認性を向上させます。
+- \[自動露出\] 周囲光に応じて露出パラメータを自動調整します。
+- \[目標強度\] 深度画像取得時の強度しきい値です。設定できません。
+- \[自動露出上限\] 自動露出の上限を設定します。
+- \[自動露出下限\] 自動露出の下限です。設定できません。
+- \[ゲイン\] 強度値を増幅します。設定できません。
+- [x] ROI左上隅のx座標です。ストリーミング停止後に変更できます。
+- \[y\] ROI左上隅のy座標です。ストリーミング停止後に変更できます。
+- \[高積分\] 積分時間を長くします。値を増やすと遠距離を測定しやすくなります。
+- \[低積分\] 近距離測定を主に制御する積分時間です。通常は変更不要です。
+- \[xオフセット\] 幅方向のオフセットです。ストリーミング停止後に変更できます。
+- \[yオフセット\] 高さ方向のオフセットです。ストリーミング停止後に変更できます。
+- \[幅\] ROIの幅です。ストリーミング停止後に変更できます。
+- \[高さ\] ROIの高さです。ストリーミング停止後に変更できます。
+- \[3Dフレームレート\] 機器の対応範囲内で点群のフレームレートを設定します。
+
+<Frame>
+  ![3D設定](/images/developers/software-lxcameraviewer-3d-settings.avif)
+</Frame>
+
+図7
+
+##### フィルター設定
+
+- \[最小深度\]：この項目を設定します。
+- \[最大深度\]：この項目を設定します。
+- \[低信号しきい値\]：この項目を設定します。
+- \[高信号しきい値\]：この項目を設定します。
+- \[微弱信号測定\]：この項目を設定します。
+- \[フィルターモード\]：この項目を設定します。
+- \[平滑化レベル\]：この項目を設定します。
+- \[ノイズレベル\]：この項目を設定します。
+- \[時間フィルターレベル\]：この項目を設定します。
+- この項目を設定します。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-filter-settings.avif)
+</Frame>
+
+図8
+
+##### ハードウェアインターフェース
+
+- \[IO出力モード\]：この項目を設定します。
+- \[IOユーザー制御モード\]：この項目を設定します。
+- \[CANボーレート\]：この項目を設定します。
+- \[CANプロトコル種別\]：この項目を設定します。
+- \[CANアドレス\]：この項目を設定します。
+- \[MODBUSアドレス\]：この項目を設定します。
+- \[IO状態を取得\]：この項目を設定します。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-hardware-interface-diagram.avif)
+</Frame>
+
+図9
+
+##### 取得設定
+
+- \[フレーム同期\]：この項目を設定します。
+- \[トリガーモード\]：この項目を設定します。
+- \[点群保存方式\]：この項目を設定します。
+
+  - 非順序点群：点数は変わらず、幅 = 幅\*高さ、高さ = 1です（図3）。
+  - 順序付き点群：点数は変わらず、幅 = ToF幅、高さ = ToF高さです（図4）。
+- \[点群保存形式\]：この項目を設定します。
+
+  - BINARY：バイナリ形式で保存します。
+  - ASCII：テキスト形式で保存します。
+- \[点群値の単位\]：この項目を設定します。
+- \[画像保存を開始\]：この項目を設定します。
+- \[保存先を開く\]：この項目を設定します。
+
+注：この設定に関する注意事項です。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-collection-settings.avif)
+</Frame>
+
+図10
+
+##### 機能設定
+
+- \[構成を選択\]：この項目を設定します。
+- \[構成を保存\]：この項目を設定します。
+- \[構成を読み込む\]：この項目を設定します。
+- \[構成をファイルへエクスポート\]：この項目を設定します。
+- \[ファイルから構成を読み込む\]：この項目を設定します。
+- \[ユーザー定義ID\]：この項目を設定します。
+- \[アルゴリズムを上位機へ移行\]：この項目を設定します。
+- \[内部パラメータを取得\]：この項目を設定します。
+- \[工場出荷時設定に復元\]：この項目を設定します。
+- \[ファームウェア更新\]：この項目を設定します。
+- \[カメラ再起動\]：この項目を設定します。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-function-settings.avif)
+</Frame>
+
+図11
+
+#### アプリケーションアルゴリズム
+
+- この項目を設定します。
+- \[動作モード\]：この項目を設定します。
+- \[アプリケーションアルゴリズム\]：この項目を設定します。
+
+  - \[Close\] (Picture 2)
+  - \[障害物回避アルゴリズム 2.0\]（図3）
+  - \[パレット位置決めと拡張\]（図4）
+- \[アルゴリズムバージョン\]：この項目を設定します。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-application-algorithms.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-2.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-3.avif)
+</Frame>
+
+図3
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-4.avif)
+</Frame>
+
+図4
+
+##### 障害物回避アルゴリズム
+
+- アプリケーションアルゴリズムに障害物回避を設定すると、関連設定が表示されます。
+- \[車体を表示\]：この項目を設定します。
+- \[障害物回避インデックス\]：この項目を設定します。
+- \[カメラ角度ロール（x軸）\]：この項目を設定します。
+- \[カメラ角度ピッチ（y軸）\]：この項目を設定します。
+- \[カメラ角度ヨー（z軸）\]：この項目を設定します。
+- \[カメラ位置（距離x）\]：この項目を設定します。
+- \[カメラ位置（幅y）\]：この項目を設定します。
+- \[カメラ位置（高さz）\]：この項目を設定します。
+- \[早期警告距離（x遠方）\]：この項目を設定します。
+- \[警報距離（x中央）\]：この項目を設定します。
+- \[マスク距離（x近傍）\]：この項目を設定します。
+- \[障害物回避範囲左（y左）\]：この項目を設定します。
+- \[障害物回避範囲右（y右）\]：この項目を設定します。
+- \[障害物回避高さ下限（z下）\]：この項目を設定します。
+- \[障害物回避高さ上限（z上）\]：この項目を設定します。
+- \[障害物回避出力\]：この項目を設定します。
+- \[カメラ外部パラメータをリセット\]：この項目を設定します。
+- \[外部パラメータを設定\]：この項目を設定します。
+- 詳細は障害物回避のドキュメントを参照してください。
+
+##### パレット位置決め
+
+- アプリケーションアルゴリズムにパレット位置決めを設定すると、関連設定が表示されます。
+- \[プロジェクト名\]：この項目を設定します。
+- \[クイック構成\]：この項目を設定します。
+- \[カメラ角度ロール（x軸）\]：この項目を設定します。
+- \[カメラ角度ピッチ（y軸）\]：この項目を設定します。
+- \[カメラ角度ヨー（z軸）\]：この項目を設定します。
+- \[カメラ位置（距離x）\]：この項目を設定します。
+- \[カメラ位置（幅y）\]：この項目を設定します。
+- \[カメラ位置（高さz）\]：この項目を設定します。
+- \[地面高さ\]：この項目を設定します。
+- \[パレット脚幅上限\]：この項目を設定します。
+- \[パレット脚幅下限\]：この項目を設定します。
+- \[パレットまでの距離\]：この項目を設定します。
+- \[取付方法\]：この項目を設定します。
+- \[Z値下限\]：この項目を設定します。
+- \[Z値上限\]：この項目を設定します。
+- \[X値下限\]：この項目を設定します。
+- \[X値上限\]：この項目を設定します。
+- \[パレットアルゴリズム出力\]：この項目を設定します。
+- \[キャリブレーション手順\]：この項目を設定します。
+- \[既定パラメータを復元\]：この項目を設定します。
+- \[カメラから外部パラメータを読込\]：この項目を設定します。
+- \[パラメータを送信\]：この項目を設定します。
+- 詳細はパレット検出機能のドキュメントを参照してください。
+
+#### その他のツール
+
+- \[ローカル点群を読込\]：この項目を設定します。
+- \[IP設定ツール\]：この項目を設定します。
+- \[パケットキャプチャツール\]：この項目を設定します。
+- \[ネットワークカード設定ツール\]：この項目を設定します。
+- \[通信ツール\]：この項目を設定します。
+- \[GPUを有効化\]：この項目を設定します。
+- \[ログレベル\]：この項目を設定します。
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-other-tools.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![設定画面](/images/developers/software-lxcameraviewer-other-tools-2.avif)
+</Frame>
+
+図2
+
+## カメラシステムへアクセスする
+
+- SSHでカメラのIPアドレスのポート22に接続します。
+
+  - 例として、カメラIPアドレスを `192.168.100.15` としてMobaXtermを使用します（図1、図2）。
+- ユーザー名とパスワードはいずれも `user` です。ログインに成功すると図3の画面が表示されます。
+- システムには次の構成が含まれます。
+
+|  |  |
+| --- | --- |
+| 組込み構成 | バージョン |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| Pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**注：システム障害の原因となるため、組込み構成を任意に変更しないでください。**
+
+<Frame>
+  ![カメラシステムへのアクセス](/images/developers/software-lxcameraviewer-4-access-camera-system.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![カメラシステムへのアクセス（2）](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-2.avif)
+</Frame>
+
+図2
+
+<Frame>
+  ![カメラシステムへのアクセス（3）](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-3.avif)
+</Frame>
+
+図3
+
+## ツールの説明
+
+### IP設定ツール
+
+- \[IP設定ツール\] を開くと、図1の画面が表示されます。
+- MACアドレスの値をダブルクリックするとコピーできます。IPアドレス、サブネットマスク、ゲートウェイの値をダブルクリックして編集し、Enterキーで確定します。他の項目をクリックすると編集を取り消します（図2）。
+
+<Frame>
+  ![Windows IPv4ネットワーク設定画面](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface.avif)
+</Frame>
+
+図1
+
+<Frame>
+  ![Windows IPv4ネットワーク設定画面（2）](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface-2.avif)
+</Frame>
+
+図2
+
+### 通信ツール
+
+- \[通信ツール\] を開くと図1の画面が表示されます。
+- 通信ツールは TCP、UDP、FTP、Modbus TCP、Modbus RTU、CAN（Linux）に対応します。
+- 異なるタブを複数同時に開けます。
+
+<Frame>
+  ![通信ツール](/images/developers/software-lxcameraviewer-communication-tools.avif)
+</Frame>
+
+図1
+
+### ネットワークカード設定ツール
+
+- \[ネットワークカード設定ツール\] を開くと、図1の画面が表示されます。
+- ネットワークカード設定ツールでは、ファイアウォールを設定できます。
+- ネットワークカードを選択すると、Windows標準のネットワークカードのプロパティと設定画面を開けます。
+- ファイアウォール設定ページを開けます。
+- タスクマネージャーを開けます。
+- ネットワークと共有センターを開けます。
+- 表示言語は本ソフトウェアの設定に従います。
+
+<Frame>
+  ![ネットワークカード設定ツール](/images/developers/software-lxcameraviewer-the-network-card-configuration-tool.avif)
+</Frame>
+
+図1
+
+## トラブルシューティング
+
+|  |  |
+| --- | --- |
+| 問題 | 対処方法 |
+| カメラが見つからない | 電源が接続され、電源投入後に前面の青色LEDが点灯していることを確認します。IPアドレスとサブネットマスク、ホストPCのネットワークアクセス制限も確認してください。 |
+| カメラは開けるがストリーミングに失敗する | ホストPCでソフトウェアを管理者権限で起動していることを確認してください。 |
+| 画像が遅延する | ネットワークカード、ケーブル、スイッチがギガビット対応であることを確認してください。RGBアライメント有効時は100 Mbpsネットワークで遅延が発生する場合があります。 |
+| カメラが頻繁に再接続する | 工場出荷時設定への復元、ファームウェア更新、または100 Mbpsネットワークでの初回起動後は、約30秒間カメラが調整または再起動します。安定するまでホストPCは接続を試行します。 |
+| 深度データまたは点群データがない | カメラが遮られていないこと、対象物が撮影範囲内にあること、深度の最小値・最大値とフィルターパラメータが正しいことを確認してください。 |
+| 点群が消え、画面に白い枠だけが表示される | 点群画像をクリックし、`m` キーを押して点群安定化を有効にしてください。 |
+| 点群表示が異常 | 点群のショートカットキーが操作されていないか確認し、点群安定化を有効にしてください。 |
+| Linuxでカメラを開いても点群が表示されない | 点群画像をマウスでクリックしてドラッグしてください。 |
+| 「VTKの読込みに失敗し、点群は表示されません」と表示される | GPU性能が不足していないか、グラフィックスドライバーが正常に動作しているか確認してください。点群表示には専用ビデオメモリを持つGPUとそのドライバーが必要です。 |
+
+## ヘルプ
+
+### バージョン情報
+
+右上の \[バージョン情報\] をクリックするか、初回起動時に現在の情報エリアを確認すると、ソフトウェアとSDKのバージョンなどを確認できます。\[ヘルプドキュメントを開く\] をクリックすると本書を開きます。
+
+<Frame>
+  ![バージョン情報](/images/developers/software-lxcameraviewer-about.avif)
+</Frame>
+
+### ユーザーマニュアル
+
+本ソフトウェアのショートカットを右クリックし、**ファイルの場所を開く** を選択します。親ディレクトリに戻ると、`Document` フォルダーで関連文書を確認できます。
+
+<Frame>
+  ![ユーザーマニュアル](/images/developers/software-lxcameraviewer-user-manual.avif)
+</Frame>
