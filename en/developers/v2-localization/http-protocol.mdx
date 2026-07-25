@@ -1,6 +1,6 @@
 ---
-title: "V2 visual localization HTTP protocol"
-sidebarTitle: "V2 HTTP protocol"
+title: V2 visual localization HTTP protocol
+sidebarTitle: V2 HTTP protocol
 description: "Reference for V2 visual localization HTTP endpoints, request parameters, and response fields."
 hidden: true
 ---
@@ -15,7 +15,7 @@ This page lists the HTTP endpoints provided by the V2 visual localization module
 
 ### Update the main program
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/quiet_update</code>
+Address: <code>http://<ip>:9998/tool/rob/quiet_update</code>
 
 <ParamField body="url" type="string" required>
   Reachable URL of the main-program upgrade package.
@@ -23,7 +23,7 @@ Address: <code>http://&lt;ip&gt;:9998/tool/rob/quiet_update</code>
 
 ### Set camera height
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/setHeightRequest</code>
+Address: <code>http://<ip>:9998/tool/rob/setHeightRequest</code>
 
 <ParamField body="height" type="number" required>
   Camera height.
@@ -31,90 +31,132 @@ Address: <code>http://&lt;ip&gt;:9998/tool/rob/setHeightRequest</code>
 
 ### Get program version
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/getRobotVersion</code>
+Address: <code>http://<ip>:9998/tool/rob/getRobotVersion</code>
 
 This endpoint requires no request parameters.
 
-<ResponseField name="code" type="integer" required>Response status code.</ResponseField>
-<ResponseField name="data" type="string">Program version, such as `version 12313`.</ResponseField>
+<ResponseField name="code" type="integer" required>
+  Response status code.
+</ResponseField>
+ <ResponseField name="data" type="string">
+  Program version, such as 
+  `version 12313`
+  .
+</ResponseField>
 
 ### Get vehicle information
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/getVehicle</code>
+Address: <code>http://<ip>:9998/tool/rob/getVehicle</code>
 
 This endpoint requires no request parameters.
 
-<ResponseField name="data" type="object" required>Vehicle information object.</ResponseField>
-<ResponseField name="vehicleId" type="string">Vehicle UUID.</ResponseField>
-<ResponseField name="mapId" type="string">Current map.</ResponseField>
-<ResponseField name="vehicleType" type="string">Vehicle type.</ResponseField>
+<ResponseField name="data" type="object" required>
+  Vehicle information object.
+</ResponseField>
+ <ResponseField name="vehicleId" type="string">
+  Vehicle UUID.
+</ResponseField>
+ <ResponseField name="mapId" type="string">
+  Current map.
+</ResponseField>
+ <ResponseField name="vehicleType" type="string">
+  Vehicle type.
+</ResponseField>
 
 ### Get the current pose
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/getAGVPose</code>
+Address: <code>http://<ip>:9998/tool/rob/getAGVPose</code>
 
 This endpoint requires no request parameters.
 
-<ResponseField name="pose" type="object" required>Current pose.</ResponseField>
-<ResponseField name="x" type="number">X coordinate.</ResponseField>
-<ResponseField name="y" type="number">Y coordinate.</ResponseField>
-<ResponseField name="yaw" type="number">Heading angle.</ResponseField>
+<ResponseField name="pose" type="object" required>
+  Current pose.
+</ResponseField>
+ <ResponseField name="x" type="number">
+  X coordinate.
+</ResponseField>
+ <ResponseField name="y" type="number">
+  Y coordinate.
+</ResponseField>
+ <ResponseField name="yaw" type="number">
+  Heading angle.
+</ResponseField>
 
 ### Relocate
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/relocate</code>
+Address: <code>http://<ip>:9998/tool/rob/relocate</code>
 
 Request header: `Content-Type: application/json`
 
-<ParamField body="x" type="number" required>X coordinate in meters.</ParamField>
-<ParamField body="y" type="number" required>Y coordinate in meters.</ParamField>
-<ParamField body="angle" type="number" required>Pose angle.</ParamField>
-<ParamField body="noisyX" type="number" required>X-axis noise in meters.</ParamField>
-<ParamField body="noisyY" type="number" required>Y-axis noise in meters.</ParamField>
-<ParamField body="noisyAngle" type="number" required>Angular noise.</ParamField>
+<ParamField body="x" type="number" required>
+  X coordinate in meters.
+</ParamField>
+ <ParamField body="y" type="number" required>
+  Y coordinate in meters.
+</ParamField>
+ <ParamField body="angle" type="number" required>
+  Pose angle.
+</ParamField>
+ <ParamField body="noisyX" type="number" required>
+  X-axis noise in meters.
+</ParamField>
+ <ParamField body="noisyY" type="number" required>
+  Y-axis noise in meters.
+</ParamField>
+ <ParamField body="noisyAngle" type="number" required>
+  Angular noise.
+</ParamField>
 
 ## Map management
 
 ### Download the current running map package
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/getRunMapZip</code>
+Address: <code>http://<ip>:9998/tool/rob/getRunMapZip</code>
 
 Request header: `Content-Type: application/json`
 
-<ParamField body="Name" type="string" required>Map name.</ParamField>
+<ParamField body="Name" type="string" required>
+  Map name.
+</ParamField>
 
 The response is a ZIP file with content type `application/zip`.
 
 ### Deploy a map
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/deployRunMap</code>
+Address: <code>http://<ip>:9998/tool/rob/deployRunMap</code>
 
-<ParamField body="id" type="string" required>Map name.</ParamField>
+<ParamField body="id" type="string" required>
+  Map name.
+</ParamField>
 
 ### Apply a map
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/changeCurrentRunMap</code>
+Address: <code>http://<ip>:9998/tool/rob/changeCurrentRunMap</code>
 
-<ParamField body="name" type="string" required>Map name.</ParamField>
+<ParamField body="name" type="string" required>
+  Map name.
+</ParamField>
 
 ### Start mapping
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/startMapping</code>
+Address: <code>http://<ip>:9998/tool/rob/startMapping</code>
 
-<ParamField body="name" type="string" required>Map name.</ParamField>
+<ParamField body="name" type="string" required>
+  Map name.
+</ParamField>
 
 ### Stop mapping
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/stopMapping</code>
+Address: <code>http://<ip>:9998/tool/rob/stopMapping</code>
 
 This endpoint requires no request parameters.
 
 ### Start or stop incremental mapping
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/sendCMD</code>
+Address: <code>http://<ip>:9998/tool/rob/sendCMD</code>
 
 | Operation | `cmd` | `attach.sub_command` | `attach.param` |
-| --- | ---: | ---: | --- |
+| --- | --: | --: | --- |
 | Start incremental mapping | `904` | `0` | `mapname` |
 | Stop incremental mapping | `905` | `0` | `mapname` |
 
@@ -122,36 +164,40 @@ Address: <code>http://&lt;ip&gt;:9998/tool/rob/sendCMD</code>
 
 Use the local map-list endpoint:
 
-<code>http://&lt;ip&gt;:9998/tool/rob/getRunMapLists</code>
+<code>http://<ip>:9998/tool/rob/getRunMapLists</code>
 
 This endpoint requires no request parameters. The response `run_maps` is an array of map names.
 
 <Note>
-  The backend map-list endpoint <code>http://&lt;ip&gt;:9998/tool/editor/getLocalMaps</code> is deprecated and not recommended.
+  The backend map-list endpoint <code>http://<ip>:9998/tool/editor/getLocalMaps</code> is deprecated and not recommended.
 </Note>
 
 ### Upload a map package to the camera
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/uploadMapZip2RunMaps</code>
+Address: <code>http://<ip>:9998/tool/rob/uploadMapZip2RunMaps</code>
 
-<ParamField body="url" type="string" required>Reachable URL of the map package.</ParamField>
+<ParamField body="url" type="string" required>
+  Reachable URL of the map package.
+</ParamField>
 
 ### Download a map
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/downloadVisiomWithLaserMap</code>
+Address: <code>http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap</code>
 
-<ParamField body="url" type="string" required>Reachable URL of the map package.</ParamField>
+<ParamField body="url" type="string" required>
+  Reachable URL of the map package.
+</ParamField>
 
 ## Maintenance endpoints
 
 ### Restart the camera program
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/restart</code>
+Address: <code>http://<ip>:9998/tool/rob/restart</code>
 
 This endpoint requires no request parameters.
 
 ### Reboot the camera
 
-Address: <code>http://&lt;ip&gt;:9998/tool/rob/Reboot</code>
+Address: <code>http://<ip>:9998/tool/rob/Reboot</code>
 
 This endpoint requires no request parameters.

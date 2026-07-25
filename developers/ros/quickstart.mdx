@@ -1,11 +1,9 @@
 ---
-title: "ROS 快速入门"
-description: "配置并运行 V2 视觉定位模块 ROS SDK，完成建图、切换地图、重定位和定位结果订阅。"
+title: ROS 快速入门
+description: 配置并运行 V2 视觉定位模块 ROS SDK，完成建图、切换地图、重定位和定位结果订阅。
 hidden: true
-legacyId: "019ce64a-0114-7df5-81b6-4d5488d8f0ad"
-legacyUrls:
-  - "/node/019ce64a-0114-7df5-81b6-4d5488d8f0ad"
-  - "/doc/editor/019ce64a-0114-7df5-81b6-4d5488d8f0ad"
+legacyId: 019ce64a-0114-7df5-81b6-4d5488d8f0ad
+legacyUrls: ["/node/019ce64a-0114-7df5-81b6-4d5488d8f0ad","/doc/editor/019ce64a-0114-7df5-81b6-4d5488d8f0ad"]
 ---
 
 ## 概述
@@ -13,7 +11,7 @@ legacyUrls:
 V2 定位模块中的定位程序通过 UDP 与上位机 ROS SDK 通信。模块内置 Web 前端，可用于执行建图、定位和参数配置；ROS SDK 可调用建图、重定位和地图下载等相同能力。
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-preface.avif" alt="V2 定位模块与 ROS SDK 的通信架构" />
+  ![V2 定位模块与 ROS SDK 的通信架构](/images/developers/ros-quickstart-preface.avif)
 </Frame>
 
 <Info>
@@ -41,32 +39,31 @@ catkin_make
     打开 `/V2-ROS-SDK-service/src/lx_camera_ros/launch/mapping.launch`。相机默认 IP 为 `192.168.100.201`；如修改相机 IP，须在此文件中同步更新。端口填写 `8001`。
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-2.avif" alt="mapping.launch 中的相机连接配置" />
+      ![mapping.launch 中的相机连接配置](/images/developers/ros-quickstart-operation-2.avif)
     </Frame>
   </Step>
   <Step title="检查网络与模块参数">
     确认相机与上位机接入同一交换机并处于同一网段。在 Web 前端中打开 **参数配置**，将 `portCode` 设为 `8987`，将 `portName` 设为运行 ROS SDK 的上位机网卡 IP。
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-3.avif" alt="Web 前端的参数配置入口" />
+      ![Web 前端的参数配置入口](/images/developers/ros-quickstart-operation-3.avif)
     </Frame>
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-4.avif" alt="Web 前端中的 UDP 端口与目标地址配置" />
+      ![Web 前端中的 UDP 端口与目标地址配置](/images/developers/ros-quickstart-operation-4.avif)
     </Frame>
   </Step>
   <Step title="启动 ROS 节点">
-
-```bash
-cd /V2-ROS-SDK-service
-source devel/setup.bash
-roslaunch lx_camera_ros mapping.launch
-```
+    ```bash
+    cd /V2-ROS-SDK-service
+    source devel/setup.bash
+    roslaunch lx_camera_ros mapping.launch
+    ```
 
     节点正常启动后，终端会输出启动信息。
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-5.avif" alt="ROS 节点成功启动的终端输出" />
+      ![ROS 节点成功启动的终端输出](/images/developers/ros-quickstart-operation-5.avif)
     </Frame>
   </Step>
 </Steps>
@@ -86,7 +83,7 @@ rostopic echo /lx_localization_node/LxCamera_Capacity_Status
 ```
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-debugging.avif" alt="订阅存储空间状态话题的终端输出" />
+  ![订阅存储空间状态话题的终端输出](/images/developers/ros-quickstart-debugging.avif)
 </Frame>
 
 也可调用以下服务读取当前地图名称：
@@ -96,7 +93,7 @@ rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapnam
 ```
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-debugging-2.avif" alt="获取当前地图名称的服务调用结果" />
+  ![获取当前地图名称的服务调用结果](/images/developers/ros-quickstart-debugging-2.avif)
 </Frame>
 
 ## 建图与定位
@@ -105,56 +102,52 @@ rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapnam
 
 <Steps>
   <Step title="开始建图">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
+    ```
 
     服务返回 `true` 后，移动载体采集地图。
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-basic-operating-procedures.avif" alt="开始建图后的 Web 前端状态" />
+      ![开始建图后的 Web 前端状态](/images/developers/ros-quickstart-basic-operating-procedures.avif)
     </Frame>
   </Step>
   <Step title="结束建图">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
+    ```
 
     等待服务返回 `true`，确认建图完成。
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-basic-operating-procedures-2.avif" alt="结束建图后的 Web 前端状态" />
+      ![结束建图后的 Web 前端状态](/images/developers/ros-quickstart-basic-operating-procedures-2.avif)
     </Frame>
   </Step>
   <Step title="切换至新地图">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
+    ```
   </Step>
   <Step title="发送重定位位姿">
     `orientation.x`、`orientation.y`、`orientation.z` 和 `orientation.w` 为姿态四元数，须按 ROS 消息格式填写。
 
-```bash
-rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
-  header:
-    seq: 0
-    stamp: {secs: 0, nsecs: 0}
-    frame_id: 'map'
-  pose:
-    pose:
-      position: {x: 4.5, y: -15.5, z: 0.0}
-      orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
-    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'map'
+      pose:
+        pose:
+          position: {x: 4.5, y: -15.5, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
+        covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    ```
   </Step>
   <Step title="订阅实时定位结果">
-
-```bash
-rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
-```
+    ```bash
+    rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+    ```
   </Step>
 </Steps>
 
@@ -164,9 +157,11 @@ rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
   <Accordion title="ROS 程序无法编译">
     检查 Qt5 和 `libzip` 是否已完整安装，再重新执行 `catkin_make`。
   </Accordion>
+
   <Accordion title="ROS SDK 发送消息后无响应">
     确认相机与上位机处于同一网段，且可通过相机上位机软件访问相机。随后核对相机端与 ROS SDK 端的配置。
   </Accordion>
+
   <Accordion title="无法发送 ROS 调试消息">
     ROS 消息格式严格。请保留示例中的字段结构，仅修改需要测试的值。
   </Accordion>

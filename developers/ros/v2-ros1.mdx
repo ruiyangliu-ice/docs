@@ -1,12 +1,11 @@
 ---
-title: "V2 ROS1 接口说明"
-description: "介绍 V2 定位模块 ROS1 SDK 的编译、运行、话题和服务接口。"
+title: V2 ROS1 接口说明
+description: 介绍 V2 定位模块 ROS1 SDK 的编译、运行、话题和服务接口。
 hidden: true
-legacyId: "019ce649-f8a5-7e5c-a554-418838f1dbd6"
-legacyUrls:
-  - "/node/019ce649-f8a5-7e5c-a554-418838f1dbd6"
-  - "/doc/editor/019ce649-f8a5-7e5c-a554-418838f1dbd6"
+legacyId: 019ce649-f8a5-7e5c-a554-418838f1dbd6
+legacyUrls: ["/node/019ce649-f8a5-7e5c-a554-418838f1dbd6","/doc/editor/019ce649-f8a5-7e5c-a554-418838f1dbd6"]
 ---
+
 ## 编译
 
 安装 Qt5 的 Core 和 Network 组件。不同 Linux 发行版的安装方式可能不同；以下为 Ubuntu 示例：
@@ -114,7 +113,7 @@ rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
 
 ### 上传里程计
 
-1.  用户发布`nav_msgs::Odometry`类型数据到topic：`/sim/odom` (可修改)
+1. 用户发布`nav_msgs::Odometry`类型数据到topic：`/sim/odom` (可修改)
 
 rostopic pub /odom nav\_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame\_id: 'odom' child\_frame\_id: 'base\_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: \[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\]"
 
@@ -127,11 +126,9 @@ rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
 
 ### 下载轮廓地图接口
 
-1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_DownloadMap`
-
-2.  消息格式为一个保存地址和一个地图名称，使用英文逗号“,”分割。地址是上位机中的地址，使用绝对路径；地图名是相机中已经完成建图的“.zip”格式的文件名。
-
-3.  成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个`pgm地图文件`和一个`yaml配置文件`。
+1. 用户发布`std_msgs/String`类型消息到topic：`LxCamera_DownloadMap`
+2. 消息格式为一个保存地址和一个地图名称，使用英文逗号“,”分割。地址是上位机中的地址，使用绝对路径；地图名是相机中已经完成建图的“.zip”格式的文件名。
+3. 成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个`pgm地图文件`和一个`yaml配置文件`。
 
 ```cpp
 // 进入lx_camera_udp目录
@@ -142,11 +139,9 @@ rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/hom
 
 ### 上传地图文件zip接口（new）
 
-1.  用户发布`std_msgs/String`类型消息到topic：`LxCamera_UploadMapZip`
-
-2.  消息内容为需要上传的**地图压缩包路径**, 例如：“/home/fr1511b/map.zip” ,需上传 由下载接口下载下来的压缩包
-
-3.  如果找到地图文件则打包后发送到相机，相机接收后会解压到指定的路径：`/home/fr1511b/hontai/map/`
+1. 用户发布`std_msgs/String`类型消息到topic：`LxCamera_UploadMapZip`
+2. 消息内容为需要上传的**地图压缩包路径**, 例如：“/home/fr1511b/map.zip” ,需上传 由下载接口下载下来的压缩包
+3. 如果找到地图文件则打包后发送到相机，相机接收后会解压到指定的路径：`/home/fr1511b/hontai/map/`
 
 ```cpp
 rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
@@ -154,11 +149,9 @@ rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map
 
 ### 重定位接口
 
-1.  用户发布`geometry_msgs::PoseWithCovarianceStamped`类型的数据到topic：`LxCamera_UploadReloc`
-
-2.  数据为激光位姿，包含：`x,y,yaw`
-
-3.  相机网页上显示的本体位置更新为发送的位置则重定位成功。
+1. 用户发布`geometry_msgs::PoseWithCovarianceStamped`类型的数据到topic：`LxCamera_UploadReloc`
+2. 数据为激光位姿，包含：`x,y,yaw`
+3. 相机网页上显示的本体位置更新为发送的位置则重定位成功。
 
 ```cpp
 rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "

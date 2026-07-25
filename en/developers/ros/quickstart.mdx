@@ -1,5 +1,5 @@
 ---
-title: "ROS quickstart"
+title: ROS quickstart
 description: "Configure and run the V2 visual localization ROS SDK to build maps, switch maps, relocalize, and subscribe to localization results."
 hidden: true
 ---
@@ -9,7 +9,7 @@ hidden: true
 The V2 localization module communicates with the host computer's ROS SDK over UDP. Its built-in web interface supports mapping, localization, and parameter configuration. The ROS SDK exposes the same capabilities, including mapping, relocalization, and map downloads.
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-preface.avif" alt="V2 localization module and ROS SDK communication architecture" />
+  ![V2 localization module and ROS SDK communication architecture](/images/developers/ros-quickstart-preface.avif)
 </Frame>
 
 <Info>
@@ -37,32 +37,31 @@ catkin_make
     Open `/V2-ROS-SDK-service/src/lx_camera_ros/launch/mapping.launch`. The default camera IP address is `192.168.100.201`; if you change the camera IP, update it in this file as well. Set the port to `8001`.
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-2.avif" alt="Camera connection settings in mapping.launch" />
+      ![Camera connection settings in mapping.launch](/images/developers/ros-quickstart-operation-2.avif)
     </Frame>
   </Step>
   <Step title="Check the network and module parameters">
     Connect the camera and host computer to the same switch and network segment. In the web interface, open **Parameter Configuration**, set `portCode` to `8987`, and set `portName` to the IP address of the host computer network adapter running the ROS SDK.
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-3.avif" alt="Web interface parameter configuration entry" />
+      ![Web interface parameter configuration entry](/images/developers/ros-quickstart-operation-3.avif)
     </Frame>
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-4.avif" alt="UDP port and target address settings in the web interface" />
+      ![UDP port and target address settings in the web interface](/images/developers/ros-quickstart-operation-4.avif)
     </Frame>
   </Step>
   <Step title="Start the ROS node">
-
-```bash
-cd /V2-ROS-SDK-service
-source devel/setup.bash
-roslaunch lx_camera_ros mapping.launch
-```
+    ```bash
+    cd /V2-ROS-SDK-service
+    source devel/setup.bash
+    roslaunch lx_camera_ros mapping.launch
+    ```
 
     The terminal displays startup information when the node starts successfully.
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-operation-5.avif" alt="Terminal output after the ROS node starts successfully" />
+      ![Terminal output after the ROS node starts successfully](/images/developers/ros-quickstart-operation-5.avif)
     </Frame>
   </Step>
 </Steps>
@@ -82,7 +81,7 @@ rostopic echo /lx_localization_node/LxCamera_Capacity_Status
 ```
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-debugging.avif" alt="Terminal output for the storage status topic" />
+  ![Terminal output for the storage status topic](/images/developers/ros-quickstart-debugging.avif)
 </Frame>
 
 You can also call the following service to read the current map name:
@@ -92,7 +91,7 @@ rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapnam
 ```
 
 <Frame>
-  <img src="/images/developers/ros-quickstart-debugging-2.avif" alt="Result of reading the current map name" />
+  ![Result of reading the current map name](/images/developers/ros-quickstart-debugging-2.avif)
 </Frame>
 
 ## Build a map and localize
@@ -101,56 +100,52 @@ Power on the camera and wait about 30 seconds for the built-in program to start 
 
 <Steps>
   <Step title="Start mapping">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
+    ```
 
     After the service returns `true`, move the platform through the area to capture the map.
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-basic-operating-procedures.avif" alt="Web interface status after mapping starts" />
+      ![Web interface status after mapping starts](/images/developers/ros-quickstart-basic-operating-procedures.avif)
     </Frame>
   </Step>
   <Step title="Stop mapping">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
+    ```
 
     Wait for the service to return `true` to confirm that mapping is complete.
 
     <Frame>
-      <img src="/images/developers/ros-quickstart-basic-operating-procedures-2.avif" alt="Web interface status after mapping stops" />
+      ![Web interface status after mapping stops](/images/developers/ros-quickstart-basic-operating-procedures-2.avif)
     </Frame>
   </Step>
   <Step title="Switch to the new map">
-
-```bash
-rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
+    ```
   </Step>
   <Step title="Send a relocalization pose">
     `orientation.x`, `orientation.y`, `orientation.z`, and `orientation.w` are the orientation quaternion. Populate them according to the ROS message format.
 
-```bash
-rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
-  header:
-    seq: 0
-    stamp: {secs: 0, nsecs: 0}
-    frame_id: 'map'
-  pose:
-    pose:
-      position: {x: 4.5, y: -15.5, z: 0.0}
-      orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
-    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
-```
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'map'
+      pose:
+        pose:
+          position: {x: 4.5, y: -15.5, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
+        covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    ```
   </Step>
   <Step title="Subscribe to live localization results">
-
-```bash
-rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
-```
+    ```bash
+    rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+    ```
   </Step>
 </Steps>
 
@@ -160,9 +155,11 @@ rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
   <Accordion title="The ROS program cannot compile">
     Verify that Qt5 and `libzip` are fully installed, then run `catkin_make` again.
   </Accordion>
+
   <Accordion title="The ROS SDK does not respond after sending a message">
     Confirm that the camera and host computer are on the same network segment and that the camera can be opened from the camera host software. Then verify the camera-side and ROS SDK configuration.
   </Accordion>
+
   <Accordion title="A ROS debug message cannot be sent">
     ROS message formats are strict. Keep the field structure from the example and change only the values required for the test.
   </Accordion>

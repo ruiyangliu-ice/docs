@@ -1,12 +1,11 @@
 ---
-title: "V2 ROS2 接口说明"
-description: "介绍 V2 定位模块 ROS2 SDK 的编译、运行、话题和服务接口。"
+title: V2 ROS2 接口说明
+description: 介绍 V2 定位模块 ROS2 SDK 的编译、运行、话题和服务接口。
 hidden: true
-legacyId: "019ce649-f8e9-738a-ad79-af748af75bda"
-legacyUrls:
-  - "/node/019ce649-f8e9-738a-ad79-af748af75bda"
-  - "/doc/editor/019ce649-f8e9-738a-ad79-af748af75bda"
+legacyId: 019ce649-f8e9-738a-ad79-af748af75bda
+legacyUrls: ["/node/019ce649-f8e9-738a-ad79-af748af75bda","/doc/editor/019ce649-f8e9-738a-ad79-af748af75bda"]
 ---
+
 ## 概述
 
 本文介绍 V2 定位模块 `lx_camera_ros` 的 ROS2 话题与服务接口。
@@ -115,11 +114,9 @@ ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
 
 #### 下载地图接口
 
-1.  用户发布`std_msgs::msg::String`类型消息到topic：`LxCamera_DownloadMap`
-
-2.  消息格式为字符串，包含两个字段：save\_path表示保存地址(上位机中的地址，使用绝对路径)，mapname表示地图名称(相机中已经完成建图的".zip"格式的文件名)
-
-3.  成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个`pgm地图文件`和一个`yaml配置文件`
+1. 用户发布`std_msgs::msg::String`类型消息到topic：`LxCamera_DownloadMap`
+2. 消息格式为字符串，包含两个字段：save\_path表示保存地址(上位机中的地址，使用绝对路径)，mapname表示地图名称(相机中已经完成建图的".zip"格式的文件名)
+3. 成功后，你上位机指定的路径下会有一个指定地图名称的压缩包，解压后得到一个`pgm地图文件`和一个`yaml配置文件`
 
 ```bash
 // 进入lx_camera_ros2_ws目录
@@ -130,7 +127,7 @@ ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure
 
 #### 上传里程计接口
 
-1.  用户发布`nav_msgs::msg::Odometry`类型数据到topic：`/sim/odom` (可修改)
+1. 用户发布`nav_msgs::msg::Odometry`类型数据到topic：`/sim/odom` (可修改)
 
 ```bash wrap
 // 进入lx_camera_ros2_ws目录 //开启终端 source install/setup.bash ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
@@ -138,11 +135,9 @@ ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure
 
 #### 重定位接口
 
-1.  用户发布`geometry_msgs::msg::PoseWithCovarianceStamped`类型的数据到topic：`LxCamera_UploadReloc`
-
-2.  数据为激光位姿，包含：`x,y,yaw`
-
-3.  相机网页上显示的本体位置更新为发送的位置则重定位成功
+1. 用户发布`geometry_msgs::msg::PoseWithCovarianceStamped`类型的数据到topic：`LxCamera_UploadReloc`
+2. 数据为激光位姿，包含：`x,y,yaw`
+3. 相机网页上显示的本体位置更新为发送的位置则重定位成功
 
 ```bash
 ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
@@ -176,7 +171,7 @@ map_request_prefix = "aced220f";      // 下载指定地图
 prefix_after_reloc = "aced0f0b";      // 重定位
 ```
 
-* * *
+---
 
 ## ROS2 服务接口
 

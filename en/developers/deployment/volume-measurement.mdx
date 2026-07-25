@@ -1,6 +1,6 @@
 ---
-title: "Deploy volume measurement"
-sidebarTitle: "Volume measurement deployment"
+title: Deploy volume measurement
+sidebarTitle: Volume measurement deployment
 description: "Deploy volume measurement with M Series cameras, including installation, extrinsic calibration, region configuration, and result integration."
 hidden: true
 ---
@@ -26,7 +26,7 @@ See the [M Series ToF cameras](/en/products/m-series/overview "M Series ToF came
 - For multiple cameras, assign each camera a unique network address and verify its power state.
 
 <Frame>
-  <img src="/images/developers/deployment-volume-measurement-camera-installation-methods.avif" alt="M4 camera installed facing downward for volume measurement" />
+  ![M4 camera installed facing downward for volume measurement](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
 </Frame>
 
 ### Host requirements
@@ -120,34 +120,66 @@ For single-shot measurement, enable **Trigger mode** in **Volume detection**, sa
 TCP, UDP, and HTTP use the `RESULT_UPDATE` command to request volume results.
 
 | Protocol | Port | Use |
-| --- | ---: | --- |
+| --- | --: | --- |
 | TCP | `14951` | Request a volume-detection result |
 | UDP | `14950` | Request a volume-detection result |
 | HTTP | `14952` | Request the volume result as JSON |
 
-<ParamField body="command" type="string" required default="RESULT_UPDATE">
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
   Requests the current volume-detection result from the camera.
 </ParamField>
 
 Top-level HTTP response fields:
 
-<ResponseField name="IP" type="string" required>IP address of the camera that produced the data.</ResponseField>
-<ResponseField name="TM" type="object[]" required>List of detected objects.</ResponseField>
-<ResponseField name="TM_DATA_TIME" type="string">Time when volume data was captured.</ResponseField>
-<ResponseField name="TM_RES_TIME" type="string">Time when the result was output.</ResponseField>
-<ResponseField name="nick_name" type="string">Camera name.</ResponseField>
-<ResponseField name="ret_code" type="integer" required>Return code; `0` indicates success.</ResponseField>
+<ResponseField name="IP" type="string" required>
+  IP address of the camera that produced the data.
+</ResponseField>
+ <ResponseField name="TM" type="object[]" required>
+  List of detected objects.
+</ResponseField>
+ <ResponseField name="TM_DATA_TIME" type="string">
+  Time when volume data was captured.
+</ResponseField>
+ <ResponseField name="TM_RES_TIME" type="string">
+  Time when the result was output.
+</ResponseField>
+ <ResponseField name="nick_name" type="string">
+  Camera name.
+</ResponseField>
+ <ResponseField name="ret_code" type="integer" required>
+  Return code; 
+  `0`
+   indicates success.
+</ResponseField>
 
 Each `TM` object can contain:
 
-<ResponseField name="angle" type="number">Object-box angle.</ResponseField>
-<ResponseField name="cx" type="number">Object-center X coordinate.</ResponseField>
-<ResponseField name="cy" type="number">Object-center Y coordinate.</ResponseField>
-<ResponseField name="cz" type="number">Object-center Z coordinate.</ResponseField>
-<ResponseField name="height" type="number">Object height.</ResponseField>
-<ResponseField name="length" type="number">Object length.</ResponseField>
-<ResponseField name="width" type="number">Object width.</ResponseField>
-<ResponseField name="valid" type="boolean">Whether the result is valid. `false` indicates insufficient confidence.</ResponseField>
+<ResponseField name="angle" type="number">
+  Object-box angle.
+</ResponseField>
+ <ResponseField name="cx" type="number">
+  Object-center X coordinate.
+</ResponseField>
+ <ResponseField name="cy" type="number">
+  Object-center Y coordinate.
+</ResponseField>
+ <ResponseField name="cz" type="number">
+  Object-center Z coordinate.
+</ResponseField>
+ <ResponseField name="height" type="number">
+  Object height.
+</ResponseField>
+ <ResponseField name="length" type="number">
+  Object length.
+</ResponseField>
+ <ResponseField name="width" type="number">
+  Object width.
+</ResponseField>
+ <ResponseField name="valid" type="boolean">
+  Whether the result is valid. 
+  `false`
+   indicates insufficient confidence.
+</ResponseField>
 
 ## Troubleshooting
 

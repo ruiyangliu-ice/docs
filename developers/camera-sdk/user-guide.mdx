@@ -1,12 +1,11 @@
 ---
-title: "Camera SDK 使用手册"
-description: "介绍 MRDVS Camera SDK 的运行环境、设备连接、数据类型和 C/C++ API 调用要求。"
+title: Camera SDK 使用手册
+description: 介绍 MRDVS Camera SDK 的运行环境、设备连接、数据类型和 C/C++ API 调用要求。
 hidden: true
-legacyId: "019cbdb0-16c3-7aca-b38f-3252812412a4"
-legacyUrls:
-  - "/node/019cbdb0-16c3-7aca-b38f-3252812412a4"
-  - "/doc/editor/019cbdb0-16c3-7aca-b38f-3252812412a4"
+legacyId: 019cbdb0-16c3-7aca-b38f-3252812412a4
+legacyUrls: ["/node/019cbdb0-16c3-7aca-b38f-3252812412a4","/doc/editor/019cbdb0-16c3-7aca-b38f-3252812412a4"]
 ---
+
 ## 概述
 
 本手册面向具备软件开发基础的设备接入人员。Camera SDK 支持 M4、M4 Mega、M4 Pro、V1Pro、S2 和 H3 系列产品，可运行于 x86 Windows，以及 x86 和 ARM Linux 平台。
@@ -35,23 +34,22 @@ SDK 提供统一的设备访问和参数配置接口，可同步或异步获取�
 为相机提供 24 V 电源，并通过网线连接至上位机。
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-hardware-environment-construction.avif" alt="硬件环境搭建相关图示" />
+  ![硬件环境搭建相关图示](/images/developers/camera-sdk-user-guide-hardware-environment-construction.avif)
 </Frame>
 
 #### 网络配置
 
 1. 相机默认 IP 网段为 `192.168.100.*`。
-
 2. 将上位机连接相机的网卡 IP 设置为 `192.168.100.x` 网段内且不冲突的地址，子网掩码设为 `255.255.255.0`。
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-network-environment-construction.avif" alt="网络环境搭建相关图示" />
+  ![网络环境搭建相关图示](/images/developers/camera-sdk-user-guide-network-environment-construction.avif)
 </Frame>
 
 3. 连接相机时，确认防火墙规则不会拦截相机数据包。
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-network-environment-construction-2.avif" alt="网络环境搭建相关图示 2" />
+  ![网络环境搭建相关图示 2](/images/developers/camera-sdk-user-guide-network-environment-construction-2.avif)
 </Frame>
 
 4. Linux 的网络配置与 Windows 相同。不同发行版的防火墙管理方式不同；以 Ubuntu 为例：
@@ -69,19 +67,19 @@ sudo ufw status
 运行 `Lanxin-MRDVS-xxx.exe` 安装包。如需为所有用户安装，请以管理员权限运行。
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation.avif" alt="Windows 系统安装：相关图示" />
+  ![Windows 系统安装：相关图示](/images/developers/camera-sdk-user-guide-windows-system-installation.avif)
 </Frame>
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-2.avif" alt="Windows 系统安装：相关图示 2" />
+  ![Windows 系统安装：相关图示 2](/images/developers/camera-sdk-user-guide-windows-system-installation-2.avif)
 </Frame>
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-3.avif" alt="Windows 系统安装：相关图示 3" />
+  ![Windows 系统安装：相关图示 3](/images/developers/camera-sdk-user-guide-windows-system-installation-3.avif)
 </Frame>
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-windows-system-installation-4.avif" alt="Windows 系统安装：相关图示 4" />
+  ![Windows 系统安装：相关图示 4](/images/developers/camera-sdk-user-guide-windows-system-installation-4.avif)
 </Frame>
 
 ##### Linux
@@ -115,33 +113,30 @@ source ~/.bashrc
 Camera SDK 目录内容包含如下图：
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-camera-sdk-directory-structure-related-diagram.avif" alt="Camera SDK 目录结构相关图示" />
+  ![Camera SDK 目录结构相关图示](/images/developers/camera-sdk-user-guide-camera-sdk-directory-structure-related-diagram.avif)
 </Frame>
 
 - `Document`：SDK 说明文档。
-
 - `FirmWare`：相机固件升级包。
-
 - `Sample`：多种编程语言的 Camera SDK 示例代码。
-
 - `SDK`：Camera SDK 的头文件和库文件。
 
 ### 开发流程
 
 #### 配置项目工程
 
-建议使用 C/C++ 集成 SDK。SDK 提供基于 CMake 的 `CMakeLists.txt`，`Sample` 目录提供多语言示例；Linux 环境可参考 [Linux 示例使用手册](/developers/camera-sdk/linux-examples)。
+建议使用 C/C\+\+ 集成 SDK。SDK 提供基于 CMake 的 `CMakeLists.txt`，`Sample` 目录提供多语言示例；Linux 环境可参考 [Linux 示例使用手册](/developers/camera-sdk/linux-examples)。
 
 #### 同步调用流程
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-synchronous-mode-interface-call-flow-chart.avif" alt="同步方式接口调用流程图" />
+  ![同步方式接口调用流程图](/images/developers/camera-sdk-user-guide-synchronous-mode-interface-call-flow-chart.avif)
 </Frame>
 
 #### 异步调用流程
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-asynchronous-mode-interface-call-flow-chart.avif" alt="异步方式接口调用流程图" />
+  ![异步方式接口调用流程图](/images/developers/camera-sdk-user-guide-asynchronous-mode-interface-call-flow-chart.avif)
 </Frame>
 
 ## 调用要求
@@ -164,27 +159,16 @@ Camera SDK 目录内容包含如下图：
 </Warning>
 
 - DcSetRoi
-
 - LX\_INT\_3D\_BINNING\_MODE;
-
 - LX\_INT\_2D\_BINNING\_MODE;
-
 - LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH;
-
 - LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR;
-
 - LX\_BOOL\_ENABLE\_MULTI\_MACHINE;
-
 - LX\_INT\_TRIGGER\_MODE;
-
 - LX\_INT\_CALCULATE\_UP;
-
 - LX\_BOOL\_ENABLE\_HDR;
-
 - LX\_BOOL\_ENABLE\_TOF\_DEPTH\_CALIBE;
-
 - LX\_BOOL\_ENABLE\_SYNC\_FRAME
-
 - LX\_INT\_SAVE\_PARAMS\_GROUP
 
 工作模式（`LX_INT_WORK_MODE`）为常开模式时，也不允许设置：
@@ -194,13 +178,9 @@ Camera SDK 目录内容包含如下图：
 3D 自动曝光（`LX_BOOL_ENABLE_3D_AUTO_EXPOSURE`）开启时，不允许操作：
 
 - LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR ;
-
 - LX\_INT\_FIRST\_EXPOSURE;
-
 - LX\_INT\_SECOND\_EXPOSURE;
-
 - LX\_INT\_THIRD\_EXPOSURE;
-
 - LX\_INT\_GAIN;<br />
 
 3D 自动曝光（`LX_BOOL_ENABLE_3D_AUTO_EXPOSURE`）关闭时，不允许操作：
@@ -222,7 +202,6 @@ Camera SDK 目录内容包含如下图：
 滤波为非常规模式时，不允许设置：
 
 - LX\_INT\_FILTER\_SMOOTH\_LEVEL LX\_INT\_FILTER\_NOISE\_LEVEL
-
 - LX\_INT\_FILTER\_TIME\_LEVEL
 
 <br />8.**开启 2D 反畸变时, 必须先开启 RGBD 对齐：**
@@ -245,36 +224,36 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_SUCCESS | 函数执行成功 |
-| LX_ERROR | 函数执行失败 |
-| LX_E_NOT_SUPPORT | 所连接的相机不支持该功能 |
-| LX_E_NETWORK_ERROR | 网络通讯错误 |
-| LX_E_INPUT_ILLEGAL | 函数参数传入非法 |
-| LX_E_RECONNECTING | 设备重连中 |
-| LX_E_DEVICE_ERROR | 设备故障 |
-| LX_E_DEVICE_NEED_UPDATE | 设备版本过低,需升级固件版本 |
-| LX_E_API_NEED_UPDATE | API 版本过低,需升级 SDK |
-| LX_E_CTRL_PERMISS_ERROR | 独占控制权限失败(设备同时只能一个 SDK连接) |
-| LX_E_GET_DEVICEINFO_ERROR | 获取设备信息失败 |
-| LX_E_IMAGE_SIZE_ERROR | 图像尺寸不匹配，重新打开相机 |
-| LX_E_IMAGE_PARTITION_ERROR | 图像解析失败 |
-| LX_E_DEVICE_NOT_CONNECTED | 相机未连接 |
-| LX_E_DEVICE_INIT_FAILED | 相机初始化失败 |
-| LX_E_DEVICE_NOT_FOUND | 未找到匹配的相机 |
-| LX_E_FILE_INVALID | 文件错误(文件名或类型或格式不正确) |
-| LX_E_CRC_CHECK_FAILED | 文件 crc 或 md5 校验失败 |
-| LX_E_TIME_OUT | 超时 |
-| LX_E_FRAME_LOSS | 漏帧 |
-| LX_E_ENABLE_ANYSTREAM_FAILED | 开启任意流失败 |
-| LX_E_NOT_RECEIVE_STREAM | 未收到流数据 |
-| LX_E_PARSE_STREAM_FAILED | 启流成功但解析流数据失败 |
-| LX_E_PROCESS_IMAGE_FAILED | 图像计算处理失败 |
-| LX_E_SETTING_NOT_ALLOWED | 常开模式下不允许设置 |
-| LX_E_LOAD_DATAPROCESSLIB_ERROR | 加载图像处理算法库错误 |
-| LX_E_FUNCTION_CALL_LOGIC_ERROR | 函数调用逻辑错误 |
-| LX_E_IPAPPDR_UNREACHABLE_ERROR | IP 不可达或网络配置错误 |
-| LX_E_FRAME_ID_NOT_MATCH | 超时范围内帧不同步错误 |
-| LX_E_FRAME_MULTI_MACHINE | 帧中检测到多机干扰信号 |
+| LX\_SUCCESS | 函数执行成功 |
+| LX\_ERROR | 函数执行失败 |
+| LX\_E\_NOT\_SUPPORT | 所连接的相机不支持该功能 |
+| LX\_E\_NETWORK\_ERROR | 网络通讯错误 |
+| LX\_E\_INPUT\_ILLEGAL | 函数参数传入非法 |
+| LX\_E\_RECONNECTING | 设备重连中 |
+| LX\_E\_DEVICE\_ERROR | 设备故障 |
+| LX\_E\_DEVICE\_NEED\_UPDATE | 设备版本过低,需升级固件版本 |
+| LX\_E\_API\_NEED\_UPDATE | API 版本过低,需升级 SDK |
+| LX\_E\_CTRL\_PERMISS\_ERROR | 独占控制权限失败(设备同时只能一个 SDK连接) |
+| LX\_E\_GET\_DEVICEINFO\_ERROR | 获取设备信息失败 |
+| LX\_E\_IMAGE\_SIZE\_ERROR | 图像尺寸不匹配，重新打开相机 |
+| LX\_E\_IMAGE\_PARTITION\_ERROR | 图像解析失败 |
+| LX\_E\_DEVICE\_NOT\_CONNECTED | 相机未连接 |
+| LX\_E\_DEVICE\_INIT\_FAILED | 相机初始化失败 |
+| LX\_E\_DEVICE\_NOT\_FOUND | 未找到匹配的相机 |
+| LX\_E\_FILE\_INVALID | 文件错误(文件名或类型或格式不正确) |
+| LX\_E\_CRC\_CHECK\_FAILED | 文件 crc 或 md5 校验失败 |
+| LX\_E\_TIME\_OUT | 超时 |
+| LX\_E\_FRAME\_LOSS | 漏帧 |
+| LX\_E\_ENABLE\_ANYSTREAM\_FAILED | 开启任意流失败 |
+| LX\_E\_NOT\_RECEIVE\_STREAM | 未收到流数据 |
+| LX\_E\_PARSE\_STREAM\_FAILED | 启流成功但解析流数据失败 |
+| LX\_E\_PROCESS\_IMAGE\_FAILED | 图像计算处理失败 |
+| LX\_E\_SETTING\_NOT\_ALLOWED | 常开模式下不允许设置 |
+| LX\_E\_LOAD\_DATAPROCESSLIB\_ERROR | 加载图像处理算法库错误 |
+| LX\_E\_FUNCTION\_CALL\_LOGIC\_ERROR | 函数调用逻辑错误 |
+| LX\_E\_IPAPPDR\_UNREACHABLE\_ERROR | IP 不可达或网络配置错误 |
+| LX\_E\_FRAME\_ID\_NOT\_MATCH | 超时范围内帧不同步错误 |
+| LX\_E\_FRAME\_MULTI\_MACHINE | 帧中检测到多机干扰信号 |
 
 ### 5.2 LX\_DATA\_TYPE
 
@@ -282,14 +261,14 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_DATA_UNSIGNED_CHAR | 无符号字符型 |
-| LX_DATA_UNSIGNED_SHORT | 无符号短整型 |
-| LX_DATA_SIGNED_SHORT | 有符号短整型 |
-| LX_DATA_FLOAT | 浮点型 |
-| LX_DATA_OBSTACLE | 避障算法结构体类型 |
-| LX_DATA_PALLET | 托盘算法结构体类型 |
-| LX_DATA_LOCATION | 视觉定位算法结构体类型 |
-| LX_DATA_OBSTACLE | 避障算法 V2 结构体类型 |
+| LX\_DATA\_UNSIGNED\_CHAR | 无符号字符型 |
+| LX\_DATA\_UNSIGNED\_SHORT | 无符号短整型 |
+| LX\_DATA\_SIGNED\_SHORT | 有符号短整型 |
+| LX\_DATA\_FLOAT | 浮点型 |
+| LX\_DATA\_OBSTACLE | 避障算法结构体类型 |
+| LX\_DATA\_PALLET | 托盘算法结构体类型 |
+| LX\_DATA\_LOCATION | 视觉定位算法结构体类型 |
+| LX\_DATA\_OBSTACLE | 避障算法 V2 结构体类型 |
 
 ### 5.3 LX\_BINNING\_MODE
 
@@ -297,9 +276,9 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_BINNING_1X1 | 1x1Binning |
-| LX_BINNING_2X2 | 2x2Binning |
-| LX_BINNING_4X4 | 4x4Binning |
+| LX\_BINNING\_1X1 | 1x1Binning |
+| LX\_BINNING\_2X2 | 2x2Binning |
+| LX\_BINNING\_4X4 | 4x4Binning |
 
 ### 5.4 LX\_STRUCT\_LIGHT\_CODE\_MODE
 
@@ -307,9 +286,9 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_CODE_NORMAL | 常规 |
-| LX_CODE_STATBLE | 稳定 |
-| LX_CODE_ENHANCE | 高精度加强 |
+| LX\_CODE\_NORMAL | 常规 |
+| LX\_CODE\_STATBLE | 稳定 |
+| LX\_CODE\_ENHANCE | 高精度加强 |
 
 ### 5.5 LX\_ALGORITHM\_MODE
 
@@ -317,11 +296,11 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| MODE_ALL_OFF | 关闭相机内置算法 |
-| MODE_AVOID_OBSTACLE | 内置避障算法 |
-| MODE_PALLET_LOCATE | 内置托盘算法 |
-| MODE_VISION_LOCATION | 内置视觉定位算法 |
-| MODE_AVOID_OBSTACLE2 | 内置避障算法 V2 |
+| MODE\_ALL\_OFF | 关闭相机内置算法 |
+| MODE\_AVOID\_OBSTACLE | 内置避障算法 |
+| MODE\_PALLET\_LOCATE | 内置托盘算法 |
+| MODE\_VISION\_LOCATION | 内置视觉定位算法 |
+| MODE\_AVOID\_OBSTACLE2 | 内置避障算法 V2 |
 
 ### 5.6 LX\_CAMERA\_WORK\_MODE
 
@@ -329,8 +308,8 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| KEEP_HEARTBEAT | 心跳模式，SDK 心跳中断后相机进入待机状态 |
-| WORK_FOREVER | 常开模式, 相机始终保持工作状态 |
+| KEEP\_HEARTBEAT | 心跳模式，SDK 心跳中断后相机进入待机状态 |
+| WORK\_FOREVER | 常开模式, 相机始终保持工作状态 |
 
 ### 5.7 LX\_TRIGGER\_MODE
 
@@ -338,9 +317,9 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_TRIGGER_MODE_OFF | 关闭触发模式,流模式,默认 |
-| LX_TRIGGER_SOFTWARE | 软触发模式 |
-| LX_TRIGGER_HARDWARE | 硬触发模式 |
+| LX\_TRIGGER\_MODE\_OFF | 关闭触发模式,流模式,默认 |
+| LX\_TRIGGER\_SOFTWARE | 软触发模式 |
+| LX\_TRIGGER\_HARDWARE | 硬触发模式 |
 
 ### 5.8 LX\_CAMERA\_FEATURE
 
@@ -352,150 +331,150 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_INT_FIRST_EXPOSURE | 曝光值，单位 us, 针对多积分情况为第一个积分的曝光时间 |
-| LX_INT_SECOND_EXPOSURE | 针对多积分情况为第二个积分的曝光时间 |
-| LX_INT_THIRD_EXPOSURE | 针对多积分情况为第三个积分的曝光时间，部分型号支持 |
-| LX_INT_FOURTH_EXPOSURE | 针对多积分情况为第四个积分的曝光时间，部分型号支持 |
-| LX_INT_GAIN | 增益，与曝光效果等价。会引入噪声，可适当调节增益防止曝光参数过大 |
-| LX_INT_MIN_DEPTH | 最小深度值，超出范围的值置为无效 |
-| LX_INT_MAX_DEPTH | 最大深度值，超出范围的值置为无效 |
-| LX_INT_MIN_AMPLITUDE | 有效信号最小强度值，超出范围深度值置为无效 |
-| LX_INT_MAX_AMPLITUDE | 有效信号最大强度值，超出范围深度值置为无效 |
-| LX_INT_CODE_MODE | 结 构 光 相 机 编 码 模 式 ， 参 考CODE_MODE(部分型号支持) |
-| LX_INT_WORK_MODE | 工作模式，参考 LX_CAMERA_WORK_MODE |
-| LX_INT_LINK_SPEED | 协商的网卡网速 100-百兆，1000-千兆, 只支持获取，不可设置 |
-| LX_INT_TOF_GLOBAL_OFFSET | TOF 深度数据偏移 |
-| LX_INT_ALGORITHM_MODE | 内置算法开启模式, 部分型号支持,对应的值参考 LX_ALGORITHM_MODE |
-| LX_INT_TRIGGER_MODE | 触 发 模 式 , 对 应 的 值 参 考LX_TRIGGER_MODE |
-| LX_INT_MODBUS_ADDR | modbus 地址，部分型号支持 MODBUS 协议通过串口输出 |
-| LX_INT_HEART_TIME | 心跳时间，相机超时未收到心跳会自动待机 |
-| LX_INT_GVSP_PACKET_SIZE | GVSP 单包数据分包大小, 单位字节 |
-| LX_INT_CALCULATE_UP | 允许 tof 或 rgb 算法上下移，节省上位机或相机算力，可能影响帧率和延时 |
-| LX_INT_CAN_BAUD_RATE | can 的波特率值, 单位 bps |
-| LX_INT_SAVE_PARAMS_GROUP | 将相机当前配置保存为指定的参数组 |
-| LX_INT_LOAD_PARAMS_GROUP | 一键加载指定索引的参数组 |
+| LX\_INT\_FIRST\_EXPOSURE | 曝光值，单位 us, 针对多积分情况为第一个积分的曝光时间 |
+| LX\_INT\_SECOND\_EXPOSURE | 针对多积分情况为第二个积分的曝光时间 |
+| LX\_INT\_THIRD\_EXPOSURE | 针对多积分情况为第三个积分的曝光时间，部分型号支持 |
+| LX\_INT\_FOURTH\_EXPOSURE | 针对多积分情况为第四个积分的曝光时间，部分型号支持 |
+| LX\_INT\_GAIN | 增益，与曝光效果等价。会引入噪声，可适当调节增益防止曝光参数过大 |
+| LX\_INT\_MIN\_DEPTH | 最小深度值，超出范围的值置为无效 |
+| LX\_INT\_MAX\_DEPTH | 最大深度值，超出范围的值置为无效 |
+| LX\_INT\_MIN\_AMPLITUDE | 有效信号最小强度值，超出范围深度值置为无效 |
+| LX\_INT\_MAX\_AMPLITUDE | 有效信号最大强度值，超出范围深度值置为无效 |
+| LX\_INT\_CODE\_MODE | 结 构 光 相 机 编 码 模 式 ， 参 考CODE\_MODE(部分型号支持) |
+| LX\_INT\_WORK\_MODE | 工作模式，参考 LX\_CAMERA\_WORK\_MODE |
+| LX\_INT\_LINK\_SPEED | 协商的网卡网速 100-百兆，1000-千兆, 只支持获取，不可设置 |
+| LX\_INT\_TOF\_GLOBAL\_OFFSET | TOF 深度数据偏移 |
+| LX\_INT\_ALGORITHM\_MODE | 内置算法开启模式, 部分型号支持,对应的值参考 LX\_ALGORITHM\_MODE |
+| LX\_INT\_TRIGGER\_MODE | 触 发 模 式 , 对 应 的 值 参 考LX\_TRIGGER\_MODE |
+| LX\_INT\_MODBUS\_ADDR | modbus 地址，部分型号支持 MODBUS 协议通过串口输出 |
+| LX\_INT\_HEART\_TIME | 心跳时间，相机超时未收到心跳会自动待机 |
+| LX\_INT\_GVSP\_PACKET\_SIZE | GVSP 单包数据分包大小, 单位字节 |
+| LX\_INT\_CALCULATE\_UP | 允许 tof 或 rgb 算法上下移，节省上位机或相机算力，可能影响帧率和延时 |
+| LX\_INT\_CAN\_BAUD\_RATE | can 的波特率值, 单位 bps |
+| LX\_INT\_SAVE\_PARAMS\_GROUP | 将相机当前配置保存为指定的参数组 |
+| LX\_INT\_LOAD\_PARAMS\_GROUP | 一键加载指定索引的参数组 |
 
 ##### 5.8.1.2 3D 图像参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_INT_3D_IMAGE_WIDTH | 3D 图像分辨率当前宽度 |
-| LX_INT_3D_IMAGE_HEIGHT | 3D 图像分辨率当前高度 |
-| LX_INT_3D_IMAGE_OFFSET_X | ROI 水平偏移像素，设置参数请用 DcSetRoI |
-| LX_INT_3D_IMAGE_OFFSET_Y | ROI 垂直偏移像素，设置参数请用 DcSetRoI |
-| LX_INT_3D_BINNING_MODE | 像素合并，参考 LX_BINNING_MODE |
-| LX_INT_3D_DEPTH_DATA_TYPE | 深度图像数据格式，只能获取，对应的值参考 LX_DATA_TYPE |
-| LX_INT_3D_AMPLITUDE_CHANNEL | 3D 强度图像通道数，与深度图通道共用 |
-| LX_INT_3D_AMPLITUDE_DATA_TYPE | 强度图像数据格式，只能获取，对应的值参考 LX_DATA_TYPE |
-| LX_INT_3D_AUTO_EXPOSURE_LEVEL | 3D 自动曝光开启时的曝光等级,期间不允许设置曝光值与增益 |
-| LX_INT_3D_AUTO_EXPOSURE_MAX | 3D 自动曝光上限值 |
-| LX_INT_3D_AUTO_EXPOSURE_MIN | 3D 自动曝光下限值 |
-| LX_INT_3D_UNDISTORT_SCALE | 3D 图像反畸变系数 |
+| LX\_INT\_3D\_IMAGE\_WIDTH | 3D 图像分辨率当前宽度 |
+| LX\_INT\_3D\_IMAGE\_HEIGHT | 3D 图像分辨率当前高度 |
+| LX\_INT\_3D\_IMAGE\_OFFSET\_X | ROI 水平偏移像素，设置参数请用 DcSetRoI |
+| LX\_INT\_3D\_IMAGE\_OFFSET\_Y | ROI 垂直偏移像素，设置参数请用 DcSetRoI |
+| LX\_INT\_3D\_BINNING\_MODE | 像素合并，参考 LX\_BINNING\_MODE |
+| LX\_INT\_3D\_DEPTH\_DATA\_TYPE | 深度图像数据格式，只能获取，对应的值参考 LX\_DATA\_TYPE |
+| LX\_INT\_3D\_AMPLITUDE\_CHANNEL | 3D 强度图像通道数，与深度图通道共用 |
+| LX\_INT\_3D\_AMPLITUDE\_DATA\_TYPE | 强度图像数据格式，只能获取，对应的值参考 LX\_DATA\_TYPE |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_LEVEL | 3D 自动曝光开启时的曝光等级,期间不允许设置曝光值与增益 |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_MAX | 3D 自动曝光上限值 |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_MIN | 3D 自动曝光下限值 |
+| LX\_INT\_3D\_UNDISTORT\_SCALE | 3D 图像反畸变系数 |
 
 ##### 5.8.1.4 2D 图像参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_INT_2D_IMAGE_CHANNEL | 2D 图像通道数，单色为 1，彩色为 3 |
-| LX_INT_2D_IMAGE_WIDTH | 2D 图像分辨率当前宽度 |
-| LX_INT_2D_IMAGE_HEIGHT | 2D 图像分辨率当前高度 |
-| LX_INT_2D_IMAGE_OFFSET_X | 2D 图像 ROI 水平偏移像素，只能获取，设置参数请用 DcSetRoI |
-| LX_INT_2D_IMAGE_OFFSET_Y | 2D 图像 ROI 垂直偏移像素，只能获取，设置参数请用 DcSetRoI |
-| LX_INT_2D_BINNING_MODE | 像素合并，参考 LX_BINNING_MODE |
-| LX_INT_2D_MANUAL_EXPOSURE | 2D 手动曝光时的曝光值 |
-| LX_INT_2D_MANUAL_GAIN | 2D 手动曝光时的增益值 |
-| LX_INT_2D_AUTO_EXPOSURE_LEVEL | 2D 图像自动曝光时曝光等级 |
-| LX_INT_2D_IMAGE_DATA_TYPE | 2D 图像数据格式，只能获取,对应的值参考LX_DATA_TYPE |
-| LX_INT_2D_UNDISTORT_SCALE | 2D 图像反畸变系数 |
+| LX\_INT\_2D\_IMAGE\_CHANNEL | 2D 图像通道数，单色为 1，彩色为 3 |
+| LX\_INT\_2D\_IMAGE\_WIDTH | 2D 图像分辨率当前宽度 |
+| LX\_INT\_2D\_IMAGE\_HEIGHT | 2D 图像分辨率当前高度 |
+| LX\_INT\_2D\_IMAGE\_OFFSET\_X | 2D 图像 ROI 水平偏移像素，只能获取，设置参数请用 DcSetRoI |
+| LX\_INT\_2D\_IMAGE\_OFFSET\_Y | 2D 图像 ROI 垂直偏移像素，只能获取，设置参数请用 DcSetRoI |
+| LX\_INT\_2D\_BINNING\_MODE | 像素合并，参考 LX\_BINNING\_MODE |
+| LX\_INT\_2D\_MANUAL\_EXPOSURE | 2D 手动曝光时的曝光值 |
+| LX\_INT\_2D\_MANUAL\_GAIN | 2D 手动曝光时的增益值 |
+| LX\_INT\_2D\_AUTO\_EXPOSURE\_LEVEL | 2D 图像自动曝光时曝光等级 |
+| LX\_INT\_2D\_IMAGE\_DATA\_TYPE | 2D 图像数据格式，只能获取,对应的值参考LX\_DATA\_TYPE |
+| LX\_INT\_2D\_UNDISTORT\_SCALE | 2D 图像反畸变系数 |
 
 ##### 5.8.1.5 触发参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_INT_TRIGGER_MODE | 触发模式,对应的值参考 LX_TRIGGER_MODE |
-| LX_INT_HARDWARE_TRIGGER_FILTER_TIME | 硬触发滤波时间, 单位 us |
-| LX_INT_TRIGGER_MIN_PERIOD_TIME | 触发最小时间间隔, 单位 us |
-| LX_INT_TRIGGER_DELAY_TIME | 触发延迟时间,单位 us, 当值&lt;=1000 时表示立刻生效<br />(预留功能,若大于1000 时表示延时生效) |
-| LX_INT_TRIGGER_FRAME_COUNT | 单次触发帧数 |
-| LX_INT_IO_WORK_MODE | GPIO信 号 输 出 控 制 模 式 ,参 考LX_IO_WORK_MODE |
-| LX_INT_IO_OUTPUT_STATE | GPIO 信 号 输 出 的 用 户 控 制 模 式 , 参 考LX_IO_OUTPUT_STATE |
+| LX\_INT\_TRIGGER\_MODE | 触发模式,对应的值参考 LX\_TRIGGER\_MODE |
+| LX\_INT\_HARDWARE\_TRIGGER\_FILTER\_TIME | 硬触发滤波时间, 单位 us |
+| LX\_INT\_TRIGGER\_MIN\_PERIOD\_TIME | 触发最小时间间隔, 单位 us |
+| LX\_INT\_TRIGGER\_DELAY\_TIME | 触发延迟时间,单位 us, 当值\<=1000 时表示立刻生效<br />(预留功能,若大于1000 时表示延时生效) |
+| LX\_INT\_TRIGGER\_FRAME\_COUNT | 单次触发帧数 |
+| LX\_INT\_IO\_WORK\_MODE | GPIO信 号 输 出 控 制 模 式 ,参 考LX\_IO\_WORK\_MODE |
+| LX\_INT\_IO\_OUTPUT\_STATE | GPIO 信 号 输 出 的 用 户 控 制 模 式 , 参 考LX\_IO\_OUTPUT\_STATE |
 
 ##### 5.8.1.6 滤波参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_INT_FILTER_MODE | 滤波模式,参考 LX_FILTER_MODE |
-| LX_INT_FILTER_SMOOTH_LEVEL | 当LX_INT_FILTER_MODE 为 FILTER_NORMAL 时,<br />可设置滤波平滑等级，[0, 3]，值越大，滤波越强 |
-| LX_INT_FILTER_NOISE_LEVEL | 当 LX_INT_FILTER_MODE 为 FILTER_NORMAL 时,<br />可设置滤波噪声等级，[0, 3]，值越大，滤波越强 |
-| LX_INT_FILTER_TIME_LEVEL | 当 LX_INT_FILTER_MODE 为 FILTER_NORMAL 时,<br />可设置滤波时域等级，[0, 3]，值越大，滤波越强 |
+| LX\_INT\_FILTER\_MODE | 滤波模式,参考 LX\_FILTER\_MODE |
+| LX\_INT\_FILTER\_SMOOTH\_LEVEL | 当LX\_INT\_FILTER\_MODE 为 FILTER\_NORMAL 时,<br />可设置滤波平滑等级，\[0, 3\]，值越大，滤波越强 |
+| LX\_INT\_FILTER\_NOISE\_LEVEL | 当 LX\_INT\_FILTER\_MODE 为 FILTER\_NORMAL 时,<br />可设置滤波噪声等级，\[0, 3\]，值越大，滤波越强 |
+| LX\_INT\_FILTER\_TIME\_LEVEL | 当 LX\_INT\_FILTER\_MODE 为 FILTER\_NORMAL 时,<br />可设置滤波时域等级，\[0, 3\]，值越大，滤波越强 |
 
 #### 5.8.2 float 型参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_FLOAT_FILTER_LEVEL | 滤波等级，0-1，值越大滤波强度越高 |
-| LX_FLOAT_EST_OUT_EXPOSURE | 是否评估过曝数据，0-1，为 1 则过曝数据无效 |
-| LX_FLOAT_LIGHT_INTENSITY | 光强度，部分型号支持 |
-| LX_FLOAT_3D_DEPTH_FPS | 深度图当前帧率 |
-| LX_FLOAT_3D_AMPLITUDE_FPS | 强度图当前帧率 |
-| LX_FLOAT_2D_IAMGE_FPS | RGB 图当前帧率 |
-| LX_FLOAT_DEVICE_TEMPERATURE | 获取当前相机温度 |
+| LX\_FLOAT\_FILTER\_LEVEL | 滤波等级，0-1，值越大滤波强度越高 |
+| LX\_FLOAT\_EST\_OUT\_EXPOSURE | 是否评估过曝数据，0-1，为 1 则过曝数据无效 |
+| LX\_FLOAT\_LIGHT\_INTENSITY | 光强度，部分型号支持 |
+| LX\_FLOAT\_3D\_DEPTH\_FPS | 深度图当前帧率 |
+| LX\_FLOAT\_3D\_AMPLITUDE\_FPS | 强度图当前帧率 |
+| LX\_FLOAT\_2D\_IAMGE\_FPS | RGB 图当前帧率 |
+| LX\_FLOAT\_DEVICE\_TEMPERATURE | 获取当前相机温度 |
 
 #### 5.8.3 bool 型参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_BOOL_CONNECT_STATE | 当前连接状态 |
-| LX_BOOL_ENABLE_3D_DEPTH_STREAM | 开启/关闭深度图(部分相机支持) |
-| LX_BOOL_ENABLE_3D_AMP_STREAM | 开启/关闭强度图(部分相机支持) |
-| LX_BOOL_ENABLE_3D_AUTO_EXPOSURE | 3D 自动曝光使能 |
-| LX_BOOL_ENABLE_3D_UNDISTORT | 3D 反畸变使能 |
-| LX_BOOL_ENABLE_BACKGROUND_AMP | 强度背景光使能 |
-| LX_BOOL_ENABLE_ANTI_FLICKER | 抗频闪使能，LED 环境照明可能导致数据存在明显波纹，部分型号支持 |
-| LX_BOOL_ENABLE_2D_STREAM | 开启/关闭 RGB |
-| LX_BOOL_ENABLE_2D_AUTO_EXPOSURE | 2D 自动曝光使能 |
-| LX_BOOL_ENABLE_2D_UNDISTORT | 2D 反畸变使能 |
-| LX_BOOL_ENABLE_2D_TO_DEPTH | RGBD 坐标对齐使能 |
-| LX_BOOL_ENABLE_MULTI_MACHINE | 多机模式使能，部分型号支持 |
-| LX_BOOL_ENABLE_MULTI_EXPOSURE_HDR | HDR（多曝光高动态范围模式）使能 |
-| LX_BOOL_ENABLE_SYNC_FRAME | 是否开启强制帧同步, 默认数据实时性优先，若需要 RGBD 同步,<br />需要开启该模式 |
+| LX\_BOOL\_CONNECT\_STATE | 当前连接状态 |
+| LX\_BOOL\_ENABLE\_3D\_DEPTH\_STREAM | 开启/关闭深度图(部分相机支持) |
+| LX\_BOOL\_ENABLE\_3D\_AMP\_STREAM | 开启/关闭强度图(部分相机支持) |
+| LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE | 3D 自动曝光使能 |
+| LX\_BOOL\_ENABLE\_3D\_UNDISTORT | 3D 反畸变使能 |
+| LX\_BOOL\_ENABLE\_BACKGROUND\_AMP | 强度背景光使能 |
+| LX\_BOOL\_ENABLE\_ANTI\_FLICKER | 抗频闪使能，LED 环境照明可能导致数据存在明显波纹，部分型号支持 |
+| LX\_BOOL\_ENABLE\_2D\_STREAM | 开启/关闭 RGB |
+| LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE | 2D 自动曝光使能 |
+| LX\_BOOL\_ENABLE\_2D\_UNDISTORT | 2D 反畸变使能 |
+| LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH | RGBD 坐标对齐使能 |
+| LX\_BOOL\_ENABLE\_MULTI\_MACHINE | 多机模式使能，部分型号支持 |
+| LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR | HDR（多曝光高动态范围模式）使能 |
+| LX\_BOOL\_ENABLE\_SYNC\_FRAME | 是否开启强制帧同步, 默认数据实时性优先，若需要 RGBD 同步,<br />需要开启该模式 |
 
 #### 5.8.4 string 型参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_STRING_DEVICE_VERSION | 设备版本号 |
-| LX_STRING_FIRMWARE_NAME | 固件文件名，用于升级设备版本,只能设置 |
-| LX_STRING_FILTER_PARAMS | 滤波算法参数，json 格式的字符串 |
-| LX_STRING_ALGORITHM_PARAMS | 内置算法参数，不同的开启模式，对应不同的 json 格式字符串,<br />前提需要设置过 LX_ALGORITHM_MODE |
-| LX_STRING_ALGORITHM_VERSION | 内置算法版本号,不同的开启模式，返回对应的版本号,只能获取,<br />前提需要设置过 LX_ALGORITHM_MODE |
-| LX_STRING_DEVICE_OS_VERSION | 设备系统镜像版本号 |
-| LX_STRING_IMPORT_PARAMS_FROM_FILE | 从本地文件加载参数到相机 |
-| LX_STRING_EXPORT_PARAMS_TO_FILE | 将相机当前参数导出到本地文件 |
+| LX\_STRING\_DEVICE\_VERSION | 设备版本号 |
+| LX\_STRING\_FIRMWARE\_NAME | 固件文件名，用于升级设备版本,只能设置 |
+| LX\_STRING\_FILTER\_PARAMS | 滤波算法参数，json 格式的字符串 |
+| LX\_STRING\_ALGORITHM\_PARAMS | 内置算法参数，不同的开启模式，对应不同的 json 格式字符串,<br />前提需要设置过 LX\_ALGORITHM\_MODE |
+| LX\_STRING\_ALGORITHM\_VERSION | 内置算法版本号,不同的开启模式，返回对应的版本号,只能获取,<br />前提需要设置过 LX\_ALGORITHM\_MODE |
+| LX\_STRING\_DEVICE\_OS\_VERSION | 设备系统镜像版本号 |
+| LX\_STRING\_IMPORT\_PARAMS\_FROM\_FILE | 从本地文件加载参数到相机 |
+| LX\_STRING\_EXPORT\_PARAMS\_TO\_FILE | 将相机当前参数导出到本地文件 |
 
 #### 5.8.5 command 型参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_CMD_GET_NEW_FRAME | 更新一次数据，默认超时时间 1s |
-| LX_CMD_RETURN_VERSION | 回退上一版本 |
-| LX_CMD_RESTART_DEVICE | 重启相机 |
-| LX_CMD_WHITE_BALANCE | 自动白平衡 |
-| LX_CMD_RESET_PARAM | 恢复默认参数 |
+| LX\_CMD\_GET\_NEW\_FRAME | 更新一次数据，默认超时时间 1s |
+| LX\_CMD\_RETURN\_VERSION | 回退上一版本 |
+| LX\_CMD\_RESTART\_DEVICE | 重启相机 |
+| LX\_CMD\_WHITE\_BALANCE | 自动白平衡 |
+| LX\_CMD\_RESET\_PARAM | 恢复默认参数 |
 
 #### 5.8.6 ptr 型参数
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_PTR_2D_IMAGE_DATA | 获取 2D 图像数据指针，数据长度由 2D 图像尺寸、通道数和数据格式（LX_INT_2D_IMAGE_DATA_TYPE）确定 |
-| LX_PTR_3D_AMP_DATA | 获取 3D 强度图数据指针，数据长度由 3D 图像尺寸、通道数和数据格式(LX_INT_3D_AMPLITUDE_DATA_TYPE)确定 |
-| LX_PTR_3D_DEPTH_DATA | 获取 3D 深度图数据指针，数据长度由 3D 图像尺寸、通道数和数据格式（LX_INT_3D_DEPTH_DATA_TYPE）确定 |
-| LX_PTR_XYZ_DATA | 获取点云数据指针，float*类型三通道(x, y, z 为一组数 据 ， 依 次 循 环 ), 数 据 长度为LX_INT_3D_IMAGE_WIDTH*LX_INT_3D_IMAGE_HEIG HT*sizeof(float)*3 |
-| LX_PTR_ALGORITHM_OUTPUT | 获 取 内 置 算 法 输 出 ， 与 算 法 模 式 有 关 。MODE_AVOID_OBSTACLE 为 LxAvoidanceOutput 指针，MODE_PALLET_LOCATE为 LxPalletPose指 针 ，MODE_VISION_LOCATION 为参考 LxLocation 指针 |
-| LX_PTR_2D_INTRIC_PARAM | 获取 2D 图像内参，float*类型指针，<br />长度固定为9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
-| LX_PTR_3D_INTRIC_PARAM | 获取 3D 图像内参, float*类型指针，<br />长度固定为9*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
-| LX_PTR_3D_EXTRIC_PARAM | 获取 3D 图像外参，float*类型指针 ，<br />长度固定为12*sizeof(float)(前 9 个表示旋转矩阵，后 3 个表示平移向量) |
-| LX_PTR_FRAME_DATA | 获取完整一帧数据，输出结果参考结构体 FrameInfo |
+| LX\_PTR\_2D\_IMAGE\_DATA | 获取 2D 图像数据指针，数据长度由 2D 图像尺寸、通道数和数据格式（LX\_INT\_2D\_IMAGE\_DATA\_TYPE）确定 |
+| LX\_PTR\_3D\_AMP\_DATA | 获取 3D 强度图数据指针，数据长度由 3D 图像尺寸、通道数和数据格式(LX\_INT\_3D\_AMPLITUDE\_DATA\_TYPE)确定 |
+| LX\_PTR\_3D\_DEPTH\_DATA | 获取 3D 深度图数据指针，数据长度由 3D 图像尺寸、通道数和数据格式（LX\_INT\_3D\_DEPTH\_DATA\_TYPE）确定 |
+| LX\_PTR\_XYZ\_DATA | 获取点云数据指针，float_类型三通道(x, y, z 为一组数 据 ， 依 次 循 环 ), 数 据 长度为LX\_INT\_3D\_IMAGE\_WIDTH_LX\_INT\_3D\_IMAGE\_HEIG HT\*sizeof(float)\*3 |
+| LX\_PTR\_ALGORITHM\_OUTPUT | 获 取 内 置 算 法 输 出 ， 与 算 法 模 式 有 关 。MODE\_AVOID\_OBSTACLE 为 LxAvoidanceOutput 指针，MODE\_PALLET\_LOCATE为 LxPalletPose指 针 ，MODE\_VISION\_LOCATION 为参考 LxLocation 指针 |
+| LX\_PTR\_2D\_INTRIC\_PARAM | 获取 2D 图像内参，float_类型指针，_<br />_长度固定为9_sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX\_PTR\_3D\_INTRIC\_PARAM | 获取 3D 图像内参, float_类型指针，_<br />_长度固定为9_sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3) |
+| LX\_PTR\_3D\_EXTRIC\_PARAM | 获取 3D 图像外参，float_类型指针 ，_<br />_长度固定为12_sizeof(float)(前 9 个表示旋转矩阵，后 3 个表示平移向量) |
+| LX\_PTR\_FRAME\_DATA | 获取完整一帧数据，输出结果参考结构体 FrameInfo |
 
 ### 5.9 LxDeviceInfo
 
@@ -504,14 +483,14 @@ Camera SDK 目录内容包含如下图：
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
 | handle | DcHandle | 设备唯一标识 |
-| dev_type | LX_DEVICE_TYPE | 设备类型 |
+| dev\_type | LX\_DEVICE\_TYPE | 设备类型 |
 | id | Char 数组 | 设备 id |
 | ip | Char 数组 | 设备 ip:port |
 | sn | Char 数组 | 设备序列号 |
 | mac | Char 数组 | 设备 mac 地址 |
-| firmware_ver | Char 数组 | 设备软件版本号 |
-| algor_ver | Char 数组 | 设备算法版本号 |
-| name | Char 数组 | 设备名称，如：camera_M3_192.168.11.13_9803 |
+| firmware\_ver | Char 数组 | 设备软件版本号 |
+| algor\_ver | Char 数组 | 设备算法版本号 |
+| name | Char 数组 | 设备名称，如：camera\_M3\_192.168.11.13\_9803 |
 | reserve | Char 数组 | 预留字段, 子网掩码 |
 | reserve2 | Char 数组 | 预留字段 2，网关 |
 | reserve3 | Char 数组 | 预留字段 3 |
@@ -523,10 +502,10 @@ Camera SDK 目录内容包含如下图：
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
-| set_available | Bool | 当前值是否可设置, true-可设置，false-不可设置 |
-| cur_value | Int | 当前值 |
-| max_value | Int | 最大值 |
-| min_value | Int | 最小值 |
+| set\_available | Bool | 当前值是否可设置, true-可设置，false-不可设置 |
+| cur\_value | Int | 当前值 |
+| max\_value | Int | 最大值 |
+| min\_value | Int | 最小值 |
 | reserve | Int 数组 | 预留字段 |
 
 ### 5.11 LxFloatValueInfo
@@ -535,10 +514,10 @@ Camera SDK 目录内容包含如下图：
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
-| set_available | Bool | 当前值是否可设置，true-可设置，false-不可设置 |
-| cur_value | float | 当前值 |
-| max_value | float | 最大值 |
-| min_value | float | 最小值 |
+| set\_available | Bool | 当前值是否可设置，true-可设置，false-不可设置 |
+| cur\_value | float | 当前值 |
+| max\_value | float | 最大值 |
+| min\_value | float | 最小值 |
 | reserve | float 数组 | 预留字段 |
 
 ### 5.12 LX\_DEVICE\_TYPE
@@ -547,20 +526,20 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| LX_DEVICE_M2 | M2 相机 |
-| LX_DEVICE_M3 | M3 相机 |
-| LX_DEVICE_M4 Pro | M4 Pro 相机 |
-| LX_DEVICE_M4_MEGA | M4 Mega 相机 |
-| LX_DEVICE_M4 | M4 相机 |
-| LX_DEVICE_S1 | S1 相机 |
-| LX_DEVICE_S2 | S2 相机 |
-| LX_DEVICE_I1 | I1 相机 |
-| LX_DEVICE_I2 | I2 相机 |
-| LX_DEVICE_T1 | T1 相机 |
-| LX_DEVICE_T2 | T2 相机 |
-| LX_DEVICE_H3 | H3 相机 |
-| LX_DEVICE_V1Pro | V1Pro 相机 |
-| LX_DEVICE_NULL | 预留 |
+| LX\_DEVICE\_M2 | M2 相机 |
+| LX\_DEVICE\_M3 | M3 相机 |
+| LX\_DEVICE\_M4 Pro | M4 Pro 相机 |
+| LX\_DEVICE\_M4\_MEGA | M4 Mega 相机 |
+| LX\_DEVICE\_M4 | M4 相机 |
+| LX\_DEVICE\_S1 | S1 相机 |
+| LX\_DEVICE\_S2 | S2 相机 |
+| LX\_DEVICE\_I1 | I1 相机 |
+| LX\_DEVICE\_I2 | I2 相机 |
+| LX\_DEVICE\_T1 | T1 相机 |
+| LX\_DEVICE\_T2 | T2 相机 |
+| LX\_DEVICE\_H3 | H3 相机 |
+| LX\_DEVICE\_V1Pro | V1Pro 相机 |
+| LX\_DEVICE\_NULL | 预留 |
 
 ### 5.13 LX\_OPEN\_MODE
 
@@ -568,10 +547,10 @@ Camera SDK 目录内容包含如下图：
 
 | 关键字 | 说明 |
 | --- | --- |
-| OPEN_BY_INDEX | 按搜索列表中索引下标方式打开，对应的参数为索引号，当搜索到的设备列表发生变化时，<br />选择打开的设备也会不一样 |
-| OPEN_BY_IP | 按搜索列表中对应ip 方式打开，对应的参数为设备ip 或ip:port |
-| OPEN_BY_SN | 按搜索列表中对应 sn 方式打开，对应的参数为设备 sn |
-| OPEN_BY_ID | 按搜索列表中对应 id 方式打开，对应的参数为设备 id |
+| OPEN\_BY\_INDEX | 按搜索列表中索引下标方式打开，对应的参数为索引号，当搜索到的设备列表发生变化时，<br />选择打开的设备也会不一样 |
+| OPEN\_BY\_IP | 按搜索列表中对应ip 方式打开，对应的参数为设备ip 或ip:port |
+| OPEN\_BY\_SN | 按搜索列表中对应 sn 方式打开，对应的参数为设备 sn |
+| OPEN\_BY\_ID | 按搜索列表中对应 id 方式打开，对应的参数为设备 id |
 
 ### 5.14 FrameDataInfo
 
@@ -579,13 +558,13 @@ Camera SDK 目录内容包含如下图：
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
-| frame_data_type | LX_DATA_TYPE | 帧数据类型 |
-| frame_width | Int | 帧数据图像宽 |
-| frame_height | Int | 帧数据图像高 |
-| frame_channel | Int | 帧数据通道数 |
-| frame_data | Void *指针类型 | 帧数据内容 |
-| sensor_timestamp | Unsigned long long 类型 | sensor 出图时间戳 |
-| recv_timestamp | Unsigned long long 类型 | 接收完帧数据时的时间戳 |
+| frame\_data\_type | LX\_DATA\_TYPE | 帧数据类型 |
+| frame\_width | Int | 帧数据图像宽 |
+| frame\_height | Int | 帧数据图像高 |
+| frame\_channel | Int | 帧数据通道数 |
+| frame\_data | Void \*指针类型 | 帧数据内容 |
+| sensor\_timestamp | Unsigned long long 类型 | sensor 出图时间戳 |
+| recv\_timestamp | Unsigned long long 类型 | 接收完帧数据时的时间戳 |
 
 ### 5.15 FrameInfo
 
@@ -593,15 +572,15 @@ Camera SDK 目录内容包含如下图：
 
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
-| frame_state | LX_STATE | 帧数据状态 |
+| frame\_state | LX\_STATE | 帧数据状态 |
 | handle | DcHandle | 设备唯一标识 |
-| depth_data | FrameDataInfo 类型 | 深度图帧数据结构体 |
-| amp_data | FrameDataInfo 类型 | 强度图帧数据结构体 |
-| rgb_data | FrameDataInfo 类型 | Rgb 图帧数据结构体 |
-| app_data | FrameDataInfo 类型 | 算法输出结构体 |
-| reserve_data | Void *指针类型 | 扩展预留字段 |
+| depth\_data | FrameDataInfo 类型 | 深度图帧数据结构体 |
+| amp\_data | FrameDataInfo 类型 | 强度图帧数据结构体 |
+| rgb\_data | FrameDataInfo 类型 | Rgb 图帧数据结构体 |
+| app\_data | FrameDataInfo 类型 | 算法输出结构体 |
+| reserve\_data | Void \*指针类型 | 扩展预留字段 |
 
-* * *
+---
 
 ## API 参考
 
@@ -616,7 +595,7 @@ Camera SDK 目录内容包含如下图：
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetdevicelist.avif" alt="DcGetDeviceList相关图示" />
+  ![DcGetDeviceList相关图示](/images/developers/camera-sdk-user-guide-dcgetdevicelist.avif)
 </Frame>
 
 **函数功能：**
@@ -626,21 +605,20 @@ Camera SDK 目录内容包含如下图：
 **函数参数：**
 
 - \[out\]devlist 查找到的相机列表
-
 - \[out\]devnum 查找到的相机数量
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**内部维护内存，外部无须分配内存, 但因每次搜索前会清空原内容，故需外部保证线程安全
+\*\*备注：\*\*内部维护内存，外部无须分配内存, 但因每次搜索前会清空原内容，故需外部保证线程安全
 
 #### 6.1.2 DcOpenDevice
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcopendevice.avif" alt="DcOpenDevice相关图示" />
+  ![DcOpenDevice相关图示](/images/developers/camera-sdk-user-guide-dcopendevice.avif)
 </Frame>
 
 **函数功能：**
@@ -650,25 +628,22 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]open\_mode 打开方式, 具体说明见 OpenMode
-
 - \[in\]param 不同的打开方式，填写不同的参数
-
 - \[out\]handle 连接成功后返回的设备句柄,后续所有接口访问都依赖该 handle
-
 - \[out\]info 连接成功后返回的相机详细信息
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.1.3 DcCloseDevice
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcclosedevice.avif" alt="DcCloseDevice相关图示" />
+  ![DcCloseDevice相关图示](/images/developers/camera-sdk-user-guide-dcclosedevice.avif)
 </Frame>
 
 **函数功能：**
@@ -683,7 +658,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.2 开始取流、关闭取流
 
@@ -692,10 +667,10 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcstartstream.avif" alt="DcStartStream相关图示" />
+  ![DcStartStream相关图示](/images/developers/camera-sdk-user-guide-dcstartstream.avif)
 </Frame>
 
-**函数功能：**打开数据流
+\*\*函数功能：\*\*打开数据流
 
 **函数参数：**
 
@@ -705,17 +680,17 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.2.2 DcStopStream
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcstopstream.avif" alt="DcStopStream相关图示" />
+  ![DcStopStream相关图示](/images/developers/camera-sdk-user-guide-dcstopstream.avif)
 </Frame>
 
-**函数功能：**关闭数据流
+\*\*函数功能：\*\*关闭数据流
 
 **函数参数：**
 
@@ -725,7 +700,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.3 读取与设置相机参数
 
@@ -734,7 +709,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetintvalue.avif" alt="DcSetIntValue相关图示" />
+  ![DcSetIntValue相关图示](/images/developers/camera-sdk-user-guide-dcsetintvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -744,23 +719,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[in\]value 设置参数值
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.2 DcGetIntValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetintvalue.avif" alt="DcGetIntValue相关图示" />
+  ![DcGetIntValue相关图示](/images/developers/camera-sdk-user-guide-dcgetintvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -770,23 +743,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[out\]value 返回参数结构体，参数的最大最小值、当前值等
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.3 DcSetFloatValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetfloatvalue.avif" alt="DcSetFloatValue相关图示" />
+  ![DcSetFloatValue相关图示](/images/developers/camera-sdk-user-guide-dcsetfloatvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -796,23 +767,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[in\]value 设置参数值
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.4 DcGetFloatValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetfloatvalue.avif" alt="DcGetFloatValue相关图示" />
+  ![DcGetFloatValue相关图示](/images/developers/camera-sdk-user-guide-dcgetfloatvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -822,23 +791,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[out\]value 返回参数结构体，参数的最大最小值、当前值等
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.5 DcSetBoolValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetboolvalue.avif" alt="DcSetBoolValue相关图示" />
+  ![DcSetBoolValue相关图示](/images/developers/camera-sdk-user-guide-dcsetboolvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -848,23 +815,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[in\]value 设置参数值
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.6 DcGetBoolValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetboolvalue.avif" alt="DcGetBoolValue相关图示" />
+  ![DcGetBoolValue相关图示](/images/developers/camera-sdk-user-guide-dcgetboolvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -874,23 +839,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[out\]value 返回参数
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.7 DcSetStringValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetstringvalue.avif" alt="DcSetStringValue相关图示" />
+  ![DcSetStringValue相关图示](/images/developers/camera-sdk-user-guide-dcsetstringvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -900,23 +863,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考LX\_CAMERA\_FEATURE
-
 - \[in\]value 设置参数值
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.8 DcGetStringValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetstringvalue.avif" alt="DcGetStringValue相关图示" />
+  ![DcGetStringValue相关图示](/images/developers/camera-sdk-user-guide-dcgetstringvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -926,23 +887,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[out\]value 返回参数，无需外部分配内存
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.9 DcGetPtrValue
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetptrvalue.avif" alt="DcGetPtrValue相关图示" />
+  ![DcGetPtrValue相关图示](/images/developers/camera-sdk-user-guide-dcgetptrvalue.avif)
 </Frame>
 
 **函数功能：**
@@ -952,23 +911,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
-
 - \[out\]value 返回参数，无需外部分配内存
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.3.10 DcSetCmd
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetcmd.avif" alt="DcSetCmd相关图示" />
+  ![DcSetCmd相关图示](/images/developers/camera-sdk-user-guide-dcsetcmd.avif)
 </Frame>
 
 **函数功能：**
@@ -978,14 +935,13 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]cmd 参考 LX\_CAMERA\_FEATURE
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.4 保存点云
 
@@ -994,7 +950,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsavexyz.avif" alt="DcSaveXYZ相关图示" />
+  ![DcSaveXYZ相关图示](/images/developers/camera-sdk-user-guide-dcsavexyz.avif)
 </Frame>
 
 **函数功能：**
@@ -1004,14 +960,13 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - handle 设备句柄
-
 - filename 文件名，支持 txt,ply 和 pcd 格式。txt 格式按图像顺序保存所有数 据，ply 和 pcd 仅保存非零数据
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.5 特殊控制
 
@@ -1020,7 +975,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcspecialcontrol.avif" alt="DcSpecialControl相关图示" />
+  ![DcSpecialControl相关图示](/images/developers/camera-sdk-user-guide-dcspecialcontrol.avif)
 </Frame>
 
 **函数功能：**
@@ -1030,16 +985,14 @@ LX\_CAMERA\_FEATURE 定义之外的特殊操作
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]param 操作
-
 - \[inout\]value 设置时为对应入参，获取时为对应出参，无需外部分配内存
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.6 设置 ROI 与参数路径
 
@@ -1048,7 +1001,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetroi.avif" alt="DcSetRoI相关图示" />
+  ![DcSetRoI相关图示](/images/developers/camera-sdk-user-guide-dcsetroi.avif)
 </Frame>
 
 **函数功能：**
@@ -1058,22 +1011,17 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄
-
 - \[in\]offsetx 起始点水平偏移像素
-
 - \[in\]offsety 起始点垂直偏移像素
-
 - \[in\]widthroi 目标区域的宽
-
 - \[in\]heightroi 目标区域的高
-
 - \[in\]type0-3D 图像 1-2D 图像
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.7 设置相机 IP
 
@@ -1082,7 +1030,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetcameraip.avif" alt="DcSetCameraIp相关图示" />
+  ![DcSetCameraIp相关图示](/images/developers/camera-sdk-user-guide-dcsetcameraip.avif)
 </Frame>
 
 **函数功能：**
@@ -1092,18 +1040,15 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄,
-
 - \[in\]ip 设备IP,
-
 - \[in\]netmask 子网掩码(若传空则内部默认"255.255.0.0")
-
 - \[in\]gateway 网关ip(若传空则内部默认将ip 最后网段置为"1"后作为网关)
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**当未连接上设备情况下，需先通过搜索获取。若设备支持修改网关和子网掩码，则同时将网关设置为同网段，子网掩码设置为"255.255.0.0"。修改完之后设备列表会变化，需重新调用 DcGetDeviceList 接口重新获取新的设备列表
+\*\*备注：\*\*当未连接上设备情况下，需先通过搜索获取。若设备支持修改网关和子网掩码，则同时将网关设置为同网段，子网掩码设置为"255.255.0.0"。修改完之后设备列表会变化，需重新调用 DcGetDeviceList 接口重新获取新的设备列表
 
 ### 6.8 日志信息与版本信息
 
@@ -1112,7 +1057,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcgetapiversion.avif" alt="DcGetApiVersion相关图示" />
+  ![DcGetApiVersion相关图示](/images/developers/camera-sdk-user-guide-dcgetapiversion.avif)
 </Frame>
 
 **函数功能：**
@@ -1132,7 +1077,7 @@ char 指针数据。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif" alt="DcSetInfoOutput相关图示" />
+  ![DcSetInfoOutput相关图示](/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif)
 </Frame>
 
 **函数功能：**
@@ -1142,25 +1087,22 @@ char 指针数据。
 **函数参数：**
 
 - \[in\]print\_level 0：info 所有调试信息；1：warn 重要及警告类调试信息； 2：error 仅输出错误信息
-
 - \[in\]enable\_screen\_print 是否在窗口打印
-
 - \[in\]log\_path log 文件保存路径(不包含日志文件名)，可以为空。 Windows 默认在当前用户路径，linux 默认在/var/log 路径
-
 - \[in\]language 语言(暂无用)
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.8.3 DcLog
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dclog.avif" alt="DcLog相关图示" />
+  ![DcLog相关图示](/images/developers/camera-sdk-user-guide-dclog.avif)
 </Frame>
 
 **函数功能：**
@@ -1175,14 +1117,14 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.8.4 DcRegisterFrameCallback
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif" alt="DcRegisterFrameCallback相关图示" />
+  ![DcRegisterFrameCallback相关图示](/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif)
 </Frame>
 
 **函数功能：**
@@ -1192,23 +1134,21 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄,
-
 - \[in\]func 帧数据回调函数,
-
 - \[in\]usr\_data 用户自定义参数, 可传空
 
 **返回值：**
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.8.5 DcUnregisterFrameCallback
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif" alt="DcUnregisterFrameCallback相关图示" />
+  ![DcUnregisterFrameCallback相关图示](/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif)
 </Frame>
 
 **函数功能：**
@@ -1223,7 +1163,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 ### 6.9 设备状态回调
 
@@ -1232,7 +1172,7 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif" alt="DcRegisterCameraStatusCallback相关图示" />
+  ![DcRegisterCameraStatusCallback相关图示](/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif)
 </Frame>
 
 **函数功能：**
@@ -1242,19 +1182,17 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 **函数参数：**
 
 - \[in\]handle 设备句柄,
-
 - \[in\]func 帧数据回调函数,
-
 - \[in\]usr\_data 用户自定义参数, 可传空
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
 #### 6.9.2 DcUnregisterCameraStatusCallback
 
 **函数原型：**
 
 <Frame>
-  <img src="/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif" alt="DcUnregisterCameraStatusCallback相关图示" />
+  ![DcUnregisterCameraStatusCallback相关图示](/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif)
 </Frame>
 
 **函数功能：**
@@ -1269,9 +1207,9 @@ Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
 Int 数据，该值等于 LX\_SUCCESS，说明接口调用成功。
 
-**备注：**应确保传入参数有效
+\*\*备注：\*\*应确保传入参数有效
 
-* * *
+---
 
 ## 版本与更新
 

@@ -1,258 +1,211 @@
 ---
-title: "视觉通用问题"
-description: "排查 MRDVS 相机供电、网络、成像和点云质量问题。"
-legacyId: "019cb784-359c-7434-9f5a-e845c695f98f"
-legacyUrls:
-  - "/node/019cb784-359c-7434-9f5a-e845c695f98f"
-  - "/doc/editor/019cb784-359c-7434-9f5a-e845c695f98f"
+title: 视觉通用问题
+description: 排查 MRDVS 相机供电、网络、成像和点云质量问题。
+legacyId: 019cb784-359c-7434-9f5a-e845c695f98f
+legacyUrls: ["/node/019cb784-359c-7434-9f5a-e845c695f98f","/doc/editor/019cb784-359c-7434-9f5a-e845c695f98f"]
 ---
+
 先检查供电、网络和软件版本，再根据现象处理。更改成像或滤波参数前请记录当前值。
 
 ## 相机硬件
 
 <AccordionGroup>
-<Accordion title="电源指示灯不亮或蓝灯微弱">
+  <Accordion title="电源指示灯不亮或蓝灯微弱">
+    **可能原因**
 
-**可能原因**
+    电源电压不稳定
 
-电源电压不稳定
+    **处理方法**
 
-**处理方法**
+    电源要求为 `24 V DC / 2 A`。
+  </Accordion>
 
-电源要求为 `24 V DC / 2 A`。
+  <Accordion title="相机频繁自动重启">
+    **处理方法**
 
-</Accordion>
+    1. 检查网络带宽占用。<br />2. 检查供电是否满足要求。
+  </Accordion>
 
-<Accordion title="相机频繁自动重启">
+  <Accordion title="上位机软件避障结果正常IO结果异常">
+    **处理方法**
 
-**处理方法**
+    1. 检查 IO 接线。<br />2. 检查功能线。<br />3. 检查固件版本是否符合功能要求。
+  </Accordion>
 
-1. 检查网络带宽占用。<br />2. 检查供电是否满足要求。
+  <Accordion title="网卡显示断开">
+    **可能原因**
 
-</Accordion>
+    网络连接异常
 
-<Accordion title="上位机软件避障结果正常IO结果异常">
+    **处理方法**
 
-**处理方法**
+    排查网络、网卡、交换机是否正常或是否有拦截
+  </Accordion>
 
-1. 检查 IO 接线。<br />2. 检查功能线。<br />3. 检查固件版本是否符合功能要求。
+  <Accordion title="CANopen 通信未收到数据或数据不匹配">
+    **处理方法**
 
-</Accordion>
-
-<Accordion title="网卡显示断开">
-
-**可能原因**
-
-网络连接异常
-
-**处理方法**
-
-排查网络、网卡、交换机是否正常或是否有拦截
-
-</Accordion>
-
-<Accordion title="CANopen 通信未收到数据或数据不匹配">
-
-**处理方法**
-
-1. 检查波特率和 CAN ID 是否匹配。<br />2. 检查 CAN 线连接。
-
-</Accordion>
-
+    1. 检查波特率和 CAN ID 是否匹配。<br />2. 检查 CAN 线连接。
+  </Accordion>
 </AccordionGroup>
+
 ## 上位机软件与视觉成像
 
 <AccordionGroup>
-<Accordion title="上位机软件打开相机后无数据（上位机软件报错未收到数据流）">
+  <Accordion title="上位机软件打开相机后无数据（上位机软件报错未收到数据流）">
+    **可能原因**
 
-**可能原因**
+    1. 防火墙开启。<br />2. 网卡与相机不在同一网段。<br />3. 交换机拦截数据。<br />4. 计算机网络异常。
 
-1. 防火墙开启。<br />2. 网卡与相机不在同一网段。<br />3. 交换机拦截数据。<br />4. 计算机网络异常。
+    **处理方法**
 
-**处理方法**
+    1. 关闭防火墙。<br />2. 设置同网段 IP。<br />3. 排查交换机。<br />4. 更换计算机验证。<br />5. 配置多网段。
+  </Accordion>
 
-1. 关闭防火墙。<br />2. 设置同网段 IP。<br />3. 排查交换机。<br />4. 更换计算机验证。<br />5. 配置多网段。
+  <Accordion title="深度图上观测数据缺失标准矩形块，深度呈黑色矩形孔洞">
+    **可能原因**
 
-</Accordion>
+    多机误检
 
-<Accordion title="深度图上观测数据缺失标准矩形块，深度呈黑色矩形孔洞">
+    **处理方法**
 
-**可能原因**
+    停流后在3D设置内关闭多机模式（算法模式需先改为断开时关闭）
+  </Accordion>
 
-多机误检
+  <Accordion title="S10/S10 Pro 打开后无图像或深度图像异常缩小">
+    **可能原因**
 
-**处理方法**
+    上位机软件版本不匹配
 
-停流后在3D设置内关闭多机模式（算法模式需先改为断开时关闭）
+    **处理方法**
 
-</Accordion>
+    更新至 `Lanxin-MRDVS-1.3.66.0606` 或更高版本。
+  </Accordion>
 
-<Accordion title="S10/S10 Pro 打开后无图像或深度图像异常缩小">
+  <Accordion title="相机打开失败，网络通讯错误">
+    **可能原因**
 
-**可能原因**
+    相机与电脑非同网段
 
-上位机软件版本不匹配
+    **处理方法**
 
-**处理方法**
+    将相机与计算机设置为同一网段。
+  </Accordion>
 
-更新至 `Lanxin-MRDVS-1.3.66.0606` 或更高版本。
+  <Accordion title="独占应用权限失败">
+    **可能原因**
 
-</Accordion>
+    多用户连接相机
 
-<Accordion title="相机打开失败，网络通讯错误">
+    **处理方法**
 
-**可能原因**
+    确保同一时间只有一个用户连接相机（2.4.50.0720及往后版本会进入多用户权限）
+  </Accordion>
 
-相机与电脑非同网段
+  <Accordion title="受限模式打开相机设备：成功">
+    **可能原因**
 
-**处理方法**
+    多用户连接相机
 
-将相机与计算机设置为同一网段。
+    **处理方法**
 
-</Accordion>
+    同一时间多个进程连接相机设备，可能出现上位机或其他进程无数据流的情况。需要主权限（第一个打开相机设备的进程）开启数据流后，受限模式设备方可查看数据流。
+  </Accordion>
 
-<Accordion title="独占应用权限失败">
+  <Accordion title="被检测物体成像稀疏或缺失">
+    **可能原因**
 
-**可能原因**
+    曝光不够或滤波过度过滤
 
-多用户连接相机
+    **处理方法**
 
-**处理方法**
+    1、检查高曝光参数（一般在600-1200）<br />2、检查低信号阈值（一般在10-30）
+  </Accordion>
 
-确保同一时间只有一个用户连接相机（2.4.50.0720及往后版本会进入多用户权限）
+  <Accordion title="上位机启流正常但无图像数据，帧率显示正常">
+    **可能原因**
 
-</Accordion>
+    激光器微弱或熄灭
 
-<Accordion title="受限模式打开相机设备：成功">
+    **处理方法**
 
-**可能原因**
+    用手机摄像头拍摄相机前脸确认激光器状态，熄灭或微弱则更换相机硬件
+  </Accordion>
 
-多用户连接相机
+  <Accordion title="前方空间无物体，点云上有数据存在">
+  </Accordion>
 
-**处理方法**
+  <Accordion title="正对被测物时，被测物侧边出现噪声数据">
+    **可能原因**
 
-同一时间多个进程连接相机设备，可能出现上位机或其他进程无数据流的情况。需要主权限（第一个打开相机设备的进程）开启数据流后，受限模式设备方可查看数据流。
+    眩光导致
 
-</Accordion>
+    **处理方法**
 
-<Accordion title="被检测物体成像稀疏或缺失">
+    1、打开眩光算法优化<br />2、提高低信号阈值
+  </Accordion>
 
-**可能原因**
+  <Accordion title="rgb图像中心位置偏红色、rgb图像模糊">
+    **处理方法**
 
-曝光不够或滤波过度过滤
+    更换硬件
+  </Accordion>
 
-**处理方法**
+  <Accordion title="rgb图像正视，深度图像斜视">
+    **处理方法**
 
-1、检查高曝光参数（一般在600-1200）<br />2、检查低信号阈值（一般在10-30）
+    更换硬件
+  </Accordion>
 
-</Accordion>
+  <Accordion title="相邻物体之间点云存在粘连">
+    **处理方法**
 
-<Accordion title="上位机启流正常但无图像数据，帧率显示正常">
+    在滤镜设置中提高去噪级别和平滑级别
+  </Accordion>
 
-**可能原因**
+  <Accordion title="设置rgbd对齐后rgb无数据">
+    **可能原因**
 
-激光器微弱或熄灭
+    软件版本问题
 
-**处理方法**
+    **处理方法**
 
-用手机摄像头拍摄相机前脸确认激光器状态，熄灭或微弱则更换相机硬件
+    更新软件版本（Github下载链接：[https://github.com/Lanxin-MRDVS/CameraSDK/releases）](https://github.com/Lanxin-MRDVS/CameraSDK/releases）)
+  </Accordion>
 
-</Accordion>
+  <Accordion title="点云出现明显分层（S系列）">
+    **处理方法**
 
-<Accordion title="前方空间无物体，点云上有数据存在">
+    更换硬件
+  </Accordion>
 
-</Accordion>
+  <Accordion title="近处白色物体边缘精度较差（S系列）">
+    **可能原因**
 
-<Accordion title="正对被测物时，被测物侧边出现噪声数据">
+    眩光导致
 
-**可能原因**
+    **处理方法**
 
-眩光导致
+    打开优化眩光算法，但黑色检测可能缺失
+  </Accordion>
 
-**处理方法**
+  <Accordion title="反光柱位置大面积过曝（S系列）">
+    **可能原因**
 
-1、打开眩光算法优化<br />2、提高低信号阈值
+    眩光导致
 
-</Accordion>
+    **处理方法**
 
-<Accordion title="rgb图像中心位置偏红色、rgb图像模糊">
+    打开眩光抑制算法
+  </Accordion>
 
-**处理方法**
+  <Accordion title="黑色物体成像检测不完整（S系列）">
+    **可能原因**
 
-更换硬件
+    打开高曝模式
 
-</Accordion>
+    **处理方法**
 
-<Accordion title="rgb图像正视，深度图像斜视">
-
-**处理方法**
-
-更换硬件
-
-</Accordion>
-
-<Accordion title="相邻物体之间点云存在粘连">
-
-**处理方法**
-
-在滤镜设置中提高去噪级别和平滑级别
-
-</Accordion>
-
-<Accordion title="设置rgbd对齐后rgb无数据">
-
-**可能原因**
-
-软件版本问题
-
-**处理方法**
-
-更新软件版本（Github下载链接：https://github.com/Lanxin-MRDVS/CameraSDK/releases）
-
-</Accordion>
-
-<Accordion title="点云出现明显分层（S系列）">
-
-**处理方法**
-
-更换硬件
-
-</Accordion>
-
-<Accordion title="近处白色物体边缘精度较差（S系列）">
-
-**可能原因**
-
-眩光导致
-
-**处理方法**
-
-打开优化眩光算法，但黑色检测可能缺失
-
-</Accordion>
-
-<Accordion title="反光柱位置大面积过曝（S系列）">
-
-**可能原因**
-
-眩光导致
-
-**处理方法**
-
-打开眩光抑制算法
-
-</Accordion>
-
-<Accordion title="黑色物体成像检测不完整（S系列）">
-
-**可能原因**
-
-打开高曝模式
-
-**处理方法**
-
-TOF寄存器100130B0设置为240
-
-</Accordion>
-
+    TOF寄存器100130B0设置为240
+  </Accordion>
 </AccordionGroup>

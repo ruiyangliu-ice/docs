@@ -1,5 +1,5 @@
 ---
-title: "General vision FAQs"
+title: General vision FAQs
 description: "Troubleshoot MRDVS camera power, networking, imaging, filtering, and point-cloud quality."
 ---
 
@@ -8,152 +8,112 @@ Check the power supply, network, and software versions first. Record current ima
 ## Camera hardware
 
 <AccordionGroup>
-<Accordion title="The power indicator is off or the blue indicator is weak">
-**Possible cause**
-The supply voltage is unstable.
-**Resolution**
-Use a `24 V DC / 2 A` power supply.
-</Accordion>
+  <Accordion title="The power indicator is off or the blue indicator is weak">
+    **Possible cause** The supply voltage is unstable. **Resolution** Use a `24 V DC / 2 A` power supply.
+  </Accordion>
 
-<Accordion title="The camera restarts frequently">
-**Resolution**
-1. Check network bandwidth usage.<br />2. Confirm that the power supply meets the camera requirements.
-</Accordion>
+  <Accordion title="The camera restarts frequently">
+    **Resolution**
 
-<Accordion title="Obstacle-avoidance output is normal in the host software, but IO output is abnormal">
-**Resolution**
-1. Check the IO wiring.<br />2. Check the function cable.<br />3. Confirm that the firmware supports the requested function.
-</Accordion>
+    1. Check network bandwidth usage.<br />2. Confirm that the power supply meets the camera requirements.
+  </Accordion>
 
-<Accordion title="The network adapter shows disconnected">
-**Possible cause**
-The network connection is abnormal.
-**Resolution**
-Check the network, adapter, and switch for faults or filtering.
-</Accordion>
+  <Accordion title="Obstacle-avoidance output is normal in the host software, but IO output is abnormal">
+    **Resolution**
 
-<Accordion title="CANopen communication does not return data or returns mismatched data">
-**Resolution**
-1. Check that the baud rate and CAN ID match.<br />2. Check the CAN wiring.
-</Accordion>
+    1. Check the IO wiring.<br />2. Check the function cable.<br />3. Confirm that the firmware supports the requested function.
+  </Accordion>
+
+  <Accordion title="The network adapter shows disconnected">
+    **Possible cause** The network connection is abnormal. **Resolution** Check the network, adapter, and switch for faults or filtering.
+  </Accordion>
+
+  <Accordion title="CANopen communication does not return data or returns mismatched data">
+    **Resolution**
+
+    1. Check that the baud rate and CAN ID match.<br />2. Check the CAN wiring.
+  </Accordion>
 </AccordionGroup>
 
 ## Host software and imaging
 
 <AccordionGroup>
-<Accordion title="No data appears after the host software opens the camera">
-**Possible causes**
-1. The firewall is enabled.<br />2. The adapter and camera are on different subnets.<br />3. The switch is filtering the traffic.<br />4. The computer network is abnormal.
-**Resolution**
-1. Disable the firewall.<br />2. Set the computer and camera to the same subnet.<br />3. Check the switch.<br />4. Test with another computer.<br />5. Configure multiple subnets if required.
-</Accordion>
+  <Accordion title="No data appears after the host software opens the camera">
+    **Possible causes**
 
-<Accordion title="The depth map contains missing rectangular blocks or black holes">
-**Possible cause**
-The camera is falsely detecting another camera.
-**Resolution**
-Stop the stream and disable multi-camera mode in **3D Settings**. If required, change the algorithm mode to disable multi-camera mode while disconnected.
-</Accordion>
+    1. The firewall is enabled.<br />2. The adapter and camera are on different subnets.<br />3. The switch is filtering the traffic.<br />4. The computer network is abnormal. **Resolution**
+    2. Disable the firewall.<br />2. Set the computer and camera to the same subnet.<br />3. Check the switch.<br />4. Test with another computer.<br />5. Configure multiple subnets if required.
+  </Accordion>
 
-<Accordion title="An S10 or S10 Pro camera shows no image or a very small depth image">
-**Possible cause**
-The host software version is incompatible.
-**Resolution**
-Update to `Lanxin-MRDVS-1.3.66.0606` or later.
-</Accordion>
+  <Accordion title="The depth map contains missing rectangular blocks or black holes">
+    **Possible cause** The camera is falsely detecting another camera. **Resolution** Stop the stream and disable multi-camera mode in **3D Settings**. If required, change the algorithm mode to disable multi-camera mode while disconnected.
+  </Accordion>
 
-<Accordion title="The camera fails to open with a network communication error">
-**Possible cause**
-The camera and computer are on different subnets.
-**Resolution**
-Configure the camera and computer on the same subnet.
-</Accordion>
+  <Accordion title="An S10 or S10 Pro camera shows no image or a very small depth image">
+    **Possible cause** The host software version is incompatible. **Resolution** Update to `Lanxin-MRDVS-1.3.66.0606` or later.
+  </Accordion>
 
-<Accordion title="Exclusive application permission fails">
-**Possible cause**
-Multiple users are connected to the camera.
-**Resolution**
-Allow only one user to connect at a time. Versions `2.4.50.0720` and later support multi-user permissions.
-</Accordion>
+  <Accordion title="The camera fails to open with a network communication error">
+    **Possible cause** The camera and computer are on different subnets. **Resolution** Configure the camera and computer on the same subnet.
+  </Accordion>
 
-<Accordion title="The camera opens in restricted mode successfully, but the stream is unavailable">
-**Possible cause**
-Multiple processes are connected to the camera.
-**Resolution**
-The first process to open the camera has primary permission and must start the stream before a restricted-mode process can view it.
-</Accordion>
+  <Accordion title="Exclusive application permission fails">
+    **Possible cause** Multiple users are connected to the camera. **Resolution** Allow only one user to connect at a time. Versions `2.4.50.0720` and later support multi-user permissions.
+  </Accordion>
 
-<Accordion title="The target object appears sparse or incomplete">
-**Possible cause**
-Exposure is too low or filtering is too aggressive.
-**Resolution**
-1. Check **High Exposure**; a typical range is `600–1200`.<br />2. Check **Low Signal Threshold**; a typical range is `10–30`.
-</Accordion>
+  <Accordion title="The camera opens in restricted mode successfully, but the stream is unavailable">
+    **Possible cause** Multiple processes are connected to the camera. **Resolution** The first process to open the camera has primary permission and must start the stream before a restricted-mode process can view it.
+  </Accordion>
 
-<Accordion title="The stream starts and the frame rate is normal, but no image data is available">
-**Possible cause**
-The laser is weak or off.
-**Resolution**
-Use a phone camera to inspect the front of the camera. If the laser is off or weak, replace the camera hardware.
-</Accordion>
+  <Accordion title="The target object appears sparse or incomplete">
+    **Possible cause** Exposure is too low or filtering is too aggressive. **Resolution**
 
-<Accordion title="The point cloud contains data where there are no objects ahead">
-**Resolution**
-Check the imaging environment, exposure, and filter settings. If the issue persists after confirming the configuration, collect a log and sample data for analysis.
-</Accordion>
+    1. Check **High Exposure**; a typical range is `600–1200`.<br />2. Check **Low Signal Threshold**; a typical range is `10–30`.
+  </Accordion>
 
-<Accordion title="Noise appears along the side of an object when the camera faces it">
-**Possible cause**
-Glare.
-**Resolution**
-1. Enable glare-optimization processing.<br />2. Increase **Low Signal Threshold**.
-</Accordion>
+  <Accordion title="The stream starts and the frame rate is normal, but no image data is available">
+    **Possible cause** The laser is weak or off. **Resolution** Use a phone camera to inspect the front of the camera. If the laser is off or weak, replace the camera hardware.
+  </Accordion>
 
-<Accordion title="The center of the RGB image is reddish or the RGB image is blurred">
-**Resolution**
-Replace the camera hardware.
-</Accordion>
+  <Accordion title="The point cloud contains data where there are no objects ahead">
+    **Resolution** Check the imaging environment, exposure, and filter settings. If the issue persists after confirming the configuration, collect a log and sample data for analysis.
+  </Accordion>
 
-<Accordion title="The RGB image faces forward, but the depth image is skewed">
-**Resolution**
-Replace the camera hardware.
-</Accordion>
+  <Accordion title="Noise appears along the side of an object when the camera faces it">
+    **Possible cause** Glare. **Resolution**
 
-<Accordion title="Point clouds from adjacent objects merge together">
-**Resolution**
-Increase the denoising and smoothing levels in the filter settings.
-</Accordion>
+    1. Enable glare-optimization processing.<br />2. Increase **Low Signal Threshold**.
+  </Accordion>
 
-<Accordion title="RGB has no data after RGB-D alignment is enabled">
-**Possible cause**
-The software version is incompatible.
-**Resolution**
-Update the software. Download releases from the [Camera SDK GitHub repository](https://github.com/Lanxin-MRDVS/CameraSDK/releases).
-</Accordion>
+  <Accordion title="The center of the RGB image is reddish or the RGB image is blurred">
+    **Resolution** Replace the camera hardware.
+  </Accordion>
 
-<Accordion title="The S Series point cloud shows obvious layers">
-**Resolution**
-Replace the camera hardware.
-</Accordion>
+  <Accordion title="The RGB image faces forward, but the depth image is skewed">
+    **Resolution** Replace the camera hardware.
+  </Accordion>
 
-<Accordion title="The edge accuracy of a nearby white object is poor on the S Series">
-**Possible cause**
-Glare.
-**Resolution**
-Enable glare optimization. Black-object detection may become incomplete.
-</Accordion>
+  <Accordion title="Point clouds from adjacent objects merge together">
+    **Resolution** Increase the denoising and smoothing levels in the filter settings.
+  </Accordion>
 
-<Accordion title="A reflective post is heavily overexposed on the S Series">
-**Possible cause**
-Glare.
-**Resolution**
-Enable glare-suppression processing.
-</Accordion>
+  <Accordion title="RGB has no data after RGB-D alignment is enabled">
+    **Possible cause** The software version is incompatible. **Resolution** Update the software. Download releases from the [Camera SDK GitHub repository](https://github.com/Lanxin-MRDVS/CameraSDK/releases).
+  </Accordion>
 
-<Accordion title="A black object is not fully captured on the S Series">
-**Possible cause**
-High-exposure mode is enabled.
-**Resolution**
-Set the ToF register `100130B0` to `240`.
-</Accordion>
+  <Accordion title="The S Series point cloud shows obvious layers">
+    **Resolution** Replace the camera hardware.
+  </Accordion>
+
+  <Accordion title="The edge accuracy of a nearby white object is poor on the S Series">
+    **Possible cause** Glare. **Resolution** Enable glare optimization. Black-object detection may become incomplete.
+  </Accordion>
+
+  <Accordion title="A reflective post is heavily overexposed on the S Series">
+    **Possible cause** Glare. **Resolution** Enable glare-suppression processing.
+  </Accordion>
+
+  <Accordion title="A black object is not fully captured on the S Series">
+    **Possible cause** High-exposure mode is enabled. **Resolution** Set the ToF register `100130B0` to `240`.
+  </Accordion>
 </AccordionGroup>
