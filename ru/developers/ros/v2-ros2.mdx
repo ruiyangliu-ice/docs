@@ -1,0 +1,410 @@
+---
+title: Справочник интерфейса V2 ROS2
+description: "Соберите и запустите ROS2 SDK локализации V2, затем используйте его топики и сервисы для построения карт, локализации и управления картами."
+hidden: true
+---
+
+## Обзор
+
+На этой странице описаны топики и сервисы ROS2, предоставляемые `lx_camera_ros` в модуле локализации V2.
+
+## Компиляция
+
+Установите компоненты Qt5 Core и Network. Команды установки зависят от дистрибутива Linux; в следующем примере используется Ubuntu:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+Загрузите исходный код `libzip` со [страницы загрузки libzip](https://libzip.org/download/) и скомпилируйте его в соответствии с официальной инструкцией.
+
+Выполните следующую команду из `/lx_camera_ros`:
+
+```bash
+./build.sh
+```
+
+## Запуск
+
+<Note>
+  После изменения файла конфигурации YAML выполните компиляцию повторно. Изменения вступят в силу только после пересборки проекта.
+</Note>
+
+```bash
+./start.sh
+```
+
+## Интерфейсы топиков ROS2
+
+Перед проверкой интерфейса включите камеру, подождите около 30 секунд и запустите узел ROS2 SDK.
+
+| Сценарий | Связанные топики |
+| --- | --- |
+| Локализация | Поза, состояние локализации, переключение карт и повторная локализация |
+| Построение карты | Состояние и ход построения карты |
+| Обслуживание и настройка | Использование хранилища, неисправные модули, параметры и загрузка карт |
+
+#### Получение позы локализации
+
+ROS2 непрерывно получает от камеры значения `x`, `y` и `theta`, публикует эти значения и кватернион, преобразованный из `theta`, в `LxCamera_LocationPoseResult`, а также передает позу через TF.
+
+```bash
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### Получение состояния локализации
+
+ROS2 получает состояние локализации камеры (`true` или `false`) с частотой 1 Гц и публикует его как `std_msgs::msg::Bool` в `LxCamera_LocationResult`.
+
+```bash
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### Получение информации об использовании хранилища камеры
+
+ROS2 получает коэффициент использования хранилища камеры с частотой 2 Гц и публикует его как `std_msgs::msg::Float32` в `LxCamera_Capacity_Status`.
+
+```bash
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### Получение имени неисправного модуля
+
+ROS2 получает от камеры имя неисправного модуля и публикует его как `std_msgs::msg::String` в `LxCamera_Module_Error`.
+
+```bash
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### Получение хода построения карты
+
+После начала построения карты ROS2 публикует ход выполнения (`0–100`) как `std_msgs::msg::Int32` в `LxCamera_Mapping_Progress`.
+
+```bash
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### Получение состояния построения карты
+
+После начала построения карты ROS2 публикует его состояние как `std_msgs::msg::Bool` в `LxCamera_MappingState`.
+
+```bash
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### Задание параметров
+
+Опубликуйте сообщение `std_msgs::msg::String` в `LxCamera_SetParam`. Сообщение содержит девять чисел с плавающей точкой, разделенных запятыми: `x,y,z,yaw,pitch,roll,x,y,yaw`. Первые шесть значений задают позу камеры, последние три — позу LiDAR. После успешного обновления соответствующие значения в разделах `[Laser1]` и `[Camera1]` файла `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` обновляются.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### Переключение карт
+
+Опубликуйте в `LxCamera_SwitchMap` сообщение `std_msgs::msg::String` с именем готовой карты. Обновите веб-интерфейс камеры. Если отображаемое имя карты изменилось, переключение выполнено успешно.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### Загрузка карты
+
+1. Опубликуйте сообщение `std_msgs::msg::String` в `LxCamera_DownloadMap`.
+2. Сообщение содержит два поля: `save_path` — абсолютный путь на хост-компьютере, а `mapname` — имя файла `.zip` готовой карты на камере.
+3. После успешной загрузки по указанному пути на хост-компьютере появится архив карты. Распакуйте его, чтобы получить файл карты `PGM` и файл конфигурации `YAML`.
+
+```bash
+# Перейдите в каталог lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### Передача одометрии
+
+Опубликуйте данные `nav_msgs::msg::Odometry` в `/sim/odom` (топик можно изменить).
+
+```bash
+# Перейдите в каталог lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### Повторная локализация
+
+1. Опубликуйте данные `geometry_msgs::msg::PoseWithCovarianceStamped` в `LxCamera_UploadReloc`.
+2. Поза содержит позу LiDAR: `x`, `y` и `yaw`.
+3. Повторная локализация выполнена успешно, если позиция в веб-интерфейсе камеры обновилась до отправленной позы.
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}"
+```
+
+> Кватернионы имеют ограничения, поэтому их нельзя заполнять произвольно. Используйте [конвертер угла Эйлера в кватернион](https://www.itutool.com/tools/euler-quaternion-converter "Веб-инструмент"), чтобы преобразовать угол `Euler yaw` в значения кватерниона `xyzw`.
+
+#### Префиксы типов сообщений
+
+Хост-компьютер взаимодействует с камерой по UDP. Первые четыре байта каждого сообщения определяют тип данных интерфейса:
+
+```text
+mapping_prefix = "aced220d";          // Включить построение карты
+setparam_prefix = "aced220e";         // Задать параметры камеры и LiDAR
+UploadScan_prefix = "aced2209";       // Передать данные лазерного сканирования на камеру
+odom_prefix = "aced0f0a";             // Данные одометрии
+mapname_prefix = "aced220c";          // Переключить карты
+map_request_prefix = "aced220f";      // Загрузить указанную карту
+prefix_after_reloc = "aced0f0b";      // Повторная локализация
+```
+
+---
+
+## Интерфейсы сервисов ROS2
+
+Построение карт, переключение карт, загрузка карт и повторная локализация также доступны через сервисы ROS2. Ответ сервиса `true` означает успех, а `false` — ошибку.
+
+<Info>
+  Используйте `ros2 service call` для следующих команд. Имена карт не должны начинаться с цифры и не должны превышать 30 символов.
+</Info>
+
+#### Построение карты
+
+Имя сервиса: `/LxCamera_Mapping_srv`
+
+Определение сервиса:
+
+```text
+bool status      # Начать построение карты: true; остановить: false
+string mapname   # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+---
+bool result      # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### Переключение карт
+
+Имя сервиса: `/LxCamera_SwitchMap_srv`
+
+Определение сервиса:
+
+```text
+string mapname   # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+---
+bool result      # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### Загрузка карты
+
+Имя сервиса: `/LxCamera_DownloadMap_srv`
+
+Определение сервиса:
+
+```text
+string mapname    # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+string save_path  # Абсолютный путь сохранения, например "/home/lx/map"; не добавляйте завершающий слеш
+---
+bool result       # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### Повторная локализация
+
+Имя сервиса: `/LxCamera_UploadReloc_srv`
+
+Определение сервиса:
+
+```text
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result       # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  \"pose\": {
+    \"header\": {
+      \"stamp\": {\"sec\": 0, \"nanosec\": 0},
+      \"frame_id\": \"map\"
+    },
+    \"pose\": {
+      \"pose\": {
+        \"position\": {\"x\": 4.5, \"y\": -15.5, \"z\": 0.0},
+        \"orientation\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.694658, \"w\": 0.71934}
+      },
+      \"covariance\": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### Получение имени текущей карты
+
+Имя сервиса: `/LxCamera_GetCurMapname_srv`
+
+Определение сервиса:
+
+```text
+bool get_cur_mapname # Получить идентификатор карты
+---
+string mapname      # Имя текущей карты
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### Получение списка текущих карт
+
+Имя сервиса: `/LxCamera_GetMapList_srv`
+
+Определение сервиса:
+
+```text
+bool get_map_list # Получить список карт
+---
+string[] map_list # Список карт
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### Выход из режима построения карты
+
+Имя сервиса: `/LxCamera_ExitMapping_srv`
+
+Определение сервиса:
+
+```text
+bool exit_mapping # Выйти из режима построения карты
+---
+bool state        # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### Удаление карты
+
+Имя сервиса: `/LxCamera_EraseMap_srv`
+
+Определение сервиса:
+
+```text
+string mapname    # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+---
+bool result       # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### Загрузка тепловой карты
+
+Имя сервиса: `/LxCamera_DownloadHeatMap_srv`
+
+Определение сервиса:
+
+```text
+string mapname    # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+string save_path  # Абсолютный путь сохранения, например "/home/lx/map"; не добавляйте завершающий слеш
+---
+bool result       # true: успех; false: ошибка
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## Инкрементальное построение карты
+
+Имя сервиса: `/LxCamera_IncMapping_srv`
+
+Определение сервиса:
+
+```text
+bool status      # Начать построение карты: true; остановить: false
+string mapname   # Имя карты; не должно начинаться с цифры и не должно превышать 30 символов
+---
+bool result
+```
+
+Вызов сервиса:
+
+```bash
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

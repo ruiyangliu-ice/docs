@@ -1,0 +1,77 @@
+---
+title: Kameraparameter importieren und exportieren
+sidebarTitle: Parameterimport/-export
+description: "Sichere Parameter für Hindernisvermeidung, Bildgebung, Filter und Palettenerkennung in LxCameraViewer und PalletPro und stelle sie wieder her."
+---
+
+Exportiere eine geprüfte Konfiguration, bevor du Parameter änderst. Prüfe nach dem Import einer Konfiguration vor dem Betrieb Kameramodell, Installationsextrinsik und Bildgebung am Zielgerät.
+
+<Warning>
+  Konfigurationsdateien können extrinsische Parameter enthalten, die von der Installation abhängen. Verwende die Extrinsik eines Fahrzeugs nicht für ein anderes Fahrzeug. Prüfe die importierten Werte immer.
+</Warning>
+
+## Parameter für die Hindernisvermeidung
+
+### Exportieren
+
+<Steps>
+  <Step title="Einstellungen der Hindernisvermeidung öffnen">
+    Wähle unter **Application algorithm** den Algorithmus für die Hindernisvermeidung aus und konfiguriere die Bereiche und extrinsischen Parameter der Hindernisvermeidung.
+  </Step>
+  <Step title="Parameter senden">
+    Wähle unter **Obstacle avoidance settings** die Option **Send parameters**.
+  </Step>
+  <Step title="Datei suchen">
+    Öffne den Ordner `params` im Verzeichnis der Hostanwendung und anschließend das Verzeichnis der Kamera-ID. Die Datei `avoidance` enthält die gespeicherten Parameter.
+  </Step>
+</Steps>
+
+Das Standardverzeichnis lautet:
+
+`D:\\Program Files\\Lanxin-MRDVS\\Tools\\params`
+
+### Importieren
+
+Wähle unter **Obstacle avoidance settings** die Option **Load configuration from file** und die exportierte Datei aus. Sende die Konfiguration und prüfe anschließend den Bereich in der Punktwolkenansicht sowie den Ausgabestatus.
+
+<Frame>
+  ![Konfiguration der Hindernisvermeidung aus einer Datei laden](/images/developers/deployment-parameter-import-export-d-the-export-and-import-of-obstacle-avoidance-algorithm-parameters-7.avif)
+</Frame>
+
+## Bildgebungs- und Filterparameter
+
+### Exportieren
+
+1. Konfiguriere die Bildgebungs- und Filterparameter unter **Basic tools**.
+2. Stoppe den Kamerastream. Während des Streamings kann eine Konfiguration nicht gespeichert werden.
+3. Wähle unter **Function settings** die Option **Export configuration to file** und erstelle einen eigenen Ordner für die Konfiguration.
+
+### Importieren
+
+Wähle unter **Function settings** die Option **Load configuration from file** und die exportierte Datei aus. Starte den Stream neu und prüfe Bildqualität und Filterung.
+
+## PalletPro-Palettenparameter
+
+PalletPro `1.4.6` und höher kann Extrinsik der Palettenerkennung im aktiven Algorithmusverzeichnis verwalten.
+
+### Importieren
+
+<Steps>
+  <Step title="Kameraverzeichnis öffnen">
+    Starte **PalletPro**, wähle **Basic operations → Camera operations → Open directory** und öffne das aktuell von der Kamera verwendete Algorithmusverzeichnis.
+  </Step>
+  <Step title="Parameterdatei ersetzen">
+    Kopiere die Extrinsik der Palettenerkennung in das Verzeichnis oder ziehe sie dorthin und bestätige den Austausch der gleichnamigen Datei.
+  </Step>
+  <Step title="Erneut kalibrieren">
+    Führe nach dem Import die Extrinsikkalibrierung für das Palettenandocken erneut aus und prüfe die Erkennungsergebnisse.
+  </Step>
+</Steps>
+
+### Exportieren
+
+Öffne nach Abschluss und Speicherung der Kalibrierung über denselben Pfad das aktive Algorithmusverzeichnis und sichere die Parameterdatei der Palettenerkennung.
+
+<Frame>
+  ![Speicherort der PalletPro-Palettenparameterdatei](/images/developers/deployment-parameter-import-export-pallet-parameter-import.avif)
+</Frame>

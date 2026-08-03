@@ -1,0 +1,152 @@
+---
+title: FAQ sullo sviluppo
+description: "Risolvi i codici di errore di Camera SDK, i problemi di connessione dei dispositivi, i flussi di dati e gli ambienti di sviluppo."
+---
+
+I codici di errore aiutano a individuare i problemi di SDK, connessione e flusso di dati. Prima di risolvere i problemi, registra il codice di errore, la versione di SDK, il modello della fotocamera e il log del dispositivo.
+
+<Warning>
+  Non cercare di risolvere i problemi modificando solo la versione di SDK. Verifica anche la compatibilità tra firmware della fotocamera, libreria di elaborazione dei dati e ambiente di sviluppo.
+</Warning>
+
+## Codici di errore di SDK e ambiente di sviluppo
+
+<AccordionGroup>
+  <Accordion title="LX_ERROR = -1">
+    **Possibile causa** Errore sconosciuto. **Risoluzione** Esporta il log del dispositivo e invialo al supporto tecnico MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_SUPPORT = -2">
+    **Possibile causa** La funzione non è supportata. **Risoluzione** Il dispositivo corrente non supporta questa funzione.
+  </Accordion>
+
+  <Accordion title="LX_E_NETWORK_ERROR = -3">
+    **Possibile causa** Errore di comunicazione di rete. **Risoluzione** Verifica la configurazione IP, i cavi di rete, lo switch e la perdita di pacchetti.
+  </Accordion>
+
+  <Accordion title="LX_E_INPUT_ILLEGAL = -4">
+    **Possibile causa** Un parametro di input non è valido. **Risoluzione** Verifica i parametri passati all'interfaccia.
+  </Accordion>
+
+  <Accordion title="LX_E_RECONNECTING = -5">
+    **Possibile causa** Il dispositivo si sta riconnettendo. **Risoluzione**
+
+    1. Attendi brevemente e riprova finché la connessione non viene ripristinata.<br />2. Verifica che la fotocamera sia accesa e che la connessione di rete sia normale.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_ERROR = -6">
+    **Possibile causa** Il dispositivo ha restituito un errore o non ha risposto. **Risoluzione** Riavvia l'applicazione o la fotocamera e riprova.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+    **Possibile causa** La versione del dispositivo è troppo vecchia. **Risoluzione** Aggiorna il firmware.
+  </Accordion>
+
+  <Accordion title="LX_E_API_NEED_UPDATE = -8">
+    **Possibile causa** La versione dell'API è troppo vecchia. **Risoluzione** Aggiorna l'SDK.
+  </Accordion>
+
+  <Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+    **Possibile causa** Non è stato possibile ottenere l'autorizzazione per il controllo esclusivo. **Risoluzione** Solo un client principale può controllare una fotocamera. Se la fotocamera non è stata arrestata normalmente, attendi `3–5 s` per il rilascio dell'autorizzazione.
+  </Accordion>
+
+  <Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+    **Possibile causa** Non è stato possibile leggere le informazioni del dispositivo. **Risoluzione** Verifica la versione del firmware del dispositivo oppure contatta il supporto MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+    **Possibile causa** La dimensione dell'immagine richiesta non corrisponde al flusso. **Risoluzione** Chiudi il dispositivo e riaprilo.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+    **Possibile causa** L'analisi dell'immagine non è riuscita, spesso perché il formato dei pixel non è corretto. **Risoluzione** Riapri il dispositivo.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+    **Possibile causa** La fotocamera non è connessa. **Risoluzione** L'applicazione ha tentato di usare una fotocamera che non era aperta. Verifica l'ordine delle chiamate e conferma che la fotocamera sia stata aperta correttamente.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+    **Possibile causa** L'inizializzazione della fotocamera non è riuscita. **Risoluzione** Riapri la fotocamera.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+    **Possibile causa** Non è stata trovata alcuna fotocamera o alcuna fotocamera corrispondente. **Risoluzione** Verifica che l'handle della fotocamera passato all'interfaccia sia valido.
+  </Accordion>
+
+  <Accordion title="LX_E_FILE_INVALID = -16">
+    **Possibile causa** Il nome, il tipo, il formato o il percorso del file non è valido, oppure non è stato possibile aprire il file. **Risoluzione** Verifica che il percorso sia corretto e che il file possa essere aperto manualmente.
+  </Accordion>
+
+  <Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+    **Possibile causa** La verifica CRC o MD5 non è riuscita durante il caricamento o il download. **Risoluzione** Riprova il trasferimento.
+  </Accordion>
+
+  <Accordion title="LX_E_TIME_OUT = -18">
+    **Possibile causa** La richiesta è scaduta. **Risoluzione** Riprova. La perdita di pacchetti o una frequenza fotogrammi bassa della fotocamera potrebbero essere la causa.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_LOSS = -19">
+    **Possibile causa** Alcuni fotogrammi sono andati persi, spesso in modalità callback. **Risoluzione** Una perdita occasionale potrebbe non richiedere interventi. In caso di perdite frequenti, verifica la larghezza di banda della rete e il buffering.
+  </Accordion>
+
+  <Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+    **Possibile causa** Non è stato possibile abilitare la configurazione del flusso richiesta. **Risoluzione** Le versioni precedenti a `2.4.9` non consentivano di disabilitare tutti i flussi. Questo codice di errore è obsoleto nelle versioni successive.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+    **Possibile causa** Non sono stati ricevuti dati del flusso. **Risoluzione** Usa le procedure di risoluzione per l'apertura della fotocamera quando manca il flusso di dati.
+  </Accordion>
+
+  <Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+    **Possibile causa** Il flusso è iniziato ma non è stato possibile analizzarlo. **Risoluzione** Verifica la versione del firmware oppure contatta il supporto MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+    **Possibile causa** L'elaborazione dell'immagine non è riuscita. **Risoluzione** Conferma che la versione della libreria di elaborazione delle immagini `Dataprocess` sia compatibile.
+  </Accordion>
+
+  <Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+    **Possibile causa** L'impostazione richiesta non è consentita in modalità continua. **Risoluzione** In modalità continua, arresta il flusso prima di modificare ROI, modalità multicamera, allineamento o altre impostazioni relative al flusso. Imposta prima la modalità della fotocamera, quindi applica l'impostazione.
+  </Accordion>
+
+  <Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+    **Possibile causa** Non è stato possibile caricare la libreria di elaborazione delle immagini. **Risoluzione** Assicurati che la libreria dinamica/oggetto condiviso `Dataprocess` esista e sia inclusa nel percorso delle librerie. Esegui `source install.sh`.
+  </Accordion>
+
+  <Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+    **Possibile causa** L'ordine delle chiamate o la logica dei prerequisiti della funzione non è valida. **Risoluzione** Verifica il log di SDK e regola la sequenza delle chiamate. I casi comuni includono:<br />1. Arresta il flusso prima di modificare un'impostazione che cambia la dimensione dell'immagine.<br />2. Non modificare la dimensione dell'immagine in modalità continua.<br />3. Il caricamento degli algoritmi e gli algoritmi applicativi integrati si escludono a vicenda.<br />4. Non abilitare l'esposizione automatica quando HDR è abilitato.<br />5. I parametri dell'esposizione automatica dipendono dallo stato dell'esposizione automatica.<br />6. I parametri di trigger dipendono dalla modalità trigger.
+  </Accordion>
+
+  <Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+    **Possibile causa** L'indirizzo IP non è raggiungibile o la rete non è configurata correttamente. **Risoluzione** Conferma che l'host di SDK possa eseguire il ping della fotocamera.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+    **Possibile causa** I fotogrammi RGB e ToF non sono stati sincronizzati entro la finestra di timeout. **Risoluzione** Quando la sincronizzazione RGB-D è abilitata, scegli se eliminare il fotogramma o ignorare l'avviso in base all'importanza della sincronizzazione o dei dati in tempo reale per la tua applicazione.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+    **Possibile causa** Il fotogramma contiene un segnale di interferenza proveniente da un'altra fotocamera. **Risoluzione** In base all'applicazione, elimina il fotogramma o ignora l'avviso.
+  </Accordion>
+
+  <Accordion title="L'errore `-25` o `LxDataProcess` non riesce a caricarsi">
+    **Possibile causa** In Linux, la libreria non è inclusa nel percorso dell'ambiente. **Risoluzione** Esegui `source install.sh`.
+  </Accordion>
+
+  <Accordion title="L'immagine acquisita è divisa in tre sezioni">
+    **Possibile causa** Le proporzioni dell'immagine visualizzata non sono corrette.
+  </Accordion>
+
+  <Accordion title="ROS 2 è in conflitto con la libreria SDK">
+    **Risoluzione** Usa il wrapper nella directory `util`. Il wrapper collega indirettamente Camera SDK ed evita un conflitto diretto tra librerie.
+  </Accordion>
+
+  <Accordion title="Come posso distinguere una fotocamera Lite da una fotocamera standard con RGB?">
+    **Risoluzione** Chiama `DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb)`. Una fotocamera Lite restituisce che la funzione non è supportata.
+  </Accordion>
+
+  <Accordion title="Come viene gestita la sincronizzazione temporale?">
+    **Risoluzione** SDK esegue automaticamente la sincronizzazione con PTP a ogni chiamata dell'interfaccia. Non è necessario alcun trigger aggiuntivo.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,190 @@
+---
+title: Guida alla modalità di sola localizzazione V2
+description: "Usa l'interfaccia web di sola localizzazione V2 per creare mappe, localizzare il veicolo, gestire le mappe, esportare i log ed eseguire operazioni di manutenzione."
+hidden: true
+---
+
+Questa pagina descrive l'interfaccia web di sola localizzazione V2. Prima di creare una mappa, cambiare mappa o eseguire la rilocalizzazione, assicurati che il veicolo, la camera e il LiDAR funzionino normalmente.
+
+<Warning>
+  Il cambio delle mappe, l'aggiornamento del firmware e il riavvio dell'applicazione integrata influiscono sui servizi di localizzazione. Esegui queste operazioni solo con il veicolo fermo, l'area di lavoro sicura e una procedura di ripristino disponibile.
+</Warning>
+
+## Panoramica dell'interfaccia
+
+| Area | Contenuto |
+| --- | --- |
+| Barra dei menu | Funzioni di mappatura, rilocalizzazione, gestione delle mappe e manutenzione. |
+| Vista della mappa | La mappa dei contorni 2D caricata e l'icona di localizzazione del veicolo. |
+| Vista RGB | L'immagine RGB dal vivo della camera con vista dall'alto. |
+| Area di stato | Intensità del segnale di rilocalizzazione, coordinate del veicolo, velocità e coordinate del cursore. La qualità del segnale è mostrata, dalla migliore alla peggiore, in verde, blu e rosso. |
+
+<Frame>
+  ![Aree dell'interfaccia web di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-interface-description.avif)
+</Frame>
+
+## Creare una mappa
+
+### Creare una mappa
+
+<Steps>
+  <Step title="Avviare la mappatura">
+    Fai clic su **Avvia mappatura** nell'interfaccia web.
+
+    <Frame>
+      ![Pulsante Avvia mappatura nell'interfaccia di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif)
+    </Frame>
+  </Step>
+  <Step title="Inserire un nome per la mappa">
+    Il nome della mappa può contenere solo lettere, numeri e caratteri di sottolineatura e deve iniziare con una lettera.
+
+    <Columns cols={2}>
+      <Frame>
+        ![Finestra di dialogo per l'inserimento del nome della mappa](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif)
+      </Frame>
+
+      <Frame>
+        ![Pagina di avvio della mappatura](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif)
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="Acquisire l'area e arrestare la mappatura">
+    Guida l'AGV attraverso l'area di destinazione. Al termine dell'acquisizione, fai clic su **Arresta mappatura** e attendi il completamento dell'elaborazione. Il tempo di elaborazione dipende dalle dimensioni dell'area acquisita.
+  </Step>
+  <Step title="Confermare la mappa">
+    Dopo il completamento della mappatura, apri **Gestione mappe** e verifica che la nuova mappa sia elencata.
+  </Step>
+</Steps>
+
+### Mappatura incrementale
+
+Usa la mappatura incrementale per aggiungere un'area a una mappa esistente. Prima di iniziare, completa la rilocalizzazione e passa alla mappa che vuoi estendere.
+
+<Info>
+  La mappatura incrementale viene avviata e arrestata con una richiesta HTTP manuale all'indirizzo [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD).
+</Info>
+
+<Tabs>
+  <Tab title="Avviare la mappatura incrementale">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Arrestare la mappatura incrementale">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+Al termine dell'operazione, l'area appena acquisita viene scritta nella mappa corrente. Riavvia il servizio di localizzazione affinché la modifica abbia effetto.
+
+<Frame>
+  ![Operazione di mappatura incrementale nell'interfaccia di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif)
+</Frame>
+
+## Gestione delle mappe
+
+Usa **Gestione mappe** per visualizzare, applicare o eliminare le mappe. Quando operi in più aree, usa questa pagina per cambiare la mappa attiva.
+
+<Columns cols={2}>
+  <Frame>
+    ![Pagina Gestione mappe nell'interfaccia di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-2-map-management.avif)
+  </Frame>
+
+  <Frame>
+    ![Applicazione di una mappa nell'interfaccia di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Dopo aver fatto clic su **Applica**, riavvia l'applicazione integrata affinché la nuova mappa abbia effetto. Senza un riavvio, la rilocalizzazione potrebbe non riuscire.
+</Warning>
+
+## Rilocalizzazione
+
+### Rilocalizzazione manuale
+
+Fai clic su **Rilocalizzazione**, quindi trascina nella vista della mappa per fornire una posa approssimativa del veicolo, in modo che la nuvola di punti LiDAR corrisponda alla mappa dei contorni. Il problema **Timeout della localizzazione** scompare dopo il completamento della rilocalizzazione.
+
+<Frame>
+  ![Rilocalizzazione manuale nell'interfaccia di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-3-relocation.avif)
+</Frame>
+
+### Rilocalizzazione con AprilTag
+
+Puoi posizionare AprilTag in punti selezionati durante la creazione di una mappa. Quando un tag completo entra nel campo visivo del dispositivo, il sistema identifica la mappa e la posa, cambia mappa se necessario ed esegue automaticamente la rilocalizzazione.
+
+- Genera i tag con [il generatore AprilTag](https://chaitanyantr.github.io/apriltag).
+- Gli ID dei tag devono essere univoci nell'area visibile di un dispositivo.
+- Usa la famiglia di tag fissa mostrata nell'esempio dell'interfaccia.
+
+<Frame>
+  ![Configurazione della rilocalizzazione con AprilTag](/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif)
+</Frame>
+
+## Parametri e log
+
+### Configurare i parametri di localizzazione
+
+Usa la pagina dei parametri per visualizzare o configurare i parametri di localizzazione del telaio e i parametri estrinseci del LiDAR e della camera nei valori di calibrazione dei sensori.
+
+<Frame>
+  ![Parametri di localizzazione e calibrazione estrinseca dei sensori](/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif)
+</Frame>
+
+### Esportare i log
+
+Filtra i log per intervallo di tempo e tipo di modulo. Seleziona i risultati necessari ed esportali.
+
+<Frame>
+  ![Pagina di filtraggio ed esportazione dei log](/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif)
+</Frame>
+
+## Manutenzione
+
+### Aggiornare il firmware
+
+Importa un pacchetto firmware locale nella pagina di aggiornamento per aggiornare il firmware del telaio, dell'attuatore o della camera. Un pacchetto di ripristino registra la versione precedente all'ultimo aggiornamento e può essere usato per tornare alla versione precedente.
+
+<Warning>
+  Il firmware della camera aggiornato tramite il flusso di lavoro standard del computer host non può essere ripristinato. Verifica il pacchetto e la versione corrente prima dell'aggiornamento.
+</Warning>
+
+<Columns cols={2}>
+  <Frame>
+    ![Pagina di aggiornamento del firmware per il sistema di sola localizzazione V2](/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif)
+  </Frame>
+
+  <Frame>
+    ![Aggiornamento del firmware della camera tramite il computer host](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif)
+  </Frame>
+</Columns>
+
+### Arrestare o riavviare l'applicazione integrata
+
+Usa i controlli dell'applicazione integrata per arrestare o riavviare l'applicazione. Arresta l'applicazione integrata prima di connettere LxCameraViewer alla camera; in caso contrario, il veicolo potrebbe mantenere il controllo della camera e impedire la comunicazione.
+
+<Frame>
+  ![Controlli per arrestare e riavviare l'applicazione integrata](/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif)
+</Frame>
+
+### Controllare le versioni
+
+Apri la pagina delle versioni per visualizzare le versioni del frontend e del backend integrati.
+
+<Frame>
+  ![Pagina delle informazioni sulle versioni](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif)
+</Frame>

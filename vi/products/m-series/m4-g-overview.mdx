@@ -1,0 +1,131 @@
+---
+title: Camera 3D M4-G
+description: "Thông số kỹ thuật, cấu hình giao diện GMSL2 và yêu cầu tích hợp cho camera iToF RGB-D M4-G."
+---
+
+M4-G là camera iToF RGB-D cho nhận biết tầm gần. Camera sử dụng giao diện GMSL2 và có thể xuất dữ liệu độ sâu, RGB và đám mây điểm ở tốc độ thông thường 30 fps trong phạm vi 0.05–1 m. Các ứng dụng điển hình gồm cổ tay robot, gắp vật trên mặt bàn và thao tác chính xác.
+
+<Info>
+  Tải toàn bộ tài liệu sản phẩm tại [Trung tâm tải xuống](/vi/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Frame>
+  ![Camera M4-G cho nhận biết robot tầm gần](/images/products/m-series-m4-g-overview-m4-g-product-overview.avif)
+</Frame>
+
+## Tính năng chính
+
+- **Cảm nhận độ sâu iToF tầm gần:** Xuất dữ liệu độ sâu trong phạm vi 0.05–1 m.
+- **Ngõ ra RGB-D đồng bộ:** Cung cấp bản đồ độ sâu, hình ảnh RGB và đám mây điểm được căn chỉnh với RGB.
+- **Hiệu suất trong điều kiện ánh sáng yếu:** Chiếu sáng chủ động hỗ trợ các mục tiêu có độ rọi thấp hoặc ít kết cấu.
+- **Truyền tải GMSL2:** Cung cấp đường truyền dữ liệu chống nhiễu, khoảng cách dài cho tích hợp hệ thống.
+
+## Thông số kỹ thuật
+
+| Tham số | M4-G |
+| --- | --- |
+| Nguyên lý hoạt động | iToF |
+| Dữ liệu ngõ ra | Bản đồ độ sâu, hình ảnh RGB, đám mây điểm |
+| Độ phân giải và tốc độ khung hình ToF | 640 × 480; tốc độ thông thường 30 fps |
+| Trường nhìn ToF | 90° × 70°, ±3° |
+| Độ phân giải và tốc độ khung hình RGB | 1280 × 1056; tốc độ thông thường 30 fps |
+| Trường nhìn RGB | 115° × 100°, ±3° |
+| Kích thước pixel RGB | 2.5 μm |
+| ISP RGB | Tích hợp |
+| HDR RGB | ≥ 100 dB |
+| Ống kính RGB | F/2.05; tiêu cự hiệu dụng 1.28 mm |
+| Phạm vi hoạt động | 0.05–1 m |
+| Độ chính xác đo khoảng cách | 1%, tối đa 4 mm ở 1 m |
+| Laser | 940 nm |
+| Công suất tiêu thụ | 3 W |
+| Kích thước (D × R × C) | 60 × 30 × 29 mm |
+| Khối lượng | \< 200 g |
+| Nguồn cấp | 12 VDC / 1 A |
+| Giao diện truyền thông | SerDes (GMSL2) |
+| Nhiệt độ hoạt động | −20–60 °C |
+| Nhiệt độ lưu trữ | −40–85 °C |
+| SDK | C/C\+\+, ROS |
+| Hệ thống được hỗ trợ | Windows 7 trở lên, Linux, Arm Linux, ROS |
+| Làm mát | Thụ động |
+| An toàn mắt | Class 1 |
+
+## Kích thước sản phẩm
+
+<Frame>
+  ![Kích thước camera M4-G](/images/products/m-series-m4-g-overview-1-m4-g-3d-camera-dimensions.avif)
+</Frame>
+
+## Giao diện GMSL2
+
+### Cấu hình serializer
+
+| Hạng mục | Tham số |
+| --- | --- |
+| Serializer | MAX96717 |
+| Địa chỉ I²C | `0x40` (7-bit) |
+| Tốc độ GMSL | GMSL2, 6 Gbps |
+| Chế độ hoạt động | Chế độ pixel |
+| Đồng bộ khung hình | Do MAX96717 MFP0 điều khiển |
+
+### Tham số luồng video
+
+| Luồng | Độ phân giải và định dạng | Loại dữ liệu | Điều khiển và kênh ảo |
+| --- | --- | --- | --- |
+| ToF | 2560 × 960, RAW8 | `0x2A` | I²C được FPGA chuyển tiếp; VC0 |
+| RGB | 1280 × 1080, YUV422, 8-bit | `0x1E` | I²C được FPGA chuyển tiếp; VC1 |
+
+### Cấu hình FPGA
+
+| Hạng mục | Tham số |
+| --- | --- |
+| Địa chỉ I²C | `0x11` (7-bit) |
+| Ngõ ra MIPI | 4 lane, 1.2 Gbps |
+
+## Bắt đầu truyền luồng
+
+Việc chụp ảnh yêu cầu cả đồng bộ khung hình bằng phần cứng và điều khiển luồng.
+
+<Steps>
+  <Step title="Cung cấp tín hiệu đồng bộ khung hình">
+    Cấu hình đồng bộ khung hình giữa MAX96717 và deserializer được chọn theo hướng dẫn phần cứng. Có thể cấu hình MFP0 của MAX96717 làm ngõ ra kích hoạt GPIO.
+
+    <Frame>
+      ![Truyền tín hiệu đồng bộ khung hình dòng MAX96724](/images/products/m-series-m4-g-overview-2-max96724-f-r-frame-sync-signal-transmission.avif)
+    </Frame>
+  </Step>
+  <Step title="Gửi lệnh bắt đầu luồng">
+    Ghi `1` vào thanh ghi FPGA `0x2000` để bắt đầu truyền luồng hoặc ghi `0` để dừng truyền luồng.
+
+    ```bash
+    i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+    ```
+
+    Trong ví dụ này, `0x11` là địa chỉ I²C của FPGA.
+  </Step>
+</Steps>
+
+## Yêu cầu tích hợp
+
+| Hạng mục | Yêu cầu |
+| --- | --- |
+| Nhiệt độ hoạt động | −20–60 °C |
+| Độ rọi hoạt động | 0–100 kLux |
+| Nhiệt độ lưu trữ | −40–85 °C |
+| Độ ẩm lưu trữ | Tối đa 90% RH |
+| Độ tăng nhiệt độ hoạt động thông thường | Độ tăng nhiệt độ vỏ < 25 °C |
+| ESD | Phóng điện tiếp xúc ±4 kV; phóng điện qua không khí ±8 kV |
+| Phát xạ bức xạ | Tuân thủ GB 9254 Class A |
+| Tuân thủ môi trường | RoHS |
+
+## Case study liên quan
+
+<Columns cols={3}>
+  <Card title="Case xử lý xe nâng không người lái" icon="forklift" href="/vi/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+  </Card>
+
+  <Card title="Tránh chướng ngại vật cho AMR gầm thấp" icon="robot" href="/vi/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+  </Card>
+
+  <Card title="Tránh chướng ngại vật cho robot hình người bánh xe" icon="person-walking" href="/vi/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+  </Card>
+</Columns>

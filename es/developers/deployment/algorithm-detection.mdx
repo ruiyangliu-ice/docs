@@ -1,0 +1,592 @@
+---
+title: Implementar algoritmos de detección e integrar resultados
+sidebarTitle: Implementación de algoritmos de detección
+description: "Implementa algoritmos de detección humana, de ubicaciones de almacenamiento y de volumen, configura los parámetros extrínsecos y los parámetros de la cámara y recupera resultados mediante TCP, UDP, HTTP o Modbus TCP."
+---
+
+Esta guía cubre la implementación, calibración, configuración e integración de resultados de los algoritmos MRDVS de detección humana, de ubicaciones de almacenamiento y de volumen. El algoritmo se ejecuta en la cámara; la aplicación host del algoritmo se utiliza para la configuración, las actualizaciones y la inspección de resultados.
+
+<Info>
+  El firmware del algoritmo y la aplicación host del algoritmo se entregan por proyecto. Antes de instalar el firmware del algoritmo, confirma que la cámara ejecute una versión de firmware MDS. Obtén un paquete de instalación que coincida con el proyecto y el modelo de cámara.
+</Info>
+
+## Alcance compatible
+
+### Componentes del sistema
+
+| Componente | Función |
+| --- | --- |
+| Cámara 3D | Captura imágenes RGB y nubes de puntos y ejecuta el algoritmo de detección en la cámara. |
+| Aplicación host del algoritmo | Configura algoritmos, calibra parámetros extrínsecos, muestra resultados y actualiza el firmware del algoritmo. |
+| PC industrial o sistema de nivel superior | Ejecuta la aplicación host o lee resultados mediante una interfaz de red. |
+| LiDAR | `mid360`, utilizado para la configuración de la solución original basada en radar. |
+
+### Algoritmos y cámaras
+
+| Algoritmo | Cámara compatible |
+| --- | --- |
+| Detección humana | M4 Pro |
+| Detección de ubicaciones de almacenamiento | S10 Pro |
+| Detección de volumen | S10 y S10 Pro |
+
+Para obtener información del producto, consulta la [página del producto de la cámara 3D S10](/es/products/s-series/s10-overview).
+
+### Entorno de la aplicación host
+
+| Elemento | Configuración recomendada |
+| --- | --- |
+| Sistema operativo | Windows 10 o posterior |
+| CPU | Intel® Core™ i5 (7.ª generación) o posterior |
+| Memoria | 8 GB o más |
+| GPU | Intel® UHD Graphics o una GPU integrada o discreta de mayor rendimiento |
+
+## Implementación de hardware y red
+
+### Instalar la cámara
+
+Usa un soporte rígido para evitar movimientos o vibraciones después de la instalación. La detección humana normalmente utiliza una instalación horizontal o una instalación con un ángulo no superior a 30°.
+
+<Frame>
+  ![Ejemplos de instalación del soporte de la cámara](/images/developers/deployment-algorithm-detection-camera-installation-methods.avif)
+</Frame>
+
+### Conectar los dispositivos
+
+<Steps>
+  <Step title="Conectar la alimentación y la red">
+    Alimenta la cámara con una fuente regulada de 24 V DC. Usa un cable Cat6A o Cat7 para conectar la cámara a un switch gigabit o a un controlador.
+  </Step>
+  <Step title="Implementar varias cámaras">
+    Instala cada cámara a la altura y en la posición especificadas en el plano CAD. Conecta todas las cámaras mediante un switch gigabit y verifica el estado de alimentación y de enlace de cada una.
+  </Step>
+  <Step title="Preparar los objetivos de prueba">
+    Coloca en la vista de la cámara las personas, los palés o las mercancías que se van a detectar antes de calibrar los parámetros extrínsecos y configurar las regiones.
+  </Step>
+</Steps>
+
+### Configurar la red del host
+
+Coloca el ordenador host y la cámara en la misma subred. El ejemplo original utiliza el siguiente plan:
+
+| Elemento | Ejemplo |
+| --- | --- |
+| Dirección IP del host | `192.168.100.xxx` |
+| Máscara de subred | `255.255.255.0` |
+| Puerta de enlace predeterminada | `192.168.100.1` |
+
+<Steps>
+  <Step title="Abrir la configuración del adaptador">
+    En Windows, abre **Panel de control → Centro de redes y recursos compartidos → Cambiar configuración del adaptador** y selecciona el adaptador Ethernet conectado a la cámara.
+  </Step>
+  <Step title="Configurar IPv4">
+    Abre **Protocolo de Internet versión 4 (TCP/IPv4)**, selecciona **Usar la siguiente dirección IP** e introduce una dirección estática sin utilizar en la subred de la cámara.
+  </Step>
+  <Step title="Confirmar la conexión">
+    Guarda la configuración, confirma que el enlace sea gigabit y utiliza la aplicación host para descubrir o abrir la cámara.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Centro de redes y recursos compartidos de Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration.avif)
+  </Frame>
+
+  <Frame>
+    ![Configuración de dirección estática IPv4 de Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  No dejes el firewall desactivado en una red de producción. Si la aplicación host no puede conectarse, crea primero una regla para la aplicación o el puerto necesarios. Desactiva temporalmente el firewall solo en una red de depuración de confianza y, después, restaura la protección.
+</Warning>
+
+## Instalar y actualizar el software
+
+### Instalar las aplicaciones host
+
+1. Obtén la aplicación host de la cámara desde la página de [descargas de software](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Descargas de software").
+2. Instala la aplicación host de la cámara fuera de la unidad del sistema.
+3. Copia los archivos de la aplicación host del algoritmo entregados para el proyecto en la carpeta `Tools` del directorio de la aplicación host de la cámara. Reemplaza los archivos con el mismo nombre y, después, haz doble clic en el ejecutable para iniciarlo.
+
+<Frame>
+  ![Instalación de la aplicación host de la cámara](/images/developers/deployment-algorithm-detection-picture-2.avif)
+</Frame>
+
+Para actualizar solo la aplicación host del algoritmo, reemplaza su archivo `.exe` por la versión entregada.
+
+### Actualizar el firmware del algoritmo
+
+<Warning>
+  La cámara se reinicia durante la instalación. No desconectes la alimentación ni la red y no cierres la aplicación host. El paquete debe coincidir con el modelo de cámara, la versión de firmware MDS y el algoritmo del proyecto.
+</Warning>
+
+<Tabs>
+  <Tab title="Aplicación host de la cámara">
+    1. Inicia `LxCameraViewer.exe` y abre la cámara.
+    2. Selecciona **Herramientas básicas → Configuración de funciones → Actualización de firmware**.
+    3. Elige el archivo de algoritmo de detección entregado y selecciona **Ejecutar**.
+  </Tab>
+  <Tab title="Aplicación host del algoritmo">
+    1. Selecciona la cámara de destino en la lista de dispositivos.
+    2. Selecciona **Actualizar firmware**, elige el archivo de algoritmo de detección y ábrelo.
+    3. Espera a que la cámara vuelva a aparecer en la lista de dispositivos.
+  </Tab>
+</Tabs>
+
+Cuando la cámara vuelva a aparecer después de reiniciarse, la instalación habrá terminado. Un fondo verde en la cámara dentro de la aplicación host del algoritmo indica que la cámara está conectada y que el algoritmo está disponible.
+
+## Aplicación host del algoritmo
+
+### Inicio y estado
+
+Inicia `LxApplicationViewer.exe`. Un icono verde en la lista de dispositivos indica que hay una cámara conectada. Selecciona un dispositivo para cambiar la vista actual entre los modos RGB y nube de puntos. Los usuarios estándar pueden ver resultados; los administradores pueden modificar los parámetros de la cámara y del algoritmo.
+
+<Frame>
+  ![Ventana principal de la aplicación host del algoritmo](/images/developers/deployment-algorithm-detection-administrator.avif)
+</Frame>
+
+### Herramientas básicas
+
+| Función | Descripción |
+| --- | --- |
+| Cambio de usuario | Cambia los niveles de permisos. Los administradores pueden configurar los parámetros de la cámara y del algoritmo. |
+| Suelo ideal | Muestra u oculta el plano horizontal de referencia. |
+| Suelo extrínseco | Muestra u oculta el suelo calculado a partir de la calibración extrínseca. |
+| Caché de pantalla | Déjalo sin cambios. |
+| Mostrar algoritmo | Muestra el algoritmo activado actualmente. |
+| Exportar imágenes guardadas | Exporta las imágenes guardadas. |
+| Reproducción histórica | Consulta los registros de imágenes RGB y datos ToF. |
+| Cambiar algoritmo de aplicación | Elige el algoritmo que se ejecutará y, después, selecciona **Guardar y enviar**. |
+| Mostrar resultados de detección | Muestra la salida del algoritmo actual. |
+
+### Barra de estado y reproducción
+
+| Función | Descripción |
+| --- | --- |
+| RGB | Muestra la imagen RGB. |
+| Nube de puntos | Muestra la nube de puntos. |
+| Detener algoritmo | Detiene el algoritmo actual. No se reinicia automáticamente hasta que la cámara vuelva a encenderse. |
+| Actualizar firmware | Abre el flujo de actualización del firmware del algoritmo. |
+| Reiniciar cámara | Reinicia la cámara seleccionada. |
+
+Cuando cambia el estado, el software guarda un fotograma RGB y los datos de la nube de puntos. Los datos de reproducción no se comparten entre algoritmos. El tiempo de reproducción utiliza el reloj interno de la cámara, no la hora del sistema del ordenador host.
+
+Si el fondo del dispositivo es amarillo, o es verde pero la imagen no se actualiza, activa la actualización automática para reanudar la adquisición de imágenes.
+
+## Calibración extrínseca
+
+### Configuración de la cámara
+
+| Configuración | Descripción |
+| --- | --- |
+| Nombre de la cámara | Identifica una cámara en una implementación con varias cámaras. |
+| Modo de simulación | Función interna; déjalo desactivado. |
+| Modo de guardado de imágenes | Guarda los datos de imagen del algoritmo en la cámara. |
+| Modo de adquisición de imágenes | `MDS` no ocupa el acceso a la cámara. `SDK` sí lo ocupa; la aplicación host no puede abrir la cámara mientras se ejecuta el algoritmo. |
+| `x`, `y`, `z` | Posición extrínseca de la cámara; `z` es la altura de la cámara sobre el suelo. |
+| `roll`, `pitch`, `yaw` | Ángulos de orientación extrínseca de la cámara. |
+| Suelo ideal | Conserva el valor predeterminado. |
+| Leer configuración de la cámara | Lee la configuración actual de la cámara. |
+| Guardar y enviar | Escribe los cambios en la cámara. Los parámetros no guardados no tienen efecto. |
+| Calibración extrínseca | Calibra la altura y la orientación de la cámara. |
+
+<Tabs>
+  <Tab title="Instalación vertical">
+    1. Abre **Configuración de la cámara**. Antes de la calibración, establece `x`, `y`, `z`, `roll`, `pitch` y `yaw` en `0` y, después, selecciona **Guardar y enviar**.
+    2. Selecciona **Calibración extrínseca**. Cuando la calibración termine correctamente, verifica el resultado en el panel de parámetros.
+
+    <Frame>
+      ![Calibración extrínseca para una instalación vertical](/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Instalación horizontal">
+    1. Abre **Configuración de la cámara** y entra en la página de calibración de parámetros.
+    2. Alinea el suelo de la nube de puntos con el sistema de coordenadas: los ejes `X` rojo y `Y` verde están sobre el suelo, mientras que el eje `Z` azul es perpendicular al suelo y apunta hacia arriba.
+    3. Normalmente ajusta primero solo `roll` y `z`; establece los demás valores en `0`. Selecciona **Guardar y enviar** después de verificarlo.
+
+    <Frame>
+      ![Resultado de la calibración extrínseca para una instalación horizontal](/images/developers/deployment-algorithm-detection-1.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Referencia de parámetros del algoritmo
+
+Selecciona **Guardar y enviar** después de cambiar cualquier parámetro del algoritmo. Conserva los parámetros de filtro predeterminados salvo que una prueba en el sitio demuestre que es necesario ajustarlos.
+
+<Tabs>
+  <Tab title="Detección humana">
+    <Frame>
+      ![Configuración global de detección humana](/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif)
+    </Frame>
+
+    | Parámetro | Descripción |
+    | --- | --- |
+    | Versión del algoritmo | Versión actual del algoritmo. |
+    | Frecuencia de detección | Frecuencia de actualización de imágenes y resultados. |
+    | Filtro temporal | Con `3`, se requieren tres resultados idénticos consecutivos antes de considerar válido un resultado. |
+    | Tamaño del kernel | Tamaño del kernel para operaciones morfológicas 2D. Los valores mayores reducen los objetivos y amplían el fondo. |
+    | Umbral de distancia | Determina si los puntos son similares o pertenecen a la misma clase. |
+    | Cantidad mínima de puntos | Cantidad mínima de puntos de la nube necesaria para la agrupación semántica. |
+    | Cantidad mínima de puntos no semánticos | Cantidad mínima de puntos de la nube necesaria para la agrupación no semántica. |
+    | Tamaño del vecindario | Define el rango del vecindario de puntos y afecta a la granularidad de la agrupación. |
+    | Detección de rotación | Coincide con la dirección de instalación de la cámara; usa la orientación con el logotipo hacia abajo como referencia de `0°`. |
+
+    | Parámetro de región | Descripción |
+    | --- | --- |
+    | Añadir/eliminar región | Crea o elimina una región de detección humana. |
+    | Cuadro actual | Selecciona la región de detección activa. |
+    | `X`, `Y`, `Z` mínimos/máximos | Define los límites 3D de la región. |
+    | Arrastrar para ajustar la región | Arrastra con el botón izquierdo del ratón a lo largo de `x` e `y`; arrastra con el botón derecho a lo largo de `z`. |
+
+    <Frame>
+      ![Configuración de la región de detección humana](/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Detección de ubicaciones de almacenamiento">
+    <Frame>
+      ![Configuración global de detección de ubicaciones de almacenamiento](/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif)
+    </Frame>
+
+    | Parámetro | Descripción |
+    | --- | --- |
+    | Versión del algoritmo | Versión actual del algoritmo. |
+    | Filtro AI | Segmentación semántica; actualmente no disponible. |
+    | Frecuencia de detección | Frecuencia de actualización de resultados. |
+    | Ángulo de alineación | Desviación angular máxima permitida de la carga cuando la comprobación de alineación está activada. |
+    | Comprobación de alineación | Comprueba la desviación angular y el estado de los límites. Los objetos detectados se muestran con cajas de volumen amarillas. |
+    | Filtro temporal | Emite un estado válido solo después de varios resultados consecutivos coherentes. |
+    | Cantidad mínima de puntos | Los objetos con menos puntos que este valor se ignoran. |
+
+    | Modo de región | Configuración |
+    | --- | --- |
+    | RGB 2D | Usa los píxeles X e Y mínimos y máximos para definir la ubicación de almacenamiento. Se requieren el modo semántico y un modelo semántico. |
+    | Nube de puntos 3D | Usa X, Y y Z mínimos y máximos para definir la ubicación. Arrastra con el botón izquierdo del ratón a lo largo de `x` e `y`, o con el botón derecho a lo largo de `z`. |
+
+    | Función avanzada | Descripción |
+    | --- | --- |
+    | Copiar cuadro actual | Copia la región de ubicación de almacenamiento activa. |
+    | Dirección, espaciado, cantidad | Define copias espaciadas uniformemente a lo largo del eje `X`, `Y` o `Z`. |
+    | Ejecutar | Genera varias regiones a partir de la configuración. |
+    | Calibración con código QR | Introduce la anchura, la longitud, `Z_MIN` y `Z_MAX` de la ubicación y, después, calibra con un código QR. |
+
+    <Frame>
+      ![Configuración de la región de ubicación de almacenamiento 3D en nube de puntos](/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Detección de volumen">
+    <Frame>
+      ![Configuración global de detección de volumen](/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif)
+    </Frame>
+
+    | Parámetro | Descripción |
+    | --- | --- |
+    | Versión del algoritmo | Versión actual del algoritmo. |
+    | Modo de activación | Cuando está activado, adquiere una imagen y un resultado por cada activación. |
+    | Detección ascendente | Detecta mediante el sistema de coordenadas inverso de la cámara. |
+    | Frecuencia de detección | Frecuencia de actualización de imágenes y resultados. |
+    | Distancia del plano de detección | Posición de referencia de la superficie inferior del objeto, en mm. |
+    | Cantidad de vecinos/umbral de distancia | Parámetros de filtro; conserva los valores predeterminados en la mayoría de las implementaciones. |
+    | Umbral de filtro de vectores normales | Filtra planos inclinados de la nube de puntos. La recomendación original es `60`. |
+    | Umbral de distancia de vectores normales | Parámetro de filtro. El rango recomendado originalmente es `20–30`. |
+    | Cantidad mínima de puntos | Los objetos con menos puntos que este valor se ignoran. |
+    | `X`, `Y`, `Z` mínimos | Umbrales mínimos de longitud, anchura y altura, en mm. |
+
+    | Parámetro de región | Descripción |
+    | --- | --- |
+    | `X`, `Y`, `Z` mínimos/máximos | Define los límites 3D de la región de detección de volumen. |
+
+    <Frame>
+      ![Configuración de la región de detección de volumen](/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Implementar un algoritmo
+
+Cambia al modo de nube de puntos y desplázate sobre el área de imagen para mostrar los datos de la nube de puntos.
+
+### Detección humana
+
+<Steps>
+  <Step title="Calibrar una instalación horizontal">
+    Alinea los ejes `X` e `Y` con la nube de puntos del suelo. El eje `Z` debe ser perpendicular al suelo y apuntar hacia arriba.
+  </Step>
+  <Step title="Configurar los parámetros globales">
+    Abre **Detección humana**. Normalmente solo es necesario configurar **Detección de rotación**. La rotación horaria de la cámara admite `0°`, `90°`, `180°` y `270°`.
+  </Step>
+  <Step title="Crear la región de detección">
+    Selecciona **Añadir región de detección**, establece los valores `X`, `Y` y `Z` mínimos y máximos y mueve la región sobre el objetivo. El ejemplo original utiliza una región de `1000 × 1000 × 2000 mm`.
+  </Step>
+  <Step title="Guardar y verificar">
+    Selecciona **Guardar y enviar**, ejecuta una prueba de paso de una persona por el área y verifica el resultado en la barra de estado o en la reproducción histórica.
+  </Step>
+</Steps>
+
+| Regla de coincidencia | Sin persona | Persona | Obstáculo | Persona y obstáculo |
+| --- | --- | --- | --- | --- |
+| Solo profundidad | `0` | `2` | `2` | `2` |
+| Semántica más profundidad | `0` | `1` | `0` | `1` |
+
+El modo de solo profundidad informa de todos los objetos de la región. El modo semántica más profundidad solo informa de los grupos clasificados como personas.
+
+### Detección de ubicaciones de almacenamiento
+
+<Steps>
+  <Step title="Calibrar la cámara">
+    Sigue el procedimiento de calibración extrínseca. Alinea `X` e `Y` con el suelo y mantén `Z` perpendicular y apuntando hacia arriba.
+  </Step>
+  <Step title="Configurar los parámetros globales">
+    Configura **Comprobación de alineación**, **Ángulo de alineación** y **Cantidad mínima de puntos** para el sitio. Activa la comprobación de alineación cuando la carga deba colocarse con un ángulo definido.
+  </Step>
+  <Step title="Crear ubicaciones de almacenamiento">
+    En el modo de nube de puntos, selecciona **Añadir ubicación de almacenamiento**, cambia a la vista superior y pulsa `X` para iniciar o detener el dibujo. Arrastra el rectángulo sobre el palé y ajusta los límites `X`, `Y` y `Z`. Pulsa `X` de nuevo para salir del modo de dibujo.
+  </Step>
+  <Step title="Guardar y verificar">
+    Selecciona **Guardar y enviar**. Configura las ubicaciones en el modo RGB 2D o nube de puntos 3D y comprueba `Resultado` en la barra de estado.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Dibujo de una región de ubicación de almacenamiento en modo de nube de puntos](/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif)
+</Frame>
+
+| Estado de la ubicación de almacenamiento | `Resultado` |
+| --- | --- |
+| Vacía | `0` |
+| Ocupada, u ocupada y alineada | `1` |
+| Ocupada con un ángulo superior al umbral de alineación | `2` |
+| Ocupada y fuera de los límites de la ubicación | `3` |
+
+Para una disposición regular, utiliza **Copiar cuadro actual** para crear ubicaciones con una dirección y un espaciado fijos. Si se requiere verificación mediante código QR, usa **Calibración con código QR** para configurar las dimensiones de la ubicación y el rango de profundidad.
+
+### Detección de volumen
+
+<Steps>
+  <Step title="Calibrar una instalación vertical">
+    La detección de volumen funciona de arriba hacia abajo. Después de la calibración, el eje `Z` apunta hacia abajo y el plano `X`/`Y` es paralelo al suelo.
+  </Step>
+  <Step title="Configurar el plano de detección">
+    Para mercancías colocadas directamente en el suelo, establece el plano de detección a la altura del suelo. Para medir solo mercancías sobre un palé, alinea el plano con la nube de puntos del palé.
+  </Step>
+  <Step title="Configurar las dimensiones mínimas y la región">
+    Establece los valores mínimos de `X`, `Y` y `Z` para filtrar objetivos pequeños. Después, configura los límites de la región según el plano de detección y las dimensiones de la carga.
+  </Step>
+  <Step title="Guardar y verificar">
+    Selecciona **Guardar y enviar**, coloca uno o varios objetos en la región y verifica la longitud, la anchura, la altura y la cantidad devueltas.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Plano de detección del suelo para la detección de volumen](/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif)
+  </Frame>
+
+  <Frame>
+    ![Resultado de detección de volumen de un solo objeto](/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif)
+  </Frame>
+</Columns>
+
+Para utilizar la adquisición de una sola activación, activa **Modo de activación** en **Detección de volumen** y selecciona **Guardar y enviar**. Después, selecciona **Activación única** en **Herramientas básicas** o envía `TM_TRIGGER` mediante TCP o UDP.
+
+## Interfaces de comunicación
+
+<Note>
+  La dirección IP de los ejemplos es ilustrativa. Reemplázala por la dirección de la cámara en el sitio y, después, verifica la red, el estado del algoritmo y el formato de los resultados antes de integrarlos con un sistema de nivel superior.
+</Note>
+
+### Métodos de transporte
+
+| Protocolo | Puerto | Solicitud | Uso |
+| --- | --- | --- | --- |
+| TCP | `14951` | `RESULT_UPDATE` | Obtiene el resultado actual del algoritmo. |
+| UDP | `14950` | `RESULT_UPDATE` | Obtiene el resultado actual del algoritmo. |
+| HTTP | `14952` | `RESULT_UPDATE` | Obtiene el resultado del algoritmo como JSON. |
+| TCP/UDP | Puerto de resultados | `TM_TRIGGER` | Ejecuta una detección de volumen activada y devuelve el resultado. |
+| Modbus TCP | `16502` | Leer registros de retención | Lee el estado de las ubicaciones de almacenamiento. |
+
+### Solicitud de resultados HTTP
+
+El sistema de nivel superior envía una solicitud de resultados al endpoint de visión, que devuelve una cadena JSON. Utiliza en tu cliente HTTP las cabeceras de solicitud entregadas para el proyecto y el siguiente cuerpo de solicitud.
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Activa la cámara para que devuelva el resultado actual del algoritmo.
+</ParamField>
+
+### Campos de respuesta comunes
+
+<ResponseField name="IP" type="string" required>
+  Dirección IP de la cámara que generó los datos.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string" required>
+  Nombre de la cámara; cámbialo en la configuración de la cámara.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Código de retorno; `0` indica éxito.
+</ResponseField>
+
+<Tabs>
+  <Tab title="Detección humana (SG)">
+    <ResponseField name="SG" type="object" required>
+      Objeto de estado indexado por el ID de la región de detección: `0` significa que no hay objetivo, `1` que se ha detectado una persona y `2` que un objeto se ha detectado solo mediante la regla de profundidad.
+    </ResponseField>
+
+    <ResponseField name="__object_details" type="string[]">
+      Detalles de los grupos. Cada elemento es una cadena JSON que debe deserializarse de nuevo.
+    </ResponseField>
+
+    <ResponseField name="SG_DATA_TIME" type="string">
+      Marca de tiempo de los datos de detección humana.
+    </ResponseField>
+
+    <ResponseField name="SG_RES_TIME" type="string">
+      Marca de tiempo del resultado de detección humana.
+    </ResponseField>
+
+    Los detalles de los grupos incluyen `rbx2d`, `rby2d`, `tlx2d` y `tly2d` (coordenadas de la caja 2D), `semantic_index`, `traceID` y `x_min`, `x_max`, `y_min`, `y_max`, `z_min` y `z_max` (límites de la caja 3D).
+  </Tab>
+  <Tab title="Detección de ubicaciones de almacenamiento (SS)">
+    <ResponseField name="SS" type="object" required>
+      Objeto de estado indexado por el ID de ubicación: `0` vacía, `1` ocupada, `2` ocupada con una desviación angular y `3` ocupada y fuera de los límites.
+    </ResponseField>
+
+    <ResponseField name="X__detail__info" type="number[]">
+      Detalles de la ubicación `X`: centro `x`, `y` y `z`, longitud, anchura, altura y desviación angular respecto a la caja delimitadora. Una ubicación creada en 2D devuelve todos los valores como `-1`.
+    </ResponseField>
+
+    <ResponseField name="SS_DATA_TIME" type="string">
+      Marca de tiempo de los datos de la ubicación de almacenamiento.
+    </ResponseField>
+
+    <ResponseField name="SS_RES_TIME" type="string">
+      Marca de tiempo del resultado de la ubicación de almacenamiento.
+    </ResponseField>
+  </Tab>
+  <Tab title="Detección de volumen (TM)">
+    <ResponseField name="TM" type="object[]" required>
+      Matriz de todas las cajas de volumen completas de la región de detección.
+    </ResponseField>
+
+    <ResponseField name="angle" type="number">
+      Desviación angular de la caja de volumen.
+    </ResponseField>
+
+    <ResponseField name="cx" type="number">
+      Coordenada `x` del centro de la caja de volumen.
+    </ResponseField>
+
+    <ResponseField name="cy" type="number">
+      Coordenada `y` del centro de la caja de volumen.
+    </ResponseField>
+
+    <ResponseField name="cz" type="number">
+      Coordenada `z` del centro de la caja de volumen.
+    </ResponseField>
+
+    <ResponseField name="length" type="number">
+      Longitud del objeto.
+    </ResponseField>
+
+    <ResponseField name="width" type="number">
+      Anchura del objeto.
+    </ResponseField>
+
+    <ResponseField name="height" type="number">
+      Altura del objeto.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Tipo semántico.
+    </ResponseField>
+
+    <ResponseField name="valid" type="boolean">
+      Indica si el resultado es válido.
+    </ResponseField>
+
+    <ResponseField name="TM_DATA_TIME" type="string">
+      Marca de tiempo de los datos de detección de volumen.
+    </ResponseField>
+
+    <ResponseField name="TM_RES_TIME" type="string">
+      Marca de tiempo del resultado de detección de volumen.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+### Ejemplo de respuesta de detección humana
+
+```json
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
+```
+
+### Modbus TCP (detección de ubicaciones de almacenamiento)
+
+Los resultados se ordenan por ID de ubicación de almacenamiento; como máximo se devuelven las primeras 16 ubicaciones.
+
+| Configuración | Valor |
+| --- | --- |
+| Puerto | `16502` |
+| Dirección de escucha | `0.0.0.0` (todas las interfaces de red) |
+| Cantidad de registros | `16` |
+| Dirección inicial | `0x0100` |
+| Orden de bytes | Big-endian |
+
+| Registro | Contenido | Formato de datos |
+| --- | --- | --- |
+| `0x0100 + ID` | Resultados de detección de ubicación de almacenamiento y marcador | `uint16_t` de 2 bytes |
+| 8 bits altos | Código de estado de la ubicación de almacenamiento | `0–2` |
+| 8 bits bajos | Código de estado del marcador | `0–2`; esta función no está disponible actualmente, por lo que tiene el mismo significado que el código de estado de la ubicación. |
+
+| Estado de la ubicación | Significado | Condición |
+| --- | --- | --- |
+| `0` | Vacía | No hay mercancía ni palé. |
+| `1` | Ocupada normalmente | La mercancía está colocada según lo requerido. |
+| `2` | Ocupada de forma anómala | El tamaño o la posición de la carga no cumplen el requisito. |
+
+| Estado del marcador | Significado |
+| --- | --- |
+| `0` | Marcador no detectado. |
+| `1` | Marcador detectado. |
+| `2` | Error de detección del marcador. |
+
+#### Leer la cuarta ubicación de almacenamiento
+
+El siguiente ejemplo utiliza el ID de transacción `0x0001` para leer un registro de retención en la dirección `0x0104`. La respuesta contiene el estado `0x0002`.
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
+```
+
+| Campo | Valor de solicitud | Descripción |
+| --- | --- | --- |
+| Identificador de transacción | `00 01` | Número de secuencia del cliente; la respuesta debe coincidir con él. |
+| Identificador de protocolo | `00 00` | Valor fijo de Modbus/TCP. |
+| Longitud | `00 06` | Cantidad de bytes de los campos de solicitud siguientes. |
+| Identificador de unidad | `FF` | Modo de difusión o dirección del dispositivo. |
+| Código de función | `03` | Leer registros de retención. |
+| Dirección inicial | `01 04` | `0x0100 + 4`. |
+| Cantidad de registros | `00 01` | Leer un registro. |
+
+## Solución de problemas
+
+| Síntoma | Comprobaciones prioritarias |
+| --- | --- |
+| No se encuentra la cámara | Confirma que el host y la cámara compartan una subred, que el adaptador de red sea gigabit y que los enlaces de alimentación y del switch estén en buen estado. |
+| Los parámetros no tienen efecto | Confirma que se haya seleccionado **Guardar y enviar** después del cambio. |
+| No hay resultados del algoritmo | Confirma que se haya instalado el firmware del algoritmo correcto, que el dispositivo esté en verde y que el algoritmo esté activado. |
+| Nube de puntos vacía o desactualizada | Desplázate sobre el área de nube de puntos para mostrar los datos; activa la actualización automática si es necesario. |
+| Resultados anómalos de ubicación o volumen | Vuelve a comprobar las direcciones de los ejes extrínsecos, el plano de detección y los límites de la región y, después, repite la prueba con objetos del sitio. |

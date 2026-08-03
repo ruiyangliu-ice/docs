@@ -1,0 +1,120 @@
+---
+title: Giao thức giao tiếp UDP V2 Pro
+sidebarTitle: Giao thức UDP V2 Pro
+description: "Cấu hình giao tiếp UDP V2 Pro và phân tích message odometry, tái định vị, lập bản đồ, bản đồ và kết quả định vị."
+hidden: true
+---
+
+V2 Pro trao đổi dữ liệu điều khiển và định vị với client qua UDP. Trong ứng dụng web host, đặt `portName` thành địa chỉ IP của thiết bị đích và `portCode` thành cổng lắng nghe. V2 Pro lắng nghe message đến trên cổng `8001`.
+
+<Frame>
+  ![Cấu hình địa chỉ đích UDP trong ứng dụng web host V2 Pro](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+</Frame>
+
+## Quy ước message
+
+| Hạng mục | Quy ước |
+| --- | --- |
+| Thứ tự byte | Big-endian: byte cao đứng trước byte thấp. |
+| Cấu trúc frame | Header, length, command, data và checksum. |
+| Checksum | Một byte. Thực hiện XOR trên mọi byte ngoại trừ header và chính checksum. |
+| Trường length | Không bao gồm header và checksum. Một số message không có trường length. |
+| Tên bản đồ | Chỉ gồm chữ cái ASCII, chữ số và dấu gạch dưới; ký tự đầu tiên phải là chữ cái. |
+
+<Note>
+  Đánh số byte bắt đầu từ Byte 0. Tất cả số nguyên nhiều byte đều sử dụng thứ tự big-endian.
+</Note>
+
+## Message V2 Pro nhận được
+
+### Odometry
+
+| Phạm vi byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, số nguyên 4 byte biểu thị vận tốc |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, số nguyên 4 byte biểu thị góc |
+| Byte 12 | Checksum |
+
+Vận tốc `v` tính bằng mm/s. Góc `theta` tính bằng 0.01°; ví dụ, 90° được gửi dưới dạng 9000.
+
+### Tái định vị
+
+| Phạm vi byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, số nguyên 4 byte biểu thị tọa độ X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, số nguyên 4 byte biểu thị tọa độ Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, số nguyên 4 byte biểu thị góc |
+| Byte 16 | Checksum |
+
+`x` và `y` tính bằng mm. `theta` tính bằng 0.01°; ví dụ, 90° được gửi dưới dạng 9000.
+
+### Bắt đầu hoặc dừng lập bản đồ
+
+| Phạm vi byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x02 |
+| Byte 4 | Status: 0x01 bắt đầu lập bản đồ; 0x00 dừng lập bản đồ |
+| Byte 5–34 | Tên bản đồ, ASCII cố định 30 byte; đệm các byte không dùng bằng 0x00 |
+| Byte 35 | Checksum |
+
+Gửi command bắt đầu một lần cho mỗi tác vụ lập bản đồ. Không gửi lặp lại.
+
+### Chuyển đổi bản đồ
+
+| Phạm vi byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x0C |
+| Byte 4–33 | Tên bản đồ, ASCII cố định 30 byte; đệm các byte không dùng bằng 0x00 |
+| Byte 34 | Checksum |
+
+Xác nhận bản đồ đích đã được tạo trước khi gửi command.
+
+## Message V2 Pro gửi đi
+
+### Kết quả định vị
+
+| Phạm vi byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, tọa độ X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, tọa độ Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, hướng |
+| Byte 16–23 | Timestamp7 đến Timestamp0, timestamp |
+| Byte 24 | Checksum |
+
+`X` và `Y` tính bằng mm. `THETA` tính bằng 0.001 rad. Sau khi tái định vị thành công, V2 Pro liên tục gửi message này.
+
+### Kết quả tác vụ
+
+Các command bắt đầu lập bản đồ, dừng lập bản đồ và chuyển đổi bản đồ trả về trạng thái trong message sau.
+
+| Byte | Nội dung |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0xFF |
+| Byte 4 | Task ID |
+| Byte 5 | Status: 0x01 thành công; 0x00 thất bại |
+| Byte 6 | Checksum |
+
+| Task ID | Thao tác |
+| --- | --- |
+| 0x01 | Bắt đầu lập bản đồ |
+| 0x02 | Dừng lập bản đồ |
+| 0x03 | Chuyển đổi bản đồ |
+
+<Info>
+  Dừng lập bản đồ có thể mất thời gian. Thông thường quá trình hoàn tất mất khoảng một phần ba thời lượng thu thập dữ liệu. Hãy chờ message kết quả tác vụ trước khi bắt đầu thao tác khác.
+</Info>

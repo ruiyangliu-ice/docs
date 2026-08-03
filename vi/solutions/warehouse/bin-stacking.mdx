@@ -1,0 +1,79 @@
+---
+title: Xếp chồng thùng chứa bằng xe nâng AGV
+description: "Sử dụng thị giác 3D để ước tính pose của thùng chứa và hướng dẫn xe nâng AGV lấy thùng, đặt thùng và xếp chồng nhiều tầng."
+---
+
+Xếp chồng thùng chứa yêu cầu xe nâng căn chỉnh vị trí và hướng trong một dung sai giới hạn. Số tầng xếp, loại thùng chứa, hình dạng tải và ánh sáng thay đổi càng làm tăng độ khó của việc nhận dạng và ghép thùng.
+
+## Tổng quan giải pháp
+
+Giải pháp sử dụng camera 3D gắn trên xe nâng thông minh để ước tính pose tương đối của thùng chứa trên càng và thùng mục tiêu. Độ lệch vị trí và góc được gửi đến bộ điều khiển xe nâng để hướng dẫn lấy thùng và xếp chồng. Giải pháp phù hợp với thùng chứa, pallet và các tác vụ ghép chính xác khác.
+
+## Khả năng đã xác minh
+
+- Độ chính xác vị trí lên đến **±5 mm** và độ chính xác góc lên đến **0.1°**.
+- Phạm vi nhận dạng độ lệch thùng chứa **±15°**.
+- Thời gian xử lý mỗi khung hình dưới **100 ms**.
+- Hỗ trợ **1–4 tầng** và xếp chồng `2 × 2`.
+
+<Frame>
+  ![Dữ liệu đám mây điểm để ghép thùng chứa phía trên và phía dưới](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## Tùy chọn lắp đặt
+
+<Tabs>
+  <Tab title="Cấu hình một camera">
+    Gắn camera trên cơ cấu nâng và hướng ngang vào các thùng chứa trên cả hai càng. Giữ camera cách mép dưới của càng **35–55 cm**; sai số vị trí của cơ cấu nâng không được vượt quá **1 cm**.
+
+    <Frame>
+      ![Lắp đặt xếp chồng thùng chứa bằng một camera](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Cấu hình hai camera">
+    Gắn một camera ở mỗi bên xe nâng, cách bề mặt càng **30–40 cm** và tạo góc **45°** so với mặt đất. Mỗi camera nhận dạng thùng chứa ở phía tương ứng.
+
+    <Frame>
+      ![Lắp đặt xếp chồng thùng chứa bằng hai camera](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  Khuyến nghị sử dụng dòng M, chẳng hạn M4 Pro hoặc M4 Mega. Chọn model dựa trên khoảng cách làm việc, trường nhìn và kích thước thùng chứa.
+</Info>
+
+## Dữ liệu giao tiếp
+
+Hệ thống giao tiếp với bộ điều khiển xe nâng qua TCP/IP. Bộ điều khiển yêu cầu `X`, `Y` và `θ` của thùng chứa; camera trả về các trường sau.
+
+| Trường | Mô tả |
+| --- | --- |
+| `X`, `Y` | Tọa độ tương đối của thùng chứa tính bằng mm, biểu diễn dưới dạng số thực dấu phẩy động 32 bit. |
+| `Theta` | Độ lệch góc từ **−90° đến 90°**. |
+| `Error Code` | `0`: thành công; `-1`: lỗi camera; `-2`: định vị thất bại; `-3`: lỗi thuật toán. |
+
+## Quy trình
+
+<Tabs>
+  <Tab title="Lấy thùng">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="Xếp chồng">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  Tránh môi trường có nhiều bụi và môi trường ẩm. Giữ giá đỡ camera cứng vững, ổn định và vệ sinh ống kính thường xuyên để duy trì trường nhìn rõ.
+</Warning>
+
+<Frame>
+  ![Minh họa xếp chồng thùng chứa bằng xe nâng AGV](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![Kết quả nhận dạng xếp chồng thùng chứa](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

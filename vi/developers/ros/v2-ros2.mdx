@@ -1,0 +1,410 @@
+---
+title: Tài liệu tham khảo giao diện V2 ROS2
+description: "Biên dịch và chạy ROS2 SDK định vị V2, sau đó sử dụng các topic và service để lập bản đồ, định vị và quản lý bản đồ."
+hidden: true
+---
+
+## Tổng quan
+
+Trang này mô tả các topic và service ROS2 do `lx_camera_ros` cung cấp trong mô-đun định vị V2.
+
+## Biên dịch
+
+Cài đặt các thành phần Qt5 Core và Network. Lệnh cài đặt thay đổi tùy theo bản phân phối Linux; ví dụ sau sử dụng Ubuntu:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+Tải mã nguồn `libzip` từ [trang tải xuống libzip](https://libzip.org/download/) và biên dịch theo hướng dẫn chính thức.
+
+Chạy lệnh sau từ `/lx_camera_ros`:
+
+```bash
+./build.sh
+```
+
+## Chạy
+
+<Note>
+  Biên dịch lại sau khi thay đổi tệp cấu hình YAML. Các thay đổi chỉ có hiệu lực sau khi build lại dự án.
+</Note>
+
+```bash
+./start.sh
+```
+
+## Giao diện topic ROS2
+
+Trước khi kiểm tra giao diện, hãy bật camera, chờ khoảng 30 giây rồi khởi động node ROS2 SDK.
+
+| Trường hợp sử dụng | Topic liên quan |
+| --- | --- |
+| Định vị | Pose, trạng thái định vị, chuyển đổi bản đồ và tái định vị |
+| Lập bản đồ | Trạng thái và tiến trình lập bản đồ |
+| Bảo trì và cấu hình | Mức sử dụng bộ nhớ, mô-đun lỗi, cài đặt tham số và tải bản đồ xuống |
+
+#### Nhận pose định vị
+
+ROS2 liên tục nhận các giá trị `x`, `y` và `theta` của camera, xuất các giá trị này cùng quaternion được chuyển đổi từ `theta` tới `LxCamera_LocationPoseResult`, đồng thời phát pose qua TF.
+
+```bash
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### Nhận trạng thái định vị
+
+ROS2 nhận trạng thái định vị của camera (`true` hoặc `false`) ở tần số 1 Hz và xuất trạng thái dưới dạng `std_msgs::msg::Bool` trên `LxCamera_LocationResult`.
+
+```bash
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### Nhận mức sử dụng bộ nhớ của camera
+
+ROS2 nhận tỷ lệ sử dụng bộ nhớ của camera ở tần số 2 Hz và xuất dưới dạng `std_msgs::msg::Float32` trên `LxCamera_Capacity_Status`.
+
+```bash
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### Nhận tên mô-đun lỗi
+
+ROS2 nhận tên mô-đun lỗi từ camera và xuất dưới dạng `std_msgs::msg::String` trên `LxCamera_Module_Error`.
+
+```bash
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### Nhận tiến trình lập bản đồ
+
+Sau khi bắt đầu lập bản đồ, ROS2 xuất tiến trình (`0–100`) dưới dạng `std_msgs::msg::Int32` trên `LxCamera_Mapping_Progress`.
+
+```bash
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### Nhận trạng thái lập bản đồ
+
+Sau khi bắt đầu lập bản đồ, ROS2 xuất trạng thái lập bản đồ dưới dạng `std_msgs::msg::Bool` trên `LxCamera_MappingState`.
+
+```bash
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### Đặt tham số
+
+Xuất message `std_msgs::msg::String` tới `LxCamera_SetParam`. Message chứa chín giá trị số thực được phân tách bằng dấu phẩy: `x,y,z,yaw,pitch,roll,x,y,yaw`. Sáu giá trị đầu xác định pose của camera; ba giá trị cuối xác định pose LiDAR. Sau khi cập nhật thành công, các giá trị tương ứng trong các phần `[Laser1]` và `[Camera1]` của `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini` sẽ được cập nhật.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### Chuyển đổi bản đồ
+
+Xuất message `std_msgs::msg::String` chứa tên của một bản đồ đã hoàn tất tới `LxCamera_SwitchMap`. Làm mới giao diện web của camera. Nếu tên bản đồ hiển thị thay đổi, việc chuyển đổi đã thành công.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### Tải xuống bản đồ
+
+1. Xuất message `std_msgs::msg::String` tới `LxCamera_DownloadMap`.
+2. Message chứa hai trường: `save_path`, là đường dẫn tuyệt đối trên máy tính chủ, và `mapname`, là tên tệp `.zip` của một bản đồ đã hoàn tất trên camera.
+3. Sau khi tải xuống thành công, đường dẫn máy tính chủ được chỉ định sẽ chứa tệp lưu trữ bản đồ. Giải nén tệp để lấy tệp bản đồ `PGM` và tệp cấu hình `YAML`.
+
+```bash
+# Chuyển vào thư mục lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### Tải lên odometry
+
+Xuất dữ liệu `nav_msgs::msg::Odometry` tới `/sim/odom` (có thể thay đổi topic).
+
+```bash
+# Chuyển vào thư mục lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### Tái định vị
+
+1. Xuất dữ liệu `geometry_msgs::msg::PoseWithCovarianceStamped` tới `LxCamera_UploadReloc`.
+2. Pose chứa pose LiDAR: `x`, `y` và `yaw`.
+3. Tái định vị thành công khi vị trí hiển thị trong giao diện web của camera được cập nhật thành pose đã gửi.
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}"
+```
+
+> Quaternion bị ràng buộc và không được điền tùy ý. Sử dụng [công cụ chuyển đổi Euler sang quaternion](https://www.itutool.com/tools/euler-quaternion-converter "Công cụ web") để chuyển đổi góc `Euler yaw` thành các giá trị quaternion `xyzw`.
+
+#### Tiền tố loại message
+
+Máy tính chủ giao tiếp với camera qua UDP. Bốn byte đầu tiên của mỗi message xác định loại dữ liệu giao diện:
+
+```text
+mapping_prefix = "aced220d";          // Bật lập bản đồ
+setparam_prefix = "aced220e";         // Đặt tham số camera và LiDAR
+UploadScan_prefix = "aced2209";       // Tải dữ liệu quét laser lên camera
+odom_prefix = "aced0f0a";             // Dữ liệu odometry
+mapname_prefix = "aced220c";          // Chuyển đổi bản đồ
+map_request_prefix = "aced220f";      // Tải bản đồ được chỉ định xuống
+prefix_after_reloc = "aced0f0b";       // Tái định vị
+```
+
+---
+
+## Giao diện service ROS2
+
+Lập bản đồ, chuyển đổi bản đồ, tải bản đồ xuống và tái định vị cũng có thể được thực hiện qua ROS2 service. Phản hồi service `true` cho biết thành công; `false` cho biết thất bại.
+
+<Info>
+  Sử dụng `ros2 service call` cho các lệnh sau. Tên bản đồ không được bắt đầu bằng số và không được dài quá 30 ký tự.
+</Info>
+
+#### Tạo bản đồ
+
+Tên service: `/LxCamera_Mapping_srv`
+
+Định nghĩa service:
+
+```text
+bool status      # Bắt đầu lập bản đồ: true; dừng lập bản đồ: false
+string mapname   # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+---
+bool result      # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### Chuyển đổi bản đồ
+
+Tên service: `/LxCamera_SwitchMap_srv`
+
+Định nghĩa service:
+
+```text
+string mapname   # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+---
+bool result      # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### Tải xuống bản đồ
+
+Tên service: `/LxCamera_DownloadMap_srv`
+
+Định nghĩa service:
+
+```text
+string mapname    # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+string save_path  # Đường dẫn lưu tuyệt đối, ví dụ "/home/lx/map"; bỏ dấu gạch chéo cuối
+---
+bool result       # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### Tái định vị
+
+Tên service: `/LxCamera_UploadReloc_srv`
+
+Định nghĩa service:
+
+```text
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result       # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  \"pose\": {
+    \"header\": {
+      \"stamp\": {\"sec\": 0, \"nanosec\": 0},
+      \"frame_id\": \"map\"
+    },
+    \"pose\": {
+      \"pose\": {
+        \"position\": {\"x\": 4.5, \"y\": -15.5, \"z\": 0.0},
+        \"orientation\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.694658, \"w\": 0.71934}
+      },
+      \"covariance\": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### Lấy tên bản đồ hiện tại
+
+Tên service: `/LxCamera_GetCurMapname_srv`
+
+Định nghĩa service:
+
+```text
+bool get_cur_mapname # Lấy mã định danh bản đồ
+---
+string mapname      # Tên bản đồ hiện tại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### Lấy danh sách bản đồ hiện tại
+
+Tên service: `/LxCamera_GetMapList_srv`
+
+Định nghĩa service:
+
+```text
+bool get_map_list # Lấy danh sách bản đồ
+---
+string[] map_list # Danh sách bản đồ
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### Thoát chế độ lập bản đồ
+
+Tên service: `/LxCamera_ExitMapping_srv`
+
+Định nghĩa service:
+
+```text
+bool exit_mapping # Thoát chế độ lập bản đồ
+---
+bool state        # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### Xóa bản đồ
+
+Tên service: `/LxCamera_EraseMap_srv`
+
+Định nghĩa service:
+
+```text
+string mapname    # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+---
+bool result       # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### Tải xuống bản đồ nhiệt
+
+Tên service: `/LxCamera_DownloadHeatMap_srv`
+
+Định nghĩa service:
+
+```text
+string mapname    # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+string save_path  # Đường dẫn lưu tuyệt đối, ví dụ "/home/lx/map"; bỏ dấu gạch chéo cuối
+---
+bool result       # true: thành công; false: thất bại
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## Lập bản đồ bổ sung
+
+Tên service: `/LxCamera_IncMapping_srv`
+
+Định nghĩa service:
+
+```text
+bool status      # Bắt đầu lập bản đồ: true; dừng lập bản đồ: false
+string mapname   # Tên bản đồ; không được bắt đầu bằng số và không được dài quá 30 ký tự
+---
+bool result
+```
+
+Gọi service:
+
+```bash
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

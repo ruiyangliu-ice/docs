@@ -1,0 +1,79 @@
+---
+title: AGV forklift bin stacking
+description: "Use 3D vision to estimate bin pose and guide an AGV forklift through bin pickup, placement, and multi-level stacking."
+---
+
+Bin stacking requires the forklift to align position and orientation within a limited tolerance. More stacking levels, bin types, load shapes, and changing lighting increase the difficulty of recognition and docking.
+
+## Solution overview
+
+The solution uses a 3D camera mounted on the smart forklift to estimate the relative pose of the bin on the forks and the target bin. Position and angle offsets are sent to the forklift controller to guide pickup and stacking. The solution suits bins, pallets, and other precision-docking tasks.
+
+## Verified capabilities
+
+- Positioning accuracy up to **±5 mm** and angle accuracy up to **0.1°**.
+- Bin-offset recognition range of **±15°**.
+- Per-frame processing time below **100 ms**.
+- Support for **1–4 levels** and `2 × 2` stacking.
+
+<Frame>
+  ![Point-cloud data for upper and lower bin docking](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## Installation options
+
+<Tabs>
+  <Tab title="Single-camera setup">
+    Mount the camera on the lifting mechanism and point it horizontally at the bins on both forks. Keep the camera **35–55 cm** from the lower edge of the forks; the lifting mechanism position error should not exceed **1 cm**.
+
+    <Frame>
+      ![Single-camera bin-stacking installation](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Dual-camera setup">
+    Mount one camera on each side of the forklift, **30–40 cm** from the fork surface, at **45°** to the ground. Each camera recognizes the bin on its corresponding side.
+
+    <Frame>
+      ![Dual-camera bin-stacking installation](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  The M Series, such as the M4 Pro or M4 Mega, is recommended. Select the model based on working distance, field of view, and bin dimensions.
+</Info>
+
+## Communication data
+
+The system communicates with the forklift controller over TCP/IP. The controller requests the bin's `X`, `Y`, and `θ`; the camera returns the following fields.
+
+| Field | Description |
+| --- | --- |
+| `X`, `Y` | Relative bin coordinates in mm, represented as 32-bit floating-point values. |
+| `Theta` | Angular offset from **−90° to 90°**. |
+| `Error Code` | `0`: success; `-1`: camera fault; `-2`: localization failure; `-3`: algorithm error. |
+
+## Workflow
+
+<Tabs>
+  <Tab title="Pickup">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="Stacking">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  Avoid heavy dust and humid environments. Keep the camera bracket rigid and stable, and clean the lens regularly to maintain a clear field of view.
+</Warning>
+
+<Frame>
+  ![AGV forklift bin-stacking demonstration](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![Bin-stacking recognition result](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

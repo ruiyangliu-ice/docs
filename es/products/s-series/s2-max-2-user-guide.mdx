@@ -1,0 +1,314 @@
+---
+title: Guía del usuario de S2 Max 2.0
+description: "Especificaciones, características eléctricas, interfaces, integración e instrucciones de funcionamiento de la cámara S2 Max 2.0."
+hidden: true
+---
+
+<Info>
+  Esta es una guía del usuario archivada. Para realizar la primera conexión de la cámara, comienza con la [guía de inicio rápido de S2 Max 2.0](/es/products/s-series/s2-max-2-quickstart).
+</Info>
+
+## Historial de revisiones
+
+| Fecha | Versión | Cambios |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Versión inicial |
+| 2024/05/10 | V1.0 | Parámetros de la cámara actualizados |
+| 2024/06/17 | V1.1 | 1. Se actualizó la asignación de pines y se añadieron las especificaciones eléctricas. 2. Se añadió el certificado de inspección al contenido del paquete. |
+| 2024/11/25 | V1.2 | Temperatura de almacenamiento de la cámara actualizada |
+
+## Descripción general del producto
+
+### Propósito y alcance
+
+Este documento describe las especificaciones de la cámara S2 Max 2.0 y determinados detalles de diseño para desarrolladores que integran y utilizan el producto.
+
+### Terminología
+
+| Cámara RGB-D | Cámara que emite imágenes RGB y de profundidad sincronizadas y alineadas espacialmente |
+| --- | --- |
+| Profundidad | Flujo de vídeo similar a un flujo en color o monocromático, donde cada píxel representa su distancia desde la cámara |
+| FOV | Campo de visión: rango angular de una escena capturada por una cámara, incluidos los campos de visión horizontal (HFOV), vertical (VFOV) y diagonal (DFOV) |
+| Cámara IR | Cámara infrarroja; en este producto captura principalmente la banda del infrarrojo cercano |
+| Cámara RGB | Cámara en color |
+| Cámara de profundidad | Cámara cuyo módulo de profundidad suele incluir un proyector de puntos, una cámara IR y un procesador de profundidad; su módulo de color suele ser una cámara RGB |
+| SoC | Sistema en chip utilizado para el procesamiento de imágenes, el cálculo de profundidad y los algoritmos de aplicación |
+
+### Principio de funcionamiento
+
+Este producto mide la distancia mediante el tiempo de vuelo indirecto (iToF). La cámara emite un pulso láser y el receptor compara la forma de onda recibida con la forma de onda transmitida para calcular la diferencia de fase y el tiempo de vuelo del pulso Δt.
+
+Calcula la distancia del objetivo a la cámara con: distance = speed of light \* Δt / 2
+
+<Frame>
+  ![Principio de funcionamiento iToF](/images/products/s-series-s2-max-2-user-guide-s2-max-2-0-camera.avif)
+</Frame>
+
+---
+
+### Detalles del producto
+
+Esta cámara RGB-D industrial compacta integra una cámara iToF SONY CW y emite imágenes RGB en color real de tres canales con datos de profundidad de 0.2 m a 5 m. Alinea espacial y temporalmente las imágenes RGB y de profundidad, cambia entre cuatro zonas de evitación de obstáculos y emite señales de parada de emergencia, reducción de velocidad y estado seguro.
+
+### Aspecto del producto
+
+<Frame>
+  ![Cámara S2 Max 2.0](/images/products/s-series-s2-max-2-user-guide-itof-operating-principle.avif)
+</Frame>
+
+### Características
+
+- Plataforma de cálculo integrada de 1.0 TOPS que ejecuta algoritmos de evitación de obstáculos sin una CPU externa
+- Formato compacto para una integración flexible y oculta
+- Gran adaptabilidad ambiental: resiste la luz solar de 100 kLux y funciona desde la oscuridad hasta la luz intensa, en interiores y exteriores
+- Amplio alcance de medición de 0.2~5m
+- Evitación de obstáculos, detección de contenedores y medición de volumen independientes
+- Salida RGB-D
+
+## Especificaciones y características eléctricas
+
+### Especificaciones básicas
+
+| Modelo de producto | S2 Max 2.0 |
+| --- | --- |
+| Chip | Sony chip |
+| Formato de salida | Profundidad, RGB y mapa de amplitud |
+| Resolución y frecuencia de imagen ToF | 320 × 240 (habitual 12 fps) |
+| Campo de visión ToF | Habitual: 81° horizontal, 61° vertical |
+| Resolución y frecuencia de imagen RGB | 1920×1080 (habitual 12fps) |
+| Campo de visión RGB | Habitual: 88° horizontal, 56° vertical |
+| Alcance | 0.2m~~5m (@90%), 0.2~~2.5m (@10%) |
+| Precisión | ±3mm\+0.5%\*depth |
+| Consumo de energía | 6.4W |
+| Láser | 940nm |
+| Dimensiones | 92mm×47mm×51mm |
+| Peso | 449g |
+| Entrada de alimentación | 24V DC / 2A |
+| Interfaz de comunicación | Ethernet / E/S (opcional) |
+| Grado de protección | IP67 |
+| Temperatura de funcionamiento | -20°C~60°C |
+| Temperatura de almacenamiento | -40°C~85°C |
+| Entorno de software | SDK de C / C\+\+ / ROS |
+| Sistemas operativos compatibles | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Refrigeración | Pasiva, sin ventilador |
+| Resistencia a la luz solar | 100 kLux |
+
+**Nota: El modelo 3D define las dimensiones del producto.**
+
+---
+
+### Especificaciones eléctricas
+
+Tabla 3-2. Especificaciones eléctricas del producto
+
+| Parámetro | Símbolo | Condición | Mínimo | Habitual | Máximo | Unidad |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tensión de alimentación | VDD |  | 18 | 24 | 30 | V |
+| E/S digitales | IN |  | 3.3 |  | 24 | V |
+| Interfaz CAN |  |  | 0 |  | 5V | V |
+| Temperatura de funcionamiento | Ta |  | -20 |  | 60 | ℃ |
+| Humedad de funcionamiento |  |  | 20 |  | 80 | % |
+| Temperatura de almacenamiento |  |  | -40 |  | 85 | ℃ |
+| Humedad de almacenamiento |  |  | 20 |  | 80 | % |
+
+### Interfaces del producto
+
+### Interfaces del lado de la cámara
+
+La cámara tiene tres interfaces: un conector de alimentación DC24V, un conector Gigabit Ethernet y un conector de funciones de E/S/CAN.
+
+<Frame>
+  ![Interfaces del lado de la cámara](/images/products/s-series-s2-max-2-user-guide-camera-side-interfaces.avif)
+</Frame>
+
+| Puerto | Pin | Señal | Descripción |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0\_N | Gigabit Ethernet |
+|  | 2 | MDI0\_p |  |
+|  | 3 | MDI1\_N |  |
+|  | 4 | MDI1\_p |  |
+|  | 5 | MDI2\_N |  |
+|  | 6 | MDI2\_p |  |
+|  | 7 | MDI3\_N |  |
+|  | 8 | MDI3\_p |  |
+| Conector de funciones | 1 | CAN\_H | CAN\_H |
+|  | 2 | CAN\_L | CAN\_L |
+|  | 3 | GND | Tierra CAN |
+|  | 4 | OUT\_1 | Salida de E/S 1 |
+|  | 5 | COM | Terminal COM de E/S |
+|  | 6 | OUT\_2 | Salida de E/S 2 |
+|  | 7 | IN\_1 | Entrada de E/S 1 |
+|  | 8 | IN\_2 | Entrada de E/S 2 |
+| Conector de alimentación | 1 | 24\+ | Conector hembra de alimentación de CC, 5.5-2.1mm |
+|  | G | 24- |  |
+
+### Asignación de pines del cable
+
+<Frame>
+  ![Asignación de pines del cable](/images/products/s-series-s2-max-2-user-guide-cable-pinout.avif)
+</Frame>
+
+| Cable | Color | Pin | Descripción |
+| --- | --- | --- | --- |
+| Cable de funciones | Naranja | CAN\_H | CAN\_H |
+|  | Amarillo | CAN\_L | CAN\_L |
+|  | Verde | GND | Tierra CAN |
+|  | Marrón | IN\_1 | Entrada de E/S 1 |
+|  | Blanco | IN\_2 | Entrada de E/S 2 |
+|  | Morado | COM | Terminal COM de E/S |
+|  | Azul | OUT\_1 | Salida de E/S 1 |
+|  | Gris | OUT\_2 | Salida de E/S 2 |
+| Cable de alimentación | Rojo | 24V\+ | Terminal de alimentación positivo |
+|  | Negro | GND | Terminal de alimentación negativo |
+
+Nota: Algunos cables de funciones antiguos utilizan colores diferentes. Sigue las etiquetas del cable real.
+
+### Componentes de la cámara
+
+<Frame>
+  ![Componentes de la cámara](/images/products/s-series-s2-max-2-user-guide-camera-components.avif)
+</Frame>
+
+| N.º | Componente |
+| --- | --- |
+| 1 | Indicador de alimentación; parpadea lentamente después del encendido |
+| 2 | Fuente de luz de 940nm |
+| 3 | Módulo de detección de interferencias multicámara |
+| 4 | Objetivo ToF |
+| 5 | Objetivo RGB |
+
+## Guía de integración
+
+### Alcance de detección de la cámara
+
+La Figura 4.1 muestra la región de detección de S2 Max 2.0. El ángulo de detección horizontal es de 81° y el ángulo vertical es de 61°. La distancia de detección depende de la potencia óptica. Una potencia óptica y una reflectividad del objetivo mayores aumentan la zona ciega cercana y reducen la zona ciega lejana. Una potencia óptica y una reflectividad del objetivo menores reducen la zona ciega cercana y aumentan la zona ciega lejana. Para objetivos con una reflectividad del 10%~~90%, el alcance de S2 Max 2.0 es de 0.2~~5m. Más allá de 5m, la baja intensidad de la señal reflejada y la interferencia de la luz ambiental provocan errores considerables de medición de distancia.
+
+<Frame>
+  ![Alcance de detección de la cámara](/images/products/s-series-s2-max-2-user-guide-camera-detection-range.avif)
+</Frame>
+
+### Dimensiones de la cámara
+
+<Frame>
+  ![Dimensiones de la cámara](/images/products/s-series-s2-max-2-user-guide-camera-dimensions.avif)
+</Frame>
+
+### Sistemas de coordenadas óptico y de origen
+
+**Sistema de coordenadas óptico:**
+
+- El sistema de coordenadas óptico incluye el sistema de coordenadas de la cámara (CCS) y el sistema de coordenadas mundial (WCS).
+- El sistema de coordenadas de la cámara es el sistema de coordenadas 2D de la imagen de profundidad. Su origen es el centro óptico.
+- El sistema de coordenadas mundial es el sistema de coordenadas 3D de la nube de puntos.
+- Utiliza los parámetros intrínsecos de la cámara para transformar las coordenadas de la imagen de profundidad en coordenadas 3D de la nube de puntos. Consulta los ejemplos del SDK.
+
+<Frame>
+  ![Sistema de coordenadas óptico](/images/products/s-series-s2-max-2-user-guide-optical-coordinate-system.avif)
+</Frame>
+
+**El origen de la cámara se define de la siguiente manera:**
+
+1. El origen de la coordenada X se alinea con el eje X del producto.
+2. El origen de la coordenada Y se alinea con el eje Y del producto.
+3. El origen de la coordenada Z se encuentra en la superficie frontal de la cámara.
+
+<Frame>
+  ![Origen de la cámara](/images/products/s-series-s2-max-2-user-guide-camera-origin.avif)
+</Frame>
+
+### SDK de software
+
+Consulta la guía del usuario del software host de MRDVS y la guía de desarrollo del SDK de MRDVS.
+
+### Entorno y fiabilidad
+
+| Elemento |  | Especificación |
+| --- | --- | --- |
+| Entorno de funcionamiento | Temperatura | -20℃~60℃ |
+|  | Humedad | 0%–95% HR, sin condensación |
+|  | Iluminación | 0–100 kLux |
+| Entorno de almacenamiento | Temperatura | -40℃~85℃ |
+|  | Humedad | 10%–95% HR, sin condensación |
+| Aumento de temperatura durante el funcionamiento normal |  | Aumento de temperatura de la carcasa \<25℃ |
+| Clasificación ESD |  | Descarga de contacto de ±4KV, descarga de aire de ±8KV |
+| Clasificación RE |  | Cumple GB 9254 CLASE A |
+| Vida útil |  | Más de 3 años |
+| Certificación ambiental |  | RoHS |
+
+## Primer uso
+
+### Prueba de conexión
+
+<Frame>
+  ![Prueba de conexión](/images/products/s-series-s2-max-2-user-guide-connection-test.avif)
+</Frame>
+
+1. Conecta la cámara a una fuente de CC de 24V/2A. Un indicador azul de alimentación que parpadea lentamente confirma que el encendido es normal.
+2. Conecta la cámara al ordenador mediante un cable Ethernet de categoría 6.
+3. La dirección IP predeterminada de fábrica de la cámara es 192.168.100.82.
+4. Configura la IP del ordenador en la subred de la cámara y desactiva el firewall del ordenador.
+5. Ejecuta el software host para ver las imágenes de la cámara.
+6. Contacta con el equipo de ventas o soporte técnico de MRDVS para obtener el software host.
+
+### Señales de E/S
+
+| Interfaz | Tipo | Notas |
+| --- | --- | --- |
+| IN1 | Entrada | Entrada digital activa en nivel alto; admite entrada de 24V/abierta |
+| IN2 | Entrada | Entrada digital activa en nivel alto; admite entrada de 24V/abierta |
+| OUT1 | Salida | Salida digital a tierra/abierta; admite elevación a 24V |
+| OUT2 | Salida | Salida digital a tierra/abierta; admite elevación a 24V |
+| COM | GND | Tierra común para las salidas digitales, compartida por IN y OUT |
+
+## Seguridad y preguntas frecuentes
+
+### Clase de seguridad del láser
+
+| <img src="/images/products/s-series-s2-max-2-user-guide-laser-safety.avif" alt="Seguridad del láser" /> | Seguridad del láser |
+| --- | --- |
+| Este producto emite un láser invisible durante el funcionamiento. Evita exponer los ojos al haz. El láser cumple la Clase 1 y no daña a las personas durante el uso normal definido por EN60825. |  |
+
+### Funcionamiento correcto
+
+La cámara S2 Max 2.0 utiliza una fuente de CC de 24V. Conecta el cable de alimentación antes de aplicar corriente y no inviertas los terminales positivo y negativo. La polaridad inversa puede dañar el producto.
+
+### Temperatura de funcionamiento
+
+Mantén la temperatura ambiente dentro del intervalo de las especificaciones del producto (Tabla 2-1). Monta el producto en un componente termoconductor, como un soporte metálico, para mejorar la disipación térmica y lograr un rendimiento óptimo.
+
+### Solución de problemas
+
+| N.º | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde al abrirla | Comprueba que el firewall esté desactivado |
+| 2 | El software host detecta varias direcciones IP | Otro dispositivo de la LAN utiliza la misma IP; selecciona la dirección IP necesaria |
+| 3 | Los datos de la cámara son inestables después de abrirla | Usa un cable Ethernet Gigabit; los datos pueden ser inicialmente inestables con Fast Ethernet |
+| 4 | Ubicación de instalación del software | Una instalación predeterminada en la unidad C puede verse afectada por la configuración de permisos |
+
+## Apéndice: contenido del paquete
+
+<Frame>
+  ![Cámara S2 Max 2.0](/images/products/s-series-s2-max-2-user-guide-s2-max-2-0-camera-02.avif)
+</Frame>
+
+Cámara S2 Max 2.0
+
+<Frame>
+  ![Cable de funciones de 8 pines](/images/products/s-series-s2-max-2-user-guide-8-pin-function-cable.avif)
+</Frame>
+
+Cable de funciones de 8 pines
+
+<Frame>
+  ![Dos kits impermeables de cuatro piezas](/images/products/s-series-s2-max-2-user-guide-two-four-piece-waterproof-kits.avif)
+</Frame>
+
+Dos kits impermeables de cuatro piezas
+
+<Frame>
+  ![Certificado de inspección](/images/products/s-series-s2-max-2-user-guide-inspection-certificate.avif)
+</Frame>
+
+Un certificado de inspección
+
+---

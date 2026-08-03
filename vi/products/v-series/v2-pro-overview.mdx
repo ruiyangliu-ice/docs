@@ -1,0 +1,351 @@
+---
+title: Hướng dẫn sử dụng V2 Pro
+description: "Thông số kỹ thuật, giao diện, lắp đặt, lập bản đồ và hướng dẫn định vị cho bộ điều khiển điều hướng V2 Pro."
+---
+
+V2 Pro là bộ điều khiển điều hướng dùng để định vị robot di động và xe nâng vận hành thủ công. Thiết bị kết hợp dữ liệu từ camera hướng lên, LiDAR 2D và IMU để hỗ trợ lập bản đồ, định vị và định vị lại.
+
+<Info>
+  Tải toàn bộ tài liệu sản phẩm tại [Trung tâm tải xuống](/vi/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Frame caption="Bộ điều khiển điều hướng V2 Pro">
+  ![Bộ điều khiển điều hướng V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller.avif)
+</Frame>
+
+## Tổng quan sản phẩm
+
+### Nguyên lý hoạt động
+
+Bộ điều khiển tích hợp nền tảng tính toán nên không cần máy tính công nghiệp bên ngoài. Khi robot di chuyển trong khu vực mục tiêu, camera hướng lên thu nhận các đặc trưng môi trường, LiDAR 2D cung cấp đường bao trên mặt phẳng và IMU cung cấp dữ liệu chuyển động. Bộ điều khiển kết hợp các nguồn dữ liệu này để xây dựng bản đồ và xuất kết quả định vị.
+
+### Tính năng chính
+
+- Kết hợp camera hướng lên có góc nhìn `108° × 57°`, quét LiDAR 2D `270°` và IMU.
+- Cung cấp hiệu năng NPU `6 TOPS` và giao diện trực quan để lập bản đồ, quản lý bản đồ.
+- Tích hợp Wi-Fi 6 và ngõ ra âm thanh cho dữ liệu định vị xe nâng vận hành thủ công, lời nhắc bằng giọng nói và cảnh báo.
+- Hỗ trợ tích hợp định vị và điều hướng trong nhà cho robot di động, AGV và xe nâng vận hành thủ công.
+
+### Ứng dụng điển hình
+
+- **Logistics nhà máy:** Định vị và điều hướng robot trong kho, khu vực bốc dỡ và xưởng.
+- **Nâng cấp xe nâng thủ công:** Bổ sung khả năng định vị cho xe nâng hiện có và cung cấp dữ liệu định vị cho hệ thống tầng trên.
+
+<Frame caption="Các kịch bản ứng dụng V2 Pro">
+  ![Ứng dụng V2 Pro trên robot di động và xe nâng](/images/products/v-series-v2-pro-overview-v2-pro-applications.avif)
+</Frame>
+
+## Thông số kỹ thuật
+
+### Thông số cơ bản
+
+| Module | Tham số | Thông số kỹ thuật |
+| --- | --- | --- |
+| Camera hướng lên | Phạm vi hoạt động | 1–15 m (ánh sáng môi trường 0–10 kLux) |
+| Camera hướng lên | Trường nhìn | 108° (H) × 57° (V), ±3° |
+| Camera hướng lên | Tốc độ khung hình | 20 fps |
+| Camera hướng lên | Khả năng chống nhiễu | Chống chói và ánh sáng môi trường |
+| LiDAR 2D | Tần số quét | 15–25 Hz, có thể chuyển đổi |
+| LiDAR 2D | Trường nhìn ngang | 270° |
+| LiDAR 2D | Độ phân giải góc | 0.25° |
+| LiDAR 2D | Phạm vi phát hiện | 15 m @ độ phản xạ 10%; 40 m @ độ phản xạ 90% |
+| LiDAR 2D | Độ chính xác đo khoảng cách | ±30 mm (điển hình) |
+| Hệ thống chính | Module tích hợp | IMU (inertial measurement unit) |
+| Hệ thống chính | Bộ xử lý | Nền tảng Arm 8 lõi Rockchip |
+| Hệ thống chính | Hiệu năng NPU | 6 TOPS |
+| Hệ thống chính | Giao diện truyền thông | 1 × Ethernet; 1 × CAN; 4 × I/O (2 ngõ vào, 2 ngõ ra) |
+| Hệ thống chính | Nguồn cấp | 24 VDC (±4.8 V) |
+| Hệ thống chính | Công suất tiêu thụ | Trung bình 6.6 W; tối đa 15.3 W |
+| Hệ thống chính | Module không dây | Wi-Fi 6 |
+| Hệ thống chính | Ngõ ra âm thanh | 1 × ngõ ra âm thanh 3 chân (L/R/GND) |
+| Hệ thống chính | Kích thước | 146.5 mm × 66.3 mm × 89.4 mm |
+| Hệ thống chính | Cấp bảo vệ chống xâm nhập | IP54 |
+| Hệ thống chính | Nhiệt độ hoạt động | −20–60 °C |
+| Hệ thống chính | Nhiệt độ lưu trữ | −40–80 °C |
+
+<Tip>
+  Sử dụng model 3D của sản phẩm và phần cứng được giao làm tham chiếu cho kích thước. Trước khi lắp đặt, hãy xác nhận không gian khả dụng, điều kiện nguồn và bán kính uốn cáp.
+</Tip>
+
+### Định nghĩa giao diện
+
+Bộ điều khiển cung cấp các giao diện nguồn, Ethernet, CAN, I/O và ngõ ra âm thanh.
+
+<Frame caption="Vị trí giao diện V2 Pro">
+  ![Các giao diện Ethernet, CAN, I/O, nguồn và âm thanh của V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-interface-definitions.avif)
+</Frame>
+
+| Cổng | Định nghĩa | Mô tả |
+| --- | --- | --- |
+| CN6 | Ethernet | Đầu nối RJ45 cái |
+| CN7 | CAN | Màu hồng: CAN\_H; xanh lục nhạt: CAN\_L; đen: GND |
+| CN8 | I/O | Bốn kênh I/O: hai ngõ vào và hai ngõ ra. Xem sơ đồ chân bên dưới. |
+| CN9 | Nguồn | 24 VDC / 3 A; 1: dương; G: âm |
+| CN10 | Ngõ ra âm thanh | Phích cắm âm thanh 3.5 mm |
+
+#### Sơ đồ chân I/O CN8
+
+| Chân | Tín hiệu | Chân | Tín hiệu |
+| --- | --- | --- | --- |
+| 1 | IN1\+ | 2 | IN1− |
+| 3 | IN2\+ | 4 | IN2− |
+| 5 | OUT1\+ | 6 | OUT1− |
+| 7 | OUT2\+ | 8 | OUT2− |
+
+- Ngõ vào: mức cao tích cực ở 5–24 V.
+- Ngõ ra: ngõ ra push-pull hỗ trợ tải 24 V / 100 mA.
+
+## Cấu tạo sản phẩm
+
+### Ngoại hình và kích thước
+
+<Frame caption="Ngoại hình V2 Pro">
+  ![Ngoại hình bộ điều khiển điều hướng V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller-02.avif)
+</Frame>
+
+<Frame caption="Bản vẽ cơ khí V2 Pro">
+  ![Bản vẽ cơ khí V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-mechanical-drawing.avif)
+</Frame>
+
+### Linh kiện
+
+<Frame caption="Tổng quan linh kiện V2 Pro (mặt trước)">
+  ![Mặt trước V2 Pro gồm LiDAR 2D, camera hướng lên, đèn chiếu sáng và đầu nối ăng-ten Wi-Fi](/images/products/v-series-v2-pro-overview-v2-pro-components.avif)
+</Frame>
+
+<Frame caption="Tổng quan linh kiện V2 Pro (mặt sau)">
+  ![Mặt sau V2 Pro gồm lỗ lắp, cáp và bảng tên](/images/products/v-series-v2-pro-overview-v2-pro-component-details.avif)
+</Frame>
+
+| Số | Linh kiện |
+| --- | --- |
+| 1 | Cửa sổ phát của LiDAR 2D |
+| 2 | Cửa sổ ống kính camera hướng lên |
+| 3 | Đèn chiếu sáng của camera hướng lên |
+| 4 | Đầu nối ăng-ten Wi-Fi |
+| 5 | Bốn lỗ lắp M3 |
+| 6 | Cáp bộ điều khiển: Ethernet, nguồn, CAN, I/O và âm thanh |
+| 7 | Vị trí bảng tên |
+
+### Module truyền thông không dây
+
+Bộ điều khiển có bộ điều hợp không dây `2T2R` với MU-MIMO và truyền hai luồng. Wi-Fi hoạt động trong băng tần ISM `2.400–2.4835 GHz`. Thông lượng thực tế phụ thuộc vào cấu hình mạng, nhiễu tại địa điểm và thiết bị được kết nối.
+
+| Tham số | Thông số kỹ thuật |
+| --- | --- |
+| Tiêu chuẩn Wi-Fi | IEEE 802.11ax/ac/a/b/g/n (2T2R) |
+| Phiên bản Bluetooth | Bluetooth 5.3, 5.0, 4.2, 4.1, 4.0 LE, 3.0\+HS, 2.1\+EDR |
+| Tốc độ dữ liệu Wi-Fi | 802.11b: 11 Mbps; 802.11a/g: 54 Mbps; 802.11n: MCS0–15; 802.11ac: MCS0–9; 802.11ax: HE0–11 |
+| Tốc độ dữ liệu Bluetooth | 1 Mbps, 2 Mbps, tối đa 3 Mbps |
+| Băng tần hoạt động | Băng tần ISM 2.400–2.4835 GHz; không hỗ trợ 5 GHz |
+
+## Tích hợp và lắp đặt
+
+### Phạm vi phát hiện và hệ tọa độ
+
+<Frame caption="Phạm vi phát hiện và hệ tọa độ của camera hướng lên">
+  ![Phạm vi phát hiện và hệ tọa độ của camera hướng lên V2 Pro](/images/products/v-series-v2-pro-overview-camera-detection-range-and-coordinate-system.avif)
+</Frame>
+
+### Lắp đặt
+
+<Frame caption="Lắp đặt V2 Pro">
+  ![Lắp đặt V2 Pro trên robot](/images/products/v-series-v2-pro-overview-camera-installation.avif)
+</Frame>
+
+Giữ trường nhìn của camera hướng lên và LiDAR không bị che bởi xe, cáp hoặc các cấu trúc khác. Sau khi lắp đặt, hãy cấu hình các tham số định vị khung gầm và tham số ngoại tại của cảm biến.
+
+### Ứng dụng máy chủ và SDK
+
+Sử dụng ứng dụng máy chủ để xem hình ảnh từ camera hướng lên, đường bao LiDAR và trạng thái định vị. Để tích hợp, hãy xem hướng dẫn ứng dụng máy chủ MRDVS và hướng dẫn phát triển Camera SDK.
+
+### Môi trường và độ tin cậy
+
+| Hạng mục | Thông số kỹ thuật |
+| --- | --- |
+| Nhiệt độ hoạt động | −20–60 °C |
+| Độ rọi hoạt động | 0–50 kLux |
+| Nhiệt độ lưu trữ | −40–85 °C |
+| Độ ẩm lưu trữ | Tối đa 90% RH |
+| Độ tăng nhiệt trong hoạt động bình thường | Độ tăng nhiệt vỏ \< 25 °C |
+| ESD | Phóng điện tiếp xúc ±4 kV; phóng điện qua không khí ±8 kV |
+| RE | Tuân thủ GB 9254 Class A |
+| Tuổi thọ | Trên 3 năm |
+| Chứng nhận môi trường | RoHS |
+
+## Bắt đầu nhanh
+
+### Thành phần đóng gói
+
+| Số | Hạng mục |
+| --- | --- |
+| 1 | Bộ điều khiển V2 Pro |
+| 2 | Cáp nguồn 2 chân |
+
+### Kết nối và xác minh thiết bị
+
+<Frame caption="Kiểm tra kết nối V2 Pro">
+  ![Kết nối nguồn và Ethernet V2 Pro](/images/products/v-series-v2-pro-overview-connection-test.avif)
+</Frame>
+
+<Steps>
+  <Step title="Kết nối nguồn">
+    Kết nối cáp nguồn với ngõ vào DC của bộ điều khiển và kết nối nguồn DC `24 V / 3 A`. Đèn báo màu xanh nhấp nháy chậm cho biết nguồn bình thường.
+
+    Nếu đèn báo tắt hoặc luôn màu đỏ, hãy kiểm tra đầu nối nguồn và bộ chuyển đổi.
+  </Step>
+  <Step title="Cấu hình mạng">
+    Kết nối trực tiếp giao diện Ethernet của bộ điều khiển với máy tính bằng cáp Cat 6. Địa chỉ IP mặc định tại nhà máy là `192.168.100.201`; đặt máy tính trong cùng subnet và cho phép thiết bị giao tiếp qua tường lửa.
+
+    Mở `http://192.168.100.201:9998` trong trình duyệt trên mạng LAN để đăng nhập giao diện web mà không cần mật khẩu.
+  </Step>
+  <Step title="Kiểm tra luồng dữ liệu">
+    Khởi động ứng dụng máy chủ và xác nhận hình ảnh từ camera hướng lên rõ nét, không có ảnh giả hoặc giật. Nếu phát hiện nhiều địa chỉ IP, hãy xử lý xung đột LAN và chọn đúng thiết bị.
+  </Step>
+</Steps>
+
+### Tổng quan giao diện
+
+<Frame caption="Giao diện ứng dụng máy chủ V2 Pro">
+  ![Ứng dụng máy chủ V2 Pro hiển thị menu, bản đồ đường bao, chế độ xem hướng lên và trạng thái định vị](/images/products/v-series-v2-pro-overview-v2-pro-interface.avif)
+</Frame>
+
+1. **Vùng màu đỏ:** Menu chức năng, gồm lập bản đồ, định vị lại và quản lý bản đồ.
+2. **Vùng màu xanh dương:** Bản đồ đường bao 2D đã tải và biểu tượng định vị xe.
+3. **Vùng màu xanh lá:** Hình ảnh RGB trực tiếp từ camera hướng lên.
+4. **Vùng màu vàng:** Cường độ tín hiệu định vị lại, vị trí và tốc độ xe, cùng tọa độ con trỏ. Màu tín hiệu gồm xanh lá (xuất sắc), xanh dương (tốt) và đỏ (kém).
+
+### Tạo bản đồ
+
+<Steps>
+  <Step title="Bắt đầu lập bản đồ">
+    Chọn **Bắt đầu lập bản đồ** trong menu.
+
+    <Frame>
+      ![Bắt đầu lập bản đồ trong ứng dụng máy chủ V2 Pro](/images/products/v-series-v2-pro-overview-start-mapping.avif)
+    </Frame>
+  </Step>
+  <Step title="Nhập tên bản đồ">
+    Tên bản đồ có thể chứa chữ cái, chữ số và dấu gạch dưới, nhưng không được bắt đầu bằng chữ số.
+  </Step>
+  <Step title="Thu thập dữ liệu bản đồ">
+    Giữ tốc độ tuyến tính không vượt quá `0.5 m/s` và tốc độ góc không vượt quá `20°/s`. Giao diện hiển thị đường bao LiDAR và hình ảnh từ camera hướng lên.
+
+    <Frame caption="Giao diện lập bản đồ">
+      ![Giao diện lập bản đồ V2 Pro hiển thị đường bao LiDAR và hình ảnh hướng lên](/images/products/v-series-v2-pro-overview-mapping-interface.avif)
+    </Frame>
+
+    Lái xe chậm và ổn định, tốt nhất dưới `0.2 m/s`. Sử dụng đường thẳng và các góc vuông, tránh đi lặp lại cùng đường và rung động ngẫu nhiên, duy trì độ chồng lấn khoảng một phần ba trên các đường đi cùng hướng, đồng thời giữ các đường song song cách nhau khoảng `2 m`. Bao phủ khu vực mục tiêu hoặc tuyến đường của xe đầy đủ nhất có thể.
+
+    <Frame caption="Đường đi lập bản đồ khuyến nghị">
+      ![Đường đi song song khuyến nghị khi lập bản đồ V2 Pro](/images/products/v-series-v2-pro-overview-recommended-mapping-path.avif)
+    </Frame>
+  </Step>
+  <Step title="Hoàn tất lập bản đồ">
+    Sau khi quét khu vực, chọn **Hoàn tất lập bản đồ** trong menu. Thời gian xử lý phụ thuộc vào diện tích đã quét.
+  </Step>
+</Steps>
+
+### Triển khai và áp dụng bản đồ
+
+<Steps>
+  <Step title="Triển khai bản đồ nền">
+    Mở **Quản lý bản đồ**, tìm bản đồ mới trong danh sách bản đồ nền rồi chọn **Triển khai**. Triển khai mọi bản đồ mà máy chủ cần sử dụng; có thể chỉnh sửa, xuất hoặc xóa bản đồ nền.
+
+    <Frame caption="Quản lý bản đồ nền">
+      ![Giao diện quản lý bản đồ nền V2 Pro](/images/products/v-series-v2-pro-overview-background-map-management.avif)
+    </Frame>
+  </Step>
+  <Step title="Áp dụng bản đồ máy chủ">
+    Chọn **Áp dụng** trong **Bản đồ máy chủ**. Khởi động lại bộ điều khiển sau khi áp dụng bản đồ để bản đồ có hiệu lực. Có thể xuất hoặc xóa bản đồ máy chủ.
+
+    <Frame caption="Quản lý bản đồ máy chủ">
+      ![Giao diện quản lý bản đồ máy chủ V2 Pro](/images/products/v-series-v2-pro-overview-host-map-management.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+### Định vị lại và cấu hình tham số
+
+<Frame caption="Giao diện định vị lại">
+  ![Định vị lại V2 Pro bằng đám mây điểm LiDAR và bản đồ đường bao](/images/products/v-series-v2-pro-overview-relocalization.avif)
+</Frame>
+
+Trong **Định vị lại**, kéo chuột để chỉ định tư thế gần đúng của xe và khớp đám mây điểm LiDAR với bản đồ đường bao. Thông báo hết thời gian chờ định vị sẽ biến mất sau khi định vị lại thành công.
+
+<Frame caption="Giao diện cấu hình tham số">
+  ![Cấu hình định vị khung gầm và ngoại tại cảm biến V2 Pro](/images/products/v-series-v2-pro-overview-parameter-configuration.avif)
+</Frame>
+
+Kiểm tra và cấu hình các tham số định vị khung gầm cùng các giá trị hiệu chuẩn ngoại tại của LiDAR và camera hướng lên.
+
+## Khắc phục sự cố
+
+| Vấn đề | Hành động đề xuất |
+| --- | --- |
+| Thiết bị không phản hồi khi mở | Kiểm tra quy tắc tường lửa và xác nhận giao tiếp với bộ điều khiển không bị chặn. |
+| Ứng dụng máy chủ phát hiện nhiều địa chỉ IP | Xử lý xung đột IP LAN và chọn đúng địa chỉ thiết bị. |
+| Luồng dữ liệu không ổn định | Sử dụng cáp Ethernet Gigabit phù hợp; cáp tốc độ thấp hơn có thể khiến quá trình truyền dữ liệu ban đầu không ổn định. |
+| Ứng dụng máy chủ không khởi động đúng | Cài đặt phần mềm trong thư mục có quyền đọc và ghi. |
+
+## An toàn và tuân thủ
+
+### An toàn laser
+
+<Warning>
+  Thiết bị phát bức xạ laser vô hình trong khi hoạt động. Giữ mắt tránh xa khu vực phát xạ và giữ nhãn an toàn rõ ràng, nguyên vẹn.
+</Warning>
+
+- Sản phẩm sử dụng laser Class 1.
+- Khi sử dụng bình thường, laser phát ra không gây nguy hiểm cho con người nếu được sử dụng theo EN 60825.
+- Tuân thủ quy trình an toàn laser tại nơi lắp đặt trong quá trình lắp đặt, bảo trì và khắc phục sự cố. Không tháo rời hoặc sửa đổi các linh kiện quang học.
+
+<Frame caption="Nhãn an toàn laser">
+  ![Nhãn an toàn laser V2 Pro](/images/products/v-series-v2-pro-overview-laser-safety.avif)
+</Frame>
+
+### Có chứa pin lithium
+
+<Warning>
+  Thiết bị có chứa pin lithium. Hư hỏng, đoản mạch, đè bẹp, đâm thủng hoặc ở gần lửa có thể gây cháy hoặc các mối nguy hiểm khác.
+</Warning>
+
+- Không tự tháo rời, sửa đổi hoặc thay thế pin tích hợp.
+- Bảo vệ thiết bị khỏi va đập mạnh, đè bẹp, đâm thủng, nhiệt độ cao và lửa hở.
+- Tuân thủ các yêu cầu tại địa phương khi vận chuyển, thải bỏ hoặc tái chế thiết bị có chứa pin lithium.
+
+<Frame caption="Nhãn pin lithium">
+  ![Nhãn pin lithium V2 Pro](/images/products/v-series-v2-pro-overview-lithium-battery-notice.avif)
+</Frame>
+
+## Tài liệu liên quan
+
+<Columns cols={2}>
+  <Card title="Hướng dẫn vận hành V2 pure-localization" icon="book-open" href="/vi/developers/v2-localization/pure-localization-guide">
+    Cấu hình và sử dụng phiên bản V2 pure-localization.
+  </Card>
+
+  <Card title="Giao thức truyền thông UDP V2 Pro" icon="network" href="/vi/developers/v2-localization/udp-protocol">
+    Nhận dữ liệu định vị và dữ liệu thiết bị qua UDP.
+  </Card>
+
+  <Card title="Giao thức LiDAR bên ngoài V2" icon="scan-line" href="/vi/developers/v2-localization/external-lidar">
+    Tích hợp thiết bị LiDAR bên ngoài.
+  </Card>
+
+  <Card title="Giao thức HTTP định vị trực quan V2" icon="globe" href="/vi/developers/v2-localization/http-protocol">
+    Giao tiếp với module định vị qua HTTP.
+  </Card>
+
+  <Card title="V2 Service ROS1" icon="box" href="/vi/developers/ros/v2-ros1">
+    Ví dụ V2 Service ROS1.
+  </Card>
+
+  <Card title="V2 Service ROS2" icon="box" href="/vi/developers/ros/v2-ros2">
+    Ví dụ V2 Service ROS2.
+  </Card>
+
+  <Card title="Hướng dẫn ROS tối giản" icon="rocket" href="/vi/developers/ros/quickstart">
+    Bắt đầu tích hợp ROS nhanh chóng.
+  </Card>
+</Columns>

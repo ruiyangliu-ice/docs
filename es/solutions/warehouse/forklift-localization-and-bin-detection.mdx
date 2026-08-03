@@ -1,0 +1,47 @@
+---
+title: Localización coordinada de la carretilla y reconocimiento de ubicaciones de almacenamiento
+sidebarTitle: "Localización de la carretilla y reconocimiento de ubicaciones"
+description: "Combina los datos de pose de la carretilla y del estado de las ubicaciones de almacenamiento para respaldar el despacho de carretillas manuales, el seguimiento de cargas y la gestión de ubicaciones."
+---
+
+Las operaciones manuales con carretillas suelen depender de la experiencia del conductor, mientras que los registros de las ubicaciones de almacenamiento pueden quedar desfasados respecto al sitio real. La eficiencia de las rutas, el estado de las ubicaciones y la seguridad en pasillos estrechos son preocupaciones habituales de la gestión de almacenes.
+
+## Arquitectura de la solución
+
+La solución combina un sistema de localización de carretillas manuales con un sistema de reconocimiento del estado de las ubicaciones de almacenamiento. El primero proporciona la posición y la pose de la carretilla; el segundo proporciona la ocupación y el estado de la carga. Ambos flujos de datos se pueden enviar a un sistema de nivel superior para el despacho de tareas y el seguimiento de cargas.
+
+## Localización de carretillas manuales
+
+Monta una cámara de visión 3D en la parte superior de la carretilla. El sistema realiza la localización mediante características naturales del techo y las paredes, con asistencia de una IMU. Los registros del proyecto indican una precisión de posicionamiento de **1–5 cm**; la precisión real depende de las características del sitio, la instalación y la calibración.
+
+<Frame>
+  ![Sistema de localización visual de carretillas manuales](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
+</Frame>
+
+El sistema puede alertar al conductor sobre personas, vehículos y posibles riesgos cercanos, y se puede configurar con áreas restringidas. Los resultados de localización también se pueden combinar con el estado de las ubicaciones para registrar la colocación de cargas y ayudar a ajustar las rutas de las tareas.
+
+<Frame>
+  ![Coordinación entre la localización de carretillas y las operaciones del almacén](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+</Frame>
+
+## Reconocimiento del estado de las ubicaciones de almacenamiento
+
+Una cámara RGB-D captura información 3D y de color para identificar si una ubicación contiene una carga, cómo está colocada y si la ocupación es anómala. El algoritmo puede distinguir categorías de carga cuando es necesario, y los resultados obtenidos en la cámara se pueden enviar al sistema de despacho.
+
+| Función | Descripción |
+| --- | --- |
+| Supervisión 3D | Combina datos de profundidad y color para identificar el estado de la ubicación. |
+| Procesamiento en la cámara | Reduce la necesidad de un ordenador industrial externo. |
+| Integración de comunicaciones | Admite TCP/IP, UDP y HTTP, con salida JSON. |
+| Coordinación del despacho | Proporciona información de ubicación en tiempo real para asignar tareas. |
+
+<Frame>
+  ![Sistema de reconocimiento del estado de las ubicaciones de almacenamiento](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
+</Frame>
+
+## Flujo de coordinación
+
+1. El sistema de localización genera continuamente la posición y la pose de la carretilla.
+2. La cámara de la ubicación informa la ocupación y el estado de la carga de la ubicación objetivo.
+3. El sistema de nivel superior asocia los datos del vehículo, la carga y la ubicación para confirmar las tareas de recogida y colocación, y registrar las posiciones de las cargas.
+4. Cuando cambia el estado de la ubicación o del vehículo, el sistema de nivel superior puede actualizar las rutas de las tareas y la asignación de recursos.

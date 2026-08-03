@@ -1,0 +1,220 @@
+---
+title: Guida utente della telecamera S10
+sidebarTitle: Guida utente della telecamera S10
+description: "Specifiche del prodotto, interfacce, installazione, primo utilizzo e risoluzione dei problemi della telecamera S10."
+hidden: true
+---
+
+<Info>
+  Questa è una guida utente S10 archiviata. Consulta la [pagina del prodotto della serie S10](/it/products/s-series/s10-overview) per i modelli e la documentazione pubblici correnti.
+</Info>
+
+## Cronologia delle revisioni
+
+| Data | Versione | Modifiche |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Versione iniziale |
+| 2025/02/27 | V1.1 | Campo visivo ToF aggiornato |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## Panoramica del prodotto
+
+### Scopo e ambito
+
+Questo documento descrive le specifiche della telecamera S10 e alcuni dettagli progettuali per gli sviluppatori che integrano e utilizzano il prodotto.
+
+### Terminologia
+
+| Telecamera RGB-D | Telecamera che emette immagini RGB e di profondità sincronizzate e allineate spazialmente |
+| --- | --- |
+| Profondità | Streaming video simile a uno streaming a colori o monocromatico, in cui ogni pixel rappresenta la distanza dalla telecamera |
+| FOV | Campo visivo: intervallo angolare di una scena acquisita da una telecamera, inclusi i campi visivi orizzontale (HFOV), verticale (VFOV) e diagonale (DFOV) |
+| Telecamera IR | Telecamera a infrarossi; in questo prodotto cattura principalmente la banda del vicino infrarosso |
+| Telecamera RGB | Telecamera a colori |
+| Telecamera di profondità | Telecamera il cui modulo di profondità include in genere un proiettore di punti, una telecamera IR e un processore di profondità; il modulo a colori è in genere una telecamera RGB |
+| SoC | System on a chip usato per l'elaborazione delle immagini, il calcolo della profondità e gli algoritmi applicativi |
+| dToF | Tecnologia di rilevamento della profondità a tempo di volo diretto |
+
+### Principio di funzionamento
+
+Questo prodotto è una telecamera 3D di profondità dToF con portata elevata, buona precisione, forte resistenza alle interferenze e dati stabili. Un modulo RGB integrato acquisisce immagini a colori. La telecamera allinea internamente le immagini RGB e di profondità.
+
+### Dettagli del prodotto
+
+Questa telecamera RGB-D industriale compatta fornisce dati di profondità da 0.3m a 8m. Allinea spazialmente e temporalmente le immagini RGB e di profondità. Il SoC integrato emette profondità, intensità, RGB, nuvole di punti e risultati di rilevamento degli ostacoli. Oltre a Ethernet, due ingressi IO e due uscite IO consentono di selezionare quattro zone di evitamento degli ostacoli e di emettere segnali di arresto di emergenza, rallentamento e stato sicuro.
+
+---
+
+### Aspetto del prodotto
+
+<img src="/images/products/s-series-s10-user-guide-s10-camera.avif" alt="Telecamera S10" /> 
+
+Figura 1. Telecamera S10
+
+### Funzionalità
+
+- Basso consumo energetico dToF e dimensioni compatte
+- Elaborazione integrata che emette risultati di rilevamento degli ostacoli per un funzionamento plug-and-play
+- Forte adattabilità ambientale: resiste alla luce solare a 100 kLux e funziona dal buio alla luce intensa, al chiuso e all'aperto
+- Ampio intervallo di misurazione di 0.3-8m
+
+---
+
+## Specifiche
+
+### Specifiche di base
+
+| Modello del prodotto | S10 |
+| --- | --- |
+| Principio di funzionamento | Telecamera di profondità dToF |
+| Formato di output | Profondità & RGB & mappa di ampiezza |
+| Risoluzione ToF e frequenza dei fotogrammi | 240 × 160; fino a 20 fps, tipica 15 fps |
+| Campo visivo ToF | 90° × 61° |
+| Risoluzione RGB e frequenza dei fotogrammi | 1920×1080 @Max. 20fps, tipica 15fps |
+| Campo visivo RGB | 90°\*70° |
+| Portata | 0.3-8m (@90% riflettività), 0.3-3m (@5%) |
+| Precisione | Una deviazione standard \<3cm a temperatura ambiente (25℃), riflettività 70% e illuminamento \<50kLux |
+| Consumo energetico | ≤4W & 28w |
+| Laser | 940nm |
+| Dimensioni | 80mm di larghezza × 25mm di altezza × 37mm di profondità |
+| Peso | ≤300g |
+| Ingresso di alimentazione | 24V±20% |
+| Interfaccia di comunicazione | Ethernet / IO |
+| Grado di protezione | IP54 |
+| Temperatura operativa | -20°C~60°C |
+| Temperatura di stoccaggio | -40°C~85°C |
+| Ambiente software | C / C\+\+ / ROS SDK |
+| Sistemi operativi supportati | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Raffreddamento | Passivo, senza ventola |
+
+Nota: il modello 3D definisce le dimensioni del prodotto.
+
+### Definizioni delle interfacce
+
+Interfacce sul lato della telecamera:
+
+La telecamera dispone di tre interfacce: un connettore di alimentazione DC24V, un connettore Fast Ethernet e un connettore IO a 8 pin.
+
+<Frame>
+  ![Definizioni delle interfacce della telecamera](/images/products/s-series-s10-user-guide-camera-interface-definitions.avif)
+</Frame>
+
+Piedinatura del cavo:
+
+<Frame>
+  ![Piedinatura del cavo](/images/products/s-series-s10-user-guide-cable-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Dettaglio della piedinatura del cavo](/images/products/s-series-s10-user-guide-cable-pinout-detail.avif)
+</Frame>
+
+| Cavo | Pin P1 | Colore | Descrizione |
+| --- | --- | --- | --- |
+| Cavo Ethernet | 1 | Arancione | OUT\_COM2 |
+| ㅤ | 2 | Giallo | OUT\_2 |
+| ㅤ | 3 | Verde | OUT\_COM1 |
+| ㅤ | 4 | Blu | OUT\_1 |
+| ㅤ | 5 | Viola | IN\_COM2 |
+| ㅤ | 6 | Grigio | IN\_2 |
+| ㅤ | 7 | Marrone | IN\_COM1 |
+| ㅤ | 8 | Bianco | IN\_1 |
+| Cavo di alimentazione | 1 | Rosso | 24V\+ |
+| ㅤ | G | Nero | 24V- |
+
+### Componenti della telecamera
+
+<Frame>
+  ![Componenti della telecamera](/images/products/s-series-s10-user-guide-camera-components.avif)
+</Frame>
+
+| VCSEL | Emettitore laser |
+| --- | --- |
+| SPAD | Diodo a valanga a singolo fotone |
+| RGB | Modulo RGB |
+| Indicatore di alimentazione | Lampeggia lentamente dopo l'accensione |
+
+## Requisiti di integrazione
+
+### Design meccanico
+
+### Campo visivo della telecamera
+
+<Frame>
+  ![Campo visivo della telecamera](/images/products/s-series-s10-user-guide-camera-field-of-view.avif)
+</Frame>
+
+Figura 3. Campo visivo della telecamera
+
+### Dimensioni della telecamera
+
+<Frame>
+  ![Dimensioni della telecamera](/images/products/s-series-s10-user-guide-camera-dimensions.avif)
+</Frame>
+
+### SDK software
+
+Consulta la guida utente del software host MRDVS e la guida allo sviluppo dell'SDK MRDVS.
+
+---
+
+### Ambiente e affidabilità
+
+| Voce | ㅤ | Specifica |
+| --- | --- | --- |
+| Ambiente operativo | Temperatura | -20℃--60℃ |
+| ㅤ | Umidità | 0%–95% RH, senza condensa |
+| ㅤ | Illuminamento | 0–100 kLux |
+| Ambiente di stoccaggio | Temperatura | -40℃--85℃ |
+| ㅤ | Umidità | 10%–95% RH, senza condensa |
+| Aumento della temperatura durante il funzionamento normale | ㅤ | Aumento della temperatura dell'involucro \<25℃ |
+| Grado ESD | ㅤ | Scarica a contatto ±4KV, scarica in aria ±8KV |
+| Grado RE | ㅤ | Conforme a GB 9254 CLASS A |
+| Durata di servizio | ㅤ | 10 anni |
+| Certificazione ambientale | ㅤ | RoHS |
+
+---
+
+## Primo utilizzo
+
+### Test di connessione
+
+1. Collega la telecamera a un'alimentazione CC 24V/2A. Un indicatore blu che lampeggia lentamente conferma la normale accensione.
+2. Collega la telecamera al computer con un cavo Ethernet di categoria 6.
+3. L'indirizzo IP predefinito di fabbrica della telecamera è 192.168.100.82.
+4. Imposta l'IP del computer sulla subnet della telecamera e disabilita il firewall del computer.
+5. Esegui il software host per visualizzare le immagini della telecamera.
+6. Contatta le vendite o il supporto tecnico MRDVS per ottenere il software host.
+
+### Cablaggio I/O
+
+| Interfaccia | Tipo | Note |
+| --- | --- | --- |
+| IN1 | Ingresso | Ingresso digitale attivo alto; supporta 24V/ingresso aperto |
+| IN2 | Ingresso | Ingresso digitale attivo alto; supporta 24V/ingresso aperto |
+| OUT1 | Uscita | Uscita digitale massa/aperta; supporta pull-up da 24V |
+| OUT2 | Uscita | Uscita digitale massa/aperta; supporta pull-up da 24V |
+| COM | GND | Massa comune per le uscite digitali; usa IN1 con IN\_COM1 |
+
+---
+
+## Sicurezza e domande frequenti
+
+### Classe di sicurezza laser
+
+<Frame>
+  ![Classe di sicurezza laser](/images/products/s-series-s10-user-guide-laser-safety-class.avif)
+</Frame>
+
+---
+
+### Risoluzione dei problemi
+
+| N. | Problema | Risoluzione |
+| --- | --- | --- |
+| 1 | La telecamera non risponde quando viene aperta | Verifica che il firewall sia disabilitato |
+| 2 | Il software host rileva più indirizzi IP | Un altro dispositivo della LAN usa lo stesso IP; seleziona l'indirizzo IP richiesto |
+| 3 | I dati della telecamera sono instabili dopo l'apertura | Usa un cavo Ethernet Gigabit; inizialmente i dati possono essere instabili su Fast Ethernet |
+| 4 | Posizione di installazione del software | Un'installazione predefinita sull'unità C può essere influenzata dalle impostazioni dei permessi |

@@ -1,0 +1,220 @@
+---
+title: Guía del usuario de la cámara S10
+sidebarTitle: Guía del usuario de la cámara S10
+description: "Especificaciones del producto, interfaces, instalación, primer uso y solución de problemas de la cámara S10."
+hidden: true
+---
+
+<Info>
+  Esta es una guía del usuario archivada de S10. Consulta la [página del producto de la serie S10](/es/products/s-series/s10-overview) para conocer los modelos públicos y la documentación actuales.
+</Info>
+
+## Historial de revisiones
+
+| Fecha | Versión | Cambios |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Versión inicial |
+| 2025/02/27 | V1.1 | Campo de visión ToF actualizado |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## Descripción general del producto
+
+### Propósito y alcance
+
+Este documento describe las especificaciones de la cámara S10 y determinados detalles de diseño para desarrolladores que integran y utilizan el producto.
+
+### Terminología
+
+| Cámara RGB-D | Cámara que emite imágenes RGB y de profundidad sincronizadas y alineadas espacialmente |
+| --- | --- |
+| Profundidad | Flujo de vídeo similar a un flujo en color o monocromático, donde cada píxel representa su distancia desde la cámara |
+| FOV | Campo de visión: rango angular de una escena capturada por una cámara, incluidos los campos de visión horizontal (HFOV), vertical (VFOV) y diagonal (DFOV) |
+| Cámara IR | Cámara infrarroja; en este producto captura principalmente la banda del infrarrojo cercano |
+| Cámara RGB | Cámara en color |
+| Cámara de profundidad | Cámara cuyo módulo de profundidad suele incluir un proyector de puntos, una cámara IR y un procesador de profundidad; su módulo de color suele ser una cámara RGB |
+| SoC | Sistema en chip utilizado para el procesamiento de imágenes, el cálculo de profundidad y los algoritmos de aplicación |
+| dToF | Tecnología de detección de profundidad por tiempo de vuelo directo |
+
+### Principio de funcionamiento
+
+Este producto es una cámara 3D de profundidad dToF con largo alcance, buena precisión, gran resistencia a las interferencias y datos estables. Un módulo RGB integrado captura imágenes en color. La cámara alinea internamente las imágenes RGB y de profundidad.
+
+### Detalles del producto
+
+Esta cámara RGB-D industrial compacta proporciona datos de profundidad de 0.3 m a 8 m. Alinea espacial y temporalmente las imágenes RGB y de profundidad. Su SoC integrado emite datos de profundidad, intensidad, RGB, nube de puntos y resultados de detección de obstáculos. Además de Ethernet, dos entradas de E/S y dos salidas de E/S permiten cambiar entre cuatro zonas de evitación de obstáculos y emitir señales de parada de emergencia, reducción de velocidad y estado seguro.
+
+---
+
+### Aspecto del producto
+
+<img src="/images/products/s-series-s10-user-guide-s10-camera.avif" alt="Cámara S10" /> 
+
+Figura 1. Cámara S10
+
+### Características
+
+- Bajo consumo de energía dToF y tamaño compacto
+- Procesamiento integrado que emite resultados de detección de obstáculos para un funcionamiento plug-and-play
+- Gran adaptabilidad ambiental: resiste la luz solar de 100 kLux y funciona desde la oscuridad hasta la luz intensa, en interiores y exteriores
+- Amplio alcance de medición de 0.3-8m
+
+---
+
+## Especificaciones
+
+### Especificaciones básicas
+
+| Modelo de producto | S10 |
+| --- | --- |
+| Principio de funcionamiento | Cámara de profundidad dToF |
+| Formato de salida | Profundidad, RGB y mapa de amplitud |
+| Resolución y frecuencia de imagen ToF | 240 × 160; hasta 20 fps, habitual 15 fps |
+| Campo de visión ToF | 90° × 61° |
+| Resolución y frecuencia de imagen RGB | 1920×1080 @Máx. 20fps, habitual 15fps |
+| Campo de visión RGB | 90°\*70° |
+| Alcance | 0.3-8m (@90% ref), 0.3-3m (@5%) |
+| Precisión | Desviación estándar de 1 \<3cm a temperatura ambiente (25℃), 70% de reflectividad y una iluminación de \<50kLux |
+| Consumo de energía | ≤4W y 28w |
+| Láser | 940nm |
+| Dimensiones | 80mm de ancho × 25mm de alto × 37mm de profundidad |
+| Peso | ≤300g |
+| Entrada de alimentación | 24V±20% |
+| Interfaz de comunicación | Ethernet / E/S |
+| Grado de protección | IP54 |
+| Temperatura de funcionamiento | -20°C~60°C |
+| Temperatura de almacenamiento | -40°C~85°C |
+| Entorno de software | SDK de C / C\+\+ / ROS |
+| Sistemas operativos compatibles | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Refrigeración | Pasiva, sin ventilador |
+
+Nota: El modelo 3D define las dimensiones del producto.
+
+### Definiciones de las interfaces
+
+Interfaces del lado de la cámara:
+
+La cámara tiene tres interfaces: un conector de alimentación DC24V, un conector Fast Ethernet y un conector de E/S de 8 pines.
+
+<Frame>
+  ![Definiciones de las interfaces de la cámara](/images/products/s-series-s10-user-guide-camera-interface-definitions.avif)
+</Frame>
+
+Asignación de pines del cable:
+
+<Frame>
+  ![Asignación de pines del cable](/images/products/s-series-s10-user-guide-cable-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Detalle de la asignación de pines del cable](/images/products/s-series-s10-user-guide-cable-pinout-detail.avif)
+</Frame>
+
+| Cable | Pin P1 | Color | Descripción |
+| --- | --- | --- | --- |
+| Cable Ethernet | 1 | Naranja | OUT\_COM2 |
+| ㅤ | 2 | Amarillo | OUT\_2 |
+| ㅤ | 3 | Verde | OUT\_COM1 |
+| ㅤ | 4 | Azul | OUT\_1 |
+| ㅤ | 5 | Morado | IN\_COM2 |
+| ㅤ | 6 | Gris | IN\_2 |
+| ㅤ | 7 | Marrón | IN\_COM1 |
+| ㅤ | 8 | Blanco | IN\_1 |
+| Cable de alimentación | 1 | Rojo | 24V\+ |
+| ㅤ | G | Negro | 24V- |
+
+### Componentes de la cámara
+
+<Frame>
+  ![Componentes de la cámara](/images/products/s-series-s10-user-guide-camera-components.avif)
+</Frame>
+
+| VCSEL | Emisor láser |
+| --- | --- |
+| SPAD | Diodo de avalancha de fotón único |
+| RGB | Módulo RGB |
+| Indicador de alimentación | Parpadea lentamente después del encendido |
+
+## Requisitos de integración
+
+### Diseño mecánico
+
+### Campo de visión de la cámara
+
+<Frame>
+  ![Campo de visión de la cámara](/images/products/s-series-s10-user-guide-camera-field-of-view.avif)
+</Frame>
+
+Figura 3. Campo de visión de la cámara
+
+### Dimensiones de la cámara
+
+<Frame>
+  ![Dimensiones de la cámara](/images/products/s-series-s10-user-guide-camera-dimensions.avif)
+</Frame>
+
+### SDK de software
+
+Consulta la guía del usuario del software host de MRDVS y la guía de desarrollo del SDK de MRDVS.
+
+---
+
+### Entorno y fiabilidad
+
+| Elemento | ㅤ | Especificación |
+| --- | --- | --- |
+| Entorno de funcionamiento | Temperatura | -20℃--60℃ |
+| ㅤ | Humedad | 0%–95% HR, sin condensación |
+| ㅤ | Iluminación | 0–100 kLux |
+| Entorno de almacenamiento | Temperatura | -40℃--85℃ |
+| ㅤ | Humedad | 10%–95% HR, sin condensación |
+| Aumento de temperatura durante el funcionamiento normal | ㅤ | Aumento de temperatura de la carcasa \<25℃ |
+| Clasificación ESD | ㅤ | Descarga de contacto de ±4KV, descarga de aire de ±8KV |
+| Clasificación RE | ㅤ | Cumple GB 9254 CLASE A |
+| Vida útil | ㅤ | 10 años |
+| Certificación ambiental | ㅤ | RoHS |
+
+---
+
+## Primer uso
+
+### Prueba de conexión
+
+1. Conecta la cámara a una fuente de CC de 24V/2A. Un indicador azul de alimentación que parpadea lentamente confirma que el encendido es normal.
+2. Conecta la cámara al ordenador mediante un cable Ethernet de categoría 6.
+3. La dirección IP predeterminada de fábrica de la cámara es 192.168.100.82.
+4. Configura la IP del ordenador en la subred de la cámara y desactiva el firewall del ordenador.
+5. Ejecuta el software host para ver las imágenes de la cámara.
+6. Contacta con el equipo de ventas o soporte técnico de MRDVS para obtener el software host.
+
+### Cableado de E/S
+
+| Interfaz | Tipo | Notas |
+| --- | --- | --- |
+| IN1 | Entrada | Entrada digital activa en nivel alto; admite entrada de 24V/abierta |
+| IN2 | Entrada | Entrada digital activa en nivel alto; admite entrada de 24V/abierta |
+| OUT1 | Salida | Salida digital a tierra/abierta; admite elevación a 24V |
+| OUT2 | Salida | Salida digital a tierra/abierta; admite elevación a 24V |
+| COM | GND | Tierra común para las salidas digitales; usa IN1 con IN\_COM1 |
+
+---
+
+## Seguridad y preguntas frecuentes
+
+### Clase de seguridad del láser
+
+<Frame>
+  ![Clase de seguridad del láser](/images/products/s-series-s10-user-guide-laser-safety-class.avif)
+</Frame>
+
+---
+
+### Solución de problemas
+
+| N.º | Problema | Resolución |
+| --- | --- | --- |
+| 1 | La cámara no responde al abrirla | Comprueba que el firewall esté desactivado |
+| 2 | El software host detecta varias direcciones IP | Otro dispositivo de la LAN utiliza la misma IP; selecciona la dirección IP necesaria |
+| 3 | Los datos de la cámara son inestables después de abrirla | Usa un cable Ethernet Gigabit; los datos pueden ser inicialmente inestables con Fast Ethernet |
+| 4 | Ubicación de instalación del software | Una instalación predeterminada en la unidad C puede verse afectada por la configuración de permisos |

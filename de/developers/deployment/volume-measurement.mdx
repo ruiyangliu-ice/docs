@@ -1,0 +1,199 @@
+---
+title: Volumenmessung bereitstellen
+sidebarTitle: Bereitstellung der Volumenmessung
+description: "Stelle die Volumenmessung mit Kameras der M-Serie bereit, einschließlich Installation, Extrinsikkalibrierung, Bereichskonfiguration und Ergebnisintegration."
+hidden: true
+---
+
+Der Algorithmus für die Volumenmessung läuft auf der Kamera und misst Länge, Breite und Höhe statischer oder bewegter Objekte. Für die Bereitstellung sind eine starre Installation, eine Netzwerkverbindung, die Extrinsikkalibrierung und die Konfiguration des Erkennungsbereichs erforderlich. Verbinde mehrere Kameras über einen Gigabit-Switch mit demselben Netzwerk.
+
+<Info>
+  Dies ist ein ausgeblendeter historischer Leitfaden zur Bereitstellung. Algorithmusfirmware und dedizierte Hostanwendung werden projektbezogen geliefert. Bestätige vor der Bereitstellung, dass Kamera-, Firmware- und Softwareversion zusammenpassen.
+</Info>
+
+## Geltungsbereich
+
+Dieser Workflow gilt für Projekte zur Volumenmessung in Logistik, Paketabwicklung, Lagerhaltung und Schüttgut mit Kameras der M-Serie. Der Algorithmus misst ein oder mehrere Objekte im Erkennungsbereich. Objektidentifikation, Gewichtserfassung und Zuordnung zu Geschäftssystemen werden vom übergeordneten System übernommen.
+
+Produktinformationen findest du auf der Seite [ToF-Kameras der M-Serie](/de/products/m-series/overview "M Series ToF cameras").
+
+## Installation und Systemvorbereitung
+
+### Hardwareinstallation
+
+- Verwende eine starre Halterung, um die M4-Kamera mit parallel zur Erkennungsebene ausgerichteter und auf diese gerichteter Vorderseite zu montieren.
+- Versorge die Kamera mit `24 VDC`. Verbinde sie mit einem Cat6A- oder Cat7-Kabel mit dem Host oder einem Gigabit-Switch.
+- Weise bei mehreren Kameras jeder Kamera eine eindeutige Netzwerkadresse zu und prüfe ihren Stromversorgungsstatus.
+
+<Frame>
+  ![Nach unten gerichtete M4-Kamera für die Volumenmessung](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
+</Frame>
+
+### Hostanforderungen
+
+| Element | Empfohlene Konfiguration |
+| --- | --- |
+| Betriebssystem | Windows 10 oder höher |
+| CPU | Intel® Core™ i5 (7. Generation) oder höher |
+| Arbeitsspeicher | 8 GB oder mehr |
+| GPU | Intel® UHD Graphics oder eine leistungsfähigere integrierte oder dedizierte GPU |
+
+Installiere zuerst [LxCameraViewer](/de/developers/software/lxcameraviewer "Software download") und lege anschließend die projektbezogen gelieferte Anwendung für die Volumenmessung im Verzeichnis `Lanxin-MRDVS\\Tools` ab. Ersetze Dateien, wenn dies gemäß den Lieferanweisungen angefordert wird.
+
+<Warning>
+  Die Kamera startet während Firmware-Upgrades neu. Verwende nur das projektbezogen gelieferte Algorithmpaket und sichere die geprüfte Konfiguration vor dem Upgrade.
+</Warning>
+
+## Bereitstellungsworkflow
+
+### 1. Netzwerk konfigurieren
+
+Lege Host und Kamera in dasselbe Subnetz. Das ursprüngliche Bereitstellungsbeispiel verwendet:
+
+| Element | Beispiel |
+| --- | --- |
+| Host-IP | `192.168.100.xxx` |
+| Subnetzmaske | `255.255.255.0` |
+| Standardgateway | `192.168.100.1` |
+
+Wähle in den Eigenschaften des Windows-Ethernet-Adapters **Internet Protocol Version 4 (TCP/IPv4)** und lege eine statische Adresse fest. Erlaube die Anwendung über die Firewallregeln des Debugging-Netzwerks; deaktiviere eine Produktionsfirewall nicht dauerhaft.
+
+### 2. Extrinsik kalibrieren
+
+<Steps>
+  <Step title="Kalibrierungszustand wiederherstellen">
+    Öffne **Camera configuration**. Bestätige, dass `x`, `y`, `z`, `roll`, `pitch` und `yaw` auf `0` stehen. Setze vorhandene historische Werte zurück und wähle **Save and send**.
+  </Step>
+  <Step title="Kalibrierung ausführen">
+    Wähle **Extrinsic calibration**, bestätige die Erfolgsmeldung und notiere den resultierenden `z`-Wert.
+  </Step>
+  <Step title="Positionsparameter speichern">
+    Setze `z` wieder auf `0` und wähle **Save and send**. In diesem Workflow wird die tatsächliche Kamerahöhe im nächsten Schritt als Abstand zur Erkennungsebene verwendet.
+  </Step>
+</Steps>
+
+### 3. Erkennungsebene und Bereich festlegen
+
+Gib unter **Volume detection** den aufgezeichneten `z`-Wert als **Detection-plane distance** ein und speichere und sende ihn. Konfiguriere die Grenzen des Erkennungsbereichs anhand der Punktwolkenansicht:
+
+| Parameter | Bedeutung |
+| --- | --- |
+| Minimales/maximales X | X-Grenzen der Erkennungsbox |
+| Minimales/maximales Y | Y-Grenzen der Erkennungsbox |
+| Minimales/maximales Z | Z-Grenzen der Erkennungsbox |
+
+Der Abstand zur Erkennungsebene definiert die Bodenreferenz; setze die obere Z-Grenze etwas über diesen Abstand. Die untere Grenze muss die zu messenden Objekthöhen abdecken. Wähle nach der Konfiguration **Save and send**.
+
+### 4. Ergebnisse prüfen
+
+Zeige den Volumenstatus unter **Basic tools** an. Platziere ein Objekt im Erkennungsbereich und bestätige, dass Anzahl sowie Länge, Breite und Höhe den Bedingungen vor Ort entsprechen. Wechsle bei mehreren Objekten zwischen den Volumenboxen, um jedes Ergebnis zu prüfen.
+
+Aktiviere für eine Einzelmessung **Trigger mode** unter **Volume detection**, speichere die Konfiguration und wähle unter **Basic tools** **Single trigger**, um ein Bild und Ergebnis aufzunehmen.
+
+## Wichtige Oberflächen und Parameter
+
+### Parameter der Volumenmessung
+
+| Parameter | Beschreibung |
+| --- | --- |
+| Trigger mode | Wenn aktiviert, gibt der Algorithmus Ergebnisse nur nach einem Trigger aus. |
+| Upward detection | Kehrt die Erkennungsrichtung um; der Standardworkflow erkennt nach unten. |
+| Detection frequency | Aktualisierungszeitraum von Bild und Ergebnis. |
+| Detection-plane distance | Abstand von der Kamera zur Erkennungsebene in `mm`. |
+| Neighborhood count / distance threshold | Parameter der Punktwolkenfilterung; behalte in den meisten Fällen die Projektstandards bei. |
+| Normal-vector filter / distance threshold | Parameter für Kanten- und Punktwolkenfilter; bewahre die ursprüngliche Konfiguration vor Änderungen. |
+| Minimum point count | Mindestanzahl an Punkten für ein gültiges Objekt. |
+| Minimum X / Y / Z | Minimale erkennbaren Objektabmessungen in `mm`. |
+
+### Kamerakonfiguration
+
+| Element | Beschreibung |
+| --- | --- |
+| Camera name | Unterscheidet Kameras in einer Bereitstellung mit mehreren Kameras. |
+| Image-save mode | Speichert Algorithmusbilder auf der Kamera. |
+| Image-acquisition mode | `MDS` belegt den Kamerazugriff nicht. `SDK` tut dies; die Hostanwendung kann die Kamera während des Betriebs nicht öffnen. |
+| Extrinsics | `x`, `y`, `z`, `roll`, `pitch` und `yaw`. |
+| Save and send | Schreibt die aktuellen extrinsischen und Algorithmusparameter auf die Kamera. |
+
+## Ergebnisschnittstelle
+
+TCP, UDP und HTTP verwenden den Befehl `RESULT_UPDATE`, um Volumenergebnisse anzufordern.
+
+| Protokoll | Port | Verwendung |
+| --- | --: | --- |
+| TCP | `14951` | Volumenmessergebnis anfordern |
+| UDP | `14950` | Volumenmessergebnis anfordern |
+| HTTP | `14952` | Volumenergebnis als JSON anfordern |
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Fordert das aktuelle Ergebnis der Volumenmessung von der Kamera an.
+</ParamField>
+
+HTTP-Antwortfelder der obersten Ebene:
+
+<ResponseField name="IP" type="string" required>
+  IP-Adresse der Kamera, die die Daten erzeugt hat.
+</ResponseField>
+
+<ResponseField name="TM" type="object[]" required>
+  Liste der erkannten Objekte.
+</ResponseField>
+
+<ResponseField name="TM_DATA_TIME" type="string">
+  Zeitpunkt der Aufnahme der Volumendaten.
+</ResponseField>
+
+<ResponseField name="TM_RES_TIME" type="string">
+  Zeitpunkt der Ausgabe des Ergebnisses.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string">
+  Kameraname.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Rückgabecode; `0` bedeutet Erfolg.
+</ResponseField>
+
+Jedes `TM`-Objekt kann Folgendes enthalten:
+
+<ResponseField name="angle" type="number">
+  Winkel der Objektbox.
+</ResponseField>
+
+<ResponseField name="cx" type="number">
+  X-Koordinate des Objektzentrums.
+</ResponseField>
+
+<ResponseField name="cy" type="number">
+  Y-Koordinate des Objektzentrums.
+</ResponseField>
+
+<ResponseField name="cz" type="number">
+  Z-Koordinate des Objektzentrums.
+</ResponseField>
+
+<ResponseField name="height" type="number">
+  Objekthöhe.
+</ResponseField>
+
+<ResponseField name="length" type="number">
+  Objektlänge.
+</ResponseField>
+
+<ResponseField name="width" type="number">
+  Objektbreite.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  Gibt an, ob das Ergebnis gültig ist. `false` weist auf unzureichende Konfidenz hin.
+</ResponseField>
+
+## Fehlerbehebung
+
+| Symptom | Empfohlene Maßnahme |
+| --- | --- |
+| Punktwolkenansicht ist leer oder schwer zu prüfen | Scrolle und ziehe im Punktwolkenbereich und bestätige, dass die Kamera Daten ausgibt. |
+| Erkennung ist nach der Kalibrierung fehlerhaft | Bestätige, dass der extrinsische Wert `z` auf `0` zurückgesetzt und die aufgezeichnete Kalibrierungshöhe als Abstand zur Erkennungsebene eingegeben wurde. |
+| Objekte werden nicht erkannt | Prüfe Bereichsgrenzen, Mindestabmessungen, Mindestpunktzahl und ob sich das Objekt vollständig im Sichtfeld befindet. |
+| LxCameraViewer lässt sich nicht öffnen | Prüfe, ob der Bildaufnahmemodus `SDK` ausgewählt ist; er belegt den Kamerazugriff. |

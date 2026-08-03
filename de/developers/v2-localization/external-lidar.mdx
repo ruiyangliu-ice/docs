@@ -1,0 +1,46 @@
+---
+title: Externen LiDAR mit V2 verwenden
+description: LaserScan-Daten eines externen LiDARs an das vom V2-Lokalisierungsmodul abonnierte Topic senden.
+hidden: true
+---
+
+Diese Seite erklärt, wie Sie das V2-Lokalisierungsmodul so konfigurieren, dass es ein ROS-Laser-Topic eines externen LiDARs abonniert.
+
+<Info>
+  Der externe LiDAR muss fortlaufend `sensor_msgs/LaserScan`-Nachrichten veröffentlichen, die dem konfigurierten Topic entsprechen. Diese Seite behandelt nur die Topic-Konfiguration und die Prüfung des Abonnements; die Installation oder Kalibrierung des LiDAR-Treibers ist nicht enthalten.
+</Info>
+
+## Lokalisierungs-Laser-Topic konfigurieren
+
+Setzen Sie den Eingang des Lokalisierungslasers in der Body-Konfiguration auf UDP und geben Sie das LaserScan-Topic an:
+
+```yaml
+LxCamera_UploadScan: "/sim/scan"
+```
+
+Konfigurieren Sie den externen LiDAR so, dass er auf demselben Topic veröffentlicht, oder ändern Sie den obigen Wert so, dass er dem tatsächlichen Topic entspricht.
+
+## ROS-Topic überprüfen
+
+Bestätigen Sie, dass der V2-Lokalisierungsknoten das Topic abonniert und sein Nachrichtentyp `LaserScan` ist.
+
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
+
+    Die Ausgabe sollte `sensor_msgs/LaserScan` anzeigen und `/lx_localization_node` in der Liste der Abonnenten enthalten.
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
+
+    Die Ausgabe sollte `sensor_msgs/msg/LaserScan` und eine Abonnementanzahl von mindestens `1` anzeigen.
+  </Tab>
+</Tabs>
+
+<Tip>
+  Wenn die Abonnementanzahl `0` ist, prüfen Sie den Topic-Namen, die ROS-Domain-Konfiguration und den Status des Lokalisierungsknotens. Wenn die Anzahl der Publisher `0` ist, prüfen Sie den Treiber des externen LiDARs.
+</Tip>

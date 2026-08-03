@@ -1,0 +1,73 @@
+---
+title: Định vị trực quan SLAM cho robot di động
+sidebarTitle: Định vị trực quan cho robot di động
+description: "Lập bản đồ, định vị và tái định vị robot di động bằng cách hợp nhất camera hướng lên, LiDAR 2D và IMU."
+---
+
+Trong SLAM hướng lên, camera được lắp trên robot di động và sử dụng trần, tường cùng các đặc trưng môi trường ổn định khác để lập bản đồ và định vị. Phương pháp này giảm phụ thuộc vào các dấu mốc trên sàn, phù hợp với các địa điểm trong nhà có bố cục thay đổi, sàn bị che khuất hoặc nhiều phương tiện.
+
+## Cách hoạt động
+
+Bộ điều khiển điều hướng V2 Pro hợp nhất dữ liệu từ camera hướng lên, LiDAR 2D và IMU:
+
+- Camera hướng lên thu nhận các đặc trưng phía trên.
+- LiDAR 2D cung cấp thông tin đường bao phẳng.
+- IMU cung cấp dữ liệu chuyển động của phương tiện.
+- Bộ điều khiển xuất dữ liệu để lập bản đồ, định vị và tái định vị.
+
+<Info>
+  Định vị hướng lên phụ thuộc vào các đặc trưng môi trường có thể quan sát. Hãy xác nhận việc lập bản đồ và định vị trước khi triển khai ở khu vực mở, cảnh lặp lại hoặc khu vực bị che khuất lâu dài hay thường xuyên thay đổi cấu trúc.
+</Info>
+
+## Đặc điểm của giải pháp
+
+### Định vị bằng đặc trưng tự nhiên
+
+Bộ điều khiển định vị bằng cách nhận dạng các đặc trưng tự nhiên phía trên và xung quanh phương tiện, giảm nhu cầu sử dụng các dấu mốc cố định như gương phản xạ hoặc dải từ. Xem [tài liệu sản phẩm](/vi/products/v-series/v2-pro-overview) để biết phạm vi hoạt động và điều kiện ánh sáng môi trường của camera hướng lên V2 Pro.
+
+### Hợp nhất nhiều cảm biến
+
+Camera, LiDAR và IMU cung cấp dữ liệu bổ sung cho việc xây dựng bản đồ và ước tính pose của phương tiện. Kết quả vẫn phụ thuộc vào thông số ngoại tại của cảm biến, chuyển động của phương tiện, đặc trưng môi trường và chất lượng bản đồ.
+
+### Lập bản đồ và tích hợp trên thiết bị
+
+Bộ điều khiển tích hợp nền tảng tính toán và hỗ trợ lập bản đồ, quản lý bản đồ thông qua phần mềm máy chủ. Có sẵn SDK, HTTP API, UDP và các giao diện ROS để tích hợp hệ thống.
+
+## Kịch bản điển hình
+
+| Kịch bản | Yêu cầu | Trọng tâm định vị hướng lên |
+| --- | --- | --- |
+| Logistics kho hàng | Hàng hóa, xe đẩy và bố cục lối đi có thể thay đổi. | Xác nhận phạm vi bao phủ các đặc trưng phía trên và quy trình cập nhật bản đồ. |
+| Xưởng sản xuất | Người và phương tiện cùng hoạt động trong khu vực có nhiều thiết bị và trạm làm việc. | Lập kế hoạch vị trí lắp đặt và tránh bị phương tiện hoặc tải hàng che khuất. |
+| Kho xếp hàng trên sàn hoặc hành lang dài | Các đặc trưng trên sàn thay đổi hoặc lối đi hẹp. | Đánh giá các đặc trưng phía trên, đường bao LiDAR và các điểm tái định vị. |
+
+## Quy trình triển khai
+
+<Steps>
+  <Step title="Lắp đặt và kết nối">
+    Lắp bộ điều khiển trên nóc phương tiện. Giữ camera hướng lên và LiDAR không bị khung gầm, cáp hoặc tải hàng che khuất, sau đó kết nối nguồn, mạng và các giao diện phương tiện cần thiết.
+  </Step>
+  <Step title="Cấu hình thông số ngoại tại và phương tiện">
+    Cấu hình thông số ngoại tại của cảm biến và các tham số định vị phương tiện trong phần mềm máy chủ, sau đó kiểm tra các luồng dữ liệu.
+  </Step>
+  <Step title="Thu nhận và triển khai bản đồ">
+    Thu nhận dữ liệu môi trường dọc theo tuyến đường mục tiêu, tạo bản đồ, triển khai bản đồ lên thiết bị và xác nhận việc định vị, tái định vị tại các khu vực đại diện.
+  </Step>
+  <Step title="Kết nối hệ thống cấp cao hơn">
+    Đọc dữ liệu định vị thông qua SDK, HTTP API, UDP hoặc giao diện ROS theo yêu cầu, đồng thời triển khai xử lý ngoại lệ và giám sát thời gian chạy.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Card title="Tài liệu sản phẩm V2 Pro" icon="camera" href="/vi/products/v-series/v2-pro-overview">
+    Xem thông số bộ điều khiển, giao diện, hướng dẫn lắp đặt và lập bản đồ.
+  </Card>
+
+  <Card title="Hướng dẫn phát triển định vị V2" icon="code" href="/vi/developers/v2-localization/pure-localization-guide">
+    Xem chế độ chỉ định vị và các tài nguyên tích hợp.
+  </Card>
+</Columns>
+
+<Warning>
+  Bộ điều khiển định vị xuất pose của phương tiện. Bộ điều khiển không thay thế việc phát hiện chướng ngại vật, an toàn chức năng, lập lịch tác vụ hoặc hệ thống hoàn chỉnh cần thiết cho xe nâng tự hành. Hãy hoàn tất đánh giá rủi ro tại hiện trường và xác nhận cấp phương tiện trước khi đưa vào vận hành.
+</Warning>

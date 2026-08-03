@@ -1,0 +1,68 @@
+---
+title: Nhận dạng trạng thái vị trí lưu trữ
+description: "Sử dụng camera RGB-D để xác định tình trạng có hàng, trạng thái tải và chiều cao, sau đó đồng bộ kết quả với hệ thống kho hàng hoặc điều phối."
+---
+
+## Bối cảnh ứng dụng
+
+Trong kho AGV, việc đưa hàng vào và lấy hàng thủ công có thể khiến dữ liệu vị trí trong WMS không đồng bộ với hiện trường. Nếu không phát hiện kịp thời một vị trí đã có hàng, hệ thống điều phối có thể phát hành tác vụ lấy hàng hoặc đưa hàng vào không phù hợp.
+
+<Frame>
+  ![Ứng dụng nhận dạng trạng thái vị trí lưu trữ](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## So sánh phương pháp nhận dạng
+
+| Phương pháp | Thông tin có thể thu thập | Hạn chế điển hình |
+| --- | --- | --- |
+| Đo khoảng cách laser một điểm | Một giá trị khoảng cách | Có thể bỏ sót khoảng trống giữa các thùng carton hoặc pallet, khiến việc biểu diễn đầy đủ trạng thái vị trí trở nên khó khăn. |
+| Camera RGB | Màu sắc và kết cấu | Nhạy với mục tiêu ngoài tập huấn luyện, ánh sáng và méo ở cạnh; không thể trực tiếp cung cấp chiều cao tải. |
+| Camera RGB-D | Màu sắc, độ sâu và đám mây điểm | Có thể dùng dữ liệu 3D để xác định tình trạng có hàng, cách đặt hàng và chiều cao tải. |
+
+## Tổng quan giải pháp
+
+Giải pháp thu nhận dữ liệu màu sắc và 3D từ các vị trí lưu trữ để xác định vị trí có tải hay không, tải được đặt như thế nào và tình trạng có hàng có bất thường hay không. Khi dự án yêu cầu, thuật toán trên camera cũng có thể phân biệt các nhóm tải. Kết quả có thể được gửi đến hệ thống điều phối để hỗ trợ vận hành kho hàng.
+
+<Frame>
+  ![Giải pháp nhận dạng trạng thái vị trí lưu trữ bằng RGB-D](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## Đặc điểm của giải pháp
+
+- **Đánh giá trạng thái 3D:** Kết hợp dữ liệu độ sâu và màu sắc để xác định tình trạng có hàng và trạng thái tải.
+- **Xử lý trên camera:** Chạy thuật toán trên camera để giảm yêu cầu tính toán bên ngoài.
+- **Báo cáo kết quả:** Hỗ trợ giao tiếp TCP/IP, UDP và HTTP, với đầu ra JSON cho hệ thống điều khiển.
+- **Phối hợp điều phối:** Cung cấp dữ liệu vị trí theo thời gian thực để hỗ trợ phân công tác vụ.
+
+## Lưu ý triển khai
+
+<Columns cols={2}>
+  <Card title="Vị trí lắp đặt" icon="camera">
+    Gắn camera trên cột hoặc trần và hướng vào các vị trí cần giám sát. Xác nhận độ cao lắp đặt và trường nhìn theo kích thước vị trí.
+  </Card>
+
+  <Card title="Yêu cầu môi trường" icon="triangle-exclamation">
+    Tránh nhiều bụi và ngưng tụ. Giá đỡ phải có đủ độ cứng vững và ổn định.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Minh họa nhận dạng trạng thái vị trí lưu trữ](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="Nhận tác vụ vị trí">
+    Bộ điều khiển cấp cao hơn gửi tác vụ trong khi camera thu nhận dữ liệu hình ảnh và độ sâu cho vị trí mục tiêu.
+  </Step>
+  <Step title="Nhận dạng và báo cáo kết quả">
+    Camera xuất trạng thái vị trí và báo cáo trạng thái đó cho hệ thống cấp cao hơn dưới dạng JSON.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Lắp đặt camera nhận dạng trạng thái vị trí lưu trữ](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="Hướng dẫn triển khai phát hiện vị trí lưu trữ" icon="book-open" href="/vi/developers/deployment/algorithm-detection">
+  Xem hướng dẫn triển khai thuật toán, giao diện và gỡ lỗi.
+</Card>

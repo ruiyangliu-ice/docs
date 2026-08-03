@@ -1,0 +1,410 @@
+---
+title: Referencia de la interfaz ROS2 de V2
+description: "Compila y ejecuta el SDK de ROS2 de localización V2 y utiliza sus tópicos y servicios para el mapeo, la localización y la gestión de mapas."
+hidden: true
+---
+
+## Descripción general
+
+Esta página describe los tópicos y servicios de ROS2 que proporciona `lx_camera_ros` en el módulo de localización V2.
+
+## Compilación
+
+Instala los componentes Qt5 Core y Network. Los comandos de instalación varían según la distribución de Linux; el siguiente ejemplo usa Ubuntu:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+Descarga el código fuente de `libzip` desde la [página de descargas de libzip](https://libzip.org/download/) y compílalo según las instrucciones oficiales.
+
+Ejecuta el siguiente comando desde `/lx_camera_ros`:
+
+```bash
+./build.sh
+```
+
+## Ejecución
+
+<Note>
+  Vuelve a compilar después de cambiar el archivo de configuración YAML. Los cambios no se aplican hasta que se vuelve a compilar el proyecto.
+</Note>
+
+```bash
+./start.sh
+```
+
+## Interfaces de tópicos de ROS2
+
+Antes de probar una interfaz, enciende la cámara, espera unos 30 segundos e inicia el nodo del SDK de ROS2.
+
+| Caso de uso | Tópicos relacionados |
+| --- | --- |
+| Localización | Pose, estado de localización, cambio de mapa y relocalización |
+| Mapeo | Estado y progreso del mapeo |
+| Mantenimiento y configuración | Uso de almacenamiento, módulos defectuosos, configuración de parámetros y descarga de mapas |
+
+#### Recibe la pose de localización
+
+ROS2 recibe continuamente los valores `x`, `y` y `theta` de la cámara, publica los valores y el cuaternión convertido a partir de `theta` en `LxCamera_LocationPoseResult` y difunde la pose mediante TF.
+
+```bash
+ros2 topic echo /LxCamera_LocationPoseResult
+```
+
+#### Recibe el estado de localización
+
+ROS2 recibe el estado de localización de la cámara (`true` o `false`) a 1 Hz y lo publica como `std_msgs::msg::Bool` en `LxCamera_LocationResult`.
+
+```bash
+ros2 topic echo /LxCamera_LocationResult
+```
+
+#### Recibe el uso de almacenamiento de la cámara
+
+ROS2 recibe la proporción de uso del almacenamiento de la cámara a 2 Hz y la publica como `std_msgs::msg::Float32` en `LxCamera_Capacity_Status`.
+
+```bash
+ros2 topic echo /LxCamera_Capacity_Status
+```
+
+#### Recibe el nombre del módulo defectuoso
+
+ROS2 recibe de la cámara el nombre de un módulo defectuoso y lo publica como `std_msgs::msg::String` en `LxCamera_Module_Error`.
+
+```bash
+ros2 topic echo /LxCamera_Module_Error
+```
+
+#### Recibe el progreso del mapeo
+
+Después de iniciar el mapeo, ROS2 publica el progreso (`0–100`) como `std_msgs::msg::Int32` en `LxCamera_Mapping_Progress`.
+
+```bash
+ros2 topic echo /LxCamera_Mapping_Progress
+```
+
+#### Recibe el estado del mapeo
+
+Después de iniciar el mapeo, ROS2 publica su estado como `std_msgs::msg::Bool` en `LxCamera_MappingState`.
+
+```bash
+ros2 topic echo /LxCamera_MappingState
+```
+
+#### Establece los parámetros
+
+Publica un mensaje `std_msgs::msg::String` en `LxCamera_SetParam`. El mensaje contiene nueve valores de coma flotante separados por comas: `x,y,z,yaw,pitch,roll,x,y,yaw`. Los seis primeros valores definen la pose de la cámara; los tres últimos definen la pose del LiDAR. Después de una actualización correcta, se actualizan los valores correspondientes de las secciones `[Laser1]` y `[Camera1]` de `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SetParam std_msgs/msg/String "{data: '1,1,1,1,1,1,1,1,1'}"
+```
+
+#### Cambia de mapa
+
+Publica un mensaje `std_msgs::msg::String` que contenga el nombre de un mapa completado en `LxCamera_SwitchMap`. Actualiza la interfaz web de la cámara. Si cambia el nombre del mapa mostrado, el cambio se realizó correctamente.
+
+```bash
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_SwitchMap std_msgs/msg/String "{data: 'pf'}"
+```
+
+#### Descarga un mapa
+
+1. Publica un mensaje `std_msgs::msg::String` en `LxCamera_DownloadMap`.
+2. El mensaje contiene dos campos: `save_path`, una ruta absoluta en el equipo host, y `mapname`, el nombre del archivo `.zip` de un mapa completado en la cámara.
+3. Después de una descarga correcta, la ruta del host especificada contiene el archivo del mapa. Extráelo para obtener un archivo de mapa `PGM` y un archivo de configuración `YAML`.
+
+```bash
+# Entra en el directorio lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub -1 /LxCamera_DownloadMap std_msgs/msg/String "{data: '/home/zsure/LANXIN\,pf'}"
+```
+
+#### Carga la odometría
+
+Publica datos `nav_msgs::msg::Odometry` en `/sim/odom` (el tópico se puede cambiar).
+
+```bash
+# Entra en el directorio lx_camera_ros2_ws.
+source install/setup.bash
+ros2 topic pub /odom nav_msgs/msg/Odometry "header: stamp: {sec: 0, nanosec: 0} frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+#### Relocalízate
+
+1. Publica datos `geometry_msgs::msg::PoseWithCovarianceStamped` en `LxCamera_UploadReloc`.
+2. La pose contiene la pose del LiDAR: `x`, `y` y `yaw`.
+3. La relocalización se realiza correctamente cuando la posición mostrada en la interfaz web de la cámara se actualiza a la pose enviada.
+
+```bash
+ros2 topic pub -1 /LxCamera_UploadReloc geometry_msgs/msg/PoseWithCovarianceStamped "{
+  header: {frame_id: ''},
+  pose: {
+    pose: {
+      position: {x: 0.0, y: 0.0, z: 0.0},
+      orientation: {x: 0, y: 0, z: -0.694658, w: 0.71934}
+    },
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}"
+```
+
+> Los cuaterniones están restringidos y no se pueden completar arbitrariamente. Usa el [convertidor de Euler a cuaternión](https://www.itutool.com/tools/euler-quaternion-converter "Herramienta web") para convertir un ángulo `Euler yaw` en valores de cuaternión `xyzw`.
+
+#### Prefijos de tipo de mensaje
+
+El equipo host se comunica con la cámara mediante UDP. Los primeros cuatro bytes de cada mensaje identifican el tipo de datos de la interfaz:
+
+```text
+mapping_prefix = "aced220d";          // Activar el mapeo
+setparam_prefix = "aced220e";         // Establecer los parámetros de la cámara y el LiDAR
+UploadScan_prefix = "aced2209";       // Cargar datos de escaneo láser en la cámara
+odom_prefix = "aced0f0a";             // Datos de odometría
+mapname_prefix = "aced220c";          // Cambiar de mapa
+map_request_prefix = "aced220f";      // Descargar un mapa específico
+prefix_after_reloc = "aced0f0b";      // Relocalización
+```
+
+---
+
+## Interfaces de servicios de ROS2
+
+El mapeo, el cambio de mapa, la descarga de mapas y la relocalización también están disponibles mediante servicios de ROS2. Una respuesta de servicio `true` indica que la operación se realizó correctamente; `false` indica un fallo.
+
+<Info>
+  Usa `ros2 service call` para los siguientes comandos. Los nombres de los mapas no deben comenzar por un número ni superar los 30 caracteres.
+</Info>
+
+#### Crea un mapa
+
+Nombre del servicio: `/LxCamera_Mapping_srv`
+
+Definición del servicio:
+
+```text
+bool status      # Iniciar mapeo: true; detener mapeo: false
+string mapname   # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+---
+bool result      # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_Mapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```
+
+#### Cambia de mapa
+
+Nombre del servicio: `/LxCamera_SwitchMap_srv`
+
+Definición del servicio:
+
+```text
+string mapname   # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+---
+bool result      # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_SwitchMap_srv lx_camera_ros/srv/LxSwitchMap "{
+  mapname: 'zszs999'
+}"
+```
+
+#### Descarga un mapa
+
+Nombre del servicio: `/LxCamera_DownloadMap_srv`
+
+Definición del servicio:
+
+```text
+string mapname    # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+string save_path  # Ruta de guardado absoluta, por ejemplo "/home/lx/map"; omite la barra final
+---
+bool result       # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_DownloadMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+#### Relocalízate
+
+Nombre del servicio: `/LxCamera_UploadReloc_srv`
+
+Definición del servicio:
+
+```text
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result       # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_UploadReloc_srv lx_camera_ros/srv/LxUploadReloc "{
+  \"pose\": {
+    \"header\": {
+      \"stamp\": {\"sec\": 0, \"nanosec\": 0},
+      \"frame_id\": \"map\"
+    },
+    \"pose\": {
+      \"pose\": {
+        \"position\": {\"x\": 4.5, \"y\": -15.5, \"z\": 0.0},
+        \"orientation\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.694658, \"w\": 0.71934}
+      },
+      \"covariance\": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+    }
+  }
+}"
+```
+
+#### Obtén el nombre del mapa actual
+
+Nombre del servicio: `/LxCamera_GetCurMapname_srv`
+
+Definición del servicio:
+
+```text
+bool get_cur_mapname # Obtén el identificador del mapa
+---
+string mapname      # Nombre del mapa actual
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_GetCurMapname_srv lx_camera_ros/srv/LxGetmapname "{
+  get_cur_mapname: true
+}"
+```
+
+#### Obtén la lista de mapas actual
+
+Nombre del servicio: `/LxCamera_GetMapList_srv`
+
+Definición del servicio:
+
+```text
+bool get_map_list # Obtén la lista de mapas
+---
+string[] map_list # Lista de mapas
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_GetMapList_srv lx_camera_ros/srv/LxGetmaplist "{
+  get_map_list: true
+}"
+```
+
+#### Sal del mapeo
+
+Nombre del servicio: `/LxCamera_ExitMapping_srv`
+
+Definición del servicio:
+
+```text
+bool exit_mapping # Salir del mapeo
+---
+bool state        # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_ExitMapping_srv lx_camera_ros/srv/LxExitMapping "{
+  exit_mapping: true
+}"
+```
+
+#### Elimina un mapa
+
+Nombre del servicio: `/LxCamera_EraseMap_srv`
+
+Definición del servicio:
+
+```text
+string mapname    # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+---
+bool result       # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_EraseMap_srv lx_camera_ros/srv/LxEraseMap "{
+  mapname: 'TEST888'
+}"
+```
+
+#### Descarga un mapa de calor
+
+Nombre del servicio: `/LxCamera_DownloadHeatMap_srv`
+
+Definición del servicio:
+
+```text
+string mapname    # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+string save_path  # Ruta de guardado absoluta, por ejemplo "/home/lx/map"; omite la barra final
+---
+bool result       # true: correcto; false: fallo
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_DownloadHeatMap_srv lx_camera_ros/srv/LxDownloadMap "{
+  mapname: 'TEST_999',
+  save_path: '/home/fr1511b/T/TEST'
+}"
+```
+
+## Mapeo incremental
+
+Nombre del servicio: `/LxCamera_IncMapping_srv`
+
+Definición del servicio:
+
+```text
+bool status      # Iniciar mapeo: true; detener mapeo: false
+string mapname   # Nombre del mapa; no debe comenzar por un número ni superar los 30 caracteres
+---
+bool result
+```
+
+Llama al servicio:
+
+```bash
+ros2 service call /LxCamera_IncMapping_srv lx_camera_ros/srv/LxMapping "{
+  status: true,
+  mapname: 'test_map'
+}"
+```

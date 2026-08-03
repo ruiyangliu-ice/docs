@@ -1,0 +1,316 @@
+---
+title: Hướng dẫn sử dụng S2 Max 2.0
+description: "Thông số kỹ thuật, đặc tính điện, giao diện, tích hợp và hướng dẫn vận hành cho camera S2 Max 2.0."
+hidden: true
+---
+
+<Info>
+  Đây là hướng dẫn sử dụng lưu trữ. Để kết nối camera lần đầu, hãy bắt đầu với [bắt đầu nhanh S2 Max 2.0](/vi/products/s-series/s2-max-2-quickstart).
+</Info>
+
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Phát hành lần đầu |
+| 2024/05/10 | V1.0 | Cập nhật tham số camera |
+| 2024/06/17 | V1.1 | 1. Cập nhật sơ đồ chân và bổ sung thông số điện. 2. Bổ sung chứng nhận kiểm tra vào thành phần gói hàng. |
+| 2024/11/25 | V1.2 | Cập nhật nhiệt độ lưu trữ camera |
+
+## Tổng quan sản phẩm
+
+### Mục đích và phạm vi
+
+Tài liệu này mô tả thông số kỹ thuật camera S2 Max 2.0 và một số chi tiết thiết kế dành cho nhà phát triển tích hợp và sử dụng sản phẩm.
+
+### Thuật ngữ
+
+| Camera RGB-D | Camera xuất hình ảnh RGB và độ sâu được đồng bộ và căn chỉnh không gian |
+| --- | --- |
+| Độ sâu | Luồng video tương tự luồng màu hoặc đơn sắc, trong đó mỗi pixel biểu thị khoảng cách từ pixel đó đến camera |
+| FOV | Trường nhìn: phạm vi góc của cảnh được camera thu lại, gồm trường nhìn ngang (HFOV), dọc (VFOV) và chéo (DFOV) |
+| Camera IR | Camera hồng ngoại; trong sản phẩm này, chủ yếu thu dải cận hồng ngoại |
+| Camera RGB | Camera màu |
+| Camera độ sâu | Camera có module độ sâu thường gồm bộ chiếu điểm, camera IR và bộ xử lý độ sâu; module màu thường là camera RGB |
+| SoC | Hệ thống trên chip dùng để xử lý hình ảnh, tính độ sâu và chạy thuật toán ứng dụng |
+
+### Nguyên lý hoạt động
+
+Sản phẩm này đo khoảng cách bằng thời gian bay gián tiếp (iToF). Camera phát xung laser, sau đó bộ thu so sánh dạng sóng nhận được với dạng sóng truyền đi để tính chênh lệch pha và thời gian bay của xung Δt.
+
+Tính khoảng cách từ mục tiêu đến camera theo công thức: distance = speed of light \* Δt / 2
+
+<Frame>
+  ![Nguyên lý hoạt động iToF](/images/products/s-series-s2-max-2-user-guide-s2-max-2-0-camera.avif)
+</Frame>
+
+---
+
+### Chi tiết sản phẩm
+
+Camera RGB-D công nghiệp nhỏ gọn này tích hợp camera iToF SONY CW và xuất hình ảnh RGB màu thật ba kênh cùng dữ liệu độ sâu từ 0.2m đến 5m. Camera căn chỉnh hình ảnh RGB và độ sâu theo không gian và thời gian, chuyển đổi giữa bốn vùng tránh chướng ngại vật rồi xuất tín hiệu dừng khẩn cấp, giảm tốc và trạng thái an toàn.
+
+### Ngoại hình sản phẩm
+
+<Frame>
+  ![Camera S2 Max 2.0](/images/products/s-series-s2-max-2-user-guide-itof-operating-principle.avif)
+</Frame>
+
+### Tính năng
+
+- Nền tảng tính toán tích hợp 1.0 TOPS chạy thuật toán tránh chướng ngại vật mà không cần CPU bên ngoài
+- Kiểu dáng nhỏ gọn cho tích hợp linh hoạt, kín đáo
+- Khả năng thích ứng môi trường mạnh: chống ánh nắng 100 kLux và hoạt động từ tối đến sáng, trong nhà và ngoài trời
+- Phạm vi đo rộng 0.2~5m
+- Tránh chướng ngại vật, phát hiện thùng hàng và đo thể tích độc lập
+- Ngõ ra RGB-D
+
+## Thông số kỹ thuật và đặc tính điện
+
+### Thông số cơ bản
+
+| Model sản phẩm | S2 Max 2.0 |
+| --- | --- |
+| Chip | Chip Sony |
+| Định dạng ngõ ra | Độ sâu&RGB&Bản đồ biên độ |
+| Độ phân giải và tốc độ khung hình ToF | 320 × 240 (thông thường 12 fps) |
+| Trường nhìn ToF | Thông thường: 81° ngang, 61° dọc |
+| Độ phân giải và tốc độ khung hình RGB | 1920×1080 (thông thường 12fps) |
+| Trường nhìn RGB | Thông thường: 88° ngang, 56° dọc |
+| Phạm vi | 0.2m~~5m (@90%), 0.2~~2.5m (@10%) |
+| Độ chính xác | ±3mm\+0.5%\*depth |
+| Công suất tiêu thụ | 6.4W |
+| Laser | 940nm |
+| Kích thước | 92mm×47mm×51mm |
+| Khối lượng | 449g |
+| Ngõ vào nguồn | 24V DC / 2A |
+| Giao diện truyền thông | Ethernet / IO (tùy chọn) |
+| Cấp bảo vệ | IP67 |
+| Nhiệt độ hoạt động | -20°C~60°C |
+| Nhiệt độ lưu trữ | -40°C~85°C |
+| Môi trường phần mềm | C / C\+\+ / ROS SDK |
+| Hệ điều hành hỗ trợ | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Làm mát | Thụ động, không quạt |
+| Khả năng chống ánh nắng | 100 kLux |
+
+**Lưu ý: Model 3D xác định kích thước sản phẩm.**
+
+---
+
+### Thông số điện
+
+Bảng 3-2. Thông số điện của sản phẩm
+
+| Tham số | Ký hiệu | Điều kiện | Tối thiểu | Điển hình | Tối đa | Đơn vị |
+| --- | --- | --- | --- | --- | --- | --- |
+| Điện áp nguồn | VDD |  | 18 | 24 | 30 | V |
+| I/O số | IN |  | 3.3 |  | 24 | V |
+| Giao diện CAN |  |  | 0 |  | 5V | V |
+| Nhiệt độ hoạt động | Ta |  | -20 |  | 60 | ℃ |
+| Độ ẩm hoạt động |  |  | 20 |  | 80 | % |
+| Nhiệt độ lưu trữ |  |  | -40 |  | 85 | ℃ |
+| Độ ẩm lưu trữ |  |  | 20 |  | 80 | % |
+
+### Giao diện sản phẩm
+
+### Giao diện phía camera
+
+Camera có ba giao diện: đầu nối nguồn DC24V, đầu nối Gigabit Ethernet và đầu nối chức năng IO/CAN.
+
+<Frame>
+  ![Giao diện phía camera](/images/products/s-series-s2-max-2-user-guide-camera-side-interfaces.avif)
+</Frame>
+
+| Cổng | Chân | Tín hiệu | Mô tả |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0\_N | Gigabit Ethernet |
+|  | 2 | MDI0\_p |  |
+|  | 3 | MDI1\_N |  |
+|  | 4 | MDI1\_p |  |
+|  | 5 | MDI2\_N |  |
+|  | 6 | MDI2\_p |  |
+|  | 7 | MDI3\_N |  |
+|  | 8 | MDI3\_p |  |
+| Đầu nối chức năng | 1 | CAN\_H | CAN\_H |
+|  | 2 | CAN\_L | CAN\_L |
+|  | 3 | GND | CAN GND |
+|  | 4 | OUT\_1 | Ngõ ra IO 1 |
+|  | 5 | COM | Đầu cuối IO COM |
+|  | 6 | OUT\_2 | Ngõ ra IO 2 |
+|  | 7 | IN\_1 | Ngõ vào IO 1 |
+|  | 8 | IN\_2 | Ngõ vào IO 2 |
+| Đầu nối nguồn | 1 | 24\+ | Đầu nối cái nguồn DC, 5.5-2.1mm |
+|  | G | 24- |  |
+
+### Sơ đồ chân cáp
+
+<Frame>
+  ![Sơ đồ chân cáp](/images/products/s-series-s2-max-2-user-guide-cable-pinout.avif)
+</Frame>
+
+| Cáp | Màu | Chân | Mô tả |
+| --- | --- | --- | --- |
+| Cáp chức năng | Cam | CAN\_H | CAN\_H |
+|  | Vàng | CAN\_L | CAN\_L |
+|  | Xanh lá | GND | CAN GND |
+|  | Nâu | IN\_1 | Ngõ vào IO 1 |
+|  | Trắng | IN\_2 | Ngõ vào IO 2 |
+|  | Tím | COM | Đầu cuối IO COM |
+|  | Xanh dương | OUT\_1 | Ngõ ra IO 1 |
+|  | Xám | OUT\_2 | Ngõ ra IO 2 |
+| Cáp nguồn | Đỏ | 24V\+ | Đầu cuối nguồn dương |
+|  | Đen | GND | Đầu cuối nguồn âm |
+
+Lưu ý: Một số cáp chức năng cũ sử dụng màu khác. Hãy tuân theo nhãn trên cáp thực tế.
+
+### Linh kiện camera
+
+<Frame>
+  ![Linh kiện camera](/images/products/s-series-s2-max-2-user-guide-camera-components.avif)
+</Frame>
+
+| STT | Linh kiện |
+| --- | --- |
+| 1 | Đèn báo nguồn; nhấp nháy chậm sau khi bật nguồn |
+| 2 | Nguồn sáng 940nm |
+| 3 | Module phát hiện nhiễu nhiều camera |
+| 4 | Ống kính ToF |
+| 5 | Ống kính RGB |
+
+## Hướng dẫn tích hợp
+
+### Phạm vi phát hiện của camera
+
+Hình 4.1 minh họa vùng phát hiện của S2 Max 2.0. Góc phát hiện ngang là 81° và góc dọc là 61°. Khoảng cách phát hiện phụ thuộc vào công suất quang học. Công suất quang học và độ phản xạ mục tiêu cao hơn làm tăng vùng mù gần và giảm vùng mù xa. Công suất quang học và độ phản xạ mục tiêu thấp hơn làm giảm vùng mù gần và tăng vùng mù xa. Với mục tiêu có độ phản xạ 10%~~90%, phạm vi của S2 Max 2.0 là 0.2~~5m. Sau 5m, cường độ tín hiệu phản xạ thấp và nhiễu ánh sáng môi trường gây ra sai số đo khoảng cách đáng kể.
+
+<Frame>
+  ![Phạm vi phát hiện của camera](/images/products/s-series-s2-max-2-user-guide-camera-detection-range.avif)
+</Frame>
+
+### Kích thước camera
+
+<Frame>
+  ![Kích thước camera](/images/products/s-series-s2-max-2-user-guide-camera-dimensions.avif)
+</Frame>
+
+### Hệ tọa độ quang học và tọa độ gốc
+
+**Hệ tọa độ quang học:**
+
+- Hệ tọa độ quang học gồm hệ tọa độ camera (CCS) và hệ tọa độ thế giới (WCS).
+- Hệ tọa độ camera là hệ tọa độ hình ảnh độ sâu 2D. Gốc tọa độ nằm tại tâm quang học.
+- Hệ tọa độ thế giới là hệ tọa độ đám mây điểm 3D.
+- Sử dụng các thông số nội tại của camera để chuyển tọa độ hình ảnh độ sâu thành tọa độ đám mây điểm 3D. Xem các ví dụ SDK.
+
+<Frame>
+  ![Hệ tọa độ quang học](/images/products/s-series-s2-max-2-user-guide-optical-coordinate-system.avif)
+</Frame>
+
+**Gốc tọa độ camera được định nghĩa như sau:**
+
+1. Gốc tọa độ X trùng với trục X của sản phẩm.
+2. Gốc tọa độ Y trùng với trục Y của sản phẩm.
+3. Gốc tọa độ Z nằm trên bề mặt trước của camera.
+
+<Frame>
+  ![Gốc tọa độ camera](/images/products/s-series-s2-max-2-user-guide-camera-origin.avif)
+</Frame>
+
+### SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển SDK MRDVS.
+
+### Môi trường và độ tin cậy
+
+| Hạng mục |  | Thông số kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20℃~60℃ |
+|  | Độ ẩm | 0%–95% RH, không ngưng tụ |
+|  | Độ rọi | 0–100 kLux |
+| Môi trường lưu trữ | Nhiệt độ | -40℃~85℃ |
+|  | Độ ẩm | 10%–95% RH, không ngưng tụ |
+| Độ tăng nhiệt trong hoạt động bình thường |  | Độ tăng nhiệt vỏ \<25℃ |
+| Cấp ESD |  | Phóng điện tiếp xúc ±4KV, phóng điện qua không khí ±8KV |
+| Cấp RE |  | Tuân thủ GB 9254 CLASS A |
+| Tuổi thọ |  | Trên 3 năm |
+| Chứng nhận môi trường |  | RoHS |
+
+## Sử dụng lần đầu
+
+### Kiểm tra kết nối
+
+<Frame>
+  ![Kiểm tra kết nối](/images/products/s-series-s2-max-2-user-guide-connection-test.avif)
+</Frame>
+
+1. Kết nối camera với nguồn DC 24V/2A. Đèn báo nguồn màu xanh nhấp nháy chậm xác nhận bật nguồn bình thường.
+2. Kết nối camera với máy tính bằng cáp Ethernet Category 6.
+3. Địa chỉ IP mặc định của camera là 192.168.100.82.
+4. Đặt IP máy tính trong subnet của camera và tắt tường lửa máy tính.
+5. Chạy phần mềm máy chủ để xem hình ảnh camera.
+6. Liên hệ bộ phận kinh doanh hoặc hỗ trợ kỹ thuật MRDVS để nhận phần mềm máy chủ.
+
+### Tín hiệu I/O
+
+| Giao diện | Loại | Ghi chú |
+| --- | --- | --- |
+| IN1 | Ngõ vào | Ngõ vào rời mức cao chủ động; hỗ trợ ngõ vào 24V/hở |
+| IN2 | Ngõ vào | Ngõ vào rời mức cao chủ động; hỗ trợ ngõ vào 24V/hở |
+| OUT1 | Ngõ ra | Ngõ ra rời nối mass/hở; hỗ trợ kéo lên 24V |
+| OUT2 | Ngõ ra | Ngõ ra rời nối mass/hở; hỗ trợ kéo lên 24V |
+| COM | GND | Mass chung cho ngõ ra rời, dùng chung cho IN và OUT |
+
+## An toàn và câu hỏi thường gặp
+
+### Cấp an toàn laser
+
+| <img src="/images/products/s-series-s2-max-2-user-guide-laser-safety.avif" alt="An toàn laser" /> | An toàn laser |
+| --- | --- |
+| Sản phẩm này phát ra laser vô hình trong khi hoạt động. Tránh để mắt tiếp xúc với chùm tia. Laser tuân thủ Class 1 và không gây hại cho người trong điều kiện sử dụng bình thường theo EN60825. |  |
+
+### Vận hành đúng
+
+Camera S2 Max 2.0 sử dụng nguồn DC 24V. Kết nối cáp nguồn trước khi cấp điện và không đảo cực dương, âm. Đảo cực có thể làm hỏng sản phẩm.
+
+### Nhiệt độ hoạt động
+
+Giữ nhiệt độ môi trường trong phạm vi nêu trong thông số kỹ thuật sản phẩm (Bảng 2-1). Lắp sản phẩm lên linh kiện dẫn nhiệt như giá đỡ kim loại để cải thiện tản nhiệt và đạt hiệu suất tối ưu.
+
+### Khắc phục sự cố
+
+| STT | Sự cố | Cách xử lý |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh tường lửa đã tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong LAN sử dụng cùng IP; chọn địa chỉ IP cần thiết |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Ethernet Gigabit; dữ liệu ban đầu có thể không ổn định qua Fast Ethernet |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi cài đặt quyền |
+
+## Phụ lục: Thành phần gói hàng
+
+<Frame>
+  ![Camera S2 Max 2.0](/images/products/s-series-s2-max-2-user-guide-s2-max-2-0-camera-02.avif)
+</Frame>
+
+Camera S2 Max 2.0
+
+<Frame>
+  ![Cáp chức năng 8 chân](/images/products/s-series-s2-max-2-user-guide-8-pin-function-cable.avif)
+</Frame>
+
+Cáp chức năng 8 chân
+
+<Frame>
+  ![Hai bộ chống nước bốn chi tiết](/images/products/s-series-s2-max-2-user-guide-two-four-piece-waterproof-kits.avif)
+</Frame>
+
+Hai bộ chống nước bốn chi tiết
+
+<Frame>
+  ![Chứng nhận kiểm tra](/images/products/s-series-s2-max-2-user-guide-inspection-certificate.avif)
+</Frame>
+
+Một chứng nhận kiểm tra
+
+---
+
+---

@@ -1,0 +1,593 @@
+---
+title: Erkennungsalgorithmen bereitstellen und Ergebnisse integrieren
+sidebarTitle: Bereitstellung von Erkennungsalgorithmen
+description: "Stelle Algorithmen zur Personen-, Lagerplatz- und Volumenerkennung bereit, konfiguriere Kameraextrinsik und Parameter und rufe Ergebnisse über TCP, UDP, HTTP oder Modbus TCP ab."
+---
+
+Dieser Leitfaden behandelt Bereitstellung, Kalibrierung, Konfiguration und Ergebnisintegration der MRDVS-Algorithmen für Personen-, Lagerplatz- und Volumenerkennung. Der Algorithmus läuft auf der Kamera; die Algorithmus-Hostanwendung dient zur Konfiguration, für Upgrades und zur Ergebnisprüfung.
+
+<Info>
+  Algorithmusfirmware und Algorithmus-Hostanwendung werden projektbezogen geliefert. Bestätige vor dem Flashen der Algorithmusfirmware, dass auf der Kamera eine MDS-Firmwareversion läuft. Beschaffe ein Installationspaket, das zu Projekt und Kameramodell passt.
+</Info>
+
+## Unterstützter Umfang
+
+### Systemkomponenten
+
+| Komponente | Funktion |
+| --- | --- |
+| 3D-Kamera | Nimmt RGB-Bilder und Punktwolken auf und führt den Erkennungsalgorithmus auf der Kamera aus. |
+| Algorithmus-Hostanwendung | Konfiguriert Algorithmen, kalibriert die Extrinsik, zeigt Ergebnisse an und aktualisiert die Algorithmusfirmware. |
+| Industrie-PC oder übergeordnetes System | Führt die Hostanwendung aus oder liest Ergebnisse über eine Netzwerkschnittstelle. |
+| LiDAR | `mid360`, wird für die ursprüngliche Konfiguration der radar-basierten Lösung verwendet. |
+
+### Algorithmen und Kameras
+
+| Algorithmus | Unterstützte Kamera |
+| --- | --- |
+| Personenerkennung | M4 Pro |
+| Lagerplatzerkennung | S10 Pro |
+| Volumenerkennung | S10 und S10 Pro |
+
+Produktinformationen findest du auf der [Produktseite der 3D-Kamera S10](/de/products/s-series/s10-overview).
+
+### Umgebung der Hostanwendung
+
+| Element | Empfohlene Konfiguration |
+| --- | --- |
+| Betriebssystem | Windows 10 oder höher |
+| CPU | Intel® Core™ i5 (7. Generation) oder höher |
+| Arbeitsspeicher | 8 GB oder mehr |
+| GPU | Intel® UHD Graphics oder eine leistungsfähigere integrierte oder dedizierte GPU |
+
+## Hardware- und Netzwerkbereitstellung
+
+### Kamera installieren
+
+Verwende eine starre Halterung, um Bewegungen oder Vibrationen nach der Installation zu verhindern. Für die Personenerkennung wird normalerweise eine horizontale Installation oder eine Installation mit einem Winkel von höchstens 30° verwendet.
+
+<Frame>
+  ![Beispiele für die Installation der Kamerahalterung](/images/developers/deployment-algorithm-detection-camera-installation-methods.avif)
+</Frame>
+
+### Geräte verbinden
+
+<Steps>
+  <Step title="Stromversorgung und Netzwerk verbinden">
+    Versorge die Kamera mit einer geregelten 24-V-Gleichstromversorgung. Verwende ein Cat6A- oder Cat7-Kabel, um die Kamera mit einem Gigabit-Switch oder Controller zu verbinden.
+  </Step>
+  <Step title="Mehrere Kameras bereitstellen">
+    Installiere jede Kamera in der im CAD-Plan angegebenen Höhe und Position. Verbinde alle Kameras über einen Gigabit-Switch und prüfe für jede Kamera Stromversorgung und Linkstatus.
+  </Step>
+  <Step title="Testziele vorbereiten">
+    Platziere die zu erkennenden Personen, Paletten oder Güter vor der Kalibrierung der Extrinsik und der Konfiguration der Bereiche im Sichtfeld der Kamera.
+  </Step>
+</Steps>
+
+### Hostnetzwerk konfigurieren
+
+Lege Hostcomputer und Kamera in dasselbe Subnetz. Das ursprüngliche Beispiel verwendet folgenden Plan:
+
+| Element | Beispiel |
+| --- | --- |
+| Host-IP-Adresse | `192.168.100.xxx` |
+| Subnetzmaske | `255.255.255.0` |
+| Standardgateway | `192.168.100.1` |
+
+<Steps>
+  <Step title="Adaptereinstellungen öffnen">
+    Öffne unter Windows **Control Panel → Network and Sharing Center → Change adapter settings** und wähle anschließend den mit der Kamera verbundenen Ethernet-Adapter aus.
+  </Step>
+  <Step title="IPv4 konfigurieren">
+    Öffne **Internet Protocol Version 4 (TCP/IPv4)**, wähle **Use the following IP address** und gib eine freie statische Adresse im Subnetz der Kamera ein.
+  </Step>
+  <Step title="Verbindung bestätigen">
+    Speichere die Einstellungen, bestätige eine Gigabit-Verbindung und verwende die Hostanwendung, um die Kamera zu suchen oder zu öffnen.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Windows-Netzwerk- und Freigabecenter](/images/developers/deployment-algorithm-detection-camera-network-configuration.avif)
+  </Frame>
+
+  <Frame>
+    ![Windows-Einstellungen für eine statische IPv4-Adresse](/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Lass die Firewall in einem Produktionsnetzwerk nicht deaktiviert. Wenn die Hostanwendung keine Verbindung herstellen kann, erstelle zuerst eine Regel für die erforderliche Anwendung oder den erforderlichen Port. Deaktiviere die Firewall vorübergehend nur in einem vertrauenswürdigen Debugging-Netzwerk und stelle den Schutz anschließend wieder her.
+</Warning>
+
+## Software installieren und aktualisieren
+
+### Hostanwendungen installieren
+
+1. Beziehe die Kamera-Hostanwendung von der Seite [Software-Downloads](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Software-Downloads").
+2. Installiere die Kamera-Hostanwendung außerhalb des Systemlaufwerks.
+3. Kopiere die projektbezogen gelieferten Dateien der Algorithmus-Hostanwendung in den Ordner `Tools` unterhalb des Verzeichnisses der Kamera-Hostanwendung. Ersetze gleichnamige Dateien und doppelklicke anschließend auf die ausführbare Datei, um sie zu starten.
+
+<Frame>
+  ![Installation der Kamera-Hostanwendung](/images/developers/deployment-algorithm-detection-picture-2.avif)
+</Frame>
+
+Um nur die Algorithmus-Hostanwendung zu aktualisieren, ersetze ihre `.exe`-Datei durch die gelieferte Version.
+
+### Algorithmusfirmware aktualisieren
+
+<Warning>
+  Die Kamera startet während des Flashens neu. Trenne weder Stromversorgung noch Netzwerk und schließe die Hostanwendung nicht. Das Paket muss zu Kameramodell, MDS-Firmwareversion und Projektalgorithmus passen.
+</Warning>
+
+<Tabs>
+  <Tab title="Kamera-Hostanwendung">
+    1. Starte `LxCameraViewer.exe` und öffne die Kamera.
+    2. Wähle **Basic tools → Function settings → Firmware upgrade**.
+    3. Wähle die gelieferte Datei des Erkennungsalgorithmus aus und wähle **Run**.
+  </Tab>
+  <Tab title="Algorithmus-Hostanwendung">
+    1. Wähle die Zielkamera in der Geräteliste aus.
+    2. Wähle **Upgrade firmware**, wähle die Datei des Erkennungsalgorithmus aus und öffne sie.
+    3. Warte, bis die Kamera wieder in der Geräteliste angezeigt wird.
+  </Tab>
+</Tabs>
+
+Wenn die Kamera nach dem Neustart wieder angezeigt wird, ist das Flashen abgeschlossen. Ein grüner Kamerahintergrund in der Algorithmus-Hostanwendung bedeutet, dass die Kamera verbunden und der Algorithmus verfügbar ist.
+
+## Algorithmus-Hostanwendung
+
+### Start und Status
+
+Starte `LxApplicationViewer.exe`. Ein grünes Symbol in der Geräteliste zeigt eine verbundene Kamera an. Wähle ein Gerät aus, um zwischen RGB- und Punktwolkenansicht zu wechseln. Standardbenutzer können Ergebnisse anzeigen; Administratoren können Kamera- und Algorithmusparameter ändern.
+
+<Frame>
+  ![Hauptfenster der Algorithmus-Hostanwendung](/images/developers/deployment-algorithm-detection-administrator.avif)
+</Frame>
+
+### Grundlegende Werkzeuge
+
+| Funktion | Beschreibung |
+| --- | --- |
+| Benutzerwechsel | Berechtigungsstufen wechseln. Administratoren können Kamera- und Algorithmusparameter konfigurieren. |
+| Idealer Boden | Referenzhorizont ein- oder ausblenden. |
+| Extrinsischer Boden | Den aus der Extrinsikkalibrierung berechneten Boden ein- oder ausblenden. |
+| Anzeigecache | Unverändert lassen. |
+| Algorithmus anzeigen | Den aktuell aktivierten Algorithmus anzeigen. |
+| Gespeicherte Bilder exportieren | Gespeicherte Bilder exportieren. |
+| Historische Wiedergabe | RGB-Bilder und ToF-Datenprotokolle anzeigen. |
+| Anwendungsalgorithmus wechseln | Den auszuführenden Algorithmus auswählen und anschließend **Save and send** wählen. |
+| Erkennungsergebnisse anzeigen | Die Ausgabe des aktuellen Algorithmus anzeigen. |
+
+### Statusleiste und Wiedergabe
+
+| Funktion | Beschreibung |
+| --- | --- |
+| RGB | Das RGB-Bild anzeigen. |
+| Punktwolke | Die Punktwolke anzeigen. |
+| Algorithmus stoppen | Den aktuellen Algorithmus stoppen. Er startet erst wieder automatisch, wenn die Kamera erneut eingeschaltet wird. |
+| Firmware aktualisieren | Den Workflow zum Upgrade der Algorithmusfirmware öffnen. |
+| Kamera neu starten | Die ausgewählte Kamera neu starten. |
+
+Wenn sich der Status ändert, speichert die Software ein RGB-Bild und Punktwolkendaten. Wiedergabedaten werden nicht zwischen Algorithmen geteilt. Die Wiedergabezeit verwendet die interne Uhr der Kamera, nicht die Systemzeit des Hostcomputers.
+
+Wenn der Gerätehintergrund gelb ist oder grün ist, das Bild aber nicht aktualisiert wird, aktiviere die automatische Aktualisierung, um die Bildaufnahme fortzusetzen.
+
+## Extrinsikkalibrierung
+
+### Kamerakonfiguration
+
+| Konfiguration | Beschreibung |
+| --- | --- |
+| Kameraname | Identifiziert eine Kamera in einer Bereitstellung mit mehreren Kameras. |
+| Simulationsmodus | Interne Funktion; deaktiviert lassen. |
+| Bildspeichermodus | Speichert Algorithmusbilddaten auf der Kamera. |
+| Bildaufnahmemodus | `MDS` belegt den Kamerazugriff nicht. `SDK` tut dies; die Hostanwendung kann die Kamera während der Ausführung des Algorithmus nicht öffnen. |
+| `x`, `y`, `z` | Extrinsische Kameraposition; `z` ist die Kamerahöhe über dem Boden. |
+| `roll`, `pitch`, `yaw` | Extrinsische Winkel der Kameraausrichtung. |
+| Idealer Boden | Standardwert beibehalten. |
+| Konfiguration aus Kamera lesen | Liest die aktuelle Kamerakonfiguration. |
+| Speichern und senden | Schreibt Änderungen auf die Kamera. Nicht gespeicherte Parameter werden nicht wirksam. |
+| Extrinsikkalibrierung | Kalibriert Kamerahöhe und -ausrichtung. |
+
+<Tabs>
+  <Tab title="Vertikale Installation">
+    1. Öffne **Camera configuration**. Setze vor der Kalibrierung `x`, `y`, `z`, `roll`, `pitch` und `yaw` auf `0` und wähle anschließend **Save and send**.
+    2. Wähle **Extrinsic calibration**. Prüfe nach erfolgreicher Kalibrierung das Ergebnis im Parameterbereich.
+
+    <Frame>
+      ![Extrinsikkalibrierung für eine vertikale Installation](/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Horizontale Installation">
+    1. Öffne **Camera configuration** und rufe die Seite zur Parameterkalibrierung auf.
+    2. Richte den Boden der Punktwolke am Koordinatensystem aus: Die rote `X`- und grüne `Y`-Achse liegen auf dem Boden, während die blaue `Z`-Achse senkrecht zum Boden nach oben zeigt.
+    3. Passe normalerweise zuerst nur `roll` und `z` an und setze die anderen Werte auf `0`. Wähle nach der Prüfung **Save and send**.
+
+    <Frame>
+      ![Ergebnis der Extrinsikkalibrierung für eine horizontale Installation](/images/developers/deployment-algorithm-detection-1.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Referenz der Algorithmusparameter
+
+Wähle nach jeder Änderung eines Algorithmusparameters **Save and send**. Behalte Filterparameter bei ihren Standardwerten, sofern ein Test vor Ort keine Anpassung erfordert.
+
+<Tabs>
+  <Tab title="Personenerkennung">
+    <Frame>
+      ![Globale Konfiguration der Personenerkennung](/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif)
+    </Frame>
+
+    | Parameter | Beschreibung |
+    | --- | --- |
+    | Algorithmusversion | Aktuelle Algorithmusversion. |
+    | Erkennungsfrequenz | Aktualisierungsfrequenz für Bilder und Ergebnisse. |
+    | Temporaler Filter | Bei `3` müssen drei aufeinanderfolgende identische Ergebnisse vorliegen, bevor ein Ergebnis als gültig gilt. |
+    | Kernelgröße | Kernelgröße für morphologische 2D-Operationen. Größere Werte verkleinern Ziele und vergrößern den Hintergrund. |
+    | Abstandsschwellenwert | Bestimmt, ob Punkte ähnlich sind oder derselben Klasse angehören. |
+    | Mindestpunktzahl | Erforderliche Punktwolkenanzahl für semantisches Clustering. |
+    | Mindestanzahl nicht semantischer Punkte | Erforderliche Punktwolkenanzahl für nicht semantisches Clustering. |
+    | Nachbarschaftsgröße | Definiert den Bereich der Punktnachbarschaft und beeinflusst die Granularität des Clusterings. |
+    | Rotationserkennung | An die Installationsrichtung der Kamera anpassen; die Ausrichtung mit dem Logo nach unten als Referenz `0°` verwenden. |
+
+    | Bereichsparameter | Beschreibung |
+    | --- | --- |
+    | Bereich hinzufügen/löschen | Einen Bereich für die Personenerkennung erstellen oder löschen. |
+    | Aktuelle Box | Den aktiven Erkennungsbereich auswählen. |
+    | Minimales/maximales `X`, `Y`, `Z` | Die 3D-Grenzen des Bereichs definieren. |
+    | ID | Bereichsname zur Unterscheidung mehrerer Bereiche. |
+    | Bereich per Ziehen anpassen | Mit der linken Maustaste entlang `x` und `y`, mit der rechten Maustaste entlang `z` ziehen. |
+
+    <Frame>
+      ![Konfiguration des Personenerkennungsbereichs](/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Lagerplatzerkennung">
+    <Frame>
+      ![Globale Konfiguration der Lagerplatzerkennung](/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif)
+    </Frame>
+
+    | Parameter | Beschreibung |
+    | --- | --- |
+    | Algorithmusversion | Aktuelle Algorithmusversion. |
+    | KI-Filter | Semantische Segmentierung; derzeit nicht verfügbar. |
+    | Erkennungsfrequenz | Aktualisierungsfrequenz der Ergebnisse. |
+    | Ausrichtungswinkel | Maximal zulässiger Winkelversatz der Ladung, wenn die Ausrichtungsprüfung aktiviert ist. |
+    | Ausrichtungsprüfung | Prüft Winkelversatz und Grenzstatus. Erkannte Objekte werden mit gelben Volumenboxen angezeigt. |
+    | Temporaler Filter | Gibt einen gültigen Zustand erst nach mehreren aufeinanderfolgenden konsistenten Ergebnissen aus. |
+    | Mindestpunktzahl | Objekte mit weniger Punkten als diesem Wert werden ignoriert. |
+
+    | Bereichsmodus | Konfiguration |
+    | --- | --- |
+    | 2D-RGB | Verwende minimale und maximale Pixelwerte für `X` und `Y`, um den Lagerplatz zu definieren. Der semantische Modus und ein semantisches Modell sind erforderlich. |
+    | 3D-Punktwolke | Verwende minimale und maximale Werte für `X`, `Y` und `Z`, um den Platz zu definieren. Ziehe mit der linken Maustaste entlang `x` und `y` oder mit der rechten Maustaste entlang `z`. |
+
+    | Erweiterte Funktion | Beschreibung |
+    | --- | --- |
+    | Aktuelle Box kopieren | Den aktiven Lagerplatzbereich kopieren. |
+    | Richtung, Abstand, Anzahl | Gleichmäßig verteilte Kopien entlang der `X`-, `Y`- oder `Z`-Achse definieren. |
+    | Ausführen | Mehrere Bereiche aus der Konfiguration erzeugen. |
+    | QR-Code-Kalibrierung | Breite, Länge, `Z_MIN` und `Z_MAX` des Lagerplatzes eingeben und anschließend mit einem QR-Code kalibrieren. |
+
+    <Frame>
+      ![Konfiguration des 3D-Lagerplatzbereichs](/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Volumenerkennung">
+    <Frame>
+      ![Globale Konfiguration der Volumenerkennung](/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif)
+    </Frame>
+
+    | Parameter | Beschreibung |
+    | --- | --- |
+    | Algorithmusversion | Aktuelle Algorithmusversion. |
+    | Trigger mode | Bei Aktivierung für jeden Trigger ein Bild und Ergebnis aufnehmen. |
+    | Upward detection | Mit dem umgekehrten Kamerakoordinatensystem erkennen. |
+    | Detection frequency | Aktualisierungsfrequenz für Bilder und Ergebnisse. |
+    | Detection-plane distance | Referenzposition der unteren Objektfläche in mm. |
+    | Neighborhood count / distance threshold | Filterparameter; in den meisten Bereitstellungen die Standardwerte beibehalten. |
+    | Normal-vector filter threshold | Geneigte Punktwolkenebenen filtern. Die ursprüngliche Empfehlung ist `60`. |
+    | Normal-vector distance threshold | Filterparameter. Der ursprünglich empfohlene Bereich ist `20–30`. |
+    | Minimum point count | Objekte mit weniger Punkten als diesem Wert werden ignoriert. |
+    | Minimum `X`, `Y`, `Z` | Mindestschwellenwerte für Länge, Breite und Höhe in mm. |
+
+    | Bereichsparameter | Beschreibung |
+    | --- | --- |
+    | Minimales/maximales `X`, `Y`, `Z` | Definiert die 3D-Grenzen des Bereichs für die Volumenerkennung. |
+
+    <Frame>
+      ![Konfiguration des Volumenerkennungsbereichs](/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Algorithmus bereitstellen
+
+Wechsle in den Punktwolkenmodus und scrolle über den Bildbereich, um Punktwolkendaten anzuzeigen.
+
+### Personenerkennung
+
+<Steps>
+  <Step title="Horizontale Installation kalibrieren">
+    Richte die `X`- und `Y`-Achsen an der Bodenpunktwolke aus. Die `Z`-Achse muss senkrecht zum Boden stehen und nach oben zeigen.
+  </Step>
+  <Step title="Globale Parameter festlegen">
+    Öffne **Human detection**. Normalerweise muss nur **Rotation detection** festgelegt werden. Eine Drehung der Kamera im Uhrzeigersinn unterstützt `0°`, `90°`, `180°` und `270°`.
+  </Step>
+  <Step title="Erkennungsbereich erstellen">
+    Wähle **Add detection region**, lege minimales und maximales `X`, `Y` und `Z` fest und verschiebe den Bereich über das Ziel. Im ursprünglichen Beispiel wird ein Bereich von `1000 × 1000 × 2000 mm` verwendet.
+  </Step>
+  <Step title="Speichern und prüfen">
+    Wähle **Save and send**, führe einen Test durch, bei dem eine Person den Bereich durchquert, und prüfe das Ergebnis in der Statusleiste oder der historischen Wiedergabe.
+  </Step>
+</Steps>
+
+| Zuordnungsregel | Keine Person | Person | Hindernis | Person und Hindernis |
+| --- | --- | --- | --- | --- |
+| Nur Tiefe | `0` | `2` | `2` | `2` |
+| Semantik plus Tiefe | `0` | `1` | `0` | `1` |
+
+Der Nur-Tiefe-Modus meldet jedes Objekt im Bereich. Der Modus Semantik plus Tiefe meldet nur als Personen klassifizierte Cluster.
+
+### Lagerplatzerkennung
+
+<Steps>
+  <Step title="Kamera kalibrieren">
+    Befolge das Verfahren zur Extrinsikkalibrierung. Richte `X` und `Y` am Boden aus und halte `Z` senkrecht und nach oben zeigend.
+  </Step>
+  <Step title="Globale Parameter konfigurieren">
+    Lege **Alignment check**, **Alignment angle** und **Minimum point count** für den Standort fest. Aktiviere die Ausrichtungsprüfung, wenn die Ladung in einem definierten Winkel platziert werden muss.
+  </Step>
+  <Step title="Lagerplätze erstellen">
+    Wähle im Punktwolkenmodus **Add storage location**, wechsle zur Draufsicht und drücke `X`, um das Zeichnen zu starten oder zu beenden. Ziehe das Rechteck über die Palette und passe die Grenzen für `X`, `Y` und `Z` an. Drücke erneut `X`, um den Zeichenmodus zu verlassen.
+  </Step>
+  <Step title="Speichern und prüfen">
+    Wähle **Save and send**. Konfiguriere die Plätze im 2D-RGB- oder 3D-Punktwolkenmodus und prüfe `Result` in der Statusleiste.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Zeichnen eines Lagerplatzbereichs im Punktwolkenmodus](/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif)
+</Frame>
+
+| Zustand des Lagerplatzes | `Result` |
+| --- | --- |
+| Leer | `0` |
+| Belegt oder belegt und ausgerichtet | `1` |
+| Belegt mit einem Winkel über dem Ausrichtungsschwellenwert | `2` |
+| Belegt und außerhalb der Platzgrenze | `3` |
+
+Verwende für ein regelmäßiges Layout **Copy current box**, um Plätze mit fester Richtung und festem Abstand zu erstellen. Wenn eine QR-Code-Prüfung erforderlich ist, verwende **QR Code calibration**, um Platzabmessungen und Tiefenbereich zu konfigurieren.
+
+### Volumenerkennung
+
+<Steps>
+  <Step title="Vertikale Installation kalibrieren">
+    Die Volumenerkennung arbeitet von oben nach unten. Nach der Kalibrierung zeigt die `Z`-Achse nach unten und die `X`-/`Y`-Ebene ist parallel zum Boden.
+  </Step>
+  <Step title="Erkennungsebene festlegen">
+    Lege die Erkennungsebene bei Gütern, die direkt auf dem Boden liegen, auf die Bodenhöhe. Um nur Güter auf einer Palette zu messen, richte die Ebene an der Punktwolke der Palette aus.
+  </Step>
+  <Step title="Mindestabmessungen und Bereich festlegen">
+    Lege minimale Werte für `X`, `Y` und `Z` fest, um kleine Ziele zu filtern. Lege anschließend die Bereichsgrenzen anhand der Erkennungsebene und der Abmessungen der Ladung fest.
+  </Step>
+  <Step title="Speichern und prüfen">
+    Wähle **Save and send**, platziere ein oder mehrere Objekte im Bereich und prüfe zurückgegebene Länge, Breite, Höhe und Anzahl.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Bodenerkennungsebene für die Volumenerkennung](/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif)
+  </Frame>
+
+  <Frame>
+    ![Volumenerkennungsergebnis für ein einzelnes Objekt](/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif)
+  </Frame>
+</Columns>
+
+Aktiviere für die Einzeltriggeraufnahme **Trigger mode** unter **Volume detection** und wähle **Save and send**. Wähle anschließend unter **Basic tools** **Single trigger** oder sende `TM_TRIGGER` über TCP oder UDP.
+
+## Kommunikationsschnittstellen
+
+<Note>
+  Die IP-Adresse in den Beispielen dient nur zur Veranschaulichung. Ersetze sie durch die Kameraadresse am Standort und prüfe vor der Integration in ein übergeordnetes System Netzwerk, Algorithmusstatus und Ergebnisformat.
+</Note>
+
+### Übertragungsmethoden
+
+| Protokoll | Port | Anfrage | Verwendung |
+| --- | --- | --- | --- |
+| TCP | `14951` | `RESULT_UPDATE` | Aktuelles Algorithmergebnis abrufen. |
+| UDP | `14950` | `RESULT_UPDATE` | Aktuelles Algorithmergebnis abrufen. |
+| HTTP | `14952` | `RESULT_UPDATE` | Algorithmergebnis als JSON abrufen. |
+| TCP / UDP | Ergebnisport | `TM_TRIGGER` | Eine getriggerte Volumenerkennung ausführen und das Ergebnis zurückgeben. |
+| Modbus TCP | `16502` | Holding-Register lesen | Lagerplatzstatus lesen. |
+
+### HTTP-Anfrage für Ergebnisse
+
+Das übergeordnete System sendet eine Ergebnisanfrage an den Vision-Endpunkt, der eine JSON-Zeichenfolge zurückgibt. Verwende die mit dem Projekt gelieferte Anfrage-Header in deinem HTTP-Client sowie den folgenden Anfrage-Body.
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Löst die Rückgabe des aktuellen Algorithmergebnisses durch die Kamera aus.
+</ParamField>
+
+### Allgemeine Antwortfelder
+
+<ResponseField name="IP" type="string" required>
+  IP-Adresse der Kamera, die die Daten erzeugt hat.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string" required>
+  Kameraname; ändere ihn in der Kamerakonfiguration.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Rückgabecode; `0` bedeutet Erfolg.
+</ResponseField>
+
+<Tabs>
+  <Tab title="Personenerkennung (SG)">
+    <ResponseField name="SG" type="object" required>
+      Statusobjekt, dessen Schlüssel die IDs der Erkennungsbereiche sind: `0` bedeutet kein Ziel, `1` bedeutet, dass eine Person erkannt wurde, und `2` bedeutet, dass ein Objekt nur anhand der Tiefenregel erkannt wurde.
+    </ResponseField>
+
+    <ResponseField name="__object_details" type="string[]">
+      Clusterdetails. Jedes Element ist eine JSON-Zeichenfolge, die erneut deserialisiert werden muss.
+    </ResponseField>
+
+    <ResponseField name="SG_DATA_TIME" type="string">
+      Zeitstempel der Personenerkennungsdaten.
+    </ResponseField>
+
+    <ResponseField name="SG_RES_TIME" type="string">
+      Zeitstempel des Personenerkennungsergebnisses.
+    </ResponseField>
+
+    Clusterdetails enthalten `rbx2d`, `rby2d`, `tlx2d` und `tly2d` (Koordinaten der 2D-Box), `semantic_index`, `traceID` sowie `x_min`, `x_max`, `y_min`, `y_max`, `z_min` und `z_max` (Grenzen der 3D-Box).
+  </Tab>
+  <Tab title="Lagerplatzerkennung (SS)">
+    <ResponseField name="SS" type="object" required>
+      Statusobjekt, dessen Schlüssel die Lagerplatz-IDs sind: `0` leer, `1` belegt, `2` belegt mit Winkelversatz und `3` belegt und außerhalb der Grenzen.
+    </ResponseField>
+
+    <ResponseField name="X__detail__info" type="number[]">
+      Details für Platz `X`: Mittelpunkt `x`, `y` und `z`, Länge, Breite, Höhe und Winkelversatz von der Begrenzungsbox. Ein in 2D erstellter Platz gibt für alle Werte `-1` zurück.
+    </ResponseField>
+
+    <ResponseField name="SS_DATA_TIME" type="string">
+      Zeitstempel der Lagerplatzdaten.
+    </ResponseField>
+
+    <ResponseField name="SS_RES_TIME" type="string">
+      Zeitstempel des Lagerplatzergebnisses.
+    </ResponseField>
+  </Tab>
+  <Tab title="Volumenerkennung (TM)">
+    <ResponseField name="TM" type="object[]" required>
+      Array vollständiger Volumenboxen im Erkennungsbereich.
+    </ResponseField>
+
+    <ResponseField name="angle" type="number">
+      Winkelversatz der Volumenbox.
+    </ResponseField>
+
+    <ResponseField name="cx" type="number">
+      `x`-Koordinate des Mittelpunkts der Volumenbox.
+    </ResponseField>
+
+    <ResponseField name="cy" type="number">
+      `y`-Koordinate des Mittelpunkts der Volumenbox.
+    </ResponseField>
+
+    <ResponseField name="cz" type="number">
+      `z`-Koordinate des Mittelpunkts der Volumenbox.
+    </ResponseField>
+
+    <ResponseField name="length" type="number">
+      Objektlänge.
+    </ResponseField>
+
+    <ResponseField name="width" type="number">
+      Objektbreite.
+    </ResponseField>
+
+    <ResponseField name="height" type="number">
+      Objekthöhe.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Semantischer Typ.
+    </ResponseField>
+
+    <ResponseField name="valid" type="boolean">
+      Gibt an, ob das Ergebnis gültig ist.
+    </ResponseField>
+
+    <ResponseField name="TM_DATA_TIME" type="string">
+      Zeitstempel der Volumenerkennungsdaten.
+    </ResponseField>
+
+    <ResponseField name="TM_RES_TIME" type="string">
+      Zeitstempel des Volumenerkennungsergebnisses.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+### Beispiel einer Antwort der Personenerkennung
+
+```json
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
+```
+
+### Modbus TCP (Lagerplatzerkennung)
+
+Ergebnisse werden nach Lagerplatz-ID geordnet; höchstens die ersten 16 Plätze werden zurückgegeben.
+
+| Konfiguration | Wert |
+| --- | --- |
+| Port | `16502` |
+| Adresse zum Lauschen | `0.0.0.0` (alle Netzwerkschnittstellen) |
+| Registeranzahl | `16` |
+| Startadresse | `0x0100` |
+| Byte-Reihenfolge | Big-Endian |
+
+| Register | Inhalt | Datenformat |
+| --- | --- | --- |
+| `0x0100 + ID` | Ergebnisse der Lagerplatz- und Markererkennung | 2-Byte-`uint16_t` |
+| Höherwertige 8 Bit | Statuscode des Lagerplatzes | `0–2` |
+| Niederwertige 8 Bit | Statuscode des Markers | `0–2`; diese Funktion ist derzeit nicht verfügbar, daher entspricht die Bedeutung der des Lagerplatzstatus. |
+
+| Lagerplatzstatus | Bedeutung | Bedingung |
+| --- | --- | --- |
+| `0` | Leer | Keine Güter oder Palette. |
+| `1` | Normal belegt | Güter sind wie erforderlich platziert. |
+| `2` | Abnormal belegt | Größe oder Position der Ladung liegt außerhalb der Anforderung. |
+
+| Markerstatus | Bedeutung |
+| --- | --- |
+| `0` | Marker nicht erkannt. |
+| `1` | Marker erkannt. |
+| `2` | Fehler bei der Markererkennung. |
+
+#### Vierten Lagerplatz lesen
+
+Das folgende Beispiel verwendet die Transaktions-ID `0x0001`, um ein Holding-Register an Adresse `0x0104` zu lesen. Die Antwort enthält den Status `0x0002`.
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
+```
+
+| Feld | Anfragewert | Beschreibung |
+| --- | --- | --- |
+| Transaktionskennung | `00 01` | Client-Sequenznummer; die Antwort muss übereinstimmen. |
+| Protokollkennung | `00 00` | Fester Modbus/TCP-Wert. |
+| Länge | `00 06` | Anzahl der Bytes in den folgenden Anfragefeldern. |
+| Unit-Kennung | `FF` | Broadcast-Modus oder Geräteadresse. |
+| Funktionscode | `03` | Holding-Register lesen. |
+| Startadresse | `01 04` | `0x0100 + 4`. |
+| Registeranzahl | `00 01` | Ein Register lesen. |
+
+## Fehlerbehebung
+
+| Symptom | Prüfungen mit Priorität |
+| --- | --- |
+| Kamera nicht gefunden | Bestätige, dass Host und Kamera dasselbe Subnetz verwenden, der Netzwerkadapter Gigabit unterstützt sowie Stromversorgung und Switch-Links intakt sind. |
+| Parameter werden nicht wirksam | Bestätige, dass nach der Änderung **Save and send** ausgewählt wurde. |
+| Kein Algorithmergebnis | Bestätige, dass die richtige Algorithmusfirmware geflasht wurde, das Gerät grün ist und der Algorithmus aktiviert ist. |
+| Leere oder veraltete Punktwolke | Scrolle über den Punktwolkenbereich, um Daten anzuzeigen; aktiviere bei Bedarf die automatische Aktualisierung. |
+| Abnormale Lagerplatz- oder Volumenergebnisse | Prüfe Richtung der Extrinsikachsen, Erkennungsebene und Bereichsgrenzen erneut und teste anschließend mit Objekten vom Standort. |

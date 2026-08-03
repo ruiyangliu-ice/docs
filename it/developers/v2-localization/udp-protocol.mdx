@@ -1,0 +1,120 @@
+---
+title: Protocollo di comunicazione UDP V2 Pro
+sidebarTitle: Protocollo UDP V2 Pro
+description: "Configura la comunicazione UDP di V2 Pro e analizza i messaggi di odometria, rilocalizzazione, mappatura, mappe e risultati della localizzazione."
+hidden: true
+---
+
+V2 Pro scambia dati di controllo e localizzazione con un client tramite UDP. Nell'applicazione host web, imposta `portName` sull'indirizzo IP del dispositivo di destinazione e `portCode` sulla porta di ascolto. V2 Pro ascolta sulla porta `8001` per i messaggi in ingresso.
+
+<Frame>
+  ![Configurazione dell'indirizzo UDP di destinazione nell'applicazione host web V2 Pro](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+</Frame>
+
+## Convenzioni dei messaggi
+
+| Elemento | Convenzione |
+| --- | --- |
+| Ordine dei byte | Big-endian: il byte più significativo precede quello meno significativo. |
+| Struttura del frame | Header, lunghezza, comando, dati e checksum. |
+| Checksum | Un byte. Esegui XOR su tutti i byte tranne l'header e il checksum stesso. |
+| Campo della lunghezza | Esclude l'header e il checksum. Alcuni messaggi non contengono un campo della lunghezza. |
+| Nome della mappa | Solo lettere ASCII, cifre e caratteri di sottolineatura; il primo carattere deve essere una lettera. |
+
+<Note>
+  La numerazione dei byte inizia da Byte 0. Tutti gli interi composti da più byte usano l'ordine big-endian.
+</Note>
+
+## Messaggi ricevuti da V2 Pro
+
+### Odometria
+
+| Intervallo di byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, velocità intera a 4 byte |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, angolo intero a 4 byte |
+| Byte 12 | Checksum |
+
+La velocità `v` è espressa in mm/s. L'angolo `theta` è espresso in 0.01°; ad esempio, 90° viene inviato come 9000.
+
+### Rilocalizzazione
+
+| Intervallo di byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, coordinata X intera a 4 byte |
+| Byte 8–11 | Y3 Y2 Y1 Y0, coordinata Y intera a 4 byte |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, angolo intero a 4 byte |
+| Byte 16 | Checksum |
+
+`x` e `y` sono espressi in mm. `theta` è espresso in 0.01°; ad esempio, 90° viene inviato come 9000.
+
+### Avviare o arrestare la mappatura
+
+| Intervallo di byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0x02 |
+| Byte 4 | Stato: 0x01 avvia la mappatura; 0x00 arresta la mappatura |
+| Byte 5–34 | Nome della mappa, ASCII fisso di 30 byte; riempi i byte inutilizzati con 0x00 |
+| Byte 35 | Checksum |
+
+Invia il comando di avvio una volta per attività di mappatura. Non inviarlo ripetutamente.
+
+### Cambiare mappa
+
+| Intervallo di byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0x0C |
+| Byte 4–33 | Nome della mappa, ASCII fisso di 30 byte; riempi i byte inutilizzati con 0x00 |
+| Byte 34 | Checksum |
+
+Conferma che la mappa di destinazione sia stata creata prima di inviare il comando.
+
+## Messaggi inviati da V2 Pro
+
+### Risultato della localizzazione
+
+| Intervallo di byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, coordinata X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, coordinata Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, orientamento |
+| Byte 16–23 | Timestamp7 fino a Timestamp0, marca temporale |
+| Byte 24 | Checksum |
+
+`X` e `Y` sono espressi in mm. `THETA` è espresso in 0.001 rad. Dopo una rilocalizzazione riuscita, V2 Pro invia continuamente questo messaggio.
+
+### Risultato dell'attività
+
+I comandi di avvio mappatura, arresto mappatura e cambio mappa restituiscono il proprio stato nel messaggio seguente.
+
+| Byte | Contenuto |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Lunghezza: Length |
+| Byte 3 | Comando: 0xFF |
+| Byte 4 | ID attività |
+| Byte 5 | Stato: 0x01 successo; 0x00 errore |
+| Byte 6 | Checksum |
+
+| ID attività | Operazione |
+| --- | --- |
+| 0x01 | Avviare la mappatura |
+| 0x02 | Arrestare la mappatura |
+| 0x03 | Cambiare mappa |
+
+<Info>
+  L'arresto della mappatura può richiedere tempo. Il completamento richiede solitamente circa un terzo della durata della raccolta dati. Attendi il messaggio del risultato dell'attività prima di avviare un'altra operazione.
+</Info>

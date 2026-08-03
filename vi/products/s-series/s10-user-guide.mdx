@@ -1,0 +1,220 @@
+---
+title: Hướng dẫn sử dụng camera S10
+sidebarTitle: Hướng dẫn sử dụng camera S10
+description: "Thông số kỹ thuật sản phẩm, giao diện, lắp đặt, sử dụng lần đầu và khắc phục sự cố cho camera S10."
+hidden: true
+---
+
+<Info>
+  Đây là hướng dẫn sử dụng S10 lưu trữ. Xem [trang sản phẩm dòng S10](/vi/products/s-series/s10-overview) để biết các model công khai và tài liệu hiện tại.
+</Info>
+
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 2025/01/13 | V1.0 | Phát hành lần đầu |
+| 2025/02/27 | V1.1 | Cập nhật trường nhìn ToF |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+| ㅤ | ㅤ | ㅤ |
+
+## Tổng quan sản phẩm
+
+### Mục đích và phạm vi
+
+Tài liệu này mô tả thông số kỹ thuật camera S10 và một số chi tiết thiết kế dành cho nhà phát triển tích hợp và sử dụng sản phẩm.
+
+### Thuật ngữ
+
+| Camera RGB-D | Camera xuất hình ảnh RGB và độ sâu được đồng bộ và căn chỉnh không gian |
+| --- | --- |
+| Độ sâu | Luồng video tương tự luồng màu hoặc đơn sắc, trong đó mỗi pixel biểu thị khoảng cách từ pixel đó đến camera |
+| FOV | Trường nhìn: phạm vi góc của cảnh được camera thu lại, gồm trường nhìn ngang (HFOV), dọc (VFOV) và chéo (DFOV) |
+| Camera IR | Camera hồng ngoại; trong sản phẩm này, chủ yếu thu dải cận hồng ngoại |
+| Camera RGB | Camera màu |
+| Camera độ sâu | Camera có module độ sâu thường gồm bộ chiếu điểm, camera IR và bộ xử lý độ sâu; module màu thường là camera RGB |
+| SoC | Hệ thống trên chip dùng để xử lý hình ảnh, tính độ sâu và chạy thuật toán ứng dụng |
+| dToF | Công nghệ cảm biến độ sâu thời gian bay trực tiếp |
+
+### Nguyên lý hoạt động
+
+Đây là camera độ sâu 3D dToF có tầm xa, độ chính xác tốt, khả năng chống nhiễu mạnh và dữ liệu ổn định. Module RGB tích hợp thu hình ảnh màu. Camera căn chỉnh hình ảnh RGB và độ sâu bên trong.
+
+### Chi tiết sản phẩm
+
+Camera RGB-D công nghiệp nhỏ gọn này cung cấp dữ liệu độ sâu từ 0.3m đến 8m. Camera căn chỉnh hình ảnh RGB và độ sâu theo không gian và thời gian. SoC tích hợp xuất độ sâu, cường độ, RGB, đám mây điểm và kết quả phát hiện chướng ngại vật. Ngoài Ethernet, hai ngõ vào IO và hai ngõ ra IO chuyển đổi giữa bốn vùng tránh chướng ngại vật rồi xuất tín hiệu dừng khẩn cấp, giảm tốc và trạng thái an toàn.
+
+---
+
+### Ngoại hình sản phẩm
+
+<img src="/images/products/s-series-s10-user-guide-s10-camera.avif" alt="Camera S10" /> 
+
+Hình 1. Camera S10
+
+### Tính năng
+
+- Công suất dToF thấp và kích thước nhỏ gọn
+- Xử lý tích hợp xuất kết quả phát hiện chướng ngại vật để vận hành cắm là chạy
+- Khả năng thích ứng môi trường mạnh: chống ánh nắng 100 kLux và hoạt động từ tối đến sáng, trong nhà và ngoài trời
+- Phạm vi đo rộng 0.3-8m
+
+---
+
+## Thông số kỹ thuật
+
+### Thông số cơ bản
+
+| Model sản phẩm | S10 |
+| --- | --- |
+| Nguyên lý hoạt động | Camera độ sâu dToF |
+| Định dạng ngõ ra | Độ sâu & RGB & Bản đồ biên độ |
+| Độ phân giải và tốc độ khung hình ToF | 240 × 160; tối đa 20 fps, thông thường 15 fps |
+| Trường nhìn ToF | 90° × 61° |
+| Độ phân giải và tốc độ khung hình RGB | 1920×1080 @Max. 20fps, thông thường 15fps |
+| Trường nhìn RGB | 90°\*70° |
+| Phạm vi | 0.3-8m (@90% ref), 0.3-3m (@5%) |
+| Độ chính xác | 1 độ lệch chuẩn \<3cm ở nhiệt độ phòng (25℃), độ phản xạ 70% và độ rọi \<50kLux |
+| Công suất tiêu thụ | ≤4W & 28w |
+| Laser | 940nm |
+| Kích thước | Rộng 80mm × cao 25mm × sâu 37mm |
+| Khối lượng | ≤300g |
+| Ngõ vào nguồn | 24V±20% |
+| Giao diện truyền thông | Ethernet / IO |
+| Cấp bảo vệ | IP54 |
+| Nhiệt độ hoạt động | -20°C~60°C |
+| Nhiệt độ lưu trữ | -40°C~85°C |
+| Môi trường phần mềm | C / C\+\+ / ROS SDK |
+| Hệ điều hành hỗ trợ | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Làm mát | Thụ động, không quạt |
+
+Lưu ý: Model 3D xác định kích thước sản phẩm.
+
+### Định nghĩa giao diện
+
+Giao diện phía camera:
+
+Camera có ba giao diện: đầu nối nguồn DC24V, đầu nối Fast Ethernet và đầu nối IO 8 chân.
+
+<Frame>
+  ![Định nghĩa giao diện camera](/images/products/s-series-s10-user-guide-camera-interface-definitions.avif)
+</Frame>
+
+Sơ đồ chân cáp:
+
+<Frame>
+  ![Sơ đồ chân cáp](/images/products/s-series-s10-user-guide-cable-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Chi tiết sơ đồ chân cáp](/images/products/s-series-s10-user-guide-cable-pinout-detail.avif)
+</Frame>
+
+| Cáp | Chân P1 | Màu | Mô tả |
+| --- | --- | --- | --- |
+| Cáp Ethernet | 1 | Cam | OUT\_COM2 |
+| ㅤ | 2 | Vàng | OUT\_2 |
+| ㅤ | 3 | Xanh lá | OUT\_COM1 |
+| ㅤ | 4 | Xanh dương | OUT\_1 |
+| ㅤ | 5 | Tím | IN\_COM2 |
+| ㅤ | 6 | Xám | IN\_2 |
+| ㅤ | 7 | Nâu | IN\_COM1 |
+| ㅤ | 8 | Trắng | IN\_1 |
+| Cáp nguồn | 1 | Đỏ | 24V\+ |
+| ㅤ | G | Đen | 24V- |
+
+### Linh kiện camera
+
+<Frame>
+  ![Linh kiện camera](/images/products/s-series-s10-user-guide-camera-components.avif)
+</Frame>
+
+| VCSEL | Bộ phát laser |
+| --- | --- |
+| SPAD | Diode avalanche đơn photon |
+| RGB | Module RGB |
+| Đèn báo nguồn | Nhấp nháy chậm sau khi bật nguồn |
+
+## Yêu cầu tích hợp
+
+### Thiết kế cơ khí
+
+### Trường nhìn camera
+
+<Frame>
+  ![Trường nhìn camera](/images/products/s-series-s10-user-guide-camera-field-of-view.avif)
+</Frame>
+
+Hình 3. Trường nhìn camera
+
+### Kích thước camera
+
+<Frame>
+  ![Kích thước camera](/images/products/s-series-s10-user-guide-camera-dimensions.avif)
+</Frame>
+
+### SDK phần mềm
+
+Xem hướng dẫn sử dụng phần mềm máy chủ MRDVS và hướng dẫn phát triển SDK MRDVS.
+
+---
+
+### Môi trường và độ tin cậy
+
+| Môi trường | ㅤ | Thông số kỹ thuật |
+| --- | --- | --- |
+| Môi trường hoạt động | Nhiệt độ | -20℃--60℃ |
+| ㅤ | Độ ẩm | 0%–95% RH, không ngưng tụ |
+| ㅤ | Độ rọi | 0–100 kLux |
+| Môi trường lưu trữ | Nhiệt độ | -40℃--85℃ |
+| ㅤ | Độ ẩm | 10%–95% RH, không ngưng tụ |
+| Độ tăng nhiệt trong hoạt động bình thường | ㅤ | Độ tăng nhiệt vỏ \<25℃ |
+| Cấp ESD | ㅤ | Phóng điện tiếp xúc ±4KV, phóng điện qua không khí ±8KV |
+| Cấp RE | ㅤ | Tuân thủ GB 9254 CLASS A |
+| Tuổi thọ | ㅤ | 10 năm |
+| Chứng nhận môi trường | ㅤ | RoHS |
+
+---
+
+## Sử dụng lần đầu
+
+### Kiểm tra kết nối
+
+1. Kết nối camera với nguồn DC 24V/2A. Đèn báo nguồn màu xanh nhấp nháy chậm xác nhận bật nguồn bình thường.
+2. Kết nối camera với máy tính bằng cáp Ethernet Category 6.
+3. Địa chỉ IP mặc định của camera là 192.168.100.82.
+4. Đặt IP máy tính trong subnet của camera và tắt tường lửa máy tính.
+5. Chạy phần mềm máy chủ để xem hình ảnh camera.
+6. Liên hệ bộ phận kinh doanh hoặc hỗ trợ kỹ thuật MRDVS để nhận phần mềm máy chủ.
+
+### Đấu dây I/O
+
+| Giao diện | Loại | Ghi chú |
+| --- | --- | --- |
+| IN1 | Ngõ vào | Ngõ vào rời mức cao chủ động; hỗ trợ ngõ vào 24V/hở |
+| IN2 | Ngõ vào | Ngõ vào rời mức cao chủ động; hỗ trợ ngõ vào 24V/hở |
+| OUT1 | Ngõ ra | Ngõ ra rời nối mass/hở; hỗ trợ kéo lên 24V |
+| OUT2 | Ngõ ra | Ngõ ra rời nối mass/hở; hỗ trợ kéo lên 24V |
+| COM | GND | Mass chung cho ngõ ra rời; sử dụng IN1 với IN\_COM1 |
+
+---
+
+## An toàn và câu hỏi thường gặp
+
+### Cấp an toàn laser
+
+<Frame>
+  ![Cấp an toàn laser](/images/products/s-series-s10-user-guide-laser-safety-class.avif)
+</Frame>
+
+---
+
+### Khắc phục sự cố
+
+| STT | Sự cố | Cách xử lý |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh tường lửa đã tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong LAN sử dụng cùng IP; chọn địa chỉ IP cần thiết |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Ethernet Gigabit; dữ liệu ban đầu có thể không ổn định qua Fast Ethernet |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi cài đặt quyền |

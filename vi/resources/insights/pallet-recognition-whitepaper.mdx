@@ -1,0 +1,106 @@
+---
+title: "Sách trắng: Nhận dạng pallet cho logistics thông minh"
+sidebarTitle: Sách trắng về nhận dạng pallet
+description: "Tìm hiểu các thách thức kỹ thuật, quy trình PalletPro, chế độ docking và các ca nhận dạng pallet công khai cho xe nâng không người lái."
+---
+
+Độ lệch pallet, khác biệt về quy cách, bề mặt phản quang và vật liệu có độ phản xạ thấp có thể ảnh hưởng đến việc docking và vận chuyển bằng xe nâng không người lái. Bài viết này mô tả các thách thức kỹ thuật của nhận dạng pallet, quy trình nhận dạng và docking bằng PalletPro cùng các ca ứng dụng công khai.
+
+Trong logistics kho hàng, AMR và xe nâng không người lái có thể thực hiện các tác vụ vận chuyển lặp lại. Vận hành an toàn, định vị và docking pallet đáng tin cậy vẫn phụ thuộc vào toàn bộ hệ thống xe, cảm nhận, điều khiển và quản lý địa điểm.
+
+Rủi ro xung quanh thiết bị di động phải được kiểm soát thông qua điều khiển xe, phát hiện vật cản, quy trình vận hành và quản lý địa điểm. [Dữ liệu năm 2023/24 của UK Health and Safety Executive về các vụ va chạm gây tử vong với xe đang di chuyển](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-Jb3Ud6FjFojVYjxwKLvcgju4nRf "Nguồn 1") cung cấp bối cảnh hữu ích cho ngành.
+
+## Bối cảnh tự động hóa kho hàng
+
+Các kho hàng lớn sử dụng robot để phân loại, vận chuyển và lấy hàng. [Thông tin công khai của Amazon Robotics](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-DIAmd4kfsoNLNGxTGxDcM65unyf "Nguồn 2") cho thấy các hệ thống robot thường kết hợp cảm nhận, điều khiển xe, lập lịch và cơ chế an toàn tại địa điểm. Với xe nâng không người lái, nhận dạng pallet và tư thế ổn định là đầu vào quan trọng.
+
+## Thách thức kỹ thuật trong nhận dạng pallet
+
+Xe nâng không người lái cần biết tư thế của pallet so với xe để điều chỉnh đường docking. Trong thực tế, độ lệch ngang, hướng, kết cấu và độ phản xạ bề mặt thay đổi. Ánh sáng môi trường và hiện tượng che khuất cũng có thể ảnh hưởng đến chất lượng dữ liệu cảm biến.
+
+<Frame>
+  ![Các yếu tố kỹ thuật ảnh hưởng đến nhận dạng pallet cho xe nâng không người lái](/images/resources/insights-pallet-recognition-whitepaper-the-importance-of-pallet-identification-in-unmanned-forklifts.avif)
+</Frame>
+
+## Phương pháp nhận dạng
+
+PalletPro trích xuất các đặc điểm đám mây điểm như chân pallet và thanh ngang từ dữ liệu độ sâu ToF 3D, sau đó xuất tư thế để xe thực hiện docking. Nhãn và LiDAR 2D có thể hoạt động trong một số môi trường cụ thể, nhưng mức độ phù hợp phụ thuộc vào kết cấu pallet, cách lắp đặt và điều kiện địa điểm.
+
+## Hệ thống nhận dạng pallet PalletPro
+
+PalletPro kết hợp camera 3D với các thuật toán nhận dạng pallet và cung cấp vị trí cùng hướng của pallet cho hệ thống điều khiển xe.
+
+- **Xử lý và xuất dữ liệu tích hợp**: Thuật toán xử lý dữ liệu độ sâu trên camera và xuất kết quả nhận dạng ở tốc độ **10 FPS**.
+- **Triển khai và docking**: Camera có thể được lắp giữa hai càng xe nâng. Hiệu chuẩn tự động thiết lập quan hệ tọa độ giữa camera, xe và pallet. Có thể đánh giá pallet tiêu chuẩn hai chân, bốn chân và pallet xếp chồng theo địa điểm; pallet không có chân hoặc pallet bất thường cần được đánh giá theo dự án.
+- **Tích hợp**: Hệ thống cung cấp kết quả nhận dạng theo thời gian thực. Cấu hình giao diện, cách lắp đặt trên xe và chiến lược docking theo tài liệu dự án.
+
+<Frame>
+  ![Quy trình thị giác 3D và nhận dạng pallet bằng PalletPro](/images/resources/insights-pallet-recognition-whitepaper-mrdvs-pallet-recognition-system-palletpro-relevant-illustrations-to-solve-the-p.avif)
+</Frame>
+
+- **Thích ứng môi trường**: Với ánh sáng môi trường mạnh hoặc pallet có độ phản xạ thấp, hãy xác thực model camera, khoảng cách lắp đặt, độ phơi sáng và tham số bộ lọc tại địa điểm.
+
+[Xem thử nghiệm nhận dạng pallet ngoài trời của MRDVS trên Bilibili](https://www.bilibili.com/video/BV1nYtoeREJD/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=11 "Thử nghiệm nhận dạng pallet ngoài trời")
+
+Các mục tiêu có độ phản xạ thấp như pallet màu đen có thể làm giảm chất lượng đám mây điểm. Sử dụng video thử nghiệm thực địa và dữ liệu tại địa điểm để đánh giá hiệu năng nhận dạng.
+
+[Xem thử nghiệm nhận dạng pallet màu đen của MRDVS trên Bilibili](https://www.bilibili.com/video/BV14AtZeNEuQ/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=7 "Thử nghiệm nhận dạng pallet màu đen")
+
+## Nhận dạng và docking
+
+Camera M Series có thể được lắp giữa hai càng xe nâng để thu dữ liệu độ sâu của pallet và xuất tư thế pallet thông qua thuật toán nhận dạng.
+
+Trong quy trình điển hình, xe trước tiên thu tư thế ở khoảng cách gần `2 m` so với pallet và điều chỉnh hướng. Sau đó xe thực hiện định vị chính xác và hiệu chỉnh ngang ở khoảng cách gần `1.5 m`. Hãy xác thực khoảng cách thực tế và chiến lược điều khiển theo xe, tốc độ và địa điểm.
+
+<Frame>
+  ![Quy trình nhận dạng pallet và docking xe nâng](/images/resources/insights-pallet-recognition-whitepaper-relevant-for-identification-and-docking.avif)
+</Frame>
+
+Hệ thống điều khiển xe có thể sử dụng **docking hai giai đoạn** hoặc **docking theo thời gian thực**, tùy theo quy trình tác vụ.
+
+### Docking hai giai đoạn
+
+1. **Định vị từ xa**: Thu kết quả nhận dạng ở khoảng cách `1,800–2,800 mm` so với pallet và điều chỉnh hướng cùng độ lệch ngang.
+2. **Xác minh trường gần**: Khi đầu càng cách mép trước pallet khoảng `200 mm`, thu lại kết quả và kiểm tra kết quả có đáp ứng yêu cầu đưa càng vào pallet không.
+3. **Đưa càng vào pallet**: Đưa càng vào pallet sau khi xác minh. Nếu xác minh không thành công, điều chỉnh xe và xác minh lại.
+
+### Docking theo thời gian thực
+
+Liên tục thu kết quả nhận dạng để điều chỉnh tư thế xe. Thực hiện các hiệu chỉnh nhỏ và hoàn tất việc đưa càng vào pallet ở khoảng cách gần `200 mm` so với mép trước pallet. Hệ thống điều khiển nên sử dụng dấu thời gian dữ liệu để xử lý độ trễ.
+
+## Truyền thông
+
+Giải pháp hỗ trợ các giao diện như TCP, UDP, CAN, RS-485 và API. Kiểm tra tài liệu sản phẩm và triển khai tương ứng để biết khả năng hỗ trợ và định dạng thông báo. Chuyển đổi giữa thuật toán nhận dạng và tránh vật cản theo cấu hình dự án.
+
+## Ca ứng dụng
+
+### Ca 1: Nhận dạng pallet và lỗ cuộn cáp cho công ty truyền thông cáp quang
+
+**Bối cảnh dự án**: Company F sử dụng xe xếp hàng không người lái cho các tác vụ logistics. Dự án bao gồm nhận dạng và vận chuyển pallet cùng lỗ cuộn cáp.
+
+**Giải pháp**: PalletPro cung cấp thông tin độ sâu và tư thế pallet để bộ điều khiển xe điều chỉnh tư thế xe xếp hàng. Thị giác 3D cũng nhận dạng lỗ cuộn cáp.
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_1.mp4" title="Ca 1: nhận dạng pallet và lỗ cuộn cáp bằng xe xếp hàng không người lái" alt="Video ca nhận dạng pallet bằng xe xếp hàng không người lái 1" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_2.mp4" title="Ca 1: nhận dạng lỗ cuộn cáp" alt="Video ca nhận dạng pallet bằng xe xếp hàng không người lái 2" />
+</Frame>
+
+### Ca 2: Nhận dạng pallet không tiêu chuẩn trong ngành sợi thủy tinh
+
+<Frame>
+  ![Dự án nhận dạng pallet không tiêu chuẩn trong ngành sợi thủy tinh](/images/resources/insights-pallet-recognition-whitepaper-case-2-the-non-standard-pallet-identification-project-in-the-fiberglass-industr.avif)
+</Frame>
+
+**Bối cảnh dự án**: Cơ sở Tongxiang của China Jushi Group đã đưa xe nâng không người lái vào vận chuyển tự động trên sàn sản xuất.
+
+**Thách thức**: Logistics nội bộ sử dụng pallet kim loại tùy chỉnh với hình dạng và góc đặt khác nhau, làm tăng độ khó của việc nhận dạng và đưa càng vào pallet.
+
+**Giải pháp**: Xe nâng không người lái sử dụng PalletPro để thu dữ liệu độ sâu của pallet và hiệu chỉnh vị trí cùng hướng của pallet theo thời gian thực.
+
+## Nguồn
+
+1. [UK Health and Safety Executive](https://www.hse.gov.uk/statistics/fatals.htm)
+2. [The Robot Report](https://www.therobotreport.com/a-decade-after-acquiring-kiva-amazon-unveils-its-first-amr/)

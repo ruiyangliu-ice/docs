@@ -1,0 +1,204 @@
+---
+title: Benutzerhandbuch für die H3310-Kamera
+sidebarTitle: H3310-Benutzerhandbuch
+description: "Spezifikationen, Schnittstellen, mechanische Integration und grundlegende Fehlerbehebung für die RGB-D-Kamera H3310 mit strukturiertem Licht."
+hidden: true
+---
+
+Dieses Handbuch beschreibt die RGB-D-Kamera H3310 mit strukturiertem Licht, einschließlich ihrer Spezifikationen, Schnittstellendefinitionen, Anforderungen an die mechanische Integration und grundlegender Fehlerbehebung.
+
+## Versionsverlauf
+
+| Datum | Version | Beschreibung |
+| --- | --- | --- |
+| 2023-11-21 | V0.1 | Erstveröffentlichung |
+| 2024-11-25 | V1.0 | Lagertemperatur aktualisiert |
+
+## Begriffe und Funktionsprinzip
+
+### Allgemeine Begriffe
+
+| Begriff | Beschreibung |
+| --- | --- |
+| Baseline | Horizontaler Abstand zwischen den optischen Zentren der beiden stereoskopischen Bildeinheiten. |
+| Tiefe | Daten, die den Abstand von jedem Pixel zur Kamera darstellen. |
+| FOV | Sichtfeld, einschließlich horizontaler, vertikaler und diagonaler Winkel. |
+| IR-Kamera | Kamera für die Bildgebung im nahen Infrarotbereich. |
+| RGB-Kamera | Farbbildkamera. |
+| Tiefenkamera | Bildgebungssystem, das Tiefendaten ausgibt und typischerweise Projektions-, Bildaufnahme- und Tiefenverarbeitungseinheiten umfasst. |
+| SoC | System-on-Chip für Bildverarbeitung, Tiefenberechnung und Anwendungsalgorithmen. |
+
+### Binokulares codiertes strukturiertes Licht
+
+Die H3310 erfasst 3D-Informationen, indem sie die Projektion von codiertem strukturiertem Licht mit binokularer Bildgebung kombiniert.
+
+<Steps>
+</Steps>
+
+<Frame>
+  ![Binokulare Bildgebung mit codiertem strukturiertem Licht und Tiefenberechnung](/images/products/h-series-h3310-user-guide-how-structured-light-technology-works.avif)
+</Frame>
+
+## Produktübersicht
+
+Die H3310 ist eine industrielle RGB-D-Kamera mit strukturiertem Licht und einem Gewicht von 400 g. Sie kann an einem Verbundroboter oder einem kleinen Roboterarm montiert werden. In einem Arbeitsbereich von 300–600 mm gibt die Kamera hochpräzise Tiefen- und RGB-Daten aus und stellt eine integrierte Rechenplattform für Anwendungsalgorithmen bereit.
+
+<Frame>
+  ![H3310-Kamera](/images/products/h-series-h3310-user-guide-h3310-camera.avif)
+</Frame>
+
+### Funktionen
+
+- Integrierte 6.0-TOPS-Rechenplattform für Anwendungsalgorithmen.
+- Ausgabe von Tiefen-, RGB- und Amplitudenbildern.
+- Offene Schnittstellen für die Integration in Roboterarme und mobile Roboter.
+
+## Spezifikationen
+
+| Parameter | H3310 |
+| --- | --- |
+| Funktionsprinzip | Binokulares codiertes strukturiertes Licht |
+| Tiefenauflösung | 1280 × 1024 |
+| RGB-Auflösung | 1920 × 1080 |
+| Datenerfassungszeit | Etwa 0.8 s |
+| Ausgabedaten | Tiefenkarte, RGB-Bild, Amplitudenbild |
+| Arbeitsbereich | 300–600 mm |
+| Sichtfeld | 55° × 45° |
+| Messgenauigkeit | ±0.1 mm (bei 350 mm) |
+| Leistungsaufnahme | 8 W (24 VDC) |
+| Abmessungen (L × B × H) | 124 × 70 × 53 mm |
+| Gewicht | 400 g |
+| Stromversorgung | 12–24 VDC / 3 A |
+| Kommunikationsschnittstelle | Gigabit Ethernet |
+| Schutzart | IP55 |
+| Betriebstemperatur | 0–40 °C |
+| Lagertemperatur | −40–85 °C |
+| SDK | C/C\+\+ |
+| Unterstützung durch Drittanbieter | ROS, ROS2 |
+| Unterstützte Betriebssysteme | Arm Linux (AArch64), Linux (x86\_64), Windows 7/8/10/11 |
+| Kühlung | Passiv |
+| Augensicherheit | Klasse 3R |
+| Toleranz gegenüber Umgebungslicht | 10 kLux |
+
+## Schnittstellen und Bauteile
+
+### Schnittstellen an der Kamera
+
+<Frame>
+  ![Positionen der Stromversorgungs- und Ethernet-Anschlüsse der H3310](/images/products/h-series-h3310-user-guide-connector-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Pin-Nummerierung der H3310-Anschlüsse](/images/products/h-series-h3310-user-guide-connector-pinout-2.avif)
+</Frame>
+
+#### Ethernet-Anschluss
+
+| Pin | Signal | Aderfarbe |
+| --- | --- | --- |
+| 1 | 0\+ | Orange/Weiß |
+| 2 | 0− | Orange |
+| 3 | 1\+ | Grün/Weiß |
+| 4 | 1− | Grün |
+| 5 | 2\+ | Blau |
+| 6 | 2− | Blau/Weiß |
+| 7 | 3\+ | Braun/Weiß |
+| 8 | 3− | Braun |
+
+#### Stromversorgungs- und I/O-Anschluss
+
+| Pin | Signal | Beschreibung |
+| --- | --- | --- |
+| 1 | CON\_IN | Gemeinsamer Anschluss für I/O-Eingänge |
+| 2 | IN\_2 | I/O-Eingang 2 |
+| 3 | IN\_1 | I/O-Eingang 1 |
+| 4 | COM\_OUT | Gemeinsamer Anschluss für I/O-Ausgänge |
+| 5 | OUT\_2 | I/O-Ausgang 2 |
+| 6 | OUT\_1 | I/O-Ausgang 1 |
+| 7 | VIN\+ | Pluspol 24 VDC |
+| 8 | VIN− | Minuspol 24 VDC |
+
+### Bauteile der Kamera
+
+<Frame>
+  ![Optische Bauteile an der Vorderseite der H3310](/images/products/h-series-h3310-user-guide-camera-components.avif)
+</Frame>
+
+<Frame>
+  ![Anschlussbauteile der H3310-Kamera](/images/products/h-series-h3310-user-guide-camera-components-2.avif)
+</Frame>
+
+| Nummer | Bauteil |
+| --- | --- |
+| 1 | IR-Kamera |
+| 2 | RGB-Kamera |
+| 3 | Projektor für strukturiertes Licht |
+| 4 | Stromkabel |
+| 5 | Ethernetkabel |
+
+## Mechanische Integration
+
+### Sichtfeld und Koordinatensystem
+
+<Frame>
+  ![Sichtfeld der H3310](/images/products/h-series-h3310-user-guide-camera-field-of-view.avif)
+</Frame>
+
+Der Koordinatenursprung befindet sich auf der Vorderseite der Kamera. Die X- und Y-Achsen stimmen mit den auf dem Produkt markierten X- und Y-Achsen überein.
+
+<Frame>
+  ![Koordinatenursprung und Achsen der H3310](/images/products/h-series-h3310-user-guide-camera-coordinate-origin.avif)
+</Frame>
+
+### Abmessungen
+
+<Frame>
+  ![Abmessungen der H3310 von vorn und von der Seite](/images/products/h-series-h3310-user-guide-camera-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![Abmessungen der Befestigungsbohrungen der H3310](/images/products/h-series-h3310-user-guide-camera-dimensions-2.avif)
+</Frame>
+
+## Umgebung und Zuverlässigkeit
+
+| Element | Anforderung |
+| --- | --- |
+| Betriebstemperatur | 0–40 °C |
+| Luftfeuchtigkeit im Betrieb | 0–95 % RH, nicht kondensierend |
+| Beleuchtungsstärke im Betrieb | 0–30 kLux |
+| Luftfeuchtigkeit bei Lagerung | 10–95 % RH, nicht kondensierend |
+| Normale Temperaturerhöhung im Betrieb | Temperaturerhöhung des Gehäuses < 20 °C |
+| ESD | Kontaktentladung ±4 kV; Luftentladung ±8 kV |
+| Abgestrahlte Emissionen | Entspricht GB 9254 Klasse A |
+| Umweltkonformität | RoHS |
+
+## Verwendung und Sicherheit
+
+<Warning>
+  Zerlegen, verändern oder reparieren Sie die Kamera nicht. Blockieren Sie das Objektiv nicht und setzen Sie die Kamera weder Stürzen noch starken mechanischen Belastungen oder direkter Sonneneinstrahlung aus. Schalten Sie eine sichtbar beschädigte Kamera nicht ein.
+</Warning>
+
+<Frame>
+  ![Laser-Sicherheitshinweis der H3310](/images/products/h-series-h3310-user-guide-laser-safety-class.avif)
+</Frame>
+
+## Häufig gestellte Fragen
+
+<AccordionGroup>
+  <Accordion title="Die Hostanwendung kann die Kamera nicht öffnen">
+    Stellen Sie sicher, dass die Host-Firewall die Verbindung nicht blockiert. Überprüfen Sie anschließend die Stromversorgung der Kamera und die Netzwerkkonnektivität.
+  </Accordion>
+
+  <Accordion title="In der Geräteliste werden mehrere IP-Adressen angezeigt">
+    Im LAN können mehrere erkennbare Geräte vorhanden sein. Wählen Sie die IP-Adresse der Zielkamera aus.
+  </Accordion>
+
+  <Accordion title="Der Datenstream ist instabil">
+    Verwenden Sie ein Gigabit-Ethernetkabel. Ein 100-Mbit/s-Netzwerk kann anfänglich zu einem instabilen Datenstream führen.
+  </Accordion>
+
+  <Accordion title="Die Software kann nach der Installation nicht ausgeführt werden">
+    Wenn die Software in einem Verzeichnis mit eingeschränkten Rechten installiert ist, überprüfen Sie die Berechtigungen für Datei- und Programmausführung.
+  </Accordion>
+</AccordionGroup>

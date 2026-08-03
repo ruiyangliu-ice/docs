@@ -1,0 +1,120 @@
+---
+title: Protocolo de comunicación UDP de V2 Pro
+sidebarTitle: Protocolo UDP de V2 Pro
+description: "Configura la comunicación UDP de V2 Pro y analiza mensajes de odometría, relocalización, mapeo, mapas y resultados de localización."
+hidden: true
+---
+
+V2 Pro intercambia datos de control y localización con un cliente mediante UDP. En la aplicación web del host, establece `portName` en la dirección IP del dispositivo de destino y `portCode` en el puerto de escucha. V2 Pro escucha en el puerto `8001` los mensajes entrantes.
+
+<Frame>
+  ![Configuración de la dirección de destino UDP en la aplicación web del host de V2 Pro](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+</Frame>
+
+## Convenciones de los mensajes
+
+| Elemento | Convención |
+| --- | --- |
+| Orden de bytes | Big-endian: el byte alto precede al byte bajo. |
+| Estructura de trama | Encabezado, longitud, comando, datos y suma de comprobación. |
+| Suma de comprobación | Un byte. Aplica XOR a todos los bytes, excepto al encabezado y a la propia suma de comprobación. |
+| Campo de longitud | Excluye el encabezado y la suma de comprobación. Algunos mensajes no contienen un campo de longitud. |
+| Nombre del mapa | Solo letras ASCII, dígitos y guiones bajos; el primer carácter debe ser una letra. |
+
+<Note>
+  La numeración de bytes comienza en Byte 0. Todos los enteros de varios bytes usan el orden big-endian.
+</Note>
+
+## Mensajes recibidos por V2 Pro
+
+### Odometría
+
+| Rango de bytes | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, velocidad representada por un entero de 4 bytes |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, ángulo representado por un entero de 4 bytes |
+| Byte 12 | Suma de comprobación |
+
+La velocidad `v` se expresa en mm/s. El ángulo `theta` se expresa en 0,01°; por ejemplo, 90° se envía como 9000.
+
+### Relocalización
+
+| Rango de bytes | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, coordenada X representada por un entero de 4 bytes |
+| Byte 8–11 | Y3 Y2 Y1 Y0, coordenada Y representada por un entero de 4 bytes |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, ángulo representado por un entero de 4 bytes |
+| Byte 16 | Suma de comprobación |
+
+`x` e `y` se expresan en mm. `theta` se expresa en 0,01°; por ejemplo, 90° se envía como 9000.
+
+### Iniciar o detener el mapeo
+
+| Rango de bytes | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0x02 |
+| Byte 4 | Estado: 0x01 inicia el mapeo; 0x00 detiene el mapeo |
+| Byte 5–34 | Nombre del mapa, ASCII fijo de 30 bytes; rellena los bytes no utilizados con 0x00 |
+| Byte 35 | Suma de comprobación |
+
+Envía el comando de inicio una vez por tarea de mapeo. No lo envíes repetidamente.
+
+### Cambiar de mapa
+
+| Rango de bytes | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0x0C |
+| Byte 4–33 | Nombre del mapa, ASCII fijo de 30 bytes; rellena los bytes no utilizados con 0x00 |
+| Byte 34 | Suma de comprobación |
+
+Confirma que el mapa de destino se haya creado antes de enviar el comando.
+
+## Mensajes enviados por V2 Pro
+
+### Resultado de localización
+
+| Rango de bytes | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, coordenada X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, coordenada Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, orientación |
+| Byte 16–23 | Timestamp7 a Timestamp0, marca de tiempo |
+| Byte 24 | Suma de comprobación |
+
+`X` e `Y` se expresan en mm. `THETA` se expresa en 0,001 rad. Después de una relocalización correcta, V2 Pro envía continuamente este mensaje.
+
+### Resultado de la tarea
+
+Los comandos de iniciar el mapeo, detener el mapeo y cambiar de mapa devuelven su estado en el siguiente mensaje.
+
+| Byte | Contenido |
+| --- | --- |
+| Byte 0–1 | Encabezado: AC ED |
+| Byte 2 | Longitud: Length |
+| Byte 3 | Comando: 0xFF |
+| Byte 4 | ID de tarea |
+| Byte 5 | Estado: 0x01 correcto; 0x00 fallo |
+| Byte 6 | Suma de comprobación |
+
+| ID de tarea | Operación |
+| --- | --- |
+| 0x01 | Iniciar el mapeo |
+| 0x02 | Detener el mapeo |
+| 0x03 | Cambiar de mapa |
+
+<Info>
+  Detener el mapeo puede tardar. La finalización suele requerir aproximadamente un tercio de la duración de la recopilación de datos. Espera el mensaje de resultado de la tarea antes de iniciar otra operación.
+</Info>

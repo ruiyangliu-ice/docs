@@ -1,0 +1,166 @@
+---
+title: Bắt đầu nhanh với ROS
+description: "Cấu hình và chạy ROS SDK định vị thị giác V2 để tạo bản đồ, chuyển đổi bản đồ, tái định vị và đăng ký nhận kết quả định vị."
+hidden: true
+---
+
+## Tổng quan
+
+Mô-đun định vị V2 giao tiếp với ROS SDK trên máy tính chủ qua UDP. Giao diện web tích hợp hỗ trợ lập bản đồ, định vị và cấu hình tham số. ROS SDK cung cấp cùng các chức năng này, bao gồm lập bản đồ, tái định vị và tải bản đồ xuống.
+
+<Frame>
+  ![Kiến trúc giao tiếp giữa mô-đun định vị V2 và ROS SDK](/images/developers/ros-quickstart-preface.avif)
+</Frame>
+
+<Info>
+  Giao diện web mặc định có tại `192.168.100.201:9998`. Hãy cấu hình địa chỉ IP và cổng đích trên cả camera và ROS SDK, đồng thời đảm bảo các giá trị khớp nhau.
+</Info>
+
+## Điều kiện tiên quyết
+
+Cài đặt các thành phần Qt5 Core và Network cùng dependency `libzip`. Ví dụ sau sử dụng Ubuntu:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+Cài đặt `libzip` theo [hướng dẫn cài đặt libzip](https://blog.csdn.net/iamhuanyu/article/details/129603632). Sau đó biên dịch gói ROS từ `/V2-ROS-SDK-service`, nằm cùng cấp với `src`:
+
+```bash
+catkin_make
+```
+
+## Cấu hình và khởi động node
+
+<Steps>
+  <Step title="Kiểm tra cấu hình ROS SDK">
+    Mở `/V2-ROS-SDK-service/src/lx_camera_ros/launch/mapping.launch`. Địa chỉ IP mặc định của camera là `192.168.100.201`; nếu thay đổi IP của camera, hãy cập nhật địa chỉ này trong tệp. Đặt cổng thành `8001`.
+
+    <Frame>
+      ![Cài đặt kết nối camera trong mapping.launch](/images/developers/ros-quickstart-operation-2.avif)
+    </Frame>
+  </Step>
+  <Step title="Kiểm tra mạng và tham số mô-đun">
+    Kết nối camera và máy tính chủ vào cùng một switch và phân đoạn mạng. Trong giao diện web, mở **Cấu hình tham số (Parameter Configuration)**, đặt `portCode` thành `8987` và đặt `portName` thành địa chỉ IP của bộ điều hợp mạng trên máy tính chủ chạy ROS SDK.
+
+    <Frame>
+      ![Mục cấu hình tham số trong giao diện web](/images/developers/ros-quickstart-operation-3.avif)
+    </Frame>
+
+    <Frame>
+      ![Cài đặt cổng UDP và địa chỉ đích trong giao diện web](/images/developers/ros-quickstart-operation-4.avif)
+    </Frame>
+  </Step>
+  <Step title="Khởi động node ROS">
+    ```bash
+    cd /V2-ROS-SDK-service
+    source devel/setup.bash
+    roslaunch lx_camera_ros mapping.launch
+    ```
+
+    Terminal hiển thị thông tin khởi động khi node khởi động thành công.
+
+    <Frame>
+      ![Đầu ra terminal sau khi node ROS khởi động thành công](/images/developers/ros-quickstart-operation-5.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+## Xác minh giao tiếp
+
+Mở một terminal mới, chuyển đến `/V2-ROS-SDK-service` và nạp môi trường:
+
+```bash
+source devel/setup.bash
+```
+
+Đăng ký nhận topic trạng thái bộ nhớ để xác minh liên kết giao tiếp. Topic này cũng có thể được dùng làm heartbeat và phát dữ liệu ở tần số 2 Hz:
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+<Frame>
+  ![Đầu ra terminal của topic trạng thái bộ nhớ](/images/developers/ros-quickstart-debugging.avif)
+</Frame>
+
+Bạn cũng có thể gọi service sau để đọc tên bản đồ hiện tại:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+<Frame>
+  ![Kết quả đọc tên bản đồ hiện tại](/images/developers/ros-quickstart-debugging-2.avif)
+</Frame>
+
+## Tạo bản đồ và định vị
+
+Bật camera và chờ khoảng 30 giây để chương trình tích hợp khởi động trước khi khởi động node chuyển tiếp dữ liệu.
+
+<Steps>
+  <Step title="Bắt đầu lập bản đồ">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
+    ```
+
+    Sau khi service trả về `true`, di chuyển bệ qua khu vực để thu thập bản đồ.
+
+    <Frame>
+      ![Trạng thái giao diện web sau khi bắt đầu lập bản đồ](/images/developers/ros-quickstart-basic-operating-procedures.avif)
+    </Frame>
+  </Step>
+  <Step title="Dừng lập bản đồ">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
+    ```
+
+    Chờ service trả về `true` để xác nhận quá trình lập bản đồ đã hoàn tất.
+
+    <Frame>
+      ![Trạng thái giao diện web sau khi dừng lập bản đồ](/images/developers/ros-quickstart-basic-operating-procedures-2.avif)
+    </Frame>
+  </Step>
+  <Step title="Chuyển sang bản đồ mới">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
+    ```
+  </Step>
+  <Step title="Gửi pose tái định vị">
+    `orientation.x`, `orientation.y`, `orientation.z` và `orientation.w` là quaternion hướng. Hãy điền các giá trị này theo định dạng message của ROS.
+
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'map'
+      pose:
+        pose:
+          position: {x: 4.5, y: -15.5, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
+        covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    ```
+  </Step>
+  <Step title="Đăng ký nhận kết quả định vị theo thời gian thực">
+    ```bash
+    rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+    ```
+  </Step>
+</Steps>
+
+## Khắc phục sự cố
+
+<AccordionGroup>
+  <Accordion title="Chương trình ROS không thể biên dịch">
+    Xác minh Qt5 và `libzip` đã được cài đặt đầy đủ, sau đó chạy lại `catkin_make`.
+  </Accordion>
+
+  <Accordion title="ROS SDK không phản hồi sau khi gửi message">
+    Xác nhận camera và máy tính chủ nằm trong cùng một phân đoạn mạng, đồng thời có thể mở camera từ phần mềm máy chủ của camera. Sau đó kiểm tra cấu hình phía camera và ROS SDK.
+  </Accordion>
+
+  <Accordion title="Không thể gửi message gỡ lỗi ROS">
+    Định dạng message của ROS rất nghiêm ngặt. Giữ nguyên cấu trúc trường trong ví dụ và chỉ thay đổi các giá trị cần thiết cho bài kiểm tra.
+  </Accordion>
+</AccordionGroup>

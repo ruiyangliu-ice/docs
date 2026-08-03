@@ -1,0 +1,828 @@
+---
+title: Hướng dẫn sử dụng LxCameraViewer
+description: "Sử dụng LxCameraViewer để kết nối và cấu hình camera 3D MRDVS, đồng thời xem hình ảnh, đám mây điểm và kết quả thuật toán ứng dụng."
+---
+
+LxCameraViewer tìm kiếm và kết nối camera, hiển thị hình ảnh và đám mây điểm, cấu hình tham số camera, đồng thời cung cấp các công cụ bảo trì thuật toán ứng dụng.
+
+<Info>
+  Sổ tay PDF đầy đủ: [Sổ tay người dùng LxCameraViewer](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/lxcameraviewer_user_manual.pdf).
+</Info>
+
+## Tổng quan
+
+LxCameraViewer được xây dựng trên MRDVS Camera SDK và hỗ trợ Windows và Linux. Bạn có thể dùng phần mềm để xem và lưu hình ảnh độ sâu, cường độ, đám mây điểm và RGB; đọc và đặt tham số camera cùng thuật toán ứng dụng; đồng thời truy cập các công cụ cấu hình IP, bắt gói tin, giao tiếp và cấu hình card mạng.
+
+## Cài đặt và cấu hình mạng
+
+### Cấu hình hệ thống khuyến nghị
+
+| Hạng mục cấu hình | Windows | Linux |
+| --- | --- | --- |
+| Hệ điều hành | Windows 10 (64-bit) hoặc Windows 11 (64-bit) | Ubuntu (64-bit) |
+| Bộ nhớ | 4 GB trở lên | 4 GB trở lên |
+| Bộ điều hợp mạng và cáp | Gigabit Ethernet hoặc nhanh hơn | Gigabit Ethernet hoặc nhanh hơn |
+
+### Cấu hình địa chỉ IP và gateway
+
+Camera sử dụng địa chỉ IP tĩnh. Địa chỉ IP mặc định là `192.168.100.82` và có thể để trống gateway mặc định. Sử dụng subnet mask `255.255.0.0` trên Windows và `255.255.255.0` trên Linux.
+
+Đặt bộ điều hợp Ethernet của máy chủ kết nối với camera thành `192.168.100.x`, trong đó `x` là số bất kỳ từ `3` đến `254` và không trùng với IP của camera. Ví dụ, khi IP camera là `192.168.100.12`, đặt IP máy chủ thành `192.168.100.89`.
+
+<Frame>
+  ![Minh họa liên quan đến cấu hình địa chỉ IP và gateway](/images/developers/software-lxcameraviewer-ip-address-and-gateway-configuration.avif)
+</Frame>
+
+### Cài đặt phần mềm
+
+<Steps>
+  <Step title="Khởi động trình cài đặt">
+    Nhấp đúp vào `Lanxin-MRDVS-x.x.x.xxxx.exe` và cho phép ứng dụng thực hiện thay đổi trên thiết bị.
+  </Step>
+  <Step title="Chọn ngôn ngữ và đường dẫn cài đặt">
+    Chọn ngôn ngữ và đường dẫn cài đặt. Giữ đường dẫn mặc định nếu không có yêu cầu cụ thể, rồi chọn **Create desktop shortcut**.
+  </Step>
+  <Step title="Khởi động phần mềm lần đầu">
+    Sau khi cài đặt, nhấp chuột phải vào biểu tượng trên màn hình nền rồi chọn **Run as administrator**.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt trên máy chủ](/images/developers/software-lxcameraviewer-the-installation-of-the-host-computer.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt trên máy chủ 2](/images/developers/software-lxcameraviewer-host-computer-installation-2.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt trên máy chủ 3](/images/developers/software-lxcameraviewer-host-computer-installation-3.avif)
+</Frame>
+
+Hình 3
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt trên máy chủ 4](/images/developers/software-lxcameraviewer-host-computer-installation-4.avif)
+</Frame>
+
+Hình 4
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt trên máy chủ 5](/images/developers/software-lxcameraviewer-host-computer-installation-5.avif)
+</Frame>
+
+Hình 5
+
+### Cấu hình tường lửa
+
+Nếu phần mềm không thể mở camera, hãy tạm thời tắt tường lửa cho bộ điều hợp kết nối với camera trên một mạng gỡ lỗi đáng tin cậy. Ví dụ sau sử dụng Windows 10.
+
+Mở phần mềm rồi nhấp vào **Other Tools**.
+
+<Frame>
+  ![Các biểu tượng liên quan đến cấu hình tường lửa](/images/developers/software-lxcameraviewer-firewall-configuration.avif)
+</Frame>
+
+Hình 1
+
+Chọn **Network Card Configuration Tool** trong bảng điều khiển bên phải.
+
+<Frame>
+  ![Sơ đồ liên quan đến cấu hình tường lửa 2](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-2.avif)
+</Frame>
+
+Hình 2
+
+Trong công cụ cấu hình card mạng, nhấp vào **Open/Close**.
+
+<Frame>
+  ![Sơ đồ liên quan đến cấu hình tường lửa 3](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-3.avif)
+</Frame>
+
+<img src="/images/developers/software-lxcameraviewer-firewall-configuration-4.avif" alt="Biểu tượng liên quan đến cấu hình tường lửa 4" />Hình 3
+
+Cửa sổ bật lên trong Hình 4 cho biết tường lửa đang được bật. Cửa sổ bật lên trong Hình 5 cùng với thông báo ở góc dưới bên phải trong Hình 6 cho biết tường lửa đã được tắt.
+
+![Biểu tượng liên quan đến cấu hình tường lửa 5](/images/developers/software-lxcameraviewer-firewall-configuration-5.avif)
+
+![Biểu tượng liên quan đến cấu hình tường lửa 6](/images/developers/software-lxcameraviewer-firewall-configuration-6.avif)
+
+Hình 4 Hình 5
+
+<Frame>
+  ![Sơ đồ liên quan đến cấu hình tường lửa 7](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-7.avif)
+</Frame>
+
+Hình 6
+
+Nếu phương pháp này không hiệu quả, hãy nhấp vào **Firewall Configuration Page** và chờ trang mở.
+
+<Frame>
+  ![Sơ đồ liên quan đến cấu hình tường lửa 8](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-8.avif)
+</Frame>
+
+Hình 7
+
+<Warning>
+  Không để tường lửa bị tắt trên mạng sản xuất. Hãy khôi phục chế độ bảo vệ sau khi gỡ lỗi hoặc tạo quy tắc cho ứng dụng cần thiết.
+</Warning>
+
+## Sử dụng LxCameraViewer
+
+### Tổng quan giao diện phần mềm
+
+#### Camera chưa mở
+
+Giao diện ban đầu gồm các khu vực sau:
+
+- **Bảng danh sách**: Danh sách thiết bị, thông tin hiện tại và thông tin thiết bị.
+- **Thanh menu trên cùng**: Công cụ và lựa chọn ngôn ngữ giao diện.
+- **Khu vực hiển thị hình ảnh**: Chế độ xem đám mây điểm, độ sâu, cường độ và RGB.
+- Nhấp đúp vào thanh menu để phóng to hoặc khôi phục cửa sổ. Kéo thanh menu để di chuyển cửa sổ.
+
+<Frame>
+  ![Các biểu tượng liên quan đến tổng quan giao diện phần mềm khi camera chưa mở](/images/developers/software-lxcameraviewer-software-interface-overview-camera-not-opened.avif)
+</Frame>
+
+#### Camera đã mở
+
+Sau khi mở camera, thanh chức năng xuất hiện ở bên phải.
+
+- **Công cụ cơ bản**: Cài đặt hiển thị hình ảnh, cài đặt 2D, cài đặt 3D, lọc, giao diện phần cứng, cài đặt thu nhận và cài đặt chức năng.
+- **Thuật toán ứng dụng**: Cài đặt chế độ hoạt động, cài đặt chế độ thuật toán, phiên bản thuật toán và cài đặt thuật toán chi tiết.
+- **Công cụ khác**: Tải đám mây điểm cục bộ, cấu hình IP, bắt gói tin, cấu hình card mạng, giao tiếp, bật GPU và cấp độ nhật ký.
+
+<Frame>
+  ![Các biểu tượng liên quan đến tổng quan giao diện phần mềm khi camera đã bật](/images/developers/software-lxcameraviewer-software-interface-overview-camera-turned-on.avif)
+</Frame>
+
+### Mở và đóng thiết bị
+
+#### Danh sách thiết bị
+
+- Danh sách thiết bị nằm ở góc trên bên trái. Sử dụng **Refresh** để tìm kiếm camera và nút liền kề để thu gọn hoặc mở rộng danh sách.
+- Mỗi thiết bị hiển thị trạng thái mở, ID camera và địa chỉ IP. Di con trỏ lên ID camera để xem địa chỉ IP.
+- Nhấp vào **Open** hoặc **Close** để điều khiển kết nối. Nút này cũng hiển thị trạng thái hiện tại.
+- Thiết bị được chọn hiển thị màu xanh dương. Bạn có thể mở nhiều thiết bị nếu mạng có đủ băng thông; nhấp vào ID camera để chuyển đổi giữa các thiết bị.
+
+<Frame>
+  ![Các biểu tượng liên quan đến danh sách thiết bị](/images/developers/software-lxcameraviewer-device-list.avif)
+</Frame>
+
+Hình 1
+
+![Biểu tượng liên quan đến danh sách thiết bị 2](/images/developers/software-lxcameraviewer-device-list-2.avif)
+
+![Biểu tượng liên quan đến danh sách thiết bị 3](/images/developers/software-lxcameraviewer-device-list-3.avif)
+
+Hình 2 Hình 3
+
+![Biểu tượng liên quan đến danh sách thiết bị 4](/images/developers/software-lxcameraviewer-device-list-4.avif)
+
+![Biểu tượng liên quan đến danh sách thiết bị 5](/images/developers/software-lxcameraviewer-device-list-5.avif)
+
+Hình 4 Hình 5
+
+![Biểu tượng liên quan đến danh sách thiết bị 6](/images/developers/software-lxcameraviewer-device-list-6.avif)
+
+![Biểu tượng liên quan đến danh sách thiết bị 7](/images/developers/software-lxcameraviewer-device-list-7.avif)
+
+Hình 6 Hình 7
+
+### Thông tin hiện tại
+
+- Khu vực thông tin hiện tại nằm ở giữa bên trái giao diện. Khu vực này hiển thị thông tin camera, thao tác phần mềm, kết quả thao tác và kết quả luồng.
+- Sử dụng thanh cuộn phía dưới hoặc con lăn chuột để xem nội dung dài. Khu vực này lưu tối đa 25 mục; các mục cũ hơn sẽ bị ghi đè.
+- Nhấp vào nút thu gọn để ẩn khu vực này.
+
+<Frame>
+  ![Các biểu tượng liên quan đến thông tin ứng dụng](/images/developers/software-lxcameraviewer-application-information.avif)
+</Frame>
+
+Hình 1
+
+![Hình ảnh liên quan đến thông tin ứng dụng 2](/images/developers/software-lxcameraviewer-application-information-2.avif)
+
+![Hình ảnh liên quan đến thông tin ứng dụng 3](/images/developers/software-lxcameraviewer-application-information-3.avif)
+
+![Hình ảnh liên quan đến thông tin ứng dụng 4](/images/developers/software-lxcameraviewer-application-information-4.avif)
+
+Hình 2 Hình 3 Hình 4
+
+### Thông tin thiết bị
+
+- Khu vực thông tin thiết bị nằm ở góc dưới bên trái và hiển thị các thông tin sau của thiết bị được chọn:
+
+  - Số sê-ri
+  - ID camera, được SDK sử dụng để mở thiết bị
+  - Địa chỉ IP
+  - Địa chỉ MAC
+  - Phiên bản phần mềm
+  - Phiên bản thuật toán (hiển thị sau khi mở camera)
+  - Tốc độ mạng (ngắt kết nối khi đóng; 100 Mbps hoặc Gigabit khi mở, tùy thuộc vào bộ điều hợp và cáp)
+  - Model camera
+  - Phiên bản hình ảnh (hiển thị sau khi mở camera)
+- Nhấp vào nút thu gọn để ẩn khu vực này. Nhấp chuột phải vào một mục để sao chép giá trị của mục đó.
+
+<Frame>
+  ![Các biểu tượng liên quan đến thông tin thiết bị](/images/developers/software-lxcameraviewer-device-information.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Biểu tượng liên quan đến thông tin thiết bị 2](/images/developers/software-lxcameraviewer-device-information-2.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Biểu tượng liên quan đến thông tin thiết bị 3](/images/developers/software-lxcameraviewer-device-information-3.avif)
+</Frame>
+
+Hình 3
+
+### Xem trước và lưu hình ảnh
+
+#### Xem trước
+
+- Khu vực giữa hiển thị hình ảnh, dữ liệu hình ảnh và các thao tác liên quan đến hình ảnh (bên trong khung màu đỏ trong Hình 1)
+- \[Start/Stop Flow\] \[Single Save\] \[Depth Map\] \[Intensity Map\] \[RGB\] \[Point Cloud\] là các nút điều khiển thao tác hình ảnh
+- Ba hình ảnh ở giữa là hình ảnh độ sâu, hình ảnh cường độ, hình ảnh đám mây điểm và hình ảnh RGB nhận được từ thiết bị.
+- Chữ màu trắng ở phía dưới là dữ liệu camera và dữ liệu hình ảnh (như trong Hình 2)
+
+<Frame>
+  ![Các biểu tượng liên quan đến xem trước](/images/developers/software-lxcameraviewer-preview.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Biểu tượng liên quan đến xem trước 2](/images/developers/software-lxcameraviewer-preview-2.avif)
+</Frame>
+
+Hình 2
+
+#### Điều khiển luồng hình ảnh
+
+- Nút \[Start/stop flow\]: Nhấp để bắt đầu hoặc dừng luồng của thiết bị
+- Nút \[Single Save\]: Lưu hình ảnh của dữ liệu luồng đã được bật
+
+  - Ví dụ, Hình 2 chỉ lưu hình ảnh độ sâu và hình ảnh đám mây điểm. Hình ảnh RGB và hình ảnh cường độ chưa được bật nên không được lưu.
+  - Hậu tố của tệp bản đồ độ sâu và bản đồ cường độ là .pgm, hậu tố của tệp hình ảnh RGB là .png và hậu tố của tệp hình ảnh đám mây điểm là .pcd
+  - Hình ảnh độ sâu, hình ảnh cường độ và hình ảnh đám mây điểm đã lưu là hình ảnh gốc, không thêm màu giả.
+  - Bạn có thể nhấp nhiều lần để lưu liên tục, nhưng chỉ có thể lưu tối đa ba lần liên tiếp.
+- Hộp kiểm \[Depth Map\]: có hiển thị (bật) bản đồ độ sâu hay không
+- Hộp kiểm \[Intensity graph\]: có hiển thị (bật) biểu đồ cường độ hay không
+- Hộp kiểm \[Point Cloud\]: có hiển thị (bật) hình ảnh đám mây điểm hay không
+- Hộp kiểm \[RGB\]: có bật hình ảnh RGB hay không
+- Sau khi bỏ chọn bản đồ RGB/cường độ, thiết bị sẽ dừng thu nhận hình ảnh bản đồ RGB/cường độ, nhưng thiết bị chỉ dừng thu nhận dữ liệu độ sâu khi đồng thời tắt bản đồ độ sâu và bản đồ đám mây điểm.
+- Trong Hình 2, thiết bị bắt đầu truyền luồng và hiển thị hình ảnh độ sâu, hình ảnh đám mây điểm, hình ảnh RGB và hình ảnh cường độ.
+- Trong Hình 3, thiết bị dừng truyền luồng và không thể xem bất kỳ loại hình ảnh nào.
+
+<Frame>
+  ![Các biểu tượng liên quan đến điều khiển luồng hình ảnh](/images/developers/software-lxcameraviewer-image-flow-control.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Sơ đồ liên quan đến điều khiển luồng hình ảnh 2](/images/developers/software-lxcameraviewer-image-flow-control-related-diagram-2.avif)
+</Frame>
+
+Hình 3
+
+#### Dữ liệu hình ảnh
+
+- Hiển thị nhiệt độ camera (khung màu đỏ trong Hình 4)
+- Hiển thị tốc độ khung hình của bản đồ độ sâu khi bản đồ độ sâu được chọn (khung màu xanh lá trong Hình 4)
+- Hiển thị tốc độ khung hình của bản đồ cường độ khi bản đồ cường độ được chọn (khung màu xanh dương trong Hình 4)
+- Hiển thị tốc độ khung hình của hình ảnh RGB khi hình ảnh RGB được chọn (khung màu đỏ sẫm trong Hình 4)
+- Khi hình ảnh RGB được chọn, hiển thị giá trị của pixel được chọn trong hình ảnh RGB (khung màu đen trong Hình 4)
+- Khi bản đồ độ sâu được chọn, hiển thị giá trị của pixel được chọn trong bản đồ độ sâu (khung màu vàng trong Hình 4)
+- Khi bản đồ cường độ được chọn, hiển thị giá trị của pixel được chọn trong bản đồ cường độ (khung màu cam trong Hình 4)
+- Khi bản đồ đám mây điểm được chọn, hiển thị giá trị đám mây điểm tương ứng với pixel được chọn trong bản đồ độ sâu (khung màu tím trong Hình 4)
+- Khi chưa chọn pixel nào, pixel (0,0) được chọn theo mặc định
+- Khi tốc độ khung hình lớn hơn 12, màu nền là màu xanh lá; nếu lớn hơn 6 và nhỏ hơn 12, màu nền là màu cam; nếu nhỏ hơn 6, màu nền là màu đỏ.
+
+<Frame>
+  ![Các biểu tượng liên quan đến dữ liệu hình ảnh](/images/developers/software-lxcameraviewer-image-data.avif)
+</Frame>
+
+Hình 4
+
+#### Hiển thị hình ảnh
+
+- Bạn có thể chọn các phương thức hiển thị khác nhau:
+
+  - Màn hình đơn: Khi chọn một trong bốn hình ảnh, màn hình đơn sẽ được hiển thị (như trong Hình 5)
+  - Màn hình kép: Khi chọn hai trong bốn hình ảnh, màn hình kép sẽ được hiển thị (như trong Hình 6)
+  - Ba hình ảnh: Khi chọn ba trong bốn hình ảnh, ba hình ảnh sẽ được hiển thị (như trong Hình 7)
+  - Màn hình bốn phần: Khi chọn cả bốn hình ảnh, bốn màn hình sẽ được hiển thị (như trong Hình 8)
+- Khi di chuyển chuột trên hình ảnh, bạn có thể dùng con lăn chuột để phóng to hoặc thu nhỏ quanh vị trí chuột, giữ nút chuột trái và kéo (so sánh hình ảnh RGB trong Hình 5 và Hình 6)
+- Nhấp chuột trái vào hình ảnh để chọn pixel; các phím mũi tên có thể di chuyển pixel được chọn (Hình 6)
+
+![Hình ảnh liên quan đến hiển thị hình ảnh](/images/developers/software-lxcameraviewer-image-display.avif)
+
+![Hình ảnh liên quan đến hiển thị hình ảnh 2](/images/developers/software-lxcameraviewer-image-display-2.avif)
+
+Hình 5 Hình 6
+
+![Hình ảnh liên quan đến hiển thị hình ảnh 3](/images/developers/software-lxcameraviewer-image-display-3.avif)
+
+![Hình ảnh liên quan đến hiển thị hình ảnh 4](/images/developers/software-lxcameraviewer-image-display-4.avif)
+
+Hình 7 Hình 8
+
+#### Thao tác với đám mây điểm
+
+- Nhấn giữ nút chuột trái trên hình ảnh đám mây điểm và kéo để xoay góc nhìn camera
+- Nhấn giữ nút chuột giữa và kéo để di chuyển tiêu điểm
+- Nhấn giữ nút chuột phải rồi kéo chuột lên hoặc xuống, hoặc dùng con lăn chuột để phóng to hoặc thu nhỏ đám mây điểm
+- Các thao tác bằng phím tắt của hình ảnh đám mây điểm như sau:
+
+|  |  |
+| --- | --- |
+| Phím tắt | Chức năng |
+| W | Hiển thị mô hình dạng lưới, nhấn S để chuyển đổi |
+| R | Đặt lại góc nhìn camera |
+| S | Hiển thị mô hình bề mặt, nhấn W để chuyển đổi |
+| P | Ẩn tất cả đoạn thẳng, bề mặt và lưới; nhấn W, S để khôi phục |
+| U | Gọi hàm do người dùng định nghĩa (không hợp lệ) |
+| O | Loại bỏ hiệu ứng mắt cá, nhấn lại để khôi phục |
+| F | Phóng to đến vị trí chuột và đặt vị trí chuột làm tâm xoay |
+| G | Hiển thị thước tỷ lệ và tỷ lệ, nhấn lại để ẩn |
+|  |
+| M | Hiển thị hộp giới hạn đám mây điểm, nhấn lại để hiển thị đám mây điểm |
+| A | Giảm độ dày đám mây điểm xuống tối thiểu là 1 |
+| D | Tăng độ dày đám mây điểm, tối đa là 6 |
+| E | Trở về góc nhìn ban đầu |
+| \[ | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn trước, không hỗ trợ trong chế độ tránh chướng ngại vật |
+| \] | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn sau, không hỗ trợ trong chế độ tránh chướng ngại vật |
+| ; | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn bên trái, không hỗ trợ trong chế độ tránh chướng ngại vật |
+| ‘ | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn bên phải, không hỗ trợ trong chế độ tránh chướng ngại vật |
+| . | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn từ trên xuống, không hỗ trợ trong chế độ tránh chướng ngại vật |
+| / | Dùng điểm trung tâm trung bình làm tiêu điểm để chuyển sang góc nhìn từ dưới lên, không hỗ trợ trong chế độ tránh chướng ngại vật |
+
+### Thanh menu
+
+- Thanh menu bao gồm \[Basic Functions\] \[Application Algorithm\] \[Others\] \[Language\] (Hình 1)
+- Nhấp vào \[Basic Functions\] để hiển thị như trong Hình 2
+- Nhấp vào \[Apply Algorithm\] để hiển thị như trong Hình 3
+- Nhấp vào \[Other Tools\] để hiển thị như trong Hình 4
+- Nhấp vào \[Language\] để hiển thị như trong Hình 5
+
+<Frame>
+  ![Các biểu tượng liên quan đến thanh menu](/images/developers/software-lxcameraviewer-menu-bar.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Các biểu tượng liên quan đến thanh menu 2](/images/developers/software-lxcameraviewer-menu-bar-2.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Các biểu tượng liên quan đến thanh menu 3](/images/developers/software-lxcameraviewer-menu-bar-3.avif)
+</Frame>
+
+Hình 3
+
+<Frame>
+  ![Các biểu tượng liên quan đến thanh menu 4](/images/developers/software-lxcameraviewer-menu-bar-4.avif)
+</Frame>
+
+Hình 4
+
+<Frame>
+  ![Các biểu tượng liên quan đến thanh menu 5](/images/developers/software-lxcameraviewer-menu-bar-5.avif)
+</Frame>
+
+Hình 5
+
+### Thanh chức năng
+
+#### Hiển thị chức năng
+
+- Thu gọn cột bên phải (khung màu đỏ trong Hình 1)
+- Mở rộng tất cả và thu gọn tất cả (trong khung màu xanh dương ở Hình 1, chỉ số trên biểu thị thu gọn tất cả, chỉ số dưới biểu thị mở rộng tất cả)
+- Nhấp vào tên chức năng để hiển thị thông tin cài đặt tương ứng trong SDK (trong khung màu xanh dương ở cuối Hình 1)
+
+  - Ví dụ, trong hình, mục chống biến dạng trong cài đặt 2D được nhấp (chữ trong khung màu xanh lá), và giao diện API cùng giá trị enum khi gọi chức năng này được hiển thị trong khung màu xanh dương.
+- Trạng thái mở rộng và trạng thái thu gọn (2D trong Hình 1 được đặt ở trạng thái mở rộng, các mục khác ở trạng thái thu gọn)
+
+<Frame>
+  ![Các biểu tượng liên quan đến hiển thị chức năng](/images/developers/software-lxcameraviewer-display-function.avif)
+</Frame>
+
+Hình 1
+
+#### Công cụ cơ bản
+
+- Nhấp vào \[Basic Tools\] trên thanh menu để xem các cài đặt liên quan của công cụ cơ bản ở bên phải giao diện (Hình 1)
+- Công cụ cơ bản gồm \[Image Display Settings\] \[2D Settings\] \[3D Settings\] \[Filtering\] \[Hardware Interface\] \[Acquisition Settings\] \[Function Settings\] (Hình 2)
+- Tên chức năng và giá trị enum tương ứng với giao diện được hiển thị trong khung màu xanh dương bên dưới (Hình 2)
+
+<Frame>
+  ![Các hình minh họa liên quan đến công cụ cơ bản](/images/developers/software-lxcameraviewer-basic-tools.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Các hình minh họa liên quan đến công cụ cơ bản 2](/images/developers/software-lxcameraviewer-basic-tools-2.avif)
+</Frame>
+
+Hình 2
+
+##### Cài đặt hiển thị hình ảnh
+
+- \[Display camera model\] Hiển thị (Hình 4) hoặc không hiển thị (Hình 5) model camera trên hình ảnh đám mây điểm
+- \[Display false colors\] Hiển thị màu độ sâu trên đám mây điểm và hiển thị màu RGB sau khi bật căn chỉnh RGB
+- \[Point Cloud Stability\] Khi bật, chức năng này có thể ổn định hiển thị đám mây điểm khi đám mây điểm biến mất do quá trình thích ứng trên một số máy tính.
+- \[Strong Image Synchronization\] Thay đổi độ sâu tối thiểu của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+- \[Keep interference frames\] Thay đổi độ sâu tối đa của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+- \[Minimum depth\] Thay đổi độ sâu tối thiểu của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+- \[Maximum depth\] Thay đổi độ sâu tối đa của bản đồ độ sâu và bản đồ đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+- \[Minimum intensity\] Thay đổi cường độ tối thiểu của bản đồ độ sâu và hình ảnh đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+- \[Maximum intensity\] Thay đổi cường độ tối đa của bản đồ độ sâu và hình ảnh đám mây điểm hiển thị trên giao diện; đầu ra camera không thay đổi.
+
+<Frame>
+  ![Các biểu tượng liên quan đến cài đặt hiển thị hình ảnh](/images/developers/software-lxcameraviewer-image-display-settings.avif)
+</Frame>
+
+Hình 3
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt hiển thị hình ảnh 2](/images/developers/software-lxcameraviewer-image-display-settings-2.avif)
+</Frame>
+
+Hình 4
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt hiển thị hình ảnh 3](/images/developers/software-lxcameraviewer-image-display-settings-3.avif)
+</Frame>
+
+Hình 5
+
+##### Cài đặt 2D
+
+- \[RGB Width\] Chiều rộng pixel của hình ảnh RGB, do model thiết bị quyết định và không thể đặt
+- \[RGB height\] Chiều cao pixel của hình ảnh RGB, do model thiết bị quyết định và không thể đặt
+- \[Pixel binning\] Chọn 1\*1, 2\*2 hoặc N\*N để cộng các giá trị pixel trong ma trận rồi chia cho 2\*2 hoặc N\*N để thu được hình ảnh binning (kích thước hình ảnh theo chiều ngang và dọc bằng kích thước ban đầu chia cho kích thước pixel binning);
+- \[Anti-distortion\] Gọi các tham số biến dạng trong thông số nội tại để loại bỏ biến dạng của hình ảnh khi hiển thị trên giao diện
+- \[Anti-distortion coefficient\] Điều chỉnh hệ số biến dạng để tăng hoặc giảm biến dạng của hình ảnh bị che
+- \[Auto Exposure\] Bật hoặc tắt để camera tự động đặt giá trị phơi sáng RGB
+- \[Exposure\] Phơi sáng thủ công, có thể đặt khi tắt phơi sáng tự động
+- \[Gain\] Gain thủ công, có thể đặt khi tắt phơi sáng tự động
+
+<Frame>
+  ![Các biểu tượng liên quan đến cài đặt 2D](/images/developers/software-lxcameraviewer-2d-settings.avif)
+</Frame>
+
+Hình 6
+
+##### Cài đặt 3D
+
+- \[3D Width\] Chiều rộng hình ảnh đám mây điểm do model thiết bị quyết định và không thể đặt.
+- \[3D Height\] Chiều cao hình ảnh đám mây điểm do model thiết bị quyết định và không thể đặt.
+- \[Pixel binning\] Chọn 1\*1, 2\*2 hoặc N\*N để cộng các giá trị pixel trong ma trận rồi chia cho 2\*2 hoặc N\*N để thu được hình ảnh binning; có thể thay đổi sau khi dừng luồng (kích thước hình ảnh theo chiều ngang và dọc bằng kích thước ban đầu chia cho kích thước pixel binning)
+- \[RGB Alignment\] Căn chỉnh bản đồ độ sâu, bản đồ cường độ, đám mây điểm và hình ảnh RGB. Sau khi căn chỉnh, bản đồ độ sâu và bản đồ cường độ có cùng chiều rộng và chiều cao với hình ảnh RGB. Dữ liệu đám mây điểm sẽ tăng và có thể thay đổi sau khi dừng luồng.
+- \[Multi-camera mode\] Khi bật và sử dụng nhiều camera cùng lúc, chức năng này có thể loại bỏ nhiễu từ các camera khác; có thể thay đổi sau khi dừng luồng.
+- \[Multi-machine algorithm sensitivity\] Các tham số tích hợp của thiết bị do model thiết bị quyết định và không thể đặt.
+- \[Anti-distortion\] Gọi các tham số biến dạng trong thông số nội tại để loại bỏ biến dạng của hình ảnh khi hiển thị trên giao diện
+- \[Anti-distortion coefficient\] Điều chỉnh hệ số biến dạng để tăng hoặc giảm biến dạng của hình ảnh bị che
+- \[Frequency Mode\] Các tham số tích hợp của thiết bị do model thiết bị quyết định (tần số của một số camera cố định và không thể đặt)
+- \[HDR Enable\] Bật HDR có thể cải thiện độ rõ của hình ảnh trong các cảnh có chênh lệch sáng tối lớn.
+- \[Auto Exposure\] Khi bật, thiết bị tự động điều chỉnh các tham số phơi sáng theo cường độ ánh sáng môi trường.
+- \[Target intensity\] Ngưỡng cường độ khi thu nhận hình ảnh độ sâu (không thể đặt)
+- \[Auto exposure upper limit\] Đặt giới hạn trên của phơi sáng tự động
+- \[Auto exposure lower limit\] Đặt giới hạn dưới của phơi sáng tự động (không thể đặt)
+- \[Gain\] Có thể tăng giá trị cường độ theo bội số (không thể đặt)
+- [x] Tọa độ x của góc trên bên trái vùng ROI được đặt; có thể thay đổi sau khi dừng luồng.
+- \[y\] Đặt tọa độ y của góc trên bên trái vùng ROI; có thể thay đổi sau khi dừng luồng.
+- \[High integration\] Thời gian tích hợp cao (tăng giá trị cho phép camera đo khoảng cách xa hơn)
+- \[Low Integration\] Thời gian tích hợp thấp (chủ yếu điều khiển đo khoảng cách gần, thường không cần thay đổi)
+- \[x offset\] Giá trị bù theo chiều rộng; có thể thay đổi sau khi dừng luồng
+- \[y offset\] Giá trị bù theo chiều cao; có thể thay đổi sau khi dừng luồng.
+- \[Width\] Chiều rộng vùng ROI được đặt; có thể thay đổi sau khi dừng luồng.
+- \[High\] Chiều cao vùng ROI được đặt; có thể thay đổi sau khi dừng luồng.
+- \[3D Frame Rate\] Đặt tốc độ khung hình đám mây điểm trong phạm vi tốc độ khung hình của thiết bị
+
+<Frame>
+  ![Các biểu tượng liên quan đến cài đặt 3D](/images/developers/software-lxcameraviewer-3d-settings.avif)
+</Frame>
+
+Hình 7
+
+##### Cài đặt bộ lọc
+
+- \[Minimum depth\] Giới hạn dưới của màu giả hoặc khoảng cách của bản đồ độ sâu. Bên dưới giá trị này, màu giả được hiển thị màu đen và bị buộc đặt về 0.
+- \[Maximum depth\] Giới hạn trên của màu giả hoặc khoảng cách của bản đồ độ sâu. Bên trên giá trị này, màu giả được hiển thị màu đen và bị buộc đặt về 0.
+- \[Low signal threshold\] Giới hạn dưới của giá trị cường độ. Bên dưới giá trị này, các pixel tương ứng trong bản đồ độ sâu bị buộc đặt về 0 (không có hiệu lực với bản đồ cường độ)
+- \[High signal threshold\] Giới hạn trên của giá trị cường độ. Nếu cao hơn giá trị này, các pixel tương ứng trong bản đồ độ sâu bị buộc đặt về 0 (không có hiệu lực với bản đồ cường độ)
+- \[Small signal measurement\] Đặt mức phát hiện tín hiệu nhỏ. Mức càng cao thì càng dễ phát hiện.
+- \[Filter Mode\] Đặt mức che chắn của bộ lọc
+- \[Smoothing Level\] Điều khiển cường độ làm mịn của bộ lọc không gian, giữ lại chi tiết cạnh vật thể đồng thời làm mịn nhiễu
+- \[Noise Level\] Đặt ngưỡng lọc nhiễu (giá trị càng lớn thì nhiễu càng nhiều)
+- \[Temporal Level\] Điều khiển cường độ lọc theo thời gian và sử dụng dữ liệu nhiều khung hình trong quá khứ để cải thiện tính liên tục của dữ liệu độ sâu
+- Lưu ý: Đặt mức làm mịn, mức nhiễu và mức miền thời gian bằng 0 nghĩa là tắt bộ lọc.
+
+<Frame>
+  ![Các hình minh họa liên quan đến cài đặt bộ lọc](/images/developers/software-lxcameraviewer-filter-settings.avif)
+</Frame>
+
+Hình 8
+
+##### Giao diện phần cứng
+
+- \[IO output mode\] Bạn có thể đặt định dạng đầu ra của giao diện IO
+- \[IO user control mode\] Các tham số tích hợp của thiết bị xác định giao diện IO và không thể sửa đổi.
+- \[CAN baud rate\] Giá trị mặc định là 250000. Tốc độ baud phải nhất quán khi giao tiếp với các thiết bị khác qua CAN.
+- \[CAN protocol type\] Mặc định là loại giao thức chính thức của MRDVS, có thể đổi thành kcrobots
+- \[CAN address\] Địa chỉ bắt đầu giao tiếp CAN, mặc định là 18
+- \[MODBUS address\] Địa chỉ bắt đầu giao tiếp MODBUS, mặc định là 23
+- \[Get IO status\] Lấy trạng thái trả về hiện tại của giao diện IO
+
+<Frame>
+  ![Sơ đồ giao diện phần cứng](/images/developers/software-lxcameraviewer-hardware-interface-diagram.avif)
+</Frame>
+
+Hình 9
+
+##### Cài đặt thu nhận
+
+- \[Frame synchronization\] Điều khiển điều kiện môi trường của từng loại thu nhận hình ảnh nhất quán khi lưu hình ảnh
+- \[Trigger Mode\] Điều khiển chế độ luồng thành liên tục, bị động hoặc chủ động
+- \[Point cloud saving method\]
+
+  - Thông thường (đám mây điểm không có thứ tự): Số lượng đám mây điểm không đổi, width = width\*height, height = 1, như trong Hình 3
+  - Đám mây điểm có thứ tự: Số lượng đám mây điểm không đổi, width = ToF width, height = ToF height, như trong Hình 4
+- \[Point cloud saving format\] Đặt định dạng dữ liệu để lưu đám mây điểm
+
+  - BINARY: Lưu ở định dạng nhị phân
+  - ASCII: Lưu ở định dạng mã ASCII, tức là lưu ở chế độ văn bản
+- \[Point cloud value unit\] Đặt đơn vị đo của dữ liệu trong hình ảnh đám mây điểm.
+- \[Start saving pictures\] Liên tục lưu loại hình ảnh hiện được chọn
+- \[Open Save Path\] Mở đường dẫn lưu hình ảnh bằng chức năng \[Single Save\]
+
+Lưu ý: Với hình ảnh 640\*480, thời gian lưu ASCII khoảng 6,6 giây, còn thời gian lưu nhị phân khoảng 32 ms. Tốc độ lưu nhị phân nhanh gấp 206 lần ASCII. Khuyến nghị lưu ở định dạng nhị phân.
+
+<Frame>
+  ![Các biểu tượng liên quan đến cài đặt thu nhận](/images/developers/software-lxcameraviewer-collection-settings.avif)
+</Frame>
+
+Hình 10
+
+##### Cài đặt chức năng
+
+- \[Select configuration\] Bạn có thể chọn cấu hình tham số camera đã được thiết lập
+- \[Save Configuration\] Lưu thủ công cấu hình tham số hiện tại của camera
+- \[Load configuration\] Áp dụng cấu hình tham số camera đã thiết lập cho camera hiện tại
+- \[Export configuration to file\] Đóng gói cấu hình tham số camera hiện tại thành tệp định dạng json và xuất tệp
+- \[Load configuration from file\] Nhập tệp json chứa cấu hình tham số camera vào camera hiện tại và áp dụng cấu hình
+- \[User-defined ID\] Tùy chỉnh ID của cấu hình tham số hiện tại
+- \[Algorithm Move Up\] Di chuyển thuật toán tích hợp hiện tại lên nền tảng phía trên để chạy
+- \[Get internal parameters\] Xem cấu hình tham số tích hợp của camera
+- \[Restore Factory Settings\] Khôi phục camera về trạng thái xuất xưởng. Thao tác này sẽ xóa mọi cấu hình đã thiết lập, bao gồm nhưng không giới hạn ở IP camera. Camera sẽ tự động tắt và cần được bật lại thủ công.
+- \[Firmware Upgrade\] Nâng cấp firmware của camera. Sau khi nhấp, hộp thoại chọn tệp sẽ xuất hiện. Chọn tệp có hậu tố .bin.
+- \[Camera Restart\] Khởi động lại camera. Camera sẽ không tự động tắt mà chuyển sang trạng thái kết nối lại. Không thực hiện thao tác khác trong khi camera đang kết nối lại.
+
+<Frame>
+  ![Các biểu tượng liên quan đến cài đặt chức năng](/images/developers/software-lxcameraviewer-function-settings.avif)
+</Frame>
+
+Hình 11
+
+#### Thuật toán ứng dụng
+
+- Nhấp vào \[Apply Algorithm\] trên thanh menu để xem các cài đặt liên quan của thuật toán ứng dụng ở bên phải giao diện (Hình 1)
+- \[Working Mode\] Bạn có thể đặt camera tiếp tục xuất kết quả thuật toán ngay cả khi bị ngắt kết nối khỏi máy chủ.
+- \[Application Algorithm\] Chọn thuật toán ứng dụng cần bật:
+
+  - \[Close\] (Hình 2)
+  - \[Obstacle avoidance algorithm 2.0\] (Hình 3)
+  - \[Pallet positioning and expansion\] (Hình 4)
+- \[Algorithm version\] Hiển thị số phiên bản của thuật toán hiện được chọn
+
+<Frame>
+  ![Các hình minh họa liên quan đến thuật toán ứng dụng](/images/developers/software-lxcameraviewer-application-algorithms.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Sơ đồ liên quan đến thuật toán ứng dụng 2](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-2.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Sơ đồ liên quan đến thuật toán ứng dụng 3](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-3.avif)
+</Frame>
+
+Hình 3
+
+<Frame>
+  ![Sơ đồ liên quan đến thuật toán ứng dụng 4](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-4.avif)
+</Frame>
+
+Hình 4
+
+##### Thuật toán tránh chướng ngại vật
+
+- Đặt thuật toán ứng dụng thành thuật toán tránh chướng ngại vật; các cấu hình liên quan đến tránh chướng ngại vật sẽ được hiển thị.
+- \[Display car body\] Bạn có thể tắt hoặc bật model xe hiển thị vị trí thân xe trong hình ảnh đám mây điểm.
+- \[Obstacle avoidance index\] Tránh chướng ngại vật có thể có nhiều cấu hình, được đặt bằng tùy chọn này
+- \[Camera Angle Roll (x-axis)\] Tham số ngoại tại của camera, góc roll; camera mặc định là 180
+- \[Camera angle Pitch (y-axis)\] Tham số ngoại tại của camera, góc pitch; mặc định là lắp đặt theo phương thẳng đứng, giá trị là 90
+- \[Camera angle Yaw (z-axis)\] Tham số ngoại tại của camera, góc hướng yaw; mặc định là 90
+- \[Camera position (distance x)\] Tham số ngoại tại của camera, khoảng cách theo hướng x đến gốc tọa độ, đơn vị: mét.
+- \[Camera position (width y)\] Tham số ngoại tại của camera, khoảng cách theo hướng y đến gốc tọa độ; nếu lắp ở giữa thì giá trị là 0. Đơn vị: mét.
+- \[Camera position (height z)\] Tham số ngoại tại của camera, khoảng cách theo hướng z đến gốc tọa độ, có thể hiểu là chiều cao của camera so với mặt đất, đơn vị: mét.
+- \[Early Warning Distance (x far)\] Phạm vi tránh chướng ngại vật, khoảng cách theo hướng x từ tâm xe. Chướng ngại vật vượt quá khoảng cách này được xem là an toàn; khoảng cách giữa khoảng cách cảnh báo sớm và khoảng cách báo động được xem là vùng giảm tốc cảnh báo sớm, giao diện hiển thị vùng màu vàng. Đơn vị: mét.
+- \[Alarm distance (x center)\] Phạm vi tránh chướng ngại vật, khoảng cách theo hướng x từ tâm xe. Chướng ngại vật gần hơn khoảng cách này được xem là phải dừng do báo động, giao diện hiển thị vùng màu đỏ; khoảng cách giữa khoảng cách cảnh báo sớm và khoảng cách báo động được xem là vùng giảm tốc cảnh báo sớm, giao diện hiển thị vùng màu vàng. Đơn vị: mét.
+- \[Shielding distance (near x)\] Phạm vi tránh chướng ngại vật, khoảng cách theo hướng x từ tâm xe. Chướng ngại vật nằm trong khoảng cách này sẽ bị bỏ qua. Đơn vị: mét.
+- \[Obstacle avoidance range left (y left)\] Phạm vi tránh chướng ngại vật, khoảng cách từ phía trái theo hướng y đến tâm xe. Đơn vị: mét.
+- \[Obstacle avoidance range right (y right)\] Phạm vi tránh chướng ngại vật, khoảng cách từ phía phải theo hướng y đến tâm xe. Đơn vị: mét.
+- \[Obstacle avoidance height lower (z lower)\] Phạm vi tránh chướng ngại vật, chiều cao tính từ mặt đất; bên dưới chiều cao này sẽ không được xử lý. Nếu đặt quá nhỏ, lỗi đo khoảng cách có thể gây báo động giả; nếu đặt quá lớn, các chướng ngại vật lớn trên mặt đất có thể bị lọc bỏ, dẫn đến báo động giả. Đơn vị: mét.
+- \[Obstacle avoidance height upper (z upper)\] Phạm vi tránh chướng ngại vật, chiều cao tính từ mặt đất; bên trên chiều cao này sẽ không được xử lý. Đơn vị: mét.
+- \[Obstacle avoidance output\] Xuất kết quả tránh chướng ngại vật
+- \[Reset camera external parameters\] Khôi phục tất cả tham số chưa được ghi vào camera
+- \[Set external parameters\] Ghi tất cả tham số vào camera
+- Để biết cài đặt tránh chướng ngại vật chi tiết, hãy xem tài liệu tránh chướng ngại vật.
+
+##### Định vị pallet
+
+- Đặt thuật toán ứng dụng thành định vị pallet; các cấu hình liên quan đến tránh chướng ngại vật sẽ được hiển thị.
+- \[Project Name\] Đặt tên cho cấu hình tham số nhận dạng pallet hiện tại
+- \[Quick Configuration\] Một số cấu hình được camera cung cấp theo mặc định
+- \[Camera Angle Roll (x-axis)\] Góc nghiêng của camera so với trục X
+- \[Camera angle Pitch (y-axis)\] Góc nghiêng của camera so với trục Y
+- \[Camera Angle Yaw (z-axis)\] Góc nghiêng của camera so với trục Z
+- \[Camera position (distance x)\] Khoảng cách tương đối giữa tâm quang học của camera và tâm quay của xe nâng theo hướng X
+- \[Camera position (width y)\] Khoảng cách tương đối giữa tâm quang học của camera và tâm quay của xe nâng theo hướng Y
+- \[Camera position (height z)\] Khoảng cách tương đối giữa tâm quang học của camera và tâm quay của xe nâng theo hướng Z
+- \[Ground Height\] Khoảng cách từ tâm quang học của camera đến mặt đất
+- \[Maximum pallet leg width\] Phải tương thích với chiều rộng tối đa của chân pallet trong loại pallet
+- \[Minimum Pallet Leg Width\] Phải tương thích với chiều rộng tối thiểu của chân pallet trong loại pallet
+- \[Distance from the tray\] Khoảng cách từ tâm quang học của camera đến khay sau khi hoàn tất thao tác đưa vào
+- \[Installation method\] Đặt theo hướng cố định của camera, mặc định là lắp đặt chính diện (0)
+- \[Minimum Z value\] Nhận dạng khoảng cách độ sâu gần nhất của pallet
+- \[Maximum Z value\] Nhận dạng khoảng cách độ sâu xa nhất của pallet
+- \[Minimum X value\] Nhận dạng biên ngang của pallet (biên trái khi camera là tâm)
+- \[Maximum X value\] Nhận dạng biên ngang của pallet (biên phải khi camera là tâm)
+- \[Pallet algorithm output\] Hiển thị kết quả của thuật toán pallet
+- \[Calibration Instructions\] Tự động hiệu chuẩn khi mặt đất phẳng và không có vật cản phía trước pallet. Pallet có kích thước tiêu chuẩn.
+- \[Restore default parameters\] Khôi phục tất cả tham số về mặc định xuất xưởng
+- \[Read external parameters from camera\] Đọc tất cả tham số từ camera; mọi tham số chưa gửi sẽ bị ghi đè
+- \[Send parameters\] Ghi tất cả tham số vào camera
+- Để biết cài đặt phát hiện pallet chi tiết, hãy xem tài liệu chức năng phát hiện pallet.
+
+#### Công cụ khác
+
+- \[Load local point cloud\] Bạn có thể mở các tệp đám mây điểm ở định dạng .pcl, .png và xem chúng. Vui lòng xem mô tả công cụ để biết chi tiết.
+- \[IP Configuration Tool\] Bạn có thể cấu hình IP, subnet mask và gateway của camera
+- \[Packet Capture Tool\] Có thể dùng để bắt dữ liệu gói tin của card mạng; vui lòng xem mô tả công cụ để biết chi tiết
+- \[Network Card Configuration Tool\] Hỗ trợ thiết lập card mạng và tường lửa; vui lòng xem mô tả công cụ để biết chi tiết
+- \[Communication Tool\] Hỗ trợ giao tiếp TCP, UDP, MODBUS, FTP; vui lòng xem mô tả công cụ để biết chi tiết
+- \[GPU Enable\] Cho phép sử dụng phép tính GPU để xử lý đồ họa
+- \[Log Level\] Điều khiển mức độ chi tiết của thông tin in nhật ký
+
+<Frame>
+  ![Các biểu tượng liên quan đến công cụ khác](/images/developers/software-lxcameraviewer-other-tools.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Các biểu tượng liên quan đến công cụ khác 2](/images/developers/software-lxcameraviewer-other-tools-2.avif)
+</Frame>
+
+Hình 2
+
+## Truy cập hệ thống camera
+
+- Kết nối qua SSH đến địa chỉ IP của camera, cổng 22
+
+  - Lấy MobaXterm làm ví dụ, giả sử IP camera là 192.168.100.15 (Hình 1, Hình 2)
+- Tên người dùng: user, mật khẩu: user. Sau khi đăng nhập thành công, bạn sẽ thấy giao diện như trong Hình 3.
+- Hệ thống đi kèm cấu hình như trong bảng dưới đây
+
+|  |  |
+| --- | --- |
+| Cấu hình tích hợp | Số phiên bản |
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| Pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Lưu ý: Không tùy ý sửa đổi cấu hình tích hợp của hệ thống vì điều này có thể khiến hệ thống bị lỗi**
+
+<Frame>
+  ![Các biểu tượng liên quan đến truy cập hệ thống camera 4](/images/developers/software-lxcameraviewer-4-access-camera-system.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Các hình minh họa liên quan đến truy cập hệ thống camera 2](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-2.avif)
+</Frame>
+
+Hình 2
+
+<Frame>
+  ![Các hình minh họa liên quan đến truy cập hệ thống camera 3](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-3.avif)
+</Frame>
+
+Hình 3
+
+## Mô tả công cụ
+
+### Công cụ cấu hình IP
+
+- Sau khi mở \[IP Configuration Tool\], như trong Hình 1
+- Nhấp đúp vào thông tin sau địa chỉ MAC để sao chép; nhấp đúp vào thông tin sau địa chỉ IP, subnet mask và gateway để ghi; nhấp vào tùy chọn khác để hủy sửa đổi và nhấn Enter để xác nhận sửa đổi, như trong Hình 2
+
+<Frame>
+  ![Giao diện cài đặt mạng IPv4 của Windows](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface.avif)
+</Frame>
+
+Hình 1
+
+<Frame>
+  ![Giao diện cài đặt mạng IPv4 của Windows 2](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface-2.avif)
+</Frame>
+
+Hình 2
+
+### Công cụ giao tiếp
+
+- Mở \[Communication Tools\] như trong Hình 1
+- Công cụ giao tiếp hỗ trợ TCP, UDP, FTP, Modbus TCP, Modbus RTU, CAN (Linux)
+- Công cụ giao tiếp hỗ trợ mở đồng thời nhiều tab khác nhau
+
+<Frame>
+  ![Các hình minh họa liên quan đến công cụ giao tiếp](/images/developers/software-lxcameraviewer-communication-tools.avif)
+</Frame>
+
+Hình 1
+
+### Công cụ cấu hình card mạng
+
+- Sau khi mở \[Local Point Cloud Tool\], như trong Hình 1
+- Công cụ cấu hình card mạng có thể thiết lập tường lửa
+- Sau khi chọn card mạng, bạn có thể mở giao diện thuộc tính và cấu hình card mạng có sẵn trong Windows.
+
+- Hỗ trợ mở trang cấu hình tường lửa
+
+- Hỗ trợ mở trình quản lý tác vụ
+
+- Hỗ trợ mở Trung tâm kết nối mạng
+
+- Ngôn ngữ tự động theo phần mềm này
+
+<Frame>
+  ![Các hình minh họa liên quan đến công cụ cấu hình card mạng](/images/developers/software-lxcameraviewer-the-network-card-configuration-tool.avif)
+</Frame>
+
+Hình 1
+
+## Khắc phục sự cố
+
+|  |  |
+| --- | --- |
+| Mô tả vấn đề | Giải pháp |
+| Không tìm thấy camera | \* Kiểm tra camera đã được cấp nguồn chưa. Sau khi bật nguồn, đèn màu xanh ở mặt trước camera luôn sáng \* Kiểm tra địa chỉ IP và subnet mask có chính xác không \* Kiểm tra máy chủ có bị cấm truy cập mạng không |
+| Có thể mở camera nhưng không thể truyền luồng | Kiểm tra máy chủ đã được mở với quyền quản trị viên chưa |
+| Hình ảnh bị trễ | Kiểm tra card mạng, cáp mạng và bộ chuyển mạch có phải Gigabit không. Sau khi bật căn chỉnh RGB, mạng 100M sẽ có độ trễ nhất định |
+| Camera thường xuyên kết nối lại | Sau khi khôi phục cài đặt xuất xưởng, nâng cấp firmware hoặc khi camera được bật lần đầu trên mạng 100M, camera sẽ tự điều chỉnh/khởi động lại trong khoảng 30 giây. Trong 30 giây này, máy chủ sẽ liên tục thử kết nối với camera cho đến khi camera ổn định |
+| Không có dữ liệu độ sâu, dữ liệu đám mây điểm | \* Kiểm tra camera có bị che khuất không \* Kiểm tra đối tượng có nằm trong phạm vi chụp của camera không \* Kiểm tra giá trị độ sâu tối đa/tối thiểu có chính xác không \* Kiểm tra các tham số bộ lọc có chính xác không |
+| Đám mây điểm biến mất và giao diện chỉ hiển thị khung màu trắng | Nhấp chuột vào hình ảnh đám mây điểm rồi nhấn phím 'm' để bật tính ổn định của đám mây điểm |
+| Hiển thị đám mây điểm bất thường | Kiểm tra đã thao tác phím tắt của đám mây điểm chưa và bật tính ổn định của đám mây điểm |
+| Đám mây điểm không hiển thị sau khi mở camera trên Linux | Dùng chuột nhấn và kéo hình ảnh đám mây điểm để hiển thị |
+| Giao diện ứng dụng: Tải VTK thất bại, đám mây điểm không hiển thị; hãy kiểm tra cấu hình card đồ họa và trình điều khiển card đồ họa | \* Kiểm tra cấu hình card đồ họa có quá thấp không \* Kiểm tra trình điều khiển card đồ họa có hoạt động bình thường không \* Hiển thị đám mây điểm yêu cầu card đồ họa có bộ nhớ video độc lập và trình điều khiển của card |
+
+## Trợ giúp
+
+### Giới thiệu
+
+Nhấp vào \[About\] ở góc trên bên phải hoặc xem thông tin hiện tại khi phần mềm khởi động lần đầu để xem số phiên bản phần mềm, số phiên bản SDK và các thông tin liên quan khác. Nhấp vào nút \[Open Help Document\] để mở tài liệu này, như trong hình dưới đây:
+
+<Frame>
+  ![Các biểu tượng liên quan đến mục Giới thiệu](/images/developers/software-lxcameraviewer-about.avif)
+</Frame>
+
+### Sổ tay người dùng
+
+Nhấp chuột phải vào lối tắt của phần mềm này → mở vị trí tệp → quay lại thư mục cấp trên → bạn có thể xem tất cả tài liệu liên quan trong Document, như trong hình dưới đây:
+
+<Frame>
+  ![Các biểu tượng liên quan đến sổ tay người dùng](/images/developers/software-lxcameraviewer-user-manual.avif)
+</Frame>

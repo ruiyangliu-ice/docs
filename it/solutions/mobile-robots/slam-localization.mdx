@@ -1,0 +1,73 @@
+---
+title: Localizzazione SLAM visuale per robot mobili
+sidebarTitle: Localizzazione visuale per robot mobili
+description: "Crea mappe, localizza e rilocalizza i robot mobili combinando una telecamera dalla vista dall'alto, LiDAR 2D e IMU."
+---
+
+La soluzione SLAM dalla vista dall'alto monta la telecamera sul robot mobile e usa il soffitto, le pareti e altre caratteristiche ambientali stabili per la mappatura e la localizzazione. Questo approccio riduce la dipendenza da marcatori sul pavimento ed è adatto a siti interni con layout variabili, occlusioni del pavimento o più veicoli.
+
+## Come funziona
+
+Il controller di navigazione V2 Pro fonde i dati di una telecamera dalla vista dall'alto, di un LiDAR 2D e di un'IMU:
+
+- La telecamera dalla vista dall'alto acquisisce le caratteristiche sopraelevate.
+- Il LiDAR 2D fornisce informazioni sui contorni planari.
+- L'IMU fornisce dati sul movimento del veicolo.
+- Il controller produce dati per la mappatura, la localizzazione e la rilocalizzazione.
+
+<Info>
+  La localizzazione dalla vista dall'alto dipende da caratteristiche ambientali osservabili. Convalida la mappatura e la localizzazione prima dell'installazione in aree aperte, scene ripetitive o zone con occlusioni prolungate o frequenti cambiamenti strutturali.
+</Info>
+
+## Caratteristiche della soluzione
+
+### Localizzazione mediante caratteristiche naturali
+
+Il controller esegue la localizzazione riconoscendo caratteristiche naturali sopra e intorno al veicolo, riducendo la necessità di marcatori fissi come riflettori o strisce magnetiche. Consulta la [documentazione del prodotto](/it/products/v-series/v2-pro-overview) per la portata operativa e le condizioni di illuminazione ambientale della telecamera dalla vista dall'alto V2 Pro.
+
+### Fusione multisensore
+
+La telecamera, il LiDAR e l'IMU forniscono dati complementari per la costruzione della mappa e la stima della posa del veicolo. I risultati dipendono comunque dai parametri estrinseci dei sensori, dal movimento del veicolo, dalle caratteristiche ambientali e dalla qualità della mappa.
+
+### Mappatura e integrazione sul dispositivo
+
+Il controller include una piattaforma di calcolo e supporta la mappatura e la gestione delle mappe tramite il software host. Per l'integrazione del sistema sono disponibili interfacce SDK, HTTP API, UDP e ROS.
+
+## Scenari tipici
+
+| Scenario | Requisito | Focus della localizzazione dalla vista dall'alto |
+| --- | --- | --- |
+| Logistica di magazzino | Merci, carrelli e layout dei corridoi possono cambiare. | Convalida la copertura delle caratteristiche sopraelevate e i flussi di aggiornamento della mappa. |
+| Officina di produzione | Persone e veicoli condividono spazi con apparecchiature e postazioni di lavoro ravvicinate. | Pianifica la posizione di installazione ed evita l'ostruzione causata dal veicolo o dal carico. |
+| Magazzino con stoccaggio a pavimento o corridoio lungo | Le caratteristiche del pavimento cambiano o i percorsi sono stretti. | Valuta le caratteristiche sopraelevate, i contorni LiDAR e i punti di rilocalizzazione. |
+
+## Flusso di distribuzione
+
+<Steps>
+  <Step title="Installa e collega">
+    Installa il controller sulla parte superiore del veicolo. Mantieni la telecamera dalla vista dall'alto e il LiDAR liberi da telaio, cavi e carico, quindi collega alimentazione, rete e interfacce veicolo necessarie.
+  </Step>
+  <Step title="Configura i parametri estrinseci e del veicolo">
+    Configura i parametri estrinseci dei sensori e i parametri di localizzazione del veicolo nel software host, quindi controlla i flussi di dati.
+  </Step>
+  <Step title="Acquisisci e distribuisci una mappa">
+    Acquisisci dati ambientali lungo il percorso target, genera una mappa, distribuiscila sul dispositivo e verifica la localizzazione e la rilocalizzazione in aree rappresentative.
+  </Step>
+  <Step title="Collega il sistema di livello superiore">
+    Leggi i dati di localizzazione tramite SDK, HTTP API, UDP o ROS secondo necessità e implementa la gestione delle eccezioni e il monitoraggio durante l'esecuzione.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Card title="Documentazione del prodotto V2 Pro" icon="camera" href="/it/products/v-series/v2-pro-overview">
+    Consulta le specifiche del controller, le interfacce, l'installazione e le istruzioni per la mappatura.
+  </Card>
+
+  <Card title="Guida allo sviluppo della localizzazione V2" icon="code" href="/it/developers/v2-localization/pure-localization-guide">
+    Consulta la modalità di localizzazione pura e le risorse per l'integrazione.
+  </Card>
+</Columns>
+
+<Warning>
+  Il controller di localizzazione produce la posa del veicolo. Non sostituisce il rilevamento degli ostacoli, la sicurezza funzionale, la pianificazione delle attività o il sistema completo necessario per il funzionamento di un carrello elevatore autonomo. Completa una valutazione dei rischi sul posto e la convalida a livello di veicolo prima della messa in servizio.
+</Warning>

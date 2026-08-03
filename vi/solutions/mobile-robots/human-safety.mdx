@@ -1,0 +1,93 @@
+---
+title: Giám sát an toàn con người
+description: Phát hiện người đi vào khu vực hạn chế bằng camera 3D dòng M và phần mềm nhận dạng người.
+---
+
+Trong các khu vực hạn chế công nghiệp, dây chuyền tự động và khu vực làm việc trong kho hàng, việc người không được phép xâm nhập có thể tạo ra rủi ro vận hành. Giải pháp này sử dụng camera 3D và phần mềm nhận dạng người để phát hiện việc đi vào khu vực đã cấu hình và báo cáo sự kiện cho hệ thống cấp cao hơn.
+
+<Frame>
+  ![Giải pháp giám sát an toàn con người](/images/solutions/mobile-robots-human-safety-human-safety-protection.avif)
+</Frame>
+
+## Tổng quan giải pháp
+
+Hệ thống thu nhận dữ liệu RGB-D bằng camera 3D dòng M. Phần mềm nhận dạng người kiểm tra xem một người có vượt qua ranh giới trong ROI đã cấu hình hay không. Sự kiện phát hiện có thể kích hoạt cảnh báo hoặc hành động khác trong hệ thống cấp cao hơn.
+
+<Frame caption="Quy trình phát hiện người đi vào khu vực hạn chế">
+  ![Quy trình phát hiện người đi vào khu vực hạn chế](/images/solutions/mobile-robots-human-safety-solution-overview-related-graphics.avif)
+</Frame>
+
+## Thành phần hệ thống
+
+### Camera độ sâu 3D M4 Pro
+
+- Cung cấp thông tin 3D về người di chuyển trong không gian được giám sát.
+- Độ phân giải độ sâu: `640 × 480`; độ phân giải RGB: `1920 × 1080`.
+- Căn chỉnh dữ liệu RGB và độ sâu theo cả không gian và thời gian.
+- Có thể chạy các thuật toán được hỗ trợ trên thiết bị để giảm nhu cầu sử dụng máy tính công nghiệp bên ngoài.
+
+<Frame caption="Triển khai M4 Pro để giám sát an toàn con người">
+  ![Triển khai M4 Pro để giám sát an toàn con người](/images/solutions/mobile-robots-human-safety-system-composition.avif)
+</Frame>
+
+### Phần mềm nhận dạng người thông minh
+
+- Cấu hình vùng quan tâm (ROI).
+- Phát hiện và báo cáo khi người vượt qua ranh giới khu vực hạn chế.
+
+<Columns cols={2}>
+  <Frame>
+    ![Cấu hình ROI của phần mềm an toàn con người](/images/solutions/mobile-robots-human-safety-system-composition-2.avif)
+  </Frame>
+
+  <Frame>
+    ![Kết quả phát hiện của phần mềm an toàn con người](/images/solutions/mobile-robots-human-safety-system-composition-3.avif)
+  </Frame>
+</Columns>
+
+## Quy trình hoạt động
+
+<Steps>
+  <Step title="Cấu hình khu vực hạn chế">
+    Xác định ROI dựa trên bố cục hiện trường và trường nhìn của camera, đồng thời loại trừ các khu vực không thuộc nhiệm vụ phát hiện.
+  </Step>
+  <Step title="Giám sát liên tục">
+    Camera thu nhận khu vực hạn chế trong khi phần mềm kiểm tra xem người có đi vào hoặc vượt qua ranh giới đã cấu hình hay không.
+  </Step>
+  <Step title="Báo cáo sự kiện">
+    Khi phát hiện sự kiện, hệ thống báo cáo sự kiện cho hệ thống cấp cao hơn. Hệ thống này có thể kích hoạt cảnh báo, dừng hoạt động hoặc thực hiện một hành động khác đã cấu hình.
+  </Step>
+</Steps>
+
+## Kịch bản ứng dụng
+
+- Dây chuyền sản xuất tự động
+- Khu vực kho hàng và logistics
+- Khu vực lưu trữ vật liệu nguy hiểm
+- Xưởng hoặc phòng thí nghiệm có yêu cầu loại trừ nhân sự
+
+## Lưu ý về hiệu suất
+
+Các hồ sơ thử nghiệm gốc báo cáo tỷ lệ dương tính giả và bỏ sót trong một khung hình ở điều kiện phòng thí nghiệm lý tưởng. Thử nghiệm sử dụng trường nhìn mở, người không bị che khuất trong phạm vi `5 m` tính từ camera, tốc độ di chuyển dưới `3 m/s` và ánh sáng môi trường tốt. Kết quả thực tế phụ thuộc vào độ cao camera, trường nhìn, tình trạng che khuất, tư thế, ánh sáng, nhòe do chuyển động và cài đặt bộ lọc.
+
+<Tip>
+  Việc điều chỉnh cửa sổ bộ lọc phần mềm sẽ thay đổi độ ổn định phát hiện và thời gian phản hồi. Sử dụng kết quả tại hiện trường mục tiêu làm cơ sở nghiệm thu.
+</Tip>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_1.mp4" title="Minh họa giám sát an toàn con người 1" alt="Video minh họa giám sát an toàn con người 1" aria-label="Video minh họa giám sát an toàn con người 1" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_2.mp4" title="Minh họa giám sát an toàn con người 2" alt="Video minh họa giám sát an toàn con người 2" aria-label="Video minh họa giám sát an toàn con người 2" />
+</Frame>
+
+<Warning>
+  Giải pháp này phát hiện người đi vào một khu vực. Giải pháp không thay thế rèm quang, nút dừng khẩn cấp, liên động, các biện pháp kiểm soát an toàn chức năng hoặc đánh giá rủi ro tại hiện trường. Hãy triển khai và xác nhận đầy đủ các chức năng an toàn trong một hệ thống đáp ứng các quy định và tiêu chuẩn áp dụng.
+</Warning>
+
+## Khuyến nghị triển khai
+
+- Giữ ống kính sạch và thường xuyên kiểm tra xem có vật cản trong trường nhìn của camera hay không.
+- Xác nhận hệ thống tại hiện trường trước khi triển khai ở các khu vực có nhiều bụi, phản xạ mạnh hoặc các điều kiện khắc nghiệt khác.
+- Xác nhận lại phạm vi phát hiện và chuỗi phản hồi sau khi thay đổi vị trí camera, khu vực phát hiện hoặc logic hành động của hệ thống cấp cao hơn.

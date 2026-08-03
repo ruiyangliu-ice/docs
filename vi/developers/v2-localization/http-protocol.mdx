@@ -1,0 +1,213 @@
+---
+title: Giao thức HTTP định vị trực quan V2
+sidebarTitle: Giao thức HTTP V2
+description: "Tài liệu tham khảo về endpoint HTTP, tham số request và trường response của mô-đun định vị trực quan V2."
+hidden: true
+---
+
+Trang này liệt kê các endpoint HTTP do mô-đun định vị trực quan V2 cung cấp. Thay placeholder IP trong mỗi địa chỉ bằng địa chỉ IP của mô-đun. Nếu endpoint không nêu khác, `code: 200` và `message: success` cho biết request đã được xử lý thành công.
+
+<Warning>
+  Việc cập nhật phần mềm, triển khai hoặc chuyển đổi bản đồ, khởi động lại chương trình và khởi động lại camera sẽ làm gián đoạn định vị. Chỉ gọi các endpoint này khi phương tiện đã dừng và có phương án khôi phục.
+</Warning>
+
+## Thông tin chương trình và thiết bị
+
+### Cập nhật chương trình chính
+
+Địa chỉ: `http://<ip>:9998/tool/rob/quiet_update`
+
+<ParamField body="url" type="string" required>
+  URL có thể truy cập của gói nâng cấp chương trình chính.
+</ParamField>
+
+### Đặt chiều cao camera
+
+Địa chỉ: `http://<ip>:9998/tool/rob/setHeightRequest`
+
+<ParamField body="height" type="number" required>
+  Chiều cao camera.
+</ParamField>
+
+### Lấy phiên bản chương trình
+
+Địa chỉ: `http://<ip>:9998/tool/rob/getRobotVersion`
+
+Endpoint này không yêu cầu tham số request.
+
+<ResponseField name="code" type="integer" required>
+  Mã trạng thái response.
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  Phiên bản chương trình, chẳng hạn `version 12313`.
+</ResponseField>
+
+### Lấy thông tin phương tiện
+
+Địa chỉ: `http://<ip>:9998/tool/rob/getVehicle`
+
+Endpoint này không yêu cầu tham số request.
+
+<ResponseField name="data" type="object" required>
+  Đối tượng thông tin phương tiện.
+</ResponseField>
+
+<ResponseField name="vehicleId" type="string">
+  UUID của phương tiện.
+</ResponseField>
+
+<ResponseField name="mapId" type="string">
+  Bản đồ hiện tại.
+</ResponseField>
+
+<ResponseField name="vehicleType" type="string">
+  Loại phương tiện.
+</ResponseField>
+
+### Lấy pose hiện tại
+
+Địa chỉ: `http://<ip>:9998/tool/rob/getAGVPose`
+
+Endpoint này không yêu cầu tham số request.
+
+<ResponseField name="pose" type="object" required>
+  Pose hiện tại.
+</ResponseField>
+
+<ResponseField name="x" type="number">
+  Tọa độ X.
+</ResponseField>
+
+<ResponseField name="y" type="number">
+  Tọa độ Y.
+</ResponseField>
+
+<ResponseField name="yaw" type="number">
+  Góc hướng.
+</ResponseField>
+
+### Tái định vị
+
+Địa chỉ: `http://<ip>:9998/tool/rob/relocate`
+
+Header request: `Content-Type: application/json`
+
+<ParamField body="x" type="number" required>
+  Tọa độ X theo mét.
+</ParamField>
+
+<ParamField body="y" type="number" required>
+  Tọa độ Y theo mét.
+</ParamField>
+
+<ParamField body="angle" type="number" required>
+  Góc pose.
+</ParamField>
+
+<ParamField body="noisyX" type="number" required>
+  Nhiễu trục X theo mét.
+</ParamField>
+
+<ParamField body="noisyY" type="number" required>
+  Nhiễu trục Y theo mét.
+</ParamField>
+
+<ParamField body="noisyAngle" type="number" required>
+  Nhiễu góc.
+</ParamField>
+
+## Quản lý bản đồ
+
+### Tải gói bản đồ đang chạy hiện tại
+
+Địa chỉ: `http://<ip>:9998/tool/rob/getRunMapZip`
+
+Header request: `Content-Type: application/json`
+
+<ParamField body="Name" type="string" required>
+  Tên bản đồ.
+</ParamField>
+
+Response là tệp ZIP có content type `application/zip`.
+
+### Triển khai bản đồ
+
+Địa chỉ: `http://<ip>:9998/tool/rob/deployRunMap`
+
+<ParamField body="id" type="string" required>
+  Tên bản đồ.
+</ParamField>
+
+### Áp dụng bản đồ
+
+Địa chỉ: `http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+<ParamField body="name" type="string" required>
+  Tên bản đồ.
+</ParamField>
+
+### Bắt đầu lập bản đồ
+
+Địa chỉ: `http://<ip>:9998/tool/rob/startMapping`
+
+<ParamField body="name" type="string" required>
+  Tên bản đồ.
+</ParamField>
+
+### Dừng lập bản đồ
+
+Địa chỉ: `http://<ip>:9998/tool/rob/stopMapping`
+
+Endpoint này không yêu cầu tham số request.
+
+### Bắt đầu hoặc dừng lập bản đồ gia tăng
+
+Địa chỉ: `http://<ip>:9998/tool/rob/sendCMD`
+
+| Thao tác | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | --: | --: | --- |
+| Bắt đầu lập bản đồ gia tăng | `904` | `0` | `mapname` |
+| Dừng lập bản đồ gia tăng | `905` | `0` | `mapname` |
+
+### Lấy danh sách bản đồ
+
+Sử dụng endpoint danh sách bản đồ cục bộ:
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Endpoint này không yêu cầu tham số request. Response `run_maps` là một mảng tên bản đồ.
+
+<Note>
+  Endpoint danh sách bản đồ backend `http://<ip>:9998/tool/editor/getLocalMaps` đã lỗi thời và không được khuyến nghị.
+</Note>
+
+### Tải gói bản đồ lên camera
+
+Địa chỉ: `http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+<ParamField body="url" type="string" required>
+  URL có thể truy cập của gói bản đồ.
+</ParamField>
+
+### Tải bản đồ xuống
+
+Địa chỉ: `http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+<ParamField body="url" type="string" required>
+  URL có thể truy cập của gói bản đồ.
+</ParamField>
+
+## Endpoint bảo trì
+
+### Khởi động lại chương trình camera
+
+Địa chỉ: `http://<ip>:9998/tool/rob/restart`
+
+Endpoint này không yêu cầu tham số request.
+
+### Khởi động lại camera
+
+Địa chỉ: `http://<ip>:9998/tool/rob/Reboot`
+
+Endpoint này không yêu cầu tham số request.

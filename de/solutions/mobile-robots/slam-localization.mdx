@@ -1,0 +1,73 @@
+---
+title: Visuelle SLAM-Lokalisierung für mobile Roboter
+sidebarTitle: Visuelle Lokalisierung mobiler Roboter
+description: "Erstellen Sie Karten und lokalisieren bzw. relokalisieren Sie mobile Roboter durch Fusion einer Top-View-Kamera, 2D-LiDAR und einer IMU."
+---
+
+Beim Top-View-SLAM wird die Kamera auf dem mobilen Roboter montiert und nutzt die Decke, Wände sowie andere stabile Merkmale der Umgebung für Kartierung und Lokalisierung. Dieser Ansatz verringert die Abhängigkeit von Bodenmarkierungen und eignet sich für Innenbereiche mit sich ändernden Layouts, Verdeckungen auf Bodenebene oder mehreren Fahrzeugen.
+
+## Funktionsweise
+
+Der Navigationscontroller V2 Pro fusioniert Daten einer Top-View-Kamera, von 2D-LiDAR und einer IMU:
+
+- Die Top-View-Kamera erfasst Merkmale oberhalb des Fahrzeugs.
+- 2D-LiDAR liefert Informationen zu ebenen Konturen.
+- Die IMU liefert Daten zur Fahrzeugbewegung.
+- Der Controller gibt Daten für Kartierung, Lokalisierung und Relokalisierung aus.
+
+<Info>
+  Die Top-View-Lokalisierung hängt von beobachtbaren Merkmalen der Umgebung ab. Validieren Sie Kartierung und Lokalisierung vor der Bereitstellung in offenen Bereichen, sich wiederholenden Szenen oder Zonen mit langfristiger Verdeckung bzw. häufigen strukturellen Änderungen.
+</Info>
+
+## Merkmale der Lösung
+
+### Lokalisierung anhand natürlicher Merkmale
+
+Der Controller lokalisiert das Fahrzeug, indem er natürliche Merkmale oberhalb und in der Umgebung erkennt. Dadurch sinkt der Bedarf an festen Markierungen wie Reflektoren oder Magnetstreifen. In der [Produktdokumentation](/de/products/v-series/v2-pro-overview) finden Sie Arbeitsbereich und Umgebungslichtbedingungen der Top-View-Kamera des V2 Pro.
+
+### Fusion mehrerer Sensoren
+
+Kamera, LiDAR und IMU liefern ergänzende Daten für die Kartenerstellung und die Schätzung der Fahrzeugpose. Die Ergebnisse hängen weiterhin von Sensor-Extrinsiken, Fahrzeugbewegung, Umgebungsmerkmalen und Kartenqualität ab.
+
+### Kartierung und Integration auf dem Gerät
+
+Der Controller enthält eine Rechenplattform und unterstützt Kartierung sowie Kartenverwaltung über die Hostsoftware. Für die Systemintegration stehen SDK-, HTTP-API-, UDP- und ROS-Schnittstellen zur Verfügung.
+
+## Typische Szenarien
+
+| Szenario | Anforderung | Schwerpunkt der Top-View-Lokalisierung |
+| --- | --- | --- |
+| Lagerlogistik | Waren, Wagen und Ganglayouts können sich ändern. | Abdeckung von Merkmalen oberhalb des Fahrzeugs und Abläufe zur Kartenaktualisierung validieren. |
+| Fertigungswerkstatt | Personen und Fahrzeuge bewegen sich zwischen dicht angeordneten Anlagen und Arbeitsstationen. | Montageposition planen und Verdeckungen durch Fahrzeug oder Ladung vermeiden. |
+| Bodengestapeltes Lager oder langer Korridor | Bodenmerkmale ändern sich oder Wege sind eng. | Merkmale oberhalb des Fahrzeugs, LiDAR-Konturen und Relokalisierungspunkte bewerten. |
+
+## Ablauf der Bereitstellung
+
+<Steps>
+  <Step title="Montieren und verbinden">
+    Montieren Sie den Controller oben auf dem Fahrzeug. Halten Sie Top-View-Kamera und LiDAR frei von Chassis, Kabeln und Ladung und verbinden Sie Stromversorgung, Netzwerk sowie die erforderlichen Fahrzeugschnittstellen.
+  </Step>
+  <Step title="Extrinsiken und Fahrzeugparameter konfigurieren">
+    Konfigurieren Sie Sensor-Extrinsiken und Parameter für die Fahrzeuglokalisierung in der Hostsoftware und prüfen Sie anschließend die Datenströme.
+  </Step>
+  <Step title="Karte erfassen und bereitstellen">
+    Erfassen Sie Umgebungsdaten entlang der Zielroute, erstellen Sie eine Karte, stellen Sie sie auf dem Gerät bereit und überprüfen Sie Lokalisierung sowie Relokalisierung in repräsentativen Bereichen.
+  </Step>
+  <Step title="Übergeordnetes System verbinden">
+    Lesen Sie die Lokalisierungsdaten je nach Bedarf über SDK, HTTP-API, UDP oder ROS aus und implementieren Sie Ausnahmebehandlung sowie Laufzeitüberwachung.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Card title="V2 Pro Produktdokumentation" icon="camera" href="/de/products/v-series/v2-pro-overview">
+    Hier finden Sie Controllerspezifikationen, Schnittstellen, Installations- und Kartierungsanweisungen.
+  </Card>
+
+  <Card title="Entwicklungsleitfaden für die V2-Lokalisierung" icon="code" href="/de/developers/v2-localization/pure-localization-guide">
+    Hier finden Sie den Modus für reine Lokalisierung und Ressourcen zur Integration.
+  </Card>
+</Columns>
+
+<Warning>
+  Der Lokalisierungscontroller gibt die Fahrzeugpose aus. Er ersetzt weder Hinderniserkennung, funktionale Sicherheit und Aufgabenplanung noch das vollständige System, das für den autonomen Gabelstaplerbetrieb erforderlich ist. Führen Sie vor dem Start eine Risikobewertung vor Ort und eine Validierung auf Fahrzeugebene durch.
+</Warning>

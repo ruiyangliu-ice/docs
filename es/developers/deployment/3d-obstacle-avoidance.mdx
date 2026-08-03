@@ -1,0 +1,177 @@
+---
+title: Implementar la prevención visual de obstáculos 3D
+sidebarTitle: Implementación de prevención de obstáculos 3D
+description: "Configura regiones de prevención visual de obstáculos 3D, parámetros extrínsecos y salidas de comunicación con cámaras de las series S y M."
+---
+
+La prevención visual de obstáculos 3D ejecuta en la cámara la detección de objetivos, la adaptación al suelo y la salida del estado de los obstáculos. Después de configurar los parámetros extrínsecos de la cámara y las regiones, puedes cambiar los grupos de parámetros de prevención de obstáculos y leer los resultados mediante la aplicación host, la API o un bus de campo compatible.
+
+<Info>
+  Los valores de esta guía solo ilustran las relaciones entre las configuraciones. Los valores reales dependen del vehículo, la posición de instalación y el área de trabajo. Valídalos en el sitio antes de enviar la configuración.
+</Info>
+
+## Preparar la implementación
+
+### Instalar la cámara
+
+| Tipo de vehículo | Guía de instalación |
+| --- | --- |
+| AMR underride | Monta la cámara en la superficie frontal, orientada en la dirección de desplazamiento. La estructura de montaje no debe obstruir el campo de visión. Se recomienda S10. |
+| Carretilla elevadora | Monta la cámara en el mástil con el objetivo inclinado hacia abajo aproximadamente `30°–55°`. El borde del campo de visión debe alcanzar la parte frontal del vehículo. Cuando sea posible, mantén la altura de instalación en `2 m` o menos. Se recomienda S10. |
+
+<Columns cols={2}>
+  <Card title="Instalación de AMR underride" icon="car">
+    ![Cámara montada en la parte frontal de un AMR underride](/images/developers/deployment-3d-obstacle-avoidance-2-1-lurking-car.avif)
+  </Card>
+
+  <Card title="Instalación en carretilla elevadora" icon="forklift">
+    ![Cámara montada en el mástil de una carretilla elevadora](/images/developers/deployment-3d-obstacle-avoidance-2-2-forklift.avif)
+  </Card>
+</Columns>
+
+### Conectar la cámara
+
+<Steps>
+  <Step title="Configurar la red del host">
+    La dirección de fábrica de la cámara es `192.168.100.82`. Configura el adaptador Ethernet del ordenador en la misma subred.
+  </Step>
+  <Step title="Conectar y verificar la imagen">
+    Abre **LxCameraViewer**, descubre y abre la cámara y confirma que el mapa de profundidad y la nube de puntos se muestran correctamente.
+  </Step>
+  <Step title="Cambiar la dirección de la cámara cuando sea necesario">
+    En **Otras herramientas → Red → Herramienta de configuración de IP**, cambia la dirección IP. La cámara se reinicia después del cambio. Si la cámara pasa a otra subred, actualiza también la dirección Ethernet del ordenador.
+  </Step>
+</Steps>
+
+<Warning>
+  No desactives permanentemente el firewall en una red de producción. En una red de depuración controlada, permite solo las aplicaciones y los puertos necesarios según tu política de seguridad.
+</Warning>
+
+### Ajustar la imagen
+
+En **Configuración 3D** y **Configuración de filtros**, verifica la calidad de imagen. Para configuraciones antiguas de prevención de obstáculos, puedes usar como punto de partida una exposición alta de `650`, una exposición baja de `200` y un umbral de señal baja de `10–20`. S10 normalmente solo requiere un nivel de deslumbramiento de `1`. Para instalaciones no estándar, confirma la configuración con el soporte técnico antes de la implementación.
+
+## Configurar el algoritmo de prevención de obstáculos
+
+<Steps>
+  <Step title="Activar el algoritmo">
+    En **Algoritmo de aplicación**, selecciona el modo siempre activo. Para S10, selecciona **Algoritmo de prevención de obstáculos**. Para otros modelos compatibles, selecciona **Algoritmo de prevención de obstáculos 2.0**.
+  </Step>
+  <Step title="Elegir el tipo de región">
+    Elige una región rectangular o con forma de sector para el vehículo. S10 no admite regiones con forma de sector; usar una puede producir resultados incorrectos.
+  </Step>
+  <Step title="Configurar los parámetros extrínsecos y las regiones">
+    Configura primero los parámetros extrínsecos de la cámara y, después, las regiones de prevención de obstáculos. Cuando cambian los parámetros extrínsecos, las demás regiones utilizan los nuevos valores.
+  </Step>
+  <Step title="Enviar y verificar">
+    Envía los parámetros y verifica las áreas de advertencia, alarma y protección en la vista de nube de puntos y en el estado de salida.
+  </Step>
+</Steps>
+
+### Parámetros extrínsecos de la cámara
+
+| Parámetro | Ejemplo | Descripción |
+| --- | --: | --- |
+| Roll (eje X) | `180°` | Orientación de la cámara; ejemplo para la instalación vertical predeterminada. |
+| Pitch (eje Y) | `90°` | Orientación de la cámara; ejemplo para la instalación vertical predeterminada. |
+| Yaw (eje Z) | `90°` | Orientación de la cámara. |
+| Posición X | `430 mm` | Posición de la cámara en el eje longitudinal del vehículo. |
+| Posición Y | `0 mm` | Posición de la cámara en el eje transversal del vehículo; `0` significa centrada. |
+| Posición Z | `120 mm` | Altura de la cámara sobre el suelo. |
+
+Configura primero la altura de montaje y, después, ajusta con precisión roll y pitch hasta que el suelo quede nivelado en la vista de nube de puntos. Selecciona **Enviar parámetros** cuando termines.
+
+### Regiones de prevención de obstáculos
+
+| Parámetro | Ejemplo | Propósito |
+| --- | --: | --- |
+| Distancia de advertencia (X lejano) | `2000 mm` | Distancia a partir de la cual el área se considera despejada; el intervalo hasta la distancia de alarma es la zona de advertencia/desaceleración. |
+| Distancia de alarma (X intermedio) | `1500 mm` | El intervalo hasta la distancia de protección es la zona de alarma/parada. |
+| Distancia de protección (X cercano) | `600 mm` | Zona ciega del extremo cercano; los obstáculos en esta zona se excluyen de la prevención de obstáculos. |
+| Rango izquierdo/derecho (Y) | `−810 / 1270 mm` | Límites de detección a ambos lados de la línea central del vehículo. |
+| Altura inferior/superior (Z) | `10 / 1500 mm` | Rango de altura incluido en la detección. |
+
+<Tip>
+  Los valores de X son relativos al centro del vehículo. La distancia de protección real también debe tener en cuenta el desplazamiento X de la cámara, por ejemplo, la distancia de advertencia menos el desplazamiento longitudinal de la cámara.
+</Tip>
+
+El número de grupos de regiones compatibles depende del método de conmutación:
+
+| Método de conmutación | Grupos compatibles |
+| --- | --: |
+| S2 / S2 Max 2.0 I/O | `0–3` |
+| SDK, UDP, RS485 o CAN | `0–19` (según el modelo) |
+
+Haz una copia de seguridad de los valores verificados en `Tools\\params\\<camera ID>\\avoidance.json`. Puedes aplicar el archivo a otro vehículo del mismo tipo mediante **Cargar configuración desde archivo**.
+
+## Comunicación y salida de estado
+
+Configura las regiones de prevención de obstáculos y los parámetros extrínsecos en la aplicación host antes de usar un bus de campo o un protocolo de red. Excepto la API, la mayoría de los métodos de comunicación cambian los grupos de parámetros; usa la aplicación host o la API para configurar parámetros detallados.
+
+| Cámara | Comunicación compatible |
+| --- | --- |
+| S2 | API, UDP, I/O |
+| S2 Max | API, UDP, CAN |
+| S2 Max 2.0 | API, UDP, I/O, CAN |
+| M4 Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API, UDP, I/O, CAN |
+
+<Note>
+  I/O tiene la máxima prioridad. Mientras I/O está activo, los demás métodos no pueden cambiar el grupo de parámetros actual, aunque sí pueden actualizar parámetros predeterminados o temporales. La aplicación host y la API establecen los parámetros predeterminados; UDP, CAN y RS485 normalmente establecen parámetros temporales. El comportamiento después de una pérdida de alimentación depende de cómo se haya guardado la última configuración.
+</Note>
+
+### API
+
+Las aplicaciones Windows, Linux y ARM pueden llamar a las API de prevención de obstáculos mediante el SDK. Después de instalar la aplicación host de Windows, el SDK y los ejemplos están disponibles en su directorio de instalación. El ejemplo de prevención de obstáculos está en `Sample\\C\\application_obstacled`. Para S10, evita cambiar los grupos de parámetros con una frecuencia alta mediante la API; usa UDP o I/O en su lugar.
+
+### RS485 (solo M4 Pro)
+
+Usa Modbus RTU con una velocidad en baudios recomendada de `9600`. Lee los dos registros de entrada a partir de la dirección `108` (`0x6C`) con el código de función `0x04` para obtener el resultado actual de prevención de obstáculos. Escribe un solo registro en la dirección `106` (`0x6A`) con el código de función `0x06` para cambiar los grupos de parámetros.
+
+| Pin | Señal | Color del cable |
+| --: | --- | --- |
+| 1 | GND | Azul |
+| 2 | RS485\_A | Gris |
+| 3 | RS485\_B | Blanco |
+| 4 | VIN\+ | Marrón |
+| 5 | VIN− | Negro |
+
+### UDP y TCP
+
+Los mensajes se envían como tramas hexadecimales. Para UDP, envía primero el mensaje de establecimiento de conexión. Después de establecer la conexión, la cámara envía los resultados a la frecuencia de imagen.
+
+| Dirección | Trama | Significado |
+| --- | --- | --- |
+| Cámara → controlador | `ACED0410XX000000` | Sin obstáculos; `XX` es el grupo de parámetros actual. |
+| Cámara → controlador | `ACED0410XX000001` | Advertencia/desaceleración. |
+| Cámara → controlador | `ACED0410XX000002` | Alarma/parada. |
+| Controlador → cámara (UDP) | `ACED040000000000` | Establecer la conexión UDP. |
+| Controlador → cámara | `ACED041A00000000` a `ACED041A00000013` | Cambiar el grupo de parámetros `0–19`. |
+| Controlador → cámara | `ACED041B00000000` | Guardar el grupo actual como grupo predeterminado. |
+
+El puerto UDP remoto predeterminado es `6688`. El cambio de parámetros requiere tiempo de carga; evita cambiar rápidamente porque puede reducir la frecuencia de imagen y la frecuencia de actualización de resultados.
+
+### CAN e I/O
+
+CAN puede cambiar los grupos de parámetros en los modelos compatibles. Las salidas I/O informan de los estados despejado, desaceleración y parada de emergencia. El tipo de salida puede ser push-pull u open-drain; confirma el tipo de entrada del controlador antes de cablear.
+
+| OUT1 push-pull | OUT2 push-pull | Estado |
+| --- | --- | --- |
+| `24 V` | `24 V` | Sin obstáculos |
+| `24 V` | `0 V` | Desaceleración |
+| `0 V` | `24 V` | Parada de emergencia |
+| `0 V` | `0 V` | Desactivado, inicializando o con error |
+
+<Warning>
+  Para S10, conecta `24 V−` a la tierra de alimentación del controlador, y conecta `IN_G` y `OUT_G` a la tierra de señal del controlador. Si el controlador no distingue entre las dos tierras, usa el esquema de tierra común aprobado en el sitio. Confirma si el controlador utiliza señales PNP o NPN y verifica el cableado con un multímetro.
+</Warning>
+
+## Solución de problemas
+
+| Síntoma | Comprobaciones |
+| --- | --- |
+| No se detectan objetos negros o de baja reflectividad | Confirma la cobertura de la nube de puntos; ajusta el tiempo de integración y el umbral de señal baja. Si es necesario, añade una superficie reflectante a la punta negra de la horquilla. |
+| Los objetos bajos no activan la detección | Comprueba el límite Z inferior; establécelo temporalmente en `0` para verificarlo. Si la detección sigue fallando, comprueba la altura de montaje y la cobertura de la nube de puntos. |
+| Los parámetros no tienen efecto | Confirma que se hayan enviado. Comprueba la validez de los parámetros, la conexión de red y la prioridad del grupo de parámetros. |
+| Datos anómalos | Comprueba si hay obstrucciones en la estructura de montaje, una película protectora en el objetivo o un cristal protector adicional. |

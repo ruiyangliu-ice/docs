@@ -1,0 +1,302 @@
+---
+title: 3D-Kameras der S10-Serie
+description: "Spezifikationen, Schnittstellen, Installationsanforderungen und Integration der Hindernisvermeidung für dToF-RGB-D-Kameras der S10-Serie."
+---
+
+<Info>
+  Laden Sie die vollständigen Produktmaterialien im [Download-Center](/de/resources/downloads/specifications-and-user-guides) herunter.
+</Info>
+
+## Produktüberblick
+
+Die S10-Serie besteht aus industriellen dToF-RGB-D-Kameras, einschließlich der Versionen S10, S10 Pro und Lite. Die Kameras synchronisieren RGB- und Tiefendaten und können Tiefenkarten, IR-Amplitudenbilder, RGB-Bilder, Punktwolken und Ergebnisse der Hindernisvermeidung ausgeben.
+
+Die Standardversion S10 misst von 0,3–8 m und die S10 Pro von 0,3–17 m. Unterstützte Modelle bieten Ethernet, zwei digitale Eingänge und zwei digitale Ausgänge. Sie können bis zu vier Hindernisvermeidungszonen konfigurieren und Stopp-, Verlangsamungs- oder Sicherheitszustandssignale ausgeben.
+
+<Frame>
+  ![Kamera der S10-Serie](/images/products/s-series-s10-overview-s10-series-camera.avif)
+</Frame>
+
+## Funktionen
+
+- **dToF-Wahrnehmung im mittleren und großen Entfernungsbereich:** Geeignet für mobile Anwendungen im Innen- und Außenbereich, etwa autonome Fahrzeuge, autonome Gabelstapler und Drohnen.
+- **Synchronisierte multimodale Ausgabe:** Stellt Tiefen-, RGB-, IR-Amplituden- und Punktwolkendaten bereit. Die Lite-Version stellt keine RGB-Daten bereit.
+- **On-Device-Hindernisvermeidung:** Empfangen Sie Punktwolken über Ethernet oder verwenden Sie den integrierten Algorithmus, um Steuersignale über I/O auszugeben.
+- **Betrieb mehrerer Kameras und Leistung bei hellem Licht:** Mehrere Kameras können zusammenarbeiten. Bei einer Umgebung mit 100 kLux und einem Ziel mit 90 % Reflexionsgrad erreicht die S10 8 m und die S10 Pro 17 m.
+
+<Columns cols={2}>
+  <Card title="Zugriff auf Punktwolken" icon="network">
+    Empfangen Sie Kameradaten über Ethernet und führen Sie sie in Ihr Wahrnehmungs- oder Steuerungssystem zusammen.
+  </Card>
+
+  <Card title="On-Device-Hindernisvermeidung" icon="shield-check">
+    Konfigurieren Sie Hindernisvermeidungszonen und geben Sie Verlangsamungs-, Stopp- oder Sicherheitszustandssignale über I/O aus.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Messung mit großer Reichweite der S10-Serie](/images/products/s-series-s10-overview-long-range-measurement.avif)
+</Frame>
+
+<Frame>
+  ![Tiefenbildgebung der S10-Serie in einer bewegten Anwendung](/images/products/s-series-s10-overview-depth-imaging-in-a-moving-application.avif)
+</Frame>
+
+<Frame>
+  ![Entfernungsmessung der S10-Serie bei hellem Licht](/images/products/s-series-s10-overview-outdoor-bright-light-ranging.avif)
+</Frame>
+
+## Spezifikationen
+
+| Parameter | S10 (Lite verfügbar) | S10 Pro |
+| --- | --- | --- |
+| Laserwellenlänge | 940 nm | 940 nm |
+| Ausgabedaten | Tiefenkarte, RGB-Bild, IR-Amplitudenbild | Tiefenkarte, RGB-Bild, IR-Amplitudenbild |
+| ToF-Auflösung und Bildrate | 240 × 160; bis zu 20 fps, typisch 15 fps | 240 × 160; bis zu 10 fps, typisch 10 fps |
+| ToF-Sichtfeld | 90° × 60° ± 3°; 120° × 80° ± 3° | 61° × 90° ± 3° |
+| RGB-Auflösung und Bildrate | 1920 × 1080 oder 1632 × 1224; bis zu 20 fps, typisch 15 fps | 1920 × 1080; bis zu 10 fps, typisch 10 fps |
+| RGB-Sichtfeld | 90° × 60° ± 3°; 120° × 80° ± 3°; kein RGB bei Lite | 61° × 90° ± 3° |
+| Betriebsbereich (hoher Reflexionsgrad) | 0,3–8 m (90 % Reflexionsgrad) | 0,3–17 m (90 % Reflexionsgrad) |
+| Betriebsbereich (niedriger Reflexionsgrad) | 0,3–3 m (5 % Reflexionsgrad) | 0,3–13 m (10 % Reflexionsgrad) |
+| Entfernungsmessgenauigkeit | ≤ 3 cm | ≤ 3 cm |
+| Durchschnittliche Leistungsaufnahme | ≤ 4 W | ≤ 7 W |
+| Abmessungen | 80 × 37 × 25 mm | 92 × 47 × 51 mm |
+| Gewicht | 190 g | 460 g |
+| Stromversorgung | 12–28 V | 24 V |
+| Kommunikationsschnittstellen | Ethernet, GMSL<sup>1</sup>, I/O<sup>2</sup> | Ethernet, I/O |
+| Schutzart | IP54 | IP67 |
+| Betriebstemperatur | −20–60 °C | −20–60 °C |
+| Lagertemperatur | −40–85 °C | −40–85 °C |
+| Zeitsynchronisierung | PTP | PTP |
+| Softwareumgebung | C/C\+\+/ROS SDK | C/C\+\+/ROS SDK |
+| Unterstützte Systeme | Windows 7/8/10/11, Linux, Arm Linux/ROS | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Beständigkeit gegen Umgebungslicht | 100 kLux | 100 kLux |
+
+<Note>
+  <sup>1</sup> Wenden Sie sich für die GMSL-Version an MRDVS.<br /> <sup>2</sup> Die 120°-Version S10 Lite stellt ein I/O-Kabel bereit. Verwenden Sie für die endgültigen Produktabmessungen das 3D-Modell.
+</Note>
+
+## Schnittstellen und Komponenten
+
+### Kameraanschlüsse
+
+Die Kamera stellt Schnittstellen für Stromversorgung, Ethernet und Funktionen bereit. Die Funktionsschnittstelle verfügt über kein externes I/O-Kabel, außer bei der 120°-Version S10 Lite.
+
+<Frame>
+  ![Kameraanschlüsse der S10-Serie](/images/products/s-series-s10-overview-s10-camera-ports.avif)
+</Frame>
+
+<Frame>
+  ![Anschlüsse und I/O-Kabel der S10 Lite 120°](/images/products/s-series-s10-overview-s10-series-camera-side-interfaces.avif)
+</Frame>
+
+### I/O-Signale
+
+| Schnittstelle | Typ | Beschreibung |
+| --- | --- | --- |
+| IN1, IN2 | Eingang | Aktiv-hoher diskreter Eingang; unterstützt 24 V oder offenen Eingang. |
+| OUT1, OUT2 | Ausgang | Diskreter Ausgang; unterstützt einen 24-V-Pull-up. |
+| COM | Gemeinsam | Gemeinsame Masse für digitale I/O. |
+
+### Kabelbelegung
+
+<Frame>
+  ![I/O-Kabel und Stecker der S10-Serie](/images/products/s-series-s10-overview-io-cable-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Kabelanschluss des I/O-Kabels der S10-Serie](/images/products/s-series-s10-overview-io-cable-pinout-detail.avif)
+</Frame>
+
+Die folgende Pinbelegung berücksichtigt Korrekturen im archivierten Material. Beachten Sie vor der Verkabelung das Kabeletikett und die tatsächliche Produktversion.
+
+| Pin | Kabelfarbe | Signal |
+| --- | --- | --- |
+| 1 | Orange | IN1 |
+| 2 | Gelb | IN\_COM1 |
+| 3 | Grün | IN2 |
+| 4 | Violett | OUT1 |
+| 5 | Grau | OUT\_COM1 |
+| 6 | Blau | IN\_COM2 |
+| 7 | Braun | OUT2 |
+| 8 | Weiß | OUT\_COM2 |
+
+### Kamerakomponenten
+
+<Frame>
+  ![Kamerakomponenten der S10-Serie](/images/products/s-series-s10-overview-camera-components.avif)
+</Frame>
+
+| Komponente | Beschreibung |
+| --- | --- |
+| VCSEL | Laseremitter |
+| SPAD | Einzelphotonen-Lawinenphotodiode |
+| RGB | RGB-Modul |
+| Betriebsanzeige | Blinkt nach dem Einschalten langsam |
+
+## Integration und Installation
+
+### Sichtfeld und Abmessungen
+
+<Frame>
+  ![3D-Sichtfeld der S10-Serie mit 120° × 80°](/images/products/s-series-s10-overview-s10-120-degree-3d-field-of-view.avif)
+</Frame>
+
+<Frame>
+  ![3D-Sichtfeld der S10-Serie mit 90° × 60°](/images/products/s-series-s10-overview-s10-90-degree-3d-field-of-view.avif)
+</Frame>
+
+<Frame>
+  ![2D-Sichtfeld der S10-Serie mit 120° × 80°](/images/products/s-series-s10-overview-s10-120-degree-2d-field-of-view.avif)
+</Frame>
+
+<Frame>
+  ![2D-Sichtfeld der S10-Serie](/images/products/s-series-s10-overview-s10-2d-field-of-view.avif)
+</Frame>
+
+<Frame>
+  ![Abmessungen der Kamera der S10-Serie](/images/products/s-series-s10-overview-s10-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![Abmessungen der S10 Pro](/images/products/s-series-s10-overview-s10-pro-dimensions.avif)
+</Frame>
+
+### Erforderlicher Freiraum
+
+<Warning>
+  Halten Sie den dargestellten rosafarbenen Freiraum frei von Hindernissen. Bauteile, die in diesen Bereich ragen, können Punktwolken stören und Rauschen, Fehlauslösungen oder falsche Stopps verursachen.
+</Warning>
+
+<Frame>
+  ![Erforderlicher Freiraum der Kamera der S10-Serie](/images/products/s-series-s10-overview-required-camera-clearance.avif)
+</Frame>
+
+<Frame>
+  ![Detailbereich des erforderlichen Freiraums der S10-Serie](/images/products/s-series-s10-overview-required-camera-clearance-detail.avif)
+</Frame>
+
+<Frame>
+  ![Falsche Installation der S10-Serie](/images/products/s-series-s10-overview-incorrect-camera-installation.avif)
+</Frame>
+
+<Frame>
+  ![Beispiel für eine Installationsstörung der S10-Serie](/images/products/s-series-s10-overview-object-inside-the-clearance-area.avif)
+</Frame>
+
+#### Häufige Installationsstörungen
+
+- **Verdeckung des Sichtfelds:** Rahmen, Rippen, kleine Öffnungen oder eine außermittige Montage können feste Blindbereiche oder falsche Ziele im Nahbereich erzeugen.
+- **Reflexionen und Mehrwegeffekte im Nahbereich:** Enge Hohlräume, glänzendes Metall oder Spiegel können Entfernungen verzerren oder lokale Sättigung verursachen.
+- **Probleme mit dem optischen Fenster:** Gewöhnliches Glas, Acryl, Schmutz oder Kondenswasser können Artefakte erzeugen, Signale abschwächen oder das Signal-Rausch-Verhältnis verringern. Prüfen Sie Übertragung und Entfernungsmessleistung, bevor Sie ein Fenster hinzufügen.
+- **Montagebelastung und Wärme:** Zu starkes Anziehen kann die optische Achse verschieben. Sorgen Sie bei Installationen in geschlossenen Gehäusen für einen Wärmeableitungspfad, um temperaturbedingte Drift zu vermeiden.
+
+### Umgebung und Zuverlässigkeit
+
+| Element | Anforderung |
+| --- | --- |
+| Betriebstemperatur | −20–60 °C |
+| Betriebsbeleuchtung | 0–100 kLux |
+| Lagertemperatur | −40–85 °C |
+| Lagerfeuchte | Maximal 90 % RH |
+| Temperaturanstieg im Normalbetrieb | Temperaturanstieg des Gehäuses < 25 °C |
+| ESD | ±4 kV Kontaktentladung; ±8 kV Luftentladung |
+| RE | Entspricht GB 9254 Klasse A |
+| Nutzungsdauer | 3 Jahre |
+| Umweltzertifizierung | RoHS |
+
+## Erste Verbindung
+
+<Steps>
+  <Step title="Stromversorgung und Netzwerk anschließen">
+    Versorgen Sie die Kamera mit 24 VDC und verbinden Sie ihre Kommunikationsschnittstelle über ein Cat-6-Ethernetkabel mit dem Computer. Eine langsam blinkende blaue Anzeige signalisiert eine normale Stromversorgung.
+  </Step>
+  <Step title="Netzwerk konfigurieren">
+    Die werkseitige Standard-IP-Adresse der Kamera ist `192.168.100.82`. Stellen Sie den Computer auf dasselbe Subnetz ein und vergewissern Sie sich, dass die Firewall die Kamerakommunikation nicht blockiert.
+  </Step>
+  <Step title="Bildausgabe prüfen">
+    Öffnen Sie die Kamera in der Host-Anwendung und vergewissern Sie sich, dass das Bild klar und stabil ist. Konfigurieren Sie bei Bedarf grundlegende Parameter und Anwendungsalgorithmen.
+  </Step>
+</Steps>
+
+## LxCameraViewer-Oberfläche
+
+LxCameraViewer zeigt Tiefen-, IR-Amplituden-, Punktwolken- und RGB-Bilder an und liest grundlegende Kamera- und Algorithmusparameter aus oder konfiguriert sie.
+
+<Frame>
+  ![LxCameraViewer vor dem Öffnen der Kamera](/images/products/s-series-s10-overview-interface-before-opening-a-camera.avif)
+</Frame>
+
+<Frame>
+  ![LxCameraViewer mit geöffneter Kamera](/images/products/s-series-s10-overview-interface-with-an-open-camera.avif)
+</Frame>
+
+- Wählen Sie ein Gerät in der Liste aus und klicken Sie auf **Open** oder **Close**, um die Verbindung zu steuern.
+- Verwenden Sie **Capture**, um das Streaming zu starten oder zu stoppen, und **Save frame**, um aktive Streams zu speichern.
+- Wählen Sie **Depth**, **Intensity**, **RGB** oder **Point cloud**, um die angezeigten Daten auszuwählen.
+- Konfigurieren Sie Gerätefunktionen unter **Basic tools**, **Application algorithms** und **Other**.
+
+## Sicherheit und Fehlerbehebung
+
+### Lasersicherheit
+
+<Frame>
+  ![Lasersicherheitsetikett der S10-Serie](/images/products/s-series-s10-overview-laser-safety-class.avif)
+</Frame>
+
+Halten Sie das Sicherheitsetikett vollständig und lesbar und befolgen Sie die Sicherheitsanforderungen auf dem Etikett und in den Produktmaterialien.
+
+### Fehlerbehebung
+
+| Problem | Empfohlene Prüfungen |
+| --- | --- |
+| Keine Daten nach dem Öffnen der Kamera | Prüfen Sie die Firewall, vergewissern Sie sich, dass Computer und Kamera dasselbe Subnetz verwenden, und prüfen Sie Switch und Ethernetkabel. |
+| Die Host-Anwendung erkennt mehrere IP-Adressen | Beheben Sie doppelte LAN-IP-Adressen und wählen Sie das richtige Gerät aus. |
+| Weiße Objekte haben eine ungenaue Kantenerkennung | Passen Sie die Parameter zur Unterdrückung von Blendung an und prüfen Sie die Leistung bei schwarzen Zielen erneut. |
+| Reflektierende Säulen sind überbelichtet | Probieren Sie den Algorithmus zur Unterdrückung von Blendung aus und validieren Sie ihn in der tatsächlichen Szene. |
+| Kein Bild oder ungewöhnliche Größe des Tiefenbilds | Aktualisieren Sie die Host-Anwendung auf `Lanxin-MRDVS-1.3.66.0606` oder höher. |
+| Berechtigung für exklusive Anwendung schlägt fehl | Stellen Sie sicher, dass nur ein Client verbunden ist, oder verwenden Sie eine neuere Version mit Mehrbenutzerberechtigungen. |
+| Spärliche oder fehlende Zieldaten | Prüfen Sie den Parameter für hohe Belichtung (typischerweise 600–1200) und den Schwellenwert für niedrige Signale (typischerweise 10–30). |
+
+## Anwendungen und Fallstudien
+
+<Frame>
+  ![Anwendungsszenarien der S10-Serie](/images/products/s-series-s10-overview-s10-applications.avif)
+</Frame>
+
+### dToF und iToF
+
+dToF eignet sich im Allgemeinen für mittlere und große Entfernungen sowie komplexe Umgebungen; iToF wird häufig für hochpräzise Erkennung im Nahbereich eingesetzt. Wählen Sie die Kamera anhand von Arbeitsabstand, Sichtfeld, Reflexionsgrad und Umgebungslicht aus.
+
+<Frame>
+  ![Vergleich der dToF- und iToF-Technologie](/images/products/s-series-s10-overview-dtof-and-itof-comparison.avif)
+</Frame>
+
+<Frame>
+  ![Vergleich der dToF- und iToF-Anwendungen](/images/products/s-series-s10-overview-dtof-and-itof-comparison-detail.avif)
+</Frame>
+
+<Columns cols={2}>
+  <Card title="3D-Hindernisvermeidung für mobile Roboter" icon="bot" href="/de/solutions/mobile-robots/3d-obstacle-avoidance">
+    Sehen Sie sich die 3D-Lösung zur Hindernisvermeidung für mobile Roboter an.
+  </Card>
+
+  <Card title="Fallstudie: autonomer Gabelstapler" icon="forklift" href="/de/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+    Sehen Sie eine Fallstudie zum stabilen Betrieb eines autonomen Gabelstaplers.
+  </Card>
+
+  <Card title="Fallstudie: AMR mit Unterfahrbereich" icon="route" href="/de/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+    Sehen Sie eine Anwendung zur Vermeidung niedriger Hindernisse.
+  </Card>
+
+  <Card title="Fallstudie: humanoider Roboter auf Rädern" icon="accessibility" href="/de/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+    Sehen Sie eine Anwendung zur 3D-Hindernisvermeidung für humanoide Roboter auf Rädern.
+  </Card>
+</Columns>
+
+## Zertifikate
+
+- [CE-EMV-Zertifikat (TÜV)](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/s10_ce_emc_certificate_tuv.pdf)
+- [EMV-Prüfbericht (TÜV)](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/s10_emc_test_report_tuv.pdf)
+- [RoHS-Prüfbericht](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/s10_rohs_test_report.pdf)
+- [Prüfbericht Klasse I](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/s10_class_1_test_report.pdf)

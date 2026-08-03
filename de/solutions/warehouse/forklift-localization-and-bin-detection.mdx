@@ -1,0 +1,47 @@
+---
+title: Koordinierte Gabelstaplerlokalisierung und Lagerplatzerkennung
+sidebarTitle: "Gabelstaplerlokalisierung & Lagerplatzerkennung"
+description: "Kombinieren Sie Gabelstaplerpose und Lagerplatzstatusdaten, um die Disposition manueller Gabelstapler, die Ladungsverfolgung und die Lagerplatzverwaltung zu unterstützen."
+---
+
+Der Betrieb manueller Gabelstapler hängt häufig von der Erfahrung der Fahrer ab, während Lagerplatzaufzeichnungen dem tatsächlichen Anlagenzustand hinterherhinken können. Wegeeffizienz, Lagerplatzstatus und Sicherheit in schmalen Gängen sind häufige Herausforderungen der Lagerverwaltung.
+
+## Lösungsarchitektur
+
+Die Lösung kombiniert ein Lokalisierungssystem für manuelle Gabelstapler mit einem System zur Erkennung des Lagerplatzstatus. Das erste System liefert Position und Pose des Gabelstaplers, das zweite Belegung und Ladungsstatus. Beide Datenströme können an ein übergeordnetes System zur Aufgabendisposition und Ladungsverfolgung gesendet werden.
+
+## Lokalisierung manueller Gabelstapler
+
+Montieren Sie eine 3D-Vision-Kamera oben auf dem Gabelstapler. Das System lokalisiert sich anhand natürlicher Merkmale an Decke und Wänden, unterstützt durch eine IMU. Projektaufzeichnungen geben eine Positioniergenauigkeit von **1–5 cm** an; die tatsächliche Genauigkeit hängt von den Merkmalen am Standort, der Installation und der Kalibrierung ab.
+
+<Frame>
+  ![Visuelles Lokalisierungssystem für manuelle Gabelstapler](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
+</Frame>
+
+Das System kann den Fahrer vor Personen, Fahrzeugen und potenziellen Risiken in der Nähe warnen und mit Sperrbereichen konfiguriert werden. Die Lokalisierungsergebnisse können außerdem mit dem Lagerplatzstatus kombiniert werden, um die Ladungsplatzierung zu protokollieren und die Aufgabenerouten anzupassen.
+
+<Frame>
+  ![Koordination von Gabelstaplerlokalisierung und Lagerbetrieb](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+</Frame>
+
+## Erkennung des Lagerplatzstatus
+
+Eine RGB-D-Kamera erfasst 3D- und Farbinformationen, um zu erkennen, ob ein Lagerplatz eine Ladung enthält, wie sie platziert ist und ob eine anomale Belegung vorliegt. Der Algorithmus kann bei Bedarf Ladungskategorien unterscheiden, und kamera-seitige Ergebnisse können an das Dispositionssystem gesendet werden.
+
+| Merkmal | Beschreibung |
+| --- | --- |
+| 3D-Überwachung | Kombiniert Tiefen- und Farbdaten, um den Lagerplatzstatus zu erkennen. |
+| Verarbeitung auf der Kamera | Reduziert den Bedarf an einem externen Industriecomputer. |
+| Kommunikationsintegration | Unterstützt TCP/IP, UDP und HTTP mit JSON-Ausgabe. |
+| Koordination mit der Disposition | Stellt Echtzeitinformationen zu Lagerplätzen für die Aufgabenzuweisung bereit. |
+
+<Frame>
+  ![System zur Erkennung des Lagerplatzstatus](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
+</Frame>
+
+## Koordinierter Ablauf
+
+1. Das Lokalisierungssystem gibt kontinuierlich Position und Pose des Gabelstaplers aus.
+2. Die Lagerplatzkamera meldet Belegung und Ladungsstatus des Ziellagerplatzes.
+3. Das übergeordnete System verknüpft Fahrzeug-, Ladungs- und Lagerplatzdaten, um Aufnahme- und Platzierungsaufgaben zu bestätigen und Ladungspositionen zu protokollieren.
+4. Wenn sich Lagerplatz- oder Fahrzeugstatus ändern, kann das übergeordnete System Aufgabenrouten und Ressourcenzuweisung aktualisieren.

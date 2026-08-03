@@ -1,0 +1,77 @@
+---
+title: Importar y exportar parámetros de la cámara
+sidebarTitle: Importación/exportación de parámetros
+description: "Haz copias de seguridad y restaura parámetros de prevención de obstáculos, imagen, filtros y reconocimiento de palés en LxCameraViewer y PalletPro."
+---
+
+Exporta una configuración verificada antes de cambiar los parámetros. Después de importar una configuración, comprueba el modelo de cámara, los parámetros extrínsecos de instalación y la imagen en el dispositivo de destino antes de utilizarlo.
+
+<Warning>
+  Los archivos de configuración pueden contener parámetros extrínsecos que dependen de la instalación. No uses los parámetros extrínsecos de un vehículo en otro. Verifica siempre los valores importados.
+</Warning>
+
+## Parámetros de prevención de obstáculos
+
+### Exportar
+
+<Steps>
+  <Step title="Abrir la configuración de prevención de obstáculos">
+    En **Algoritmo de aplicación**, selecciona el algoritmo de prevención de obstáculos y configura sus regiones y parámetros extrínsecos.
+  </Step>
+  <Step title="Enviar los parámetros">
+    En **Configuración de prevención de obstáculos**, selecciona **Enviar parámetros**.
+  </Step>
+  <Step title="Localizar el archivo">
+    Abre la carpeta `params` del directorio de la aplicación host y, después, abre el directorio correspondiente al ID de la cámara. El archivo `avoidance` contiene los parámetros guardados.
+  </Step>
+</Steps>
+
+El directorio predeterminado es:
+
+`D:\\Program Files\\Lanxin-MRDVS\\Tools\\params`
+
+### Importar
+
+En **Configuración de prevención de obstáculos**, selecciona **Cargar configuración desde archivo** y elige el archivo exportado. Envía la configuración y verifica la región en la vista de nube de puntos y el estado de salida.
+
+<Frame>
+  ![Carga de una configuración de prevención de obstáculos desde un archivo](/images/developers/deployment-parameter-import-export-d-the-export-and-import-of-obstacle-avoidance-algorithm-parameters-7.avif)
+</Frame>
+
+## Parámetros de imagen y filtros
+
+### Exportar
+
+1. Configura los parámetros de imagen y filtros en **Herramientas básicas**.
+2. Detén la transmisión de la cámara. No se puede guardar una configuración mientras se transmite.
+3. En **Configuración de funciones**, selecciona **Exportar configuración a archivo** y crea una carpeta exclusiva para la configuración.
+
+### Importar
+
+En **Configuración de funciones**, selecciona **Cargar configuración desde archivo** y elige el archivo exportado. Reinicia la transmisión y verifica la calidad de imagen y el filtrado.
+
+## Parámetros de palés de PalletPro
+
+PalletPro `1.4.6` y versiones posteriores pueden gestionar los parámetros extrínsecos de reconocimiento de palés en el directorio del algoritmo activo.
+
+### Importar
+
+<Steps>
+  <Step title="Abrir el directorio de la cámara">
+    Inicia **PalletPro**, selecciona **Operaciones básicas → Operaciones de cámara → Abrir directorio** y abre el directorio del algoritmo que utiliza actualmente la cámara.
+  </Step>
+  <Step title="Reemplazar el archivo de parámetros">
+    Copia o arrastra los parámetros extrínsecos de reconocimiento de palés al directorio y confirma el reemplazo del archivo correspondiente.
+  </Step>
+  <Step title="Volver a calibrar">
+    Después de la importación, ejecuta de nuevo la calibración extrínseca de acoplamiento de palés y verifica los resultados de reconocimiento.
+  </Step>
+</Steps>
+
+### Exportar
+
+Después de completar y guardar la calibración, abre el directorio del algoritmo activo con la misma ruta y haz una copia de seguridad del archivo de parámetros de reconocimiento de palés.
+
+<Frame>
+  ![Ubicación del archivo de parámetros de palés de PalletPro](/images/developers/deployment-parameter-import-export-pallet-parameter-import.avif)
+</Frame>

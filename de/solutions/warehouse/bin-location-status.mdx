@@ -1,0 +1,68 @@
+---
+title: Erkennung des Lagerplatzstatus
+description: "Verwenden Sie eine RGB-D-Kamera, um Belegung, Ladungsstatus und Höhe zu erkennen und das Ergebnis mit einem Lager- oder Dispositionssystem zu synchronisieren."
+---
+
+## Anwendungshintergrund
+
+In einem AGV-Lager können manuelle Ein- und Auslagerungen dazu führen, dass die Lagerplatzdaten im WMS nicht mehr mit dem tatsächlichen Anlagenzustand übereinstimmen. Wird ein belegter Lagerplatz nicht rechtzeitig erkannt, kann das Dispositionssystem eine ungeeignete Ein- oder Auslagerungsaufgabe ausgeben.
+
+<Frame>
+  ![Anwendung zur Erkennung des Lagerplatzstatus](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## Vergleich der Erkennungsmethoden
+
+| Methode | Verfügbare Informationen | Typische Einschränkung |
+| --- | --- | --- |
+| Einpunkt-Laserentfernungsmessung | Ein Entfernungswert | Lücken zwischen Kartons oder Paletten können übersehen werden, sodass der vollständige Status des Lagerplatzes schwer abzubilden ist. |
+| RGB-Kamera | Farbe und Textur | Empfindlich gegenüber Zielen außerhalb des Trainingsdatensatzes, Beleuchtung und Randverzerrungen; kann die Ladehöhe nicht direkt liefern. |
+| RGB-D-Kamera | Farbe, Tiefe und Punktwolke | 3D-Daten können verwendet werden, um Belegung, Platzierung und Ladehöhe zu bestimmen. |
+
+## Lösungsübersicht
+
+Die Lösung erfasst Farb- und 3D-Daten von Lagerplätzen, um zu erkennen, ob eine Ladung vorhanden ist, wie sie platziert ist und ob eine anomale Belegung vorliegt. Kamera-seitige Algorithmen können bei Bedarf auch Ladungskategorien unterscheiden. Die Ergebnisse können an das Dispositionssystem gesendet werden, um Lagerabläufe zu unterstützen.
+
+<Frame>
+  ![RGB-D-Lösung zur Erkennung des Lagerplatzstatus](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## Merkmale der Lösung
+
+- **3D-Statusbewertung:** Kombinieren Sie Tiefen- und Farbdaten, um Belegung und Ladungsstatus zu erkennen.
+- **Verarbeitung auf der Kamera:** Führen Sie den Algorithmus auf der Kamera aus, um den Bedarf an externer Rechenleistung zu reduzieren.
+- **Ergebnisübertragung:** Unterstützen Sie die Kommunikation über TCP/IP, UDP und HTTP und geben Sie JSON an das Steuersystem aus.
+- **Koordination mit der Disposition:** Stellen Sie Echtzeitdaten zu Lagerplätzen für die Aufgabenzuweisung bereit.
+
+## Hinweise zur Bereitstellung
+
+<Columns cols={2}>
+  <Card title="Installationsposition" icon="camera">
+    Montieren Sie die Kamera an einer Säule oder Decke und richten Sie sie auf die überwachten Lagerplätze. Stimmen Sie Installationshöhe und Sichtfeld auf die Abmessungen der Lagerplätze ab.
+  </Card>
+
+  <Card title="Umgebungsanforderungen" icon="triangle-exclamation">
+    Vermeiden Sie starken Staub und Kondensation. Die Montagehalterung muss ausreichend steif und stabil sein.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Demonstration der Erkennung des Lagerplatzstatus](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="Lagerplatzaufgabe empfangen">
+    Die übergeordnete Steuerung sendet eine Aufgabe, während die Kamera Bild- und Tiefendaten für den Ziel-Lagerplatz erfasst.
+  </Step>
+  <Step title="Ergebnis erkennen und melden">
+    Die Kamera gibt den Lagerplatzstatus aus und meldet ihn als JSON an das übergeordnete System.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Kamerainstallation zur Erkennung des Lagerplatzstatus](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="Bereitstellungsleitfaden für die Lagerplatzerkennung" icon="book-open" href="/de/developers/deployment/algorithm-detection">
+  Hier finden Sie Anweisungen zur Algorithmenbereitstellung, zu Schnittstellen und zum Debugging.
+</Card>

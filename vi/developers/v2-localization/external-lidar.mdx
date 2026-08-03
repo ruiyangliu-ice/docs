@@ -1,0 +1,46 @@
+---
+title: Sử dụng LiDAR bên ngoài với V2
+description: Xuất dữ liệu LaserScan của LiDAR bên ngoài đến topic mà mô-đun định vị V2 đăng ký.
+hidden: true
+---
+
+Trang này giải thích cách cấu hình mô-đun định vị V2 để đăng ký topic laser ROS của LiDAR bên ngoài.
+
+<Info>
+  LiDAR bên ngoài phải liên tục xuất message `sensor_msgs/LaserScan` khớp với topic đã cấu hình. Trang này chỉ đề cập đến cấu hình topic và kiểm tra đăng ký; không đề cập đến việc cài đặt hoặc hiệu chuẩn driver LiDAR.
+</Info>
+
+## Cấu hình topic laser định vị
+
+Đặt đầu vào laser định vị thành UDP trong cấu hình body và chỉ định topic LaserScan:
+
+```yaml
+LxCamera_UploadScan: "/sim/scan"
+```
+
+Cấu hình LiDAR bên ngoài để xuất dữ liệu trên cùng topic hoặc thay đổi giá trị trên cho khớp với topic thực tế.
+
+## Xác minh topic ROS
+
+Xác nhận node định vị V2 đăng ký topic và kiểu message của topic là `LaserScan`.
+
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
+
+    Kết quả phải hiển thị `sensor_msgs/LaserScan` và có `/lx_localization_node` trong danh sách subscriber.
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
+
+    Kết quả phải hiển thị `sensor_msgs/msg/LaserScan` và số lượng subscription ít nhất là `1`.
+  </Tab>
+</Tabs>
+
+<Tip>
+  Nếu số lượng subscription là `0`, hãy kiểm tra tên topic, cấu hình ROS domain và trạng thái node định vị. Nếu số lượng publisher là `0`, hãy kiểm tra driver LiDAR bên ngoài.
+</Tip>

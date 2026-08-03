@@ -1,0 +1,571 @@
+---
+title: M4 Mega-Benutzerhandbuch
+description: "Spezifikationen, Schnittstellen, Trigger, Installation, Genauigkeit und Softwareanweisungen für die iToF-RGB-D-Kamera M4 Mega."
+hidden: true
+---
+
+## Änderungshistorie
+
+| Datum | Version | Änderung |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Erstes Dokument |
+| 2023/04/03 | V1.0 | Anweisungen für Software- und Hardwaretrigger hinzugefügt |
+| 2024/05/10 | V1.1 | Kamerainformationen und Parameter korrigiert |
+| 2024/06/17 | V1.2 | Belegung der Kameraleitungen korrigiert und ein Konformitätszertifikat dem Lieferumfang hinzugefügt |
+| 2024/11/125 | V1.3 | Lagertemperatur der Kamera aktualisiert |
+
+## Produktübersicht
+
+Dieses Handbuch beschreibt die von Zhejiang MRDVS Technology Co., Ltd. entwickelte M4 Mega-Kamera einschließlich ihrer Spezifikationen, Funktionen und Bedienhinweise.
+
+Die M4 Mega-Produktfamilie umfasst die M4 Mega-Kamera. Dieses ToF-Produkt verwendet eine Gigabit-Ethernet-Kommunikationsschnittstelle und eine 24VDC-Stromversorgung.
+
+<Frame>
+  ![Übersicht der M4 Mega-Kamera](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-overview.avif)
+</Frame>
+
+Abbildung 1.1. M4 Mega-Kamera
+
+### Produktfunktionen
+
+- Integrierte Rechenleistung von 1Tops für den Betrieb ohne externe CPU
+- RGB-D-Unterstützung
+- Eigenständige Hindernisvermeidung, Andocken, Lokalisierung, Greifen von Weichpaketen, Erkennung von Lagerplätzen und Volumenmessung
+- Gigabit-Ethernet-Anschluss
+- Schutzart IP67
+
+### Nutzungsbedingungen
+
+**Beachten Sie während der Verwendung die folgenden Anforderungen:**
+
+- Entfernen Sie keine Etiketten vom Produkt.
+- Zerlegen Sie das Produkt nicht. Das Zerlegen kann es beschädigen.
+- Verwenden Sie das Produkt nicht in starken Magnetfeldern.
+- Verwenden Sie das Produkt nicht bei intensiver Sonneneinstrahlung über 100 kLux.
+- Wischen Sie das Gehäuse zur Reinigung mit einem weichen, fusselfreien Tuch ab, das leicht mit gereinigtem Wasser oder Alkohol angefeuchtet ist.
+- Bewahren Sie die Originalverpackung auf und verwenden Sie sie nach Möglichkeit beim Transport.
+
+---
+
+## Funktionsprinzip und Spezifikationen
+
+### ToF-Entfernungsprinzip
+
+Die M4 Mega-Kamera verwendet die Laufzeitmessung (Time of Flight, ToF). Sie misst die Zeit zwischen dem Aussenden von Licht und dem Empfang der Reflexion eines Objekts, um den Abstand zwischen Objekt und Kamera zu berechnen.
+
+Die M4 Mega-Kamera erfasst die Tiefe direkt. Dadurch liefert sie mit geringem Rechenaufwand hochwertige Tiefeninformationen und erstellt Tiefenszenen mit hoher Bildrate. Wie LiDAR können ToF-Kameras gepulstes ToF (P\_ToF) oder kontinuierlich wellenmoduliertes ToF (CW\_ToF) verwenden. P\_ToF sendet Lichtimpulse aus, die normalerweise unsichtbar sind, und berechnet die Entfernung aus ihrer Hin- und Rücklaufzeit. CW\_ToF sendet kontinuierlich moduliertes Licht aus und berechnet die Entfernung aus der Phasendifferenz zwischen ausgesendetem und zurückkehrendem Licht.
+
+<Frame>
+  ![Prinzip der ToF-Entfernungsmessung](/images/products/m-series-m4-mega-user-guide-tof-distance-measurement-principle.avif)
+</Frame>
+
+Abbildung 2.1. Erkennungsprinzip
+
+### Produktübersicht
+
+Diese kompakte industrielle RGB-D-Kamera integriert eine Sony-CW-iToF-Kamera mit einer dreikanaligen Echtfarben-RGB-Ausgabe. Sie liefert Tiefendaten aus dem Bereich von 0.2m~5m und richtet RGB- und Tiefenbilder räumlich sowie zeitlich aus. Die Kamera kann außerdem strukturierte Palettenerkennungsergebnisse über CAN ausgeben.
+
+### Wichtige Spezifikationen
+
+Tabelle 2-1. Produktspezifikationen
+
+| Kamera | Modell | Eagle-M4 Mega |
+| --- | --- | --- |
+| Leistung | Sensor | Sony-Sensor |
+| ㅤ | Messmethode | Laufzeitmessung |
+| ㅤ | Betriebswellenlänge | 940nm |
+| ㅤ | ToF-Auflösung und Bildrate | 640 × 480 (typisch 15 fps, max. 25 fps) |
+| ㅤ | ToF-Sichtfeld | 81° × 61° |
+| ㅤ | RGB-Auflösung und Bildrate | 1280×960 (typisch 15fps, Max 25fps) |
+| ㅤ | RGB-Sichtfeld | 86°×55° |
+| ㅤ | Messbereich | 0.2~~5m (90% Reflexionsgrad); 0.2~~2.5m (10% Reflexionsgrad) |
+| ㅤ | Messgenauigkeit | ±3mm\+0.25%×depth |
+| Elektrisch | Kommunikationsschnittstelle | Ethernet / CAN / IO |
+| ㅤ | Stromanschluss | Industrieller 5-poliger Rundsteckverbinder |
+| ㅤ | Stromversorgung | 24V DC / 2A |
+| ㅤ | Durchschnittliche Leistungsaufnahme | 6.8w |
+| Mechanisch | Abmessungen | 92mm×47mm×51mm |
+| ㅤ | Gewicht | 449g |
+| ㅤ | Schutzart | IP67 |
+| ㅤ | Betriebstemperatur | -20℃~60℃ |
+| ㅤ | Lagertemperatur | -40℃~85℃ |
+| ㅤ | Luftfeuchtigkeit | 10%~90%RH, nicht kondensierend |
+| Sonstige | Unempfindlichkeit gegenüber Umgebungslicht | Unterstützt Sonnenlicht bis 100 kLux |
+| ㅤ | Übergang von Schatten zu Licht | Weniger als 1cm Abweichung über eine Schatten-Licht-Grenze von 100 kLux |
+| ㅤ | Softwareumgebung | C / C\+\+ / ROS SDK |
+| ㅤ | Unterstützte Betriebssysteme | Windows7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Kühlung | Passiv |
+
+Hinweis: Für die Produktabmessungen siehe das 3D-Modell.
+
+---
+
+## Bildgebungs- und Messeigenschaften
+
+### Elektrische Eigenschaften
+
+Tabelle 3-1. Elektrische Eigenschaften
+
+| Parameter | Symbol | Bedingung | Minimum | Typisch | Maximum | Einheit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Versorgungsspannung | VDD | ㅤ | 18 | 24 | 30 | V |
+| Digitale I/O | IN | ㅤ | 3.3 | ㅤ | 24 | V |
+| CAN | ㅤ | ㅤ | 0 | ㅤ | 5V | V |
+| Betriebstemperatur | Ta | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Betriebsluftfeuchtigkeit | ㅤ | ㅤ | 20 | ㅤ | 80 | % |
+| Lagerluftfeuchtigkeit | ㅤ | ㅤ | -25 | ㅤ | 80 | % |
+| Lagertemperatur | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### Ausgabedaten
+
+Standardmäßig gibt die M4 Mega-Kamera ein Tiefenbild (Abbildung 3.1), pro Pixel erfasste Signalintensitätsdaten (Abbildung 3.2) und eine aus den Tiefendaten erzeugte Punktwolke (Abbildung 3.3) aus. Das dargestellte Objekt ist ein Aluminiumprofil.
+
+<Frame>
+  ![Tiefenbild der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-depth-image.avif)
+</Frame>
+
+Abbildung 3.1. Tiefenbild
+
+<Frame>
+  ![Amplitudenbild der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-amplitude-image.avif)
+</Frame>
+
+Abbildung 3.2. Amplitudenbild
+
+<Frame>
+  ![Punktwolke der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-point-cloud.avif)
+</Frame>
+
+Abbildung 3.3. Punktwolke
+
+Die Kamera verwendet ein HDR-Verfahren zwischen Frames, um den Messbereich zu erweitern. Der Sensor gibt zwei Tiefenframes mit unterschiedlichen Integrationszeiten und Kalibrierparametern aus. Für jedes Pixel wählt die Hostanwendung den Frame mit der höheren Intensität aus und kombiniert die Ergebnisse zur endgültigen Ausgabe. Dadurch wird die Tiefengenauigkeit über verschiedene Messbereiche hinweg verbessert.
+
+### Sichtfeld und Arbeitsbereich
+
+Abbildung 3.4 zeigt den Erfassungsbereich der M4 Mega. Das horizontale Sichtfeld der Kamera beträgt 81°, das vertikale Sichtfeld 61°. Die Erfassungsentfernung hängt von der optischen Leistung ab. Eine höhere optische Leistung und ein höherer Reflexionsgrad des Ziels vergrößern den Nahbereich ohne Messung, verkleinern aber den Fernbereich ohne Messung. Eine geringere optische Leistung und ein geringerer Reflexionsgrad des Ziels verkleinern den Nahbereich ohne Messung, vergrößern aber den Fernbereich ohne Messung. Für Objekte mit einem Reflexionsgrad von 10%~~90% beträgt der Messbereich der M4 Mega 0.2~~5m. Jenseits von 5m sind schwache reflektierte Signale anfälliger für Umgebungslicht und erzeugen größere Fehler.
+
+<Frame>
+  ![Erfassungsbereich der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-detection-range.avif)
+</Frame>
+
+Abbildung 3.4. Sichtfeld
+
+### Referenz für Reflexionsgrade
+
+Die Reflexionsgrade in diesem Handbuch wurden anhand einer weißen Kodak-Standardkarte gemessen. Referenzwerte für andere Materialien finden Sie unten.
+
+Tabelle 3-2. Reflexionsgrad von Materialien
+
+| Nr. | Material | Reflexionsgrad |
+| --- | --- | --- |
+| 1 | Schwarzer Gummi | 22% |
+| 2 | Schwarze Keramiktasse | 34% |
+| 3 | Schwarze Kunststofffolie | 42% |
+| 4 | Zeitungspapier | 45% |
+| 5 | Schwarzer Stoff | 78% |
+| 6 | Undurchsichtige Kunststoffflasche | 85% |
+| 7 | Glatte Holzplatte | 90% |
+| 8 | Weißes Papier | 90% |
+| 9 | Weiße Kodak-Standardkarte | 100% |
+| 10 | Klares Glas | 140% |
+| 11 | Glänzende, helle Metalloberfläche | 150% |
+
+### Abmessungen
+
+<Frame>
+  ![Abmessungen der M4 Mega-Kamera](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-dimensions.avif)
+</Frame>
+
+Abbildung 3.5. Abmessungen der M4 Mega-Kamera
+
+### Optische Koordinatensysteme und Ursprung
+
+**Optische Koordinatensysteme:**
+
+- Die optischen Koordinatensysteme umfassen das Kamerakoordinatensystem (CCS) und das Weltkoordinatensystem (WCS).
+- Das Kamerakoordinatensystem ist das zweidimensionale Koordinatensystem des Tiefenbilds. Sein Ursprung liegt im optischen Zentrum.
+- Das Weltkoordinatensystem ist das dreidimensionale Koordinatensystem der Punktwolke.
+- Verwenden Sie die Kameraintrinsik, um Koordinaten des Tiefenbilds in 3D-Punktwolkenkoordinaten umzuwandeln. Siehe die SDK-Beispiele.
+
+<Frame>
+  ![Optische Koordinatensysteme](/images/products/m-series-m4-mega-user-guide-optical-coordinate-systems.avif)
+</Frame>
+
+Abbildung 3.6. Optische Koordinatensysteme
+
+**Der Ursprung der Kamera ist wie folgt definiert:**
+
+1. Der Ursprung der X-Koordinate ist an der X-Achse des Produkts ausgerichtet.
+2. Der Ursprung der Y-Koordinate ist an der Y-Achse des Produkts ausgerichtet.
+3. Der Ursprung der Z-Koordinate liegt auf der Vorderseite der Kamera.
+
+<Frame>
+  ![Ursprung der M4 Mega-Kamera](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-origin.avif)
+</Frame>
+
+Abbildung 3.7. Kameraursprung
+
+### Produktschnittstellen
+
+### Kameraseitige Schnittstellen
+
+Die Kamera verfügt über drei Schnittstellen: einen DC24V-Stromanschluss, einen Gigabit-Ethernet-Anschluss und einen I/O/CAN-Funktionsanschluss.
+
+<Frame>
+  ![Kameraseitige Schnittstellen der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-side-interfaces.avif)
+</Frame>
+
+Tabelle 3-3. Pinbelegung
+
+| Anschluss | Pin | Signal | Beschreibung |
+| --- | --- | --- | --- |
+| Ethernet | 1 | MDI0\_N | Gigabit-Ethernet |
+| ㅤ | 2 | MDI0\_p | ㅤ |
+| ㅤ | 3 | MDI1\_N | ㅤ |
+| ㅤ | 4 | MDI1\_p | ㅤ |
+| ㅤ | 5 | MDI2\_N | ㅤ |
+| ㅤ | 6 | MDI2\_p | ㅤ |
+| ㅤ | 7 | MDI3\_N | ㅤ |
+| ㅤ | 8 | MDI3\_p | ㅤ |
+| Funktionsanschluss | 1 | CAN\_H | CAN\_H |
+| ㅤ | 2 | CAN\_L | CAN\_L |
+| ㅤ | 3 | GND | CAN GND |
+| ㅤ | 4 | OUT\_1 | I/O-Ausgang 1 |
+| ㅤ | 5 | COM | I/O-COM-Anschluss |
+| ㅤ | 6 | OUT\_2 | I/O-Ausgang 2 |
+| ㅤ | 7 | IN\_1 | I/O-Eingang 1 |
+| ㅤ | 8 | IN\_2 | I/O-Eingang 2 |
+| Stromanschluss | 1 | 24\+ | DC-Strombuchse, 5.5-2.1mm |
+| ㅤ | G | 24- | ㅤ |
+
+### Belegung der Funktionskabeladern
+
+<Frame>
+  ![Belegung der Funktionskabeladern der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-function-cable-wire-order.avif)
+</Frame>
+
+Tabelle 3-4. Belegung der Funktionskabeladern
+
+| Kabel | Farbe | Pin | Beschreibung |
+| --- | --- | --- | --- |
+| Funktionskabel | Orange | CAN\_H | CAN\_H |
+| ㅤ | Gelb | CAN\_L | CAN\_L |
+| ㅤ | Grün | GND | CAN GND |
+| ㅤ | Braun | IN\_1 | I/O-Eingang 1 |
+| ㅤ | Weiß | IN\_2 | I/O-Eingang 2 |
+| ㅤ | Violett | COM | I/O-COM-Anschluss |
+| ㅤ | Blau | OUT\_1 | I/O-Ausgang 1 |
+| ㅤ | Grau | OUT\_2 | I/O-Ausgang 2 |
+| Stromkabel | Rot | 24V\+ | Positiver Stromversorgungsanschluss |
+| ㅤ | Schwarz | GND | Negativer Stromversorgungsanschluss |
+
+Hinweis: Bei einigen älteren Funktionskabeln werden andere Farben verwendet. Schließen Sie die Leitungen entsprechend ihrer Beschriftung an.
+
+### Hardwaretrigger
+
+1. Hardwaretrigger funktionieren nur, wenn sich das Produkt im Hardwaretrigger-Modus befindet. Hardwaretrigger- und Hindernisvermeidungsmodus schließen sich gegenseitig aus. Im Hardwaretrigger-Modus wartet die Kamera auf einen gültigen Impuls an I/O-Eingang Pin 1, nimmt ein Bild auf und kehrt anschließend in den Wartezustand zurück.
+2. Das Hardwaretrigger-Signal muss 3.3V~24V betragen und mindestens 10mA Treiberstrom liefern. Fügen Sie dem Trigger-Signal-Pin eine Entkopplungsschaltung hinzu, um Fehlauslösungen durch Impulsrauschen zu verhindern.
+
+### Hardwaretrigger in der Hostanwendung konfigurieren
+
+Öffnen Sie die Kamera → vergewissern Sie sich, dass der Hindernisvermeidungsalgorithmus deaktiviert ist → stoppen Sie den Stream → **Basic tools** → **Acquisition settings** → stellen Sie **Trigger mode** auf **Hardware trigger** um → konfigurieren Sie die Parameter → starten Sie den Stream und warten Sie auf ein externes Triggersignal.
+
+**1. Hardwaretrigger-Parameter**
+
+**Filter time:** Zeit, die nach dem Empfang des Signals am Hardwaretrigger-Eingang vergeht, bevor das Triggersignal erneut geprüft wird. Dadurch wird Rauschen gefiltert. Verwenden Sie einen Wert unter 5ms. Ein größerer Wert kann gültige Triggersignale herausfiltern.
+
+**Minimum interval:** Intervall zwischen zwei aufeinanderfolgenden automatischen Triggersignalen. Der Bereich beträgt 70000~100000000μs, und der Wert muss die Integrationszeit überschreiten.
+
+**Trigger time:** Verzögerung nach der erneuten Prüfung des Triggersignals. Setzen Sie den Wert für sofortiges Auslösen auf 0. Der Bereich beträgt 0~100000000μs.
+
+**Frames per trigger:** Anzahl aufeinanderfolgender Frames, die durch einen Hardwaretrigger ausgelöst werden. Der Bereich beträgt 1~200 Frames.
+
+**2. Hardwaretrigger-Beispiele**
+
+**Beispiel 1:** Filter time: 1000; minimum interval: 70000 (Minimum); trigger time: 2000; frames per trigger: 10.
+
+Nach dem Empfang des Signals wartet die Kamera 1ms und prüft es erneut. Vor der Auslösung des ersten Frames wartet sie weitere 2ms. Anschließend wartet sie zwischen den folgenden Frames bis Frame 10 jeweils 70ms. Während dieser Sequenz empfangene Triggersignale werden ignoriert.
+
+**Beispiel 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+
+Nach dem Empfang des Signals wartet die Kamera 1ms, prüft es erneut und löst sofort aus. Das Mindestintervall gilt nicht, wenn Frames per trigger auf 1 gesetzt ist.
+
+**Beispiel 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+
+### Softwaretrigger
+
+Softwaretrigger funktionieren nur, wenn sich das Produkt im Softwaretrigger-Modus befindet. Softwaretrigger- und Hindernisvermeidungsmodus schließen sich gegenseitig aus. Im Softwaretrigger-Modus wartet die Kamera auf ein gültiges Software-Triggersignal, nimmt ein Bild auf und kehrt anschließend in den Wartezustand zurück.
+
+### Softwaretrigger in der Hostanwendung konfigurieren
+
+Öffnen Sie die Kamera → vergewissern Sie sich, dass der Hindernisvermeidungsalgorithmus deaktiviert ist → stoppen Sie den Stream → **Basic tools** → **Acquisition settings** → stellen Sie **Trigger mode** auf **Software trigger** um → konfigurieren Sie die Parameter → starten Sie den Stream → wählen Sie **Send software trigger** aus.
+
+1. **Softwaretrigger-Parameter**
+
+**Filter time:** Zeit, die nach dem Empfang des Signals am Softwaretrigger-Eingang vergeht, bevor das Triggersignal erneut geprüft wird. Dadurch wird Rauschen gefiltert. Verwenden Sie einen Wert unter 5ms. Ein größerer Wert kann gültige Triggersignale herausfiltern.
+
+**Minimum interval:** Intervall zwischen zwei aufeinanderfolgenden automatischen Triggersignalen. Der Bereich beträgt 70000~100000000μs, und der Wert muss die Integrationszeit überschreiten.
+
+**Trigger time:** Verzögerung nach der erneuten Prüfung des Triggersignals. Setzen Sie den Wert für sofortiges Auslösen auf 0. Der Bereich beträgt 0~100000000μs.
+
+**Frames per trigger:** Anzahl aufeinanderfolgender Frames, die durch einen Softwaretrigger ausgelöst werden. Der Bereich beträgt 1~200 Frames.
+
+1. **Softwaretrigger-Beispiele**
+
+**Beispiel 1:** Filter time: 1000; minimum interval: 70000 (Minimum); trigger time: 2000; frames per trigger: 10.
+
+Nach dem Empfang des Signals wartet die Kamera 1ms und prüft es erneut. Vor der Auslösung des ersten Frames wartet sie weitere 2ms. Anschließend wartet sie zwischen den folgenden Frames bis Frame 10 jeweils 70ms. Während dieser Sequenz empfangene Triggersignale werden ignoriert.
+
+**Beispiel 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+
+Nach dem Empfang des Signals wartet die Kamera 1ms, prüft es erneut und löst sofort aus. Das Mindestintervall gilt nicht, wenn Frames per trigger auf 1 gesetzt ist.
+
+**Beispiel 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+
+### Kamerakomponenten
+
+<Frame>
+  ![Komponenten der M4 Mega-Kamera](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-components.avif)
+</Frame>
+
+| Nr. | Komponente |
+| --- | --- |
+| 1 | Betriebsanzeige; blinkt nach dem Einschalten langsam |
+| 2 | 940-Lichtquelle |
+| 3 | Erkennungsmodul für Interferenzquellen mehrerer Kameras |
+| 4 | ToF-Objektiv |
+| 5 | RGB-Objektiv |
+
+### Empfohlene Installation
+
+**Verwenden Sie eine der folgenden drei Installationsmethoden.**
+
+**Installation 1:** Weder die rechte Wand noch der Boden sind sichtbar. Platzieren Sie die Kamera in einer Ecke, sodass sich nur die Wand vor ihr im Sichtfeld befindet. Diese Konfiguration bietet eine gute Entfernungsleistung.
+
+<Frame>
+  ![Empfohlene Installation der M4 Mega 1](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-1.avif)
+</Frame>
+
+Abbildung 3.8. Installation 1
+
+**Installation 2:** Die rechte Wand ist sichtbar, der Boden jedoch nicht. Platzieren Sie die Kamera in einer Ecke mindestens 20cm von der rechten Wand entfernt, gemessen über die Entfernung `d`. Mit dieser Konfiguration kann eine Entfernungsgenauigkeit von ±15mm erreicht werden.
+
+<Frame>
+  ![Empfohlene Installation der M4 Mega 2](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-2.avif)
+</Frame>
+
+Abbildung 3.9. Installation 2
+
+**Installation 3:** Der Boden ist sichtbar, die rechte Wand jedoch nicht. Installieren Sie die Kamera in der empfohlenen Höhe von 10cm~30cm über dem Boden.
+
+<Frame>
+  ![Empfohlene Installation der M4 Mega 3](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-3.avif)
+</Frame>
+
+Abbildung 3.10. Installation 3
+
+Wenn sich die Kamera nahe am Boden befindet, wird der nahe Boden überbelichtet und beeinflusst andere Bereiche. Streulicht und Mehrwege-Reflexionen beeinflussen ebenfalls die Messungen in Bodennähe, wie in Abbildung 3.11 dargestellt.
+
+<Frame>
+  ![Mehrwegeeffekte in Bodennähe](/images/products/m-series-m4-mega-user-guide-near-floor-multipath-effects.avif)
+</Frame>
+
+Abbildung 3.11. Mehrwegeeffekte in Bodennähe
+
+In der Bildgebungsoptik tritt Streulicht hauptsächlich als Geisterbilder und Flares auf, wie in Abbildung 3.12 dargestellt.
+
+<Frame>
+  ![Geisterbilder und Flares durch Streulicht](/images/products/m-series-m4-mega-user-guide-ghosting-and-flare-from-stray-light.avif)
+</Frame>
+
+Abbildung 3.12. Geisterbilder und Flares
+
+**Installieren Sie das Produkt nicht an einem Ort, an dem sowohl die rechte Wand als auch der Boden sichtbar sind**, wie unten dargestellt. Streulicht vom Boden und Mehrwege-Reflexionen von der Wand können die Messungen auf komplexe Weise beeinflussen.
+
+<Frame>
+  ![Nicht unterstützte Installation der M4 Mega](/images/products/m-series-m4-mega-user-guide-unsupported-m4-mega-installation.avif)
+</Frame>
+
+Abbildung 3.13. Nicht unterstützte Installation
+
+---
+
+## Genauigkeit und Einsatz mehrerer Kameras
+
+### Genauigkeit
+
+Die Kalibrierung beseitigt feste Abweichungen zwischen Sensormessungen und tatsächlichen Werten, indem sie beide einander zuordnet. Montieren Sie zur Kalibrierung einer M4 Mega-Kamera die Kamera auf einer Schiene und richten Sie sie auf eine weiße Wand. Ordnen Sie den Messwert jedes Pixels dem Abstand zwischen Kamera und dem entsprechenden Wandbereich zu und korrigieren Sie anschließend die Messungen anhand dieser Zuordnung, wie in Abbildung 4.1 dargestellt.
+
+<Frame>
+  ![Kalibrieraufbau der M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-calibration-setup.avif)
+</Frame>
+
+Abbildung 4.1. Kalibrierung
+
+Die M4 Mega verwendet eine aktive Entfernungsmessung, daher beeinflussen viele Faktoren ihre Genauigkeit. Eine unsachgemäße Installation kann Mehrwegeeffekte verursachen und Messungen verfälschen.
+
+Dies ist besonders bei der Messung eines Ziels mit geringem Reflexionsgrad neben einem stark reflektierenden Objekt erkennbar. Idealerweise folgt das Licht dem blauen Pfad. Von einer Wand reflektiertes Licht kann ebenfalls das Ziel erreichen und entlang des grünen Pfads zur Kamera zurückkehren. Direkt vom angrenzenden Objekt mit hohem Reflexionsgrad reflektierte Beleuchtung kann entlang des roten Pfads in die Kamera gelangen. Optische Unvollkommenheiten wandeln dieses Licht in Blendlicht um, das die Entfernungsmessung stört, wie in Abbildung 4.2 dargestellt.
+
+<Frame>
+  ![Installation der M4 Mega und Reflexionspfade](/images/products/m-series-m4-mega-user-guide-m4-mega-installation-and-reflection-paths.avif)
+</Frame>
+
+Abbildung 4.2. Kamerainstallation
+
+### Präzision
+
+Präzision bezeichnet üblicherweise die Streuung eines einzelnen Punkts (1-σ). Als optoelektronisches Messgerät wird die M4 Mega durch ADC-Umwandlung, Signal-Rausch-Verhältnis und Systemrauschen beeinflusst. Abbildung 4.3 zeigt den Zusammenhang zwischen Messpräzision und Signalintensität.
+
+<Frame>
+  ![Messpräzision und Signalintensität](/images/products/m-series-m4-mega-user-guide-measurement-precision-and-signal-intensity.avif)
+</Frame>
+
+Abbildung 4.3. Messpräzision und Signalintensität
+
+Die M4 Mega wandelt optoelektronische Analogsignale in digitale Daten um. Bei der ADC-Umwandlung wird der analoge Wert auf den kleinsten Auflösungsschritt gerundet, wodurch Rauschen entsteht. Ein 1.1V-Signal kann als 1V dargestellt werden und dadurch einen Fehler von 10% erzeugen. Ein 10.1V-Signal kann zu 10V und ein 100.1V-Signal zu 100V werden; jedes erzeugt dabei einen Fehler von etwa 1%. Die ADC-Umwandlung führt daher bei niedrigen Signalpegeln zu mehr Rauschen und größeren Fehlern. Das Signal-Rausch-Verhältnis einer ToF-Kamera folgt im Allgemeinen SNR∝1/√t, wobei `t` die Integrationszeit ist. Eine längere Integrationszeit erhöht die Signalintensität.
+
+---
+
+## Interferenz zwischen mehreren Kameras
+
+### Parallele Interferenz
+
+Wenn zwei Kameras parallel installiert sind, kann jede Kamera sowohl ihre eigene reflektierte Beleuchtung als auch die Beleuchtung der anderen Kamera empfangen, wodurch die Tiefendaten gestört werden. Parallele Interferenz erhöht den Messfehler, wenn zwei M4 Mega-Kameras in dieselbe Richtung zeigen.
+
+<Frame>
+  ![Interferenz parallel installierter Kameras](/images/products/m-series-m4-mega-user-guide-parallel-camera-interference.avif)
+</Frame>
+
+Um parallele Interferenz zu vermeiden, installieren Sie die Kameras in einem Winkel zur Horizontalen. Wenn sie bei 0° zur horizontalen Ebene installiert werden müssen, wenden Sie sich wegen einer kundenspezifischen Konfiguration an MRDVS.
+
+---
+
+## Software und Daten
+
+### SDK
+
+Verwenden Sie das SDK zum Initialisieren und Starten der Kamera, zum Abrufen von Daten und zum Schließen der Kamera. Für Plattformen außer Linux oder Windows portieren Sie die Anwendung anhand des SDK-Quellcodes.
+
+Tabelle 6-1. SDK-Details
+
+| Betriebssystem | Linux&Windows |
+| --- | --- |
+| Programmiersprache | C/C\+\+ |
+| Datenformat | 16-bit unsigned short |
+| Integration | Gemeinsame Bibliothek (.so), dynamische Bibliothek (.dll) oder integrierter SDK-Quellcode |
+
+### SDK-Ausgabereihenfolge
+
+<Frame>
+  ![SDK-Ausgabereihenfolge](/images/products/m-series-m4-mega-user-guide-sdk-output-order.avif)
+</Frame>
+
+Abbildung 6.1. SDK-Ausgabereihenfolge
+
+Das SDK gibt jeweils einen Frame mit Tiefen- und Amplitudendaten in der konfigurierten Auflösung aus. Jeder Frame wird als eindimensionales Array gespeichert, das am Pixel oben links beginnt und von links nach rechts und anschließend von oben nach unten fortschreitet. Abbildung 6.1 zeigt zuerst die Ausgabe entlang der x-Achse und anschließend entlang der y-Achse, wodurch folgende Reihenfolge entsteht:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Jedes Pixel des Tiefenbilds ist ein 16-bit unsigned short und stellt die Entfernung vom gemessenen Objekt zur Kameraebene dar.
+
+Jedes Pixel des Amplitudenbilds ist ein 16-bit unsigned short und stellt die Intensität des zurückkehrenden Signals dar.
+
+### IP-Adresse
+
+Die Standard-IP-Adresse der M4 Mega-Kamera lautet 192.168.100.82. Verwenden Sie zum Ändern der IP-Adresse oder zum Aktivieren von DHCP die von MRDVS bereitgestellte Demoanwendung.
+
+### Demoanwendung
+
+### IP-Konfiguration
+
+Schließen Sie das Stromkabel an und verbinden Sie die Kamera anschließend über ein Ethernetkabel mit dem Computer. Da die werkseitige Standard-IP-Adresse der Kamera 192.168.100.82 lautet, stellen Sie den Computer mit Ausnahme von 100.82 auf das Subnetz 192.168.100.x und die Subnetzmaske 255.255.255.0 ein. Öffnen Sie **Settings** → **Ethernet** → **Change adapter options**. Klicken Sie mit der rechten Maustaste auf **Ethernet**, wählen Sie **Properties** und anschließend **Internet Protocol Version 4 (TCP/IPv4)**. Legen Sie beispielsweise die IP-Adresse 192.168.100.20 und die Subnetzmaske 255.255.255.0 fest.
+
+### Anwendung öffnen
+
+Laden Sie die Software herunter und installieren Sie sie. Doppelklicken Sie anschließend auf das Symbol der LxCameraViwer-Demo. Die Hostanwendung wird geöffnet, sucht nach einer Kamera, öffnet sie und startet die Aufnahme automatisch, sobald eine Kamera verbunden ist.
+
+**Hinweis: Beim ersten Start müssen Sie der Anwendung auf manchen Systemen den Zugriff durch die Firewall erlauben.**
+
+Die Anwendung umfasst grundlegende Bedienelemente, Bildauswahl, Kamerakonfiguration und Kamerainformationen. Zu den Kamerainformationen gehören IP-Adresse, ID, MAC-Adresse, Seriennummer sowie Software- und Algorithmusversionen. Aktivieren Sie das Kontrollkästchen für Tiefe, Amplitude, RGB oder Punktwolke, um die jeweilige Ansicht im mittleren Bereich anzuzeigen.
+
+<Frame>
+  ![Bildanzeige von LxCameraViewer](/images/products/m-series-m4-mega-user-guide-lxcameraviewer-image-display.avif)
+</Frame>
+
+Abbildung 6.2. Bildanzeige
+
+### Bilder speichern
+
+Wählen Sie **Save**, um die ausgewählten Bilder im Ordner `./data` des Installationsverzeichnisses zu speichern. Das Terminal gibt den Pfad ebenfalls aus, zum Beispiel: `save path= ./data/<camera-ID>`.
+
+Nach dem Speichern kennzeichnet `_a` ein Amplitudenbild, `_d` ein Tiefenbild und `_r` ein RGB-Bild (MONO). `.pcd` kennzeichnet eine Punktwolke. Tiefen- und Amplitudenbilder verwenden das PGM-Format, RGB-Bilder PNG und Punktwolken PCD.
+
+<Frame>
+  ![Gespeicherte Bilddateien](/images/products/m-series-m4-mega-user-guide-saved-image-files.avif)
+</Frame>
+
+Abbildung 6.3. Gespeicherte Bilder
+
+### IP-Adresse ändern
+
+Geben Sie die gewünschte IP-Adresse ein, zum Beispiel 192.168.10.199. Geben Sie die Subnetzmaske 255.255.255.0 und das Gateway 192.168.10.1 ein. Das Gateway muss sich im selben Subnetz wie die gewünschte IP-Adresse befinden; setzen Sie sein letztes Oktett auf 1. Bestätigen Sie die Änderung und schalten Sie die Kamera aus und wieder ein.
+
+<Frame>
+  ![IP-Adresse der Kamera ändern](/images/products/m-series-m4-mega-user-guide-change-the-camera-ip-address.avif)
+</Frame>
+
+---
+
+## 7. Hauptfunktionen
+
+### Entfernungsbereich
+
+Die M4 Mega-Kamera misst von 0.2~5m. Wenden Sie sich an MRDVS, wenn Sie einen kundenspezifischen Bereich benötigen.
+
+### Filterung
+
+Das MRDVS SDK stellt folgende Filter bereit:
+
+- Medianfilter
+- Modusfilter
+- Entfernung von Flying Pixels
+
+---
+
+## Sicherheit und Fehlerbehebung
+
+### Lasersicherheitsklasse
+
+<Frame>
+  ![Lasersicherheitsklasse](/images/products/m-series-m4-mega-user-guide-laser-safety-class.avif)
+</Frame>
+
+### Ordnungsgemäßer Betrieb
+
+Die M4 Mega-Kamera verwendet eine 24V-DC-Stromversorgung. Schließen Sie das Stromkabel an, bevor Sie Spannung anlegen. Vertauschen Sie die positiven und negativen Anschlüsse nicht, da dies das Produkt beschädigen kann.
+
+| Nr. | Problem | Lösung |
+| --- | --- | --- |
+| 1 | Die Kamera reagiert beim Öffnen nicht | Vergewissern Sie sich, dass die Firewall deaktiviert ist. |
+| 2 | Die Hostanwendung erkennt mehrere IP-Adressen | Im LAN ist eine doppelte IP-Adresse vorhanden. Wählen Sie die erforderliche IP-Adresse aus. |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernetkabel. Über ein 100Mbps-Kabel können die Daten zunächst instabil sein. |
+| 4 | Installationsort der Software | Die Installation am Standardspeicherort auf Laufwerk C kann Änderungen an den Berechtigungen erfordern. |
+
+---
+
+### Betriebstemperatur
+
+Halten Sie die Umgebungstemperatur innerhalb des in Tabelle 2-1 angegebenen Bereichs. Montieren Sie das Produkt auf einer wärmeleitenden Komponente, beispielsweise einer Metallhalterung, um die Wärmeableitung zu verbessern und eine optimale Leistung zu erzielen.
+
+---
+
+### Häufig gestellte Fragen
+
+Tabelle 9-1. Häufig gestellte Fragen
+
+| Nr. | Problem | Lösung |
+| --- | --- | --- |
+| 1 | Die Kamera reagiert beim Öffnen nicht | Vergewissern Sie sich, dass die Firewall deaktiviert ist. |
+| 2 | Die Hostanwendung erkennt mehrere IP-Adressen | Im LAN ist eine doppelte IP-Adresse vorhanden. Wählen Sie die erforderliche IP-Adresse aus. |
+| 3 | Kameradaten sind nach dem Öffnen instabil | Verwenden Sie ein Gigabit-Ethernetkabel. Über ein 100Mbps-Kabel können die Daten zunächst instabil sein. |
+| 4 | Installationsort der Software | Die Installation am Standardspeicherort auf Laufwerk C kann Änderungen an den Berechtigungen erfordern. |

@@ -1,0 +1,204 @@
+---
+title: H3310 Camera User Guide
+sidebarTitle: H3310 camera user guide
+description: "Specifications, interfaces, mechanical integration, and basic troubleshooting for the H3310 RGB-D structured-light camera."
+hidden: true
+---
+
+This guide describes the H3310 RGB-D structured-light camera, including its specifications, interface definitions, mechanical integration requirements, and basic troubleshooting.
+
+## Revision history
+
+| Date | Version | Description |
+| --- | --- | --- |
+| 2023-11-21 | V0.1 | Initial release |
+| 2024-11-25 | V1.0 | Updated the storage temperature |
+
+## Terms and operating principle
+
+### Common terms
+
+| Term | Description |
+| --- | --- |
+| Baseline | Horizontal distance between the optical centers of the two stereo imaging units. |
+| Depth | Data that represents the distance from each pixel to the camera. |
+| FOV | Field of view, including horizontal, vertical, and diagonal angles. |
+| IR camera | Camera used for near-infrared imaging. |
+| RGB camera | Color imaging camera. |
+| Depth camera | Imaging system that outputs depth data, typically including projection, imaging, and depth-processing units. |
+| SoC | System-on-chip used for image processing, depth calculation, and application algorithms. |
+
+### Binocular coded structured light
+
+H3310 obtains 3D information by combining coded structured-light projection with binocular imaging.
+
+<Steps>
+</Steps>
+
+<Frame>
+  ![Binocular coded structured-light imaging and depth calculation](/images/products/h-series-h3310-user-guide-how-structured-light-technology-works.avif)
+</Frame>
+
+## Product overview
+
+H3310 is an industrial RGB-D structured-light camera weighing 400 g. It can be mounted on a compound robot or small robotic arm. Within a 300–600 mm working range, the camera outputs high-precision depth and RGB data and provides an integrated computing platform for application algorithms.
+
+<Frame>
+  ![H3310 camera](/images/products/h-series-h3310-user-guide-h3310-camera.avif)
+</Frame>
+
+### Features
+
+- Integrated 6.0 TOPS computing platform for application algorithms.
+- Depth, RGB, and amplitude image output.
+- Open interfaces for robotic-arm and mobile-robot integration.
+
+## Specifications
+
+| Parameter | H3310 |
+| --- | --- |
+| Operating principle | Binocular coded structured light |
+| Depth resolution | 1280 × 1024 |
+| RGB resolution | 1920 × 1080 |
+| Data capture time | Approximately 0.8 s |
+| Output data | Depth map, RGB image, amplitude image |
+| Working range | 300–600 mm |
+| Field of view | 55° × 45° |
+| Measurement accuracy | ±0.1 mm (at 350 mm) |
+| Power consumption | 8 W (24 VDC) |
+| Dimensions (L × W × H) | 124 × 70 × 53 mm |
+| Weight | 400 g |
+| Power supply | 12–24 VDC / 3 A |
+| Communication interface | Gigabit Ethernet |
+| Ingress protection | IP55 |
+| Operating temperature | 0–40 °C |
+| Storage temperature | −40–85 °C |
+| SDK | C/C\+\+ |
+| Third-party support | ROS, ROS2 |
+| Supported operating systems | Arm Linux (AArch64), Linux (x86\_64), Windows 7/8/10/11 |
+| Cooling | Passive |
+| Eye safety | Class 3R |
+| Ambient light tolerance | 10 kLux |
+
+## Interfaces and components
+
+### Camera-side interfaces
+
+<Frame>
+  ![H3310 power and Ethernet connector locations](/images/products/h-series-h3310-user-guide-connector-pinout.avif)
+</Frame>
+
+<Frame>
+  ![H3310 connector pin numbering](/images/products/h-series-h3310-user-guide-connector-pinout-2.avif)
+</Frame>
+
+#### Ethernet connector
+
+| Pin | Signal | Wire color |
+| --- | --- | --- |
+| 1 | 0\+ | Orange/white |
+| 2 | 0− | Orange |
+| 3 | 1\+ | Green/white |
+| 4 | 1− | Green |
+| 5 | 2\+ | Blue |
+| 6 | 2− | Blue/white |
+| 7 | 3\+ | Brown/white |
+| 8 | 3− | Brown |
+
+#### Power and I/O connector
+
+| Pin | Signal | Description |
+| --- | --- | --- |
+| 1 | CON\_IN | Common terminal for I/O inputs |
+| 2 | IN\_2 | I/O input 2 |
+| 3 | IN\_1 | I/O input 1 |
+| 4 | COM\_OUT | Common terminal for I/O outputs |
+| 5 | OUT\_2 | I/O output 2 |
+| 6 | OUT\_1 | I/O output 1 |
+| 7 | VIN\+ | 24 VDC positive |
+| 8 | VIN− | 24 VDC negative |
+
+### Camera components
+
+<Frame>
+  ![H3310 front optical components](/images/products/h-series-h3310-user-guide-camera-components.avif)
+</Frame>
+
+<Frame>
+  ![H3310 camera connection components](/images/products/h-series-h3310-user-guide-camera-components-2.avif)
+</Frame>
+
+| Number | Component |
+| --- | --- |
+| 1 | IR camera |
+| 2 | RGB camera |
+| 3 | Structured-light projector |
+| 4 | Power cable |
+| 5 | Ethernet cable |
+
+## Mechanical integration
+
+### Field of view and coordinate system
+
+<Frame>
+  ![H3310 field of view](/images/products/h-series-h3310-user-guide-camera-field-of-view.avif)
+</Frame>
+
+The coordinate origin is on the front surface of the camera. The X and Y axes align with the X and Y axes marked on the product.
+
+<Frame>
+  ![H3310 coordinate origin and axes](/images/products/h-series-h3310-user-guide-camera-coordinate-origin.avif)
+</Frame>
+
+### Dimensions
+
+<Frame>
+  ![H3310 front and side dimensions](/images/products/h-series-h3310-user-guide-camera-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![H3310 mounting-hole dimensions](/images/products/h-series-h3310-user-guide-camera-dimensions-2.avif)
+</Frame>
+
+## Environment and reliability
+
+| Item | Requirement |
+| --- | --- |
+| Operating temperature | 0–40 °C |
+| Operating humidity | 0–95% RH, non-condensing |
+| Operating illuminance | 0–30 kLux |
+| Storage humidity | 10–95% RH, non-condensing |
+| Normal operating temperature rise | Enclosure temperature rise \< 20 °C |
+| ESD | Contact discharge ±4 kV; air discharge ±8 kV |
+| Radiated emissions | Complies with GB 9254 Class A |
+| Environmental compliance | RoHS |
+
+## Use and safety
+
+<Warning>
+  Do not disassemble, modify, or repair the camera. Do not block the lens or expose the camera to drops, strong mechanical stress, or direct sunlight. Do not power on a visibly damaged camera.
+</Warning>
+
+<Frame>
+  ![H3310 laser safety label](/images/products/h-series-h3310-user-guide-laser-safety-class.avif)
+</Frame>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="The host application cannot open the camera">
+    Confirm that the host firewall is not blocking the connection, then check camera power and network connectivity.
+  </Accordion>
+
+  <Accordion title="Multiple IP addresses appear in the device list">
+    Multiple discoverable devices may be present on the LAN. Select the IP address that belongs to the target camera.
+  </Accordion>
+
+  <Accordion title="The data stream is unstable">
+    Use a Gigabit Ethernet cable. A 100 Mbps network may cause initial stream instability.
+  </Accordion>
+
+  <Accordion title="The software cannot run after installation">
+    If the software is installed in a restricted directory, check file and program execution permissions.
+  </Accordion>
+</AccordionGroup>

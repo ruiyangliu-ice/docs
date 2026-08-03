@@ -1,0 +1,106 @@
+---
+title: "Whitepaper: Palettenerkennung für intelligente Logistik"
+sidebarTitle: Whitepaper zur Palettenerkennung
+description: "Informieren Sie sich über technische Herausforderungen, PalletPro-Workflows, Andockmodi und öffentliche Palettenerkennungsfälle für fahrerlose Gabelstapler."
+---
+
+Palettenversatz, Spezifikationsunterschiede, reflektierende Oberflächen und Materialien mit geringem Reflexionsvermögen können das Andocken und Handling fahrerloser Gabelstapler beeinflussen. Dieser Artikel beschreibt die technischen Herausforderungen der Palettenerkennung, den Erkennungs- und Andockworkflow von PalletPro sowie öffentliche Anwendungsfälle.
+
+In der Lagerlogistik können AMRs und fahrerlose Gabelstapler wiederkehrende Transportaufgaben ausführen. Sicherer Betrieb, Lokalisierung und zuverlässiges Andocken an Paletten hängen weiterhin vom vollständigen System aus Fahrzeug, Wahrnehmung, Steuerung und Standortverwaltung ab.
+
+Risiken im Umfeld mobiler Geräte müssen durch Fahrzeugsteuerung, Hinderniserkennung, Betriebsabläufe und Standortverwaltung kontrolliert werden. Die [Daten des UK Health and Safety Executive zu tödlichen Kollisionen mit fahrenden Fahrzeugen 2023/24](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-Jb3Ud6FjFojVYjxwKLvcgju4nRf "Quelle 1") liefern nützlichen Branchenkontext.
+
+## Hintergrund der Lagerautomatisierung
+
+Große Lager verwenden Roboter zum Sortieren, Transportieren und Kommissionieren. Öffentliche [Informationen zu Amazon Robotics](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-DIAmd4kfsoNLNGxTGxDcM65unyf "Quelle 2") zeigen, dass Robotersysteme typischerweise Wahrnehmung, Fahrzeugsteuerung, Einsatzplanung und Sicherheitsmechanismen für den Standort kombinieren. Für einen fahrerlosen Gabelstapler ist eine stabile Erkennung von Palette und Pose ein wichtiger Eingang.
+
+## Technische Herausforderungen der Palettenerkennung
+
+Ein fahrerloser Gabelstapler benötigt die Palettenpose relativ zum Fahrzeug, um seine Andockbahn anzupassen. In der Praxis variieren seitlicher Versatz, Ausrichtung, Struktur und Reflexionsvermögen der Oberfläche. Umgebungslicht und Verdeckungen können ebenfalls die Qualität der Sensordaten beeinflussen.
+
+<Frame>
+  ![Technische Faktoren, die die Palettenerkennung für fahrerlose Gabelstapler beeinflussen](/images/resources/insights-pallet-recognition-whitepaper-the-importance-of-pallet-identification-in-unmanned-forklifts.avif)
+</Frame>
+
+## Erkennungsansatz
+
+PalletPro extrahiert Merkmale der Punktwolke, etwa Palettenfüße und Querträger, aus 3D ToF-Tiefendaten und gibt anschließend die vom Fahrzeug zum Andocken verwendete Pose aus. Etiketten und 2D-LiDAR können in bestimmten Umgebungen funktionieren; die Eignung hängt jedoch von Palettenstruktur, Installation und Standortbedingungen ab.
+
+## Palettenerkennungssystem PalletPro
+
+PalletPro kombiniert eine 3D-Kamera mit Palettenerkennungsalgorithmen und stellt dem Fahrzeugsteuerungssystem Position und Ausrichtung der Palette bereit.
+
+- **Integrierte Verarbeitung und Ausgabe**: Der Algorithmus verarbeitet Tiefendaten auf der Kamera und gibt Erkennungsergebnisse mit **10 FPS** aus.
+- **Bereitstellung und Andocken**: Die Kamera kann zwischen den Gabeln des Gabelstaplers installiert werden. Eine automatische Kalibrierung stellt die Koordinatenbeziehung zwischen Kamera, Fahrzeug und Palette her. Standardpaletten mit zwei und vier Füßen sowie gestapelte Paletten können am Standort bewertet werden; palettenlose oder ungewöhnliche Paletten erfordern eine Projektbewertung.
+- **Integration**: Das System stellt Erkennungsergebnisse in Echtzeit bereit. Konfigurieren Sie Schnittstelle, Fahrzeuginstallation und Andockstrategie entsprechend der Projektdokumentation.
+
+<Frame>
+  ![3D-Visions- und Palettenerkennungsworkflow von PalletPro](/images/resources/insights-pallet-recognition-whitepaper-mrdvs-pallet-recognition-system-palletpro-relevant-illustrations-to-solve-the-p.avif)
+</Frame>
+
+- **Anpassung an die Umgebung**: Bei starkem Umgebungslicht oder Paletten mit geringem Reflexionsvermögen müssen Kameramodell, Montageabstand, Belichtung und Filterparameter am Standort validiert werden.
+
+[Feldtest der MRDVS-Palettenerkennung im Außenbereich auf Bilibili ansehen](https://www.bilibili.com/video/BV1nYtoeREJD/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=11 "Feldtest der Palettenerkennung im Außenbereich")
+
+Ziele mit geringem Reflexionsvermögen, etwa schwarze Paletten, können die Punktwolkenqualität verringern. Bewerten Sie die Erkennungsleistung anhand des Feldtestvideos und der Standortdaten.
+
+[Feldtest der MRDVS-Erkennung schwarzer Paletten auf Bilibili ansehen](https://www.bilibili.com/video/BV14AtZeNEuQ/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=7 "Feldtest der Erkennung schwarzer Paletten")
+
+## Erkennung und Andocken
+
+Eine Kamera der M-Serie kann zwischen den Gabeln des Gabelstaplers installiert werden, um Tiefendaten der Palette zu erfassen und über den Erkennungsalgorithmus die Palettenpose auszugeben.
+
+In einem typischen Workflow erfasst das Fahrzeug die Pose zunächst in ungefähr `2 m` Entfernung von der Palette und korrigiert seine Ausrichtung. Anschließend führt es in ungefähr `1.5 m` Entfernung eine präzise Positionierung und seitliche Korrektur aus. Validieren Sie die tatsächlichen Abstände und die Steuerungsstrategie für Fahrzeug, Geschwindigkeit und Standort.
+
+<Frame>
+  ![Workflow für Palettenerkennung und Gabelstapler-Andocken](/images/resources/insights-pallet-recognition-whitepaper-relevant-for-identification-and-docking.avif)
+</Frame>
+
+Das Fahrzeugsteuerungssystem kann abhängig vom Aufgabenablauf entweder **zweistufiges Andocken** oder **Echtzeit-Andocken** verwenden.
+
+### Zweistufiges Andocken
+
+1. **Positionierung aus der Ferne**: Erfassen Sie Erkennungsergebnisse in `1,800–2,800 mm` Entfernung von der Palette und korrigieren Sie Ausrichtung und seitlichen Versatz.
+2. **Nahbereichsprüfung**: Wenn sich die Gabelspitzen ungefähr `200 mm` von der Vorderkante der Palette entfernt befinden, erfassen Sie das Ergebnis erneut und prüfen Sie, ob es die Anforderungen zum Einfahren der Gabeln erfüllt.
+3. **Einfahren der Gabeln**: Fahren Sie die Gabeln nach der Prüfung in die Palette ein. Wenn die Prüfung fehlschlägt, passen Sie das Fahrzeug an und prüfen Sie erneut.
+
+### Echtzeit-Andocken
+
+Erfassen Sie fortlaufend Erkennungsergebnisse, um die Fahrzeugpose anzupassen. Nehmen Sie Feinjustierungen vor und schließen Sie das Einfahren der Gabeln ungefähr `200 mm` von der Vorderkante der Palette entfernt ab. Das Steuerungssystem sollte Zeitstempel der Daten verwenden, um Latenzen zu behandeln.
+
+## Kommunikation
+
+Die Lösung unterstützt Schnittstellen wie TCP, UDP, CAN, RS-485 und API. Prüfen Sie in der relevanten Produkt- und Bereitstellungsdokumentation Verfügbarkeit und Nachrichtenformate. Wechseln Sie entsprechend der Projektkonfiguration zwischen Erkennungs- und Hindernisvermeidungsalgorithmen.
+
+## Fallstudien
+
+### Fall 1: Erkennung von Paletten und Kabeltrommelöffnungen bei einem Glasfaserkommunikationsunternehmen
+
+**Projekthintergrund**: Unternehmen F setzt für Logistikaufgaben fahrerlose Stapler ein. Das Projekt umfasst die Erkennung und Handhabung von Paletten und Kabeltrommelöffnungen.
+
+**Lösung**: PalletPro stellt Tiefen- und Posedaten der Palette bereit, damit der Fahrzeugcontroller die Pose des Staplers anpassen kann. Die 3D-Vision erkennt außerdem Kabeltrommelöffnungen.
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_1.mp4" title="Fall 1: Erkennung von Palette und Kabeltrommelöffnung durch einen fahrerlosen Stapler" alt="Fallvideo 1 zur Palettenerkennung durch einen fahrerlosen Stapler" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_2.mp4" title="Fall 1: Erkennung von Kabeltrommelöffnungen" alt="Fallvideo 2 zur Palettenerkennung durch einen fahrerlosen Stapler" />
+</Frame>
+
+### Fall 2: Erkennung nicht standardisierter Paletten in der Glasfaserindustrie
+
+<Frame>
+  ![Projekt zur Erkennung nicht standardisierter Paletten in der Glasfaserindustrie](/images/resources/insights-pallet-recognition-whitepaper-case-2-the-non-standard-pallet-identification-project-in-the-fiberglass-industr.avif)
+</Frame>
+
+**Projekthintergrund**: Der Standort Tongxiang der China Jushi Group hat fahrerlose Gabelstapler für den automatisierten Transport auf der Produktionsfläche eingeführt.
+
+**Herausforderung**: Die interne Logistik verwendet kundenspezifische Metallpaletten mit unterschiedlichen Formen und Platzierungswinkeln, was Erkennung und Einfahren der Gabeln erschwert.
+
+**Lösung**: Der fahrerlose Gabelstapler verwendet PalletPro, um Tiefendaten der Palette zu erfassen und Position sowie Ausrichtung der Palette in Echtzeit zu korrigieren.
+
+## Quellen
+
+1. [UK Health and Safety Executive](https://www.hse.gov.uk/statistics/fatals.htm)
+2. [The Robot Report](https://www.therobotreport.com/a-decade-after-acquiring-kiva-amazon-unveils-its-first-amr/)

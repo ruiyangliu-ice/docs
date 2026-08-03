@@ -1,0 +1,79 @@
+---
+title: Behälterstapelung mit AGV-Gabelstaplern
+description: "Verwenden Sie 3D-Vision, um die Pose von Behältern zu schätzen und einen AGV-Gabelstapler beim Aufnehmen, Platzieren und Stapeln auf mehreren Ebenen zu führen."
+---
+
+Das Stapeln von Behältern erfordert, dass der Gabelstapler Position und Ausrichtung innerhalb einer begrenzten Toleranz ausrichtet. Mehrere Stapelebenen, verschiedene Behältertypen, unterschiedliche Ladungsformen und wechselnde Beleuchtung erschweren die Erkennung und das Andocken.
+
+## Lösungsübersicht
+
+Die Lösung verwendet eine 3D-Kamera, die am intelligenten Gabelstapler montiert ist, um die relative Pose des Behälters auf den Gabelzinken und des Zielbehälters zu schätzen. Positions- und Winkelversätze werden an die Gabelstaplersteuerung gesendet, um Aufnahme und Stapelung zu führen. Die Lösung eignet sich für Behälter, Paletten und andere Aufgaben mit präzisem Andocken.
+
+## Verifizierte Leistungsdaten
+
+- Positioniergenauigkeit bis zu **±5 mm** und Winkelgenauigkeit bis zu **0,1°**.
+- Erkennungsbereich für Behälterversatz von **±15°**.
+- Verarbeitungszeit pro Bild unter **100 ms**.
+- Unterstützung für **1–4 Ebenen** und `2 × 2`-Stapelung.
+
+<Frame>
+  ![Punktwolkendaten für das Andocken oberer und unterer Behälter](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## Installationsoptionen
+
+<Tabs>
+  <Tab title="Einzelkamera-Aufbau">
+    Montieren Sie die Kamera am Hubmechanismus und richten Sie sie horizontal auf die Behälter an beiden Gabelzinken. Halten Sie einen Abstand von **35–55 cm** zur Unterkante der Gabelzinken ein; der Positionsfehler des Hubmechanismus sollte **1 cm** nicht überschreiten.
+
+    <Frame>
+      ![Installation zur Behälterstapelung mit einer Kamera](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Zweikamera-Aufbau">
+    Montieren Sie je eine Kamera an beiden Seiten des Gabelstaplers, **30–40 cm** von der Gabeloberfläche entfernt und in einem Winkel von **45°** zum Boden. Jede Kamera erkennt den Behälter auf der entsprechenden Seite.
+
+    <Frame>
+      ![Installation zur Behälterstapelung mit zwei Kameras](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  Die M Series, zum Beispiel M4 Pro oder M4 Mega, wird empfohlen. Wählen Sie das Modell anhand von Arbeitsabstand, Sichtfeld und Behälterabmessungen.
+</Info>
+
+## Kommunikationsdaten
+
+Das System kommuniziert über TCP/IP mit der Gabelstaplersteuerung. Die Steuerung fordert `X`, `Y` und `θ` des Behälters an; die Kamera gibt die folgenden Felder zurück.
+
+| Feld | Beschreibung |
+| --- | --- |
+| `X`, `Y` | Relative Behälterkoordinaten in mm, dargestellt als 32-Bit-Gleitkommawerte. |
+| `Theta` | Winkelversatz von **−90° bis 90°**. |
+| `Error Code` | `0`: Erfolg; `-1`: Kamerafehler; `-2`: Lokalisierungsfehler; `-3`: Algorithmusfehler. |
+
+## Ablauf
+
+<Tabs>
+  <Tab title="Aufnahme">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="Stapelung">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  Vermeiden Sie Umgebungen mit starkem Staub oder hoher Luftfeuchtigkeit. Halten Sie die Kamerahalterung steif und stabil und reinigen Sie das Objektiv regelmäßig, damit das Sichtfeld klar bleibt.
+</Warning>
+
+<Frame>
+  ![Demonstration der Behälterstapelung mit einem AGV-Gabelstapler](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![Erkennungsergebnis der Behälterstapelung](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

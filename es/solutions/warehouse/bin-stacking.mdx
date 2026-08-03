@@ -1,0 +1,79 @@
+---
+title: Apilado de contenedores con carretilla elevadora AGV
+description: "Usa visión 3D para estimar la pose del contenedor y guiar una carretilla elevadora AGV en la recogida, colocación y apilado de contenedores en varios niveles."
+---
+
+El apilado de contenedores requiere que la carretilla alinee la posición y la orientación dentro de una tolerancia limitada. Un mayor número de niveles de apilado, distintos tipos de contenedor, formas de carga y cambios de iluminación aumentan la dificultad del reconocimiento y el acoplamiento.
+
+## Descripción de la solución
+
+La solución utiliza una cámara 3D montada en la carretilla elevadora inteligente para estimar la pose relativa del contenedor en las horquillas y del contenedor objetivo. Los desplazamientos de posición y ángulo se envían al controlador de la carretilla para guiar la recogida y el apilado. La solución es adecuada para contenedores, palés y otras tareas de acoplamiento de precisión.
+
+## Capacidades verificadas
+
+- Precisión de posicionamiento de hasta **±5 mm** y precisión angular de hasta **0.1°**.
+- Rango de reconocimiento del desplazamiento del contenedor de **±15°**.
+- Tiempo de procesamiento por fotograma inferior a **100 ms**.
+- Admite **1–4 niveles** y apilado `2 × 2`.
+
+<Frame>
+  ![Datos de nube de puntos para el acoplamiento de contenedores superior e inferior](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## Opciones de instalación
+
+<Tabs>
+  <Tab title="Configuración con una cámara">
+    Monta la cámara en el mecanismo de elevación y oriéntala horizontalmente hacia los contenedores de ambas horquillas. Mantén la cámara a **35–55 cm** del borde inferior de las horquillas; el error de posición del mecanismo de elevación no debe superar **1 cm**.
+
+    <Frame>
+      ![Instalación de apilado de contenedores con una cámara](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Configuración con dos cámaras">
+    Monta una cámara a cada lado de la carretilla, a **30–40 cm** de la superficie de la horquilla y con un ángulo de **45°** respecto al suelo. Cada cámara reconoce el contenedor del lado correspondiente.
+
+    <Frame>
+      ![Instalación de apilado de contenedores con dos cámaras](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  Se recomienda la serie M, como M4 Pro o M4 Mega. Selecciona el modelo según la distancia de trabajo, el campo de visión y las dimensiones del contenedor.
+</Info>
+
+## Datos de comunicación
+
+El sistema se comunica con el controlador de la carretilla mediante TCP/IP. El controlador solicita `X`, `Y` y `θ` del contenedor; la cámara devuelve los siguientes campos.
+
+| Campo | Descripción |
+| --- | --- |
+| `X`, `Y` | Coordenadas relativas del contenedor en mm, representadas como valores de coma flotante de 32 bits. |
+| `Theta` | Desplazamiento angular de **−90° a 90°**. |
+| `Error Code` | `0`: éxito; `-1`: fallo de la cámara; `-2`: fallo de localización; `-3`: error del algoritmo. |
+
+## Flujo de trabajo
+
+<Tabs>
+  <Tab title="Recogida">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="Apilado">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  Evita el polvo intenso y los entornos húmedos. Mantén el soporte de la cámara rígido y estable, y limpia la lente con regularidad para conservar un campo de visión nítido.
+</Warning>
+
+<Frame>
+  ![Demostración del apilado de contenedores con carretilla elevadora AGV](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![Resultado del reconocimiento para el apilado de contenedores](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

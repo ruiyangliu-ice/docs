@@ -1,0 +1,156 @@
+---
+title: FAQ về thuật toán ứng dụng
+description: "Xử lý sự cố nhận dạng pallet, tránh vật cản và triển khai thuật toán ứng dụng."
+---
+
+Trước khi xử lý sự cố, hãy xác nhận luồng dữ liệu camera, phần mềm máy chủ và firmware thuật toán sử dụng các phiên bản tương thích. Ghi lại cấu hình hiện tại trước khi thay đổi tham số để có thể khôi phục khi cần.
+
+## Nhận dạng pallet và tránh vật cản
+
+<AccordionGroup>
+  <Accordion title="Nhận dạng pallet không thành công với pallet màu đen">
+    **Nguyên nhân có thể**
+
+    Đám mây điểm của pallet màu đen không đầy đủ.
+
+    **Cách xử lý**
+
+    1. Trong **3D Settings** của phần mềm máy chủ, đặt **High Exposure** thành `1400`.<br />2. Trong **Filter**, đặt **Low Signal Threshold** thành `20`.<br />3. Đặt **Small Signal Detection** thành `1`.
+  </Accordion>
+
+  <Accordion title="PalletPro hoạt động trong công cụ kiểm thử nhưng xe nhận kết quả bất thường hoặc không thành công">
+    **Nguyên nhân có thể**
+
+    Phiên bản phần mềm máy chủ và firmware thuật toán nhúng không khớp.
+
+    **Cách xử lý**
+
+    Cập nhật firmware thuật toán nhúng.
+  </Accordion>
+
+  <Accordion title="Hiệu chuẩn tham số ngoài báo không phát hiện được mặt đất">
+    **Nguyên nhân có thể**
+
+    Chưa thu được đám mây điểm của mặt đất.
+
+    **Cách xử lý**
+
+    Mở camera. Đặt **High Exposure** thành `1400` trong **3D Settings**, đặt **Low Signal Threshold** thành `10` trong **Filter**, rồi chạy hiệu chuẩn tham số ngoài. Khôi phục các giá trị ban đầu sau khi hiệu chuẩn.
+  </Accordion>
+
+  <Accordion title="Hiệu chuẩn tham số ngoài ở trường gần không thành công">
+    **Cách xử lý**
+
+    1. Kiểm tra đám mây điểm của pallet có đầy đủ không.<br />2. Kiểm tra pallet có cách camera khoảng `1300 mm` không.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-1` hoặc `failed-11`">
+    **Nguyên nhân có thể**
+
+    Không nhận được dữ liệu hoặc dữ liệu không đủ.
+
+    **Cách xử lý**
+
+    Dùng phần mềm máy chủ để xác nhận camera tạo được hình ảnh và các cài đặt bộ lọc không loại bỏ quá nhiều dữ liệu đám mây điểm.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-2`, `failed-12` hoặc `failed-16`">
+    **Nguyên nhân có thể**
+
+    Dữ liệu đám mây điểm không đủ để phát hiện chân pallet.
+
+    **Cách xử lý**
+
+    Kiểm tra các điều kiện sau:<br />1. Chiều cao nâng của camera hoặc càng nâng đã thay đổi.<br />2. Chân pallet bị che khuất.<br />3. Camera hoặc càng nâng có góc pitch quá lớn.<br />4. Hình ảnh chân pallet không rõ.<br />5. Cột phản quang quá gần chân pallet và ảnh hưởng đến việc tạo ảnh.<br />
+
+    Dùng PalletPro để xác nhận tình trạng, sau đó điều chỉnh cấu hình, cột phản quang hoặc tư thế xe nâng khi cần.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-3` hoặc `failed-13`">
+    **Nguyên nhân có thể**
+
+    Kích thước chân pallet không đáp ứng giới hạn đã cấu hình hoặc không phát hiện được chân pallet nào.
+
+    **Cách xử lý**
+
+    Các đặc điểm của chân pallet nằm ngoài phạm vi nhận dạng. Điều chỉnh phạm vi chiều rộng chân hoặc chiều rộng pallet nếu phù hợp.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-4` hoặc `failed-14`">
+    **Nguyên nhân có thể**
+
+    Chưa cấu hình chiều cao lắp đặt camera.
+
+    **Cách xử lý**
+
+    Đặt tham số chiều cao lắp đặt hoặc chạy hiệu chuẩn tham số ngoài.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-5` hoặc `failed-15`">
+    **Nguyên nhân có thể**
+
+    Xác minh pallet không thành công do không phát hiện được thanh ngang hoặc góc pitch của pallet quá lớn.
+
+    **Cách xử lý**
+
+    Dùng phần mềm máy chủ để tắt việc loại bỏ flying pixel, đưa camera lại gần bằng cách thay đổi khoảng cách docking hoặc điều chỉnh tỷ lệ phát hiện thanh ngang.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-7`">
+    **Nguyên nhân có thể**
+
+    Chiều rộng các chân pallet chênh lệch quá nhiều trong trường nhìn.
+
+    **Cách xử lý**
+
+    Kiểm tra xem có cột phản quang gần pallet không, hoặc pallet có ở gần tường khiến các chân ở mép không được tạo ảnh đúng không.
+  </Accordion>
+
+  <Accordion title="Nhận dạng pallet trả về `failed-8`">
+    **Nguyên nhân có thể**
+
+    Góc hướng của pallet trong trường nhìn quá lớn (`> 30°`).
+
+    **Cách xử lý**
+
+    Đặt pallet thẳng trước khi phát hiện.
+  </Accordion>
+
+  <Accordion title="Chuyển profile tránh vật cản qua truyền thông hoặc IO không cập nhật phần mềm máy chủ">
+    **Cách xử lý**
+
+    1. Xác nhận profile tránh vật cản mục tiêu đã được cấu hình trước.<br />2. Dừng và khởi động lại luồng dữ liệu, sau đó kiểm tra profile đã cập nhật chưa.
+  </Accordion>
+
+  <Accordion title="Đầu ra tránh vật cản hiển thị trong phần mềm bất thường, chẳng hạn như `1000`">
+    **Nguyên nhân có thể**
+
+    Phiên bản thuật toán không tương thích với sản phẩm.
+
+    **Cách xử lý**
+
+    Nâng cấp firmware thuật toán.
+  </Accordion>
+
+  <Accordion title="IO không có đầu ra">
+    **Nguyên nhân có thể**
+
+    Với S2/S2 Max, có thể thiếu dây nối pull-up. Với S10/S10 Pro, firmware thuật toán có thể quá cũ.
+
+    **Cách xử lý**
+
+    1. Thêm điện trở pull-up cho S2/S2 Max theo yêu cầu của hệ thống xe.<br />2. Nâng cấp firmware thuật toán S10/S10 Pro lên `V1.1.050E06_250527` hoặc mới hơn.
+  </Accordion>
+
+  <Accordion title="Cảnh báo vật cản được kích hoạt dù phía trước không có vật cản">
+    **Cách xử lý**
+
+    1. Kiểm tra phiên bản phần mềm máy chủ.<br />2. Kiểm tra phiên bản firmware camera.<br />3. Xác nhận cấu hình tránh vật cản đã được áp dụng cho camera.
+  </Accordion>
+
+  <Accordion title="Sau khi cập nhật firmware, phần mềm thuật toán ứng dụng không thể mở camera">
+    **Cách xử lý**
+
+    Khởi động lại camera, sau đó bật làm mới theo thời gian thực trong **Global Settings** của phần mềm thuật toán ứng dụng.
+  </Accordion>
+</AccordionGroup>

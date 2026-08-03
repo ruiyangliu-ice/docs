@@ -1,0 +1,190 @@
+---
+title: Anleitung für die reine V2-Lokalisierung
+description: "Verwenden Sie die Weboberfläche der reinen V2-Lokalisierung, um Karten zu erstellen, zu lokalisieren, Karten zu verwalten, Logs zu exportieren und Wartungsaufgaben auszuführen."
+hidden: true
+---
+
+Diese Seite beschreibt die Weboberfläche der reinen V2-Lokalisierung. Vergewissern Sie sich vor dem Erstellen oder Wechseln von Karten sowie vor einer Relokalisierung, dass Fahrzeug, Kamera und LiDAR ordnungsgemäß funktionieren.
+
+<Warning>
+  Das Wechseln von Karten, das Aktualisieren der Firmware und der Neustart der integrierten Anwendung beeinflussen die Lokalisierungsdienste. Führen Sie diese Vorgänge nur bei angehaltenem Fahrzeug, in einem sicheren Arbeitsbereich und mit verfügbarer Wiederherstellungsprozedur aus.
+</Warning>
+
+## Übersicht über die Oberfläche
+
+| Bereich | Inhalt |
+| --- | --- |
+| Menüleiste | Funktionen für Kartierung, Relokalisierung, Kartenverwaltung und Wartung. |
+| Kartenansicht | Die geladene 2D-Konturkarte und das Lokalisierungssymbol des Fahrzeugs. |
+| RGB-Ansicht | Das Live-RGB-Bild der Top-View-Kamera. |
+| Statusbereich | Relokalisierungssignalstärke, Fahrzeugkoordinaten, Geschwindigkeit und Cursor-Koordinaten. Die Signalqualität wird von der besten bis zur schlechtesten Qualität als Grün, Blau und Rot angezeigt. |
+
+<Frame>
+  ![Bereiche der Weboberfläche für die reine V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-interface-description.avif)
+</Frame>
+
+## Karte erstellen
+
+### Karte erstellen
+
+<Steps>
+  <Step title="Kartierung starten">
+    Klicken Sie in der Weboberfläche auf **Kartierung starten**.
+
+    <Frame>
+      ![Schaltfläche zum Starten der Kartierung in der Oberfläche der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif)
+    </Frame>
+  </Step>
+  <Step title="Kartennamen eingeben">
+    Ein Kartenname darf nur Buchstaben, Zahlen und Unterstriche enthalten und muss mit einem Buchstaben beginnen.
+
+    <Columns cols={2}>
+      <Frame>
+        ![Dialog zur Eingabe des Kartennamens](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif)
+      </Frame>
+
+      <Frame>
+        ![Seite zum Starten der Kartierung](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif)
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="Bereich erfassen und Kartierung beenden">
+    Fahren Sie den AGV durch den Zielbereich. Wenn die Erfassung abgeschlossen ist, klicken Sie auf **Kartierung beenden** und warten Sie, bis die Verarbeitung abgeschlossen ist. Die Verarbeitungszeit hängt von der Größe des erfassten Bereichs ab.
+  </Step>
+  <Step title="Karte bestätigen">
+    Öffnen Sie nach erfolgreicher Kartierung die **Kartenverwaltung** und bestätigen Sie, dass die neue Karte aufgelistet ist.
+  </Step>
+</Steps>
+
+### Inkrementelle Kartierung
+
+Verwenden Sie die inkrementelle Kartierung, um einen Bereich zu einer vorhandenen Karte hinzuzufügen. Führen Sie vor dem Start eine Relokalisierung durch und wechseln Sie zu der Karte, die Sie erweitern möchten.
+
+<Info>
+  Die inkrementelle Kartierung wird mit einer manuellen HTTP-Anfrage unter [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD) gestartet und beendet.
+</Info>
+
+<Tabs>
+  <Tab title="Inkrementelle Kartierung starten">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Inkrementelle Kartierung beenden">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+Nach Abschluss des Vorgangs wird der neu erfasste Bereich in die aktuelle Karte geschrieben. Starten Sie den Lokalisierungsdienst neu, damit die Änderung wirksam wird.
+
+<Frame>
+  ![Inkrementelle Kartierung in der Oberfläche der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif)
+</Frame>
+
+## Kartenverwaltung
+
+Verwenden Sie die **Kartenverwaltung**, um Karten anzuzeigen, anzuwenden oder zu löschen. Wenn Sie in mehreren Bereichen arbeiten, können Sie auf dieser Seite die aktive Karte wechseln.
+
+<Columns cols={2}>
+  <Frame>
+    ![Seite der Kartenverwaltung in der Oberfläche der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-2-map-management.avif)
+  </Frame>
+
+  <Frame>
+    ![Anwenden einer Karte in der Oberfläche der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Starten Sie nach dem Klicken auf **Anwenden** die integrierte Anwendung neu, damit die neue Karte wirksam wird. Ohne Neustart kann die Relokalisierung fehlschlagen.
+</Warning>
+
+## Relokalisierung
+
+### Manuelle Relokalisierung
+
+Klicken Sie auf **Relokalisierung** und ziehen Sie anschließend in der Kartenansicht, um eine ungefähre Fahrzeugpose anzugeben, damit die LiDAR-Punktwolke mit der Konturkarte übereinstimmt. Der Fehler **Lokalisierungs-Timeout** verschwindet nach erfolgreicher Relokalisierung.
+
+<Frame>
+  ![Manuelle Relokalisierung in der Oberfläche der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-3-relocation.avif)
+</Frame>
+
+### AprilTag-Relokalisierung
+
+Sie können beim Erstellen einer Karte AprilTags an ausgewählten Positionen platzieren. Wenn ein vollständiger Tag in das Sichtfeld des Geräts gelangt, identifiziert das System seine Karte und Pose, wechselt bei Bedarf die Karte und führt automatisch eine Relokalisierung durch.
+
+- Erstellen Sie Tags mit [dem AprilTag-Generator](https://chaitanyantr.github.io/apriltag).
+- Tag-IDs müssen innerhalb des sichtbaren Bereichs eines Geräts eindeutig sein.
+- Verwenden Sie die feste Tag-Familie aus dem Oberflächenbeispiel.
+
+<Frame>
+  ![Konfiguration der AprilTag-Relokalisierung](/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif)
+</Frame>
+
+## Parameter und Logs
+
+### Lokalisierungsparameter konfigurieren
+
+Verwenden Sie die Parameterseite, um Chassis-Lokalisierungsparameter sowie die extrinsischen LiDAR- und Kameraparameter in den Sensor-Kalibrierungswerten anzuzeigen oder zu konfigurieren.
+
+<Frame>
+  ![Lokalisierungsparameter und extrinsische Sensorkalibrierung](/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif)
+</Frame>
+
+### Logs exportieren
+
+Filtern Sie Logs nach Zeitraum und Modultyp. Wählen Sie die benötigten Ergebnisse aus und exportieren Sie sie.
+
+<Frame>
+  ![Seite zum Filtern und Exportieren von Logs](/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif)
+</Frame>
+
+## Wartung
+
+### Firmware aktualisieren
+
+Importieren Sie auf der Aktualisierungsseite ein lokales Firmwarepaket, um die Firmware des Chassis, des Aktuators oder der Kamera zu aktualisieren. Ein Wiederherstellungspaket speichert die Version vor der letzten Aktualisierung und kann zum Zurücksetzen verwendet werden.
+
+<Warning>
+  Kamera-Firmware, die über den standardmäßigen Hostcomputer-Workflow aktualisiert wurde, kann nicht zurückgesetzt werden. Prüfen Sie das Paket und die aktuelle Version vor der Aktualisierung.
+</Warning>
+
+<Columns cols={2}>
+  <Frame>
+    ![Firmware-Aktualisierungsseite für das System der reinen V2-Lokalisierung](/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif)
+  </Frame>
+
+  <Frame>
+    ![Kamera-Firmware über den Hostcomputer aktualisieren](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif)
+  </Frame>
+</Columns>
+
+### Integrierte Anwendung anhalten oder neu starten
+
+Verwenden Sie die Steuerelemente der integrierten Anwendung, um die Anwendung anzuhalten oder neu zu starten. Halten Sie die integrierte Anwendung an, bevor Sie LxCameraViewer mit der Kamera verbinden; andernfalls kann das Fahrzeug die Kontrolle über die Kamera behalten und die Kommunikation verhindern.
+
+<Frame>
+  ![Steuerelemente zum Anhalten und Neustarten der integrierten Anwendung](/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif)
+</Frame>
+
+### Versionen prüfen
+
+Öffnen Sie die Versionsseite, um die Versionen des integrierten Frontends und Backends anzuzeigen.
+
+<Frame>
+  ![Seite mit Versionsinformationen](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif)
+</Frame>

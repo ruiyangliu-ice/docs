@@ -1,0 +1,177 @@
+---
+title: Distribuire l'evitamento degli ostacoli visivo 3D
+sidebarTitle: Distribuzione dell'evitamento ostacoli 3D
+description: "Configura le regioni di evitamento degli ostacoli visivi 3D, i parametri estrinseci e le uscite di comunicazione con le fotocamere delle serie S e M."
+---
+
+L'evitamento degli ostacoli visivo 3D esegue il rilevamento dei bersagli, l'adattamento al terreno e l'uscita dello stato degli ostacoli sulla fotocamera. Dopo aver configurato i parametri estrinseci della fotocamera e le regioni, puoi cambiare i gruppi di parametri per l'evitamento degli ostacoli e leggere i risultati tramite l'applicazione host, l'API o un bus di campo supportato.
+
+<Info>
+  I valori riportati in questa guida illustrano solo le relazioni tra le configurazioni. I valori effettivi dipendono dal veicolo, dalla posizione di installazione e dall'area di lavoro. Convalidali sul posto prima di inviare la configurazione.
+</Info>
+
+## Preparazione della distribuzione
+
+### Installazione della fotocamera
+
+| Tipo di veicolo | Indicazioni per l'installazione |
+| --- | --- |
+| AMR underride | Monta la fotocamera sulla superficie anteriore nella direzione di marcia. La struttura di montaggio non deve ostacolare il campo visivo. Si consiglia S10. |
+| Carrello elevatore | Monta la fotocamera sul montante con l'obiettivo inclinato verso il basso di circa `30°–55°`. Il bordo del campo visivo deve raggiungere la parte anteriore del veicolo. Quando possibile, mantieni l'altezza di installazione a o sotto `2 m`. Si consiglia S10. |
+
+<Columns cols={2}>
+  <Card title="Installazione su AMR underride" icon="car">
+    ![Fotocamera montata sulla parte anteriore di un AMR underride](/images/developers/deployment-3d-obstacle-avoidance-2-1-lurking-car.avif)
+  </Card>
+
+  <Card title="Installazione su carrello elevatore" icon="forklift">
+    ![Fotocamera montata sul montante di un carrello elevatore](/images/developers/deployment-3d-obstacle-avoidance-2-2-forklift.avif)
+  </Card>
+</Columns>
+
+### Collegamento della fotocamera
+
+<Steps>
+  <Step title="Configura la rete dell'host">
+    L'indirizzo predefinito di fabbrica della fotocamera è `192.168.100.82`. Configura l'adattatore Ethernet del computer sulla stessa sottorete.
+  </Step>
+  <Step title="Collega e verifica l'acquisizione">
+    Apri **LxCameraViewer**, individua e apri la fotocamera e verifica che la mappa di profondità e la nuvola di punti vengano visualizzate correttamente.
+  </Step>
+  <Step title="Cambia l'indirizzo della fotocamera se necessario">
+    In **Altri strumenti → Rete → Strumento di configurazione IP**, cambia l'indirizzo IP. La fotocamera si riavvia dopo la modifica. Se la fotocamera passa a un'altra sottorete, aggiorna anche l'indirizzo Ethernet del computer.
+  </Step>
+</Steps>
+
+<Warning>
+  Non disabilitare permanentemente il firewall su una rete di produzione. In una rete di debug controllata, consenti solo le applicazioni e le porte necessarie secondo la tua policy di sicurezza.
+</Warning>
+
+### Regolazione dell'acquisizione
+
+In **Impostazioni 3D** e **Impostazioni filtro**, verifica la qualità dell'immagine. Per le configurazioni legacy di evitamento degli ostacoli, come punto di partenza puoi usare un valore di esposizione alta pari a `650`, un'esposizione bassa pari a `200` e una soglia del segnale basso pari a `10–20`. S10 normalmente richiede solo un livello di riflessi pari a `1`. Per installazioni non standard, conferma le impostazioni con il supporto tecnico prima della distribuzione.
+
+## Configurazione dell'algoritmo di evitamento degli ostacoli
+
+<Steps>
+  <Step title="Abilita l'algoritmo">
+    In **Algoritmo applicativo**, seleziona la modalità sempre attiva. Per S10, seleziona **Algoritmo di evitamento degli ostacoli**. Per gli altri modelli supportati, seleziona **Algoritmo di evitamento degli ostacoli 2.0**.
+  </Step>
+  <Step title="Scegli il tipo di regione">
+    Scegli una regione rettangolare o a settore per il veicolo. S10 non supporta le regioni a settore; il loro utilizzo può produrre risultati errati.
+  </Step>
+  <Step title="Imposta i parametri estrinseci e le regioni">
+    Imposta prima i parametri estrinseci della fotocamera, quindi configura le regioni di evitamento degli ostacoli. Quando i parametri estrinseci cambiano, le altre regioni usano i nuovi valori.
+  </Step>
+  <Step title="Invia e verifica">
+    Invia i parametri, quindi verifica le aree di avviso, allarme e schermatura nella vista della nuvola di punti e nello stato di uscita.
+  </Step>
+</Steps>
+
+### Parametri estrinseci della fotocamera
+
+| Parametro | Esempio | Descrizione |
+| --- | --: | --- |
+| Roll (asse X) | `180°` | Orientamento della fotocamera; esempio per l'installazione verticale predefinita. |
+| Pitch (asse Y) | `90°` | Orientamento della fotocamera; esempio per l'installazione verticale predefinita. |
+| Yaw (asse Z) | `90°` | Orientamento della fotocamera. |
+| Posizione X | `430 mm` | Posizione della fotocamera lungo l'asse longitudinale anteriore-posteriore del veicolo. |
+| Posizione Y | `0 mm` | Posizione della fotocamera lungo l'asse trasversale sinistra-destra del veicolo; `0` indica il centro. |
+| Posizione Z | `120 mm` | Altezza della fotocamera sopra il terreno. |
+
+Imposta prima l'altezza di montaggio, quindi regola con precisione roll e pitch finché il terreno non risulta livellato nella vista della nuvola di punti. Al termine, seleziona **Invia parametri**.
+
+### Regioni di evitamento degli ostacoli
+
+| Parametro | Esempio | Scopo |
+| --- | --: | --- |
+| Distanza di avviso (X lontano) | `2000 mm` | Distanza oltre la quale l'area è considerata libera; l'intervallo fino alla distanza di allarme è la zona di avviso/decelerazione. |
+| Distanza di allarme (X intermedio) | `1500 mm` | L'intervallo fino alla distanza di schermatura è la zona di allarme/arresto. |
+| Distanza di schermatura (X vicino) | `600 mm` | Zona cieca vicina; gli ostacoli in questa zona sono esclusi dall'evitamento degli ostacoli. |
+| Intervallo sinistro / destro (Y) | `−810 / 1270 mm` | Limiti di rilevamento su entrambi i lati dell'asse centrale del veicolo. |
+| Altezza inferiore / superiore (Z) | `10 / 1500 mm` | Intervallo di altezza incluso nel rilevamento. |
+
+<Tip>
+  I valori X sono relativi al centro del veicolo. La distanza di protezione effettiva deve tenere conto anche dell'offset X della fotocamera, ad esempio distanza di avviso meno l'offset longitudinale anteriore-posteriore della fotocamera.
+</Tip>
+
+Il numero di gruppi di regioni supportati dipende dal metodo di commutazione:
+
+| Metodo di commutazione | Gruppi supportati |
+| --- | --: |
+| S2 / S2 Max 2.0 I/O | `0–3` |
+| SDK, UDP, RS485 o CAN | `0–19` (dipende dal modello) |
+
+Esegui il backup dei valori verificati in `Tools\\params\\<camera ID>\\avoidance.json`. Puoi applicare il file a un altro veicolo dello stesso tipo con **Carica configurazione da file**.
+
+## Comunicazione e uscita dello stato
+
+Configura le regioni di evitamento degli ostacoli e i parametri estrinseci nell'applicazione host prima di usare un bus di campo o un protocollo di rete. Ad eccezione dell'API, la maggior parte dei metodi di comunicazione cambia i gruppi di parametri; usa l'applicazione host o l'API per le impostazioni dettagliate dei parametri.
+
+| Fotocamera | Comunicazione supportata |
+| --- | --- |
+| S2 | API, UDP, I/O |
+| S2 Max | API, UDP, CAN |
+| S2 Max 2.0 | API, UDP, I/O, CAN |
+| M4 Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API, UDP, I/O, CAN |
+
+<Note>
+  I/O ha la priorità più alta. Quando I/O è attivo, gli altri metodi non possono cambiare il gruppo di parametri corrente, ma possono comunque aggiornare i parametri predefiniti o temporanei. L'applicazione host e l'API impostano i parametri predefiniti; UDP, CAN e RS485 normalmente impostano parametri temporanei. Il comportamento dopo una perdita di alimentazione dipende da come è stata salvata l'ultima configurazione.
+</Note>
+
+### API
+
+Le applicazioni Windows, Linux e ARM possono chiamare le API di evitamento degli ostacoli tramite l'SDK. Dopo aver installato l'applicazione host Windows, l'SDK e gli esempi sono disponibili nella relativa directory di installazione. L'esempio di evitamento degli ostacoli si trova in `Sample\\C\\application_obstacled`. Per S10, evita di cambiare frequentemente i gruppi di parametri tramite l'API; usa invece UDP o I/O.
+
+### RS485 (solo M4 Pro)
+
+Usa Modbus RTU con una velocità in baud consigliata di `9600`. Leggi i due registri di ingresso a partire dall'indirizzo `108` (`0x6C`) con il codice funzione `0x04` per ottenere il risultato corrente dell'evitamento degli ostacoli. Scrivi un singolo registro all'indirizzo `106` (`0x6A`) con il codice funzione `0x06` per cambiare i gruppi di parametri.
+
+| Pin | Segnale | Colore del cavo |
+| --: | --- | --- |
+| 1 | GND | Blu |
+| 2 | RS485\_A | Grigio |
+| 3 | RS485\_B | Bianco |
+| 4 | VIN\+ | Marrone |
+| 5 | VIN− | Nero |
+
+### UDP e TCP
+
+I messaggi vengono inviati come frame esadecimali. Per UDP, invia prima il messaggio di stabilimento della connessione. Dopo lo stabilimento della connessione, la fotocamera invia i risultati alla frequenza dei fotogrammi.
+
+| Direzione | Frame | Significato |
+| --- | --- | --- |
+| Fotocamera → controller | `ACED0410XX000000` | Nessun ostacolo; `XX` è il gruppo di parametri corrente. |
+| Fotocamera → controller | `ACED0410XX000001` | Avviso/decelerazione. |
+| Fotocamera → controller | `ACED0410XX000002` | Allarme/arresto. |
+| Controller → fotocamera (UDP) | `ACED040000000000` | Stabilisce la connessione UDP. |
+| Controller → fotocamera | `ACED041A00000000` a `ACED041A00000013` | Cambia il gruppo di parametri `0–19`. |
+| Controller → fotocamera | `ACED041B00000000` | Salva il gruppo corrente come gruppo predefinito. |
+
+La porta UDP remota predefinita è `6688`. La commutazione dei parametri richiede un tempo di caricamento; evita commutazioni rapide perché possono ridurre la frequenza dei fotogrammi e la frequenza di aggiornamento dei risultati.
+
+### CAN e I/O
+
+CAN può cambiare i gruppi di parametri sui modelli supportati. Le uscite I/O riportano gli stati libero, decelerazione e arresto di emergenza. Il tipo di uscita può essere push-pull o open-drain; verifica il tipo di ingresso del controller prima del cablaggio.
+
+| OUT1 push-pull | OUT2 push-pull | Stato |
+| --- | --- | --- |
+| `24 V` | `24 V` | Nessun ostacolo |
+| `24 V` | `0 V` | Decelerazione |
+| `0 V` | `24 V` | Arresto di emergenza |
+| `0 V` | `0 V` | Disabilitato, inizializzazione o errore |
+
+<Warning>
+  Per S10, collega `24 V−` alla massa di alimentazione del controller e collega `IN_G` e `OUT_G` alla massa del segnale del controller. Se il controller non distingue le due masse, usa lo schema di massa comune approvato per il sito. Conferma se il controller usa segnali PNP o NPN e verifica il cablaggio con un multimetro.
+</Warning>
+
+## Risoluzione dei problemi
+
+| Sintomo | Verifiche |
+| --- | --- |
+| Gli oggetti neri o a bassa riflettività non vengono rilevati | Conferma la copertura della nuvola di punti; regola il tempo di integrazione e la soglia del segnale basso. Se necessario, aggiungi una superficie riflettente alla punta nera della forca. |
+| Gli oggetti bassi non attivano il rilevamento | Controlla il limite Z inferiore; impostalo temporaneamente su `0` per la verifica. Se il rilevamento continua a non riuscire, controlla l'altezza di montaggio e la copertura della nuvola di punti. |
+| I parametri non hanno effetto | Conferma che siano stati inviati. Controlla la validità dei parametri, la connessione di rete e la priorità del gruppo di parametri. |
+| Dati anomali | Controlla la presenza di ostruzioni nella struttura di montaggio, di una pellicola protettiva sull'obiettivo o di un vetro protettivo aggiuntivo. |

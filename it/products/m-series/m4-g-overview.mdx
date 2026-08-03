@@ -1,0 +1,131 @@
+---
+title: Telecamera 3D M4-G
+description: "Specifiche, configurazione dell'interfaccia GMSL2 e requisiti di integrazione per la telecamera RGB-D iToF M4-G."
+---
+
+M4-G è una telecamera RGB-D iToF per la percezione a corto raggio. Utilizza un'interfaccia GMSL2 e può fornire dati di profondità, RGB e nuvola di punti a una frequenza tipica di 30 fps nell'intervallo 0.05–1 m. Le applicazioni tipiche includono polsi robotici, presa su piano di lavoro e manipolazione di precisione.
+
+<Info>
+  Scarica la documentazione completa del prodotto dal [Centro download](/it/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Frame>
+  ![Telecamera M4-G per la percezione robotica a corto raggio](/images/products/m-series-m4-g-overview-m4-g-product-overview.avif)
+</Frame>
+
+## Funzionalità principali
+
+- **Rilevamento della profondità iToF a corto raggio:** fornisce dati di profondità nell'intervallo 0.05–1 m.
+- **Output RGB-D sincronizzato:** fornisce mappe di profondità, immagini RGB e nuvole di punti allineate all'RGB.
+- **Prestazioni in condizioni di scarsa illuminazione:** l'illuminazione attiva supporta target con illuminazione ridotta o texture limitata.
+- **Trasmissione GMSL2:** fornisce un collegamento dati a lunga distanza e resistente alle interferenze per l'integrazione del sistema.
+
+## Specifiche
+
+| Parametro | M4-G |
+| --- | --- |
+| Principio di funzionamento | iToF |
+| Dati di output | Mappa di profondità, immagine RGB, nuvola di punti |
+| Risoluzione e frequenza dei fotogrammi ToF | 640 × 480; tipici 30 fps |
+| Campo visivo ToF | 90° × 70°, ±3° |
+| Risoluzione e frequenza dei fotogrammi RGB | 1280 × 1056; tipici 30 fps |
+| Campo visivo RGB | 115° × 100°, ±3° |
+| Dimensione dei pixel RGB | 2.5 μm |
+| ISP RGB | Integrato |
+| HDR RGB | ≥ 100 dB |
+| Obiettivo RGB | F/2.05; lunghezza focale effettiva 1.28 mm |
+| Distanza operativa | 0.05–1 m |
+| Precisione della distanza | 1%, fino a 4 mm a 1 m |
+| Laser | 940 nm |
+| Consumo energetico | 3 W |
+| Dimensioni (L × P × H) | 60 × 30 × 29 mm |
+| Peso | \< 200 g |
+| Alimentazione | 12 VDC / 1 A |
+| Interfaccia di comunicazione | SerDes (GMSL2) |
+| Temperatura operativa | −20–60 °C |
+| Temperatura di stoccaggio | −40–85 °C |
+| SDK | C/C\+\+, ROS |
+| Sistemi operativi supportati | Windows 7 o versione successiva, Linux, Arm Linux, ROS |
+| Raffreddamento | Passivo |
+| Sicurezza per gli occhi | Classe 1 |
+
+## Dimensioni del prodotto
+
+<Frame>
+  ![Dimensioni della telecamera M4-G](/images/products/m-series-m4-g-overview-1-m4-g-3d-camera-dimensions.avif)
+</Frame>
+
+## Interfaccia GMSL2
+
+### Configurazione del serializer
+
+| Voce | Parametro |
+| --- | --- |
+| Serializer | MAX96717 |
+| Indirizzo I²C | `0x40` (7 bit) |
+| Velocità GMSL | GMSL2, 6 Gbps |
+| Modalità operativa | Modalità pixel |
+| Sincronizzazione dei fotogrammi | Controllata da MAX96717 MFP0 |
+
+### Parametri del flusso video
+
+| Flusso | Risoluzione e formato | Tipo di dati | Controllo e canale virtuale |
+| --- | --- | --- | --- |
+| ToF | 2560 × 960, RAW8 | `0x2A` | I²C inoltrato dall'FPGA; VC0 |
+| RGB | 1280 × 1080, YUV422, 8 bit | `0x1E` | I²C inoltrato dall'FPGA; VC1 |
+
+### Configurazione FPGA
+
+| Voce | Parametro |
+| --- | --- |
+| Indirizzo I²C | `0x11` (7 bit) |
+| Output MIPI | 4 lane, 1.2 Gbps |
+
+## Avvia lo streaming
+
+L'acquisizione delle immagini richiede sia la sincronizzazione hardware dei fotogrammi sia il controllo del flusso.
+
+<Steps>
+  <Step title="Fornisci un segnale di sincronizzazione dei fotogrammi">
+    Configura la sincronizzazione dei fotogrammi tra MAX96717 e il deserializer selezionato secondo i manuali hardware. MAX96717 MFP0 può essere configurato come uscita GPIO di trigger.
+
+    <Frame>
+      ![Trasmissione del segnale di sincronizzazione dei fotogrammi della serie MAX96724](/images/products/m-series-m4-g-overview-2-max96724-f-r-frame-sync-signal-transmission.avif)
+    </Frame>
+  </Step>
+  <Step title="Invia il comando di avvio del flusso">
+    Scrivi `1` nel registro FPGA `0x2000` per avviare lo streaming oppure scrivi `0` per interromperlo.
+
+    ```bash
+    i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+    ```
+
+    In questo esempio, `0x11` è l'indirizzo I²C dell'FPGA.
+  </Step>
+</Steps>
+
+## Requisiti di integrazione
+
+| Voce | Requisito |
+| --- | --- |
+| Temperatura operativa | −20–60 °C |
+| Illuminamento operativo | 0–100 kLux |
+| Temperatura di stoccaggio | −40–85 °C |
+| Umidità di stoccaggio | Massimo 90% RH |
+| Aumento normale della temperatura operativa | Aumento della temperatura dell'involucro \< 25 °C |
+| ESD | Scarica a contatto ±4 kV; scarica in aria ±8 kV |
+| Emissioni irradiate | Conforme a GB 9254 Classe A |
+| Conformità ambientale | RoHS |
+
+## Casi di studio correlati
+
+<Columns cols={3}>
+  <Card title="Caso d'uso di un carrello elevatore senza conducente" icon="forklift" href="/it/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+  </Card>
+
+  <Card title="Evitamento degli ostacoli per AMR under-ride" icon="robot" href="/it/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+  </Card>
+
+  <Card title="Evitamento degli ostacoli per robot umanoide su ruote" icon="person-walking" href="/it/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+  </Card>
+</Columns>

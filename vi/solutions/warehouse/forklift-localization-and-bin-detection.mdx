@@ -1,0 +1,47 @@
+---
+title: Phối hợp định vị xe nâng và nhận dạng vị trí lưu trữ
+sidebarTitle: "Định vị xe nâng & nhận dạng vị trí lưu trữ"
+description: "Kết hợp dữ liệu pose của xe nâng và trạng thái vị trí lưu trữ để hỗ trợ điều phối xe nâng thủ công, theo dõi tải và quản lý vị trí."
+---
+
+Vận hành xe nâng thủ công thường phụ thuộc vào kinh nghiệm của người lái, trong khi hồ sơ vị trí lưu trữ có thể chậm cập nhật so với hiện trường. Hiệu quả tuyến đường, trạng thái vị trí và an toàn trong lối đi hẹp là những vấn đề phổ biến trong quản lý kho hàng.
+
+## Kiến trúc giải pháp
+
+Giải pháp kết hợp hệ thống định vị xe nâng thủ công với hệ thống trạng thái vị trí lưu trữ. Hệ thống thứ nhất cung cấp vị trí và pose của xe nâng; hệ thống thứ hai cung cấp tình trạng có hàng và trạng thái tải. Cả hai luồng dữ liệu có thể được gửi đến hệ thống cấp cao hơn để điều phối tác vụ và theo dõi tải.
+
+## Định vị xe nâng thủ công
+
+Gắn camera thị giác 3D trên nóc xe nâng. Hệ thống định vị bằng các đặc trưng tự nhiên trên trần và tường, với sự hỗ trợ của IMU. Hồ sơ dự án ghi nhận độ chính xác định vị **1–5 cm**; độ chính xác thực tế phụ thuộc vào đặc trưng hiện trường, cách lắp đặt và hiệu chuẩn.
+
+<Frame>
+  ![Hệ thống định vị trực quan cho xe nâng thủ công](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
+</Frame>
+
+Hệ thống có thể cảnh báo người lái về người, xe và nguy cơ tiềm ẩn ở gần, đồng thời có thể cấu hình các vùng hạn chế. Kết quả định vị cũng có thể được kết hợp với trạng thái vị trí để ghi nhận việc đặt tải và hỗ trợ điều chỉnh tuyến đường của tác vụ.
+
+<Frame>
+  ![Phối hợp định vị xe nâng và vận hành kho hàng](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+</Frame>
+
+## Nhận dạng trạng thái vị trí lưu trữ
+
+Camera RGB-D thu nhận thông tin 3D và màu sắc để xác định vị trí có tải hay không, tải được đặt như thế nào và tình trạng có hàng có bất thường hay không. Khi cần, thuật toán có thể phân biệt các nhóm tải, còn kết quả trên camera có thể được gửi đến hệ thống điều phối.
+
+| Tính năng | Mô tả |
+| --- | --- |
+| Giám sát 3D | Kết hợp dữ liệu độ sâu và màu sắc để xác định trạng thái vị trí. |
+| Xử lý trên camera | Giảm nhu cầu sử dụng máy tính công nghiệp bên ngoài. |
+| Tích hợp giao tiếp | Hỗ trợ TCP/IP, UDP và HTTP, với đầu ra JSON. |
+| Phối hợp điều phối | Cung cấp thông tin vị trí theo thời gian thực để phân công tác vụ. |
+
+<Frame>
+  ![Hệ thống nhận dạng trạng thái vị trí lưu trữ](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
+</Frame>
+
+## Quy trình phối hợp
+
+1. Hệ thống định vị liên tục xuất vị trí và pose của xe nâng.
+2. Camera vị trí báo cáo tình trạng có hàng và trạng thái tải của vị trí mục tiêu.
+3. Hệ thống cấp cao hơn liên kết dữ liệu phương tiện, tải và vị trí để xác nhận tác vụ lấy và đặt hàng, đồng thời ghi nhận vị trí tải.
+4. Khi trạng thái vị trí hoặc phương tiện thay đổi, hệ thống cấp cao hơn có thể cập nhật tuyến đường của tác vụ và phân bổ tài nguyên.

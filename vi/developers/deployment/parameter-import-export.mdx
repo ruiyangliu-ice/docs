@@ -1,0 +1,77 @@
+---
+title: Nhập và xuất tham số camera
+sidebarTitle: Nhập/xuất tham số
+description: "Sao lưu và khôi phục tham số tránh chướng ngại vật, hình ảnh, bộ lọc và nhận dạng pallet trong LxCameraViewer và PalletPro."
+---
+
+Hãy xuất cấu hình đã kiểm tra trước khi thay đổi tham số. Sau khi nhập cấu hình, kiểm tra model camera, thông số ngoại tại lắp đặt và hình ảnh trên thiết bị đích trước khi vận hành.
+
+<Warning>
+  Tệp cấu hình có thể chứa thông số ngoại tại phụ thuộc vào cách lắp đặt. Không dùng thông số ngoại tại của phương tiện này cho phương tiện khác. Luôn kiểm tra các giá trị đã nhập.
+</Warning>
+
+## Tham số tránh chướng ngại vật
+
+### Xuất
+
+<Steps>
+  <Step title="Mở cài đặt tránh chướng ngại vật">
+    Trong **Application algorithm**, chọn thuật toán tránh chướng ngại vật và cấu hình các vùng tránh chướng ngại vật cùng thông số ngoại tại.
+  </Step>
+  <Step title="Gửi tham số">
+    Trong **Obstacle avoidance settings**, chọn **Send parameters**.
+  </Step>
+  <Step title="Tìm tệp">
+    Mở thư mục `params` trong thư mục ứng dụng máy chủ, sau đó mở thư mục tương ứng với ID camera. Tệp `avoidance` chứa các tham số đã lưu.
+  </Step>
+</Steps>
+
+Thư mục mặc định là:
+
+`D:\\Program Files\\Lanxin-MRDVS\\Tools\\params`
+
+### Nhập
+
+Trong **Obstacle avoidance settings**, chọn **Load configuration from file** và chọn tệp đã xuất. Gửi cấu hình, sau đó kiểm tra vùng trong chế độ xem đám mây điểm và trạng thái đầu ra.
+
+<Frame>
+  ![Tải cấu hình tránh chướng ngại vật từ tệp](/images/developers/deployment-parameter-import-export-d-the-export-and-import-of-obstacle-avoidance-algorithm-parameters-7.avif)
+</Frame>
+
+## Tham số hình ảnh và bộ lọc
+
+### Xuất
+
+1. Cấu hình tham số hình ảnh và bộ lọc trong **Basic tools**.
+2. Dừng luồng camera. Không thể lưu cấu hình khi luồng đang chạy.
+3. Trong **Function settings**, chọn **Export configuration to file** và tạo một thư mục riêng cho cấu hình.
+
+### Nhập
+
+Trong **Function settings**, chọn **Load configuration from file** và chọn tệp đã xuất. Khởi động lại luồng và kiểm tra chất lượng hình ảnh cùng bộ lọc.
+
+## Tham số pallet của PalletPro
+
+PalletPro `1.4.6` trở lên có thể quản lý thông số ngoại tại nhận dạng pallet trong thư mục thuật toán đang hoạt động.
+
+### Nhập
+
+<Steps>
+  <Step title="Mở thư mục camera">
+    Khởi động **PalletPro**, chọn **Basic operations → Camera operations → Open directory**, rồi mở thư mục thuật toán hiện đang được camera sử dụng.
+  </Step>
+  <Step title="Thay thế tệp tham số">
+    Sao chép hoặc kéo thông số ngoại tại nhận dạng pallet vào thư mục và xác nhận thay thế tệp tương ứng.
+  </Step>
+  <Step title="Hiệu chuẩn lại">
+    Sau khi nhập, chạy lại hiệu chuẩn thông số ngoại tại ghép pallet và kiểm tra kết quả nhận dạng.
+  </Step>
+</Steps>
+
+### Xuất
+
+Sau khi hoàn tất và lưu hiệu chuẩn, mở thư mục thuật toán đang hoạt động bằng cùng đường dẫn và sao lưu tệp tham số nhận dạng pallet.
+
+<Frame>
+  ![Vị trí tệp tham số pallet của PalletPro](/images/developers/deployment-parameter-import-export-pallet-parameter-import.avif)
+</Frame>

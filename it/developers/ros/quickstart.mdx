@@ -1,0 +1,166 @@
+---
+title: Guida rapida di ROS
+description: "Configura ed esegui l'SDK ROS di localizzazione visiva V2 per creare mappe, cambiare mappa, eseguire la rilocalizzazione e sottoscrivere i risultati della localizzazione."
+hidden: true
+---
+
+## Panoramica
+
+Il modulo di localizzazione V2 comunica con l'SDK ROS del computer host tramite UDP. La relativa interfaccia web integrata supporta la creazione di mappe, la localizzazione e la configurazione dei parametri. L'SDK ROS espone le stesse funzionalità, inclusi la creazione di mappe, la rilocalizzazione e il download delle mappe.
+
+<Frame>
+  ![Architettura di comunicazione tra il modulo di localizzazione V2 e l'SDK ROS](/images/developers/ros-quickstart-preface.avif)
+</Frame>
+
+<Info>
+  L'interfaccia web predefinita è disponibile all'indirizzo `192.168.100.201:9998`. Configura l'indirizzo IP e la porta di destinazione sia sulla camera sia sull'SDK ROS e assicurati che i valori coincidano.
+</Info>
+
+## Prerequisiti
+
+Installa i componenti Qt5 Core e Network e la dipendenza `libzip`. L'esempio seguente usa Ubuntu:
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+Installa `libzip` seguendo le [istruzioni per l'installazione di libzip](https://blog.csdn.net/iamhuanyu/article/details/129603632). Quindi compila il pacchetto ROS da `/V2-ROS-SDK-service`, che si trova allo stesso livello di `src`:
+
+```bash
+catkin_make
+```
+
+## Configura e avvia il nodo
+
+<Steps>
+  <Step title="Controlla la configurazione dell'SDK ROS">
+    Apri `/V2-ROS-SDK-service/src/lx_camera_ros/launch/mapping.launch`. L'indirizzo IP predefinito della camera è `192.168.100.201`; se cambi l'IP della camera, aggiornalo anche in questo file. Imposta la porta su `8001`.
+
+    <Frame>
+      ![Impostazioni di connessione della camera in mapping.launch](/images/developers/ros-quickstart-operation-2.avif)
+    </Frame>
+  </Step>
+  <Step title="Controlla i parametri di rete e del modulo">
+    Collega la camera e il computer host allo stesso switch e segmento di rete. Nell'interfaccia web, apri **Configurazione dei parametri**, imposta `portCode` su `8987` e imposta `portName` sull'indirizzo IP dell'adattatore di rete del computer host che esegue l'SDK ROS.
+
+    <Frame>
+      ![Voce di configurazione dei parametri nell'interfaccia web](/images/developers/ros-quickstart-operation-3.avif)
+    </Frame>
+
+    <Frame>
+      ![Impostazioni della porta UDP e dell'indirizzo di destinazione nell'interfaccia web](/images/developers/ros-quickstart-operation-4.avif)
+    </Frame>
+  </Step>
+  <Step title="Avvia il nodo ROS">
+    ```bash
+    cd /V2-ROS-SDK-service
+    source devel/setup.bash
+    roslaunch lx_camera_ros mapping.launch
+    ```
+
+    Il terminale visualizza le informazioni di avvio quando il nodo viene avviato correttamente.
+
+    <Frame>
+      ![Output del terminale dopo l'avvio corretto del nodo ROS](/images/developers/ros-quickstart-operation-5.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+## Verifica la comunicazione
+
+Apri un nuovo terminale, accedi a `/V2-ROS-SDK-service` e carica l'ambiente:
+
+```bash
+source devel/setup.bash
+```
+
+Sottoscrivi il topic dello stato dello spazio di archiviazione per verificare il collegamento di comunicazione. Il topic può essere usato anche come heartbeat e pubblica a 2 Hz:
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+<Frame>
+  ![Output del terminale per il topic dello stato dello spazio di archiviazione](/images/developers/ros-quickstart-debugging.avif)
+</Frame>
+
+Puoi anche chiamare il seguente servizio per leggere il nome della mappa corrente:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+<Frame>
+  ![Risultato della lettura del nome della mappa corrente](/images/developers/ros-quickstart-debugging-2.avif)
+</Frame>
+
+## Crea una mappa ed esegui la localizzazione
+
+Accendi la camera e attendi circa 30 secondi che il programma integrato si avvii prima di avviare il nodo di inoltro dei dati.
+
+<Steps>
+  <Step title="Avvia la mappatura">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true mapname: 'test_map'"
+    ```
+
+    Dopo che il servizio restituisce `true`, muovi la piattaforma nell'area per acquisire la mappa.
+
+    <Frame>
+      ![Stato dell'interfaccia web dopo l'avvio della mappatura](/images/developers/ros-quickstart-basic-operating-procedures.avif)
+    </Frame>
+  </Step>
+  <Step title="Arresta la mappatura">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: false mapname: 'test_map'"
+    ```
+
+    Attendi che il servizio restituisca `true` per confermare che la mappatura è completa.
+
+    <Frame>
+      ![Stato dell'interfaccia web dopo l'arresto della mappatura](/images/developers/ros-quickstart-basic-operating-procedures-2.avif)
+    </Frame>
+  </Step>
+  <Step title="Passa alla nuova mappa">
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "map_name: 'test_map'"
+    ```
+  </Step>
+  <Step title="Invia una posa di rilocalizzazione">
+    `orientation.x`, `orientation.y`, `orientation.z` e `orientation.w` rappresentano il quaternione di orientamento. Valorizzali secondo il formato dei messaggi ROS.
+
+    ```bash
+    rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'map'
+      pose:
+        pose:
+          position: {x: 4.5, y: -15.5, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.694658, w: 0.71934}
+        covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+    ```
+  </Step>
+  <Step title="Sottoscrivi i risultati di localizzazione in tempo reale">
+    ```bash
+    rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+    ```
+  </Step>
+</Steps>
+
+## Risoluzione dei problemi
+
+<AccordionGroup>
+  <Accordion title="Il programma ROS non viene compilato">
+    Verifica che Qt5 e `libzip` siano installati completamente, quindi esegui di nuovo `catkin_make`.
+  </Accordion>
+
+  <Accordion title="L'SDK ROS non risponde dopo l'invio di un messaggio">
+    Conferma che la camera e il computer host si trovino nello stesso segmento di rete e che la camera sia accessibile dal software host della camera. Quindi verifica la configurazione della camera e dell'SDK ROS.
+  </Accordion>
+
+  <Accordion title="Non è possibile inviare un messaggio di debug ROS">
+    I formati dei messaggi ROS sono rigidi. Mantieni la struttura dei campi dell'esempio e modifica solo i valori richiesti dal test.
+  </Accordion>
+</AccordionGroup>

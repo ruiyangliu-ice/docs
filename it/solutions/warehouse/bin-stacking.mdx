@@ -1,0 +1,79 @@
+---
+title: Impilamento di contenitori con carrello elevatore AGV
+description: "Utilizza la visione 3D per stimare la posa del contenitore e guidare un carrello elevatore AGV nel prelievo, nel posizionamento e nell'impilamento su più livelli."
+---
+
+L'impilamento dei contenitori richiede che il carrello elevatore allinei posizione e orientamento entro una tolleranza limitata. Un numero maggiore di livelli di impilamento, diversi tipi di contenitore, forme dei carichi e condizioni di illuminazione variabili aumentano la difficoltà di riconoscimento e aggancio.
+
+## Panoramica della soluzione
+
+La soluzione utilizza una camera 3D montata sul carrello elevatore intelligente per stimare la posa relativa del contenitore sulle forche e del contenitore target. Gli offset di posizione e angolazione vengono inviati al controller del carrello elevatore per guidare il prelievo e l'impilamento. La soluzione è adatta a contenitori, pallet e altre attività di aggancio di precisione.
+
+## Capacità verificate
+
+- Precisione di posizionamento fino a **±5 mm** e precisione angolare fino a **0,1°**.
+- Intervallo di riconoscimento dell'offset del contenitore di **±15°**.
+- Tempo di elaborazione per fotogramma inferiore a **100 ms**.
+- Supporto da **1 a 4 livelli** e impilamento `2 × 2`.
+
+<Frame>
+  ![Dati della nuvola di punti per l'aggancio dei contenitori superiore e inferiore](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## Opzioni di installazione
+
+<Tabs>
+  <Tab title="Configurazione a camera singola">
+    Monta la camera sul meccanismo di sollevamento e orientala orizzontalmente verso i contenitori su entrambe le forche. Mantieni la camera a **35–55 cm** dal bordo inferiore delle forche; l'errore di posizione del meccanismo di sollevamento non deve superare **1 cm**.
+
+    <Frame>
+      ![Installazione per l'impilamento dei contenitori con camera singola](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Configurazione a doppia camera">
+    Monta una camera su ciascun lato del carrello elevatore, a **30–40 cm** dalla superficie delle forche e a **45°** rispetto al terreno. Ogni camera riconosce il contenitore sul lato corrispondente.
+
+    <Frame>
+      ![Installazione per l'impilamento dei contenitori con doppia camera](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  Si consiglia la M Series, ad esempio M4 Pro o M4 Mega. Seleziona il modello in base alla distanza di lavoro, al campo visivo e alle dimensioni dei contenitori.
+</Info>
+
+## Dati di comunicazione
+
+Il sistema comunica con il controller del carrello elevatore tramite TCP/IP. Il controller richiede `X`, `Y` e `θ` del contenitore; la camera restituisce i campi seguenti.
+
+| Campo | Descrizione |
+| --- | --- |
+| `X`, `Y` | Coordinate relative del contenitore in mm, rappresentate come valori in virgola mobile a 32 bit. |
+| `Theta` | Offset angolare da **−90° a 90°**. |
+| `Error Code` | `0`: operazione riuscita; `-1`: errore della camera; `-2`: errore di localizzazione; `-3`: errore dell'algoritmo. |
+
+## Flusso di lavoro
+
+<Tabs>
+  <Tab title="Prelievo">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="Impilamento">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  Evita ambienti con molta polvere o umidi. Mantieni la staffa della camera rigida e stabile e pulisci regolarmente l'obiettivo per mantenere nitido il campo visivo.
+</Warning>
+
+<Frame>
+  ![Dimostrazione dell'impilamento dei contenitori con carrello elevatore AGV](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![Risultato del riconoscimento dell'impilamento dei contenitori](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

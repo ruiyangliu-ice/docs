@@ -1,0 +1,213 @@
+---
+title: HTTP-Protokoll der visuellen V2-Lokalisierung
+sidebarTitle: V2-HTTP-Protokoll
+description: "Referenz für HTTP-Endpunkte, Anfrageparameter und Antwortfelder der visuellen V2-Lokalisierung."
+hidden: true
+---
+
+Diese Seite listet die vom Modul für die visuelle V2-Lokalisierung bereitgestellten HTTP-Endpunkte auf. Ersetzen Sie den IP-Platzhalter in jeder Adresse durch die IP-Adresse des Moduls. Sofern bei einem Endpunkt nichts anderes angegeben ist, zeigen `code: 200` und `message: success` an, dass die Anfrage erfolgreich verarbeitet wurde.
+
+<Warning>
+  Das Aktualisieren der Software, das Bereitstellen oder Wechseln von Karten, der Neustart des Programms und der Neustart der Kamera unterbrechen die Lokalisierung. Rufen Sie diese Endpunkte nur auf, wenn das Fahrzeug angehalten wurde und eine Wiederherstellung möglich ist.
+</Warning>
+
+## Programm- und Geräteinformationen
+
+### Hauptprogramm aktualisieren
+
+Adresse: `http://<ip>:9998/tool/rob/quiet_update`
+
+<ParamField body="url" type="string" required>
+  Erreichbare URL des Upgrade-Pakets für das Hauptprogramm.
+</ParamField>
+
+### Kamerahöhe festlegen
+
+Adresse: `http://<ip>:9998/tool/rob/setHeightRequest`
+
+<ParamField body="height" type="number" required>
+  Kamerahöhe.
+</ParamField>
+
+### Programmversion abrufen
+
+Adresse: `http://<ip>:9998/tool/rob/getRobotVersion`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.
+
+<ResponseField name="code" type="integer" required>
+  Antwortstatuscode.
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  Programmversion, z. B. `version 12313`.
+</ResponseField>
+
+### Fahrzeuginformationen abrufen
+
+Adresse: `http://<ip>:9998/tool/rob/getVehicle`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.
+
+<ResponseField name="data" type="object" required>
+  Fahrzeuginformationsobjekt.
+</ResponseField>
+
+<ResponseField name="vehicleId" type="string">
+  Fahrzeug-UUID.
+</ResponseField>
+
+<ResponseField name="mapId" type="string">
+  Aktuelle Karte.
+</ResponseField>
+
+<ResponseField name="vehicleType" type="string">
+  Fahrzeugtyp.
+</ResponseField>
+
+### Aktuelle Pose abrufen
+
+Adresse: `http://<ip>:9998/tool/rob/getAGVPose`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.
+
+<ResponseField name="pose" type="object" required>
+  Aktuelle Pose.
+</ResponseField>
+
+<ResponseField name="x" type="number">
+  X-Koordinate.
+</ResponseField>
+
+<ResponseField name="y" type="number">
+  Y-Koordinate.
+</ResponseField>
+
+<ResponseField name="yaw" type="number">
+  Richtungswinkel.
+</ResponseField>
+
+### Relokalisieren
+
+Adresse: `http://<ip>:9998/tool/rob/relocate`
+
+Anfrage-Header: `Content-Type: application/json`
+
+<ParamField body="x" type="number" required>
+  X-Koordinate in Metern.
+</ParamField>
+
+<ParamField body="y" type="number" required>
+  Y-Koordinate in Metern.
+</ParamField>
+
+<ParamField body="angle" type="number" required>
+  Posewinkel.
+</ParamField>
+
+<ParamField body="noisyX" type="number" required>
+  Rauschen auf der X-Achse in Metern.
+</ParamField>
+
+<ParamField body="noisyY" type="number" required>
+  Rauschen auf der Y-Achse in Metern.
+</ParamField>
+
+<ParamField body="noisyAngle" type="number" required>
+  Winkelrauschen.
+</ParamField>
+
+## Kartenverwaltung
+
+### Aktuelles Kartenpaket herunterladen
+
+Adresse: `http://<ip>:9998/tool/rob/getRunMapZip`
+
+Anfrage-Header: `Content-Type: application/json`
+
+<ParamField body="Name" type="string" required>
+  Kartenname.
+</ParamField>
+
+Die Antwort ist eine ZIP-Datei mit dem Inhaltstyp `application/zip`.
+
+### Karte bereitstellen
+
+Adresse: `http://<ip>:9998/tool/rob/deployRunMap`
+
+<ParamField body="id" type="string" required>
+  Kartenname.
+</ParamField>
+
+### Karte anwenden
+
+Adresse: `http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+<ParamField body="name" type="string" required>
+  Kartenname.
+</ParamField>
+
+### Kartierung starten
+
+Adresse: `http://<ip>:9998/tool/rob/startMapping`
+
+<ParamField body="name" type="string" required>
+  Kartenname.
+</ParamField>
+
+### Kartierung beenden
+
+Adresse: `http://<ip>:9998/tool/rob/stopMapping`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.
+
+### Inkrementelle Kartierung starten oder beenden
+
+Adresse: `http://<ip>:9998/tool/rob/sendCMD`
+
+| Vorgang | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | --: | --: | --- |
+| Inkrementelle Kartierung starten | `904` | `0` | `mapname` |
+| Inkrementelle Kartierung beenden | `905` | `0` | `mapname` |
+
+### Kartenliste abrufen
+
+Verwenden Sie den lokalen Endpunkt für die Kartenliste:
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Dieser Endpunkt benötigt keine Anfrageparameter. Die Antwort `run_maps` ist ein Array mit Kartennamen.
+
+<Note>
+  Der Backend-Endpunkt für die Kartenliste `http://<ip>:9998/tool/editor/getLocalMaps` ist veraltet und wird nicht empfohlen.
+</Note>
+
+### Kartenpaket auf die Kamera hochladen
+
+Adresse: `http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+<ParamField body="url" type="string" required>
+  Erreichbare URL des Kartenpakets.
+</ParamField>
+
+### Karte herunterladen
+
+Adresse: `http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+<ParamField body="url" type="string" required>
+  Erreichbare URL des Kartenpakets.
+</ParamField>
+
+## Wartungsendpunkte
+
+### Kameraprogramm neu starten
+
+Adresse: `http://<ip>:9998/tool/rob/restart`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.
+
+### Kamera neu starten
+
+Adresse: `http://<ip>:9998/tool/rob/Reboot`
+
+Dieser Endpunkt benötigt keine Anfrageparameter.

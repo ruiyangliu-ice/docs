@@ -1,0 +1,131 @@
+---
+title: M4-G-3D-Kamera
+description: "Spezifikationen, Konfiguration der GMSL2-Schnittstelle und Integrationsanforderungen für die iToF-RGB-D-Kamera M4-G."
+---
+
+M4-G ist eine iToF-RGB-D-Kamera für die Wahrnehmung im Nahbereich. Sie verwendet eine GMSL2-Schnittstelle und kann Tiefen-, RGB- und Punktwolkendaten bei typischerweise 30 fps innerhalb eines Bereichs von 0.05–1 m ausgeben. Typische Anwendungen sind Roboterhandgelenke, Greifen auf Tischflächen und präzise Manipulation.
+
+<Info>
+  Laden Sie die vollständige Produktdokumentation im [Downloadcenter](/de/resources/downloads/specifications-and-user-guides) herunter.
+</Info>
+
+<Frame>
+  ![M4-G-Kamera für die Wahrnehmung im Roboternahbereich](/images/products/m-series-m4-g-overview-m4-g-product-overview.avif)
+</Frame>
+
+## Hauptfunktionen
+
+- **iToF-Tiefenerfassung im Nahbereich:** Gibt Tiefendaten innerhalb eines Bereichs von 0.05–1 m aus.
+- **Synchronisierte RGB-D-Ausgabe:** Stellt Tiefenkarten, RGB-Bilder und Punktwolken mit RGB-Ausrichtung bereit.
+- **Leistung bei schwachem Licht:** Die aktive Beleuchtung unterstützt Ziele mit geringer Beleuchtung oder begrenzter Textur.
+- **GMSL2-Übertragung:** Bietet eine Datenverbindung über große Entfernungen mit hoher Störfestigkeit für die Systemintegration.
+
+## Spezifikationen
+
+| Parameter | M4-G |
+| --- | --- |
+| Funktionsprinzip | iToF |
+| Ausgabedaten | Tiefenkarte, RGB-Bild, Punktwolke |
+| ToF-Auflösung und Bildrate | 640 × 480; typisch 30 fps |
+| ToF-Sichtfeld | 90° × 70°, ±3° |
+| RGB-Auflösung und Bildrate | 1280 × 1056; typisch 30 fps |
+| RGB-Sichtfeld | 115° × 100°, ±3° |
+| RGB-Pixelgröße | 2.5 μm |
+| RGB-ISP | Integriert |
+| RGB-HDR | ≥ 100 dB |
+| RGB-Objektiv | F/2.05; effektive Brennweite 1.28 mm |
+| Arbeitsbereich | 0.05–1 m |
+| Entfernungsgenauigkeit | 1 %, bis zu 4 mm bei 1 m |
+| Laser | 940 nm |
+| Leistungsaufnahme | 3 W |
+| Abmessungen (L × B × H) | 60 × 30 × 29 mm |
+| Gewicht | \< 200 g |
+| Stromversorgung | 12 VDC / 1 A |
+| Kommunikationsschnittstelle | SerDes (GMSL2) |
+| Betriebstemperatur | −20–60 °C |
+| Lagertemperatur | −40–85 °C |
+| SDK | C/C\+\+, ROS |
+| Unterstützte Betriebssysteme | Windows 7 oder höher, Linux, Arm Linux, ROS |
+| Kühlung | Passiv |
+| Augensicherheit | Klasse 1 |
+
+## Produktabmessungen
+
+<Frame>
+  ![Abmessungen der M4-G-Kamera](/images/products/m-series-m4-g-overview-1-m4-g-3d-camera-dimensions.avif)
+</Frame>
+
+## GMSL2-Schnittstelle
+
+### Serializer-Konfiguration
+
+| Element | Parameter |
+| --- | --- |
+| Serializer | MAX96717 |
+| I²C-Adresse | `0x40` (7 Bit) |
+| GMSL-Rate | GMSL2, 6 Gbps |
+| Betriebsmodus | Pixelmodus |
+| Frame-Synchronisierung | Gesteuert durch MAX96717 MFP0 |
+
+### Parameter des Videostreams
+
+| Stream | Auflösung und Format | Datentyp | Steuerung und virtueller Kanal |
+| --- | --- | --- | --- |
+| ToF | 2560 × 960, RAW8 | `0x2A` | I²C über FPGA weitergeleitet; VC0 |
+| RGB | 1280 × 1080, YUV422, 8 Bit | `0x1E` | I²C über FPGA weitergeleitet; VC1 |
+
+### FPGA-Konfiguration
+
+| Element | Parameter |
+| --- | --- |
+| I²C-Adresse | `0x11` (7 Bit) |
+| MIPI-Ausgabe | 4 Lanes, 1.2 Gbps |
+
+## Streaming starten
+
+Die Bilderfassung erfordert sowohl eine Hardware-Framesynchronisierung als auch eine Streamsteuerung.
+
+<Steps>
+  <Step title="Framesynchronisierungssignal bereitstellen">
+    Konfigurieren Sie die Framesynchronisierung zwischen MAX96717 und dem ausgewählten Deserializer gemäß den Hardwarehandbüchern. MFP0 des MAX96717 kann als GPIO-Triggerausgang konfiguriert werden.
+
+    <Frame>
+      ![Übertragung des Framesynchronisierungssignals der MAX96724-Serie](/images/products/m-series-m4-g-overview-2-max96724-f-r-frame-sync-signal-transmission.avif)
+    </Frame>
+  </Step>
+  <Step title="Befehl zum Starten des Streams senden">
+    Schreiben Sie `1` in das FPGA-Register `0x2000`, um das Streaming zu starten, oder `0`, um es zu stoppen.
+
+    ```bash
+    i2ctransfer -f -y 4 w3@0x11 0x20 0x00 1
+    ```
+
+    In diesem Beispiel ist `0x11` die FPGA-I²C-Adresse.
+  </Step>
+</Steps>
+
+## Integrationsanforderungen
+
+| Element | Anforderung |
+| --- | --- |
+| Betriebstemperatur | −20–60 °C |
+| Betriebsbeleuchtungsstärke | 0–100 kLux |
+| Lagertemperatur | −40–85 °C |
+| Lagerfeuchtigkeit | Maximal 90 % RH |
+| Normaler Temperaturanstieg im Betrieb | Temperaturanstieg des Gehäuses \< 25 °C |
+| ESD | Kontaktentladung ±4 kV; Luftentladung ±8 kV |
+| Abgestrahlte Emissionen | Entspricht GB 9254 Klasse A |
+| Umweltkonformität | RoHS |
+
+## Verwandte Fallstudien
+
+<Columns cols={3}>
+  <Card title="Fallstudie zu 500 Aufgaben mit einem fahrerlosen Gabelstapler" icon="forklift" href="/de/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+  </Card>
+
+  <Card title="Hindernisvermeidung eines Unterfahr-AMR" icon="robot" href="/de/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+  </Card>
+
+  <Card title="Hindernisvermeidung eines humanoiden Radroboters" icon="person-walking" href="/de/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+  </Card>
+</Columns>

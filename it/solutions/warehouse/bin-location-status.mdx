@@ -1,0 +1,68 @@
+---
+title: Riconoscimento dello stato dell'ubicazione di stoccaggio
+description: "Utilizza una camera RGB-D per identificare occupazione, stato del carico e altezza, quindi sincronizza il risultato con un sistema di gestione o di dispatching del magazzino."
+---
+
+## Contesto applicativo
+
+In un magazzino AGV, le operazioni manuali di stoccaggio e prelievo possono lasciare i dati delle ubicazioni nel WMS non sincronizzati con lo stato effettivo del sito. Se un'ubicazione occupata non viene rilevata in tempo, il sistema di dispatching può emettere un'attività di prelievo o stoccaggio non adatta.
+
+<Frame>
+  ![Applicazione di riconoscimento dello stato dell'ubicazione di stoccaggio](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## Confronto dei metodi di riconoscimento
+
+| Metodo | Informazioni disponibili | Limite tipico |
+| --- | --- | --- |
+| Telemetro laser a punto singolo | Un solo valore di distanza | Gli spazi tra cartoni o pallet possono non essere rilevati, rendendo difficile rappresentare lo stato completo dell'ubicazione. |
+| Camera RGB | Colore e texture | È sensibile ai target esterni al set di addestramento, all'illuminazione e alla distorsione dei bordi; non può fornire direttamente l'altezza del carico. |
+| Camera RGB-D | Colore, profondità e nuvola di punti | I dati 3D possono essere utilizzati per determinare occupazione, posizionamento e altezza del carico. |
+
+## Panoramica della soluzione
+
+La soluzione acquisisce dati colore e 3D dalle ubicazioni di stoccaggio per identificare se è presente un carico, come è posizionato e se l'occupazione è anomala. Quando richiesto dal progetto, gli algoritmi sulla camera possono anche distinguere le categorie di carico. I risultati possono essere inviati al sistema di dispatching per supportare le operazioni di magazzino.
+
+<Frame>
+  ![Soluzione di riconoscimento dello stato dell'ubicazione di stoccaggio con RGB-D](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## Caratteristiche della soluzione
+
+- **Valutazione dello stato 3D:** combina dati di profondità e colore per identificare occupazione e stato del carico.
+- **Elaborazione sulla camera:** esegue l'algoritmo sulla camera per ridurre i requisiti di elaborazione esterni.
+- **Report dei risultati:** supporta la comunicazione TCP/IP, UDP e HTTP, con output JSON verso il sistema di controllo.
+- **Coordinamento del dispatching:** fornisce dati sulle ubicazioni in tempo reale per supportare l'assegnazione delle attività.
+
+## Note di installazione
+
+<Columns cols={2}>
+  <Card title="Posizione di installazione" icon="camera">
+    Monta la camera su una colonna o sul soffitto e orientala verso le ubicazioni monitorate. Verifica l'altezza di installazione e il campo visivo rispetto alle dimensioni delle ubicazioni.
+  </Card>
+
+  <Card title="Requisiti ambientali" icon="triangle-exclamation">
+    Evita polvere intensa e condensa. La staffa di montaggio deve garantire rigidità e stabilità sufficienti.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Dimostrazione del riconoscimento dello stato dell'ubicazione di stoccaggio](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="Ricevi un'attività per l'ubicazione">
+    Il controller di livello superiore invia un'attività mentre la camera acquisisce i dati immagine e profondità dell'ubicazione target.
+  </Step>
+  <Step title="Riconosci e segnala il risultato">
+    La camera restituisce lo stato dell'ubicazione e lo comunica al sistema di livello superiore in formato JSON.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Installazione della camera per il riconoscimento dello stato dell'ubicazione di stoccaggio](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="Guida all'installazione del rilevamento delle ubicazioni di stoccaggio" icon="book-open" href="/it/developers/deployment/algorithm-detection">
+  Consulta le istruzioni per l'installazione dell'algoritmo, le interfacce e il debugging.
+</Card>

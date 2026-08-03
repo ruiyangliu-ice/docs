@@ -1,0 +1,68 @@
+---
+title: Storage-location status recognition
+description: "Use an RGB-D camera to identify occupancy, load status, and height, then synchronize the result with a warehouse or dispatch system."
+---
+
+## Application background
+
+In an AGV warehouse, manual put-away and retrieval can leave WMS location data out of sync with the site. If an occupied location is not detected in time, the dispatch system may issue an unsuitable retrieval or put-away task.
+
+<Frame>
+  ![Storage-location status recognition application](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## Recognition-method comparison
+
+| Method | Available information | Typical limitation |
+| --- | --- | --- |
+| Single-point laser ranging | One distance value | Gaps between cartons or pallets can be missed, making it difficult to represent the full location status. |
+| RGB camera | Color and texture | Sensitive to targets outside the training set, lighting, and edge distortion; cannot directly provide load height. |
+| RGB-D camera | Color, depth, and point cloud | 3D data can be used to determine occupancy, placement, and load height. |
+
+## Solution overview
+
+The solution captures color and 3D data from storage locations to identify whether a load is present, how it is placed, and whether occupancy is abnormal. Camera-side algorithms can also distinguish load categories when required by the project. Results can be sent to the dispatch system to support warehouse operations.
+
+<Frame>
+  ![RGB-D storage-location status recognition solution](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## Solution characteristics
+
+- **3D status assessment:** Combine depth and color data to identify occupancy and load status.
+- **On-camera processing:** Run the algorithm on the camera to reduce external compute requirements.
+- **Result reporting:** Support TCP/IP, UDP, and HTTP communication, with JSON output to the control system.
+- **Dispatch coordination:** Provide real-time location data to support task assignment.
+
+## Deployment notes
+
+<Columns cols={2}>
+  <Card title="Installation position" icon="camera">
+    Mount the camera on a column or ceiling and aim it at the monitored locations. Confirm installation height and field of view against the location dimensions.
+  </Card>
+
+  <Card title="Environmental requirements" icon="triangle-exclamation">
+    Avoid heavy dust and condensation. The mounting bracket must provide sufficient rigidity and stability.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Storage-location status recognition demonstration](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="Receive a location task">
+    The higher-level controller sends a task while the camera captures image and depth data for the target location.
+  </Step>
+  <Step title="Recognize and report the result">
+    The camera outputs the location status and reports it to the higher-level system in JSON.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Storage-location status recognition camera installation](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="Storage-location detection deployment guide" icon="book-open" href="/ru/developers/deployment/algorithm-detection">
+  See algorithm deployment, interfaces, and debugging instructions.
+</Card>

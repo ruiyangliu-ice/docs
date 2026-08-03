@@ -1,0 +1,185 @@
+---
+title: 3D-Kamera S10 Ultra
+description: "Spezifikationen, IMU, SLAM-Integration, Installation und Betriebshinweise für die dToF-RGB-D-Kamera S10 Ultra."
+---
+
+<Info>
+  Laden Sie die vollständigen Produktmaterialien im [Download-Center](/de/resources/downloads/specifications-and-user-guides) herunter.
+</Info>
+
+## Produktüberblick
+
+Die S10 Ultra ist eine industrielle dToF-RGB-D-Kamera für die 3D-Wahrnehmung im mittleren und großen Entfernungsbereich im Innen- und Außenbereich. Sie synchronisiert RGB- und Tiefendaten und verfügt über eine IMU mit einer Datenausgaberate von bis zu 200 Hz.
+
+Die Kamera arbeitet mit SLAM-Algorithmen wie FastLio und [FastLio2](https://github.com/Lanxin-MRDVS/MRDVS-S10Ultra_Mapping), unterstützt Software-Trigger und ist als MIPI-Modul erhältlich.
+
+<Frame>
+  ![Kamera S10 Ultra](/images/products/s-series-s10-ultra-overview-s10-ultra-camera.avif)
+</Frame>
+
+## Funktionen und Anwendungen
+
+- **dToF-Wahrnehmung im mittleren und großen Entfernungsbereich:** Ein Messbereich von 0,2–42 m unterstützt Umgebungserfassung, Lokalisierung und Navigation für mobile Geräte.
+- **Synchronisierte Datenausgabe:** Gibt Tiefen-, RGB- und IR-Amplitudendaten mit RGB-D-Ausrichtung aus.
+- **Kompaktes Solid-State-Design:** Enthält keine beweglichen Teile und misst 106 × 69 × 43 mm.
+- **IMU- und SLAM-Entwicklung:** Stellt IMU-Daten mit 200 Hz für visuell-inertiale Lokalisierung und Kartierung bereit.
+
+Typische Anwendungen sind Rasenmähroboter, industrielle Vierbeinerroboter und Multirotor-Drohnen.
+
+<Frame>
+  ![S10 Ultra auf einem Vierbeinerroboter](/images/products/s-series-s10-ultra-overview-1-s10-ultra-on-an-embodied-quadruped-robot.avif)
+</Frame>
+
+<Frame>
+  ![S10 Ultra auf einem Rasenmähroboter](/images/products/s-series-s10-ultra-overview-2-s10-ultra-on-a-lawn-mower.avif)
+</Frame>
+
+<Frame>
+  ![S10 Ultra auf einer Multirotor-Drohne](/images/products/s-series-s10-ultra-overview-3-multirotor-drone-application.avif)
+</Frame>
+
+## Spezifikationen
+
+| Parameter | S10 Ultra |
+| --- | --- |
+| Umgebung | Innen-/Außenbereich |
+| Tiefentechnologie | dToF |
+| Laserwellenlänge | 940 nm |
+| Betriebsbereich | 0,2–42 m (90 % Reflexionsgrad); 0,2–30 m (10 % Reflexionsgrad) |
+| Entfernungsmessgenauigkeit | ≤ 4 cm |
+| Ausgabedaten | Tiefenkarte, RGB-Bild, IR-Amplitudenbild, Punktwolke |
+| Tiefenauflösung und Bildrate | 240 × 160; bis zu 10 fps, typisch 10 fps |
+| Tiefensichtfeld | 120° × 80° ± 3° |
+| RGB-Auflösung und Bildrate | 1280 × 1080; bis zu 20 fps, typisch 10 fps |
+| RGB-Sichtfeld | 120° × 110° ± 3° |
+| RGB-D-Ausrichtung | Unterstützt |
+| Kommunikationsschnittstelle | Ethernet |
+| Betriebstemperatur | −20–75 °C |
+| Lagertemperatur | −40–85 °C |
+| Zeitsynchronisierung | PTP |
+| Schutzart | IP67 |
+| Augensicherheit | Klasse 1 |
+| Abmessungen | 106 × 69 × 43 mm |
+| Gewicht | Ca. 440 g |
+| Leistungsaufnahme | < 9 W |
+| Stromversorgung | 12–27 VDC |
+| Softwareumgebung | C/C\+\+/ROS SDK |
+| Unterstützte Systeme | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| Beständigkeit gegen Umgebungslicht | 100 kLux |
+| IMU-Ausgaberate | 200 Hz |
+
+## Mechanisches Design und Integration
+
+### Abmessungen und Erfassungsbereich
+
+<Frame>
+  ![Abmessungen der S10 Ultra](/images/products/s-series-s10-ultra-overview-s10-ultra-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![Erfassungsbereich der S10 Ultra](/images/products/s-series-s10-ultra-overview-camera-detection-range.avif)
+</Frame>
+
+### Umgebungsanforderungen
+
+| Element | Anforderung |
+| --- | --- |
+| Betriebstemperatur | −20–75 °C |
+| Betriebsbeleuchtung | 0–100 kLux |
+| Lagertemperatur | −40–85 °C |
+| Lagerfeuchte | Maximal 90 % RH |
+
+### SDK
+
+Konfigurieren und entwickeln Sie mit der MRDVS-Host-Anwendung und dem SDK. Synchronisieren Sie für SLAM-Anwendungen die Uhren von Kamera, IMU und Host entsprechend dem ausgewählten Algorithmus.
+
+## Installationsanforderungen
+
+<Warning>
+  Halten Sie den dargestellten Freiraum frei von Hindernissen. Bauteile, die in diesen Bereich ragen, können Punktwolken stören und Rauschen, Fehlauslösungen oder falsche Stopps verursachen.
+</Warning>
+
+<Frame>
+  ![Empfohlene Installation und Freiraum der S10 Ultra](/images/products/s-series-s10-ultra-overview-recommended-installation.avif)
+</Frame>
+
+### Diese Bedingungen vermeiden
+
+- **Abgeschnittenes Sichtfeld:** Rahmen, Rippen, Öffnungen oder eine außermittige Montage können Blindbereiche und falsche Ziele im Nahbereich erzeugen.
+- **Reflexionen und Mehrwegeffekte im Nahbereich:** Enge Räume, poliertes Metall und Spiegel können Entfernungen verzerren oder lokale Bereiche sättigen.
+- **Optische Störungen durch Fenster:** Gewöhnliches Glas, Acryl, Staub und Kondenswasser können Artefakte, Signaldämpfung oder ein niedrigeres Signal-Rausch-Verhältnis verursachen. Validieren Sie die Installation, bevor Sie ein Schutzfenster hinzufügen.
+- **Montagebelastung oder schlechte Wärmeableitung:** Zu starkes Anziehen kann die optische Achse beeinflussen. Sorgen Sie in geschlossenen Räumen für einen Wärmeableitungspfad, um die Stabilität der Entfernungsmessung zu erhalten.
+
+## Erste Verbindung
+
+<Steps>
+  <Step title="Gerät anschließen">
+    Versorgen Sie die Kamera mit 12–27 VDC / 3 A und verbinden Sie sie über ein Cat-6-Ethernetkabel oder ein besseres Kabel mit dem Computer. Eine langsam blinkende blaue Anzeige signalisiert eine normale Stromversorgung.
+  </Step>
+  <Step title="Netzwerk konfigurieren">
+    Die werkseitige Standard-IP-Adresse der Kamera ist `192.168.100.82`. Stellen Sie den Computer auf dasselbe Subnetz ein und vergewissern Sie sich, dass die Firewall die Gerätekommunikation nicht blockiert.
+  </Step>
+  <Step title="Stream prüfen">
+    Öffnen Sie die Kamera in der Host-Anwendung und vergewissern Sie sich, dass das Bild klar und der Stream stabil ist. Konfigurieren Sie bei Bedarf Bild-, Algorithmus- und andere Geräteparameter.
+  </Step>
+</Steps>
+
+## LxCameraViewer-Oberfläche
+
+LxCameraViewer zeigt Tiefen-, IR-Amplituden-, Punktwolken- und RGB-Bilder an und konfiguriert grundlegende Kamera- und Algorithmusparameter.
+
+<Frame>
+  ![LxCameraViewer vor dem Öffnen der Kamera](/images/products/s-series-s10-ultra-overview-interface-before-opening-a-camera.avif)
+</Frame>
+
+<Frame>
+  ![LxCameraViewer mit geöffneter Kamera](/images/products/s-series-s10-ultra-overview-interface-with-an-open-camera.avif)
+</Frame>
+
+- Wählen Sie eine Kamera in der Geräteliste aus und klicken Sie auf **Open** oder **Close**.
+- Verwenden Sie **Capture**, um das Streaming zu starten oder zu stoppen, und **Save frame**, um aktive Streams zu speichern.
+- Wählen Sie **Depth**, **Intensity**, **RGB** oder **Point cloud**, um die angezeigten Daten auszuwählen.
+- Konfigurieren Sie Gerätefunktionen unter **Basic tools**, **Application algorithms** und **Other**.
+
+## Sicherheit und Fehlerbehebung
+
+### Lasersicherheit
+
+<Frame>
+  ![Lasersicherheitsetikett der S10 Ultra](/images/products/s-series-s10-ultra-overview-laser-safety-class.avif)
+</Frame>
+
+Halten Sie das Sicherheitsetikett vollständig und lesbar und befolgen Sie die Sicherheitsanforderungen auf dem Etikett und in den Produktmaterialien.
+
+### Fehlerbehebung
+
+| Problem | Empfohlene Prüfungen |
+| --- | --- |
+| Die Kamera reagiert beim Öffnen nicht | Prüfen Sie, ob die Firewall die Kommunikation blockiert, und vergewissern Sie sich, dass Computer und Kamera dasselbe Subnetz verwenden. |
+| Die Host-Anwendung erkennt mehrere IP-Adressen | Beheben Sie LAN-IP-Konflikte und wählen Sie die richtige Geräteadresse aus. |
+| Der Stream ist instabil | Verwenden Sie ein Gigabit-Ethernetkabel. Fast Ethernet kann die anfängliche Datenübertragung instabil machen. |
+| Die Software startet nicht korrekt | Prüfen Sie die Berechtigungen für das Installationsverzeichnis. |
+
+## Verwandte Informationen
+
+### IROS 2025
+
+Die S10 Ultra wurde auf der IROS 2025 als repräsentatives Produkt vorgestellt.
+
+<Frame>
+  ![S10 Ultra auf der IROS 2025](/images/products/s-series-s10-ultra-overview-s10-ultra-at-iros-2025.avif)
+</Frame>
+
+<Columns cols={3}>
+  <Card title="Fallstudie: autonomer Gabelstapler" icon="forklift" href="/de/solutions/warehouse/cases/unmanned-forklift-500-tasks">
+    Sehen Sie eine 3D-Wahrnehmungsanwendung für autonome Gabelstapler.
+  </Card>
+
+  <Card title="Fallstudie: AMR mit Unterfahrbereich" icon="route" href="/de/solutions/mobile-robots/cases/under-ride-amr-obstacle-avoidance">
+    Sehen Sie eine Anwendung zur Vermeidung niedriger Hindernisse.
+  </Card>
+
+  <Card title="Fallstudie: humanoider Roboter auf Rädern" icon="accessibility" href="/de/solutions/mobile-robots/cases/wheeled-humanoid-obstacle-avoidance">
+    Sehen Sie eine Anwendung zur 3D-Hindernisvermeidung für humanoide Roboter auf Rädern.
+  </Card>
+</Columns>

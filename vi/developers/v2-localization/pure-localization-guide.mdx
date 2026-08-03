@@ -1,0 +1,190 @@
+---
+title: Hướng dẫn chế độ chỉ định vị V2
+description: "Sử dụng giao diện web chỉ định vị V2 để tạo bản đồ, định vị, quản lý bản đồ, xuất nhật ký và thực hiện các thao tác bảo trì."
+hidden: true
+---
+
+Trang này mô tả giao diện web chỉ định vị V2. Trước khi tạo bản đồ, chuyển đổi bản đồ hoặc tái định vị, hãy đảm bảo phương tiện, camera và LiDAR hoạt động bình thường.
+
+<Warning>
+  Việc chuyển đổi bản đồ, cập nhật firmware và khởi động lại ứng dụng tích hợp sẽ ảnh hưởng đến các dịch vụ định vị. Chỉ thực hiện các thao tác này khi phương tiện đã dừng, khu vực làm việc an toàn và có quy trình khôi phục.
+</Warning>
+
+## Tổng quan giao diện
+
+| Khu vực | Nội dung |
+| --- | --- |
+| Thanh menu | Các chức năng lập bản đồ, tái định vị, quản lý bản đồ và bảo trì. |
+| Chế độ xem bản đồ | Bản đồ đường bao 2D đã tải và biểu tượng định vị phương tiện. |
+| Chế độ xem RGB | Hình ảnh RGB trực tiếp từ camera hướng xuống. |
+| Khu vực trạng thái | Cường độ tín hiệu tái định vị, tọa độ phương tiện, tốc độ và tọa độ con trỏ. Chất lượng tín hiệu từ tốt nhất đến kém nhất được biểu thị bằng màu xanh lá, xanh dương và đỏ. |
+
+<Frame>
+  ![Các khu vực trong giao diện web chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-interface-description.avif)
+</Frame>
+
+## Tạo bản đồ
+
+### Tạo bản đồ
+
+<Steps>
+  <Step title="Bắt đầu lập bản đồ">
+    Nhấp **Start Mapping** trong giao diện web.
+
+    <Frame>
+      ![Nút Start Mapping trong giao diện chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif)
+    </Frame>
+  </Step>
+  <Step title="Nhập tên bản đồ">
+    Tên bản đồ chỉ được chứa chữ cái, chữ số và dấu gạch dưới, đồng thời phải bắt đầu bằng một chữ cái.
+
+    <Columns cols={2}>
+      <Frame>
+        ![Hộp thoại nhập tên bản đồ](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif)
+      </Frame>
+
+      <Frame>
+        ![Trang bắt đầu lập bản đồ](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif)
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="Thu thập khu vực và dừng lập bản đồ">
+    Điều khiển AGV đi qua khu vực mục tiêu. Khi thu thập xong, nhấp **Stop Mapping** và chờ xử lý hoàn tất. Thời gian xử lý phụ thuộc vào kích thước khu vực đã thu thập.
+  </Step>
+  <Step title="Xác nhận bản đồ">
+    Sau khi lập bản đồ thành công, mở **Map Management** và xác nhận bản đồ mới xuất hiện trong danh sách.
+  </Step>
+</Steps>
+
+### Lập bản đồ gia tăng
+
+Sử dụng lập bản đồ gia tăng để thêm một khu vực vào bản đồ hiện có. Trước khi bắt đầu, hãy hoàn tất tái định vị và chuyển sang bản đồ mà bạn muốn mở rộng.
+
+<Info>
+  Lập bản đồ gia tăng được bắt đầu và dừng bằng một request HTTP thủ công tại [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD).
+</Info>
+
+<Tabs>
+  <Tab title="Bắt đầu lập bản đồ gia tăng">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Dừng lập bản đồ gia tăng">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+Sau khi thao tác hoàn tất, khu vực mới thu thập được ghi vào bản đồ hiện tại. Khởi động lại dịch vụ định vị để thay đổi có hiệu lực.
+
+<Frame>
+  ![Thao tác lập bản đồ gia tăng trong giao diện chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif)
+</Frame>
+
+## Quản lý bản đồ
+
+Sử dụng **Map Management** để xem, áp dụng hoặc xóa bản đồ. Khi làm việc ở nhiều khu vực, dùng trang này để chuyển đổi bản đồ đang hoạt động.
+
+<Columns cols={2}>
+  <Frame>
+    ![Trang Map Management trong giao diện chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-2-map-management.avif)
+  </Frame>
+
+  <Frame>
+    ![Áp dụng bản đồ trong giao diện chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Sau khi nhấp **Apply**, hãy khởi động lại ứng dụng tích hợp để bản đồ mới có hiệu lực. Nếu không khởi động lại, quá trình tái định vị có thể thất bại.
+</Warning>
+
+## Tái định vị
+
+### Tái định vị thủ công
+
+Nhấp **Relocalization**, sau đó kéo trong chế độ xem bản đồ để cung cấp pose gần đúng của phương tiện, giúp đám mây điểm LiDAR khớp với bản đồ đường bao. Lỗi **Localization timeout** sẽ biến mất sau khi tái định vị thành công.
+
+<Frame>
+  ![Tái định vị thủ công trong giao diện chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-3-relocation.avif)
+</Frame>
+
+### Tái định vị bằng AprilTag
+
+Bạn có thể đặt AprilTag tại các vị trí đã chọn trong khi tạo bản đồ. Khi một tag hoàn chỉnh nằm trong trường nhìn của thiết bị, hệ thống xác định bản đồ và pose của tag, chuyển đổi bản đồ nếu cần rồi tự động tái định vị.
+
+- Tạo tag bằng [trình tạo AprilTag](https://chaitanyantr.github.io/apriltag).
+- ID của tag phải là duy nhất trong khu vực nhìn thấy của một thiết bị.
+- Sử dụng họ tag cố định được hiển thị trong ví dụ giao diện.
+
+<Frame>
+  ![Cấu hình tái định vị bằng AprilTag](/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif)
+</Frame>
+
+## Tham số và nhật ký
+
+### Cấu hình tham số định vị
+
+Sử dụng trang tham số để xem hoặc cấu hình tham số định vị khung gầm cùng các tham số ngoại tại của LiDAR và camera trong các giá trị hiệu chuẩn cảm biến.
+
+<Frame>
+  ![Tham số định vị và hiệu chuẩn ngoại tại cảm biến](/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif)
+</Frame>
+
+### Xuất nhật ký
+
+Lọc nhật ký theo khoảng thời gian và loại mô-đun. Chọn các kết quả cần thiết rồi xuất chúng.
+
+<Frame>
+  ![Trang lọc và xuất nhật ký](/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif)
+</Frame>
+
+## Bảo trì
+
+### Cập nhật firmware
+
+Nhập gói firmware cục bộ trên trang cập nhật để cập nhật firmware khung gầm, bộ truyền động hoặc camera. Gói khôi phục ghi lại phiên bản trước lần cập nhật trước đó và có thể được dùng để khôi phục.
+
+<Warning>
+  Firmware camera được nâng cấp qua quy trình máy tính chủ tiêu chuẩn không thể khôi phục. Hãy xác minh gói và phiên bản hiện tại trước khi cập nhật.
+</Warning>
+
+<Columns cols={2}>
+  <Frame>
+    ![Trang cập nhật firmware cho hệ thống chỉ định vị V2](/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif)
+  </Frame>
+
+  <Frame>
+    ![Cập nhật firmware camera qua máy tính chủ](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif)
+  </Frame>
+</Columns>
+
+### Dừng hoặc khởi động lại ứng dụng tích hợp
+
+Sử dụng các nút điều khiển ứng dụng tích hợp để dừng hoặc khởi động lại ứng dụng. Dừng ứng dụng tích hợp trước khi kết nối LxCameraViewer với camera; nếu không, phương tiện có thể vẫn giữ quyền điều khiển camera và ngăn giao tiếp.
+
+<Frame>
+  ![Các nút dừng và khởi động lại ứng dụng tích hợp](/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif)
+</Frame>
+
+### Kiểm tra phiên bản
+
+Mở trang phiên bản để xem phiên bản frontend và backend tích hợp.
+
+<Frame>
+  ![Trang thông tin phiên bản](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif)
+</Frame>

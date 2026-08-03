@@ -1,0 +1,146 @@
+---
+title: Краткое руководство по камере S2 Max
+description: "Проверка комплектации S2 Max, настройка питания и сети, а также получение первого кадра."
+hidden: true
+---
+
+<Info>
+  Это архивное краткое руководство. Спецификации, интерфейсы, SDK и рекомендации по установке см. в [руководстве пользователя S2 Max](/ru/products/s-series/s2-max-user-guide).
+</Info>
+
+## Проверьте упаковку
+
+После получения устройства убедитесь, что камера и аксессуары в комплекте и не повреждены. Если что-либо отсутствует или повреждено, обратитесь в техническую поддержку MRDVS.
+
+## Комплект поставки
+
+<Columns cols={2}>
+  <Card title="Камера S2 Max" icon="camera">
+    Основное устройство в комплекте.
+  </Card>
+
+  <Card title="5-контактный кабель камеры" icon="cable">
+    Подключение питания и данных.
+  </Card>
+
+  <Card title="Сертификат заводской проверки" icon="badge-check">
+    Подтверждение заводской проверки.
+  </Card>
+
+  <Card title="Изолирующие винты" icon="wrench">
+    Условия использования приведены ниже.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Камера S2 Max](/images/products/s-series-s2-max-quickstart-s2-max-camera.avif)
+</Frame>
+
+<Frame>
+  ![5-контактный кабель камеры S2 Max](/images/products/s-series-s2-max-quickstart-5-pin-camera-cable.avif)
+</Frame>
+
+<Frame>
+  ![Сертификат заводской проверки S2 Max](/images/products/s-series-s2-max-quickstart-factory-inspection-certificate.avif)
+</Frame>
+
+<Frame>
+  ![Изолирующие винты S2 Max](/images/products/s-series-s2-max-quickstart-m4-insulating-screw.avif)
+</Frame>
+
+См. [условия использования изолирующих винтов](https://zcnt5g3o2989.feishu.cn/wiki/C1eHwMaJAiKkuAkOMo7cxsmjn5d?from=from_copylink).
+
+<Frame>
+  ![Краткое руководство S2 Max](/images/products/s-series-s2-max-quickstart-quickstart-guide.avif)
+</Frame>
+
+## Первое подключение
+
+<Steps>
+  <Step title="Подключите питание">
+    Подключите входящий в комплект 5-контактный кабель и используйте источник питания **24 VDC / 2 A**. Синий индикатор, медленно мигающий примерно каждые 2 секунды, означает нормальную подачу питания.
+
+    <Frame>
+      ![Подключение питания S2 Max](/images/products/s-series-s2-max-quickstart-connect-the-s2-max-camera.avif)
+    </Frame>
+  </Step>
+  <Step title="Подключите сеть">
+    Подключите камеру к компьютеру кабелем Ethernet Cat 6 или выше.
+
+    <Frame>
+      ![Подключение сети S2 Max](/images/products/s-series-s2-max-quickstart-s2-max-ethernet-connection.avif)
+    </Frame>
+  </Step>
+  <Step title="Настройте IP-адрес">
+    IP-адрес камеры по умолчанию — `192.168.100.82`. Настройте компьютер в подсети `192.168.100.xxx`, убедитесь, что оба устройства находятся в одной подсети, и разрешите обмен данными с камерой через локальный брандмауэр.
+  </Step>
+</Steps>
+
+### Настройки сети Windows
+
+В **Панели управления** откройте **Сеть и Интернет** → **Центр управления сетями и общим доступом** → **Изменение параметров адаптера** → **Ethernet** → **Протокол Интернета версии 4 (TCP/IPv4)**. Выберите **Использовать следующий IP-адрес**, введите адрес из той же подсети и задайте маску подсети `255.255.0.0`.
+
+<Frame>
+  ![Настройки IPv4 сети Windows](/images/products/s-series-s2-max-quickstart-windows-ipv4-network-settings.avif)
+</Frame>
+
+## Использование LxCameraViewer
+
+### Получение программного обеспечения
+
+LxCameraViewer отображает и настраивает параметры изображений камеры, а также встроенные алгоритмы обнаружения препятствий, работы с паллетами, навигации и захвата. Для Windows доступно хост-приложение; в Linux и ROS можно запускать примеры и просматривать данные в RViz.
+
+- [Репозиторий CameraSDK на GitHub](https://github.com/Lanxin-MRDVS/CameraSDK)
+- [Загрузки программного обеспечения](/ru/resources/downloads/software-and-sdk)
+
+### Запуск потока
+
+<Steps>
+  <Step title="Запустите программное обеспечение">
+    Установите и запустите LxCameraViewer. Убедитесь, что идентификатор камеры отображается в списке устройств.
+
+    - Если устройство отсутствует в списке, проверьте нормальное мигание индикатора и устраните проблемы с сетью.
+    - Если индикатор горит постоянно, обратитесь в техническую поддержку MRDVS.
+    - Если индикатор не горит, проверьте источник питания **24 VDC / 2 A**.
+
+    <Frame>
+      ![Список устройств LxCameraViewer](/images/products/s-series-s2-max-quickstart-lxcameraviewer-interface.avif)
+    </Frame>
+  </Step>
+  <Step title="Откройте камеру">
+    Нажмите **Open**, чтобы начать поток. Когда кнопка изменится на **Close**, поток запущен. По умолчанию включены представления глубины, амплитуды ИК-сигнала и облака точек; выберите соответствующий параметр, чтобы включить RGB.
+
+    <Frame>
+      ![Представление потока LxCameraViewer](/images/products/s-series-s2-max-quickstart-lxcameraviewer-device-list.avif)
+    </Frame>
+  </Step>
+  <Step title="Настройте параметры и алгоритмы">
+    Разверните правую панель, чтобы настроить параметры камеры. Нажмите **Application algorithms**, чтобы выбрать алгоритм и режим работы.
+
+    <Frame>
+      ![Элементы управления потоком LxCameraViewer](/images/products/s-series-s2-max-quickstart-lxcameraviewer-stream-controls.avif)
+    </Frame>
+
+    <Frame>
+      ![Панель параметров камеры LxCameraViewer](/images/products/s-series-s2-max-quickstart-lxcameraviewer-camera-parameters.avif)
+    </Frame>
+
+    <Frame>
+      ![Панель прикладных алгоритмов LxCameraViewer](/images/products/s-series-s2-max-quickstart-lxcameraviewer-application-algorithms.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+Дополнительные операции описаны в [руководстве пользователя хост-приложения LxCameraViewer](/ru/developers/software/lxcameraviewer).
+
+## Меры предосторожности при использовании и безопасности
+
+<Warning>
+  Неправильная эксплуатация может повредить внутренние компоненты. Камера излучает невидимое лазерное излучение; не направляйте объектив на яркий солнечный свет и не разбирайте, не модифицируйте и не ремонтируйте устройство самостоятельно.
+</Warning>
+
+- Избегайте падений, ударов и механических нагрузок.
+- Не изменяйте внутренние файлы камеры и не прикасайтесь к объективу: отпечатки пальцев могут повлиять на качество изображения.
+- При длительной работе устройство может нагреваться. Камера использует пассивное охлаждение; улучшите отвод тепла с помощью металлической монтажной пластины.
+- Если камера не обнаруживается, проверьте источник питания **24 VDC / 2 A** и кабель Ethernet.
+- Не включайте камеру с видимыми повреждениями.

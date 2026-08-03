@@ -1,0 +1,199 @@
+---
+title: Triển khai đo thể tích
+sidebarTitle: Triển khai đo thể tích
+description: "Triển khai đo thể tích với camera dòng M, bao gồm lắp đặt, hiệu chuẩn thông số ngoại tại, cấu hình vùng và tích hợp kết quả."
+hidden: true
+---
+
+Thuật toán đo thể tích chạy trên camera và đo chiều dài, chiều rộng và chiều cao của vật thể tĩnh hoặc đang di chuyển. Việc triển khai yêu cầu lắp đặt chắc chắn, kết nối mạng, hiệu chuẩn thông số ngoại tại và cấu hình vùng phát hiện. Kết nối nhiều camera vào cùng mạng qua switch gigabit.
+
+<Info>
+  Đây là hướng dẫn triển khai lịch sử bị ẩn. Firmware thuật toán và ứng dụng máy chủ chuyên dụng được cung cấp theo từng dự án. Xác nhận camera, firmware và phiên bản phần mềm khớp nhau trước khi triển khai.
+</Info>
+
+## Phạm vi
+
+Quy trình này áp dụng cho các dự án đo thể tích trong logistics, bưu kiện, kho hàng và vật liệu rời sử dụng camera dòng M. Thuật toán đo một hoặc nhiều vật thể trong vùng phát hiện. Việc nhận dạng vật thể, thu thập trọng lượng và liên kết với hệ thống nghiệp vụ do hệ thống lớp trên xử lý.
+
+Xem [camera ToF dòng M](/vi/products/m-series/overview "Camera ToF dòng M") để biết thông tin sản phẩm.
+
+## Lắp đặt và chuẩn bị hệ thống
+
+### Lắp đặt phần cứng
+
+- Dùng giá đỡ chắc chắn để gắn camera M4 với mặt camera song song và hướng về mặt phẳng phát hiện.
+- Cấp nguồn `24 VDC` cho camera. Dùng cáp Cat6A hoặc Cat7 để kết nối camera với máy chủ hoặc switch gigabit.
+- Với nhiều camera, cấp cho mỗi camera một địa chỉ mạng duy nhất và kiểm tra trạng thái nguồn.
+
+<Frame>
+  ![Camera M4 lắp hướng xuống để đo thể tích](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
+</Frame>
+
+### Yêu cầu máy chủ
+
+| Hạng mục | Cấu hình khuyến nghị |
+| --- | --- |
+| Hệ điều hành | Windows 10 trở lên |
+| CPU | Intel® Core™ i5 (thế hệ 7) trở lên |
+| Bộ nhớ | 8 GB trở lên |
+| GPU | Intel® UHD Graphics hoặc GPU tích hợp hoặc rời có hiệu năng cao hơn |
+
+Trước tiên cài đặt [LxCameraViewer](/vi/developers/software/lxcameraviewer "Tải phần mềm"), sau đó đặt ứng dụng đo thể tích do dự án cung cấp vào thư mục `Lanxin-MRDVS\\Tools`. Thay thế tệp khi được yêu cầu theo hướng dẫn bàn giao.
+
+<Warning>
+  Camera sẽ khởi động lại trong khi nâng cấp firmware. Chỉ dùng gói thuật toán do dự án cung cấp và sao lưu cấu hình đã kiểm tra trước khi nâng cấp.
+</Warning>
+
+## Quy trình triển khai
+
+### 1. Cấu hình mạng
+
+Đặt máy chủ và camera trên cùng subnet. Ví dụ triển khai ban đầu dùng:
+
+| Hạng mục | Ví dụ |
+| --- | --- |
+| IP máy chủ | `192.168.100.xxx` |
+| Subnet mask | `255.255.255.0` |
+| Gateway mặc định | `192.168.100.1` |
+
+Trong thuộc tính bộ điều hợp Ethernet của Windows, chọn **Internet Protocol Version 4 (TCP/IPv4)** và đặt địa chỉ tĩnh. Cho phép ứng dụng qua các quy tắc tường lửa của mạng gỡ lỗi; không vô hiệu hóa vĩnh viễn tường lửa sản xuất.
+
+### 2. Hiệu chuẩn thông số ngoại tại
+
+<Steps>
+  <Step title="Khôi phục trạng thái hiệu chuẩn">
+    Mở **Camera configuration**. Xác nhận `x`, `y`, `z`, `roll`, `pitch` và `yaw` đều là `0`. Nếu có giá trị lịch sử, đặt lại chúng và chọn **Save and send**.
+  </Step>
+  <Step title="Chạy hiệu chuẩn">
+    Chọn **Extrinsic calibration**, xác nhận thông báo thành công và ghi lại giá trị `z` thu được.
+  </Step>
+  <Step title="Lưu tham số tư thế">
+    Đặt lại `z` thành `0` và chọn **Save and send**. Trong quy trình này, độ cao thực tế của camera được dùng làm khoảng cách đến mặt phẳng phát hiện ở bước tiếp theo.
+  </Step>
+</Steps>
+
+### 3. Đặt mặt phẳng và vùng phát hiện
+
+Trong **Volume detection**, nhập giá trị `z` đã ghi vào **Detection-plane distance**, sau đó lưu và gửi. Cấu hình ranh giới vùng phát hiện từ chế độ xem đám mây điểm:
+
+| Tham số | Ý nghĩa |
+| --- | --- |
+| X tối thiểu / tối đa | Ranh giới X của hộp phát hiện |
+| Y tối thiểu / tối đa | Ranh giới Y của hộp phát hiện |
+| Z tối thiểu / tối đa | Ranh giới Z của hộp phát hiện |
+
+Khoảng cách đến mặt phẳng phát hiện xác định mốc sàn; đặt giới hạn trên Z cao hơn khoảng cách này một chút. Giới hạn dưới phải bao phủ chiều cao vật thể cần đo. Chọn **Save and send** sau khi cấu hình.
+
+### 4. Kiểm tra kết quả
+
+Xem trạng thái thể tích trong **Basic tools**. Đặt vật thể vào vùng phát hiện và xác nhận số lượng cùng chiều dài, chiều rộng và chiều cao khớp với hiện trường. Với nhiều vật thể, chuyển đổi giữa các hộp thể tích để kiểm tra từng kết quả.
+
+Để đo một lần, bật **Trigger mode** trong **Volume detection**, lưu cấu hình và chọn **Single trigger** trong **Basic tools** để thu một khung hình và kết quả.
+
+## Giao diện và tham số chính
+
+### Tham số đo thể tích
+
+| Tham số | Mô tả |
+| --- | --- |
+| Trigger mode | Khi bật, thuật toán chỉ xuất kết quả sau một tín hiệu kích hoạt. |
+| Upward detection | Đảo hướng phát hiện; quy trình mặc định phát hiện từ trên xuống. |
+| Detection frequency | Chu kỳ làm mới hình ảnh và kết quả. |
+| Detection-plane distance | Khoảng cách từ camera đến mặt phẳng phát hiện, tính bằng `mm`. |
+| Neighborhood count / distance threshold | Tham số lọc đám mây điểm; trong hầu hết trường hợp nên giữ mặc định của dự án. |
+| Normal-vector filter / distance threshold | Tham số lọc cạnh và đám mây điểm; giữ nguyên cấu hình ban đầu trước khi thay đổi. |
+| Minimum point count | Số điểm tối thiểu cần có để vật thể hợp lệ. |
+| Minimum X / Y / Z | Kích thước vật thể tối thiểu có thể phát hiện, tính bằng `mm`. |
+
+### Cấu hình camera
+
+| Hạng mục | Mô tả |
+| --- | --- |
+| Camera name | Phân biệt các camera trong triển khai nhiều camera. |
+| Image-save mode | Lưu hình ảnh thuật toán trên camera. |
+| Image-acquisition mode | `MDS` không chiếm quyền truy cập camera. `SDK` có chiếm quyền; ứng dụng máy chủ không thể mở camera khi thuật toán đang chạy. |
+| Extrinsics | `x`, `y`, `z`, `roll`, `pitch` và `yaw`. |
+| Save and send | Ghi thông số ngoại tại và cấu hình thuật toán hiện tại vào camera. |
+
+## Giao diện kết quả
+
+TCP, UDP và HTTP dùng lệnh `RESULT_UPDATE` để yêu cầu kết quả đo thể tích.
+
+| Giao thức | Cổng | Cách dùng |
+| --- | --: | --- |
+| TCP | `14951` | Yêu cầu kết quả đo thể tích |
+| UDP | `14950` | Yêu cầu kết quả đo thể tích |
+| HTTP | `14952` | Yêu cầu kết quả thể tích dưới dạng JSON |
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Yêu cầu kết quả đo thể tích hiện tại từ camera.
+</ParamField>
+
+Các trường phản hồi HTTP cấp cao nhất:
+
+<ResponseField name="IP" type="string" required>
+  Địa chỉ IP của camera tạo ra dữ liệu.
+</ResponseField>
+
+<ResponseField name="TM" type="object[]" required>
+  Danh sách các vật thể được phát hiện.
+</ResponseField>
+
+<ResponseField name="TM_DATA_TIME" type="string">
+  Thời điểm thu dữ liệu thể tích.
+</ResponseField>
+
+<ResponseField name="TM_RES_TIME" type="string">
+  Thời điểm xuất kết quả.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string">
+  Tên camera.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Mã trả về; `0` cho biết thành công.
+</ResponseField>
+
+Mỗi đối tượng `TM` có thể chứa:
+
+<ResponseField name="angle" type="number">
+  Góc của hộp vật thể.
+</ResponseField>
+
+<ResponseField name="cx" type="number">
+  Tọa độ X tâm vật thể.
+</ResponseField>
+
+<ResponseField name="cy" type="number">
+  Tọa độ Y tâm vật thể.
+</ResponseField>
+
+<ResponseField name="cz" type="number">
+  Tọa độ Z tâm vật thể.
+</ResponseField>
+
+<ResponseField name="height" type="number">
+  Chiều cao vật thể.
+</ResponseField>
+
+<ResponseField name="length" type="number">
+  Chiều dài vật thể.
+</ResponseField>
+
+<ResponseField name="width" type="number">
+  Chiều rộng vật thể.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  Kết quả có hợp lệ hay không. `false` cho biết độ tin cậy chưa đủ.
+</ResponseField>
+
+## Khắc phục sự cố
+
+| Triệu chứng | Hành động khuyến nghị |
+| --- | --- |
+| Chế độ xem đám mây điểm trống hoặc khó kiểm tra | Cuộn và kéo trong khu vực đám mây điểm, đồng thời xác nhận camera xuất dữ liệu. |
+| Phát hiện bất thường sau khi hiệu chuẩn | Xác nhận `z` ngoại tại đã được đặt lại thành `0` và chiều cao hiệu chuẩn đã ghi được nhập làm khoảng cách đến mặt phẳng phát hiện. |
+| Không phát hiện được vật thể | Kiểm tra ranh giới vùng, kích thước tối thiểu, số điểm tối thiểu và việc vật thể có nằm hoàn toàn trong trường nhìn hay không. |
+| Không thể mở LxCameraViewer | Kiểm tra `SDK` có đang được chọn làm chế độ thu hình hay không; chế độ này chiếm quyền truy cập camera. |

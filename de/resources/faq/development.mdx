@@ -1,0 +1,152 @@
+---
+title: FAQs zur Entwicklung
+description: "Beheben Sie Probleme mit Fehlercodes des Camera SDK, Geräteverbindungen, Streaming und Entwicklungsumgebungen."
+---
+
+Fehlercodes helfen dabei, Probleme mit SDK, Verbindung und Datenstream einzugrenzen. Notieren Sie vor der Fehlerbehebung Fehlercode, SDK-Version, Kameramodell und Geräteprotokoll.
+
+<Warning>
+  Führen Sie die Fehlerbehebung nicht durch, indem Sie nur die SDK-Version ändern. Prüfen Sie auch die Kompatibilität von Kamerafirmware, Datenverarbeitungsbibliothek und Entwicklungsumgebung.
+</Warning>
+
+## SDK-Fehlercodes und Entwicklungsumgebung
+
+<AccordionGroup>
+  <Accordion title="LX_ERROR = -1">
+    **Mögliche Ursache** Unbekannter Fehler. **Lösung** Exportieren Sie das Geräteprotokoll und senden Sie es an den technischen Support von MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_SUPPORT = -2">
+    **Mögliche Ursache** Die Funktion wird nicht unterstützt. **Lösung** Das aktuelle Gerät unterstützt diese Funktion nicht.
+  </Accordion>
+
+  <Accordion title="LX_E_NETWORK_ERROR = -3">
+    **Mögliche Ursache** Fehler bei der Netzwerkkommunikation. **Lösung** Prüfen Sie IP-Konfiguration, Netzwerkkabel, Switch und Paketverlust.
+  </Accordion>
+
+  <Accordion title="LX_E_INPUT_ILLEGAL = -4">
+    **Mögliche Ursache** Ein Eingabeparameter ist ungültig. **Lösung** Prüfen Sie die an die Schnittstelle übergebenen Parameter.
+  </Accordion>
+
+  <Accordion title="LX_E_RECONNECTING = -5">
+    **Mögliche Ursache** Das Gerät stellt die Verbindung wieder her. **Lösung**
+
+    1. Warten Sie kurz und versuchen Sie es erneut, bis die Verbindung wiederhergestellt ist.<br />2. Prüfen Sie, ob die Kamera eingeschaltet und die Netzwerkverbindung normal ist.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_ERROR = -6">
+    **Mögliche Ursache** Das Gerät ist fehlgeschlagen oder hat nicht reagiert. **Lösung** Starten Sie Anwendung oder Kamera neu und versuchen Sie es erneut.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+    **Mögliche Ursache** Die Geräteversion ist zu alt. **Lösung** Aktualisieren Sie die Firmware.
+  </Accordion>
+
+  <Accordion title="LX_E_API_NEED_UPDATE = -8">
+    **Mögliche Ursache** Die API-Version ist zu alt. **Lösung** Aktualisieren Sie das SDK.
+  </Accordion>
+
+  <Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+    **Mögliche Ursache** Die Berechtigung für die exklusive Steuerung konnte nicht abgerufen werden. **Lösung** Nur ein primärer Client kann eine Kamera steuern. Wenn die Kamera nicht ordnungsgemäß heruntergefahren wurde, warten Sie `3–5 s`, bis die Berechtigung freigegeben wird.
+  </Accordion>
+
+  <Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+    **Mögliche Ursache** Geräteinformationen konnten nicht gelesen werden. **Lösung** Prüfen Sie die Gerätefirmware oder wenden Sie sich an den MRDVS-Support.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+    **Mögliche Ursache** Die angeforderte Bildgröße stimmt nicht mit dem Stream überein. **Lösung** Schließen Sie das Gerät und öffnen Sie es erneut.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+    **Mögliche Ursache** Das Parsen des Bildes ist fehlgeschlagen, häufig wegen eines falschen Pixelformats. **Lösung** Öffnen Sie das Gerät erneut.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+    **Mögliche Ursache** Die Kamera ist nicht verbunden. **Lösung** Die Anwendung hat versucht, eine nicht geöffnete Kamera zu verwenden. Prüfen Sie die Reihenfolge der Aufrufe und bestätigen Sie, dass die Kamera erfolgreich geöffnet wurde.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+    **Mögliche Ursache** Die Kamerainitialisierung ist fehlgeschlagen. **Lösung** Öffnen Sie die Kamera erneut.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+    **Mögliche Ursache** Es wurde keine Kamera oder keine passende Kamera gefunden. **Lösung** Prüfen Sie, ob der an die Schnittstelle übergebene Kamera-Handle gültig ist.
+  </Accordion>
+
+  <Accordion title="LX_E_FILE_INVALID = -16">
+    **Mögliche Ursache** Dateiname, Typ, Format oder Pfad ist ungültig, oder die Datei konnte nicht geöffnet werden. **Lösung** Prüfen Sie, ob der Pfad korrekt ist und die Datei manuell geöffnet werden kann.
+  </Accordion>
+
+  <Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+    **Mögliche Ursache** Die CRC- oder MD5-Prüfung ist während des Uploads oder Downloads fehlgeschlagen. **Lösung** Wiederholen Sie die Übertragung.
+  </Accordion>
+
+  <Accordion title="LX_E_TIME_OUT = -18">
+    **Mögliche Ursache** Die Anfrage ist abgelaufen. **Lösung** Versuchen Sie es erneut. Paketverlust oder eine niedrige Kamerabildrate können die Ursache sein.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_LOSS = -19">
+    **Mögliche Ursache** Frames sind verloren gegangen, häufig im Callback-Modus. **Lösung** Gelegentliche Verluste erfordern möglicherweise keine Maßnahme. Bei häufigen Verlusten prüfen Sie Netzwerkbandbreite und Pufferung.
+  </Accordion>
+
+  <Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+    **Mögliche Ursache** Die angeforderte Streamkonfiguration konnte nicht aktiviert werden. **Lösung** Versionen vor `2.4.9` erlaubten nicht, alle Streams zu deaktivieren. Dieser Fehlercode ist in späteren Versionen veraltet.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+    **Mögliche Ursache** Es wurden keine Streamdaten empfangen. **Lösung** Verwenden Sie die Schritte zur Fehlerbehebung beim Öffnen der Kamera für einen fehlenden Datenstream.
+  </Accordion>
+
+  <Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+    **Mögliche Ursache** Der Stream wurde gestartet, konnte aber nicht geparst werden. **Lösung** Prüfen Sie die Firmwareversion oder wenden Sie sich an den MRDVS-Support.
+  </Accordion>
+
+  <Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+    **Mögliche Ursache** Die Bildverarbeitung ist fehlgeschlagen. **Lösung** Bestätigen Sie, dass die Version der Bildverarbeitungsbibliothek `Dataprocess` kompatibel ist.
+  </Accordion>
+
+  <Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+    **Mögliche Ursache** Die angeforderte Einstellung ist im kontinuierlichen Modus nicht zulässig. **Lösung** Stoppen Sie im kontinuierlichen Modus den Stream, bevor Sie ROI, Mehrkameramodus, Ausrichtung oder andere streambezogene Einstellungen ändern. Legen Sie zuerst den Kameramodus fest und wenden Sie anschließend die Einstellung an.
+  </Accordion>
+
+  <Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+    **Mögliche Ursache** Die Bildverarbeitungsbibliothek konnte nicht geladen werden. **Lösung** Stellen Sie sicher, dass die dynamische Bibliothek bzw. Shared Object-Datei `Dataprocess` vorhanden und im Bibliothekspfad enthalten ist. Führen Sie `source install.sh` aus.
+  </Accordion>
+
+  <Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+    **Mögliche Ursache** Die Reihenfolge der Funktionsaufrufe oder die Logik einer Voraussetzung ist ungültig. **Lösung** Prüfen Sie das SDK-Protokoll und passen Sie die Aufrufsequenz an. Häufige Fälle sind:<br />1. Stoppen Sie den Stream, bevor Sie eine Einstellung ändern, die die Bildgröße ändert.<br />2. Ändern Sie die Bildgröße nicht im kontinuierlichen Modus.<br />3. Algorithmus-Upload und integrierte Anwendungsalgorithmen schließen sich gegenseitig aus.<br />4. Aktivieren Sie die automatische Belichtung nicht, wenn HDR aktiviert ist.<br />5. Die Parameter der automatischen Belichtung hängen vom Status der automatischen Belichtung ab.<br />6. Triggerparameter hängen vom Triggermodus ab.
+  </Accordion>
+
+  <Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+    **Mögliche Ursache** Die IP-Adresse ist nicht erreichbar oder das Netzwerk ist falsch konfiguriert. **Lösung** Bestätigen Sie, dass der SDK-Host die Kamera anpingen kann.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+    **Mögliche Ursache** RGB- und ToF-Frames wurden innerhalb des Zeitüberschreitungsfensters nicht synchronisiert. **Lösung** Wählen Sie bei aktivierter RGB-D-Synchronisierung abhängig davon, ob für Ihre Anwendung Synchronisierung oder Echtzeitdaten wichtiger sind, ob der Frame verworfen oder die Warnung ignoriert werden soll.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+    **Mögliche Ursache** Der Frame enthält ein Störsignal einer anderen Kamera. **Lösung** Verwerfen Sie den Frame oder ignorieren Sie die Warnung, abhängig von der Anwendung.
+  </Accordion>
+
+  <Accordion title="Fehler `-25` oder Laden von `LxDataProcess` schlägt fehl">
+    **Mögliche Ursache** Unter Linux ist die Bibliothek nicht im Umgebungspfad enthalten. **Lösung** Führen Sie `source install.sh` aus.
+  </Accordion>
+
+  <Accordion title="Das aufgenommene Bild ist in drei Bereiche geteilt">
+    **Mögliche Ursache** Das Seitenverhältnis des angezeigten Bildes ist falsch.
+  </Accordion>
+
+  <Accordion title="ROS 2 steht in Konflikt mit der SDK-Bibliothek">
+    **Lösung** Verwenden Sie den Wrapper im Verzeichnis `util`. Er bindet das Camera SDK indirekt ein und vermeidet einen direkten Bibliothekskonflikt.
+  </Accordion>
+
+  <Accordion title="Wie kann ich eine Lite-Kamera von einer Standardkamera mit RGB unterscheiden?">
+    **Lösung** Rufen Sie `DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb)` auf. Eine Lite-Kamera gibt zurück, dass die Funktion nicht unterstützt wird.
+  </Accordion>
+
+  <Accordion title="Wie wird die Zeitsynchronisierung behandelt?">
+    **Lösung** Das SDK synchronisiert bei jedem Schnittstellenaufruf automatisch mit PTP. Ein zusätzlicher Trigger ist nicht erforderlich.
+  </Accordion>
+</AccordionGroup>

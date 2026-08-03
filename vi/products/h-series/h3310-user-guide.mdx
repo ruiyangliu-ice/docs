@@ -1,0 +1,204 @@
+---
+title: Hướng dẫn sử dụng camera H3310
+sidebarTitle: Hướng dẫn sử dụng camera H3310
+description: "Thông số kỹ thuật, giao diện, tích hợp cơ khí và khắc phục sự cố cơ bản cho camera ánh sáng cấu trúc RGB-D H3310."
+hidden: true
+---
+
+Hướng dẫn này mô tả camera ánh sáng cấu trúc RGB-D H3310, bao gồm thông số kỹ thuật, định nghĩa giao diện, yêu cầu tích hợp cơ khí và cách khắc phục sự cố cơ bản.
+
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Mô tả |
+| --- | --- | --- |
+| 2023-11-21 | V0.1 | Phát hành lần đầu |
+| 2024-11-25 | V1.0 | Cập nhật nhiệt độ lưu trữ |
+
+## Thuật ngữ và nguyên lý hoạt động
+
+### Thuật ngữ phổ biến
+
+| Thuật ngữ | Mô tả |
+| --- | --- |
+| Baseline | Khoảng cách ngang giữa tâm quang học của hai bộ phận tạo ảnh stereo. |
+| Depth | Dữ liệu biểu thị khoảng cách từ mỗi pixel đến camera. |
+| FOV | Trường nhìn, bao gồm góc ngang, góc dọc và góc chéo. |
+| Camera IR | Camera dùng để tạo ảnh hồng ngoại gần. |
+| Camera RGB | Camera tạo ảnh màu. |
+| Camera độ sâu | Hệ thống tạo ảnh xuất dữ liệu độ sâu, thường bao gồm bộ phận chiếu, tạo ảnh và xử lý độ sâu. |
+| SoC | Hệ thống trên chip dùng cho xử lý hình ảnh, tính toán độ sâu và các thuật toán ứng dụng. |
+
+### Ánh sáng cấu trúc mã hóa hai mắt
+
+H3310 thu thập thông tin 3D bằng cách kết hợp phép chiếu ánh sáng cấu trúc mã hóa với tạo ảnh hai mắt.
+
+<Steps>
+</Steps>
+
+<Frame>
+  ![Tạo ảnh bằng ánh sáng cấu trúc mã hóa hai mắt và tính toán độ sâu](/images/products/h-series-h3310-user-guide-how-structured-light-technology-works.avif)
+</Frame>
+
+## Tổng quan sản phẩm
+
+H3310 là camera ánh sáng cấu trúc RGB-D công nghiệp có khối lượng 400 g. Camera có thể được lắp trên robot hợp thể hoặc cánh tay robot nhỏ. Trong phạm vi làm việc 300–600 mm, camera xuất dữ liệu độ sâu và RGB có độ chính xác cao, đồng thời cung cấp nền tảng điện toán tích hợp cho các thuật toán ứng dụng.
+
+<Frame>
+  ![Camera H3310](/images/products/h-series-h3310-user-guide-h3310-camera.avif)
+</Frame>
+
+### Tính năng
+
+- Nền tảng điện toán tích hợp 6.0 TOPS cho các thuật toán ứng dụng.
+- Xuất hình ảnh độ sâu, RGB và biên độ.
+- Giao diện mở để tích hợp với cánh tay robot và robot di động.
+
+## Thông số kỹ thuật
+
+| Tham số | H3310 |
+| --- | --- |
+| Nguyên lý hoạt động | Ánh sáng cấu trúc mã hóa hai mắt |
+| Độ phân giải độ sâu | 1280 × 1024 |
+| Độ phân giải RGB | 1920 × 1080 |
+| Thời gian thu thập dữ liệu | Khoảng 0.8 s |
+| Dữ liệu đầu ra | Bản đồ độ sâu, hình ảnh RGB, hình ảnh biên độ |
+| Phạm vi làm việc | 300–600 mm |
+| Trường nhìn | 55° × 45° |
+| Độ chính xác đo lường | ±0.1 mm (tại 350 mm) |
+| Công suất tiêu thụ | 8 W (24 VDC) |
+| Kích thước (D × R × C) | 124 × 70 × 53 mm |
+| Khối lượng | 400 g |
+| Nguồn cấp | 12–24 VDC / 3 A |
+| Giao diện truyền thông | Gigabit Ethernet |
+| Cấp bảo vệ chống xâm nhập | IP55 |
+| Nhiệt độ hoạt động | 0–40 °C |
+| Nhiệt độ lưu trữ | −40–85 °C |
+| SDK | C/C\+\+ |
+| Hỗ trợ bên thứ ba | ROS, ROS2 |
+| Hệ điều hành được hỗ trợ | Arm Linux (AArch64), Linux (x86\_64), Windows 7/8/10/11 |
+| Làm mát | Thụ động |
+| An toàn mắt | Class 3R |
+| Khả năng chịu ánh sáng môi trường | 10 kLux |
+
+## Giao diện và thành phần
+
+### Giao diện phía camera
+
+<Frame>
+  ![Vị trí đầu nối nguồn và Ethernet của H3310](/images/products/h-series-h3310-user-guide-connector-pinout.avif)
+</Frame>
+
+<Frame>
+  ![Số thứ tự chân đầu nối của H3310](/images/products/h-series-h3310-user-guide-connector-pinout-2.avif)
+</Frame>
+
+#### Đầu nối Ethernet
+
+| Chân | Tín hiệu | Màu dây |
+| --- | --- | --- |
+| 1 | 0\+ | Cam/trắng |
+| 2 | 0− | Cam |
+| 3 | 1\+ | Xanh lá/trắng |
+| 4 | 1− | Xanh lá |
+| 5 | 2\+ | Xanh dương |
+| 6 | 2− | Xanh dương/trắng |
+| 7 | 3\+ | Nâu/trắng |
+| 8 | 3− | Nâu |
+
+#### Đầu nối nguồn và I/O
+
+| Chân | Tín hiệu | Mô tả |
+| --- | --- | --- |
+| 1 | CON\_IN | Chân chung cho các đầu vào I/O |
+| 2 | IN\_2 | Đầu vào I/O 2 |
+| 3 | IN\_1 | Đầu vào I/O 1 |
+| 4 | COM\_OUT | Chân chung cho các đầu ra I/O |
+| 5 | OUT\_2 | Đầu ra I/O 2 |
+| 6 | OUT\_1 | Đầu ra I/O 1 |
+| 7 | VIN\+ | Cực dương 24 VDC |
+| 8 | VIN− | Cực âm 24 VDC |
+
+### Thành phần camera
+
+<Frame>
+  ![Các thành phần quang học phía trước của H3310](/images/products/h-series-h3310-user-guide-camera-components.avif)
+</Frame>
+
+<Frame>
+  ![Các thành phần kết nối camera H3310](/images/products/h-series-h3310-user-guide-camera-components-2.avif)
+</Frame>
+
+| Số | Thành phần |
+| --- | --- |
+| 1 | Camera IR |
+| 2 | Camera RGB |
+| 3 | Máy chiếu ánh sáng cấu trúc |
+| 4 | Cáp nguồn |
+| 5 | Cáp Ethernet |
+
+## Tích hợp cơ khí
+
+### Trường nhìn và hệ tọa độ
+
+<Frame>
+  ![Trường nhìn của H3310](/images/products/h-series-h3310-user-guide-camera-field-of-view.avif)
+</Frame>
+
+Gốc tọa độ nằm trên bề mặt phía trước của camera. Các trục X và Y trùng với các trục X và Y được đánh dấu trên sản phẩm.
+
+<Frame>
+  ![Gốc tọa độ và các trục của H3310](/images/products/h-series-h3310-user-guide-camera-coordinate-origin.avif)
+</Frame>
+
+### Kích thước
+
+<Frame>
+  ![Kích thước mặt trước và mặt bên của H3310](/images/products/h-series-h3310-user-guide-camera-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![Kích thước lỗ lắp của H3310](/images/products/h-series-h3310-user-guide-camera-dimensions-2.avif)
+</Frame>
+
+## Môi trường và độ tin cậy
+
+| Hạng mục | Yêu cầu |
+| --- | --- |
+| Nhiệt độ hoạt động | 0–40 °C |
+| Độ ẩm hoạt động | 0–95% RH, không ngưng tụ |
+| Độ rọi hoạt động | 0–30 kLux |
+| Độ ẩm lưu trữ | 10–95% RH, không ngưng tụ |
+| Độ tăng nhiệt độ vỏ trong hoạt động bình thường | Độ tăng nhiệt độ vỏ < 20 °C |
+| ESD | Phóng điện tiếp xúc ±4 kV; phóng điện qua không khí ±8 kV |
+| Phát xạ bức xạ | Tuân thủ GB 9254 Class A |
+| Tuân thủ môi trường | RoHS |
+
+## Sử dụng và an toàn
+
+<Warning>
+  Không tháo rời, sửa đổi hoặc sửa chữa camera. Không che ống kính hoặc để camera bị rơi, chịu tác động cơ học mạnh hay tiếp xúc với ánh nắng trực tiếp. Không bật camera có dấu hiệu hư hỏng rõ ràng.
+</Warning>
+
+<Frame>
+  ![Nhãn an toàn laser H3310](/images/products/h-series-h3310-user-guide-laser-safety-class.avif)
+</Frame>
+
+## Câu hỏi thường gặp
+
+<AccordionGroup>
+  <Accordion title="Ứng dụng máy chủ không thể mở camera">
+    Xác nhận tường lửa của máy chủ không chặn kết nối, sau đó kiểm tra nguồn camera và kết nối mạng.
+  </Accordion>
+
+  <Accordion title="Danh sách thiết bị hiển thị nhiều địa chỉ IP">
+    Có thể có nhiều thiết bị có thể được phát hiện trong mạng LAN. Chọn địa chỉ IP thuộc về camera đích.
+  </Accordion>
+
+  <Accordion title="Luồng dữ liệu không ổn định">
+    Sử dụng cáp Ethernet Gigabit. Mạng 100 Mbps có thể khiến luồng không ổn định trong giai đoạn đầu.
+  </Accordion>
+
+  <Accordion title="Phần mềm không thể chạy sau khi cài đặt">
+    Nếu phần mềm được cài đặt trong thư mục bị hạn chế, hãy kiểm tra quyền truy cập tệp và quyền thực thi chương trình.
+  </Accordion>
+</AccordionGroup>

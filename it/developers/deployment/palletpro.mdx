@@ -1,0 +1,194 @@
+---
+title: Distribuire il riconoscimento dei pallet con PalletPro
+sidebarTitle: Distribuzione di PalletPro
+description: "Installa, calibra, integra e risolvi i problemi del riconoscimento dei pallet con le fotocamere della serie M e PalletPro."
+---
+
+PalletPro configura i parametri di riconoscimento e aggancio dei pallet per le fotocamere della serie M. La fotocamera esegue l'algoritmo sul dispositivo; PalletPro si collega alla fotocamera, verifica l'acquisizione, calibra i parametri estrinseci, regola le regioni di riconoscimento e legge i risultati.
+
+<Info>
+  Le dimensioni, le distanze e gli intervalli dei parametri standard riportati in questa guida si applicano solo al flusso di lavoro di riconoscimento standard. Valuta prima sul posto i pallet non standard, senza gambe o altamente riflettenti.
+</Info>
+
+## Preparazione della distribuzione
+
+### Pallet standard e requisiti di installazione
+
+Questo flusso di lavoro usa un pallet standard a due o tre gambe. Il flusso originale usa pallet da `1.2 m × 0.8 m` o `1.2 m × 1.0 m`. Conferma con MRDVS le dimensioni non standard prima della distribuzione.
+
+| Elemento | Requisito |
+| --- | --- |
+| Posizione della fotocamera | Mantieni la fotocamera il più vicino possibile al centro tra le due forche; l'offset da sinistra a destra non deve superare `50 mm`. |
+| Orientamento della fotocamera | Mantieni la superficie della fotocamera perpendicolare al terreno, con pitch e roll minimi. |
+| Campo visivo | Alla distanza di riconoscimento più vicina, le forche non devono nascondere completamente il pallet. |
+| Installazione solidale | Monta la fotocamera sul pannello alla radice delle forche, in modo che si muova con le forche. |
+| Installazione a discesa | Monta la fotocamera sotto le forche, in modo che si muova con esse quando sono completamente abbassate. |
+
+Per lunghezze delle forche fino a `1.2 m`, un'altezza di montaggio empirica è `0.35–0.4 m`. Per forche più lunghe, usa `0.4–0.8 m` come intervallo iniziale. Conferma l'altezza finale in base al campo visivo, all'acquisizione delle gambe del pallet e alla distanza di aggancio.
+
+<Frame>
+  ![Installazione solidale della fotocamera per il riconoscimento dei pallet](/images/developers/deployment-palletpro-follow-up-installation.avif)
+</Frame>
+
+### Apparecchiatura e software
+
+- Alimenta la fotocamera con `24 VDC` e collegala al computer con un cavo Ethernet Cat7.
+- Host consigliato: Windows 10 o versione successiva, Intel® Core™ i5 (7ª generazione) o versione successiva, `8 GB` di RAM e Intel® UHD Graphics o una GPU con prestazioni superiori.
+- Durante l'installazione di PalletPro, accetta la richiesta del runtime C\+\+. L'assenza del runtime può impedire l'avvio dell'applicazione.
+
+<Warning>
+  Usa solo il firmware della fotocamera e il pacchetto dell'algoritmo per pallet forniti per il progetto. La fotocamera si riavvia durante un aggiornamento e scompare temporaneamente dall'elenco dei dispositivi. Esegui il backup della calibrazione verificata prima dell'aggiornamento.
+</Warning>
+
+## Distribuzione rapida
+
+<Steps>
+  <Step title="Configura la rete e apri la fotocamera">
+    Metti il computer sulla sottorete `192.168.100.xxx / 255.255.255.0`. Avvia PalletPro, individua e apri la fotocamera di destinazione.
+  </Step>
+  <Step title="Verifica versioni e acquisizione">
+    In LxCameraViewer, verifica che le versioni dell'applicazione, del firmware della fotocamera e dell'algoritmo per pallet corrispondano alla consegna del progetto. Conferma che le gambe del pallet siano completamente visibili nella nuvola di punti.
+  </Step>
+  <Step title="Imposta l'altezza iniziale">
+    In **Impostazioni parametri**, usa **Adattamento altezza** per ottenere un valore iniziale. Regolalo con precisione rispetto alla linea del terreno, quindi seleziona **Salva parametri**.
+  </Step>
+  <Step title="Esegui l'insegnamento dell'estremità vicina">
+    Usa un pallet standard, mantienilo centrato e senza ostruzioni vicine e seleziona **Insegnamento pallet (estremità vicina)** quando il pallet si trova a circa `1.3 m` dalla fotocamera.
+  </Step>
+  <Step title="Esegui l'insegnamento dell'estremità lontana">
+    Mantieni il pallet nella stessa posizione laterale. Fai arretrare il veicolo in linea retta di circa `600–1000 mm` finché il pallet non si trova a circa `2.0–2.4 m` dalla fotocamera, quindi seleziona **Insegnamento pallet (estremità lontana)**.
+  </Step>
+  <Step title="Salva e verifica">
+    Salva i parametri e prova ripetutamente le posizioni vicina e lontana. Controlla l'output X, Y e angolo, nonché la stabilità del riconoscimento.
+  </Step>
+</Steps>
+
+<Tip>
+  L'insegnamento dell'estremità lontana calibra il pitch della fotocamera. Non spostarti lateralmente e non sterzare tra l'insegnamento dell'estremità vicina e quello dell'estremità lontana.
+</Tip>
+
+## Utilizzo di PalletPro
+
+### Interfaccia principale
+
+| Area | Scopo |
+| --- | --- |
+| Operazioni di base | Calibrazione estrinseca, salvataggio dei parametri e operazioni sulla fotocamera. |
+| Applicazioni avanzate | Parametri avanzati, visualizzazione 3D e test offline. |
+| Impostazioni fotocamera | Individuazione, apertura o chiusura della fotocamera, visualizzazione dei dati in tempo reale, rilevamento e proiezione. |
+| Impostazioni parametri | Nome della fotocamera, altezza di installazione, orientamento e metodo di installazione. |
+| Importazione file | Importazione di file di calibrazione, una singola immagine o una cartella di immagini per i test offline. |
+| Log e immagini | Visualizzazione dei log di runtime, delle versioni e dei risultati del riconoscimento in tempo reale. |
+
+### Calibrazione estrinseca
+
+In **Operazioni di base → Calibrazione estrinseca**, leggi le **Note sulla calibrazione** prima dell'insegnamento. Usa il nome del progetto e l'ID del veicolo come nome del cliente. È necessaria la distanza dal centro ottico della fotocamera al centro di rotazione del carrello elevatore.
+
+| Passaggio di calibrazione | Risultato |
+| --- | --- |
+| Insegnamento dell'estremità vicina | Calibra altezza di montaggio, offset laterale, orientamento e roll. |
+| Insegnamento dell'estremità lontana | Calibra il pitch dal risultato dell'estremità vicina. |
+| Salva parametri | Invia la calibrazione corrente alla fotocamera. |
+
+<Frame>
+  ![Interfaccia di insegnamento del pallet all'estremità vicina in PalletPro](/images/developers/deployment-palletpro-tray-teaching-near-end-explanation.avif)
+</Frame>
+
+### Parametri avanzati
+
+Modifica solo i campi richiesti dal progetto e seleziona **Salva parametri** dopo ogni modifica.
+
+| Parametro | Scopo |
+| --- | --- |
+| `R` | Orientamento della fotocamera: pitch, orientamento e roll. |
+| `t` | Offset della fotocamera; il primo valore è l'offset laterale. |
+| `ground_y` | Altezza della fotocamera in `mm`. |
+| `orientation` | Metodo di installazione: `0` verticale, `2` invertito, `1` / `3` montato lateralmente. |
+| `multi_level` | Riconoscimento di più pallet: `0` disattivato, `1` attivato. |
+| `quad` | Riconoscimento di pallet a quattro gambe: `0` disattivato, `1` attivato. |
+| `min_z` / `max_z` | Intervallo valido lungo l'asse della distanza dalla fotocamera. |
+| `min_x` / `max_x` | Intervallo orizzontale valido. |
+| `two_leg` | Riconoscimento di pallet a due gambe: `0` disattivato, `1` attivato. |
+
+<Note>
+  Non modificare i parametri avanzati non elencati qui, salvo richiesta di MRDVS. Conserva la configurazione originale e convalida ogni modifica se devi regolare la larghezza delle gambe, il rilevamento delle traverse o la regione di riconoscimento.
+</Note>
+
+### Test offline e log
+
+In **Applicazioni avanzate → Test offline**, trascina:
+
+- il file di calibrazione `pallet_settings.json`;
+- un'immagine PNG o una cartella contenente immagini con risultati.
+
+Scegli un test su singolo file o su cartella e seleziona **Avvia rilevamento**. L'area dei log mostra API della fotocamera, firmware, algoritmo e risultati del riconoscimento. Usa **Operazioni fotocamera** per esportare i log software per la risoluzione dei problemi.
+
+## Integrazione della comunicazione
+
+### TCP e UDP
+
+In LxCameraViewer, seleziona **Localizzazione pallet** e impostala su **Sempre attivo**. Il server TCP usa per impostazione predefinita la porta `5501` e UDP usa la porta `8000`. I messaggi usano l'ordine dei byte big-endian e una lunghezza standard del frame di `16` byte.
+
+| Direzione | Comando esadecimale | Scopo |
+| --- | --- | --- |
+| Client → PalletPro | `60 04 00 00` | Avvia il riconoscimento. |
+| Client → PalletPro | `60 04 00 01` | Arresta il riconoscimento. |
+
+Il frame di risposta contiene un codice restituito, la lunghezza, i segni X / Y / theta / Z, X / Y del centro anteriore del pallet, l'angolo theta e l'altezza del pallet. Imposta a `0` i byte di estensione nel protocollo corrente.
+
+### RS485 (solo M4 Pro)
+
+Usa Modbus RTU a `9600` baud e `8N1`. L'indirizzo Modbus predefinito è `0x17`; usa l'SDK per impostare un indirizzo da `1–247`.
+
+| Operazione | Codice funzione | Registro | Valore |
+| --- | --- | --- | --- |
+| Abilita / arresta riconoscimento | `0x06` | `120` (`0x0078`) | `1` abilita, `0` arresta |
+| Leggi risultati | `0x04` | `122` (`0x007A`) | Legge `8` registri |
+
+I campi del risultato sono X, Y, yaw, valore restituito e altezza, ciascuno rappresentato da un campo di 4 byte.
+
+### CANopen (M4 / M4 Mega)
+
+CAN usa frame standard a 11 bit a `250 Kbit/s`. Il controller invia `COB ID 0x212`; `MODE CTRL` `0` disabilita il riconoscimento e `1` lo abilita. Il dispositivo restituisce stato del riconoscimento, posa, posizione, altezza e dimensioni del pallet tramite `0x192`, `0x292`, `0x392` e `0x492`.
+
+### Modbus TCP
+
+Questa interfaccia richiede la versione dell'algoritmo `0.8.1` o successiva. La porta predefinita è `6601`; ascolta su tutte le interfacce di rete e usa l'indirizzo iniziale del registro `0x100`.
+
+| Offset | Registro | Contenuto |
+| --: | --- | --- |
+| 0 | `0x100` | Valore restituito assoluto; `0` indica che il riconoscimento è riuscito. |
+| 1–4 | `0x101–0x104` | Segni di X, Y, yaw e altezza; `0` positivo, `1` negativo. |
+| 5–8 | `0x105–0x108` | X / Y del centro anteriore del pallet, yaw e altezza. |
+| 9 | `0x109` | Larghezza del pallet. |
+| 10 | `0x10A` | Numero di gambe del pallet. |
+| 11–19 | — | Riservato. |
+
+## Verifica e risoluzione dei problemi
+
+### Accettazione della calibrazione
+
+Guida ripetutamente tra le posizioni di insegnamento dell'estremità vicina e lontana. La calibrazione è accettabile quando gli errori X e Y sono entro `10 mm` e il riconoscimento è stabile senza mancate rilevazioni. Ad esempio, `x = -2000`, `y = 100` e `yaw = 2.3` indicano che il pallet si trova a `2000 mm` dal centro ottico della fotocamera, `100 mm` a destra ed è ruotato di `2.3°` in senso antiorario nella vista dall'alto.
+
+### Codici di errore comuni
+
+| Codice di errore | Significato | Verifica prioritaria |
+| --: | --- | --- |
+| `0` | Riconoscimento normale | — |
+| `-1` | Nessun dato immagine o dati insufficienti | Conferma che la fotocamera restituisca immagini. |
+| `-2` / `-6` | Troppi pochi punti o gambe del pallet non rilevate | Controlla altezza di montaggio, orientamento delle forche, ostruzioni e acquisizione delle gambe del pallet. |
+| `-3` | Dimensioni delle gambe del pallet fuori dalle condizioni | Regola la larghezza delle gambe o i limiti della larghezza del pallet. |
+| `-4` | Altezza della fotocamera non impostata | Imposta e salva l'altezza di installazione. |
+| `-5` | Errore di rilevamento della traversa o inclinazione eccessiva del pallet | Controlla l'acquisizione della traversa, i pixel volanti e la distanza di aggancio. |
+| `-7` | Differenza eccessiva tra le larghezze delle gambe del pallet | Verifica se riflettori, pareti o altri oggetti influenzano l'acquisizione delle gambe laterali. |
+| `-8` | Angolo del pallet troppo grande | Regola l'orientamento del pallet. |
+
+### Condizioni di riconoscimento e limiti del sito
+
+- Condizioni standard: larghezza e lunghezza del pallet `800–2000 mm`, altezza `80–200 mm`, larghezza delle gambe `40–200 mm`, larghezza dell'apertura `300–600 mm`, spessore della traversa di almeno `30 mm` e distanza di riconoscimento `1200–3000 mm`.
+- Mantieni il pallet completamente all'interno del campo visivo. Evita l'occlusione da parte di forche, merci o oggetti vicini.
+- Prova sul posto pallet neri, a bassa riflettività e altamente riflettenti. Nel test originale, un pallet nero con riflettività del `5%` poteva essere acquisito a `2 m`; quando necessario, regola il tempo di integrazione e la soglia del segnale basso.
+- Per il prelievo delle forche in posizione alta, quando possibile mantieni almeno `200 mm` tra i riflettori e le gambe del pallet.
+- Durante l'aggancio in tempo reale, usa i timestamp dei risultati a livello applicativo per determinare se i dati sono aggiornati e prevenire correzioni ritardate.
+
+Contatta MRDVS per valutare pallet non standard o senza gambe.

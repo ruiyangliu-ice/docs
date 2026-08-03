@@ -1,0 +1,199 @@
+---
+title: Implementar la medición de volumen
+sidebarTitle: Implementación de medición de volumen
+description: "Implementa la medición de volumen con cámaras de la serie M, incluida la instalación, la calibración extrínseca, la configuración de regiones y la integración de resultados."
+hidden: true
+---
+
+El algoritmo de medición de volumen se ejecuta en la cámara y mide la longitud, la anchura y la altura de objetos estáticos o en movimiento. La implementación requiere una instalación rígida, conexión de red, calibración extrínseca y configuración de la región de detección. Conecta varias cámaras a la misma red mediante un switch gigabit.
+
+<Info>
+  Esta es una guía histórica de implementación oculta. El firmware del algoritmo y la aplicación host dedicada se entregan por proyecto. Confirma que la cámara y las versiones de firmware y software coincidan antes de la implementación.
+</Info>
+
+## Alcance
+
+Este flujo de trabajo se aplica a proyectos de medición de volumen en logística, paquetería, almacenamiento y materiales a granel que utilizan cámaras de la serie M. El algoritmo mide uno o varios objetos en la región de detección. El sistema de nivel superior se encarga de identificar objetos, recopilar pesos y asociarlos con el sistema empresarial.
+
+Consulta las [cámaras ToF de la serie M](/es/products/m-series/overview "Cámaras ToF de la serie M") para obtener información del producto.
+
+## Instalación y preparación del sistema
+
+### Instalación del hardware
+
+- Usa un soporte rígido para montar la cámara M4 con la superficie frontal paralela y orientada hacia el plano de detección.
+- Alimenta la cámara con `24 VDC`. Usa un cable Cat6A o Cat7 para conectar la cámara al host o a un switch gigabit.
+- Para varias cámaras, asigna a cada cámara una dirección de red única y verifica su estado de alimentación.
+
+<Frame>
+  ![Cámara M4 instalada hacia abajo para medir el volumen](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
+</Frame>
+
+### Requisitos del host
+
+| Elemento | Configuración recomendada |
+| --- | --- |
+| Sistema operativo | Windows 10 o posterior |
+| CPU | Intel® Core™ i5 (7.ª generación) o posterior |
+| Memoria | 8 GB o más |
+| GPU | Intel® UHD Graphics o una GPU integrada o discreta de mayor rendimiento |
+
+Primero instala [LxCameraViewer](/es/developers/software/lxcameraviewer "Descarga de software") y, después, coloca la aplicación de medición de volumen entregada para el proyecto en el directorio `Lanxin-MRDVS\\Tools`. Reemplaza los archivos cuando las instrucciones de entrega lo indiquen.
+
+<Warning>
+  La cámara se reinicia durante las actualizaciones de firmware. Usa únicamente el paquete de algoritmo entregado para el proyecto y haz una copia de seguridad de la configuración verificada antes de actualizar.
+</Warning>
+
+## Flujo de implementación
+
+### 1. Configurar la red
+
+Coloca el host y la cámara en la misma subred. El ejemplo de implementación original utiliza:
+
+| Elemento | Ejemplo |
+| --- | --- |
+| IP del host | `192.168.100.xxx` |
+| Máscara de subred | `255.255.255.0` |
+| Puerta de enlace predeterminada | `192.168.100.1` |
+
+En las propiedades del adaptador Ethernet de Windows, selecciona **Internet Protocol Version 4 (TCP/IPv4)** y configura una dirección estática. Permite la aplicación mediante las reglas del firewall de la red de depuración; no desactives permanentemente el firewall de producción.
+
+### 2. Calibrar los parámetros extrínsecos
+
+<Steps>
+  <Step title="Restaurar el estado de calibración">
+    Abre **Configuración de la cámara**. Confirma que `x`, `y`, `z`, `roll`, `pitch` y `yaw` sean `0`. Si existen valores históricos, restablécelos y selecciona **Guardar y enviar**.
+  </Step>
+  <Step title="Ejecutar la calibración">
+    Selecciona **Calibración extrínseca**, confirma el mensaje de éxito y registra el valor `z` resultante.
+  </Step>
+  <Step title="Guardar los parámetros de pose">
+    Vuelve a establecer `z` en `0` y selecciona **Guardar y enviar**. En este flujo, la altura real de la cámara se utiliza como distancia del plano de detección en el siguiente paso.
+  </Step>
+</Steps>
+
+### 3. Configurar el plano y la región de detección
+
+En **Detección de volumen**, introduce el valor `z` registrado como **Distancia del plano de detección** y, después, guarda y envía. Configura los límites de la región de detección desde la vista de nube de puntos:
+
+| Parámetro | Significado |
+| --- | --- |
+| X mínimo/máximo | Límites X de la caja de detección |
+| Y mínimo/máximo | Límites Y de la caja de detección |
+| Z mínimo/máximo | Límites Z de la caja de detección |
+
+La distancia del plano de detección define la referencia del suelo; establece el límite superior Z ligeramente por encima de esta distancia. El límite inferior debe cubrir las alturas de los objetos que se van a medir. Selecciona **Guardar y enviar** después de configurar todo.
+
+### 4. Verificar los resultados
+
+Consulta el estado del volumen en **Herramientas básicas**. Coloca un objeto en la región de detección y confirma que su cantidad y su longitud, anchura y altura coincidan con las del sitio. Para varios objetos, cambia entre las cajas de volumen para inspeccionar cada resultado.
+
+Para una medición de una sola captura, activa **Modo de activación** en **Detección de volumen**, guarda la configuración y selecciona **Activación única** en **Herramientas básicas** para adquirir un fotograma y un resultado.
+
+## Interfaz y parámetros principales
+
+### Parámetros de detección de volumen
+
+| Parámetro | Descripción |
+| --- | --- |
+| Modo de activación | Cuando está activado, el algoritmo genera resultados solo después de una activación. |
+| Detección ascendente | Invierte la dirección de detección; el flujo predeterminado detecta hacia abajo. |
+| Frecuencia de detección | Periodo de actualización de imágenes y resultados. |
+| Distancia del plano de detección | Distancia desde la cámara hasta el plano de detección, en `mm`. |
+| Cantidad de vecinos/umbral de distancia | Parámetros de filtrado de la nube de puntos; en la mayoría de los casos, conserva los valores predeterminados del proyecto. |
+| Filtro de vectores normales/umbral de distancia | Parámetros de filtrado de bordes y de la nube de puntos; conserva la configuración original antes de cambiarlos. |
+| Cantidad mínima de puntos | Cantidad mínima de puntos necesaria para un objeto válido. |
+| X/Y/Z mínimos | Dimensiones mínimas detectables del objeto, en `mm`. |
+
+### Configuración de la cámara
+
+| Elemento | Descripción |
+| --- | --- |
+| Nombre de la cámara | Distingue las cámaras en una implementación con varias cámaras. |
+| Modo de guardado de imágenes | Guarda las imágenes del algoritmo en la cámara. |
+| Modo de adquisición de imágenes | `MDS` no ocupa el acceso a la cámara. `SDK` sí lo ocupa; la aplicación host no puede abrir la cámara mientras está en ejecución. |
+| Parámetros extrínsecos | `x`, `y`, `z`, `roll`, `pitch` y `yaw`. |
+| Guardar y enviar | Escribe los parámetros extrínsecos y la configuración del algoritmo actuales en la cámara. |
+
+## Interfaz de resultados
+
+TCP, UDP y HTTP utilizan el comando `RESULT_UPDATE` para solicitar resultados de volumen.
+
+| Protocolo | Puerto | Uso |
+| --- | --: | --- |
+| TCP | `14951` | Solicitar un resultado de detección de volumen |
+| UDP | `14950` | Solicitar un resultado de detección de volumen |
+| HTTP | `14952` | Solicitar el resultado de volumen como JSON |
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Solicita a la cámara el resultado actual de detección de volumen.
+</ParamField>
+
+Campos de respuesta HTTP de nivel superior:
+
+<ResponseField name="IP" type="string" required>
+  Dirección IP de la cámara que generó los datos.
+</ResponseField>
+
+<ResponseField name="TM" type="object[]" required>
+  Lista de objetos detectados.
+</ResponseField>
+
+<ResponseField name="TM_DATA_TIME" type="string">
+  Hora en que se capturaron los datos de volumen.
+</ResponseField>
+
+<ResponseField name="TM_RES_TIME" type="string">
+  Hora en que se generó el resultado.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string">
+  Nombre de la cámara.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Código de retorno; `0` indica éxito.
+</ResponseField>
+
+Cada objeto `TM` puede contener:
+
+<ResponseField name="angle" type="number">
+  Ángulo de la caja del objeto.
+</ResponseField>
+
+<ResponseField name="cx" type="number">
+  Coordenada X del centro del objeto.
+</ResponseField>
+
+<ResponseField name="cy" type="number">
+  Coordenada Y del centro del objeto.
+</ResponseField>
+
+<ResponseField name="cz" type="number">
+  Coordenada Z del centro del objeto.
+</ResponseField>
+
+<ResponseField name="height" type="number">
+  Altura del objeto.
+</ResponseField>
+
+<ResponseField name="length" type="number">
+  Longitud del objeto.
+</ResponseField>
+
+<ResponseField name="width" type="number">
+  Anchura del objeto.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  Indica si el resultado es válido. `false` indica confianza insuficiente.
+</ResponseField>
+
+## Solución de problemas
+
+| Síntoma | Acción recomendada |
+| --- | --- |
+| La vista de nube de puntos está vacía o es difícil de inspeccionar | Desplázate y arrastra en el área de nube de puntos y confirma que la cámara emita datos. |
+| La detección es anómala después de la calibración | Confirma que el parámetro extrínseco `z` se haya restablecido a `0` y que la altura de calibración registrada se haya introducido como distancia del plano de detección. |
+| No se detectan objetos | Comprueba los límites de la región, las dimensiones mínimas, la cantidad mínima de puntos y si el objeto está completamente dentro del campo de visión. |
+| LxCameraViewer no puede abrirse | Comprueba si está seleccionado el modo de adquisición de imágenes `SDK`; este modo ocupa el acceso a la cámara. |

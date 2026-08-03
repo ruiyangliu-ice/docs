@@ -1,0 +1,446 @@
+---
+title: Hướng dẫn sử dụng S2 Max
+description: "Thông số kỹ thuật, lắp đặt, SDK, vận hành ứng dụng máy chủ và lưu ý sử dụng cho camera S2 Max."
+hidden: true
+---
+
+<Info>
+  Đây là hướng dẫn sử dụng lưu trữ. Để kết nối lần đầu và thiết lập luồng, hãy bắt đầu với [bắt đầu nhanh S2 Max](/vi/products/s-series/s2-max-quickstart).
+</Info>
+
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Phát hành lần đầu |
+| 2024/05/10 | V1.0 | Cập nhật tham số camera |
+| 2024/06/17 | V1.1 | 1. Cập nhật sơ đồ chân và bổ sung thông số điện. 2. Bổ sung chứng nhận kiểm tra vào thành phần gói hàng. |
+| 2024/11/25 | V1.2 | Cập nhật nhiệt độ lưu trữ camera |
+
+## Tổng quan sản phẩm
+
+Tài liệu này mô tả camera S2 Max do Zhejiang MRDVS Technology Co., Ltd. phát triển, bao gồm thông số kỹ thuật, tính năng và hướng dẫn vận hành.
+
+S2 Max là camera ToF của MRDVS với giao diện truyền thông Gigabit Ethernet và ngõ vào nguồn DC 24V.
+
+<Frame>
+  ![Camera S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-camera.avif)
+</Frame>
+
+Hình 1.1. Camera S2 Max
+
+### 1.1 Tính năng
+
+- Năng lực tính toán tích hợp 1 TOPS; không cần CPU bên ngoài
+- Ngõ ra RGB-D
+- Tránh chướng ngại vật, phát hiện thùng hàng và đo thể tích độc lập
+- Gigabit Ethernet
+
+### 1.2 Điều khoản sử dụng
+
+**Tuân thủ các yêu cầu sau trong quá trình sử dụng:**
+
+- Không bóc nhãn khỏi sản phẩm.
+- Không tháo rời sản phẩm. Việc này có thể làm hỏng sản phẩm.
+- Không sử dụng sản phẩm trong từ trường mạnh.
+- Không sử dụng sản phẩm dưới ánh nắng trực tiếp trên 100 kLux.
+- Vệ sinh vỏ bằng khăn mềm, không xơ, làm ẩm bằng một lượng nhỏ nước tinh khiết hoặc cồn.
+- Giữ lại bao bì gốc và dùng để vận chuyển khi có thể.
+
+---
+
+## Nguyên lý đo khoảng cách và thông số kỹ thuật
+
+### Nguyên lý đo khoảng cách
+
+S2 Max đo khoảng cách bằng thời gian bay (ToF): đo thời gian từ lúc phát ánh sáng đến lúc nhận ánh sáng phản xạ từ vật thể.
+
+S2 Max sử dụng phép đo trực tiếp để tạo ảnh độ sâu, tạo dữ liệu độ sâu chất lượng cao với tài nguyên tính toán tối thiểu và dựng cảnh độ sâu ở tốc độ khung hình cao. Tương tự LiDAR, camera ToF được chia thành ToF xung (P\_ToF) và ToF sóng liên tục (CW\_ToF). P\_ToF phát các xung ánh sáng, thường là ánh sáng vô hình, rồi tính khoảng cách từ thời gian đi-về của xung. CW\_ToF phát ánh sáng liên tục được điều chế và tính thời gian bay từ chênh lệch pha giữa ánh sáng truyền đi và phản hồi.
+
+<Frame>
+  ![Nguyên lý phát hiện ToF](/images/products/s-series-s2-max-user-guide-tof-detection-principle.avif)
+</Frame>
+
+Hình 2.1. Nguyên lý phát hiện
+
+### Thông số kỹ thuật sản phẩm
+
+Bảng 2-1. Thông số kỹ thuật sản phẩm
+
+| Camera | Tham số | Eagle-S2 Max |
+| --- | --- | --- |
+| Hiệu suất | Chip | Chip Sony |
+| ㅤ | Phương pháp đo khoảng cách | Thời gian bay |
+| ㅤ | Bước sóng hoạt động | 940nm |
+| ㅤ | Độ phân giải và tốc độ khung hình ToF | 320 × 240 (thông thường 12 fps) |
+| ㅤ | Trường nhìn ToF | 81° × 61° |
+| ㅤ | Độ phân giải và tốc độ khung hình RGB | 1920×1080 (thông thường 12fps) |
+| ㅤ | Trường nhìn RGB | 88°×56° |
+| ㅤ | Phạm vi | 0.2~~5m (độ phản xạ 90%), 0.2~~2.5m (độ phản xạ 10%) |
+| ㅤ | Độ chính xác | ±3mm\+0.5%×depth |
+| Điện | Giao diện truyền thông | Ethernet / CAN |
+| ㅤ | Giao diện nguồn | Đầu nối tròn công nghiệp 5 chân |
+| ㅤ | Ngõ vào nguồn | 24V DC / 2A |
+| ㅤ | Công suất tiêu thụ trung bình | 6.6W |
+| Cơ khí | Kích thước | 88mm×47mm×47mm |
+| ㅤ | Khối lượng | 333g |
+| ㅤ | Cấp IP | IP42 |
+| ㅤ | Nhiệt độ hoạt động | -20℃~60℃ |
+| ㅤ | Nhiệt độ lưu trữ | -40℃~85℃ |
+| ㅤ | Độ ẩm | 10%~90% RH, không ngưng tụ |
+| Khác | Khả năng chống ánh sáng môi trường | Tối đa 100 kLux ánh nắng |
+| ㅤ | Khả năng chống chuyển vùng bóng-sáng | Thay đổi dưới 1cm qua ranh giới bóng-sáng 100 kLux |
+| ㅤ | Môi trường phần mềm | C / C\+\+ / ROS SDK |
+| ㅤ | Hệ điều hành hỗ trợ | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Làm mát | Thụ động |
+
+Lưu ý: Model 3D xác định kích thước sản phẩm.
+
+---
+
+## Ngõ ra, phát hiện và cấu trúc
+
+### Đặc tính điện
+
+Bảng 3-1. Thông số điện của sản phẩm
+
+| Tham số | Ký hiệu | Điều kiện | Tối thiểu | Điển hình | Tối đa | Đơn vị |
+| --- | --- | --- | --- | --- | --- | --- |
+| Điện áp nguồn | VDD | ㅤ | 22 | 24 | 26 | V |
+| CAN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
+| Nhiệt độ hoạt động | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Độ ẩm hoạt động | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Độ ẩm lưu trữ | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Nhiệt độ lưu trữ | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### Dữ liệu ngõ ra
+
+Theo mặc định, S2 Max xuất hình ảnh độ sâu (Hình 3.1), dữ liệu cường độ tín hiệu tương ứng theo từng pixel (Hình 3.2) và đám mây điểm được tạo từ dữ liệu độ sâu (Hình 3.3). Vật thể hiển thị là một thanh nhôm định hình.
+
+<Frame>
+  ![Hình ảnh độ sâu](/images/products/s-series-s2-max-user-guide-depth-image.avif)
+</Frame>
+
+Hình 3.1. Hình ảnh độ sâu
+
+<Frame>
+  ![Hình ảnh cường độ](/images/products/s-series-s2-max-user-guide-intensity-image.avif)
+</Frame>
+
+Hình 3.2. Hình ảnh cường độ
+
+<Frame>
+  ![Đám mây điểm](/images/products/s-series-s2-max-user-guide-point-cloud.avif)
+</Frame>
+
+Hình 3.3. Đám mây điểm
+
+Phát hiện độ sâu sử dụng HDR theo các khung hình xen kẽ để mở rộng phạm vi đo. Cảm biến xuất hai khung hình độ sâu với thời gian tích hợp và tham số hiệu chuẩn khác nhau. Với mỗi pixel, phần mềm máy chủ chọn khung hình có giá trị cường độ cao hơn và hợp nhất các lựa chọn thành ngõ ra cuối cùng, cung cấp độ sâu chính xác trong toàn bộ phạm vi đo.
+
+### Phạm vi phát hiện
+
+Hình 3.1 minh họa vùng phát hiện của S2 Max. Góc phát hiện ngang là 81° và góc dọc là 61°. Khoảng cách phát hiện phụ thuộc vào công suất quang học. Công suất quang học và độ phản xạ mục tiêu cao hơn làm tăng vùng mù gần và giảm vùng mù xa. Công suất quang học và độ phản xạ mục tiêu thấp hơn làm giảm vùng mù gần và tăng vùng mù xa. Với mục tiêu có độ phản xạ 10%~~90%, phạm vi của S2 Max là 0.2~~5m. Sau 5m, cường độ tín hiệu phản xạ thấp và nhiễu ánh sáng môi trường gây ra sai số đo khoảng cách đáng kể.
+
+<Frame>
+  ![Phạm vi phát hiện](/images/products/s-series-s2-max-user-guide-detection-range.avif)
+</Frame>
+
+Hình 3.4. Trường nhìn
+
+### 3.4 Tham chiếu độ phản xạ
+
+Độ phản xạ trong thông số này được đo so với bảng trắng tiêu chuẩn Kodak. Các giá trị độ phản xạ điển hình của vật liệu khác như sau.
+
+Bảng 3-2. Độ phản xạ vật liệu
+
+| STT | Vật liệu | Độ phản xạ |
+| --- | --- | --- |
+| 1 | Cao su đen | 22% |
+| 2 | Cốc gốm đen | 34% |
+| 3 | Tấm nhựa đen | 42% |
+| 4 | Báo | 45% |
+| 5 | Vải đen | 78% |
+| 6 | Chai nhựa đục | 85% |
+| 7 | Tấm gỗ nhẵn | 90% |
+| 8 | Giấy trắng | 90% |
+| 9 | Bảng trắng tiêu chuẩn Kodak | 100% |
+| 10 | Kính trong | 140% |
+| 11 | Bề mặt kim loại sáng bóng màu nhạt | 150% |
+
+### 3.5 Kích thước
+
+<Frame>
+  ![Kích thước S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-dimensions.avif)
+</Frame>
+
+Hình 3.5. Kích thước S2 Max
+
+### 3.6 Hệ tọa độ quang học và tọa độ gốc
+
+**Hệ tọa độ quang học:**
+
+- Hệ tọa độ quang học gồm hệ tọa độ camera (CCS) và hệ tọa độ thế giới (WCS).
+- Hệ tọa độ camera là hệ tọa độ hình ảnh độ sâu 2D. Gốc tọa độ nằm tại tâm quang học.
+- Hệ tọa độ thế giới là hệ tọa độ đám mây điểm 3D.
+- Sử dụng các thông số nội tại của camera để chuyển tọa độ hình ảnh độ sâu thành tọa độ đám mây điểm 3D. Xem các ví dụ SDK.
+
+<Frame>
+  ![Hệ tọa độ quang học](/images/products/s-series-s2-max-user-guide-optical-coordinate-system.avif)
+</Frame>
+
+Hình 3.6. Hệ tọa độ quang học
+
+**Gốc tọa độ camera được định nghĩa như sau:**
+
+1. Gốc tọa độ X trùng với trục X của sản phẩm.
+2. Gốc tọa độ Y trùng với trục Y của sản phẩm.
+3. Gốc tọa độ Z nằm trên bề mặt trước của camera.
+
+<Frame>
+  ![Gốc tọa độ camera](/images/products/s-series-s2-max-user-guide-camera-origin.avif)
+</Frame>
+
+Hình 3.7. Gốc tọa độ camera
+
+### 3.7 Giao diện sản phẩm
+
+Cổng 5 chân của S2 Max được định nghĩa bên dưới. **Lưu ý: Chừa 35mm tại vị trí cáp ra để lắp đặt và đảm bảo bán kính uốn.**
+
+<Frame>
+  ![Giao diện 5 chân S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-5-pin-interface.avif)
+</Frame>
+
+Bảng 3-3. Định nghĩa chân
+
+| Cổng | Chân | Tín hiệu | Mô tả | Ghi chú |
+| --- | --- | --- | --- | --- |
+| Ổ cắm | 1 | VIN\+ | Ngõ vào nguồn 24V dương | Nâu |
+| ㅤ | 2 | CAN\_L | CAN\_L | Trắng |
+| ㅤ | 3 | GND | Mass tín hiệu | Xanh dương |
+| ㅤ | 4 | VIN- | Ngõ vào nguồn 24V âm | Đen |
+| ㅤ | 5 | CAN\_H | CAN\_H | Xám |
+
+### 3.8 Lắp đặt khuyến nghị
+
+**Ba phương pháp lắp đặt sau đây được khuyến nghị.**
+
+**Lắp đặt 1:** Không nhìn thấy tường bên phải và sàn. Đặt camera ở góc sao cho chỉ nhìn thấy tường phía trước. Cấu hình này cho khả năng đo khoảng cách tốt.
+
+<Frame>
+  ![Lắp đặt khuyến nghị 1](/images/products/s-series-s2-max-user-guide-recommended-installation-1.avif)
+</Frame>
+
+Hình 3.8. Lắp đặt 1
+
+**Lắp đặt 2:** Nhìn thấy tường bên phải nhưng không nhìn thấy sàn. Đặt camera ở góc cách tường bên phải ít nhất 20cm. Độ chính xác đo khoảng cách có thể đạt ±15mm.
+
+<Frame>
+  ![Lắp đặt khuyến nghị 2](/images/products/s-series-s2-max-user-guide-recommended-installation-2.avif)
+</Frame>
+
+Hình 3.9. Lắp đặt 2
+
+**Lắp đặt 3:** Nhìn thấy sàn nhưng không nhìn thấy tường bên phải. Lắp camera cao hơn sàn 10cm~30cm.
+
+<Frame>
+  ![Lắp đặt khuyến nghị 3](/images/products/s-series-s2-max-user-guide-recommended-installation-3.avif)
+</Frame>
+
+Hình 3.10. Lắp đặt 3
+
+Gần sàn, khu vực gần camera nhất có thể bị phơi sáng quá mức và ảnh hưởng đến các vùng khác do ánh sáng tán xạ và phản xạ nhiều đường.
+
+<Frame>
+  ![Hiệu ứng phản xạ nhiều đường gần sàn](/images/products/s-series-s2-max-user-guide-near-floor-multipath-effect.avif)
+</Frame>
+
+Hình 3.11. Hiệu ứng phản xạ nhiều đường gần sàn
+
+Trong quang học tạo ảnh, ánh sáng tán xạ chủ yếu xuất hiện dưới dạng ảnh bóng và lóa.
+
+<Frame>
+  ![Ảnh bóng và lóa](/images/products/s-series-s2-max-user-guide-ghosting-and-flare.avif)
+</Frame>
+
+Hình 3.12. Ảnh bóng và lóa do ánh sáng tán xạ
+
+**Không sử dụng sản phẩm này** trong cấu hình lắp đặt có thể nhìn thấy cả tường bên phải và sàn. Ánh sáng tán xạ từ sàn và phản xạ nhiều đường từ tường tạo ra nhiễu đo khoảng cách phức tạp.
+
+<Frame>
+  ![Lắp đặt không khuyến nghị](/images/products/s-series-s2-max-user-guide-installation-not-recommended.avif)
+</Frame>
+
+Hình 3.13. Lắp đặt không khuyến nghị
+
+---
+
+## Độ chính xác, độ lặp lại và nhiễu nhiều camera
+
+### 4.1 Độ chính xác
+
+Hiệu chuẩn loại bỏ độ lệch cố định giữa phép đo của cảm biến và giá trị thực bằng cách thiết lập ánh xạ giữa hai giá trị. Với S2 Max, lắp camera trên thanh ray hướng vào tường trắng rồi ánh xạ phép đo của từng pixel với khoảng cách giữa camera và vùng tường được tạo ảnh. Hiệu chỉnh phép đo bằng ánh xạ này sẽ cung cấp giá trị khoảng cách chính xác hơn, như trong Hình 4.1.
+
+<Frame>
+  ![Thiết lập hiệu chuẩn](/images/products/s-series-s2-max-user-guide-calibration-setup.avif)
+</Frame>
+
+Hình 4.1. Hiệu chuẩn
+
+S2 Max sử dụng phép đo khoảng cách chủ động. Lắp đặt và các yếu tố khác có thể gây nhiễu phản xạ nhiều đường và làm sai lệch độ chính xác.
+
+Hiệu ứng này đặc biệt rõ khi đo mục tiêu có độ phản xạ thấp nằm cạnh vật thể có độ phản xạ cao. Phép đo lý tưởng đi theo đường màu xanh dương, nhưng ánh sáng có thể phản xạ từ tường đến mục tiêu rồi quay lại camera (đường màu xanh lá). Ánh sáng cũng có thể phản xạ trực tiếp từ vật thể gần có độ phản xạ cao vào camera (đường màu đỏ). Khiếm khuyết quang học tạo ra lóa gây nhiễu phép đo khoảng cách, như trong Hình 4.2.
+
+<Frame>
+  ![Đường truyền ánh sáng khi lắp camera](/images/products/s-series-s2-max-user-guide-camera-installation-light-paths.avif)
+</Frame>
+
+Hình 4.2. Lắp đặt camera
+
+### 4.2 Độ lặp lại
+
+Độ lặp lại thường có nghĩa là độ biến thiên tại một điểm (1-σ). Là thiết bị đo quang điện tử, S2 Max chịu ảnh hưởng của chuyển đổi AD, tỷ số tín hiệu trên nhiễu, nhiễu hệ thống và các yếu tố khác. Hình 4.3 cho thấy mối quan hệ giữa độ lặp lại và cường độ tín hiệu.
+
+<Frame>
+  ![Độ lặp lại và cường độ tín hiệu](/images/products/s-series-s2-max-user-guide-precision-and-signal-strength.avif)
+</Frame>
+
+Hình 4.3. Độ lặp lại và cường độ tín hiệu
+
+S2 Max chuyển đổi tín hiệu tương tự quang điện tử thành dữ liệu số. ADC lượng tử hóa tín hiệu tương tự ở độ phân giải tối thiểu và tạo ra nhiễu. Ví dụ, tín hiệu 1.1V có thể được đọc thành 1V, sai số 10%; 10.1V có thể được đọc thành 10V, sai số 1%; và 100.1V có thể được đọc thành 100V. Vì vậy, chuyển đổi AD tạo ra tỷ lệ nhiễu và sai số lớn hơn khi cường độ tín hiệu thấp. Tỷ số tín hiệu trên nhiễu của camera ToF thường liên quan đến thời gian tích hợp t theo SNR∝1/√t, do đó tăng thời gian tích hợp sẽ tăng cường độ tín hiệu.
+
+---
+
+### Nhiễu nhiều camera
+
+### 5.1 Nhiễu song song
+
+Khi hai camera được lắp song song, mỗi camera nhận ánh sáng phản hồi từ chính nó và từ camera kia, gây nhiễu dữ liệu độ sâu. Nhiễu song song là sai số phát hiện tăng lên khi hai camera S2 Max hướng cùng một hướng.
+
+<Frame>
+  ![Nhiễu camera song song](/images/products/s-series-s2-max-user-guide-parallel-camera-interference.avif)
+</Frame>
+
+Để tránh nhiễu song song, hãy lắp camera nghiêng so với mặt phẳng ngang. Nếu bắt buộc phải lắp ở 0°, hãy liên hệ MRDVS để được cấu hình tùy chỉnh.
+
+---
+
+## SDK và ứng dụng máy chủ
+
+### 6.1 SDK
+
+Sử dụng SDK để khởi tạo và khởi động camera, lấy dữ liệu rồi đóng camera. Đối với các nền tảng khác Linux hoặc Windows, hãy dùng mã nguồn SDK làm tham khảo khi chuyển ứng dụng camera.
+
+Bảng 6-1. SDK
+
+| Hệ điều hành | Linux & Windows |
+| --- | --- |
+| Ngôn ngữ lập trình | C/C\+\+ |
+| Định dạng dữ liệu | Số nguyên short không dấu 16 bit |
+| Tích hợp | Thư viện dùng chung (.so), thư viện liên kết động (.dll) hoặc mã nguồn SDK |
+
+### 6.2 Thứ tự ngõ ra SDK
+
+<Frame>
+  ![Thứ tự ngõ ra SDK](/images/products/s-series-s2-max-user-guide-sdk-output-order.avif)
+</Frame>
+
+Hình 6.1. Thứ tự ngõ ra SDK
+
+SDK xuất dữ liệu độ sâu và cường độ từng khung hình một dưới dạng mảng một chiều ở độ phân giải đã cấu hình. Pixel trên cùng bên trái là gốc, ngõ ra đi từ trái sang phải và từ trên xuống dưới. Hình 6.1 minh họa ngõ ra theo trục x rồi theo trục y:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Mỗi pixel độ sâu là một số nguyên short không dấu 16 bit biểu thị khoảng cách từ vật thể được đo đến mặt phẳng camera.
+
+Mỗi pixel cường độ là một số nguyên short không dấu 16 bit biểu thị cường độ tín hiệu phản hồi.
+
+### 6.3 Địa chỉ IP
+
+Địa chỉ IP mặc định của S2 Max là 192.168.100.82. Sử dụng công cụ demo MRDVS để thay đổi địa chỉ IP hoặc bật DHCP.
+
+### 6.4 Phần mềm demo
+
+### 6.4.1 Cấu hình IP
+
+Kết nối cáp nguồn, sau đó kết nối camera với máy tính bằng cáp Ethernet. Vì IP mặc định của camera là 192.168.100.82, hãy cấu hình máy tính thành 192.168.100.x, không dùng 100.82, với subnet mask 255.255.255.0. Mở **Settings** → **Ethernet** → **Change adapter options**, nhấp phải **Ethernet** rồi chọn **Internet Protocol Version 4 (TCP/IPv4)**. Ví dụ, đặt địa chỉ IP là 192.168.100.20 và subnet mask là 255.255.255.0.
+
+### 6.4.2 Mở phần mềm
+
+Tải xuống và cài đặt phần mềm, sau đó nhấp đúp biểu tượng demo LxCameraViwer. Phần mềm máy chủ mở, tìm camera, mở camera và tự động bắt đầu thu nhận khi chỉ có một camera được kết nối.
+
+**Lưu ý: Khi khởi chạy lần đầu, một số hệ thống yêu cầu bạn cấp quyền truy cập tường lửa.**
+
+Phần mềm cung cấp các chức năng cơ bản, lựa chọn hình ảnh, cấu hình camera và thông tin camera. Thông tin camera gồm IP camera, ID, địa chỉ MAC, số sê-ri và phiên bản phần mềm và thuật toán. Chọn **Độ sâu**, **Cường độ**, **RGB** hoặc **Đám mây điểm** để hiển thị hình ảnh tương ứng.
+
+<Frame>
+  ![Hiển thị hình ảnh LxCameraViewer](/images/products/s-series-s2-max-user-guide-lxcameraviewer-image-display.avif)
+</Frame>
+
+Hình 6.2. Hiển thị hình ảnh
+
+### 6.4.3 Lưu hình ảnh
+
+Nhấp **Lưu** để lưu các hình ảnh đã chọn vào thư mục `./data` trong thư mục cài đặt phần mềm. Terminal cũng in đường dẫn, ví dụ: `save path= ./data/camera ID`.
+
+Trong các tệp đã lưu, `_a` là hình ảnh cường độ, `_d` là hình ảnh độ sâu, `_r` là hình ảnh RGB (MONO), còn `.pcd` là đám mây điểm. Hình ảnh độ sâu và cường độ sử dụng PGM, hình ảnh RGB sử dụng PNG và đám mây điểm sử dụng PCD.
+
+<Frame>
+  ![Các tệp hình ảnh đã lưu](/images/products/s-series-s2-max-user-guide-saved-image-files.avif)
+</Frame>
+
+Hình 6.3. Hình ảnh đã lưu
+
+### 6.4.4 Thay đổi địa chỉ IP
+
+Nhập địa chỉ IP cần thiết, chẳng hạn 192.168.10.199. Nhập subnet mask 255.255.255.0 và gateway 192.168.10.1. Gateway phải cùng subnet với IP cần thiết và thường kết thúc bằng 1. Xác nhận thay đổi rồi tắt bật nguồn camera.
+
+<Frame>
+  ![Thay đổi địa chỉ IP camera](/images/products/s-series-s2-max-user-guide-change-the-camera-ip-address.avif)
+</Frame>
+
+---
+
+## Chức năng chính
+
+### 7.1 Phạm vi
+
+Phạm vi S2 Max là 0.2~5m. Liên hệ MRDVS để biết phạm vi tùy chỉnh.
+
+### 7.2 Lọc
+
+SDK MRDVS cung cấp các bộ lọc sau:
+
+- Bộ lọc trung vị
+- Bộ lọc mode
+- Loại bỏ pixel bay
+
+---
+
+## An toàn và khắc phục sự cố
+
+### 8.1 Cấp an toàn laser
+
+<Frame>
+  ![Cấp an toàn laser](/images/products/s-series-s2-max-user-guide-laser-safety-class.avif)
+</Frame>
+
+### 8.2 Vận hành đúng
+
+Camera S2 Max sử dụng nguồn DC 24V. Kết nối cáp nguồn trước khi cấp điện và không đảo cực dương, âm. Đảo cực có thể làm hỏng sản phẩm.
+
+### 8.3 Nhiệt độ hoạt động
+
+Giữ nhiệt độ môi trường trong phạm vi nêu trong thông số kỹ thuật sản phẩm (Bảng 2-1). Lắp sản phẩm lên linh kiện dẫn nhiệt như giá đỡ kim loại để cải thiện tản nhiệt và đạt hiệu suất tối ưu.
+
+---
+
+### Khắc phục sự cố
+
+Bảng 9-1. Khắc phục sự cố
+
+| STT | Sự cố | Cách xử lý |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi mở | Xác minh tường lửa đã tắt |
+| 2 | Phần mềm máy chủ phát hiện nhiều địa chỉ IP | Một thiết bị khác trong LAN sử dụng cùng IP; chọn địa chỉ IP cần thiết |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Ethernet Gigabit; dữ liệu ban đầu có thể không ổn định qua Fast Ethernet |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt mặc định trên ổ C có thể bị ảnh hưởng bởi cài đặt quyền |

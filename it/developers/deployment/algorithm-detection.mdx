@@ -1,0 +1,593 @@
+---
+title: Distribuire gli algoritmi di rilevamento e integrare i risultati
+sidebarTitle: Distribuzione degli algoritmi di rilevamento
+description: "Distribuisci gli algoritmi di rilevamento delle persone, delle ubicazioni di stoccaggio e dei volumi, configura i parametri estrinseci e i parametri della fotocamera e recupera i risultati tramite TCP, UDP, HTTP o Modbus TCP."
+---
+
+Questa guida illustra la distribuzione, la calibrazione, la configurazione e l'integrazione dei risultati per gli algoritmi MRDVS di rilevamento delle persone, delle ubicazioni di stoccaggio e dei volumi. L'algoritmo viene eseguito sulla fotocamera; l'applicazione host dell'algoritmo viene usata per la configurazione, gli aggiornamenti e l'ispezione dei risultati.
+
+<Info>
+  Il firmware dell'algoritmo e l'applicazione host dell'algoritmo vengono forniti per ogni progetto. Prima di eseguire il flashing del firmware dell'algoritmo, verifica che la fotocamera esegua una versione del firmware MDS. Ottieni un pacchetto di installazione corrispondente al progetto e al modello della fotocamera.
+</Info>
+
+## Ambito supportato
+
+### Componenti del sistema
+
+| Componente | Funzione |
+| --- | --- |
+| Fotocamera 3D | Acquisisce immagini RGB e nuvole di punti ed esegue l'algoritmo di rilevamento sulla fotocamera. |
+| Applicazione host dell'algoritmo | Configura gli algoritmi, calibra i parametri estrinseci, visualizza i risultati e aggiorna il firmware dell'algoritmo. |
+| PC industriale o sistema di livello superiore | Esegue l'applicazione host o legge i risultati tramite un'interfaccia di rete. |
+| LiDAR | `mid360`, usato per la configurazione della soluzione originale basata sul radar. |
+
+### Algoritmi e fotocamere
+
+| Algoritmo | Fotocamera supportata |
+| --- | --- |
+| Rilevamento persone | M4 Pro |
+| Rilevamento ubicazioni di stoccaggio | S10 Pro |
+| Rilevamento volumi | S10 e S10 Pro |
+
+Per informazioni sul prodotto, consulta la [pagina del prodotto della fotocamera 3D S10](/it/products/s-series/s10-overview).
+
+### Ambiente dell'applicazione host
+
+| Elemento | Configurazione consigliata |
+| --- | --- |
+| Sistema operativo | Windows 10 o versione successiva |
+| CPU | Intel® Core™ i5 (7ª generazione) o versione successiva |
+| Memoria | 8 GB o più |
+| GPU | Intel® UHD Graphics o una GPU integrata o discreta con prestazioni superiori |
+
+## Distribuzione hardware e di rete
+
+### Installare la fotocamera
+
+Usa una staffa rigida per impedire movimenti o vibrazioni dopo l'installazione. Il rilevamento delle persone usa normalmente un'installazione orizzontale o un'installazione con un angolo non superiore a 30°.
+
+<Frame>
+  ![Esempi di installazione della staffa della fotocamera](/images/developers/deployment-algorithm-detection-camera-installation-methods.avif)
+</Frame>
+
+### Collegare i dispositivi
+
+<Steps>
+  <Step title="Collega l'alimentazione e la rete">
+    Alimenta la fotocamera con un'alimentazione stabilizzata da 24 V CC. Usa un cavo Cat6A o Cat7 per collegare la fotocamera a uno switch gigabit o a un controller.
+  </Step>
+  <Step title="Distribuisci più fotocamere">
+    Installa ogni fotocamera all'altezza e nella posizione specificate nel progetto CAD. Collega tutte le fotocamere tramite uno switch gigabit e verifica l'alimentazione e lo stato del collegamento di ciascuna.
+  </Step>
+  <Step title="Prepara i target di test">
+    Posiziona le persone, i pallet o le merci da rilevare nel campo visivo della fotocamera prima di calibrare i parametri estrinseci e configurare le regioni.
+  </Step>
+</Steps>
+
+### Configurare la rete dell'host
+
+Metti il computer host e la fotocamera sulla stessa sottorete. L'esempio originale usa il seguente schema:
+
+| Elemento | Esempio |
+| --- | --- |
+| Indirizzo IP dell'host | `192.168.100.xxx` |
+| Maschera di sottorete | `255.255.255.0` |
+| Gateway predefinito | `192.168.100.1` |
+
+<Steps>
+  <Step title="Apri le impostazioni della scheda">
+    In Windows, apri **Pannello di controllo → Centro connessioni di rete e condivisione → Modifica impostazioni scheda**, quindi seleziona la scheda Ethernet collegata alla fotocamera.
+  </Step>
+  <Step title="Configura IPv4">
+    Apri **Protocollo Internet versione 4 (TCP/IPv4)**, seleziona **Usa il seguente indirizzo IP** e inserisci un indirizzo statico non utilizzato nella sottorete della fotocamera.
+  </Step>
+  <Step title="Conferma la connessione">
+    Salva le impostazioni, conferma il collegamento gigabit e usa l'applicazione host per individuare o aprire la fotocamera.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Centro connessioni di rete e condivisione di Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration.avif)
+  </Frame>
+
+  <Frame>
+    ![Impostazioni dell'indirizzo statico IPv4 di Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Non lasciare il firewall disabilitato su una rete di produzione. Se l'applicazione host non riesce a connettersi, crea prima una regola per l'applicazione o la porta necessaria. Disabilita temporaneamente il firewall solo su una rete di debug attendibile, quindi ripristina la protezione.
+</Warning>
+
+## Installare e aggiornare il software
+
+### Installare le applicazioni host
+
+1. Ottieni l'applicazione host della fotocamera dalla pagina dei [download del software](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Download del software").
+2. Installa l'applicazione host della fotocamera al di fuori dell'unità di sistema.
+3. Copia i file dell'applicazione host dell'algoritmo forniti per il progetto nella cartella `Tools` all'interno della directory dell'applicazione host della fotocamera. Sostituisci i file con lo stesso nome, quindi fai doppio clic sull'eseguibile per avviarlo.
+
+<Frame>
+  ![Installazione dell'applicazione host della fotocamera](/images/developers/deployment-algorithm-detection-picture-2.avif)
+</Frame>
+
+Per aggiornare solo l'applicazione host dell'algoritmo, sostituisci il relativo file `.exe` con la versione fornita.
+
+### Aggiornare il firmware dell'algoritmo
+
+<Warning>
+  La fotocamera si riavvia durante il flashing. Non scollegare l'alimentazione o la rete e non chiudere l'applicazione host. Il pacchetto deve corrispondere al modello della fotocamera, alla versione del firmware MDS e all'algoritmo del progetto.
+</Warning>
+
+<Tabs>
+  <Tab title="Applicazione host della fotocamera">
+    1. Avvia `LxCameraViewer.exe` e apri la fotocamera.
+    2. Seleziona **Strumenti di base → Impostazioni funzione → Aggiornamento firmware**.
+    3. Scegli il file dell'algoritmo di rilevamento fornito e seleziona **Esegui**.
+  </Tab>
+  <Tab title="Applicazione host dell'algoritmo">
+    1. Seleziona la fotocamera target nell'elenco dei dispositivi.
+    2. Seleziona **Aggiorna firmware**, scegli il file dell'algoritmo di rilevamento e aprilo.
+    3. Attendi che la fotocamera ricompaia nell'elenco dei dispositivi.
+  </Tab>
+</Tabs>
+
+Quando la fotocamera ricompare dopo il riavvio, il flashing è completato. Uno sfondo verde della fotocamera nell'applicazione host dell'algoritmo indica che la fotocamera è connessa e che l'algoritmo è disponibile.
+
+## Applicazione host dell'algoritmo
+
+### Avvio e stato
+
+Avvia `LxApplicationViewer.exe`. Un'icona verde nell'elenco dei dispositivi indica una fotocamera connessa. Seleziona un dispositivo per alternare la vista corrente tra la modalità RGB e quella della nuvola di punti. Gli utenti standard possono visualizzare i risultati; gli amministratori possono modificare i parametri della fotocamera e dell'algoritmo.
+
+<Frame>
+  ![Finestra principale dell'applicazione host dell'algoritmo](/images/developers/deployment-algorithm-detection-administrator.avif)
+</Frame>
+
+### Strumenti di base
+
+| Funzione | Descrizione |
+| --- | --- |
+| Cambio utente | Cambia i livelli di autorizzazione. Gli amministratori possono configurare i parametri della fotocamera e dell'algoritmo. |
+| Piano ideale | Mostra o nasconde il piano orizzontale di riferimento. |
+| Piano estrinseco | Mostra o nasconde il terreno calcolato dalla calibrazione estrinseca. |
+| Visualizzazione cache | Lascia invariato. |
+| Visualizzazione algoritmo | Mostra l'algoritmo attualmente abilitato. |
+| Esporta immagini salvate | Esporta le immagini salvate. |
+| Riproduzione dello storico | Visualizza le immagini RGB e i log dei dati ToF. |
+| Cambia algoritmo dell'applicazione | Scegli l'algoritmo da eseguire, quindi seleziona **Salva e invia**. |
+| Visualizza risultati del rilevamento | Mostra l'output dell'algoritmo corrente. |
+
+### Barra di stato e riproduzione
+
+| Funzione | Descrizione |
+| --- | --- |
+| RGB | Mostra l'immagine RGB. |
+| Nuvola di punti | Mostra la nuvola di punti. |
+| Arresta algoritmo | Arresta l'algoritmo corrente. Non si riavvia automaticamente finché la fotocamera non viene riaccesa. |
+| Aggiorna firmware | Apre il flusso di lavoro per l'aggiornamento del firmware dell'algoritmo. |
+| Riavvia fotocamera | Riavvia la fotocamera selezionata. |
+
+Quando cambia lo stato, il software salva un fotogramma RGB e i dati della nuvola di punti. I dati di riproduzione non sono condivisi tra gli algoritmi. L'ora della riproduzione usa l'orologio interno della fotocamera, non l'ora di sistema del computer host.
+
+Se lo sfondo del dispositivo è giallo, oppure è verde ma l'immagine non si aggiorna, abilita l'aggiornamento automatico per riprendere l'acquisizione delle immagini.
+
+## Calibrazione estrinseca
+
+### Configurazione della fotocamera
+
+| Configurazione | Descrizione |
+| --- | --- |
+| Nome fotocamera | Identifica una fotocamera in una distribuzione con più fotocamere. |
+| Modalità simulazione | Funzione interna; lascia disabilitata. |
+| Modalità salvataggio immagini | Salva i dati delle immagini dell'algoritmo sulla fotocamera. |
+| Modalità acquisizione immagini | `MDS` non occupa l'accesso alla fotocamera. `SDK` lo occupa; l'applicazione host non può aprire la fotocamera mentre l'algoritmo è in esecuzione. |
+| `x`, `y`, `z` | Posizione estrinseca della fotocamera; `z` è l'altezza della fotocamera dal terreno. |
+| `roll`, `pitch`, `yaw` | Angoli di orientamento estrinseco della fotocamera. |
+| Piano ideale | Mantieni il valore predefinito. |
+| Leggi configurazione dalla fotocamera | Legge la configurazione corrente della fotocamera. |
+| Salva e invia | Scrive le modifiche sulla fotocamera. I parametri non salvati non hanno effetto. |
+| Calibrazione estrinseca | Calibra l'altezza e l'orientamento della fotocamera. |
+
+<Tabs>
+  <Tab title="Installazione verticale">
+    1. Apri **Configurazione della fotocamera**. Prima della calibrazione, imposta `x`, `y`, `z`, `roll`, `pitch` e `yaw` su `0`, quindi seleziona **Salva e invia**.
+    2. Seleziona **Calibrazione estrinseca**. Al termine della calibrazione, verifica il risultato nel pannello dei parametri.
+
+    <Frame>
+      ![Calibrazione estrinseca per un'installazione verticale](/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Installazione orizzontale">
+    1. Apri **Configurazione della fotocamera** e accedi alla pagina di calibrazione dei parametri.
+    2. Allinea il terreno della nuvola di punti al sistema di coordinate: gli assi `X` rosso e `Y` verde giacciono sul terreno, mentre l'asse `Z` blu è perpendicolare al terreno e punta verso l'alto.
+    3. Di solito regola prima solo `roll` e `z`; imposta gli altri valori su `0`. Dopo la verifica, seleziona **Salva e invia**.
+
+    <Frame>
+      ![Risultato della calibrazione estrinseca per un'installazione orizzontale](/images/developers/deployment-algorithm-detection-1.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Riferimento dei parametri dell'algoritmo
+
+Seleziona **Salva e invia** dopo aver modificato qualsiasi parametro dell'algoritmo. Mantieni i parametri del filtro sui valori predefiniti, a meno che un test sul posto non dimostri che è necessario modificarli.
+
+<Tabs>
+  <Tab title="Rilevamento persone">
+    <Frame>
+      ![Configurazione globale del rilevamento persone](/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif)
+    </Frame>
+
+    | Parametro | Descrizione |
+    | --- | --- |
+    | Versione algoritmo | Versione corrente dell'algoritmo. |
+    | Frequenza di rilevamento | Frequenza di aggiornamento delle immagini e dei risultati. |
+    | Filtro temporale | Con `3`, sono necessari tre risultati identici consecutivi prima che un risultato venga considerato valido. |
+    | Dimensione kernel | Dimensione del kernel per le operazioni morfologiche 2D. Valori più grandi riducono i target ed espandono lo sfondo. |
+    | Soglia di distanza | Determina se i punti sono simili o appartengono alla stessa classe. |
+    | Numero minimo di punti | Numero minimo di punti della nuvola richiesto per il clustering semantico. |
+    | Numero minimo di punti non semantici | Numero minimo di punti della nuvola richiesto per il clustering non semantico. |
+    | Dimensione del vicinato | Definisce l'intervallo del vicinato dei punti e influisce sulla granularità del clustering. |
+    | Rilevamento della rotazione | Corrisponde alla direzione di installazione della fotocamera; usa l'orientamento con il logo rivolto verso il basso come riferimento `0°`. |
+
+    | Parametro della regione | Descrizione |
+    | --- | --- |
+    | Aggiungi / elimina regione | Crea o elimina una regione di rilevamento delle persone. |
+    | Riquadro corrente | Seleziona la regione di rilevamento attiva. |
+    | `X`, `Y`, `Z` minimo / massimo | Definisce i limiti 3D della regione. |
+    | ID | Nome della regione usato per distinguere più regioni. |
+    | Trascina per regolare la regione | Trascina con il pulsante sinistro del mouse lungo `x` e `y`; trascina con il pulsante destro lungo `z`. |
+
+    <Frame>
+      ![Configurazione della regione di rilevamento persone](/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Rilevamento ubicazioni di stoccaggio">
+    <Frame>
+      ![Configurazione globale del rilevamento delle ubicazioni di stoccaggio](/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif)
+    </Frame>
+
+    | Parametro | Descrizione |
+    | --- | --- |
+    | Versione algoritmo | Versione corrente dell'algoritmo. |
+    | Filtro AI | Segmentazione semantica; attualmente non disponibile. |
+    | Frequenza di rilevamento | Frequenza di aggiornamento dei risultati. |
+    | Angolo di allineamento | Offset angolare massimo consentito del carico quando è abilitato il controllo dell'allineamento. |
+    | Controllo dell'allineamento | Controlla l'offset angolare e lo stato dei limiti. Gli oggetti rilevati vengono mostrati con riquadri del volume gialli. |
+    | Filtro temporale | Emette uno stato valido solo dopo diversi risultati consecutivi coerenti. |
+    | Numero minimo di punti | Gli oggetti con meno punti di questo valore vengono ignorati. |
+
+    | Modalità regione | Configurazione |
+    | --- | --- |
+    | RGB 2D | Usa i pixel `X` e `Y` minimo e massimo per definire l'ubicazione di stoccaggio. Sono necessarie la modalità semantica e un modello semantico. |
+    | Nuvola di punti 3D | Usa `X`, `Y` e `Z` minimo e massimo per definire l'ubicazione. Trascina con il pulsante sinistro del mouse lungo `x` e `y`, oppure con il pulsante destro lungo `z`. |
+
+    | Funzione avanzata | Descrizione |
+    | --- | --- |
+    | Copia riquadro corrente | Copia la regione di stoccaggio attiva. |
+    | Direzione, spaziatura, conteggio | Definisce copie equidistanti lungo l'asse `X`, `Y` o `Z`. |
+    | Esegui | Genera più regioni dalla configurazione. |
+    | Calibrazione codice QR | Inserisci la larghezza e la lunghezza dell'ubicazione, `Z_MIN` e `Z_MAX`, quindi calibra con un codice QR. |
+
+    <Frame>
+      ![Configurazione della regione di stoccaggio nella nuvola di punti 3D](/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Rilevamento volumi">
+    <Frame>
+      ![Configurazione globale del rilevamento dei volumi](/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif)
+    </Frame>
+
+    | Parametro | Descrizione |
+    | --- | --- |
+    | Versione algoritmo | Versione corrente dell'algoritmo. |
+    | Modalità trigger | Se abilitata, acquisisce un'immagine e un risultato per ogni trigger. |
+    | Rilevamento verso l'alto | Rileva usando il sistema di coordinate inverso della fotocamera. |
+    | Frequenza di rilevamento | Frequenza di aggiornamento delle immagini e dei risultati. |
+    | Distanza del piano di rilevamento | Posizione di riferimento della superficie inferiore dell'oggetto, in mm. |
+    | Conteggio vicinato / soglia di distanza | Parametri del filtro; nella maggior parte delle distribuzioni mantieni i valori predefiniti. |
+    | Soglia del filtro del vettore normale | Filtra i piani inclinati della nuvola di punti. La raccomandazione originale è `60`. |
+    | Soglia di distanza del vettore normale | Parametro del filtro. L'intervallo consigliato originale è `20–30`. |
+    | Numero minimo di punti | Gli oggetti con meno punti di questo valore vengono ignorati. |
+    | `X`, `Y`, `Z` minimo | Soglie minime di lunghezza, larghezza e altezza, in mm. |
+
+    | Parametro della regione | Descrizione |
+    | --- | --- |
+    | `X`, `Y`, `Z` minimo / massimo | Definisce i limiti 3D della regione di rilevamento dei volumi. |
+
+    <Frame>
+      ![Configurazione della regione di rilevamento dei volumi](/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Distribuire un algoritmo
+
+Passa alla modalità nuvola di punti e scorri sull'area dell'immagine per visualizzare i dati della nuvola di punti.
+
+### Rilevamento persone
+
+<Steps>
+  <Step title="Calibra un'installazione orizzontale">
+    Allinea gli assi `X` e `Y` alla nuvola di punti del terreno. L'asse `Z` deve essere perpendicolare al terreno e puntare verso l'alto.
+  </Step>
+  <Step title="Imposta i parametri globali">
+    Apri **Rilevamento persone**. Di solito è necessario impostare solo **Rilevamento della rotazione**. La rotazione oraria della fotocamera supporta `0°`, `90°`, `180°` e `270°`.
+  </Step>
+  <Step title="Crea la regione di rilevamento">
+    Seleziona **Aggiungi regione di rilevamento**, imposta `X`, `Y` e `Z` minimo e massimo e sposta la regione sul target. L'esempio originale usa una regione di `1000 × 1000 × 2000 mm`.
+  </Step>
+  <Step title="Salva e verifica">
+    Seleziona **Salva e invia**, esegui un test facendo attraversare la regione a una persona e verifica il risultato nella barra di stato o nella riproduzione dello storico.
+  </Step>
+</Steps>
+
+| Regola di corrispondenza | Nessuna persona | Persona | Ostacolo | Persona e ostacolo |
+| --- | --- | --- | --- | --- |
+| Solo profondità | `0` | `2` | `2` | `2` |
+| Semantica più profondità | `0` | `1` | `0` | `1` |
+
+La modalità solo profondità segnala ogni oggetto nella regione. La modalità semantica più profondità segnala solo i cluster classificati come persone.
+
+### Rilevamento ubicazioni di stoccaggio
+
+<Steps>
+  <Step title="Calibra la fotocamera">
+    Segui la procedura di calibrazione estrinseca. Allinea `X` e `Y` al terreno e mantieni `Z` perpendicolare e rivolto verso l'alto.
+  </Step>
+  <Step title="Configura i parametri globali">
+    Imposta **Controllo dell'allineamento**, **Angolo di allineamento** e **Numero minimo di punti** per il sito. Abilita il controllo dell'allineamento quando il carico deve essere posizionato con un angolo definito.
+  </Step>
+  <Step title="Crea le ubicazioni di stoccaggio">
+    In modalità nuvola di punti, seleziona **Aggiungi ubicazione di stoccaggio**, passa alla vista dall'alto e premi `X` per avviare o interrompere il disegno. Trascina il rettangolo sul pallet e regola i limiti `X`, `Y` e `Z`. Premi di nuovo `X` per uscire dalla modalità di disegno.
+  </Step>
+  <Step title="Salva e verifica">
+    Seleziona **Salva e invia**. Configura le ubicazioni in modalità RGB 2D o nuvola di punti 3D e controlla `Result` nella barra di stato.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Disegno di una regione di stoccaggio in modalità nuvola di punti](/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif)
+</Frame>
+
+| Stato dell'ubicazione di stoccaggio | `Result` |
+| --- | --- |
+| Vuota | `0` |
+| Occupata, oppure occupata e allineata | `1` |
+| Occupata con un angolo oltre la soglia di allineamento | `2` |
+| Occupata e al di fuori dei limiti dell'ubicazione | `3` |
+
+Per una disposizione regolare, usa **Copia riquadro corrente** per creare ubicazioni con una direzione e una spaziatura fisse. Se è necessaria la verifica tramite codice QR, usa **Calibrazione codice QR** per configurare le dimensioni dell'ubicazione e l'intervallo di profondità.
+
+### Rilevamento volumi
+
+<Steps>
+  <Step title="Calibra un'installazione verticale">
+    Il rilevamento dei volumi procede dall'alto verso il basso. Dopo la calibrazione, l'asse `Z` punta verso il basso e il piano `X`/`Y` è parallelo al terreno.
+  </Step>
+  <Step title="Imposta il piano di rilevamento">
+    Per le merci posizionate direttamente sul pavimento, imposta il piano di rilevamento all'altezza del pavimento. Per misurare solo le merci su un pallet, allinea il piano alla nuvola di punti del pallet.
+  </Step>
+  <Step title="Imposta le dimensioni minime e la regione">
+    Imposta i valori minimi `X`, `Y` e `Z` per filtrare i target piccoli. Quindi imposta i limiti della regione in base al piano di rilevamento e alle dimensioni del carico.
+  </Step>
+  <Step title="Salva e verifica">
+    Seleziona **Salva e invia**, posiziona uno o più oggetti nella regione e verifica la lunghezza, la larghezza, l'altezza e il conteggio restituiti.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Piano di rilevamento del pavimento per il rilevamento dei volumi](/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif)
+  </Frame>
+
+  <Frame>
+    ![Risultato del rilevamento del volume di un singolo oggetto](/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif)
+  </Frame>
+</Columns>
+
+Per usare l'acquisizione con trigger singolo, abilita **Modalità trigger** in **Rilevamento volumi** e seleziona **Salva e invia**. Quindi seleziona **Trigger singolo** in **Strumenti di base** oppure invia `TM_TRIGGER` tramite TCP o UDP.
+
+## Interfacce di comunicazione
+
+<Note>
+  L'indirizzo IP negli esempi è puramente illustrativo. Sostituiscilo con l'indirizzo della fotocamera sul sito, quindi verifica la rete, lo stato dell'algoritmo e il formato dei risultati prima di eseguire l'integrazione con un sistema di livello superiore.
+</Note>
+
+### Metodi di trasporto
+
+| Protocollo | Porta | Richiesta | Uso |
+| --- | --- | --- | --- |
+| TCP | `14951` | `RESULT_UPDATE` | Ottiene il risultato corrente dell'algoritmo. |
+| UDP | `14950` | `RESULT_UPDATE` | Ottiene il risultato corrente dell'algoritmo. |
+| HTTP | `14952` | `RESULT_UPDATE` | Ottiene il risultato dell'algoritmo come JSON. |
+| TCP / UDP | Porta dei risultati | `TM_TRIGGER` | Esegue un rilevamento dei volumi con un trigger e restituisce il risultato. |
+| Modbus TCP | `16502` | Leggi registri di mantenimento | Legge lo stato delle ubicazioni di stoccaggio. |
+
+### Richiesta del risultato HTTP
+
+Il sistema di livello superiore invia una richiesta di risultato all'endpoint di visione, che restituisce una stringa JSON. Usa nell'applicazione client HTTP le intestazioni della richiesta fornite per il progetto e il seguente corpo della richiesta.
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Attiva la restituzione del risultato corrente dell'algoritmo da parte della fotocamera.
+</ParamField>
+
+### Campi comuni della risposta
+
+<ResponseField name="IP" type="string" required>
+  Indirizzo IP della fotocamera che ha prodotto i dati.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string" required>
+  Nome della fotocamera; modificalo nella configurazione della fotocamera.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Codice restituito; `0` indica il successo.
+</ResponseField>
+
+<Tabs>
+  <Tab title="Rilevamento persone (SG)">
+    <ResponseField name="SG" type="object" required>
+      Oggetto di stato indicizzato per ID della regione di rilevamento: `0` indica nessun target, `1` indica che è stata rilevata una persona e `2` indica che un oggetto è stato rilevato solo dalla regola di profondità.
+    </ResponseField>
+
+    <ResponseField name="__object_details" type="string[]">
+      Dettagli del cluster. Ogni elemento è una stringa JSON che deve essere deserializzata nuovamente.
+    </ResponseField>
+
+    <ResponseField name="SG_DATA_TIME" type="string">
+      Timestamp dei dati del rilevamento persone.
+    </ResponseField>
+
+    <ResponseField name="SG_RES_TIME" type="string">
+      Timestamp del risultato del rilevamento persone.
+    </ResponseField>
+
+    I dettagli del cluster includono `rbx2d`, `rby2d`, `tlx2d` e `tly2d` (coordinate del riquadro 2D), `semantic_index`, `traceID` e `x_min`, `x_max`, `y_min`, `y_max`, `z_min` e `z_max` (limiti del riquadro 3D).
+  </Tab>
+  <Tab title="Rilevamento ubicazioni di stoccaggio (SS)">
+    <ResponseField name="SS" type="object" required>
+      Oggetto di stato indicizzato per ID dell'ubicazione: `0` vuota, `1` occupata, `2` occupata con un offset angolare e `3` occupata e fuori dai limiti.
+    </ResponseField>
+
+    <ResponseField name="X__detail__info" type="number[]">
+      Dettagli dell'ubicazione `X`: centro `x`, `y` e `z`, lunghezza, larghezza, altezza e offset angolare rispetto al riquadro di delimitazione. Un'ubicazione creata in 2D restituisce tutti valori `-1`.
+    </ResponseField>
+
+    <ResponseField name="SS_DATA_TIME" type="string">
+      Timestamp dei dati dell'ubicazione di stoccaggio.
+    </ResponseField>
+
+    <ResponseField name="SS_RES_TIME" type="string">
+      Timestamp del risultato dell'ubicazione di stoccaggio.
+    </ResponseField>
+  </Tab>
+  <Tab title="Rilevamento volumi (TM)">
+    <ResponseField name="TM" type="object[]" required>
+      Array di riquadri del volume completi nella regione di rilevamento.
+    </ResponseField>
+
+    <ResponseField name="angle" type="number">
+      Offset angolare del riquadro del volume.
+    </ResponseField>
+
+    <ResponseField name="cx" type="number">
+      Coordinata `x` del centro del riquadro del volume.
+    </ResponseField>
+
+    <ResponseField name="cy" type="number">
+      Coordinata `y` del centro del riquadro del volume.
+    </ResponseField>
+
+    <ResponseField name="cz" type="number">
+      Coordinata `z` del centro del riquadro del volume.
+    </ResponseField>
+
+    <ResponseField name="length" type="number">
+      Lunghezza dell'oggetto.
+    </ResponseField>
+
+    <ResponseField name="width" type="number">
+      Larghezza dell'oggetto.
+    </ResponseField>
+
+    <ResponseField name="height" type="number">
+      Altezza dell'oggetto.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Tipo semantico.
+    </ResponseField>
+
+    <ResponseField name="valid" type="boolean">
+      Indica se il risultato è valido.
+    </ResponseField>
+
+    <ResponseField name="TM_DATA_TIME" type="string">
+      Timestamp dei dati del rilevamento volumi.
+    </ResponseField>
+
+    <ResponseField name="TM_RES_TIME" type="string">
+      Timestamp del risultato del rilevamento volumi.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+### Esempio di risposta del rilevamento persone
+
+```json
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
+```
+
+### Modbus TCP (rilevamento ubicazioni di stoccaggio)
+
+I risultati sono ordinati per ID dell'ubicazione di stoccaggio; vengono restituite al massimo le prime 16 ubicazioni.
+
+| Configurazione | Valore |
+| --- | --- |
+| Porta | `16502` |
+| Indirizzo di ascolto | `0.0.0.0` (tutte le interfacce di rete) |
+| Numero di registri | `16` |
+| Indirizzo iniziale | `0x0100` |
+| Ordine dei byte | Big-endian |
+
+| Registro | Contenuto | Formato dati |
+| --- | --- | --- |
+| `0x0100 + ID` | Risultati del rilevamento dell'ubicazione di stoccaggio e del marcatore | `uint16_t` a 2 byte |
+| 8 bit alti | Codice di stato dell'ubicazione di stoccaggio | `0–2` |
+| 8 bit bassi | Codice di stato del marcatore | `0–2`; questa funzione non è attualmente disponibile, quindi ha lo stesso significato del codice di stato dell'ubicazione. |
+
+| Stato dell'ubicazione | Significato | Condizione |
+| --- | --- | --- |
+| `0` | Vuota | Nessuna merce o pallet. |
+| `1` | Occupata normalmente | Le merci sono posizionate come richiesto. |
+| `2` | Occupata in modo anomalo | Le dimensioni o la posizione del carico non rispettano i requisiti. |
+
+| Stato del marcatore | Significato |
+| --- | --- |
+| `0` | Marcatore non rilevato. |
+| `1` | Marcatore rilevato. |
+| `2` | Errore di rilevamento del marcatore. |
+
+#### Leggere la quarta ubicazione di stoccaggio
+
+L'esempio seguente usa l'ID transazione `0x0001` per leggere un registro di mantenimento all'indirizzo `0x0104`. La risposta contiene lo stato `0x0002`.
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
+```
+
+| Campo | Valore della richiesta | Descrizione |
+| --- | --- | --- |
+| Identificatore transazione | `00 01` | Numero di sequenza del client; la risposta deve corrispondere. |
+| Identificatore protocollo | `00 00` | Valore Modbus/TCP fisso. |
+| Lunghezza | `00 06` | Numero di byte nei campi della richiesta successivi. |
+| Identificatore unità | `FF` | Modalità broadcast o indirizzo del dispositivo. |
+| Codice funzione | `03` | Legge i registri di mantenimento. |
+| Indirizzo iniziale | `01 04` | `0x0100 + 4`. |
+| Numero di registri | `00 01` | Legge un registro. |
+
+## Risoluzione dei problemi
+
+| Sintomo | Verifiche prioritarie |
+| --- | --- |
+| Fotocamera non trovata | Verifica che host e fotocamera condividano una sottorete, che la scheda di rete sia gigabit e che l'alimentazione e i collegamenti allo switch siano funzionanti. |
+| I parametri non hanno effetto | Verifica che dopo la modifica sia stato selezionato **Salva e invia**. |
+| Nessun risultato dell'algoritmo | Verifica che sia stato eseguito il flashing del firmware dell'algoritmo corretto, che il dispositivo sia verde e che l'algoritmo sia abilitato. |
+| Nuvola di punti vuota o non aggiornata | Scorri sull'area della nuvola di punti per visualizzare i dati; se necessario, abilita l'aggiornamento automatico. |
+| Risultati anomali delle ubicazioni o dei volumi | Ricontrolla le direzioni degli assi estrinseci, il piano di rilevamento e i limiti delle regioni, quindi ripeti il test con oggetti del sito. |

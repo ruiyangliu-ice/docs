@@ -1,0 +1,467 @@
+---
+title: Hướng dẫn sử dụng M4 Pro
+description: "Thông số kỹ thuật, giao diện, lắp đặt, đặc tính tạo ảnh và hướng dẫn phần mềm cho camera iToF RGB-D M4 Pro, M4 Pro 850 và M4 Pro Wfov."
+hidden: true
+---
+
+## Lịch sử sửa đổi
+
+| Ngày | Phiên bản | Thay đổi |
+| --- | --- | --- |
+| 2023/01/31 | V0.1 | Tài liệu ban đầu |
+| 2023/02/24 | V1.0 | Cập nhật kích thước kết cấu và phát hành chính thức |
+| 2023/04/10 | V1.1 | Thêm hướng dẫn lắp đặt khuyến nghị |
+| 2023/04/18 | V1.2 | Cập nhật giao diện sản phẩm |
+| 2023/06/28 | V1.2.1 | Cập nhật phạm vi nguồn cấp và cấp bảo vệ chống xâm nhập |
+| 2023/08/31 | V1.3 | Cập nhật thông tin ống kính RGB |
+| 2024/05/10 | V1.3.1 | Sửa tham số camera |
+| 2024/06/17 | V1.3.2 | Loại bỏ vít khỏi kiện hàng và thêm giấy chứng nhận phù hợp |
+| 2024/11/25 | V1.4 | Cập nhật nhiệt độ lưu trữ của camera |
+
+## Tổng quan sản phẩm
+
+Hướng dẫn này mô tả camera M4 Pro do Zhejiang MRDVS Technology Co., Ltd. phát triển, bao gồm thông số kỹ thuật, tính năng và hướng dẫn vận hành.
+
+Họ sản phẩm M4 Pro gồm camera M4 Pro, M4 Pro 850 và M4 Pro Wfov. Các sản phẩm ToF này sử dụng giao diện truyền thông Gigabit Ethernet và nguồn cấp 24VDC.
+
+<Frame>
+  ![Tổng quan camera M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-camera-overview.avif)
+</Frame>
+
+Hình 1.1. Camera M4 Pro
+
+### Tính năng sản phẩm
+
+- Tích hợp năng lực tính toán 6Tops, cho phép hoạt động mà không cần CPU bên ngoài
+- Hỗ trợ RGB-D
+- Tránh chướng ngại vật, docking, định vị, gắp kiện mềm, phát hiện người, phát hiện vị trí lưu trữ và đo thể tích độc lập
+- Cổng Gigabit Ethernet
+
+### Điều khoản sử dụng
+
+**Tuân thủ các yêu cầu sau trong quá trình sử dụng:**
+
+- Không bóc nhãn khỏi sản phẩm.
+- Không tháo rời sản phẩm. Việc tháo rời có thể làm hỏng sản phẩm.
+- Không sử dụng sản phẩm trong môi trường có từ trường mạnh.
+- Không sử dụng sản phẩm dưới ánh nắng mạnh trên 100 kLux.
+- Để vệ sinh vỏ, lau bằng khăn mềm, không xơ, thấm nhẹ nước tinh khiết hoặc cồn.
+- Giữ lại bao bì gốc và sử dụng bao bì này khi có thể trong quá trình vận chuyển.
+
+---
+
+## Nguyên lý hoạt động và thông số kỹ thuật
+
+### Nguyên lý đo khoảng cách ToF
+
+Camera M4 Pro sử dụng phương pháp đo khoảng cách theo thời gian bay (ToF). Camera đo khoảng thời gian từ khi phát ánh sáng đến khi nhận ánh sáng phản xạ từ vật thể để tính khoảng cách giữa vật thể và camera.
+
+Camera M4 Pro chụp trực tiếp độ sâu, cung cấp thông tin độ sâu chất lượng cao với tài nguyên tính toán tối thiểu và xây dựng cảnh độ sâu ở tốc độ khung hình cao. Tương tự LiDAR, camera ToF có thể sử dụng ToF xung (P\_ToF) hoặc ToF sóng liên tục điều chế (CW\_ToF). P\_ToF phát các xung ánh sáng, thường là ánh sáng không nhìn thấy, và tính khoảng cách từ thời gian truyền đi và quay về. CW\_ToF phát ánh sáng liên tục đã điều chế và tính khoảng cách từ độ lệch pha giữa ánh sáng phát ra và ánh sáng quay về.
+
+<Frame>
+  ![Nguyên lý đo khoảng cách ToF](/images/products/m-series-m4-pro-user-guide-tof-distance-measurement-principle.avif)
+</Frame>
+
+Hình 2.1. Nguyên lý phát hiện
+
+### Thông số kỹ thuật model
+
+Bảng 2-1. Thông số kỹ thuật sản phẩm
+
+| Camera | Model | M4 Pro | M4 Pro 850 | M4 Pro Wfov |
+| --- | --- | --- | --- | --- |
+| Hiệu năng | Cảm biến | Cảm biến Sony | ㅤ | ㅤ |
+| ㅤ | Phương pháp đo | Thời gian bay | ㅤ | ㅤ |
+| ㅤ | Bước sóng hoạt động | 940nm | 850nm | 940nm |
+| ㅤ | Độ phân giải và tốc độ khung hình ToF | 640 × 480 (tốc độ thông thường 12 fps) | 640 × 480 (tốc độ thông thường 12 fps) | 640 × 480 (tốc độ thông thường 12 fps) |
+| ㅤ | Trường nhìn ToF | 81° × 61° | 81° × 61° | 108° × 82° |
+| ㅤ | Độ phân giải và tốc độ khung hình RGB | 1920×1080 (tốc độ thông thường 12fps) | 1280×960 (tốc độ thông thường 12fps) | 1920×1080 (tốc độ thông thường 12fps) |
+| ㅤ | Trường nhìn RGB | 88°×56° | 86°×55° | 120°×80° |
+| ㅤ | Phạm vi đo | 0.3~~5m (độ phản xạ 90%); 0.3~~2.5m (độ phản xạ 10%) | ㅤ | 0.3~~3m (độ phản xạ 90%); 0.3~~1.2m (độ phản xạ 10%) |
+| ㅤ | Độ chính xác đo | ±4mm\+0.25%×độ sâu | ㅤ | ±5mm\+0.25%×độ sâu |
+| Điện | Giao diện truyền thông | Ethernet / RS485 | ㅤ | ㅤ |
+| ㅤ | Đầu nối nguồn | Đầu nối tròn công nghiệp 5 chân | ㅤ | ㅤ |
+| ㅤ | Nguồn cấp | 24V DC / 2A | ㅤ | ㅤ |
+| ㅤ | Công suất tiêu thụ trung bình | 8.7w | ㅤ | 9.2w |
+| Cơ khí | Kích thước | 95mm×80mm×41mm | ㅤ | ㅤ |
+| ㅤ | Khối lượng | 428g | ㅤ | ㅤ |
+| ㅤ | Cấp bảo vệ chống xâm nhập | IP50 | ㅤ | ㅤ |
+| ㅤ | Nhiệt độ hoạt động | -20℃~60℃ | ㅤ | ㅤ |
+| ㅤ | Nhiệt độ lưu trữ | -40℃~85℃ | ㅤ | ㅤ |
+| ㅤ | Độ ẩm | 10%~90%RH, không ngưng tụ | ㅤ | ㅤ |
+| Khác | Khả năng chống ánh sáng môi trường | Hỗ trợ ánh nắng lên đến 100 kLux | ㅤ | ㅤ |
+| ㅤ | Chuyển tiếp vùng bóng tối–ánh sáng | Độ biến thiên nhỏ hơn 1cm qua ranh giới bóng tối–ánh sáng 100 kLux | ㅤ | ㅤ |
+| ㅤ | Môi trường phần mềm | C / C\+\+ / ROS SDK | ㅤ | ㅤ |
+| ㅤ | Hệ thống được hỗ trợ | Windows7/8/10/11, Linux, Arm Linux/ROS | ㅤ | ㅤ |
+| ㅤ | Làm mát | Thụ động | ㅤ | ㅤ |
+
+Lưu ý: Tham khảo model 3D để biết kích thước sản phẩm.
+
+---
+
+## Đặc tính tạo ảnh và đo lường
+
+### Đặc tính điện
+
+Bảng 3-1. Đặc tính điện
+
+| Tham số | Ký hiệu | Điều kiện | Tối thiểu | Điển hình | Tối đa | Đơn vị |
+| --- | --- | --- | --- | --- | --- | --- |
+| Điện áp cấp | VDD | ㅤ | 22 | 24 | 26 | V |
+| CAN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
+| Nhiệt độ hoạt động | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Độ ẩm hoạt động | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Độ ẩm lưu trữ | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Nhiệt độ lưu trữ | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### Dữ liệu ngõ ra
+
+Theo mặc định, camera M4 Pro xuất hình ảnh độ sâu (Hình 3.1), dữ liệu cường độ tín hiệu theo từng pixel (Hình 3.2) và đám mây điểm được tạo từ dữ liệu độ sâu (Hình 3.3). Vật thể được hiển thị là một thanh nhôm định hình.
+
+<Frame>
+  ![Hình ảnh độ sâu M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-depth-image.avif)
+</Frame>
+
+Hình 3.1. Hình ảnh độ sâu
+
+<Frame>
+  ![Hình ảnh biên độ M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-amplitude-image.avif)
+</Frame>
+
+Hình 3.2. Hình ảnh biên độ
+
+<Frame>
+  ![Đám mây điểm M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-point-cloud.avif)
+</Frame>
+
+Hình 3.3. Đám mây điểm
+
+Camera sử dụng dải tương phản động cao giữa các khung hình (HDR) để mở rộng phạm vi đo. Cảm biến xuất hai khung hình độ sâu với thời gian tích hợp và tham số hiệu chuẩn khác nhau. Với mỗi pixel, ứng dụng máy chủ chọn khung hình có cường độ cao hơn và kết hợp các kết quả thành ngõ ra cuối cùng, cải thiện độ chính xác độ sâu trên các phạm vi đo.
+
+Hình ảnh sau được chụp bằng cảm biến RGB của camera.
+
+<Frame>
+  ![Hình ảnh RGB M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-rgb-image.avif)
+</Frame>
+
+Hình 3.4. Hình ảnh RGB
+
+### Trường nhìn và phạm vi hoạt động
+
+Hình 3.5 minh họa vùng phát hiện của M4 Pro. Trường nhìn ngang của camera là 81° và trường nhìn dọc là 61°. Khoảng cách phát hiện phụ thuộc vào công suất quang học. Công suất quang học và độ phản xạ của mục tiêu cao hơn làm tăng vùng mù gần nhưng giảm vùng mù xa. Công suất quang học và độ phản xạ của mục tiêu thấp hơn làm giảm vùng mù gần nhưng tăng vùng mù xa. Với vật thể có độ phản xạ 10%-90%, phạm vi đo của M4 Pro là 0.3~5m. Ngoài 5m, tín hiệu phản xạ yếu dễ bị ảnh hưởng bởi ánh sáng môi trường hơn và tạo ra sai số lớn hơn.
+
+<Frame>
+  ![Trường nhìn M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-field-of-view.avif)
+</Frame>
+
+Hình 3.5. Trường nhìn M4 Pro
+
+<Frame>
+  ![Trường nhìn M4 Pro Wfov](/images/products/m-series-m4-pro-user-guide-m4-pro-wfov-field-of-view.avif)
+</Frame>
+
+Hình 3.6. Trường nhìn M4 Pro Wfov
+
+<Frame>
+  ![Trường nhìn M4 Pro 850](/images/products/m-series-m4-pro-user-guide-m4-pro-850-field-of-view.avif)
+</Frame>
+
+Hình 3.7. Trường nhìn M4 Pro 850
+
+### Tham chiếu độ phản xạ
+
+Các giá trị độ phản xạ trong hướng dẫn này được đo bằng thẻ trắng tiêu chuẩn Kodak. Giá trị tham chiếu của các vật liệu khác được liệt kê bên dưới.
+
+Bảng 3-2. Độ phản xạ của vật liệu
+
+| STT | Vật liệu | Độ phản xạ |
+| --- | --- | --- |
+| 1 | Cao su đen | 22% |
+| 2 | Cốc gốm đen | 34% |
+| 3 | Tấm nhựa đen | 42% |
+| 4 | Giấy báo | 45% |
+| 5 | Vải đen | 78% |
+| 6 | Chai nhựa đục | 85% |
+| 7 | Tấm gỗ nhẵn | 90% |
+| 8 | Giấy trắng | 90% |
+| 9 | Thẻ trắng tiêu chuẩn Kodak | 100% |
+| 10 | Kính trong | 140% |
+| 11 | Bề mặt kim loại sáng bóng, màu sáng | 150% |
+
+### Kích thước
+
+<Frame>
+  ![Kích thước camera M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-camera-dimensions.avif)
+</Frame>
+
+Hình 3.8. Kích thước camera M4 Pro
+
+### Hệ tọa độ quang học và gốc tọa độ
+
+**Hệ tọa độ quang học:**
+
+- Hệ tọa độ quang học gồm hệ tọa độ camera (CCS) và hệ tọa độ thế giới (WCS).
+- Hệ tọa độ camera là hệ tọa độ hình ảnh độ sâu hai chiều. Gốc tọa độ là tâm quang học.
+- Hệ tọa độ thế giới là hệ tọa độ đám mây điểm ba chiều.
+- Sử dụng thông số nội tại của camera để chuyển tọa độ hình ảnh độ sâu sang tọa độ đám mây điểm 3D. Xem các ví dụ SDK.
+
+<Frame>
+  ![Hệ tọa độ quang học](/images/products/m-series-m4-pro-user-guide-optical-coordinate-systems.avif)
+</Frame>
+
+Hình 3.9. Hệ tọa độ quang học
+
+**Gốc tọa độ camera được xác định như sau:**
+
+1. Gốc tọa độ X thẳng hàng với trục X của sản phẩm.
+2. Gốc tọa độ Y thẳng hàng với trục Y của sản phẩm.
+3. Gốc tọa độ Z nằm trên bề mặt trước của camera.
+
+<Frame>
+  ![Gốc tọa độ camera M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-camera-origin.avif)
+</Frame>
+
+Hình 3.10. Gốc tọa độ camera
+
+### Giao diện sản phẩm
+
+Cổng 5 chân của camera M4 Pro được định nghĩa bên dưới (**lưu ý: chừa 35mm tại vị trí cáp đi ra để lắp đặt và đảm bảo bán kính uốn**):
+
+<Frame>
+  ![Giao diện sản phẩm M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-product-interface.avif)
+</Frame>
+
+Bảng 3-3. Định nghĩa chân
+
+| Cổng | Chân | Tín hiệu | Mô tả | Màu dây |
+| --- | --- | --- | --- | --- |
+| Ổ cắm | 1 | GND | Mass tín hiệu | Xanh dương |
+| ㅤ | 2 | 485\_A | RS485\_A | Xám |
+| ㅤ | 3 | 485\_B | RS485\_B | Trắng |
+| ㅤ | 4 | VIN \+ | Ngõ vào nguồn dương 24V | Nâu |
+| ㅤ | 5 | VIN - | Ngõ vào nguồn âm 24V | Đen |
+
+### Lắp đặt khuyến nghị
+
+**Sử dụng một trong ba phương pháp lắp đặt sau.**
+
+**Lắp đặt 1:** Không nhìn thấy tường bên phải và sàn. Đặt camera trong góc sao cho trong trường nhìn chỉ có bức tường phía trước. Cấu hình này cung cấp hiệu suất đo khoảng cách tốt.
+
+<Frame>
+  ![Lắp đặt M4 Pro khuyến nghị 1](/images/products/m-series-m4-pro-user-guide-recommended-m4-pro-installation-1.avif)
+</Frame>
+
+Hình 3.11. Lắp đặt 1
+
+**Lắp đặt 2:** Nhìn thấy tường bên phải nhưng không nhìn thấy sàn. Đặt camera trong góc cách tường bên phải ít nhất 20cm, đo theo khoảng cách `d`. Cấu hình này có thể đạt độ chính xác đo khoảng cách ±15mm.
+
+<Frame>
+  ![Lắp đặt M4 Pro khuyến nghị 2](/images/products/m-series-m4-pro-user-guide-recommended-m4-pro-installation-2.avif)
+</Frame>
+
+Hình 3.12. Lắp đặt 2
+
+**Lắp đặt 3:** Nhìn thấy sàn nhưng không nhìn thấy tường bên phải. Lắp camera ở độ cao khuyến nghị `h` từ 10cm~30cm phía trên sàn.
+
+<Frame>
+  ![Lắp đặt M4 Pro khuyến nghị 3](/images/products/m-series-m4-pro-user-guide-recommended-m4-pro-installation-3.avif)
+</Frame>
+
+Hình 3.13. Lắp đặt 3
+
+Khi camera ở gần sàn, phần sàn gần camera bị phơi sáng quá mức và ảnh hưởng đến các khu vực khác. Ánh sáng tán xạ và phản xạ đa đường cũng ảnh hưởng đến phép đo gần sàn, như minh họa trong Hình 3.11.
+
+<Frame>
+  ![Ảnh hưởng phản xạ đa đường gần sàn](/images/products/m-series-m4-pro-user-guide-near-floor-multipath-effects.avif)
+</Frame>
+
+Hình 3.14. Ảnh hưởng phản xạ đa đường gần sàn
+
+Trong quang học tạo ảnh, ánh sáng tán xạ chủ yếu xuất hiện dưới dạng bóng ma và lóe sáng, như minh họa trong Hình 3.12.
+
+<Frame>
+  ![Bóng ma và lóe sáng do ánh sáng tán xạ](/images/products/m-series-m4-pro-user-guide-ghosting-and-flare-from-stray-light.avif)
+</Frame>
+
+Hình 3.15. Bóng ma và lóe sáng
+
+**Không lắp đặt sản phẩm ở nơi vừa nhìn thấy tường bên phải vừa nhìn thấy sàn**, như minh họa bên dưới. Ánh sáng tán xạ từ sàn và phản xạ đa đường từ tường có thể ảnh hưởng đến phép đo theo những cách phức tạp.
+
+<Frame>
+  ![Lắp đặt M4 Pro không được hỗ trợ](/images/products/m-series-m4-pro-user-guide-unsupported-m4-pro-installation.avif)
+</Frame>
+
+Hình 3.16. Lắp đặt không được hỗ trợ
+
+---
+
+## Độ chính xác và triển khai nhiều camera
+
+### Độ chính xác
+
+Hiệu chuẩn loại bỏ độ lệch cố định giữa phép đo của cảm biến và giá trị thực bằng cách ánh xạ giá trị này sang giá trị kia. Để hiệu chuẩn camera M4 Pro, gắn camera lên ray và hướng camera vào một bức tường trắng. Ánh xạ giá trị đo của từng pixel với khoảng cách giữa camera và khu vực tương ứng trên tường, sau đó hiệu chỉnh phép đo bằng ánh xạ này như minh họa trong Hình 4.1.
+
+<Frame>
+  ![Thiết lập hiệu chuẩn M4 Pro](/images/products/m-series-m4-pro-user-guide-m4-pro-calibration-setup.avif)
+</Frame>
+
+Hình 4.1. Hiệu chuẩn
+
+M4 Pro sử dụng phép đo khoảng cách chủ động nên nhiều yếu tố ảnh hưởng đến độ chính xác. Lắp đặt không đúng có thể tạo ra ảnh hưởng đa đường và làm biến dạng phép đo.
+
+Điều này đặc biệt dễ nhận thấy khi đo một mục tiêu có độ phản xạ thấp nằm cạnh một vật thể có độ phản xạ cao. Lý tưởng nhất là ánh sáng đi theo đường màu xanh dương. Ánh sáng phản xạ từ tường cũng có thể tới mục tiêu rồi quay lại camera theo đường màu xanh lá. Ánh sáng phản xạ trực tiếp từ vật thể có độ phản xạ cao bên cạnh có thể đi vào camera theo đường màu đỏ. Các khiếm khuyết quang học biến ánh sáng này thành ánh sáng chói gây nhiễu phép đo khoảng cách, như minh họa trong Hình 4.2.
+
+<Frame>
+  ![Lắp đặt M4 Pro và các đường phản xạ](/images/products/m-series-m4-pro-user-guide-m4-pro-installation-and-reflection-paths.avif)
+</Frame>
+
+Hình 4.2. Lắp đặt camera
+
+### Độ ổn định
+
+Độ ổn định thường chỉ độ biến thiên tại một điểm (1-σ). Là thiết bị đo quang điện tử, M4 Pro chịu ảnh hưởng của chuyển đổi ADC, tỷ số tín hiệu trên nhiễu và nhiễu hệ thống. Hình 4.3 minh họa mối quan hệ giữa độ ổn định đo và cường độ tín hiệu.
+
+<Frame>
+  ![Độ ổn định đo và cường độ tín hiệu](/images/products/m-series-m4-pro-user-guide-measurement-precision-and-signal-intensity.avif)
+</Frame>
+
+Hình 4.3. Độ ổn định đo và cường độ tín hiệu
+
+M4 Pro chuyển đổi tín hiệu tương tự quang điện tử thành dữ liệu số. Trong quá trình chuyển đổi ADC, giá trị tương tự được làm tròn về bước độ phân giải nhỏ nhất, tạo ra nhiễu. Tín hiệu 1.1V có thể được biểu diễn thành 1V, tạo ra sai số 10%. Tín hiệu 10.1V có thể trở thành 10V, còn tín hiệu 100.1V có thể trở thành 100V; mỗi trường hợp tạo ra sai số khoảng 1%. Vì vậy, chuyển đổi ADC tạo ra nhiều nhiễu và sai số hơn ở mức tín hiệu thấp. Tỷ số tín hiệu trên nhiễu của camera ToF nhìn chung tuân theo SNR∝1/√t, trong đó `t` là thời gian tích hợp. Tăng thời gian tích hợp sẽ tăng cường độ tín hiệu.
+
+---
+
+## Nhiễu giữa nhiều camera
+
+### Nhiễu song song
+
+Khi hai camera được lắp song song, mỗi camera có thể nhận cả ánh sáng phản xạ của chính mình và ánh sáng từ camera kia, gây nhiễu dữ liệu độ sâu. Nhiễu song song làm tăng sai số đo khi hai camera M4 Pro hướng cùng một hướng.
+
+<Frame>
+  ![Nhiễu camera song song](/images/products/m-series-m4-pro-user-guide-parallel-camera-interference.avif)
+</Frame>
+
+Để tránh nhiễu song song, lắp các camera nghiêng so với phương ngang. Nếu bắt buộc phải lắp ở góc 0° so với mặt phẳng ngang, liên hệ MRDVS để được cấu hình tùy chỉnh.
+
+---
+
+## Phần mềm và dữ liệu
+
+### SDK
+
+Sử dụng SDK để khởi tạo và khởi động camera, truy xuất dữ liệu và đóng camera. Với các nền tảng khác Linux hoặc Windows, chuyển ứng dụng bằng cách tham khảo mã nguồn SDK.
+
+Bảng 6-1. Chi tiết SDK
+
+| Hệ điều hành | Linux&Windows |
+| --- | --- |
+| Ngôn ngữ lập trình | C/C\+\+ |
+| Định dạng dữ liệu | 16-bit unsigned short |
+| Tích hợp | Shared library (.so), dynamic-link library (.dll) hoặc mã nguồn SDK tích hợp |
+
+### Thứ tự ngõ ra SDK
+
+<Frame>
+  ![Thứ tự ngõ ra SDK](/images/products/m-series-m4-pro-user-guide-sdk-output-order.avif)
+</Frame>
+
+Hình 6.1. Thứ tự ngõ ra SDK
+
+SDK xuất một khung hình dữ liệu độ sâu và một khung hình dữ liệu biên độ ở độ phân giải đã cấu hình. Mỗi khung hình được lưu dưới dạng mảng một chiều, bắt đầu từ pixel phía trên bên trái rồi đi từ trái sang phải, sau đó từ trên xuống dưới. Hình 6.1 minh họa ngõ ra theo trục x rồi đến trục y, tạo ra thứ tự sau:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Mỗi pixel của hình ảnh độ sâu là một unsigned short 16-bit biểu thị khoảng cách từ vật thể được đo đến mặt phẳng camera.
+
+Mỗi pixel của hình ảnh biên độ là một unsigned short 16-bit biểu thị cường độ tín hiệu nhận được.
+
+### Địa chỉ IP
+
+Địa chỉ IP mặc định của camera M4 Pro là 192.168.100.82. Để thay đổi địa chỉ IP hoặc bật DHCP, sử dụng ứng dụng demo do MRDVS cung cấp.
+
+### Ứng dụng demo
+
+### Cấu hình IP
+
+Kết nối cáp nguồn, sau đó kết nối camera với máy tính bằng cáp Ethernet. Vì địa chỉ IP mặc định tại nhà máy của camera là 192.168.100.82, đặt máy tính vào subnet 192.168.100.x, không dùng 100.82, với subnet mask 255.255.255.0. Mở **Settings** → **Ethernet** → **Change adapter options**. Nhấp chuột phải vào **Ethernet**, chọn **Properties**, sau đó chọn **Internet Protocol Version 4 (TCP/IPv4)**. Ví dụ, đặt địa chỉ IP là 192.168.100.20 và subnet mask là 255.255.255.0.
+
+### Mở ứng dụng
+
+Tải và cài đặt phần mềm, sau đó nhấp đúp vào biểu tượng demo LxCameraViwer. Ứng dụng máy chủ sẽ mở, tìm kiếm camera, mở camera và tự động bắt đầu thu nhận khi có một camera được kết nối.
+
+**Lưu ý: Khi khởi chạy lần đầu, một số hệ thống yêu cầu bạn cho phép ứng dụng đi qua tường lửa.**
+
+Ứng dụng gồm các điều khiển cơ bản, lựa chọn hình ảnh, cấu hình camera và thông tin camera. Thông tin camera gồm địa chỉ IP, ID, địa chỉ MAC, số sê-ri và phiên bản phần mềm và thuật toán. Chọn hộp kiểm độ sâu, biên độ, RGB hoặc đám mây điểm để hiển thị chế độ xem tương ứng trong bảng điều khiển trung tâm.
+
+<Frame>
+  ![Hiển thị hình ảnh LxCameraViewer](/images/products/m-series-m4-pro-user-guide-lxcameraviewer-image-display.avif)
+</Frame>
+
+Hình 6.2. Hiển thị hình ảnh
+
+### Lưu hình ảnh
+
+Chọn **Save** để lưu các hình ảnh đã chọn vào thư mục `./data` trong thư mục cài đặt. Terminal cũng in đường dẫn, ví dụ: `save path= ./data/<camera-ID>`.
+
+Sau khi lưu, `_a` xác định hình ảnh biên độ, `_d` xác định hình ảnh độ sâu và `_r` xác định hình ảnh RGB (MONO). `.pcd` xác định đám mây điểm. Hình ảnh độ sâu và biên độ sử dụng định dạng PGM, hình ảnh RGB sử dụng PNG và đám mây điểm sử dụng PCD.
+
+<Frame>
+  ![Các tệp hình ảnh đã lưu](/images/products/m-series-m4-pro-user-guide-saved-image-files.avif)
+</Frame>
+
+Hình 6.3. Hình ảnh đã lưu
+
+### Thay đổi địa chỉ IP
+
+Nhập địa chỉ IP cần thiết, chẳng hạn 192.168.10.199. Nhập subnet mask 255.255.255.0 và gateway 192.168.10.1. Gateway phải nằm trong cùng subnet với địa chỉ IP cần thiết; đặt octet cuối là 1. Xác nhận thay đổi, sau đó tắt rồi bật lại nguồn camera.
+
+<Frame>
+  ![Thay đổi địa chỉ IP camera](/images/products/m-series-m4-pro-user-guide-change-the-camera-ip-address.avif)
+</Frame>
+
+---
+
+## 7. Tính năng chính
+
+### Phạm vi đo khoảng cách
+
+Camera M4 Pro đo trong phạm vi 0.3-5m. Liên hệ MRDVS nếu cần phạm vi tùy chỉnh.
+
+### Bộ lọc
+
+SDK MRDVS cung cấp các bộ lọc sau:
+
+- Bộ lọc trung vị
+- Bộ lọc mode
+- Loại bỏ pixel bay
+
+---
+
+## An toàn và khắc phục sự cố
+
+### Cấp an toàn laser
+
+<Frame>
+  ![Cấp an toàn laser](/images/products/m-series-m4-pro-user-guide-laser-safety-class.avif)
+</Frame>
+
+### Vận hành đúng
+
+Camera M4 Pro sử dụng nguồn 24V DC. Kết nối cáp nguồn trước khi cấp điện. Không đảo cực dương và cực âm vì điều này có thể làm hỏng sản phẩm.
+
+### Nhiệt độ hoạt động
+
+Giữ nhiệt độ môi trường trong phạm vi quy định ở Bảng 2-1. Lắp sản phẩm lên một bộ phận dẫn nhiệt, chẳng hạn giá đỡ kim loại, để cải thiện khả năng tản nhiệt và đạt hiệu suất tối ưu.
+
+---
+
+### Câu hỏi thường gặp
+
+Bảng 9-1. Câu hỏi thường gặp
+
+| STT | Vấn đề | Cách xử lý |
+| --- | --- | --- |
+| 1 | Camera không phản hồi khi được mở | Xác nhận tường lửa đã được tắt. |
+| 2 | Ứng dụng máy chủ phát hiện nhiều địa chỉ IP | Có địa chỉ IP trùng lặp trên mạng LAN. Chọn địa chỉ IP cần thiết. |
+| 3 | Dữ liệu camera không ổn định sau khi mở | Sử dụng cáp Gigabit Ethernet. Dữ liệu có thể không ổn định lúc đầu khi dùng cáp 100Mbps. |
+| 4 | Vị trí cài đặt phần mềm | Cài đặt vào vị trí mặc định trên ổ C có thể yêu cầu thay đổi quyền. |

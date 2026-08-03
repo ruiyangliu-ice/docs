@@ -1,0 +1,177 @@
+---
+title: Triển khai tránh chướng ngại vật bằng thị giác 3D
+sidebarTitle: Triển khai tránh chướng ngại vật 3D
+description: "Cấu hình vùng tránh chướng ngại vật bằng thị giác 3D, thông số ngoại tại và đầu ra giao tiếp với camera dòng S và dòng M."
+---
+
+Tính năng tránh chướng ngại vật bằng thị giác 3D thực hiện phát hiện mục tiêu, thích ứng mặt đất và xuất trạng thái chướng ngại vật trên camera. Sau khi cấu hình thông số ngoại tại và các vùng của camera, bạn có thể chuyển đổi nhóm tham số tránh chướng ngại vật và đọc kết quả qua ứng dụng máy chủ, API hoặc bus trường được hỗ trợ.
+
+<Info>
+  Các giá trị trong hướng dẫn này chỉ minh họa mối quan hệ cấu hình. Giá trị thực tế phụ thuộc vào phương tiện, vị trí lắp đặt và khu vực làm việc. Hãy kiểm tra tại hiện trường trước khi gửi cấu hình.
+</Info>
+
+## Chuẩn bị triển khai
+
+### Lắp đặt camera
+
+| Loại phương tiện | Hướng dẫn lắp đặt |
+| --- | --- |
+| AMR chui gầm | Gắn camera trên mặt trước theo hướng di chuyển. Kết cấu lắp đặt không được che khuất trường nhìn. Khuyến nghị dùng S10. |
+| Xe nâng | Gắn camera trên cột nâng, hướng ống kính chếch xuống khoảng `30°–55°`. Mép trường nhìn phải chạm tới phía trước xe. Khi có thể, giữ độ cao lắp đặt ở mức không quá `2 m`. Khuyến nghị dùng S10. |
+
+<Columns cols={2}>
+  <Card title="Lắp đặt trên AMR chui gầm" icon="car">
+    ![Camera gắn trên mặt trước của AMR chui gầm](/images/developers/deployment-3d-obstacle-avoidance-2-1-lurking-car.avif)
+  </Card>
+
+  <Card title="Lắp đặt trên xe nâng" icon="forklift">
+    ![Camera gắn trên cột nâng của xe nâng](/images/developers/deployment-3d-obstacle-avoidance-2-2-forklift.avif)
+  </Card>
+</Columns>
+
+### Kết nối camera
+
+<Steps>
+  <Step title="Cấu hình mạng máy chủ">
+    Địa chỉ camera mặc định tại nhà máy là `192.168.100.82`. Cấu hình bộ điều hợp Ethernet của máy tính trên cùng subnet.
+  </Step>
+  <Step title="Kết nối và kiểm tra hình ảnh">
+    Mở **LxCameraViewer**, tìm và mở camera, sau đó xác nhận bản đồ độ sâu và đám mây điểm hiển thị chính xác.
+  </Step>
+  <Step title="Thay đổi địa chỉ camera khi cần">
+    Trong **Other tools → Network → IP configuration tool**, thay đổi địa chỉ IP. Camera sẽ khởi động lại sau khi thay đổi. Nếu camera chuyển sang subnet khác, hãy cập nhật cả địa chỉ Ethernet của máy tính.
+  </Step>
+</Steps>
+
+<Warning>
+  Không vô hiệu hóa tường lửa vĩnh viễn trên mạng sản xuất. Trong mạng gỡ lỗi có kiểm soát, chỉ cho phép các ứng dụng và cổng cần thiết theo chính sách bảo mật của bạn.
+</Warning>
+
+### Tinh chỉnh hình ảnh
+
+Trong **3D settings** và **Filter settings**, hãy kiểm tra chất lượng hình ảnh. Với cấu hình tránh chướng ngại vật cũ, có thể dùng giá trị phơi sáng cao `650`, phơi sáng thấp `200` và ngưỡng tín hiệu thấp `10–20` làm điểm bắt đầu. S10 thường chỉ cần mức chói `1`. Với các cách lắp đặt không tiêu chuẩn, hãy xác nhận cài đặt với bộ phận hỗ trợ kỹ thuật trước khi triển khai.
+
+## Cấu hình thuật toán tránh chướng ngại vật
+
+<Steps>
+  <Step title="Bật thuật toán">
+    Trong **Application algorithm**, chọn chế độ luôn bật. Với S10, chọn **Obstacle avoidance algorithm**. Với các model được hỗ trợ khác, chọn **Obstacle avoidance algorithm 2.0**.
+  </Step>
+  <Step title="Chọn loại vùng">
+    Chọn vùng hình chữ nhật hoặc hình quạt cho phương tiện. S10 không hỗ trợ vùng hình quạt; sử dụng vùng này có thể tạo ra kết quả không chính xác.
+  </Step>
+  <Step title="Đặt thông số ngoại tại và các vùng">
+    Trước tiên đặt thông số ngoại tại của camera, sau đó cấu hình các vùng tránh chướng ngại vật. Khi thông số ngoại tại thay đổi, các vùng khác sẽ dùng giá trị mới.
+  </Step>
+  <Step title="Gửi và kiểm tra">
+    Gửi tham số, sau đó kiểm tra vùng cảnh báo, báo động và vùng che chắn trong chế độ xem đám mây điểm và trạng thái đầu ra.
+  </Step>
+</Steps>
+
+### Thông số ngoại tại của camera
+
+| Tham số | Ví dụ | Mô tả |
+| --- | --: | --- |
+| Roll (trục X) | `180°` | Hướng camera; ví dụ cho cách lắp đặt thẳng đứng mặc định. |
+| Pitch (trục Y) | `90°` | Hướng camera; ví dụ cho cách lắp đặt dọc mặc định. |
+| Yaw (trục Z) | `90°` | Hướng camera. |
+| Vị trí X | `430 mm` | Vị trí camera theo trục trước–sau của phương tiện. |
+| Vị trí Y | `0 mm` | Vị trí camera theo trục trái–phải của phương tiện; `0` nghĩa là ở giữa. |
+| Vị trí Z | `120 mm` | Độ cao của camera so với mặt đất. |
+
+Trước tiên đặt độ cao lắp đặt, sau đó tinh chỉnh roll và pitch cho đến khi mặt đất nằm ngang trong chế độ xem đám mây điểm. Chọn **Send parameters** khi hoàn tất.
+
+### Vùng tránh chướng ngại vật
+
+| Tham số | Ví dụ | Mục đích |
+| --- | --: | --- |
+| Khoảng cách cảnh báo (X xa) | `2000 mm` | Khoảng cách từ đó khu vực được xem là thông thoáng; khoảng giữa khoảng cách cảnh báo và khoảng cách báo động là vùng cảnh báo/giảm tốc. |
+| Khoảng cách báo động (X giữa) | `1500 mm` | Khoảng giữa khoảng cách che chắn và khoảng cách báo động là vùng báo động/dừng. |
+| Khoảng cách che chắn (X gần) | `600 mm` | Vùng mù ở đầu gần; chướng ngại vật trong vùng này bị loại khỏi tính năng tránh chướng ngại vật. |
+| Phạm vi trái / phải (Y) | `−810 / 1270 mm` | Giới hạn phát hiện ở hai bên đường tâm của phương tiện. |
+| Độ cao dưới / trên (Z) | `10 / 1500 mm` | Phạm vi độ cao được đưa vào phát hiện. |
+
+<Tip>
+  Giá trị X là tương đối so với tâm phương tiện. Khoảng cách bảo vệ thực tế cũng phải tính đến độ lệch X của camera, chẳng hạn khoảng cách cảnh báo trừ đi độ lệch trước–sau của camera.
+</Tip>
+
+Số nhóm vùng được hỗ trợ phụ thuộc vào phương thức chuyển đổi:
+
+| Phương thức chuyển đổi | Nhóm được hỗ trợ |
+| --- | --: |
+| S2 / S2 Max 2.0 I/O | `0–3` |
+| SDK, UDP, RS485 hoặc CAN | `0–19` (phụ thuộc model) |
+
+Sao lưu các giá trị đã kiểm tra vào `Tools\\params\\<camera ID>\\avoidance.json`. Bạn có thể áp dụng tệp này cho phương tiện khác cùng loại bằng **Load configuration from file**.
+
+## Giao tiếp và đầu ra trạng thái
+
+Cấu hình các vùng tránh chướng ngại vật và thông số ngoại tại trong ứng dụng máy chủ trước khi sử dụng bus trường hoặc giao thức mạng. Ngoại trừ API, hầu hết phương thức giao tiếp đều chuyển đổi nhóm tham số; dùng ứng dụng máy chủ hoặc API để đặt tham số chi tiết.
+
+| Camera | Giao tiếp được hỗ trợ |
+| --- | --- |
+| S2 | API, UDP, I/O |
+| S2 Max | API, UDP, CAN |
+| S2 Max 2.0 | API, UDP, I/O, CAN |
+| M4 Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API, UDP, I/O, CAN |
+
+<Note>
+  I/O có mức ưu tiên cao nhất. Khi I/O đang hoạt động, các phương thức khác không thể thay đổi nhóm tham số hiện tại, nhưng vẫn có thể cập nhật tham số mặc định hoặc tạm thời. Ứng dụng máy chủ và API đặt tham số mặc định; UDP, CAN và RS485 thường đặt tham số tạm thời. Hành vi sau khi mất nguồn phụ thuộc vào cách lưu cấu hình gần nhất.
+</Note>
+
+### API
+
+Ứng dụng Windows, Linux và ARM có thể gọi API tránh chướng ngại vật thông qua SDK. Sau khi cài ứng dụng máy chủ Windows, SDK và các ví dụ có trong thư mục cài đặt. Ví dụ tránh chướng ngại vật nằm trong `Sample\\C\\application_obstacled`. Với S10, tránh chuyển nhóm tham số ở tần suất cao qua API; thay vào đó dùng UDP hoặc I/O.
+
+### RS485 (chỉ M4 Pro)
+
+Dùng Modbus RTU với tốc độ baud khuyến nghị là `9600`. Đọc hai thanh ghi đầu vào bắt đầu từ địa chỉ `108` (`0x6C`) bằng mã hàm `0x04` để lấy kết quả tránh chướng ngại vật hiện tại. Ghi một thanh ghi tại địa chỉ `106` (`0x6A`) bằng mã hàm `0x06` để chuyển nhóm tham số.
+
+| Chân | Tín hiệu | Màu dây |
+| ---: | --- | --- |
+| 1 | GND | Xanh dương |
+| 2 | RS485\_A | Xám |
+| 3 | RS485\_B | Trắng |
+| 4 | VIN\+ | Nâu |
+| 5 | VIN− | Đen |
+
+### UDP và TCP
+
+Thông báo được gửi dưới dạng khung thập lục phân. Với UDP, trước tiên gửi thông báo thiết lập kết nối. Sau khi kết nối được thiết lập, camera gửi kết quả theo tốc độ khung hình.
+
+| Hướng | Khung | Ý nghĩa |
+| --- | --- | --- |
+| Camera → bộ điều khiển | `ACED0410XX000000` | Không có chướng ngại vật; `XX` là nhóm tham số hiện tại. |
+| Camera → bộ điều khiển | `ACED0410XX000001` | Cảnh báo/giảm tốc. |
+| Camera → bộ điều khiển | `ACED0410XX000002` | Báo động/dừng. |
+| Bộ điều khiển → camera (UDP) | `ACED040000000000` | Thiết lập kết nối UDP. |
+| Bộ điều khiển → camera | `ACED041A00000000` đến `ACED041A00000013` | Chuyển nhóm tham số `0–19`. |
+| Bộ điều khiển → camera | `ACED041B00000000` | Lưu nhóm hiện tại làm nhóm mặc định. |
+
+Cổng UDP từ xa mặc định là `6688`. Việc chuyển tham số cần thời gian tải; tránh chuyển liên tục vì có thể làm giảm tốc độ khung hình và tốc độ làm mới kết quả.
+
+### CAN và I/O
+
+CAN có thể chuyển nhóm tham số trên các model được hỗ trợ. Đầu ra I/O báo trạng thái thông thoáng, giảm tốc và dừng khẩn cấp. Loại đầu ra có thể là push-pull hoặc open-drain; xác nhận loại đầu vào của bộ điều khiển trước khi đấu dây.
+
+| OUT1 push-pull | OUT2 push-pull | Trạng thái |
+| --- | --- | --- |
+| `24 V` | `24 V` | Không có chướng ngại vật |
+| `24 V` | `0 V` | Giảm tốc |
+| `0 V` | `24 V` | Dừng khẩn cấp |
+| `0 V` | `0 V` | Đã tắt, đang khởi tạo hoặc lỗi |
+
+<Warning>
+  Với S10, nối `24 V−` với mass nguồn của bộ điều khiển, đồng thời nối `IN_G` và `OUT_G` với mass tín hiệu của bộ điều khiển. Nếu bộ điều khiển không phân biệt hai loại mass, hãy dùng sơ đồ nối mass chung đã được phê duyệt tại hiện trường. Xác nhận bộ điều khiển dùng tín hiệu PNP hay NPN và kiểm tra dây bằng đồng hồ vạn năng.
+</Warning>
+
+## Khắc phục sự cố
+
+| Triệu chứng | Kiểm tra |
+| --- | --- |
+| Không phát hiện vật thể màu đen hoặc có độ phản xạ thấp | Xác nhận phạm vi đám mây điểm; điều chỉnh thời gian tích hợp và ngưỡng tín hiệu thấp. Nếu cần, thêm bề mặt phản quang vào đầu càng màu đen. |
+| Vật thể thấp không kích hoạt phát hiện | Kiểm tra giới hạn Z dưới; tạm thời đặt thành `0` để xác minh. Nếu vẫn không phát hiện, kiểm tra độ cao lắp đặt và phạm vi đám mây điểm. |
+| Tham số không có hiệu lực | Xác nhận đã gửi tham số. Kiểm tra tính hợp lệ của tham số, kết nối mạng và mức ưu tiên của nhóm tham số. |
+| Dữ liệu bất thường | Kiểm tra vật cản trong kết cấu lắp đặt, màng bảo vệ ống kính hoặc kính bảo vệ bổ sung. |

@@ -1,0 +1,156 @@
+---
+title: FAQ sugli algoritmi applicativi
+description: "Risolvi i problemi di riconoscimento dei pallet, evitamento ostacoli e distribuzione degli algoritmi applicativi."
+---
+
+Prima di risolvere i problemi, verifica che il flusso di dati della fotocamera, il software host e il firmware dell'algoritmo utilizzino versioni compatibili. Registra la configurazione corrente prima di modificare i parametri, così potrai ripristinarla se necessario.
+
+## Riconoscimento dei pallet ed evitamento ostacoli
+
+<AccordionGroup>
+  <Accordion title="Il riconoscimento del pallet non riesce per un pallet nero">
+    **Possibile causa**
+
+    La nuvola di punti del pallet nero è incompleta.
+
+    **Risoluzione**
+
+    1. In **3D Settings** nel software host, imposta **High Exposure** su `1400`.<br />2. In **Filter**, imposta **Low Signal Threshold** su `20`.<br />3. Imposta **Small Signal Detection** su `1`.
+  </Accordion>
+
+  <Accordion title="PalletPro funziona nello strumento di test, ma il veicolo riceve risultati anomali o non riusciti">
+    **Possibile causa**
+
+    Le versioni del software host e del firmware dell'algoritmo integrato non corrispondono.
+
+    **Risoluzione**
+
+    Aggiorna il firmware dell'algoritmo integrato.
+  </Accordion>
+
+  <Accordion title="La calibrazione dei parametri esterni segnala che il terreno non è stato rilevato">
+    **Possibile causa**
+
+    La nuvola di punti del terreno non è stata acquisita.
+
+    **Risoluzione**
+
+    Apri la fotocamera. In **3D Settings**, imposta **High Exposure** su `1400`, in **Filter** imposta **Low Signal Threshold** su `10` ed esegui la calibrazione dei parametri esterni. Ripristina i valori originali dopo la calibrazione.
+  </Accordion>
+
+  <Accordion title="La calibrazione dei parametri esterni nel campo vicino non riesce">
+    **Risoluzione**
+
+    1. Verifica che la nuvola di punti del pallet sia completa.<br />2. Verifica che il pallet si trovi a circa `1300 mm` dalla fotocamera.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-1` o `failed-11`">
+    **Possibile causa**
+
+    Non sono stati ricevuti dati oppure i dati ricevuti sono insufficienti.
+
+    **Risoluzione**
+
+    Usa il software host per verificare che la fotocamera produca immagini e che le impostazioni dei filtri non rimuovano una quantità eccessiva di dati della nuvola di punti.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-2`, `failed-12` o `failed-16`">
+    **Possibile causa**
+
+    I dati della nuvola di punti non sono sufficienti per rilevare le gambe del pallet.
+
+    **Risoluzione**
+
+    Verifica le seguenti condizioni:<br />1. L'altezza di sollevamento della fotocamera o dei bracci delle forche è cambiata.<br />2. Le gambe del pallet sono ostruite.<br />3. La fotocamera o i bracci delle forche presentano un'inclinazione eccessiva.<br />4. Le gambe del pallet non sono riprese nitidamente.<br />5. Un montante riflettente è troppo vicino a una gamba del pallet e interferisce con l'acquisizione.<br />
+
+    Usa PalletPro per confermare la condizione, quindi regola la configurazione, il montante riflettente o l'assetto del carrello elevatore secondo necessità.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-3` o `failed-13`">
+    **Possibile causa**
+
+    Le dimensioni delle gambe del pallet non rientrano nei limiti configurati oppure non è stata rilevata alcuna gamba del pallet.
+
+    **Risoluzione**
+
+    Le caratteristiche delle gambe del pallet sono al di fuori dell'intervallo di riconoscimento. Se appropriato, regola l'intervallo della larghezza delle gambe o della larghezza del pallet.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-4` o `failed-14`">
+    **Possibile causa**
+
+    L'altezza di installazione della fotocamera non è configurata.
+
+    **Risoluzione**
+
+    Imposta il parametro dell'altezza di installazione oppure esegui la calibrazione dei parametri esterni.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-5` o `failed-15`">
+    **Possibile causa**
+
+    La verifica del pallet non è riuscita perché la traversa non è stata rilevata oppure l'angolo di inclinazione del pallet è eccessivo.
+
+    **Risoluzione**
+
+    Usa il software host per disabilitare la rimozione dei flying pixel, avvicina la fotocamera modificando la distanza di attracco oppure regola il rapporto di rilevamento della traversa.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-7`">
+    **Possibile causa**
+
+    Le larghezze delle gambe del pallet differiscono troppo all'interno del campo visivo.
+
+    **Risoluzione**
+
+    Verifica se un montante riflettente si trova vicino al pallet o se il pallet è vicino a una parete e le gambe laterali non vengono riprese correttamente.
+  </Accordion>
+
+  <Accordion title="Il riconoscimento del pallet restituisce `failed-8`">
+    **Possibile causa**
+
+    L'angolo di orientamento del pallet nel campo visivo è eccessivo (`> 30°`).
+
+    **Risoluzione**
+
+    Raddrizza il pallet prima del rilevamento.
+  </Accordion>
+
+  <Accordion title="Il cambio del profilo di evitamento ostacoli tramite comunicazione o IO non aggiorna il software host">
+    **Risoluzione**
+
+    1. Verifica che il profilo di evitamento ostacoli target sia stato configurato in anticipo.<br />2. Arresta e riavvia il flusso di dati, quindi verifica se il profilo viene aggiornato.
+  </Accordion>
+
+  <Accordion title="L'output di evitamento ostacoli mostrato nel software è anomalo, ad esempio `1000`">
+    **Possibile causa**
+
+    La versione dell'algoritmo non corrisponde al prodotto.
+
+    **Risoluzione**
+
+    Aggiorna il firmware dell'algoritmo.
+  </Accordion>
+
+  <Accordion title="IO non produce alcun output">
+    **Possibili cause**
+
+    Per S2/S2 Max potrebbe mancare il cablaggio di pull-up. Per S10/S10 Pro, il firmware dell'algoritmo potrebbe essere troppo vecchio.
+
+    **Risoluzione**
+
+    1. Aggiungi una resistenza di pull-up per S2/S2 Max come richiesto dal sistema del veicolo.<br />2. Aggiorna il firmware dell'algoritmo S10/S10 Pro alla versione `V1.1.050E06_250527` o successiva.
+  </Accordion>
+
+  <Accordion title="Gli allarmi ostacolo si attivano anche se lo spazio davanti è libero">
+    **Risoluzione**
+
+    1. Verifica la versione del software host.<br />2. Verifica la versione del firmware della fotocamera.<br />3. Verifica che la configurazione di evitamento ostacoli sia stata applicata alla fotocamera.
+  </Accordion>
+
+  <Accordion title="Dopo un aggiornamento del firmware, il software dell'algoritmo applicativo non riesce ad aprire la fotocamera">
+    **Risoluzione**
+
+    Riavvia la fotocamera, quindi abilita l'aggiornamento in tempo reale in **Global Settings** nel software dell'algoritmo applicativo.
+  </Accordion>
+</AccordionGroup>

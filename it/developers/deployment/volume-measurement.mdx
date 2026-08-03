@@ -1,0 +1,199 @@
+---
+title: Distribuire la misurazione del volume
+sidebarTitle: Distribuzione della misurazione del volume
+description: "Distribuisci la misurazione del volume con le fotocamere della serie M, inclusi installazione, calibrazione estrinseca, configurazione delle regioni e integrazione dei risultati."
+hidden: true
+---
+
+L'algoritmo di misurazione del volume viene eseguito sulla fotocamera e misura lunghezza, larghezza e altezza di oggetti statici o in movimento. La distribuzione richiede un'installazione rigida, una connessione di rete, la calibrazione estrinseca e la configurazione della regione di rilevamento. Collega più fotocamere alla stessa rete tramite uno switch gigabit.
+
+<Info>
+  Questa è una guida storica nascosta alla distribuzione. Il firmware dell'algoritmo e l'applicazione host dedicata vengono forniti per ogni progetto. Verifica che fotocamera, firmware e versioni software corrispondano prima della distribuzione.
+</Info>
+
+## Ambito
+
+Questo flusso di lavoro si applica ai progetti di misurazione del volume nella logistica, per pacchi, magazzini e materiali sfusi che usano fotocamere della serie M. L'algoritmo misura uno o più oggetti nella regione di rilevamento. L'identificazione degli oggetti, la raccolta del peso e l'associazione al sistema aziendale sono gestite dal sistema di livello superiore.
+
+Per informazioni sul prodotto, consulta le [fotocamere ToF della serie M](/it/products/m-series/overview "Fotocamere ToF della serie M").
+
+## Installazione e preparazione del sistema
+
+### Installazione hardware
+
+- Usa una staffa rigida per montare la fotocamera M4 con la superficie parallela e rivolta verso il piano di rilevamento.
+- Alimenta la fotocamera con `24 VDC`. Usa un cavo Cat6A o Cat7 per collegare la fotocamera all'host o a uno switch gigabit.
+- Per più fotocamere, assegna a ciascuna un indirizzo di rete univoco e verifica lo stato di alimentazione.
+
+<Frame>
+  ![Fotocamera M4 installata verso il basso per la misurazione del volume](/images/developers/deployment-volume-measurement-camera-installation-methods.avif)
+</Frame>
+
+### Requisiti dell'host
+
+| Elemento | Configurazione consigliata |
+| --- | --- |
+| Sistema operativo | Windows 10 o versione successiva |
+| CPU | Intel® Core™ i5 (7ª generazione) o versione successiva |
+| Memoria | Almeno 8 GB |
+| GPU | Intel® UHD Graphics o una GPU integrata o discreta con prestazioni superiori |
+
+Installa prima [LxCameraViewer](/it/developers/software/lxcameraviewer "Download del software"), quindi inserisci l'applicazione di misurazione del volume fornita per il progetto nella directory `Lanxin-MRDVS\\Tools`. Sostituisci i file quando richiesto dalle istruzioni di consegna.
+
+<Warning>
+  La fotocamera si riavvia durante gli aggiornamenti del firmware. Usa solo il pacchetto dell'algoritmo fornito per il progetto ed esegui il backup della configurazione verificata prima dell'aggiornamento.
+</Warning>
+
+## Flusso di lavoro di distribuzione
+
+### 1. Configura la rete
+
+Metti host e fotocamera sulla stessa sottorete. L'esempio di distribuzione originale usa:
+
+| Elemento | Esempio |
+| --- | --- |
+| IP dell'host | `192.168.100.xxx` |
+| Maschera di sottorete | `255.255.255.0` |
+| Gateway predefinito | `192.168.100.1` |
+
+Nelle proprietà dell'adattatore Ethernet di Windows, seleziona **Internet Protocol Version 4 (TCP/IPv4)** e imposta un indirizzo statico. Consenti l'applicazione nelle regole firewall della rete di debug; non disabilitare permanentemente il firewall di produzione.
+
+### 2. Calibra i parametri estrinseci
+
+<Steps>
+  <Step title="Ripristina lo stato di calibrazione">
+    Apri **Configurazione fotocamera**. Conferma che `x`, `y`, `z`, `roll`, `pitch` e `yaw` siano `0`. Se esistono valori storici, reimpostali e seleziona **Salva e invia**.
+  </Step>
+  <Step title="Esegui la calibrazione">
+    Seleziona **Calibrazione estrinseca**, conferma il messaggio di esito positivo e annota il valore `z` risultante.
+  </Step>
+  <Step title="Salva i parametri di posa">
+    Reimposta `z` su `0` e seleziona **Salva e invia**. In questo flusso di lavoro, l'altezza effettiva della fotocamera viene usata come distanza dal piano di rilevamento nel passaggio successivo.
+  </Step>
+</Steps>
+
+### 3. Imposta il piano e la regione di rilevamento
+
+In **Rilevamento del volume**, inserisci il valore `z` annotato come **Distanza dal piano di rilevamento**, quindi salva e invia. Configura i limiti della regione di rilevamento dalla vista della nuvola di punti:
+
+| Parametro | Significato |
+| --- | --- |
+| X minimo / massimo | Limiti X del riquadro di rilevamento |
+| Y minimo / massimo | Limiti Y del riquadro di rilevamento |
+| Z minimo / massimo | Limiti Z del riquadro di rilevamento |
+
+La distanza dal piano di rilevamento definisce il riferimento del pavimento; imposta il limite superiore Z leggermente sopra questa distanza. Il limite inferiore deve coprire le altezze degli oggetti da misurare. Dopo la configurazione, seleziona **Salva e invia**.
+
+### 4. Verifica i risultati
+
+Visualizza lo stato del volume in **Strumenti di base**. Posiziona un oggetto nella regione di rilevamento e conferma che conteggio, lunghezza, larghezza e altezza corrispondano al sito. Per più oggetti, passa da un riquadro del volume all'altro per controllare ogni risultato.
+
+Per la misurazione a scatto singolo, abilita **Modalità trigger** in **Rilevamento del volume**, salva la configurazione e seleziona **Trigger singolo** in **Strumenti di base** per acquisire un frame e un risultato.
+
+## Interfaccia e parametri principali
+
+### Parametri di rilevamento del volume
+
+| Parametro | Descrizione |
+| --- | --- |
+| Modalità trigger | Se abilitata, l'algoritmo restituisce risultati solo dopo un trigger. |
+| Rilevamento verso l'alto | Inverte la direzione di rilevamento; il flusso predefinito rileva verso il basso. |
+| Frequenza di rilevamento | Periodo di aggiornamento dell'immagine e dei risultati. |
+| Distanza dal piano di rilevamento | Distanza dalla fotocamera al piano di rilevamento, in `mm`. |
+| Conteggio dei vicini / soglia di distanza | Parametri di filtraggio della nuvola di punti; nella maggior parte dei casi mantieni i valori predefiniti del progetto. |
+| Filtro del vettore normale / soglia di distanza | Parametri di filtraggio dei bordi e della nuvola di punti; conserva la configurazione originale prima di modificarli. |
+| Conteggio minimo di punti | Numero minimo di punti richiesto per un oggetto valido. |
+| X / Y / Z minimo | Dimensioni minime rilevabili dell'oggetto, in `mm`. |
+
+### Configurazione della fotocamera
+
+| Elemento | Descrizione |
+| --- | --- |
+| Nome della fotocamera | Distingue le fotocamere in una distribuzione con più fotocamere. |
+| Modalità di salvataggio delle immagini | Salva le immagini dell'algoritmo sulla fotocamera. |
+| Modalità di acquisizione delle immagini | `MDS` non occupa l'accesso alla fotocamera. `SDK` lo occupa; l'applicazione host non può aprire la fotocamera mentre è in esecuzione. |
+| Parametri estrinseci | `x`, `y`, `z`, `roll`, `pitch` e `yaw`. |
+| Salva e invia | Scrive i parametri estrinseci e la configurazione dell'algoritmo correnti sulla fotocamera. |
+
+## Interfaccia dei risultati
+
+TCP, UDP e HTTP usano il comando `RESULT_UPDATE` per richiedere i risultati del volume.
+
+| Protocollo | Porta | Uso |
+| --- | --: | --- |
+| TCP | `14951` | Richiede un risultato del rilevamento del volume |
+| UDP | `14950` | Richiede un risultato del rilevamento del volume |
+| HTTP | `14952` | Richiede il risultato del volume in formato JSON |
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Richiede alla fotocamera il risultato corrente del rilevamento del volume.
+</ParamField>
+
+Campi di primo livello della risposta HTTP:
+
+<ResponseField name="IP" type="string" required>
+  Indirizzo IP della fotocamera che ha prodotto i dati.
+</ResponseField>
+
+<ResponseField name="TM" type="object[]" required>
+  Elenco degli oggetti rilevati.
+</ResponseField>
+
+<ResponseField name="TM_DATA_TIME" type="string">
+  Ora di acquisizione dei dati del volume.
+</ResponseField>
+
+<ResponseField name="TM_RES_TIME" type="string">
+  Ora di restituzione del risultato.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string">
+  Nome della fotocamera.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Codice restituito; `0` indica il successo.
+</ResponseField>
+
+Ogni oggetto `TM` può contenere:
+
+<ResponseField name="angle" type="number">
+  Angolo del riquadro dell'oggetto.
+</ResponseField>
+
+<ResponseField name="cx" type="number">
+  Coordinata X del centro dell'oggetto.
+</ResponseField>
+
+<ResponseField name="cy" type="number">
+  Coordinata Y del centro dell'oggetto.
+</ResponseField>
+
+<ResponseField name="cz" type="number">
+  Coordinata Z del centro dell'oggetto.
+</ResponseField>
+
+<ResponseField name="height" type="number">
+  Altezza dell'oggetto.
+</ResponseField>
+
+<ResponseField name="length" type="number">
+  Lunghezza dell'oggetto.
+</ResponseField>
+
+<ResponseField name="width" type="number">
+  Larghezza dell'oggetto.
+</ResponseField>
+
+<ResponseField name="valid" type="boolean">
+  Indica se il risultato è valido. `false` indica una confidenza insufficiente.
+</ResponseField>
+
+## Risoluzione dei problemi
+
+| Sintomo | Azione consigliata |
+| --- | --- |
+| La vista della nuvola di punti è vuota o difficile da controllare | Scorri e trascina nell'area della nuvola di punti e verifica che la fotocamera restituisca dati. |
+| Il rilevamento è anomalo dopo la calibrazione | Conferma che il parametro estrinseco `z` sia stato reimpostato su `0` e che l'altezza di calibrazione annotata sia stata inserita come distanza dal piano di rilevamento. |
+| Gli oggetti non vengono rilevati | Controlla i limiti della regione, le dimensioni minime, il conteggio minimo di punti e che l'oggetto sia completamente visibile. |
+| LxCameraViewer non riesce ad aprire la fotocamera | Controlla se è selezionata la modalità di acquisizione `SDK`; occupa l'accesso alla fotocamera. |

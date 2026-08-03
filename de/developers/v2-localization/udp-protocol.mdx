@@ -1,0 +1,120 @@
+---
+title: UDP-Kommunikationsprotokoll von V2 Pro
+sidebarTitle: V2-Pro-UDP-Protokoll
+description: "V2-Pro-UDP-Kommunikation konfigurieren und Nachrichten zu Odometrie, Relokalisierung, Kartierung, Karten und Lokalisierungsergebnissen analysieren."
+hidden: true
+---
+
+V2 Pro tauscht Steuerungs- und Lokalisierungsdaten über UDP mit einem Client aus. Legen Sie in der Webhost-Anwendung `portName` auf die IP-Adresse des Zielgeräts und `portCode` auf den Empfangsport fest. V2 Pro wartet auf eingehende Nachrichten an Port `8001`.
+
+<Frame>
+  ![Konfiguration der UDP-Zieladresse in der V2-Pro-Webhost-Anwendung](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+</Frame>
+
+## Nachrichtenkonventionen
+
+| Element | Konvention |
+| --- | --- |
+| Byte-Reihenfolge | Big-Endian: Das höherwertige Byte steht vor dem niederwertigen Byte. |
+| Frame-Struktur | Header, Länge, Befehl, Daten und Prüfsumme. |
+| Prüfsumme | Ein Byte. Führen Sie eine XOR-Verknüpfung über alle Bytes außer dem Header und der Prüfsumme selbst aus. |
+| Längenfeld | Schließt Header und Prüfsumme aus. Einige Nachrichten enthalten kein Längenfeld. |
+| Kartenname | Nur ASCII-Buchstaben, Ziffern und Unterstriche; das erste Zeichen muss ein Buchstabe sein. |
+
+<Note>
+  Die Byte-Nummerierung beginnt bei Byte 0. Alle Ganzzahlen mit mehreren Bytes verwenden die Big-Endian-Reihenfolge.
+</Note>
+
+## Von V2 Pro empfangene Nachrichten
+
+### Odometrie
+
+| Bytebereich | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, 4-Byte-Ganzzahl für die Geschwindigkeit |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, 4-Byte-Ganzzahl für den Winkel |
+| Byte 12 | Prüfsumme |
+
+Die Geschwindigkeit `v` wird in mm/s angegeben. Der Winkel `theta` wird in 0.01° angegeben; beispielsweise wird 90° als 9000 gesendet.
+
+### Relokalisierung
+
+| Bytebereich | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, 4-Byte-Ganzzahl für die X-Koordinate |
+| Byte 8–11 | Y3 Y2 Y1 Y0, 4-Byte-Ganzzahl für die Y-Koordinate |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, 4-Byte-Ganzzahl für den Winkel |
+| Byte 16 | Prüfsumme |
+
+`x` und `y` werden in mm angegeben. `theta` wird in 0.01° angegeben; beispielsweise wird 90° als 9000 gesendet.
+
+### Kartierung starten oder beenden
+
+| Bytebereich | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0x02 |
+| Byte 4 | Status: 0x01 startet die Kartierung; 0x00 beendet die Kartierung |
+| Byte 5–34 | Kartenname, feste Länge von 30 Byte in ASCII; nicht verwendete Bytes mit 0x00 auffüllen |
+| Byte 35 | Prüfsumme |
+
+Senden Sie den Startbefehl einmal pro Kartierungsaufgabe. Senden Sie ihn nicht wiederholt.
+
+### Karten wechseln
+
+| Bytebereich | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0x0C |
+| Byte 4–33 | Kartenname, feste Länge von 30 Byte in ASCII; nicht verwendete Bytes mit 0x00 auffüllen |
+| Byte 34 | Prüfsumme |
+
+Bestätigen Sie vor dem Senden des Befehls, dass die Zielkarte erstellt wurde.
+
+## Von V2 Pro gesendete Nachrichten
+
+### Lokalisierungsergebnis
+
+| Bytebereich | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, X-Koordinate |
+| Byte 8–11 | Y3 Y2 Y1 Y0, Y-Koordinate |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, Ausrichtung |
+| Byte 16–23 | Timestamp7 bis Timestamp0, Zeitstempel |
+| Byte 24 | Prüfsumme |
+
+`X` und `Y` werden in mm angegeben. `THETA` wird in 0.001 rad angegeben. Nach erfolgreicher Relokalisierung sendet V2 Pro diese Nachricht fortlaufend.
+
+### Aufgabenergebnis
+
+Die Befehle zum Starten und Beenden der Kartierung sowie zum Wechseln der Karte geben ihren Status in der folgenden Nachricht zurück.
+
+| Byte | Inhalt |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Länge: Länge |
+| Byte 3 | Befehl: 0xFF |
+| Byte 4 | Aufgaben-ID |
+| Byte 5 | Status: 0x01 Erfolg; 0x00 Fehler |
+| Byte 6 | Prüfsumme |
+
+| Aufgaben-ID | Vorgang |
+| --- | --- |
+| 0x01 | Kartierung starten |
+| 0x02 | Kartierung beenden |
+| 0x03 | Karte wechseln |
+
+<Info>
+  Das Beenden der Kartierung kann einige Zeit dauern. Der Abschluss dauert normalerweise etwa ein Drittel der Dauer der Datenerfassung. Warten Sie auf die Nachricht mit dem Aufgabenergebnis, bevor Sie einen weiteren Vorgang starten.
+</Info>

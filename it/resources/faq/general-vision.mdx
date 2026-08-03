@@ -1,0 +1,119 @@
+---
+title: FAQ generali sulla visione
+description: "Risolvi i problemi di alimentazione, rete, acquisizione delle immagini, filtri e qualità delle nuvole di punti delle fotocamere MRDVS."
+---
+
+Controlla prima l'alimentazione, la rete e le versioni del software. Registra i valori correnti di acquisizione delle immagini e dei filtri prima di modificarli.
+
+## Hardware della fotocamera
+
+<AccordionGroup>
+  <Accordion title="L'indicatore di alimentazione è spento o l'indicatore blu è debole">
+    **Possibile causa** La tensione di alimentazione è instabile. **Risoluzione** Usa un alimentatore `24 V DC / 2 A`.
+  </Accordion>
+
+  <Accordion title="La fotocamera si riavvia frequentemente">
+    **Risoluzione**
+
+    1. Verifica l'utilizzo della larghezza di banda della rete.<br />2. Conferma che l'alimentatore soddisfi i requisiti della fotocamera.
+  </Accordion>
+
+  <Accordion title="L'output di evitamento ostacoli è normale nel software host, ma l'output IO è anomalo">
+    **Risoluzione**
+
+    1. Verifica il cablaggio IO.<br />2. Verifica il cavo funzionale.<br />3. Conferma che il firmware supporti la funzione richiesta.
+  </Accordion>
+
+  <Accordion title="L'adattatore di rete risulta disconnesso">
+    **Possibile causa** La connessione di rete è anomala. **Risoluzione** Verifica che rete, adattatore e switch non presentino guasti o filtri.
+  </Accordion>
+
+  <Accordion title="La comunicazione CANopen non restituisce dati o restituisce dati non corrispondenti">
+    **Risoluzione**
+
+    1. Verifica che la velocità di trasmissione e il CAN ID corrispondano.<br />2. Verifica il cablaggio CAN.
+  </Accordion>
+</AccordionGroup>
+
+## Software host e acquisizione delle immagini
+
+<AccordionGroup>
+  <Accordion title="Non vengono visualizzati dati dopo che il software host apre la fotocamera">
+    **Possibili cause**
+
+    1. Il firewall è abilitato.<br />2. L'adattatore e la fotocamera si trovano su sottoreti diverse.<br />3. Lo switch filtra il traffico.<br />4. La rete del computer è anomala. **Risoluzione**
+    2. Disabilita il firewall.<br />2. Imposta computer e fotocamera sulla stessa sottorete.<br />3. Verifica lo switch.<br />4. Esegui il test con un altro computer.<br />5. Configura più sottoreti se necessario.
+  </Accordion>
+
+  <Accordion title="La mappa di profondità contiene blocchi rettangolari mancanti o buchi neri">
+    **Possibile causa** La fotocamera rileva erroneamente un'altra fotocamera. **Risoluzione** Arresta il flusso e disabilita la modalità multicamera in **3D Settings**. Se necessario, modifica la modalità dell'algoritmo per disabilitare la modalità multicamera quando la fotocamera è scollegata.
+  </Accordion>
+
+  <Accordion title="Una fotocamera S10 o S10 Pro non mostra immagini oppure mostra un'immagine di profondità molto piccola">
+    **Possibile causa** La versione del software host non è compatibile. **Risoluzione** Aggiorna a `Lanxin-MRDVS-1.3.66.0606` o versione successiva.
+  </Accordion>
+
+  <Accordion title="La fotocamera non riesce ad aprirsi e restituisce un errore di comunicazione di rete">
+    **Possibile causa** La fotocamera e il computer si trovano su sottoreti diverse. **Risoluzione** Configura fotocamera e computer sulla stessa sottorete.
+  </Accordion>
+
+  <Accordion title="L'autorizzazione esclusiva dell'applicazione non riesce">
+    **Possibile causa** Più utenti sono connessi alla fotocamera. **Risoluzione** Consenti la connessione di un solo utente alla volta. Le versioni `2.4.50.0720` e successive supportano le autorizzazioni multiutente.
+  </Accordion>
+
+  <Accordion title="La fotocamera si apre correttamente in modalità limitata, ma il flusso non è disponibile">
+    **Possibile causa** Più processi sono connessi alla fotocamera. **Risoluzione** Il primo processo che apre la fotocamera dispone dell'autorizzazione principale e deve avviare il flusso prima che un processo in modalità limitata possa visualizzarlo.
+  </Accordion>
+
+  <Accordion title="L'oggetto target appare scarso o incompleto">
+    **Possibile causa** L'esposizione è troppo bassa oppure il filtraggio è troppo aggressivo. **Risoluzione**
+
+    1. Controlla **High Exposure**; un intervallo tipico è `600–1200`.<br />2. Controlla **Low Signal Threshold**; un intervallo tipico è `10–30`.
+  </Accordion>
+
+  <Accordion title="Il flusso si avvia e la frequenza dei fotogrammi è normale, ma non sono disponibili dati dell'immagine">
+    **Possibile causa** Il laser è debole o spento. **Risoluzione** Usa la fotocamera di un telefono per controllare la parte anteriore della fotocamera. Se il laser è spento o debole, sostituisci l'hardware della fotocamera.
+  </Accordion>
+
+  <Accordion title="La nuvola di punti contiene dati dove non ci sono oggetti davanti">
+    **Risoluzione** Controlla l'ambiente di acquisizione, l'esposizione e le impostazioni dei filtri. Se il problema persiste dopo aver confermato la configurazione, raccogli un log e dati campione per l'analisi.
+  </Accordion>
+
+  <Accordion title="Quando la fotocamera è rivolta verso un oggetto, lungo il suo lato compare rumore">
+    **Possibile causa** Riflessi. **Risoluzione**
+
+    1. Abilita l'elaborazione per l'ottimizzazione dei riflessi.<br />2. Aumenta **Low Signal Threshold**.
+  </Accordion>
+
+  <Accordion title="Il centro dell'immagine RGB è rossastro oppure l'immagine RGB è sfocata">
+    **Risoluzione** Sostituisci l'hardware della fotocamera.
+  </Accordion>
+
+  <Accordion title="L'immagine RGB è rivolta in avanti, ma l'immagine di profondità è inclinata">
+    **Risoluzione** Sostituisci l'hardware della fotocamera.
+  </Accordion>
+
+  <Accordion title="Le nuvole di punti di oggetti adiacenti si fondono">
+    **Risoluzione** Aumenta i livelli di riduzione del rumore e di smoothing nelle impostazioni dei filtri.
+  </Accordion>
+
+  <Accordion title="RGB non contiene dati dopo l'abilitazione dell'allineamento RGB-D">
+    **Possibile causa** La versione del software non è compatibile. **Risoluzione** Aggiorna il software. Scarica le release dal [repository GitHub di Camera SDK](https://github.com/Lanxin-MRDVS/CameraSDK/releases).
+  </Accordion>
+
+  <Accordion title="La nuvola di punti della S Series presenta strati evidenti">
+    **Risoluzione** Sostituisci l'hardware della fotocamera.
+  </Accordion>
+
+  <Accordion title="La precisione dei bordi di un oggetto bianco vicino è scarsa sulla S Series">
+    **Possibile causa** Riflessi. **Risoluzione** Abilita l'ottimizzazione dei riflessi. Il rilevamento degli oggetti neri potrebbe diventare incompleto.
+  </Accordion>
+
+  <Accordion title="Un montante riflettente è fortemente sovraesposto sulla S Series">
+    **Possibile causa** Riflessi. **Risoluzione** Abilita l'elaborazione per la soppressione dei riflessi.
+  </Accordion>
+
+  <Accordion title="Un oggetto nero non viene acquisito completamente sulla S Series">
+    **Possibile causa** La modalità di esposizione elevata è abilitata. **Risoluzione** Imposta il registro ToF `100130B0` su `240`.
+  </Accordion>
+</AccordionGroup>

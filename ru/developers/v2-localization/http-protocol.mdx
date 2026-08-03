@@ -1,0 +1,213 @@
+---
+title: Протокол HTTP визуальной локализации V2
+sidebarTitle: Протокол HTTP V2
+description: "Справочник по HTTP-эндпоинтам визуальной локализации V2, параметрам запросов и полям ответов."
+hidden: true
+---
+
+На этой странице перечислены HTTP-эндпоинты модуля визуальной локализации V2. Замените заполнитель IP-адреса в каждом адресе на IP-адрес модуля. Если для эндпоинта не указано иное, значения `code: 200` и `message: success` означают, что запрос обработан успешно.
+
+<Warning>
+  Обновление ПО, развёртывание или переключение карт, перезапуск программы и перезагрузка камеры прерывают локализацию. Вызывайте эти эндпоинты только при остановленном транспортном средстве и наличии возможности восстановления.
+</Warning>
+
+## Информация о программе и устройстве
+
+### Обновление основной программы
+
+Адрес: `http://<ip>:9998/tool/rob/quiet_update`
+
+<ParamField body="url" type="string" required>
+  Доступный URL пакета обновления основной программы.
+</ParamField>
+
+### Настройка высоты камеры
+
+Адрес: `http://<ip>:9998/tool/rob/setHeightRequest`
+
+<ParamField body="height" type="number" required>
+  Высота камеры.
+</ParamField>
+
+### Получение версии программы
+
+Адрес: `http://<ip>:9998/tool/rob/getRobotVersion`
+
+Для этого эндпоинта параметры запроса не требуются.
+
+<ResponseField name="code" type="integer" required>
+  Код статуса ответа.
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  Версия программы, например `version 12313` .
+</ResponseField>
+
+### Получение информации о транспортном средстве
+
+Адрес: `http://<ip>:9998/tool/rob/getVehicle`
+
+Для этого эндпоинта параметры запроса не требуются.
+
+<ResponseField name="data" type="object" required>
+  Объект с информацией о транспортном средстве.
+</ResponseField>
+
+<ResponseField name="vehicleId" type="string">
+  UUID транспортного средства.
+</ResponseField>
+
+<ResponseField name="mapId" type="string">
+  Текущая карта.
+</ResponseField>
+
+<ResponseField name="vehicleType" type="string">
+  Тип транспортного средства.
+</ResponseField>
+
+### Получение текущей позы
+
+Адрес: `http://<ip>:9998/tool/rob/getAGVPose`
+
+Для этого эндпоинта параметры запроса не требуются.
+
+<ResponseField name="pose" type="object" required>
+  Текущая поза.
+</ResponseField>
+
+<ResponseField name="x" type="number">
+  Координата X.
+</ResponseField>
+
+<ResponseField name="y" type="number">
+  Координата Y.
+</ResponseField>
+
+<ResponseField name="yaw" type="number">
+  Угол направления.
+</ResponseField>
+
+### Повторная локализация
+
+Адрес: `http://<ip>:9998/tool/rob/relocate`
+
+Заголовок запроса: `Content-Type: application/json`
+
+<ParamField body="x" type="number" required>
+  Координата X в метрах.
+</ParamField>
+
+<ParamField body="y" type="number" required>
+  Координата Y в метрах.
+</ParamField>
+
+<ParamField body="angle" type="number" required>
+  Угол позы.
+</ParamField>
+
+<ParamField body="noisyX" type="number" required>
+  Шум по оси X в метрах.
+</ParamField>
+
+<ParamField body="noisyY" type="number" required>
+  Шум по оси Y в метрах.
+</ParamField>
+
+<ParamField body="noisyAngle" type="number" required>
+  Угловой шум.
+</ParamField>
+
+## Управление картами
+
+### Скачивание пакета текущей активной карты
+
+Адрес: `http://<ip>:9998/tool/rob/getRunMapZip`
+
+Заголовок запроса: `Content-Type: application/json`
+
+<ParamField body="Name" type="string" required>
+  Имя карты.
+</ParamField>
+
+Ответом является ZIP-файл с типом содержимого `application/zip`.
+
+### Развёртывание карты
+
+Адрес: `http://<ip>:9998/tool/rob/deployRunMap`
+
+<ParamField body="id" type="string" required>
+  Имя карты.
+</ParamField>
+
+### Применение карты
+
+Адрес: `http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+<ParamField body="name" type="string" required>
+  Имя карты.
+</ParamField>
+
+### Начало построения карты
+
+Адрес: `http://<ip>:9998/tool/rob/startMapping`
+
+<ParamField body="name" type="string" required>
+  Имя карты.
+</ParamField>
+
+### Остановка построения карты
+
+Адрес: `http://<ip>:9998/tool/rob/stopMapping`
+
+Для этого эндпоинта параметры запроса не требуются.
+
+### Запуск или остановка инкрементального построения карты
+
+Адрес: `http://<ip>:9998/tool/rob/sendCMD`
+
+| Операция | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | --: | --: | --- |
+| Запуск инкрементального построения карты | `904` | `0` | `mapname` |
+| Остановка инкрементального построения карты | `905` | `0` | `mapname` |
+
+### Получение списка карт
+
+Используйте локальный эндпоинт списка карт:
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Для этого эндпоинта параметры запроса не требуются. В ответе `run_maps` содержится массив имён карт.
+
+<Note>
+  Серверный эндпоинт списка карт `http://<ip>:9998/tool/editor/getLocalMaps` устарел и не рекомендуется к использованию.
+</Note>
+
+### Загрузка пакета карты в камеру
+
+Адрес: `http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+<ParamField body="url" type="string" required>
+  Доступный URL пакета карты.
+</ParamField>
+
+### Скачивание карты
+
+Адрес: `http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+<ParamField body="url" type="string" required>
+  Доступный URL пакета карты.
+</ParamField>
+
+## Эндпоинты обслуживания
+
+### Перезапуск программы камеры
+
+Адрес: `http://<ip>:9998/tool/rob/restart`
+
+Для этого эндпоинта параметры запроса не требуются.
+
+### Перезагрузка камеры
+
+Адрес: `http://<ip>:9998/tool/rob/Reboot`
+
+Для этого эндпоинта параметры запроса не требуются.

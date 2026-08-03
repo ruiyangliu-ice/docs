@@ -1,0 +1,446 @@
+---
+title: Guida utente S2 Max
+description: "Specifiche, installazione, SDK, funzionamento dell'applicazione sul computer e note d'uso per la fotocamera S2 Max."
+hidden: true
+---
+
+<Info>
+  Questa è una guida utente archiviata. Per la prima connessione e la configurazione dello streaming, inizia con la [guida rapida S2 Max](/it/products/s-series/s2-max-quickstart).
+</Info>
+
+## Cronologia delle revisioni
+
+| Data | Versione | Modifiche |
+| --- | --- | --- |
+| 2024/01/30 | V0.1 | Versione iniziale |
+| 2024/05/10 | V1.0 | Parametri della fotocamera aggiornati |
+| 2024/06/17 | V1.1 | 1. Assegnazione dei pin aggiornata e specifiche elettriche aggiunte. 2. Certificato di ispezione aggiunto al contenuto della confezione. |
+| 2024/11/25 | V1.2 | Temperatura di stoccaggio della fotocamera aggiornata |
+
+## Panoramica del prodotto
+
+Questo documento descrive la fotocamera S2 Max sviluppata da Zhejiang MRDVS Technology Co., Ltd., incluse specifiche, caratteristiche e istruzioni operative.
+
+La S2 Max è una fotocamera ToF di MRDVS con interfaccia di comunicazione Gigabit Ethernet e ingresso di alimentazione a 24 V CC.
+
+<Frame>
+  ![Fotocamera S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-camera.avif)
+</Frame>
+
+Figura 1.1. Fotocamera S2 Max
+
+### 1.1 Caratteristiche
+
+- Capacità di calcolo integrata di 1 TOPS; non richiede una CPU esterna
+- Uscita RGB-D
+- Evitamento autonomo degli ostacoli, rilevamento dei contenitori e misurazione del volume
+- Gigabit Ethernet
+
+### 1.2 Condizioni d'uso
+
+**Durante l'uso, osserva i seguenti requisiti:**
+
+- Non rimuovere le etichette dal prodotto.
+- Non smontare il prodotto. Il prodotto potrebbe danneggiarsi.
+- Non utilizzare il prodotto in un campo magnetico intenso.
+- Non utilizzare il prodotto alla luce solare diretta superiore a 100 kLux.
+- Pulisci l'involucro con un panno morbido e privo di lanugine, inumidito con una piccola quantità di acqua purificata o alcol.
+- Conserva l'imballaggio originale e utilizzalo per il trasporto quando possibile.
+
+---
+
+## Principio di misurazione della distanza e specifiche
+
+### Principio di misurazione della distanza
+
+La S2 Max misura la distanza utilizzando il tempo di volo (ToF): misura il tempo tra l'emissione della luce e la ricezione del riflesso da parte di un oggetto.
+
+La S2 Max utilizza la misurazione diretta per l'imaging della profondità, generando dati di profondità di alta qualità con risorse di calcolo minime e costruendo scene di profondità a una frequenza fotogrammi elevata. Come i LiDAR, le fotocamere ToF si dividono in ToF a impulsi (P\_ToF) e ToF a onda continua (CW\_ToF). Il P\_ToF emette impulsi luminosi, generalmente invisibili, e calcola la distanza dal tempo di andata e ritorno. Il CW\_ToF emette luce continua modulata e calcola il tempo di volo dalla differenza di fase tra la luce trasmessa e quella restituita.
+
+<Frame>
+  ![Principio di rilevamento ToF](/images/products/s-series-s2-max-user-guide-tof-detection-principle.avif)
+</Frame>
+
+Figura 2.1. Principio di rilevamento
+
+### Specifiche del prodotto
+
+Tabella 2-1. Specifiche del prodotto
+
+| Fotocamera | Parametro | Eagle-S2 Max |
+| --- | --- | --- |
+| Prestazioni | Chip | Chip Sony |
+| ㅤ | Metodo di misurazione della distanza | Tempo di volo |
+| ㅤ | Lunghezza d'onda operativa | 940nm |
+| ㅤ | Risoluzione ToF e frequenza fotogrammi | 320 × 240 (tipico 12 fps) |
+| ㅤ | Campo visivo ToF | 81° × 61° |
+| ㅤ | Risoluzione RGB e frequenza fotogrammi | 1920×1080 (tipico 12fps) |
+| ㅤ | Campo visivo RGB | 88°×56° |
+| ㅤ | Portata | 0.2~~5m (riflettività del 90%), 0.2~~2.5m (riflettività del 10%) |
+| ㅤ | Precisione | ±3mm\+0.5%×depth |
+| Elettriche | Interfaccia di comunicazione | Ethernet / CAN |
+| ㅤ | Interfaccia di alimentazione | Connettore circolare industriale a 5 pin |
+| ㅤ | Ingresso di alimentazione | 24V DC / 2A |
+| ㅤ | Consumo energetico medio | 6.6W |
+| Meccaniche | Dimensioni | 88mm×47mm×47mm |
+| ㅤ | Peso | 333g |
+| ㅤ | Grado IP | IP42 |
+| ㅤ | Temperatura operativa | -20℃~60℃ |
+| ㅤ | Temperatura di stoccaggio | -40℃~85℃ |
+| ㅤ | Umidità | 10%~90% RH, senza condensa |
+| Altro | Resistenza alla luce ambientale | Fino a 100 kLux di luce solare |
+| ㅤ | Resistenza al passaggio ombra-luce | Variazione inferiore a 1cm attraverso un confine ombra-luce di 100 kLux |
+| ㅤ | Ambiente software | C / C\+\+ / ROS SDK |
+| ㅤ | Supporto dei sistemi operativi | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Raffreddamento | Passivo |
+
+Nota: il modello 3D definisce le dimensioni del prodotto.
+
+---
+
+## Uscita, rilevamento e struttura
+
+### Caratteristiche elettriche
+
+Tabella 3-1. Specifiche elettriche del prodotto
+
+| Parametro | Simbolo | Condizione | Minimo | Tipico | Massimo | Unità |
+| --- | --- | --- | --- | --- | --- | --- |
+| Tensione di alimentazione | VDD | ㅤ | 22 | 24 | 26 | V |
+| CAN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
+| Temperatura operativa | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Umidità operativa | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Umidità di stoccaggio | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Temperatura di stoccaggio | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+
+### Dati di uscita
+
+Per impostazione predefinita, la S2 Max produce un'immagine di profondità (Figura 3.1), i dati di intensità del segnale corrispondenti per ogni pixel (Figura 3.2) e una nuvola di punti generata dai dati di profondità (Figura 3.3). L'oggetto mostrato è un profilato di alluminio.
+
+<Frame>
+  ![Immagine di profondità](/images/products/s-series-s2-max-user-guide-depth-image.avif)
+</Frame>
+
+Figura 3.1. Immagine di profondità
+
+<Frame>
+  ![Immagine di intensità](/images/products/s-series-s2-max-user-guide-intensity-image.avif)
+</Frame>
+
+Figura 3.2. Immagine di intensità
+
+<Frame>
+  ![Nuvola di punti](/images/products/s-series-s2-max-user-guide-point-cloud.avif)
+</Frame>
+
+Figura 3.3. Nuvola di punti
+
+Il rilevamento della profondità utilizza l'HDR (ampia gamma dinamica) a fotogrammi alternati per estendere la portata di misurazione. Il sensore produce due fotogrammi di profondità con tempi di integrazione e parametri di calibrazione diversi. Per ogni pixel, il software del computer seleziona il fotogramma con il valore di intensità più elevato e combina le selezioni nell'uscita finale, fornendo una profondità accurata nell'intero intervallo di misurazione.
+
+### Portata di rilevamento
+
+La Figura 3.1 mostra la regione di rilevamento della S2 Max. L'angolo di rilevamento orizzontale è di 81° e quello verticale è di 61°. La distanza di rilevamento dipende dalla potenza ottica. Una potenza ottica e una riflettività del bersaglio maggiori aumentano la zona cieca vicina e riducono la zona cieca lontana. Una potenza ottica e una riflettività del bersaglio minori riducono la zona cieca vicina e aumentano la zona cieca lontana. Per bersagli con riflettività dal 10% al 90%, la portata della S2 Max è 0.2~~5m. Oltre i 5m, la bassa intensità del segnale riflesso e le interferenze della luce ambientale causano errori significativi nella misurazione della distanza.
+
+<Frame>
+  ![Portata di rilevamento](/images/products/s-series-s2-max-user-guide-detection-range.avif)
+</Frame>
+
+Figura 3.4. Campo visivo
+
+### 3.4 Riferimento della riflettività
+
+La riflettività indicata in queste specifiche è misurata rispetto a una scheda bianca standard Kodak. Seguono i valori tipici di riflettività di altri materiali.
+
+Tabella 3-2. Riflettività dei materiali
+
+| N. | Materiale | Riflettività |
+| --- | --- | --- |
+| 1 | Gomma nera | 22% |
+| 2 | Tazza in ceramica nera | 34% |
+| 3 | Foglio di plastica nera | 42% |
+| 4 | Giornale | 45% |
+| 5 | Tessuto nero | 78% |
+| 6 | Bottiglia di plastica opaca | 85% |
+| 7 | Pannello in legno liscio | 90% |
+| 8 | Carta bianca | 90% |
+| 9 | Scheda bianca standard Kodak | 100% |
+| 10 | Vetro trasparente | 140% |
+| 11 | Superficie metallica lucida di colore chiaro | 150% |
+
+### 3.5 Dimensioni
+
+<Frame>
+  ![Dimensioni della S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-dimensions.avif)
+</Frame>
+
+Figura 3.5. Dimensioni della S2 Max
+
+### 3.6 Sistema di coordinate ottiche e origine
+
+**Sistema di coordinate ottiche:**
+
+- Il sistema di coordinate ottiche comprende il sistema di coordinate della fotocamera (CCS) e il sistema di coordinate del mondo (WCS).
+- Il sistema di coordinate della fotocamera è il sistema di coordinate 2D dell'immagine di profondità. La sua origine è il centro ottico.
+- Il sistema di coordinate del mondo è il sistema di coordinate 3D della nuvola di punti.
+- Utilizza i parametri intrinseci della fotocamera per trasformare le coordinate dell'immagine di profondità in coordinate 3D della nuvola di punti. Consulta gli esempi dell'SDK.
+
+<Frame>
+  ![Sistema di coordinate ottiche](/images/products/s-series-s2-max-user-guide-optical-coordinate-system.avif)
+</Frame>
+
+Figura 3.6. Sistema di coordinate ottiche
+
+**L'origine della fotocamera è definita come segue:**
+
+1. L'origine della coordinata X è allineata con l'asse X del prodotto.
+2. L'origine della coordinata Y è allineata con l'asse Y del prodotto.
+3. L'origine della coordinata Z si trova sulla superficie anteriore della fotocamera.
+
+<Frame>
+  ![Origine della fotocamera](/images/products/s-series-s2-max-user-guide-camera-origin.avif)
+</Frame>
+
+Figura 3.7. Origine della fotocamera
+
+### 3.7 Interfaccia del prodotto
+
+La porta a 5 pin della S2 Max è definita di seguito. **Nota: lascia 35mm all'uscita del cavo per l'installazione e il raggio di curvatura.**
+
+<Frame>
+  ![Interfaccia a 5 pin della S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-5-pin-interface.avif)
+</Frame>
+
+Tabella 3-3. Definizioni dei pin
+
+| Porta | Pin | Segnale | Descrizione | Nota |
+| --- | --- | --- | --- | --- |
+| Presa | 1 | VIN\+ | Ingresso di alimentazione positivo a 24V | Marrone |
+| ㅤ | 2 | CAN\_L | CAN\_L | Bianco |
+| ㅤ | 3 | GND | Massa del segnale | Blu |
+| ㅤ | 4 | VIN- | Ingresso di alimentazione negativo a 24V | Nero |
+| ㅤ | 5 | CAN\_H | CAN\_H | Grigio |
+
+### 3.8 Installazione consigliata
+
+**Si consigliano i tre seguenti metodi di installazione.**
+
+**Installazione 1:** né la parete destra né il pavimento sono visibili. Posiziona la fotocamera in un angolo con solo la parete anteriore nel campo visivo. Questa configurazione offre una buona misurazione della distanza.
+
+<Frame>
+  ![Installazione consigliata 1](/images/products/s-series-s2-max-user-guide-recommended-installation-1.avif)
+</Frame>
+
+Figura 3.8. Installazione 1
+
+**Installazione 2:** la parete destra è visibile, ma il pavimento non lo è. Posiziona la fotocamera in un angolo ad almeno 20cm dalla parete destra. La precisione della misurazione della distanza può raggiungere ±15mm.
+
+<Frame>
+  ![Installazione consigliata 2](/images/products/s-series-s2-max-user-guide-recommended-installation-2.avif)
+</Frame>
+
+Figura 3.9. Installazione 2
+
+**Installazione 3:** il pavimento è visibile, ma la parete destra non lo è. Monta la fotocamera a 10cm~30cm dal pavimento.
+
+<Frame>
+  ![Installazione consigliata 3](/images/products/s-series-s2-max-user-guide-recommended-installation-3.avif)
+</Frame>
+
+Figura 3.10. Installazione 3
+
+Vicino al pavimento, l'area più vicina alla fotocamera può risultare sovraesposta e influire sulle altre regioni a causa della luce parassita e dei riflessi multi-percorso.
+
+<Frame>
+  ![Effetto multi-percorso vicino al pavimento](/images/products/s-series-s2-max-user-guide-near-floor-multipath-effect.avif)
+</Frame>
+
+Figura 3.11. Effetto multi-percorso vicino al pavimento
+
+Nell'ottica di imaging, la luce parassita si manifesta principalmente come immagini fantasma e bagliore.
+
+<Frame>
+  ![Immagini fantasma e bagliore](/images/products/s-series-s2-max-user-guide-ghosting-and-flare.avif)
+</Frame>
+
+Figura 3.12. Immagini fantasma e bagliore causati dalla luce parassita
+
+**Non utilizzare questo prodotto** in un'installazione in cui siano visibili sia la parete destra sia il pavimento. La luce parassita del pavimento e i riflessi multi-percorso della parete creano interferenze complesse nella misurazione della distanza.
+
+<Frame>
+  ![Installazione non consigliata](/images/products/s-series-s2-max-user-guide-installation-not-recommended.avif)
+</Frame>
+
+Figura 3.13. Installazione non consigliata
+
+---
+
+## Accuratezza, precisione e interferenza tra più fotocamere
+
+### 4.1 Accuratezza
+
+La calibrazione rimuove uno scostamento fisso tra le misurazioni del sensore e i valori effettivi stabilendo una corrispondenza tra di essi. Per la S2 Max, monta la fotocamera su una guida rivolta verso una parete bianca e associa la misurazione di ogni pixel alla distanza tra la fotocamera e la regione della parete ripresa. La correzione delle misurazioni con questa corrispondenza fornisce valori di distanza più accurati, come mostrato nella Figura 4.1.
+
+<Frame>
+  ![Configurazione della calibrazione](/images/products/s-series-s2-max-user-guide-calibration-setup.avif)
+</Frame>
+
+Figura 4.1. Calibrazione
+
+La S2 Max utilizza la misurazione attiva della distanza. L'installazione e altri fattori possono introdurre interferenze multi-percorso e alterare l'accuratezza.
+
+Questo effetto è particolarmente pronunciato quando si misura un bersaglio a bassa riflettività accanto a un oggetto altamente riflettente. La misurazione ideale segue il percorso blu, ma la luce può riflettersi dalla parete al bersaglio e tornare alla fotocamera (percorso verde). L'illuminazione può anche riflettersi direttamente dall'oggetto vicino ad alta riflettività verso la fotocamera (percorso rosso). Le imperfezioni ottiche creano riflessi che interferiscono con la misurazione della distanza, come mostrato nella Figura 4.2.
+
+<Frame>
+  ![Percorsi ottici dell'installazione della fotocamera](/images/products/s-series-s2-max-user-guide-camera-installation-light-paths.avif)
+</Frame>
+
+Figura 4.2. Installazione della fotocamera
+
+### 4.2 Precisione
+
+La precisione indica generalmente la variazione su un singolo punto (1-σ). In quanto dispositivo di misurazione optoelettronico, la S2 Max è influenzata dalla conversione AD, dal rapporto segnale-rumore, dal rumore del sistema e da altri fattori. La Figura 4.3 mostra la relazione tra precisione e intensità del segnale.
+
+<Frame>
+  ![Precisione e intensità del segnale](/images/products/s-series-s2-max-user-guide-precision-and-signal-strength.avif)
+</Frame>
+
+Figura 4.3. Precisione e intensità del segnale
+
+La S2 Max converte i segnali analogici optoelettronici in dati digitali. L'ADC quantizza il segnale analogico alla sua risoluzione minima e introduce rumore. Ad esempio, un segnale da 1.1V può essere letto come 1V, con un errore del 10%; 10.1V può essere letto come 10V, con un errore dell'1%; e 100.1V può essere letto come 100V. La conversione AD introduce quindi proporzionalmente più rumore ed errore a bassa intensità del segnale. Il rapporto segnale-rumore di una fotocamera ToF è generalmente correlato al tempo di integrazione t dalla relazione SNR∝1/√t, quindi l'aumento del tempo di integrazione aumenta l'intensità del segnale.
+
+---
+
+### Interferenza tra più fotocamere
+
+### 5.1 Interferenza parallela
+
+Quando due fotocamere sono montate in parallelo, ciascuna riceve la luce restituita sia da sé stessa sia dall'altra fotocamera, interferendo con i dati di profondità. L'interferenza parallela è l'aumento dell'errore di rilevamento causato dal fatto che due fotocamere S2 Max puntano nella stessa direzione.
+
+<Frame>
+  ![Interferenza tra fotocamere parallele](/images/products/s-series-s2-max-user-guide-parallel-camera-interference.avif)
+</Frame>
+
+Per evitare l'interferenza parallela, installa le fotocamere inclinate rispetto al piano orizzontale. Se devono essere installate a 0°, contatta MRDVS per una configurazione personalizzata.
+
+---
+
+## SDK e applicazione sul computer
+
+### 6.1 SDK
+
+Utilizza l'SDK per inizializzare e avviare la fotocamera, acquisire i dati e chiudere la fotocamera. Per piattaforme diverse da Linux o Windows, utilizza il codice sorgente dell'SDK come riferimento durante il porting dell'applicazione della fotocamera.
+
+Tabella 6-1. SDK
+
+| Sistema operativo | Linux & Windows |
+| --- | --- |
+| Linguaggio di programmazione | C/C\+\+ |
+| Formato dati | unsigned short a 16 bit |
+| Integrazione | Libreria condivisa (.so), libreria a collegamento dinamico (.dll) o codice sorgente dell'SDK |
+
+### 6.2 Ordine dei dati di uscita dell'SDK
+
+<Frame>
+  ![Ordine dei dati di uscita dell'SDK](/images/products/s-series-s2-max-user-guide-sdk-output-order.avif)
+</Frame>
+
+Figura 6.1. Ordine dei dati di uscita dell'SDK
+
+L'SDK produce i dati di profondità e di intensità un fotogramma alla volta come array monodimensionali alla risoluzione configurata. Il pixel in alto a sinistra è l'origine e i dati vengono emessi da sinistra a destra e dall'alto verso il basso. La Figura 6.1 mostra prima i dati in uscita sull'asse x, seguiti dai dati in uscita sull'asse y:
+
+(x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
+
+Ogni pixel di profondità è un unsigned short a 16 bit che rappresenta la distanza dall'oggetto misurato al piano della fotocamera.
+
+Ogni pixel di intensità è un unsigned short a 16 bit che rappresenta l'intensità del segnale restituito.
+
+### 6.3 Indirizzo IP
+
+L'indirizzo IP predefinito di fabbrica della S2 Max è 192.168.100.82. Utilizza lo strumento dimostrativo MRDVS per modificare l'indirizzo IP o abilitare DHCP.
+
+### 6.4 Software dimostrativo
+
+### 6.4.1 Configurazione IP
+
+Collega il cavo di alimentazione, quindi collega la fotocamera al computer con un cavo Ethernet. Poiché l'IP predefinito di fabbrica della fotocamera è 192.168.100.82, configura il computer su 192.168.100.x, escludendo 100.82, con la maschera di sottorete 255.255.255.0. Apri **Impostazioni** → **Ethernet** → **Modifica opzioni scheda**, fai clic con il pulsante destro del mouse su **Ethernet** e seleziona **Protocollo Internet versione 4 (TCP/IPv4)**. Ad esempio, imposta l'indirizzo IP su 192.168.100.20 e la maschera di sottorete su 255.255.255.0.
+
+### 6.4.2 Aprire il software
+
+Scarica e installa il software, quindi fai doppio clic sull'icona del software dimostrativo LxCameraViwer. Il software del computer si apre, cerca le fotocamere, apre la fotocamera e avvia automaticamente l'acquisizione quando è collegata una fotocamera.
+
+**Nota: al primo avvio, alcuni sistemi richiedono di consentire l'accesso del firewall.**
+
+Il software offre funzioni di base, selezione delle immagini, configurazione della fotocamera e informazioni sulla fotocamera. Le informazioni sulla fotocamera includono l'IP, l'ID, l'indirizzo MAC, il numero di serie e le versioni del software e degli algoritmi. Seleziona **Profondità**, **Intensità**, **RGB** o **Nuvola di punti** per visualizzare l'immagine corrispondente.
+
+<Frame>
+  ![Visualizzazione delle immagini in LxCameraViewer](/images/products/s-series-s2-max-user-guide-lxcameraviewer-image-display.avif)
+</Frame>
+
+Figura 6.2. Visualizzazione delle immagini
+
+### 6.4.3 Salvare le immagini
+
+Fai clic su **Salva** per salvare le immagini selezionate nella cartella `./data` della directory di installazione del software. Anche il terminale stampa il percorso, ad esempio: `save path= ./data/camera ID`.
+
+Nei file salvati, `_a` indica l'immagine di intensità, `_d` indica l'immagine di profondità, `_r` indica l'immagine RGB (MONO) e `.pcd` indica la nuvola di punti. Le immagini di profondità e di intensità usano PGM, le immagini RGB usano PNG e le nuvole di punti usano PCD.
+
+<Frame>
+  ![File delle immagini salvate](/images/products/s-series-s2-max-user-guide-saved-image-files.avif)
+</Frame>
+
+Figura 6.3. Immagini salvate
+
+### 6.4.4 Modificare l'indirizzo IP
+
+Inserisci l'indirizzo IP richiesto, ad esempio 192.168.10.199. Inserisci la maschera di sottorete 255.255.255.0 e il gateway 192.168.10.1. Il gateway deve trovarsi nella stessa sottorete dell'IP richiesto e normalmente termina con 1. Conferma la modifica, quindi spegni e riaccendi la fotocamera.
+
+<Frame>
+  ![Modifica dell'indirizzo IP della fotocamera](/images/products/s-series-s2-max-user-guide-change-the-camera-ip-address.avif)
+</Frame>
+
+---
+
+## Funzioni principali
+
+### 7.1 Portata
+
+La portata della S2 Max è 0.2~5m. Contatta MRDVS per una portata personalizzata.
+
+### 7.2 Filtraggio
+
+L'SDK MRDVS offre i seguenti filtri:
+
+- Filtro mediano
+- Filtro della moda
+- Rimozione dei pixel volanti
+
+---
+
+## Sicurezza e risoluzione dei problemi
+
+### 8.1 Classe di sicurezza del laser
+
+<Frame>
+  ![Classe di sicurezza del laser](/images/products/s-series-s2-max-user-guide-laser-safety-class.avif)
+</Frame>
+
+### 8.2 Uso corretto
+
+La fotocamera S2 Max utilizza un'alimentazione a 24V DC. Collega il cavo di alimentazione prima di applicare l'alimentazione e non invertire i terminali positivo e negativo. L'inversione della polarità può danneggiare il prodotto.
+
+### 8.3 Temperatura operativa
+
+Mantieni la temperatura ambiente entro l'intervallo indicato nelle specifiche del prodotto (Tabella 2-1). Monta il prodotto su un componente termicamente conduttivo, ad esempio una staffa metallica, per migliorare la dissipazione del calore e ottenere prestazioni ottimali.
+
+---
+
+### Risoluzione dei problemi
+
+Tabella 9-1. Risoluzione dei problemi
+
+| N. | Problema | Soluzione |
+| --- | --- | --- |
+| 1 | La fotocamera non risponde all'apertura | Verifica che il firewall sia disabilitato |
+| 2 | Il software del computer rileva più indirizzi IP | Un altro dispositivo della LAN utilizza lo stesso IP; seleziona l'indirizzo IP richiesto |
+| 3 | I dati della fotocamera sono instabili dopo l'apertura | Utilizza un cavo Gigabit Ethernet; inizialmente i dati possono essere instabili su Fast Ethernet |
+| 4 | Posizione di installazione del software | Un'installazione predefinita sull'unità C può essere influenzata dalle impostazioni delle autorizzazioni |

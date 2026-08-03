@@ -1,0 +1,177 @@
+---
+title: 3D-visuelle Hindernisvermeidung bereitstellen
+sidebarTitle: Bereitstellung der 3D-Hindernisvermeidung
+description: "Konfiguriere Bereiche, extrinsische Parameter und Kommunikationsausgaben für die 3D-visuelle Hindernisvermeidung mit Kameras der S- und M-Serie."
+---
+
+Die 3D-visuelle Hindernisvermeidung führt auf der Kamera Zielerkennung, Bodenanpassung und die Ausgabe des Hindernisstatus aus. Nachdem du die extrinsischen Kameraparameter und Bereiche konfiguriert hast, kannst du Parametergruppen für die Hindernisvermeidung umschalten und Ergebnisse über die Hostanwendung, die API oder einen unterstützten Feldbus lesen.
+
+<Info>
+  Die Werte in diesem Leitfaden veranschaulichen nur die Zusammenhänge der Konfiguration. Die tatsächlichen Werte hängen vom Fahrzeug, der Einbauposition und dem Arbeitsbereich ab. Validiere sie vor dem Senden der Konfiguration vor Ort.
+</Info>
+
+## Vorbereitung der Bereitstellung
+
+### Kamerainstallation
+
+| Fahrzeugtyp | Installationshinweise |
+| --- | --- |
+| Underride-AMR | Montiere die Kamera an der Vorderseite in Fahrtrichtung. Die Halterung darf das Sichtfeld nicht behindern. S10 wird empfohlen. |
+| Gabelstapler | Montiere die Kamera am Mast, wobei das Objektiv etwa `30°–55°` nach unten geneigt ist. Der Rand des Sichtfelds sollte die Vorderseite des Fahrzeugs erreichen. Halte die Einbauhöhe möglichst bei höchstens `2 m`. S10 wird empfohlen. |
+
+<Columns cols={2}>
+  <Card title="Installation am Underride-AMR" icon="car">
+    ![Kamera an der Vorderseite eines Underride-AMR montiert](/images/developers/deployment-3d-obstacle-avoidance-2-1-lurking-car.avif)
+  </Card>
+
+  <Card title="Installation am Gabelstapler" icon="forklift">
+    ![Kamera am Mast eines Gabelstaplers montiert](/images/developers/deployment-3d-obstacle-avoidance-2-2-forklift.avif)
+  </Card>
+</Columns>
+
+### Kamera verbinden
+
+<Steps>
+  <Step title="Hostnetzwerk konfigurieren">
+    Die werkseitige Kameraadresse lautet `192.168.100.82`. Konfiguriere den Ethernet-Adapter des Computers im gleichen Subnetz.
+  </Step>
+  <Step title="Bildgebung verbinden und prüfen">
+    Öffne **LxCameraViewer**, suche die Kamera, öffne sie und bestätige, dass Tiefenkarte und Punktwolke korrekt angezeigt werden.
+  </Step>
+  <Step title="Kameraadresse bei Bedarf ändern">
+    Ändere die IP-Adresse unter **Other tools → Network → IP configuration tool**. Die Kamera startet nach der Änderung neu. Wenn die Kamera in ein anderes Subnetz wechselt, aktualisiere auch die Ethernet-Adresse des Computers.
+  </Step>
+</Steps>
+
+<Warning>
+  Deaktiviere die Firewall in einem Produktionsnetzwerk nicht dauerhaft. Erlaube in einem kontrollierten Debugging-Netzwerk gemäß deiner Sicherheitsrichtlinie nur die erforderlichen Anwendungen und Ports.
+</Warning>
+
+### Bildgebung abstimmen
+
+Prüfe die Bildqualität unter **3D settings** und **Filter settings**. Für ältere Konfigurationen der Hindernisvermeidung kannst du als Ausgangspunkt eine hohe Belichtungszeit von `650`, eine niedrige Belichtung von `200` und einen Schwellenwert für schwache Signale von `10–20` verwenden. S10 benötigt normalerweise nur einen Blendenwert von `1`. Bestätige die Einstellungen bei nicht standardmäßigen Installationen vor der Bereitstellung mit dem technischen Support.
+
+## Algorithmus für die Hindernisvermeidung konfigurieren
+
+<Steps>
+  <Step title="Algorithmus aktivieren">
+    Wähle unter **Application algorithm** den Dauerbetriebsmodus. Wähle für S10 **Obstacle avoidance algorithm**. Wähle für andere unterstützte Modelle **Obstacle avoidance algorithm 2.0**.
+  </Step>
+  <Step title="Bereichstyp auswählen">
+    Wähle einen rechteckigen oder sektorförmigen Bereich für das Fahrzeug. S10 unterstützt keine sektorförmigen Bereiche; ihre Verwendung kann zu falschen Ergebnissen führen.
+  </Step>
+  <Step title="Extrinsische Parameter und Bereiche festlegen">
+    Lege zuerst die extrinsischen Kameraparameter fest und konfiguriere anschließend die Bereiche für die Hindernisvermeidung. Wenn sich die extrinsischen Parameter ändern, verwenden die anderen Bereiche die neuen Werte.
+  </Step>
+  <Step title="Senden und prüfen">
+    Sende die Parameter und prüfe anschließend Warn-, Alarm- und abgeschirmte Bereiche in der Punktwolkenansicht sowie den Ausgabestatus.
+  </Step>
+</Steps>
+
+### Extrinsische Kameraparameter
+
+| Parameter | Beispiel | Beschreibung |
+| --- | --: | --- |
+| Roll (X-Achse) | `180°` | Kameraausrichtung; Beispiel für die standardmäßige aufrechte Installation. |
+| Pitch (Y-Achse) | `90°` | Kameraausrichtung; Beispiel für die standardmäßige vertikale Installation. |
+| Yaw (Z-Achse) | `90°` | Kameraausrichtung. |
+| X-Position | `430 mm` | Kameraposition entlang der Längsachse des Fahrzeugs. |
+| Y-Position | `0 mm` | Kameraposition entlang der Querachse des Fahrzeugs; `0` bedeutet zentriert. |
+| Z-Position | `120 mm` | Kamerahöhe über dem Boden. |
+
+Lege zuerst die Einbauhöhe fest und passe anschließend Roll und Pitch an, bis der Boden in der Punktwolkenansicht waagerecht ist. Wähle danach **Send parameters**.
+
+### Bereiche der Hindernisvermeidung
+
+| Parameter | Beispiel | Zweck |
+| --- | --: | --- |
+| Warnabstand (fernes X) | `2000 mm` | Abstand, ab dem der Bereich als frei gilt; das Intervall bis zum Alarmabstand ist die Warn-/Verzögerungszone. |
+| Alarmabstand (mittleres X) | `1500 mm` | Das Intervall bis zum Abschirmabstand ist die Alarm-/Stoppzone. |
+| Abschirmabstand (nahes X) | `600 mm` | Nahseitige Blindzone; Hindernisse in dieser Zone werden von der Hindernisvermeidung ausgeschlossen. |
+| Linker/rechter Bereich (Y) | `−810 / 1270 mm` | Erkennungsgrenzen auf beiden Seiten der Fahrzeugmittellinie. |
+| Untere/obere Höhe (Z) | `10 / 1500 mm` | In die Erkennung einbezogener Höhenbereich. |
+
+<Tip>
+  X-Werte beziehen sich auf die Fahrzeugmitte. Der tatsächliche Schutzabstand muss außerdem den X-Versatz der Kamera berücksichtigen, zum Beispiel Warnabstand minus dem Längsversatz der Kamera.
+</Tip>
+
+Die Anzahl der unterstützten Bereichsgruppen hängt von der Umschaltmethode ab:
+
+| Umschaltmethode | Unterstützte Gruppen |
+| --- | --: |
+| S2 / S2 Max 2.0 I/O | `0–3` |
+| SDK, UDP, RS485 oder CAN | `0–19` (modellabhängig) |
+
+Sichere geprüfte Werte unter `Tools\\params\\<camera ID>\\avoidance.json`. Du kannst die Datei mit **Load configuration from file** auf ein anderes Fahrzeug desselben Typs anwenden.
+
+## Kommunikation und Statusausgabe
+
+Konfiguriere die Bereiche und extrinsischen Parameter der Hindernisvermeidung in der Hostanwendung, bevor du einen Feldbus oder ein Netzwerkprotokoll verwendest. Mit Ausnahme der API schalten die meisten Kommunikationsmethoden Parametergruppen um; verwende für detaillierte Parametereinstellungen die Hostanwendung oder die API.
+
+| Kamera | Unterstützte Kommunikation |
+| --- | --- |
+| S2 | API, UDP, I/O |
+| S2 Max | API, UDP, CAN |
+| S2 Max 2.0 | API, UDP, I/O, CAN |
+| M4 Pro | API, UDP, RS485 |
+| M4 | API, UDP, CAN |
+| M4 Mega | API, UDP, I/O, CAN |
+
+<Note>
+  I/O hat die höchste Priorität. Während I/O aktiv ist, können andere Methoden die aktuelle Parametergruppe nicht ändern, aber weiterhin Standard- oder temporäre Parameter aktualisieren. Hostanwendung und API setzen Standardparameter; UDP, CAN und RS485 setzen normalerweise temporäre Parameter. Das Verhalten nach einem Stromausfall hängt davon ab, wie die letzte Konfiguration gespeichert wurde.
+</Note>
+
+### API
+
+Windows-, Linux- und ARM-Anwendungen können über das SDK APIs für die Hindernisvermeidung aufrufen. Nach der Installation der Windows-Hostanwendung stehen SDK und Beispiele in deren Installationsverzeichnis zur Verfügung. Das Beispiel für die Hindernisvermeidung befindet sich unter `Sample\\C\\application_obstacled`. Vermeide es bei S10, Parametergruppen mit hoher Frequenz über die API umzuschalten; verwende stattdessen UDP oder I/O.
+
+### RS485 (nur M4 Pro)
+
+Verwende Modbus RTU mit der empfohlenen Baudrate `9600`. Lies die beiden Eingangsregister ab Adresse `108` (`0x6C`) mit dem Funktionscode `0x04`, um das aktuelle Ergebnis der Hindernisvermeidung abzurufen. Schreibe mit dem Funktionscode `0x06` ein einzelnes Register an Adresse `106` (`0x6A`), um Parametergruppen umzuschalten.
+
+| Pin | Signal | Aderfarbe |
+| --: | --- | --- |
+| 1 | GND | Blau |
+| 2 | RS485\_A | Grau |
+| 3 | RS485\_B | Weiß |
+| 4 | VIN\+ | Braun |
+| 5 | VIN− | Schwarz |
+
+### UDP und TCP
+
+Nachrichten werden als hexadezimale Frames gesendet. Sende bei UDP zuerst die Nachricht zum Verbindungsaufbau. Nach dem Verbindungsaufbau sendet die Kamera Ergebnisse mit der Bildrate.
+
+| Richtung | Frame | Bedeutung |
+| --- | --- | --- |
+| Kamera → Controller | `ACED0410XX000000` | Kein Hindernis; `XX` ist die aktuelle Parametergruppe. |
+| Kamera → Controller | `ACED0410XX000001` | Warnung/Verzögerung. |
+| Kamera → Controller | `ACED0410XX000002` | Alarm/Stopp. |
+| Controller → Kamera (UDP) | `ACED040000000000` | UDP-Verbindung herstellen. |
+| Controller → Kamera | `ACED041A00000000` bis `ACED041A00000013` | Parametergruppe `0–19` umschalten. |
+| Controller → Kamera | `ACED041B00000000` | Aktuelle Gruppe als Standardgruppe speichern. |
+
+Der standardmäßige entfernte UDP-Port ist `6688`. Das Umschalten von Parametern benötigt Ladezeit; vermeide schnelles Umschalten, da dies Bildrate und Aktualisierungsrate der Ergebnisse verringern kann.
+
+### CAN und I/O
+
+CAN kann auf unterstützten Modellen Parametergruppen umschalten. I/O-Ausgänge melden die Zustände frei, Verzögerung und Not-Halt. Der Ausgangstyp kann Push-Pull oder Open-Drain sein; bestätige vor dem Verdrahten den Eingangstyp des Controllers.
+
+| Push-Pull OUT1 | Push-Pull OUT2 | Zustand |
+| --- | --- | --- |
+| `24 V` | `24 V` | Kein Hindernis |
+| `24 V` | `0 V` | Verzögerung |
+| `0 V` | `24 V` | Not-Halt |
+| `0 V` | `0 V` | Deaktiviert, Initialisierung oder Fehler |
+
+<Warning>
+  Verbinde bei S10 `24 V−` mit der Masse der Controller-Stromversorgung sowie `IN_G` und `OUT_G` mit der Masse des Controllersignals. Wenn der Controller die beiden Massen nicht unterscheidet, verwende das am Standort freigegebene gemeinsame Massekonzept. Bestätige, ob der Controller PNP- oder NPN-Signale verwendet, und prüfe die Verdrahtung mit einem Multimeter.
+</Warning>
+
+## Fehlerbehebung
+
+| Symptom | Prüfungen |
+| --- | --- |
+| Schwarze oder schwach reflektierende Objekte werden übersehen | Prüfe die Punktwolkenabdeckung; passe Integrationszeit und Schwellenwert für schwache Signale an. Füge bei Bedarf eine reflektierende Fläche an einer schwarzen Gabelspitze hinzu. |
+| Niedrige Objekte lösen keine Erkennung aus | Prüfe die untere Z-Grenze; setze sie zur Überprüfung vorübergehend auf `0`. Wenn die Erkennung weiterhin fehlschlägt, prüfe Einbauhöhe und Punktwolkenabdeckung. |
+| Parameter werden nicht wirksam | Bestätige, dass sie gesendet wurden. Prüfe Parametergültigkeit, Netzwerkverbindung und Priorität der Parametergruppe. |
+| Anormale Daten | Prüfe auf Behinderungen durch die Halterung, eine Schutzfolie auf dem Objektiv oder zusätzliches Schutzglas. |

@@ -1,0 +1,194 @@
+---
+title: Implementar el reconocimiento de palés con PalletPro
+sidebarTitle: Implementación de PalletPro
+description: "Instala, calibra, integra y soluciona problemas del reconocimiento de palés con cámaras de M Series."
+---
+
+PalletPro configura los parámetros de reconocimiento de palés y acoplamiento para cámaras de M Series. La cámara ejecuta el algoritmo en el dispositivo; PalletPro se conecta a la cámara, comprueba la imagen, calibra los parámetros extrínsecos, ajusta las regiones de reconocimiento y lee los resultados.
+
+<Info>
+  Las dimensiones estándar de los palés, las distancias y los rangos de parámetros de esta guía solo se aplican al flujo de trabajo de reconocimiento estándar. Evalúa primero en el sitio los palés no estándar, sin patas o muy reflectantes.
+</Info>
+
+## Prepararse para la implementación
+
+### Palés estándar y requisitos de instalación
+
+Este flujo de trabajo usa un palé estándar de dos o tres patas. El flujo original usa palés de `1.2 m × 0.8 m` o `1.2 m × 1.0 m`. Confirma las dimensiones no estándar con MRDVS antes de la implementación.
+
+| Elemento | Requisito |
+| --- | --- |
+| Posición de la cámara | Mantén la cámara lo más cerca posible del centro entre las dos horquillas; el desplazamiento de izquierda a derecha no debe superar `50 mm`. |
+| Actitud de la cámara | Mantén la cara de la cámara perpendicular al suelo, con un cabeceo y balanceo mínimos. |
+| Campo de visión | En la distancia de reconocimiento más cercana, las horquillas no deben ocultar el palé completo. |
+| Instalación de seguimiento | Monta la cámara en el panel de la raíz de las horquillas para que se mueva con ellas. |
+| Instalación debajo | Monta la cámara debajo de las horquillas para que se mueva con ellas cuando estén completamente bajadas. |
+
+Para longitudes de horquilla de hasta `1.2 m`, una altura de montaje empírica es `0.35–0.4 m`. Para horquillas más largas, usa `0.4–0.8 m` como rango inicial. Confirma la altura final a partir del campo de visión, la imagen de las patas del palé y la distancia de acoplamiento.
+
+<Frame>
+  ![Instalación de seguimiento de la cámara para el reconocimiento de palés](/images/developers/deployment-palletpro-follow-up-installation.avif)
+</Frame>
+
+### Equipos y software
+
+- Alimenta la cámara con `24 VDC` y conéctala al ordenador con un cable Ethernet Cat7.
+- Host recomendado: Windows 10 o posterior, Intel® Core™ i5 (7.ª generación) o posterior, `8 GB` de RAM e Intel® UHD Graphics o una GPU de mayor rendimiento.
+- Al instalar PalletPro, acepta el mensaje del runtime de C\+\+. La ausencia del runtime puede impedir que la aplicación se inicie.
+
+<Warning>
+  Usa solo el firmware de la cámara y el paquete del algoritmo de palés entregados para el proyecto. La cámara se reinicia durante una actualización y desaparece temporalmente de la lista de dispositivos. Haz una copia de seguridad de la calibración verificada antes de actualizar.
+</Warning>
+
+## Implementación rápida
+
+<Steps>
+  <Step title="Configurar la red y abrir la cámara">
+    Pon el ordenador en la subred `192.168.100.xxx / 255.255.255.0`. Inicia PalletPro, descubre y abre la cámara de destino.
+  </Step>
+  <Step title="Verificar versiones e imagen">
+    En LxCameraViewer, verifica que la aplicación, el firmware de la cámara y las versiones del algoritmo de palés coincidan con la entrega del proyecto. Confirma que las patas del palé sean completamente visibles en la nube de puntos.
+  </Step>
+  <Step title="Establecer la altura inicial">
+    En **Configuración de parámetros**, usa **Adaptación de altura** para obtener un valor inicial. Ajústalo con precisión respecto a la línea del suelo y, después, selecciona **Guardar parámetros**.
+  </Step>
+  <Step title="Ejecutar la enseñanza del extremo cercano">
+    Usa un palé estándar, mantenlo centrado y sin obstrucciones cercanas y selecciona **Enseñanza de palé (extremo cercano)** cuando el palé esté a unos `1.3 m` de la cámara.
+  </Step>
+  <Step title="Ejecutar la enseñanza del extremo lejano">
+    Mantén el palé en la misma posición lateral. Haz retroceder el vehículo en línea recta unos `600–1000 mm` hasta que el palé esté a unos `2.0–2.4 m` de la cámara y, después, selecciona **Enseñanza de palé (extremo lejano)**.
+  </Step>
+  <Step title="Guardar y verificar">
+    Guarda los parámetros y prueba repetidamente las posiciones cercana y lejana. Comprueba la salida de X, Y y el ángulo, así como la estabilidad del reconocimiento.
+  </Step>
+</Steps>
+
+<Tip>
+  La enseñanza del extremo lejano calibra el cabeceo de la cámara. No te desplaces lateralmente ni gires entre la enseñanza del extremo cercano y la del extremo lejano.
+</Tip>
+
+## Usar PalletPro
+
+### Interfaz principal
+
+| Área | Función |
+| --- | --- |
+| Operaciones básicas | Calibración extrínseca, guardado de parámetros y operaciones de la cámara. |
+| Aplicaciones avanzadas | Parámetros avanzados, vista 3D y pruebas sin conexión. |
+| Configuración de la cámara | Descubrir, abrir o cerrar la cámara, mostrar datos en directo, detectar y proyectar. |
+| Configuración de parámetros | Nombre de la cámara, altura de instalación, actitud y método de instalación. |
+| Importación de archivos | Importar archivos de calibración, una sola imagen o una carpeta de imágenes para pruebas sin conexión. |
+| Registros e imágenes | Ver registros de tiempo de ejecución, versiones y resultados de reconocimiento en directo. |
+
+### Calibración extrínseca
+
+En **Operaciones básicas → Calibración extrínseca**, lee **Notas de calibración** antes de realizar la enseñanza. Usa el nombre del proyecto y el ID del vehículo como nombre del cliente. Se necesita la distancia desde el centro óptico de la cámara hasta el centro de rotación de la carretilla elevadora.
+
+| Paso de calibración | Resultado |
+| --- | --- |
+| Enseñanza del extremo cercano | Calibra la altura de montaje, el desplazamiento lateral, el rumbo y el balanceo. |
+| Enseñanza del extremo lejano | Calibra el cabeceo a partir del resultado del extremo cercano. |
+| Guardar parámetros | Envía la calibración actual a la cámara. |
+
+<Frame>
+  ![Interfaz de enseñanza del palé en el extremo cercano de PalletPro](/images/developers/deployment-palletpro-tray-teaching-near-end-explanation.avif)
+</Frame>
+
+### Parámetros avanzados
+
+Cambia solo los campos requeridos por el proyecto y selecciona **Guardar parámetros** después de cada cambio.
+
+| Parámetro | Propósito |
+| --- | --- |
+| `R` | Actitud de la cámara: cabeceo, rumbo y balanceo. |
+| `t` | Desplazamiento de la cámara; el primer valor es el desplazamiento lateral. |
+| `ground_y` | Altura de la cámara en `mm`. |
+| `orientation` | Método de instalación: `0` vertical, `2` invertida, `1` / `3` montada lateralmente. |
+| `multi_level` | Reconocimiento de varios palés: `0` desactivado, `1` activado. |
+| `quad` | Reconocimiento de palés de cuatro patas: `0` desactivado, `1` activado. |
+| `min_z` / `max_z` | Rango válido a lo largo del eje de distancia de la cámara. |
+| `min_x` / `max_x` | Rango horizontal válido. |
+| `two_leg` | Reconocimiento de palés de dos patas: `0` desactivado, `1` activado. |
+
+<Note>
+  No cambies los parámetros avanzados que no se enumeran aquí salvo que MRDVS lo solicite. Conserva la configuración original y valida cada cambio si necesitas ajustar el ancho de las patas, la detección de vigas o la región de reconocimiento.
+</Note>
+
+### Pruebas sin conexión y registros
+
+En **Aplicaciones avanzadas → Prueba sin conexión**, arrastra:
+
+- el archivo de calibración `pallet_settings.json`;
+- una imagen PNG o una carpeta que contenga imágenes de resultados.
+
+Elige una prueba de un solo archivo o de carpeta y selecciona **Iniciar detección**. El área de registros muestra la API de la cámara, el firmware, el algoritmo y los resultados del reconocimiento. Usa **Operaciones de cámara** para exportar los registros del software para solucionar problemas.
+
+## Integración de comunicaciones
+
+### TCP y UDP
+
+En LxCameraViewer, selecciona **Localización de palés** y configúralo como **Siempre activado**. El servidor TCP usa el puerto `5501` de forma predeterminada y UDP usa `8000`. Los mensajes usan orden de bytes big-endian y una longitud de trama estándar de `16` bytes.
+
+| Dirección | Comando hexadecimal | Propósito |
+| --- | --- | --- |
+| Cliente → PalletPro | `60 04 00 00` | Iniciar reconocimiento. |
+| Cliente → PalletPro | `60 04 00 01` | Detener reconocimiento. |
+
+La trama de respuesta contiene un código de retorno, la longitud, los signos de X / Y / theta / Z, X / Y del centro delantero del palé, el ángulo theta y la altura del palé. Establece los bytes de extensión del protocolo actual en `0`.
+
+### RS485 (solo M4 Pro)
+
+Usa Modbus RTU a `9600` baudios y `8N1`. La dirección Modbus predeterminada es `0x17`; usa el SDK para establecer una dirección de `1–247`.
+
+| Operación | Código de función | Registro | Valor |
+| --- | --- | --- | --- |
+| Activar/detener reconocimiento | `0x06` | `120` (`0x0078`) | `1` activar, `0` detener |
+| Leer resultados | `0x04` | `122` (`0x007A`) | Leer `8` registros |
+
+Los campos de resultado son X, Y, yaw, valor de retorno y altura, cada uno representado por un campo de 4 bytes.
+
+### CANopen (M4 / M4 Mega)
+
+CAN utiliza tramas estándar de 11 bits a `250 Kbit/s`. El controlador envía `COB ID 0x212`; `MODE CTRL` `0` desactiva el reconocimiento y `1` lo activa. El dispositivo devuelve el estado del reconocimiento, la pose, la posición, la altura y las dimensiones del palé mediante `0x192`, `0x292`, `0x392` y `0x492`.
+
+### Modbus TCP
+
+Esta interfaz requiere la versión de algoritmo `0.8.1` o posterior. El puerto predeterminado es `6601`; escucha en todas las interfaces de red y usa la dirección inicial del registro `0x100`.
+
+| Desplazamiento | Registro | Contenido |
+| --: | --- | --- |
+| 0 | `0x100` | Valor de retorno absoluto; `0` significa que el reconocimiento se realizó correctamente. |
+| 1–4 | `0x101–0x104` | Signos de X, Y, yaw y altura; `0` positivo, `1` negativo. |
+| 5–8 | `0x105–0x108` | X / Y del centro delantero del palé, yaw y altura. |
+| 9 | `0x109` | Ancho del palé. |
+| 10 | `0x10A` | Número de patas del palé. |
+| 11–19 | — | Reservado. |
+
+## Verificar y solucionar problemas
+
+### Aceptación de la calibración
+
+Conduce repetidamente entre las posiciones de enseñanza del extremo cercano y del extremo lejano. La calibración es aceptable cuando los errores X e Y están dentro de `10 mm` y el reconocimiento es estable sin pérdidas. Por ejemplo, `x = -2000`, `y = 100` y `yaw = 2.3` significa que el palé está a `2000 mm` del centro óptico de la cámara, a `100 mm` a la derecha y girado `2.3°` en sentido antihorario en la vista superior.
+
+### Códigos de error comunes
+
+| Código de error | Significado | Comprobación prioritaria |
+| --: | --- | --- |
+| `0` | Reconocimiento normal | — |
+| `-1` | No hay datos de imagen o son insuficientes | Confirma que la cámara emita imágenes. |
+| `-2` / `-6` | Muy pocos puntos o no se detectan las patas del palé | Comprueba la altura de montaje, la actitud de las horquillas, las obstrucciones y la imagen de las patas del palé. |
+| `-3` | Dimensiones de las patas del palé fuera de las condiciones | Ajusta el ancho de las patas o los límites del ancho del palé. |
+| `-4` | Altura de la cámara no establecida | Establece y guarda la altura de instalación. |
+| `-5` | Error de detección de la viga o inclinación excesiva del palé | Comprueba la imagen de la viga, los píxeles volantes y la distancia de acoplamiento. |
+| `-7` | Diferencia excesiva entre los anchos de las patas del palé | Comprueba si los reflectores, las paredes u otros objetos afectan a la imagen de las patas de los bordes. |
+| `-8` | Ángulo del palé demasiado grande | Ajusta la actitud del palé. |
+
+### Condiciones de reconocimiento y límites del sitio
+
+- Condiciones estándar: ancho y longitud del palé `800–2000 mm`, altura `80–200 mm`, ancho de las patas `40–200 mm`, ancho de abertura `300–600 mm`, grosor de la viga de al menos `30 mm` y distancia de reconocimiento `1200–3000 mm`.
+- Mantén el palé completamente dentro del campo de visión. Evita la oclusión causada por las horquillas, las mercancías u objetos cercanos.
+- Prueba en el sitio los palés negros, de baja reflectividad y muy reflectantes. En la prueba original, un palé negro con una reflectividad del `5%` podía obtener imágenes a `2 m`; ajusta el tiempo de integración y el umbral de señal baja cuando sea necesario.
+- Para la recogida de horquillas en posición alta, mantén al menos `200 mm` entre los reflectores y las patas del palé cuando sea posible.
+- En el acoplamiento en directo, usa las marcas de tiempo de los resultados en la capa de aplicación para determinar si los datos son actuales y evitar correcciones retrasadas.
+
+Contacta con MRDVS para evaluar palés no estándar o sin patas.

@@ -1,0 +1,119 @@
+---
+title: Allgemeine FAQs zur Bildverarbeitung
+description: "Beheben Sie Probleme mit Stromversorgung, Netzwerk, Bildgebung, Filtern und Punktwolkenqualität von MRDVS-Kameras."
+---
+
+Prüfen Sie zuerst Stromversorgung, Netzwerk und Softwareversionen. Notieren Sie aktuelle Bildgebungs- und Filterwerte, bevor Sie sie ändern.
+
+## Kamerahardware
+
+<AccordionGroup>
+  <Accordion title="Die Betriebsanzeige ist aus oder die blaue Anzeige ist schwach">
+    **Mögliche Ursache** Die Versorgungsspannung ist instabil. **Lösung** Verwenden Sie eine Stromversorgung mit `24 V DC / 2 A`.
+  </Accordion>
+
+  <Accordion title="Die Kamera startet häufig neu">
+    **Lösung**
+
+    1. Prüfen Sie die Auslastung der Netzwerkbandbreite.<br />2. Bestätigen Sie, dass die Stromversorgung die Anforderungen der Kamera erfüllt.
+  </Accordion>
+
+  <Accordion title="Die Hindernisvermeidungsausgabe ist in der Hostsoftware normal, aber die IO-Ausgabe ist abnormal">
+    **Lösung**
+
+    1. Prüfen Sie die IO-Verdrahtung.<br />2. Prüfen Sie das Funktionskabel.<br />3. Bestätigen Sie, dass die Firmware die angeforderte Funktion unterstützt.
+  </Accordion>
+
+  <Accordion title="Der Netzwerkadapter zeigt getrennt an">
+    **Mögliche Ursache** Die Netzwerkverbindung ist fehlerhaft. **Lösung** Prüfen Sie Netzwerk, Adapter und Switch auf Fehler oder Filterung.
+  </Accordion>
+
+  <Accordion title="Die CANopen-Kommunikation liefert keine Daten oder Daten mit falscher Zuordnung">
+    **Lösung**
+
+    1. Prüfen Sie, ob Baudrate und CAN-ID übereinstimmen.<br />2. Prüfen Sie die CAN-Verdrahtung.
+  </Accordion>
+</AccordionGroup>
+
+## Hostsoftware und Bildgebung
+
+<AccordionGroup>
+  <Accordion title="Nach dem Öffnen der Kamera durch die Hostsoftware werden keine Daten angezeigt">
+    **Mögliche Ursachen**
+
+    1. Die Firewall ist aktiviert.<br />2. Adapter und Kamera befinden sich in unterschiedlichen Subnetzen.<br />3. Der Switch filtert den Datenverkehr.<br />4. Das Computernetzwerk ist fehlerhaft. **Lösung**
+    2. Deaktivieren Sie die Firewall.<br />2. Setzen Sie Computer und Kamera in dasselbe Subnetz.<br />3. Prüfen Sie den Switch.<br />4. Testen Sie einen anderen Computer.<br />5. Konfigurieren Sie bei Bedarf mehrere Subnetze.
+  </Accordion>
+
+  <Accordion title="Die Tiefenkarte enthält fehlende rechteckige Blöcke oder schwarze Löcher">
+    **Mögliche Ursache** Die Kamera erkennt fälschlicherweise eine andere Kamera. **Lösung** Stoppen Sie den Stream und deaktivieren Sie den Mehrkameramodus in **3D Settings**. Ändern Sie bei Bedarf den Algorithmusmodus, um den Mehrkameramodus im getrennten Zustand zu deaktivieren.
+  </Accordion>
+
+  <Accordion title="Eine S10- oder S10-Pro-Kamera zeigt kein Bild oder ein sehr kleines Tiefenbild">
+    **Mögliche Ursache** Die Hostsoftwareversion ist inkompatibel. **Lösung** Aktualisieren Sie auf `Lanxin-MRDVS-1.3.66.0606` oder höher.
+  </Accordion>
+
+  <Accordion title="Die Kamera lässt sich wegen eines Netzwerkkommunikationsfehlers nicht öffnen">
+    **Mögliche Ursache** Kamera und Computer befinden sich in unterschiedlichen Subnetzen. **Lösung** Konfigurieren Sie Kamera und Computer im selben Subnetz.
+  </Accordion>
+
+  <Accordion title="Die Berechtigung für die exklusive Anwendung schlägt fehl">
+    **Mögliche Ursache** Mehrere Benutzer sind mit der Kamera verbunden. **Lösung** Lassen Sie jeweils nur eine Verbindung zur Kamera zu. Versionen `2.4.50.0720` und höher unterstützen Berechtigungen für mehrere Benutzer.
+  </Accordion>
+
+  <Accordion title="Die Kamera lässt sich erfolgreich im eingeschränkten Modus öffnen, aber der Stream ist nicht verfügbar">
+    **Mögliche Ursache** Mehrere Prozesse sind mit der Kamera verbunden. **Lösung** Der erste Prozess, der die Kamera öffnet, erhält die primäre Berechtigung und muss den Stream starten, bevor ein Prozess im eingeschränkten Modus ihn anzeigen kann.
+  </Accordion>
+
+  <Accordion title="Das Zielobjekt erscheint dünn oder unvollständig">
+    **Mögliche Ursache** Die Belichtung ist zu niedrig oder die Filterung zu aggressiv. **Lösung**
+
+    1. Prüfen Sie **High Exposure**; ein typischer Bereich ist `600–1200`.<br />2. Prüfen Sie **Low Signal Threshold**; ein typischer Bereich ist `10–30`.
+  </Accordion>
+
+  <Accordion title="Der Stream startet und die Bildrate ist normal, aber es sind keine Bilddaten verfügbar">
+    **Mögliche Ursache** Der Laser ist schwach oder ausgeschaltet. **Lösung** Prüfen Sie die Vorderseite der Kamera mit einer Handykamera. Wenn der Laser ausgeschaltet oder schwach ist, ersetzen Sie die Kamerahardware.
+  </Accordion>
+
+  <Accordion title="Die Punktwolke enthält Daten, obwohl sich vor der Kamera keine Objekte befinden">
+    **Lösung** Prüfen Sie Bildgebungsumgebung, Belichtung und Filtereinstellungen. Wenn das Problem nach Bestätigung der Konfiguration bestehen bleibt, sammeln Sie ein Protokoll und Beispieldaten zur Analyse.
+  </Accordion>
+
+  <Accordion title="Wenn die Kamera auf ein Objekt gerichtet ist, erscheint an dessen Seite Rauschen">
+    **Mögliche Ursache** Blendung. **Lösung**
+
+    1. Aktivieren Sie die Verarbeitung zur Blendungsoptimierung.<br />2. Erhöhen Sie **Low Signal Threshold**.
+  </Accordion>
+
+  <Accordion title="Die Mitte des RGB-Bildes ist rötlich oder das RGB-Bild ist unscharf">
+    **Lösung** Ersetzen Sie die Kamerahardware.
+  </Accordion>
+
+  <Accordion title="Das RGB-Bild zeigt nach vorn, aber das Tiefenbild ist schräg">
+    **Lösung** Ersetzen Sie die Kamerahardware.
+  </Accordion>
+
+  <Accordion title="Punktwolken benachbarter Objekte verschmelzen">
+    **Lösung** Erhöhen Sie die Stufen für Entrauschung und Glättung in den Filtereinstellungen.
+  </Accordion>
+
+  <Accordion title="Nach Aktivierung der RGB-D-Ausrichtung enthält RGB keine Daten">
+    **Mögliche Ursache** Die Softwareversion ist inkompatibel. **Lösung** Aktualisieren Sie die Software. Laden Sie Releases aus dem [Camera SDK-GitHub-Repository](https://github.com/Lanxin-MRDVS/CameraSDK/releases) herunter.
+  </Accordion>
+
+  <Accordion title="Die Punktwolke der S-Serie zeigt deutliche Schichten">
+    **Lösung** Ersetzen Sie die Kamerahardware.
+  </Accordion>
+
+  <Accordion title="Die Kantengenauigkeit eines nahen weißen Objekts ist bei der S-Serie schlecht">
+    **Mögliche Ursache** Blendung. **Lösung** Aktivieren Sie die Blendungsoptimierung. Die Erkennung schwarzer Objekte kann dadurch unvollständig werden.
+  </Accordion>
+
+  <Accordion title="Ein reflektierender Pfosten ist bei der S-Serie stark überbelichtet">
+    **Mögliche Ursache** Blendung. **Lösung** Aktivieren Sie die Verarbeitung zur Unterdrückung von Blendung.
+  </Accordion>
+
+  <Accordion title="Ein schwarzes Objekt wird bei der S-Serie nicht vollständig erfasst">
+    **Mögliche Ursache** Der Modus für hohe Belichtung ist aktiviert. **Lösung** Setzen Sie das ToF-Register `100130B0` auf `240`.
+  </Accordion>
+</AccordionGroup>

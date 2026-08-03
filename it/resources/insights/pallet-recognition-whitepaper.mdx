@@ -1,0 +1,106 @@
+---
+title: "White paper: riconoscimento dei pallet per la logistica intelligente"
+sidebarTitle: White paper sul riconoscimento dei pallet
+description: "Esamina le sfide ingegneristiche, i flussi di lavoro di PalletPro, le modalità di attracco e i casi pubblici di riconoscimento dei pallet per carrelli elevatori senza conducente."
+---
+
+Lo spostamento dei pallet, le differenze di specifica, le superfici riflettenti e i materiali a bassa riflettività possono influire sull'attracco e sulla movimentazione dei carrelli elevatori senza conducente. Questo articolo descrive le sfide ingegneristiche del riconoscimento dei pallet, il flusso di lavoro di riconoscimento e attracco di PalletPro e alcuni casi applicativi pubblici.
+
+Nella logistica di magazzino, AMR e carrelli elevatori senza conducente possono eseguire attività ripetitive di movimentazione. Il funzionamento sicuro, la localizzazione e l'attracco affidabile ai pallet dipendono ancora dal sistema completo del veicolo, dalla percezione, dal controllo e dalla gestione del sito.
+
+I rischi intorno alle apparecchiature mobili devono essere controllati tramite il controllo del veicolo, il rilevamento degli ostacoli, le procedure operative e la gestione del sito. I [dati 2023/24 dell'UK Health and Safety Executive sulle collisioni mortali con veicoli in movimento](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-Jb3Ud6FjFojVYjxwKLvcgju4nRf "Fonte 1") forniscono un utile contesto di settore.
+
+## Contesto dell'automazione di magazzino
+
+I grandi magazzini usano robot per lo smistamento, il trasporto e il picking. Le [informazioni pubbliche di Amazon Robotics](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-DIAmd4kfsoNLNGxTGxDcM65unyf "Fonte 2") mostrano che i sistemi robotici combinano in genere percezione, controllo del veicolo, pianificazione e meccanismi di sicurezza del sito. Per un carrello elevatore senza conducente, il riconoscimento stabile del pallet e della posa è un input fondamentale.
+
+## Sfide ingegneristiche nel riconoscimento dei pallet
+
+Un carrello elevatore senza conducente deve conoscere la posa del pallet rispetto al veicolo per regolare il percorso di attracco. In pratica, l'offset laterale, l'orientamento, la struttura e la riflettività della superficie variano. Anche la luce ambientale e le occlusioni possono influire sulla qualità dei dati del sensore.
+
+<Frame>
+  ![Fattori ingegneristici che influenzano il riconoscimento dei pallet per carrelli elevatori senza conducente](/images/resources/insights-pallet-recognition-whitepaper-the-importance-of-pallet-identification-in-unmanned-forklifts.avif)
+</Frame>
+
+## Approccio al riconoscimento
+
+PalletPro estrae dalle informazioni di profondità 3D ToF caratteristiche della nuvola di punti, come gambe e traverse del pallet, quindi restituisce la posa utilizzata dal veicolo per l'attracco. Le etichette e il LiDAR 2D possono funzionare in ambienti specifici, ma l'idoneità dipende dalla struttura del pallet, dall'installazione e dalle condizioni del sito.
+
+## Sistema di riconoscimento dei pallet PalletPro
+
+PalletPro combina una fotocamera 3D con algoritmi di riconoscimento dei pallet e fornisce posizione e orientamento del pallet al sistema di controllo del veicolo.
+
+- **Elaborazione e output integrati**: l'algoritmo elabora i dati di profondità sulla fotocamera e restituisce i risultati del riconoscimento a **10 FPS**.
+- **Distribuzione e attracco**: la fotocamera può essere installata tra le forche del carrello elevatore. La calibrazione automatica stabilisce la relazione delle coordinate tra fotocamera, veicolo e pallet. Nel sito è possibile valutare pallet standard a due e quattro gambe e pallet impilati; i pallet senza gambe o insoliti richiedono una valutazione del progetto.
+- **Integrazione**: il sistema fornisce risultati di riconoscimento in tempo reale. Configura l'interfaccia, l'installazione sul veicolo e la strategia di attracco secondo la documentazione del progetto.
+
+<Frame>
+  ![Flusso di lavoro della visione 3D e del riconoscimento dei pallet di PalletPro](/images/resources/insights-pallet-recognition-whitepaper-mrdvs-pallet-recognition-system-palletpro-relevant-illustrations-to-solve-the-p.avif)
+</Frame>
+
+- **Adattamento all'ambiente**: in presenza di luce ambientale intensa o pallet a bassa riflettività, convalida sul posto il modello della fotocamera, la distanza di montaggio, l'esposizione e i parametri dei filtri.
+
+[Guarda il test sul campo di riconoscimento dei pallet all'aperto di MRDVS su Bilibili](https://www.bilibili.com/video/BV1nYtoeREJD/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=11 "Test sul campo di riconoscimento dei pallet all'aperto")
+
+I target a bassa riflettività, come i pallet neri, possono ridurre la qualità della nuvola di punti. Usa il video del test sul campo e i dati del sito per valutare le prestazioni del riconoscimento.
+
+[Guarda il test sul campo di riconoscimento dei pallet neri di MRDVS su Bilibili](https://www.bilibili.com/video/BV14AtZeNEuQ/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=7 "Test sul campo di riconoscimento dei pallet neri")
+
+## Riconoscimento e attracco
+
+Una fotocamera M Series può essere installata tra le forche del carrello elevatore per acquisire i dati di profondità del pallet e restituire la posa del pallet tramite l'algoritmo di riconoscimento.
+
+In un flusso di lavoro tipico, il veicolo acquisisce prima la posa a circa `2 m` dal pallet e corregge l'orientamento. Poi esegue il posizionamento preciso e la correzione laterale a circa `1.5 m`. Convalida le distanze effettive e la strategia di controllo in base al veicolo, alla velocità e al sito.
+
+<Frame>
+  ![Flusso di lavoro del riconoscimento dei pallet e dell'attracco del carrello elevatore](/images/resources/insights-pallet-recognition-whitepaper-relevant-for-identification-and-docking.avif)
+</Frame>
+
+Il sistema di controllo del veicolo può usare l'**attracco in due fasi** oppure l'**attracco in tempo reale**, in base al flusso dell'attività.
+
+### Attracco in due fasi
+
+1. **Posizionamento a distanza**: acquisisci i risultati del riconoscimento a `1,800–2,800 mm` dal pallet e correggi l'orientamento e l'offset laterale.
+2. **Verifica nel campo vicino**: quando le punte delle forche si trovano a circa `200 mm` dal bordo anteriore del pallet, acquisisci nuovamente il risultato e verifica che soddisfi i requisiti di inserimento delle forche.
+3. **Inserimento delle forche**: inserisci le forche nel pallet dopo la verifica. Se la verifica non riesce, regola il veicolo e verifica di nuovo.
+
+### Attracco in tempo reale
+
+Acquisisci continuamente i risultati del riconoscimento per regolare la posa del veicolo. Esegui correzioni fini e completa l'inserimento delle forche a circa `200 mm` dal bordo anteriore del pallet. Il sistema di controllo deve usare i timestamp dei dati per gestire la latenza.
+
+## Comunicazione
+
+La soluzione supporta interfacce come TCP, UDP, CAN, RS-485 e API. Consulta la documentazione del prodotto e della distribuzione pertinente per verificare disponibilità e formati dei messaggi. Passa dagli algoritmi di riconoscimento a quelli di evitamento ostacoli e viceversa secondo la configurazione del progetto.
+
+## Casi di studio
+
+### Caso 1: riconoscimento dei pallet e dei fori dei tamburi per cavi per un'azienda di comunicazioni in fibra ottica
+
+**Contesto del progetto**: Company F usa impilatori senza conducente per le attività logistiche. Il progetto comprende il riconoscimento e la movimentazione dei pallet e dei fori dei tamburi per cavi.
+
+**Soluzione**: PalletPro fornisce informazioni sulla profondità e sulla posa del pallet, così il controller del veicolo può regolare la posa dell'impilatore. La visione 3D riconosce anche i fori dei tamburi per cavi.
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_1.mp4" title="Caso 1: riconoscimento dei pallet e dei fori dei tamburi per cavi da parte di un impilatore senza conducente" alt="Video del caso 1 sul riconoscimento dei pallet da parte di un impilatore senza conducente" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_2.mp4" title="Caso 1: riconoscimento dei fori dei tamburi per cavi" alt="Video del caso 2 sul riconoscimento dei pallet da parte di un impilatore senza conducente" />
+</Frame>
+
+### Caso 2: riconoscimento di pallet non standard nell'industria della fibra di vetro
+
+<Frame>
+  ![Progetto di riconoscimento di pallet non standard nell'industria della fibra di vetro](/images/resources/insights-pallet-recognition-whitepaper-case-2-the-non-standard-pallet-identification-project-in-the-fiberglass-industr.avif)
+</Frame>
+
+**Contesto del progetto**: la base di Tongxiang di China Jushi Group ha introdotto carrelli elevatori senza conducente per la movimentazione automatizzata sul piano di produzione.
+
+**Sfida**: la logistica interna usa pallet metallici personalizzati con forme e angoli di posizionamento diversi, aumentando la difficoltà di riconoscimento e inserimento delle forche.
+
+**Soluzione**: il carrello elevatore senza conducente usa PalletPro per acquisire i dati di profondità del pallet e correggere in tempo reale la posizione e l'orientamento del pallet.
+
+## Fonti
+
+1. [UK Health and Safety Executive](https://www.hse.gov.uk/statistics/fatals.htm)
+2. [The Robot Report](https://www.therobotreport.com/a-decade-after-acquiring-kiva-amazon-unveils-its-first-amr/)

@@ -1,0 +1,194 @@
+---
+title: Triển khai nhận dạng pallet với PalletPro
+sidebarTitle: Triển khai PalletPro
+description: "Cài đặt, hiệu chuẩn, tích hợp và khắc phục sự cố nhận dạng pallet với camera dòng M và PalletPro."
+---
+
+PalletPro cấu hình tham số nhận dạng và ghép pallet cho camera dòng M. Camera chạy thuật toán trên thiết bị; PalletPro kết nối với camera, kiểm tra hình ảnh, hiệu chuẩn thông số ngoại tại, điều chỉnh vùng nhận dạng và đọc kết quả.
+
+<Info>
+  Kích thước pallet, khoảng cách và phạm vi tham số tiêu chuẩn trong hướng dẫn này chỉ áp dụng cho quy trình nhận dạng tiêu chuẩn. Hãy đánh giá pallet không tiêu chuẩn, không có chân hoặc phản xạ cao tại hiện trường trước.
+</Info>
+
+## Chuẩn bị triển khai
+
+### Pallet tiêu chuẩn và yêu cầu lắp đặt
+
+Quy trình này dùng pallet tiêu chuẩn hai chân hoặc ba chân. Quy trình ban đầu dùng pallet `1.2 m × 0.8 m` hoặc `1.2 m × 1.0 m`. Xác nhận kích thước không tiêu chuẩn với MRDVS trước khi triển khai.
+
+| Hạng mục | Yêu cầu |
+| --- | --- |
+| Vị trí camera | Giữ camera càng gần càng tốt với tâm giữa hai càng; độ lệch trái–phải không được vượt quá `50 mm`. |
+| Tư thế camera | Giữ mặt camera vuông góc với mặt đất, pitch và roll ở mức nhỏ nhất. |
+| Trường nhìn | Ở khoảng cách nhận dạng gần nhất, các càng không được che khuất toàn bộ pallet. |
+| Lắp đặt bám theo càng | Gắn camera trên tấm gốc càng để camera di chuyển cùng càng. |
+| Lắp đặt thả xuống | Gắn camera bên dưới càng để camera di chuyển cùng càng khi càng hạ hoàn toàn. |
+
+Với chiều dài càng tối đa `1.2 m`, độ cao lắp đặt theo kinh nghiệm là `0.35–0.4 m`. Với càng dài hơn, dùng `0.4–0.8 m` làm phạm vi ban đầu. Xác nhận độ cao cuối cùng dựa trên trường nhìn, hình ảnh chân pallet và khoảng cách ghép.
+
+<Frame>
+  ![Lắp đặt camera bám theo càng để nhận dạng pallet](/images/developers/deployment-palletpro-follow-up-installation.avif)
+</Frame>
+
+### Thiết bị và phần mềm
+
+- Cấp nguồn `24 VDC` cho camera và kết nối với máy tính bằng cáp Ethernet Cat7.
+- Máy chủ khuyến nghị: Windows 10 trở lên, Intel® Core™ i5 (thế hệ 7) trở lên, RAM `8 GB` và Intel® UHD Graphics hoặc GPU có hiệu năng cao hơn.
+- Khi cài đặt PalletPro, chấp nhận lời nhắc về runtime C\+\+. Thiếu runtime có thể khiến ứng dụng không khởi động.
+
+<Warning>
+  Chỉ dùng firmware camera và gói thuật toán pallet được cung cấp cho dự án. Camera sẽ khởi động lại trong quá trình nâng cấp và tạm thời biến mất khỏi danh sách thiết bị. Sao lưu hiệu chuẩn đã kiểm tra trước khi nâng cấp.
+</Warning>
+
+## Triển khai nhanh
+
+<Steps>
+  <Step title="Cấu hình mạng và mở camera">
+    Đặt máy tính trên subnet `192.168.100.xxx / 255.255.255.0`. Khởi động PalletPro, tìm và mở camera đích.
+  </Step>
+  <Step title="Kiểm tra phiên bản và hình ảnh">
+    Trong LxCameraViewer, kiểm tra phiên bản ứng dụng, firmware camera và thuật toán pallet có khớp với gói bàn giao của dự án hay không. Xác nhận các chân pallet hiển thị đầy đủ trong đám mây điểm.
+  </Step>
+  <Step title="Đặt độ cao ban đầu">
+    Trong **Parameter settings**, dùng **Height adaptation** để lấy giá trị ban đầu. Tinh chỉnh theo đường mặt đất, sau đó chọn **Save parameters**.
+  </Step>
+  <Step title="Thực hiện dạy đầu gần">
+    Dùng pallet tiêu chuẩn, giữ pallet ở giữa và không có vật cản gần đó, sau đó chọn **Pallet teaching (near end)** khi pallet cách camera khoảng `1.3 m`.
+  </Step>
+  <Step title="Thực hiện dạy đầu xa">
+    Giữ pallet ở cùng vị trí ngang. Lùi xe theo đường thẳng khoảng `600–1000 mm` cho đến khi pallet cách camera khoảng `2.0–2.4 m`, sau đó chọn **Pallet teaching (far end)**.
+  </Step>
+  <Step title="Lưu và kiểm tra">
+    Lưu tham số và kiểm tra lặp lại các vị trí gần và xa. Kiểm tra đầu ra X, Y, góc và độ ổn định nhận dạng.
+  </Step>
+</Steps>
+
+<Tip>
+  Dạy đầu xa hiệu chuẩn pitch của camera. Không di chuyển ngang hoặc xoay xe giữa lần dạy đầu gần và đầu xa.
+</Tip>
+
+## Sử dụng PalletPro
+
+### Giao diện chính
+
+| Khu vực | Mục đích |
+| --- | --- |
+| Basic operations | Hiệu chuẩn thông số ngoại tại, lưu tham số và thao tác camera. |
+| Advanced applications | Tham số nâng cao, hiển thị 3D và kiểm tra ngoại tuyến. |
+| Camera settings | Tìm, mở hoặc đóng camera, hiển thị dữ liệu trực tiếp, phát hiện và chiếu. |
+| Parameter settings | Tên camera, độ cao lắp đặt, tư thế và phương thức lắp đặt. |
+| File import | Nhập tệp hiệu chuẩn, một ảnh hoặc một thư mục ảnh để kiểm tra ngoại tuyến. |
+| Logs and images | Xem nhật ký thời gian chạy, phiên bản và kết quả nhận dạng trực tiếp. |
+
+### Hiệu chuẩn thông số ngoại tại
+
+Trong **Basic operations → Extrinsic calibration**, đọc **Calibration notes** trước khi dạy. Dùng tên dự án và ID phương tiện cho tên khách hàng. Cần có khoảng cách từ tâm quang học của camera đến tâm quay của xe nâng.
+
+| Bước hiệu chuẩn | Kết quả |
+| --- | --- |
+| Dạy đầu gần | Hiệu chuẩn độ cao lắp đặt, độ lệch ngang, hướng và roll. |
+| Dạy đầu xa | Hiệu chuẩn pitch từ kết quả đầu gần. |
+| Save parameters | Gửi hiệu chuẩn hiện tại đến camera. |
+
+<Frame>
+  ![Giao diện dạy pallet đầu gần của PalletPro](/images/developers/deployment-palletpro-tray-teaching-near-end-explanation.avif)
+</Frame>
+
+### Tham số nâng cao
+
+Chỉ thay đổi các trường mà dự án yêu cầu và chọn **Save parameters** sau mỗi thay đổi.
+
+| Tham số | Mục đích |
+| --- | --- |
+| `R` | Tư thế camera: pitch, heading và roll. |
+| `t` | Độ lệch camera; giá trị đầu tiên là độ lệch ngang. |
+| `ground_y` | Độ cao camera tính bằng `mm`. |
+| `orientation` | Phương thức lắp đặt: `0` thẳng đứng, `2` đảo ngược, `1` / `3` gắn bên. |
+| `multi_level` | Nhận dạng nhiều pallet: `0` tắt, `1` bật. |
+| `quad` | Nhận dạng pallet bốn chân: `0` tắt, `1` bật. |
+| `min_z` / `max_z` | Phạm vi hợp lệ theo trục khoảng cách đến camera. |
+| `min_x` / `max_x` | Phạm vi ngang hợp lệ. |
+| `two_leg` | Nhận dạng pallet hai chân: `0` tắt, `1` bật. |
+
+<Note>
+  Không thay đổi các tham số nâng cao không được liệt kê ở đây trừ khi MRDVS yêu cầu. Giữ nguyên cấu hình ban đầu và kiểm tra từng thay đổi nếu cần điều chỉnh độ rộng chân, phát hiện thanh ngang hoặc vùng nhận dạng.
+</Note>
+
+### Kiểm tra ngoại tuyến và nhật ký
+
+Trong **Advanced applications → Offline test**, kéo vào:
+
+- tệp hiệu chuẩn `pallet_settings.json`;
+- một ảnh PNG hoặc một thư mục chứa các ảnh kết quả.
+
+Chọn kiểm tra một tệp hoặc một thư mục rồi chọn **Start detection**. Khu vực nhật ký hiển thị API camera, firmware, thuật toán và kết quả nhận dạng. Dùng **Camera operations** để xuất nhật ký phần mềm khi khắc phục sự cố.
+
+## Tích hợp giao tiếp
+
+### TCP và UDP
+
+Trong LxCameraViewer, chọn **Pallet localization** và đặt thành **Always on**. Máy chủ TCP dùng cổng `5501` theo mặc định và UDP dùng cổng `8000`. Thông báo dùng thứ tự byte big-endian và độ dài khung tiêu chuẩn là `16` byte.
+
+| Hướng | Lệnh hex | Mục đích |
+| --- | --- | --- |
+| Client → PalletPro | `60 04 00 00` | Bắt đầu nhận dạng. |
+| Client → PalletPro | `60 04 00 01` | Dừng nhận dạng. |
+
+Khung phản hồi chứa mã trả về, độ dài, dấu X / Y / theta / Z, X / Y tâm phía trước pallet, góc theta và chiều cao pallet. Đặt các byte mở rộng trong giao thức hiện tại thành `0`.
+
+### RS485 (chỉ M4 Pro)
+
+Dùng Modbus RTU ở tốc độ `9600` baud và `8N1`. Địa chỉ Modbus mặc định là `0x17`; dùng SDK để đặt địa chỉ từ `1–247`.
+
+| Thao tác | Mã hàm | Thanh ghi | Giá trị |
+| --- | --- | --- | --- |
+| Bật / dừng nhận dạng | `0x06` | `120` (`0x0078`) | `1` bật, `0` dừng |
+| Đọc kết quả | `0x04` | `122` (`0x007A`) | Đọc `8` thanh ghi |
+
+Các trường kết quả là X, Y, yaw, giá trị trả về và chiều cao, mỗi trường được biểu diễn bằng 4 byte.
+
+### CANopen (M4 / M4 Mega)
+
+CAN dùng khung 11 bit tiêu chuẩn ở tốc độ `250 Kbit/s`. Bộ điều khiển gửi `COB ID 0x212`; `MODE CTRL` `0` tắt nhận dạng và `1` bật nhận dạng. Thiết bị trả về trạng thái nhận dạng, tư thế, vị trí, chiều cao và kích thước pallet qua `0x192`, `0x292`, `0x392` và `0x492`.
+
+### Modbus TCP
+
+Giao diện này yêu cầu phiên bản thuật toán `0.8.1` trở lên. Cổng mặc định là `6601`; giao diện lắng nghe trên tất cả mạng và dùng địa chỉ bắt đầu thanh ghi `0x100`.
+
+| Offset | Thanh ghi | Nội dung |
+| ---: | --- | --- |
+| 0 | `0x100` | Giá trị trả về tuyệt đối; `0` nghĩa là nhận dạng thành công. |
+| 1–4 | `0x101–0x104` | Dấu của X, Y, yaw và chiều cao; `0` dương, `1` âm. |
+| 5–8 | `0x105–0x108` | X / Y tâm phía trước pallet, yaw và chiều cao. |
+| 9 | `0x109` | Chiều rộng pallet. |
+| 10 | `0x10A` | Số chân pallet. |
+| 11–19 | — | Dành riêng. |
+
+## Kiểm tra và khắc phục sự cố
+
+### Chấp nhận hiệu chuẩn
+
+Lái xe lặp lại giữa vị trí dạy đầu gần và đầu xa. Hiệu chuẩn đạt yêu cầu khi sai số X và Y trong phạm vi `10 mm` và nhận dạng ổn định, không bỏ sót. Ví dụ, `x = -2000`, `y = 100` và `yaw = 2.3` nghĩa là pallet cách tâm quang học camera `2000 mm`, lệch sang phải `100 mm` và xoay ngược chiều kim đồng hồ `2.3°` trong chế độ xem từ trên xuống.
+
+### Mã lỗi thường gặp
+
+| Mã lỗi | Ý nghĩa | Kiểm tra ưu tiên |
+| ---: | --- | --- |
+| `0` | Nhận dạng bình thường | — |
+| `-1` | Không có dữ liệu hình ảnh hoặc dữ liệu không đủ | Xác nhận camera xuất hình ảnh. |
+| `-2` / `-6` | Quá ít điểm hoặc không phát hiện được chân pallet | Kiểm tra độ cao lắp đặt, tư thế càng, vật cản và hình ảnh chân pallet. |
+| `-3` | Kích thước chân pallet nằm ngoài điều kiện | Điều chỉnh độ rộng chân hoặc giới hạn chiều rộng pallet. |
+| `-4` | Chưa đặt độ cao camera | Đặt và lưu độ cao lắp đặt. |
+| `-5` | Lỗi phát hiện thanh ngang hoặc pallet nghiêng quá mức | Kiểm tra hình ảnh thanh ngang, điểm bay và khoảng cách ghép. |
+| `-7` | Chênh lệch quá lớn giữa độ rộng các chân pallet | Kiểm tra vật phản quang, tường hoặc vật thể khác có ảnh hưởng đến hình ảnh chân ở mép hay không. |
+| `-8` | Góc pallet quá lớn | Điều chỉnh tư thế pallet. |
+
+### Điều kiện nhận dạng và giới hạn hiện trường
+
+- Điều kiện tiêu chuẩn: chiều rộng và chiều dài pallet `800–2000 mm`, chiều cao `80–200 mm`, độ rộng chân `40–200 mm`, độ rộng khe hở `300–600 mm`, độ dày thanh ngang ít nhất `30 mm` và khoảng cách nhận dạng `1200–3000 mm`.
+- Giữ pallet hoàn toàn trong trường nhìn. Tránh bị càng, hàng hóa hoặc vật thể gần đó che khuất.
+- Kiểm tra pallet màu đen, phản xạ thấp và phản xạ cao tại hiện trường. Trong thử nghiệm ban đầu, pallet đen có độ phản xạ `5%` có thể được chụp ở khoảng cách `2 m`; điều chỉnh thời gian tích hợp và ngưỡng tín hiệu thấp khi cần.
+- Khi lấy pallet ở vị trí càng cao, nếu có thể hãy giữ khoảng cách ít nhất `200 mm` giữa vật phản quang và chân pallet.
+- Khi ghép trực tiếp, dùng dấu thời gian kết quả ở lớp ứng dụng để xác định dữ liệu còn mới và ngăn điều chỉnh trễ.
+
+Liên hệ MRDVS để đánh giá pallet không tiêu chuẩn hoặc không có chân.

@@ -1,0 +1,106 @@
+---
+title: "Libro blanco: reconocimiento de palés para logística inteligente"
+sidebarTitle: Libro blanco sobre reconocimiento de palés
+description: "Revisa los retos de ingeniería, los flujos de trabajo de PalletPro, los modos de acoplamiento y los casos públicos de reconocimiento de palés para carretillas elevadoras no tripuladas."
+---
+
+El desplazamiento del palé, las diferencias de especificación, las superficies reflectantes y los materiales de baja reflectividad pueden afectar al acoplamiento y la manipulación de las carretillas elevadoras no tripuladas. Este artículo describe los retos de ingeniería del reconocimiento de palés, el flujo de trabajo de reconocimiento y acoplamiento de PalletPro y casos públicos de aplicación.
+
+En la logística de almacenes, los AMR y las carretillas elevadoras no tripuladas pueden realizar tareas repetitivas de manipulación. La operación segura, la localización y el acoplamiento fiable de palés siguen dependiendo del sistema completo del vehículo, la percepción, el control y la gestión del sitio.
+
+Los riesgos alrededor de los equipos móviles deben controlarse mediante el control del vehículo, la detección de obstáculos, los procedimientos operativos y la gestión del sitio. Los [datos de 2023/24 del Health and Safety Executive del Reino Unido sobre colisiones mortales con vehículos en movimiento](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-Jb3Ud6FjFojVYjxwKLvcgju4nRf "Fuente 1") proporcionan un contexto útil para el sector.
+
+## Contexto de la automatización de almacenes
+
+Los grandes almacenes usan robots para clasificar, transportar y recoger productos. La información pública de [Amazon Robotics](https://zcnt5g3o2989.feishu.cn/wiki/GBaXwSUvniIC49kIoz4crxxInuh#share-DIAmd4kfsoNLNGxTGxDcM65unyf "Fuente 2") muestra que los sistemas robóticos suelen combinar percepción, control del vehículo, programación y mecanismos de seguridad del sitio. Para una carretilla elevadora no tripulada, el reconocimiento estable del palé y de su pose es una entrada clave.
+
+## Retos de ingeniería del reconocimiento de palés
+
+Una carretilla elevadora no tripulada necesita la pose del palé con respecto al vehículo para ajustar su trayectoria de acoplamiento. En la práctica, el desplazamiento lateral, la orientación, la estructura y la reflectividad de la superficie varían. La luz ambiental y la oclusión también pueden afectar a la calidad de los datos del sensor.
+
+<Frame>
+  ![Factores de ingeniería que afectan al reconocimiento de palés para carretillas elevadoras no tripuladas](/images/resources/insights-pallet-recognition-whitepaper-the-importance-of-pallet-identification-in-unmanned-forklifts.avif)
+</Frame>
+
+## Enfoque de reconocimiento
+
+PalletPro extrae de los datos de profundidad 3D ToF características de la nube de puntos, como las patas y los travesaños del palé, y luego genera la pose que el vehículo utiliza para acoplarse. Las etiquetas y el LiDAR 2D pueden funcionar en entornos concretos, pero su idoneidad depende de la estructura del palé, la instalación y las condiciones del sitio.
+
+## Sistema de reconocimiento de palés PalletPro
+
+PalletPro combina una cámara 3D con algoritmos de reconocimiento de palés y proporciona la posición y orientación del palé al sistema de control del vehículo.
+
+- **Procesamiento y salida integrados**: El algoritmo procesa los datos de profundidad en la cámara y genera resultados de reconocimiento a **10 FPS**.
+- **Implementación y acoplamiento**: La cámara puede instalarse entre las horquillas de la carretilla. La calibración automática establece la relación de coordenadas entre la cámara, el vehículo y el palé. En el sitio se pueden evaluar palés estándar de dos y cuatro patas y palés apilados; los palés sin patas o inusuales requieren una evaluación del proyecto.
+- **Integración**: El sistema proporciona resultados de reconocimiento en tiempo real. Configura la interfaz, la instalación en el vehículo y la estrategia de acoplamiento según la documentación del proyecto.
+
+<Frame>
+  ![Flujo de trabajo de visión 3D y reconocimiento de palés de PalletPro](/images/resources/insights-pallet-recognition-whitepaper-mrdvs-pallet-recognition-system-palletpro-relevant-illustrations-to-solve-the-p.avif)
+</Frame>
+
+- **Adaptación al entorno**: En condiciones de luz ambiental intensa o con palés de baja reflectividad, valida en el sitio el modelo de cámara, la distancia de montaje, la exposición y los parámetros del filtro.
+
+[Ver la prueba de campo de reconocimiento de palés de MRDVS en exteriores en Bilibili](https://www.bilibili.com/video/BV1nYtoeREJD/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=11 "Prueba de campo de reconocimiento de palés en exteriores")
+
+Los objetivos de baja reflectividad, como los palés negros, pueden reducir la calidad de la nube de puntos. Usa el vídeo de prueba de campo y los datos del sitio para evaluar el rendimiento del reconocimiento.
+
+[Ver la prueba de campo de reconocimiento de palés negros de MRDVS en Bilibili](https://www.bilibili.com/video/BV14AtZeNEuQ/?share_source=copy_web&vd_source=151f83d2020c39e5b0ce4613cc91b21c&t=7 "Prueba de campo de reconocimiento de palés negros")
+
+## Reconocimiento y acoplamiento
+
+Una cámara M Series puede instalarse entre las horquillas de la carretilla para capturar datos de profundidad del palé y generar su pose mediante el algoritmo de reconocimiento.
+
+En un flujo de trabajo habitual, el vehículo captura primero la pose aproximadamente a `2 m` del palé y corrige su orientación. Después realiza el posicionamiento preciso y la corrección lateral aproximadamente a `1.5 m`. Valida las distancias reales y la estrategia de control según el vehículo, la velocidad y el sitio.
+
+<Frame>
+  ![Flujo de reconocimiento de palés y acoplamiento de la carretilla elevadora](/images/resources/insights-pallet-recognition-whitepaper-relevant-for-identification-and-docking.avif)
+</Frame>
+
+El sistema de control del vehículo puede utilizar **acoplamiento en dos etapas** o **acoplamiento en tiempo real**, según el flujo de tareas.
+
+### Acoplamiento en dos etapas
+
+1. **Posicionamiento remoto**: Captura los resultados de reconocimiento a `1,800–2,800 mm` del palé y corrige la orientación y el desplazamiento lateral.
+2. **Verificación en campo cercano**: Cuando las puntas de las horquillas estén aproximadamente a `200 mm` del borde delantero del palé, captura de nuevo el resultado y comprueba si cumple los requisitos de introducción de las horquillas.
+3. **Introducción de las horquillas**: Introduce las horquillas en el palé después de la verificación. Si la verificación falla, ajusta el vehículo y vuelve a verificar.
+
+### Acoplamiento en tiempo real
+
+Captura continuamente los resultados de reconocimiento para ajustar la pose del vehículo. Realiza correcciones finas y completa la introducción de las horquillas aproximadamente a `200 mm` del borde delantero del palé. El sistema de control debe usar las marcas de tiempo de los datos para gestionar la latencia.
+
+## Comunicación
+
+La solución admite interfaces como TCP, UDP, CAN, RS-485 y API. Consulta la documentación del producto y de implementación correspondiente para conocer la disponibilidad y los formatos de mensaje. Cambia entre los algoritmos de reconocimiento y de evitación de obstáculos según la configuración del proyecto.
+
+## Casos de estudio
+
+### Caso 1: Reconocimiento de palés y huecos de tambores de cable para una empresa de comunicaciones por fibra óptica
+
+**Antecedentes del proyecto**: La empresa F usa apiladoras no tripuladas para tareas logísticas. El proyecto abarca el reconocimiento y la manipulación de palés y de huecos de tambores de cable.
+
+**Solución**: PalletPro proporciona información de profundidad y pose del palé para que el controlador del vehículo ajuste la pose de la apiladora. La visión 3D también reconoce los huecos de los tambores de cable.
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_1.mp4" title="Caso 1: reconocimiento de palés y huecos de tambores de cable con una apiladora no tripulada" alt="Vídeo del caso 1 de reconocimiento de palés con una apiladora no tripulada" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/pallet_recognition_forklift_case_demo_2.mp4" title="Caso 1: reconocimiento de huecos de tambores de cable" alt="Vídeo del caso 2 de reconocimiento de palés con una apiladora no tripulada" />
+</Frame>
+
+### Caso 2: Reconocimiento de palés no estándar en la industria de la fibra de vidrio
+
+<Frame>
+  ![Proyecto de reconocimiento de palés no estándar en la industria de la fibra de vidrio](/images/resources/insights-pallet-recognition-whitepaper-case-2-the-non-standard-pallet-identification-project-in-the-fiberglass-industr.avif)
+</Frame>
+
+**Antecedentes del proyecto**: La base de Tongxiang de China Jushi Group incorporó carretillas elevadoras no tripuladas para la manipulación automatizada en la planta de producción.
+
+**Reto**: La logística interna utiliza palés metálicos personalizados con distintas formas y ángulos de colocación, lo que aumenta la dificultad del reconocimiento y de la introducción de las horquillas.
+
+**Solución**: La carretilla elevadora no tripulada usa PalletPro para capturar datos de profundidad del palé y corregir su posición y orientación en tiempo real.
+
+## Fuentes
+
+1. [Health and Safety Executive del Reino Unido](https://www.hse.gov.uk/statistics/fatals.htm)
+2. [The Robot Report](https://www.therobotreport.com/a-decade-after-acquiring-kiva-amazon-unveils-its-first-amr/)

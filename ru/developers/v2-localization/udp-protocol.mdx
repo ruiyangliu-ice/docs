@@ -1,0 +1,120 @@
+---
+title: V2 Pro UDP communication protocol
+sidebarTitle: V2 Pro UDP protocol
+description: "Configure V2 Pro UDP communication and parse odometry, relocation, mapping, map, and localization-result messages."
+hidden: true
+---
+
+V2 Pro exchanges control and localization data with a client over UDP. In the web host application, set `portName` to the target device IP address and `portCode` to the listening port. V2 Pro listens on port `8001` for incoming messages.
+
+<Frame>
+  ![UDP target address configuration in the V2 Pro web host application](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+</Frame>
+
+## Message conventions
+
+| Item | Convention |
+| --- | --- |
+| Byte order | Big-endian: the high byte precedes the low byte. |
+| Frame structure | Header, length, command, data, and checksum. |
+| Checksum | One byte. XOR all bytes except the header and checksum itself. |
+| Length field | Excludes the header and checksum. Some messages do not contain a length field. |
+| Map name | ASCII letters, digits, and underscores only; the first character must be a letter. |
+
+<Note>
+  Byte numbering starts at Byte 0. All multi-byte integers use big-endian order.
+</Note>
+
+## Messages received by V2 Pro
+
+### Odometry
+
+| Byte range | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, 4-byte integer velocity |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, 4-byte integer angle |
+| Byte 12 | Checksum |
+
+Velocity `v` is in mm/s. Angle `theta` is in 0.01°; for example, 90° is sent as 9000.
+
+### Relocation
+
+| Byte range | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, 4-byte integer X coordinate |
+| Byte 8–11 | Y3 Y2 Y1 Y0, 4-byte integer Y coordinate |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, 4-byte integer angle |
+| Byte 16 | Checksum |
+
+`x` and `y` are in mm. `theta` is in 0.01°; for example, 90° is sent as 9000.
+
+### Start or stop mapping
+
+| Byte range | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x02 |
+| Byte 4 | Status: 0x01 starts mapping; 0x00 stops mapping |
+| Byte 5–34 | Map name, fixed 30-byte ASCII; pad unused bytes with 0x00 |
+| Byte 35 | Checksum |
+
+Send the start command once per mapping task. Do not send it repeatedly.
+
+### Switch maps
+
+| Byte range | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x0C |
+| Byte 4–33 | Map name, fixed 30-byte ASCII; pad unused bytes with 0x00 |
+| Byte 34 | Checksum |
+
+Confirm that the target map has been built before sending the command.
+
+## Messages sent by V2 Pro
+
+### Localization result
+
+| Byte range | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, X coordinate |
+| Byte 8–11 | Y3 Y2 Y1 Y0, Y coordinate |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, orientation |
+| Byte 16–23 | Timestamp7 through Timestamp0, timestamp |
+| Byte 24 | Checksum |
+
+`X` and `Y` are in mm. `THETA` is in 0.001 rad. After successful relocation, V2 Pro continuously sends this message.
+
+### Task result
+
+Start mapping, stop mapping, and switch-map commands return their status in the following message.
+
+| Byte | Content |
+| --- | --- |
+| Byte 0–1 | Header: AC ED |
+| Byte 2 | Length: Length |
+| Byte 3 | Command: 0xFF |
+| Byte 4 | Task ID |
+| Byte 5 | Status: 0x01 success; 0x00 failure |
+| Byte 6 | Checksum |
+
+| Task ID | Operation |
+| --- | --- |
+| 0x01 | Start mapping |
+| 0x02 | Stop mapping |
+| 0x03 | Switch map |
+
+<Info>
+  Stopping mapping can take time. Completion usually takes about one-third of the data-collection duration. Wait for the task-result message before starting another operation.
+</Info>

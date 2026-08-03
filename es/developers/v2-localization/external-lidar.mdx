@@ -1,0 +1,46 @@
+---
+title: Usar un LiDAR externo con V2
+description: Publica datos LaserScan de un LiDAR externo en el tópico al que está suscrito el módulo de localización V2.
+hidden: true
+---
+
+Esta página explica cómo configurar el módulo de localización V2 para suscribirse a un tópico de láser ROS de un LiDAR externo.
+
+<Info>
+  El LiDAR externo debe publicar continuamente mensajes `sensor_msgs/LaserScan` que coincidan con el tópico configurado. Esta página solo cubre la configuración del tópico y las comprobaciones de suscripción; no cubre la instalación ni la calibración del controlador del LiDAR.
+</Info>
+
+## Configurar el tópico láser de localización
+
+Establece la entrada láser de localización en UDP en la configuración del cuerpo y especifica el tópico LaserScan:
+
+```yaml
+LxCamera_UploadScan: "/sim/scan"
+```
+
+Configura el LiDAR externo para que publique en el mismo tópico o cambia el valor anterior para que coincida con el tópico real.
+
+## Verificar el tópico ROS
+
+Confirma que el nodo de localización V2 está suscrito al tópico y que el tipo de mensaje es `LaserScan`.
+
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
+
+    El resultado debe mostrar `sensor_msgs/LaserScan` e incluir `/lx_localization_node` en la lista de suscriptores.
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
+
+    El resultado debe mostrar `sensor_msgs/msg/LaserScan` y un recuento de suscripciones de al menos `1`.
+  </Tab>
+</Tabs>
+
+<Tip>
+  Si el recuento de suscripciones es `0`, comprueba el nombre del tópico, la configuración del dominio ROS y el estado del nodo de localización. Si el recuento de publicaciones es `0`, comprueba el controlador del LiDAR externo.
+</Tip>

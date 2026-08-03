@@ -1,0 +1,48 @@
+---
+title: Giao thức giao tiếp JSON
+description: Định dạng thông báo JSON qua TCP Socket và tài liệu tham chiếu trường dữ liệu để giao tiếp giữa camera với robot hoặc PLC.
+hidden: true
+---
+
+## Tổng quan
+
+Camera hoạt động như một máy chủ TCP Socket và mặc định lắng nghe trên cổng `5501`. Thông báo ở dạng văn bản; hỗ trợ ASCII và khuyến nghị mã hóa JSON.
+
+<Info>
+  Sử dụng giao thức này khi robot hoặc PLC kích hoạt tác vụ thị giác 3D và đọc kết quả do camera trả về.
+</Info>
+
+## Thông báo yêu cầu
+
+Gửi thông báo sau để kích hoạt tác vụ thị giác 3D:
+
+```json
+{"action":"3D"}
+```
+
+## Thông báo phản hồi
+
+Sau khi camera hoàn tất, camera trả về một đối tượng JSON.
+
+<ResponseField name="result" type="integer" required>
+  Trạng thái phát hiện. `0` cho biết định vị không thành công hoặc không có kết quả. Số nguyên khác `0` cho biết thành công và là số lượng kết quả được trả về.
+</ResponseField>
+
+<ResponseField name="pos" type="number[]" required>
+  Mảng tư thế của đối tượng. Mỗi kết quả chứa `X`, `Y`, `Z`, `RX`, `RY` và `RZ` trong hệ tọa độ robot. Vị trí tính bằng mm và góc tính bằng °; `−180° ≤ RZ ≤ 180°`. Khi phát hiện không thành công, mọi giá trị đều là `0`.
+</ResponseField>
+
+### Ví dụ phản hồi
+
+<Tabs>
+  <Tab title="Thành công">
+    ```json
+    {"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}
+    ```
+  </Tab>
+  <Tab title="Thất bại">
+    ```json
+    {"result":0,"pos":[0,0,0,0,0,0]}
+    ```
+  </Tab>
+</Tabs>

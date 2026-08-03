@@ -1,0 +1,73 @@
+---
+title: Localización visual SLAM para robots móviles
+sidebarTitle: Localización visual para robots móviles
+description: "Crea mapas, localiza y relocaliza robots móviles fusionando una cámara orientada hacia arriba, un LiDAR 2D y una IMU."
+---
+
+El SLAM desde vista superior monta la cámara en el robot móvil y utiliza el techo, las paredes y otras características estables del entorno para crear mapas y realizar la localización. Este enfoque reduce la dependencia de las marcas del suelo y es adecuado para instalaciones interiores con distribuciones cambiantes, oclusiones del suelo o varios vehículos.
+
+## Cómo funciona
+
+El controlador de navegación V2 Pro fusiona los datos de una cámara orientada hacia arriba, un LiDAR 2D y una IMU:
+
+- La cámara orientada hacia arriba captura características del techo.
+- El LiDAR 2D proporciona información sobre los contornos planos.
+- La IMU proporciona datos del movimiento del vehículo.
+- El controlador genera datos para crear mapas, realizar la localización y la relocalización.
+
+<Info>
+  La localización desde vista superior depende de que las características del entorno sean observables. Valida el mapeo y la localización antes de la implementación en áreas abiertas, escenas repetitivas o zonas con oclusiones prolongadas o cambios estructurales frecuentes.
+</Info>
+
+## Características de la solución
+
+### Localización mediante características naturales
+
+El controlador realiza la localización reconociendo características naturales sobre el vehículo y a su alrededor, lo que reduce la necesidad de marcas fijas como reflectores o bandas magnéticas. Consulta la [documentación del producto](/es/products/v-series/v2-pro-overview) para conocer el rango de funcionamiento y las condiciones de luz ambiental de la cámara orientada hacia arriba de V2 Pro.
+
+### Fusión multisensor
+
+La cámara, el LiDAR y la IMU proporcionan datos complementarios para construir el mapa y estimar la pose del vehículo. Los resultados siguen dependiendo de los parámetros extrínsecos de los sensores, el movimiento del vehículo, las características del entorno y la calidad del mapa.
+
+### Mapeo en el dispositivo e integración
+
+El controlador incorpora una plataforma de cálculo y permite crear mapas y gestionar mapas mediante el software host. Hay interfaces SDK, HTTP API, UDP y ROS disponibles para la integración del sistema.
+
+## Escenarios típicos
+
+| Escenario | Requisito | Enfoque de la localización desde vista superior |
+| --- | --- | --- |
+| Logística de almacén | Las mercancías, los carros y la distribución de los pasillos pueden cambiar. | Valida la cobertura de las características superiores y los flujos de actualización de mapas. |
+| Taller de fabricación | Las personas y los vehículos comparten equipos y puestos de trabajo densamente distribuidos. | Planifica la posición de instalación y evita las obstrucciones causadas por el vehículo o la carga. |
+| Almacén con productos apilados en el suelo o pasillo largo | Las características del suelo cambian o las rutas son estrechas. | Evalúa las características superiores, los contornos del LiDAR y los puntos de relocalización. |
+
+## Flujo de implementación
+
+<Steps>
+  <Step title="Instala y conecta">
+    Monta el controlador en la parte superior del vehículo. Mantén la cámara orientada hacia arriba y el LiDAR despejados del chasis, los cables y la carga; después, conecta la alimentación, la red y las interfaces del vehículo necesarias.
+  </Step>
+  <Step title="Configura los parámetros extrínsecos y del vehículo">
+    Configura los parámetros extrínsecos de los sensores y los parámetros de localización del vehículo en el software host y, después, comprueba los flujos de datos.
+  </Step>
+  <Step title="Captura e implementa un mapa">
+    Captura datos del entorno a lo largo de la ruta objetivo, genera un mapa, impleméntalo en el dispositivo y verifica la localización y la relocalización en áreas representativas.
+  </Step>
+  <Step title="Conecta el sistema de nivel superior">
+    Lee los datos de localización mediante la interfaz SDK, HTTP API, UDP o ROS según sea necesario, e implementa la gestión de excepciones y la supervisión durante el funcionamiento.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Card title="Documentación del producto V2 Pro" icon="camera" href="/es/products/v-series/v2-pro-overview">
+    Consulta las especificaciones del controlador, las interfaces, la instalación y las instrucciones de mapeo.
+  </Card>
+
+  <Card title="Guía de desarrollo de localización V2" icon="code" href="/es/developers/v2-localization/pure-localization-guide">
+    Consulta el modo de localización pura y los recursos de integración.
+  </Card>
+</Columns>
+
+<Warning>
+  El controlador de localización genera la pose del vehículo. No sustituye la detección de obstáculos, la seguridad funcional, la programación de tareas ni el sistema completo necesario para el funcionamiento autónomo de una carretilla elevadora. Completa una evaluación de riesgos del sitio y la validación a nivel del vehículo antes de la puesta en marcha.
+</Warning>

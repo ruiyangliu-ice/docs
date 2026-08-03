@@ -1,0 +1,213 @@
+---
+title: Protocolo HTTP de localización visual V2
+sidebarTitle: Protocolo HTTP de V2
+description: "Referencia de los endpoints HTTP de localización visual V2, sus parámetros de solicitud y sus campos de respuesta."
+hidden: true
+---
+
+Esta página enumera los endpoints HTTP que proporciona el módulo de localización visual V2. Sustituye el marcador de IP de cada dirección por la dirección IP del módulo. Salvo que un endpoint indique lo contrario, `code: 200` y `message: success` indican que la solicitud se procesó correctamente.
+
+<Warning>
+  La actualización del software, el despliegue o cambio de mapas, el reinicio del programa y el reinicio de la cámara interrumpen la localización. Llama a estos endpoints solo cuando el vehículo esté detenido y haya un procedimiento de recuperación disponible.
+</Warning>
+
+## Información del programa y del dispositivo
+
+### Actualizar el programa principal
+
+Dirección: `http://<ip>:9998/tool/rob/quiet_update`
+
+<ParamField body="url" type="string" required>
+  URL accesible del paquete de actualización del programa principal.
+</ParamField>
+
+### Establecer la altura de la cámara
+
+Dirección: `http://<ip>:9998/tool/rob/setHeightRequest`
+
+<ParamField body="height" type="number" required>
+  Altura de la cámara.
+</ParamField>
+
+### Obtener la versión del programa
+
+Dirección: `http://<ip>:9998/tool/rob/getRobotVersion`
+
+Este endpoint no requiere parámetros de solicitud.
+
+<ResponseField name="code" type="integer" required>
+  Código de estado de la respuesta.
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  Versión del programa, como `version 12313`.
+</ResponseField>
+
+### Obtener información del vehículo
+
+Dirección: `http://<ip>:9998/tool/rob/getVehicle`
+
+Este endpoint no requiere parámetros de solicitud.
+
+<ResponseField name="data" type="object" required>
+  Objeto con la información del vehículo.
+</ResponseField>
+
+<ResponseField name="vehicleId" type="string">
+  UUID del vehículo.
+</ResponseField>
+
+<ResponseField name="mapId" type="string">
+  Mapa actual.
+</ResponseField>
+
+<ResponseField name="vehicleType" type="string">
+  Tipo de vehículo.
+</ResponseField>
+
+### Obtener la pose actual
+
+Dirección: `http://<ip>:9998/tool/rob/getAGVPose`
+
+Este endpoint no requiere parámetros de solicitud.
+
+<ResponseField name="pose" type="object" required>
+  Pose actual.
+</ResponseField>
+
+<ResponseField name="x" type="number">
+  Coordenada X.
+</ResponseField>
+
+<ResponseField name="y" type="number">
+  Coordenada Y.
+</ResponseField>
+
+<ResponseField name="yaw" type="number">
+  Ángulo de orientación.
+</ResponseField>
+
+### Relocalizar
+
+Dirección: `http://<ip>:9998/tool/rob/relocate`
+
+Encabezado de la solicitud: `Content-Type: application/json`
+
+<ParamField body="x" type="number" required>
+  Coordenada X en metros.
+</ParamField>
+
+<ParamField body="y" type="number" required>
+  Coordenada Y en metros.
+</ParamField>
+
+<ParamField body="angle" type="number" required>
+  Ángulo de la pose.
+</ParamField>
+
+<ParamField body="noisyX" type="number" required>
+  Ruido del eje X en metros.
+</ParamField>
+
+<ParamField body="noisyY" type="number" required>
+  Ruido del eje Y en metros.
+</ParamField>
+
+<ParamField body="noisyAngle" type="number" required>
+  Ruido angular.
+</ParamField>
+
+## Gestión de mapas
+
+### Descargar el paquete del mapa actual en ejecución
+
+Dirección: `http://<ip>:9998/tool/rob/getRunMapZip`
+
+Encabezado de la solicitud: `Content-Type: application/json`
+
+<ParamField body="Name" type="string" required>
+  Nombre del mapa.
+</ParamField>
+
+La respuesta es un archivo ZIP con el tipo de contenido `application/zip`.
+
+### Desplegar un mapa
+
+Dirección: `http://<ip>:9998/tool/rob/deployRunMap`
+
+<ParamField body="id" type="string" required>
+  Nombre del mapa.
+</ParamField>
+
+### Aplicar un mapa
+
+Dirección: `http://<ip>:9998/tool/rob/changeCurrentRunMap`
+
+<ParamField body="name" type="string" required>
+  Nombre del mapa.
+</ParamField>
+
+### Iniciar el mapeo
+
+Dirección: `http://<ip>:9998/tool/rob/startMapping`
+
+<ParamField body="name" type="string" required>
+  Nombre del mapa.
+</ParamField>
+
+### Detener el mapeo
+
+Dirección: `http://<ip>:9998/tool/rob/stopMapping`
+
+Este endpoint no requiere parámetros de solicitud.
+
+### Iniciar o detener el mapeo incremental
+
+Dirección: `http://<ip>:9998/tool/rob/sendCMD`
+
+| Operación | `cmd` | `attach.sub_command` | `attach.param` |
+| --- | --: | --- | --- |
+| Iniciar el mapeo incremental | `904` | `0` | `mapname` |
+| Detener el mapeo incremental | `905` | `0` | `mapname` |
+
+### Obtener la lista de mapas
+
+Usa el endpoint local de lista de mapas:
+
+`http://<ip>:9998/tool/rob/getRunMapLists`
+
+Este endpoint no requiere parámetros de solicitud. La respuesta `run_maps` es una matriz de nombres de mapas.
+
+<Note>
+  El endpoint de lista de mapas del backend `http://<ip>:9998/tool/editor/getLocalMaps` está obsoleto y no se recomienda.
+</Note>
+
+### Cargar un paquete de mapas en la cámara
+
+Dirección: `http://<ip>:9998/tool/rob/uploadMapZip2RunMaps`
+
+<ParamField body="url" type="string" required>
+  URL accesible del paquete de mapas.
+</ParamField>
+
+### Descargar un mapa
+
+Dirección: `http://<ip>:9998/tool/rob/downloadVisiomWithLaserMap`
+
+<ParamField body="url" type="string" required>
+  URL accesible del paquete de mapas.
+</ParamField>
+
+## Endpoints de mantenimiento
+
+### Reiniciar el programa de la cámara
+
+Dirección: `http://<ip>:9998/tool/rob/restart`
+
+Este endpoint no requiere parámetros de solicitud.
+
+### Reiniciar la cámara
+
+Dirección: `http://<ip>:9998/tool/rob/Reboot`
+
+Este endpoint no requiere parámetros de solicitud.

@@ -1,0 +1,77 @@
+---
+title: Importare ed esportare i parametri della fotocamera
+sidebarTitle: Importazione/esportazione dei parametri
+description: "Esegui il backup e ripristina i parametri di evitamento degli ostacoli, acquisizione, filtro e riconoscimento dei pallet in LxCameraViewer e PalletPro."
+---
+
+Esporta una configurazione verificata prima di modificare i parametri. Dopo aver importato una configurazione, controlla il modello della fotocamera, i parametri estrinseci di installazione e l'acquisizione sul dispositivo di destinazione prima dell'uso.
+
+<Warning>
+  I file di configurazione possono contenere parametri estrinseci che dipendono dall'installazione. Non usare i parametri estrinseci di un veicolo su un altro veicolo. Verifica sempre i valori importati.
+</Warning>
+
+## Parametri di evitamento degli ostacoli
+
+### Esportazione
+
+<Steps>
+  <Step title="Apri le impostazioni di evitamento degli ostacoli">
+    In **Algoritmo applicativo**, seleziona l'algoritmo di evitamento degli ostacoli e configura le regioni e i parametri estrinseci.
+  </Step>
+  <Step title="Invia i parametri">
+    In **Impostazioni di evitamento degli ostacoli**, seleziona **Invia parametri**.
+  </Step>
+  <Step title="Individua il file">
+    Apri la cartella `params` nella directory dell'applicazione host, quindi apri la directory dell'ID della fotocamera. Il file `avoidance` contiene i parametri salvati.
+  </Step>
+</Steps>
+
+La directory predefinita è:
+
+`D:\\Program Files\\Lanxin-MRDVS\\Tools\\params`
+
+### Importazione
+
+In **Impostazioni di evitamento degli ostacoli**, seleziona **Carica configurazione da file** e scegli il file esportato. Invia la configurazione, quindi verifica la regione nella vista della nuvola di punti e nello stato di uscita.
+
+<Frame>
+  ![Caricamento da file di una configurazione di evitamento degli ostacoli](/images/developers/deployment-parameter-import-export-d-the-export-and-import-of-obstacle-avoidance-algorithm-parameters-7.avif)
+</Frame>
+
+## Parametri di acquisizione e filtro
+
+### Esportazione
+
+1. Configura i parametri di acquisizione e filtro in **Strumenti di base**.
+2. Arresta il flusso della fotocamera. Non è possibile salvare una configurazione durante lo streaming.
+3. In **Impostazioni funzione**, seleziona **Esporta configurazione in file** e crea una cartella dedicata alla configurazione.
+
+### Importazione
+
+In **Impostazioni funzione**, seleziona **Carica configurazione da file** e scegli il file esportato. Riavvia il flusso e verifica la qualità dell'immagine e il filtraggio.
+
+## Parametri dei pallet in PalletPro
+
+PalletPro `1.4.6` e versioni successive può gestire i parametri estrinseci per il riconoscimento dei pallet nella directory dell'algoritmo attivo.
+
+### Importazione
+
+<Steps>
+  <Step title="Apri la directory della fotocamera">
+    Avvia **PalletPro**, seleziona **Operazioni di base → Operazioni fotocamera → Apri directory** e apri la directory dell'algoritmo attualmente usato dalla fotocamera.
+  </Step>
+  <Step title="Sostituisci il file dei parametri">
+    Copia o trascina i parametri estrinseci per il riconoscimento dei pallet nella directory e conferma la sostituzione del file corrispondente.
+  </Step>
+  <Step title="Esegui di nuovo la calibrazione">
+    Dopo l'importazione, esegui di nuovo la calibrazione estrinseca per l'aggancio del pallet e verifica i risultati del riconoscimento.
+  </Step>
+</Steps>
+
+### Esportazione
+
+Dopo aver completato e salvato la calibrazione, apri la directory dell'algoritmo attivo usando lo stesso percorso ed esegui il backup del file dei parametri per il riconoscimento dei pallet.
+
+<Frame>
+  ![Posizione del file dei parametri dei pallet in PalletPro](/images/developers/deployment-parameter-import-export-pallet-parameter-import.avif)
+</Frame>

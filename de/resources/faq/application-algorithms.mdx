@@ -1,0 +1,156 @@
+---
+title: FAQs zu Anwendungsalgorithmen
+description: "Beheben Sie Probleme mit Palettenerkennung, Hindernisvermeidung und der Bereitstellung von Anwendungsalgorithmen."
+---
+
+Bestätigen Sie vor der Fehlerbehebung, dass Datenstream der Kamera, Hostsoftware und Algorithmusfirmware kompatible Versionen verwenden. Notieren Sie die aktuelle Konfiguration, bevor Sie Parameter ändern, damit Sie sie bei Bedarf wiederherstellen können.
+
+## Palettenerkennung und Hindernisvermeidung
+
+<AccordionGroup>
+  <Accordion title="Die Palettenerkennung schlägt bei einer schwarzen Palette fehl">
+    **Mögliche Ursache**
+
+    Die Punktwolke der schwarzen Palette ist unvollständig.
+
+    **Lösung**
+
+    1. Setzen Sie in **3D Settings** der Hostsoftware **High Exposure** auf `1400`.<br />2. Setzen Sie unter **Filter** **Low Signal Threshold** auf `20`.<br />3. Setzen Sie **Small Signal Detection** auf `1`.
+  </Accordion>
+
+  <Accordion title="PalletPro funktioniert im Testtool, aber das Fahrzeug erhält abnormale oder fehlgeschlagene Ergebnisse">
+    **Mögliche Ursache**
+
+    Die Versionen der Hostsoftware und der eingebetteten Algorithmusfirmware stimmen nicht überein.
+
+    **Lösung**
+
+    Aktualisieren Sie die eingebettete Algorithmusfirmware.
+  </Accordion>
+
+  <Accordion title="Die Kalibrierung der externen Parameter meldet, dass der Boden nicht erkannt wurde">
+    **Mögliche Ursache**
+
+    Die Punktwolke des Bodens wurde nicht erfasst.
+
+    **Lösung**
+
+    Öffnen Sie die Kamera. Setzen Sie **High Exposure** in **3D Settings** auf `1400`, **Low Signal Threshold** unter **Filter** auf `10`, und führen Sie die Kalibrierung der externen Parameter aus. Stellen Sie die ursprünglichen Werte nach der Kalibrierung wieder her.
+  </Accordion>
+
+  <Accordion title="Die Kalibrierung der externen Parameter im Nahbereich schlägt fehl">
+    **Lösung**
+
+    1. Prüfen Sie, ob die Punktwolke der Palette vollständig ist.<br />2. Prüfen Sie, ob die Palette ungefähr `1300 mm` von der Kamera entfernt ist.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-1` oder `failed-11` zurück">
+    **Mögliche Ursache**
+
+    Es wurden keine oder nicht genügend Daten empfangen.
+
+    **Lösung**
+
+    Bestätigen Sie mit der Hostsoftware, dass die Kamera Bilder erzeugt und die Filtereinstellungen nicht zu viele Punktwolkendaten entfernen.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-2`, `failed-12` oder `failed-16` zurück">
+    **Mögliche Ursache**
+
+    Es gibt nicht genügend Punktwolkendaten, um die Palettenfüße zu erkennen.
+
+    **Lösung**
+
+    Prüfen Sie die folgenden Bedingungen:<br />1. Die Hubhöhe der Kamera oder der Gabelarme hat sich geändert.<br />2. Die Palettenfüße sind verdeckt.<br />3. Die Kamera oder die Gabelarme haben eine zu starke Neigung.<br />4. Die Palettenfüße werden nicht klar abgebildet.<br />5. Ein reflektierender Pfosten befindet sich zu nahe an einem Palettenfuß und beeinträchtigt die Abbildung.<br />
+
+    Bestätigen Sie den Zustand mit PalletPro und passen Sie anschließend bei Bedarf Konfiguration, reflektierenden Pfosten oder Gabelstaplerpose an.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-3` oder `failed-13` zurück">
+    **Mögliche Ursache**
+
+    Die Abmessungen der Palettenfüße entsprechen nicht den konfigurierten Grenzwerten, oder es wurde kein Palettenfuß erkannt.
+
+    **Lösung**
+
+    Die Merkmale der Palettenfüße liegen außerhalb des Erkennungsbereichs. Passen Sie gegebenenfalls den Bereich für Fußbreite oder Palettenbreite an.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-4` oder `failed-14` zurück">
+    **Mögliche Ursache**
+
+    Die Installationshöhe der Kamera ist nicht konfiguriert.
+
+    **Lösung**
+
+    Legen Sie den Parameter für die Installationshöhe fest oder führen Sie die Kalibrierung der externen Parameter aus.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-5` oder `failed-15` zurück">
+    **Mögliche Ursache**
+
+    Die Palettenprüfung ist fehlgeschlagen, weil der Querträger nicht erkannt wurde oder der Nickwinkel der Palette zu groß ist.
+
+    **Lösung**
+
+    Deaktivieren Sie mit der Hostsoftware die Entfernung von Flying Pixels, bewegen Sie die Kamera durch Änderung der Andockdistanz näher heran oder passen Sie das Erkennungsverhältnis des Querträgers an.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-7` zurück">
+    **Mögliche Ursache**
+
+    Die Breiten der Palettenfüße unterscheiden sich innerhalb des Sichtfelds zu stark.
+
+    **Lösung**
+
+    Prüfen Sie, ob sich ein reflektierender Pfosten nahe an der Palette befindet oder ob die Palette nahe an einer Wand steht und die Randfüße nicht korrekt abgebildet werden.
+  </Accordion>
+
+  <Accordion title="Die Palettenerkennung gibt `failed-8` zurück">
+    **Mögliche Ursache**
+
+    Der Gierwinkel der Palette im Sichtfeld ist zu groß (`> 30°`).
+
+    **Lösung**
+
+    Richten Sie die Palette vor der Erkennung gerade aus.
+  </Accordion>
+
+  <Accordion title="Das Umschalten des Hindernisvermeidungsprofils über Kommunikation oder IO aktualisiert die Hostsoftware nicht">
+    **Lösung**
+
+    1. Bestätigen Sie, dass das gewünschte Hindernisvermeidungsprofil zuvor konfiguriert wurde.<br />2. Stoppen Sie den Datenstream und starten Sie ihn neu. Prüfen Sie anschließend, ob das Profil aktualisiert wurde.
+  </Accordion>
+
+  <Accordion title="Die in der Software angezeigte Hindernisvermeidungsausgabe ist abnormal, zum Beispiel `1000`">
+    **Mögliche Ursache**
+
+    Die Algorithmusversion passt nicht zum Produkt.
+
+    **Lösung**
+
+    Aktualisieren Sie die Algorithmusfirmware.
+  </Accordion>
+
+  <Accordion title="IO gibt keine Ausgabe aus">
+    **Mögliche Ursachen**
+
+    Bei S2/S2 Max fehlt möglicherweise die Pull-up-Verdrahtung. Bei S10/S10 Pro ist die Algorithmusfirmware möglicherweise zu alt.
+
+    **Lösung**
+
+    1. Fügen Sie für S2/S2 Max entsprechend den Anforderungen des Fahrzeugs einen Pull-up-Widerstand hinzu.<br />2. Aktualisieren Sie die Algorithmusfirmware von S10/S10 Pro auf `V1.1.050E06_250527` oder höher.
+  </Accordion>
+
+  <Accordion title="Hindernisalarme werden ausgelöst, obwohl der Bereich vor der Kamera frei ist">
+    **Lösung**
+
+    1. Prüfen Sie die Version der Hostsoftware.<br />2. Prüfen Sie die Version der Kamerafirmware.<br />3. Prüfen Sie, ob die Hindernisvermeidungskonfiguration auf die Kamera angewendet wurde.
+  </Accordion>
+
+  <Accordion title="Nach einer Firmwareaktualisierung kann die Software für den Anwendungsalgorithmus die Kamera nicht öffnen">
+    **Lösung**
+
+    Starten Sie die Kamera neu und aktivieren Sie anschließend die Echtzeitaktualisierung in **Global Settings** der Software für den Anwendungsalgorithmus.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,47 @@
+---
+title: Localizzazione coordinata del carrello elevatore e riconoscimento delle ubicazioni di stoccaggio
+sidebarTitle: "Localizzazione del carrello e riconoscimento delle ubicazioni"
+description: "Combina i dati sulla posa del carrello elevatore e sullo stato delle ubicazioni di stoccaggio per supportare il dispatching dei carrelli manuali, il tracciamento dei carichi e la gestione delle ubicazioni."
+---
+
+Le operazioni con carrelli elevatori manuali dipendono spesso dall'esperienza del conducente, mentre i record delle ubicazioni di stoccaggio possono non riflettere lo stato effettivo del sito. Efficienza dei percorsi, stato delle ubicazioni e sicurezza nei corridoi stretti sono problemi comuni nella gestione del magazzino.
+
+## Architettura della soluzione
+
+La soluzione combina un sistema di localizzazione per carrelli elevatori manuali con un sistema di riconoscimento dello stato delle ubicazioni di stoccaggio. Il primo fornisce posizione e posa del carrello elevatore; il secondo fornisce occupazione e stato del carico. Entrambi i flussi di dati possono essere inviati a un sistema di livello superiore per il dispatching delle attività e il tracciamento dei carichi.
+
+## Localizzazione del carrello elevatore manuale
+
+Monta una camera di visione 3D sulla parte superiore del carrello elevatore. Il sistema esegue la localizzazione utilizzando caratteristiche naturali sul soffitto e sulle pareti, con l'assistenza di un'IMU. I record di progetto riportano una precisione di posizionamento di **1–5 cm**; la precisione effettiva dipende dalle caratteristiche del sito, dall'installazione e dalla calibrazione.
+
+<Frame>
+  ![Sistema di localizzazione visiva per carrello elevatore manuale](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
+</Frame>
+
+Il sistema può avvisare il conducente della presenza di persone, veicoli e potenziali rischi nelle vicinanze e può essere configurato con aree soggette a restrizioni. I risultati della localizzazione possono anche essere combinati con lo stato delle ubicazioni per registrare il posizionamento dei carichi e contribuire ad adattare i percorsi delle attività.
+
+<Frame>
+  ![Coordinamento della localizzazione del carrello elevatore con le operazioni di magazzino](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+</Frame>
+
+## Riconoscimento dello stato delle ubicazioni di stoccaggio
+
+Una camera RGB-D acquisisce informazioni 3D e colore per identificare se un'ubicazione contiene un carico, come è posizionato e se l'occupazione è anomala. Quando richiesto, l'algoritmo può distinguere le categorie di carico e i risultati elaborati sulla camera possono essere inviati al sistema di dispatching.
+
+| Funzionalità | Descrizione |
+| --- | --- |
+| Monitoraggio 3D | Combina dati di profondità e colore per identificare lo stato dell'ubicazione. |
+| Elaborazione sulla camera | Riduce la necessità di un computer industriale esterno. |
+| Integrazione della comunicazione | Supporta TCP/IP, UDP e HTTP, con output JSON. |
+| Coordinamento del dispatching | Fornisce informazioni sulle ubicazioni in tempo reale per l'assegnazione delle attività. |
+
+<Frame>
+  ![Sistema di riconoscimento dello stato delle ubicazioni di stoccaggio](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
+</Frame>
+
+## Flusso di coordinamento
+
+1. Il sistema di localizzazione restituisce continuamente posizione e posa del carrello elevatore.
+2. La camera delle ubicazioni segnala occupazione e stato del carico per l'ubicazione target.
+3. Il sistema di livello superiore associa i dati di veicolo, carico e ubicazione per confermare le attività di prelievo e posizionamento e registrare le posizioni dei carichi.
+4. Quando cambiano lo stato dell'ubicazione o del veicolo, il sistema di livello superiore può aggiornare i percorsi delle attività e l'allocazione delle risorse.

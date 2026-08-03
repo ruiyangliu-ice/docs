@@ -1,0 +1,93 @@
+---
+title: Supervisión de la seguridad de las personas
+description: Detecta personas que entran en áreas restringidas con una cámara 3D M Series y software de reconocimiento de personas.
+---
+
+En áreas industriales restringidas, líneas automatizadas y zonas de trabajo de almacenes, la entrada no autorizada puede crear un riesgo operativo. Esta solución utiliza una cámara 3D y software de reconocimiento de personas para detectar entradas en un área configurada e informar de los eventos a un sistema de nivel superior.
+
+<Frame>
+  ![Solución de supervisión de la seguridad de las personas](/images/solutions/mobile-robots-human-safety-human-safety-protection.avif)
+</Frame>
+
+## Resumen de la solución
+
+El sistema captura datos RGB-D con una cámara 3D M Series. El software de reconocimiento de personas comprueba si una persona cruza un límite dentro de la ROI configurada. Los eventos de detección pueden activar una alarma u otra acción en el sistema de nivel superior.
+
+<Frame caption="Flujo de detección de entrada en un área restringida">
+  ![Flujo de detección de entrada en un área restringida](/images/solutions/mobile-robots-human-safety-solution-overview-related-graphics.avif)
+</Frame>
+
+## Componentes del sistema
+
+### Cámara de profundidad 3D M4 Pro
+
+- Proporciona información 3D sobre las personas que se desplazan en el espacio supervisado.
+- Resolución de profundidad: `640 × 480`; resolución RGB: `1920 × 1080`.
+- Alinea los datos RGB y de profundidad tanto espacial como temporalmente.
+- Puede ejecutar algoritmos compatibles en el dispositivo para reducir la necesidad de un ordenador industrial externo.
+
+<Frame caption="Implementación de M4 Pro para la supervisión de la seguridad de las personas">
+  ![Implementación de M4 Pro para la supervisión de la seguridad de las personas](/images/solutions/mobile-robots-human-safety-system-composition.avif)
+</Frame>
+
+### Software inteligente de reconocimiento de personas
+
+- Configura una región de interés (ROI).
+- Detecta e informa de las personas que cruzan el límite restringido.
+
+<Columns cols={2}>
+  <Frame>
+    ![Configuración de la ROI del software de seguridad de las personas](/images/solutions/mobile-robots-human-safety-system-composition-2.avif)
+  </Frame>
+
+  <Frame>
+    ![Resultados de detección del software de seguridad de las personas](/images/solutions/mobile-robots-human-safety-system-composition-3.avif)
+  </Frame>
+</Columns>
+
+## Flujo de trabajo
+
+<Steps>
+  <Step title="Configura el área restringida">
+    Define la ROI a partir de la distribución del sitio y el campo de visión de la cámara, y excluye las áreas que no formen parte de la tarea de detección.
+  </Step>
+  <Step title="Supervisa de forma continua">
+    La cámara captura el área restringida mientras el software comprueba si una persona entra o cruza el límite configurado.
+  </Step>
+  <Step title="Informa del evento">
+    Cuando se detecta un evento, el sistema lo informa al sistema de nivel superior, que puede activar una alarma, detener la operación u otra acción configurada.
+  </Step>
+</Steps>
+
+## Escenarios de aplicación
+
+- Líneas de producción automatizadas
+- Áreas de almacén y logística
+- Áreas de almacenamiento de materiales peligrosos
+- Talleres o laboratorios con requisitos de exclusión de personal
+
+## Notas sobre el rendimiento
+
+Los registros de las pruebas originales informan de las tasas de falsos positivos y detecciones omitidas por fotograma en condiciones ideales de laboratorio. La prueba utilizó un campo de visión abierto, una persona sin obstáculos a menos de `5 m` de la cámara, una velocidad de movimiento inferior a `3 m/s` y buena iluminación ambiental. Los resultados reales dependen de la altura de la cámara, el campo de visión, las oclusiones, la postura, la iluminación, el desenfoque por movimiento y la configuración de los filtros.
+
+<Tip>
+  Ajustar la ventana de filtrado del software cambia la estabilidad de la detección y el tiempo de respuesta. Usa los resultados del sitio objetivo como base para la aceptación.
+</Tip>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_1.mp4" title="Demostración 1 de supervisión de la seguridad de las personas" alt="Vídeo de demostración 1 de supervisión de la seguridad de las personas" aria-label="Vídeo de demostración 1 de supervisión de la seguridad de las personas" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_2.mp4" title="Demostración 2 de supervisión de la seguridad de las personas" alt="Vídeo de demostración 2 de supervisión de la seguridad de las personas" aria-label="Vídeo de demostración 2 de supervisión de la seguridad de las personas" />
+</Frame>
+
+<Warning>
+  Esta solución detecta a las personas que entran en un área. No sustituye a las cortinas fotoeléctricas, las paradas de emergencia, los enclavamientos, los controles de seguridad funcional ni la evaluación de riesgos del sitio. Implementa y valida las funciones de seguridad completas en un sistema que cumpla las normativas y normas aplicables.
+</Warning>
+
+## Recomendaciones de implementación
+
+- Mantén limpia la lente y comprueba regularmente que no haya obstrucciones en el campo de visión de la cámara.
+- Valida el sistema en el sitio antes de implementarlo en áreas con mucho polvo, reflejos intensos u otras condiciones extremas.
+- Vuelve a validar el rango de detección y la cadena de respuesta después de cambiar la posición de la cámara, el área de detección o la lógica de acciones del sistema de nivel superior.

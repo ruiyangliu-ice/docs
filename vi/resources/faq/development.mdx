@@ -1,0 +1,152 @@
+---
+title: FAQ về phát triển
+description: "Xử lý sự cố mã lỗi Camera SDK, kết nối thiết bị, luồng dữ liệu và môi trường phát triển."
+---
+
+Mã lỗi giúp xác định các vấn đề về SDK, kết nối và luồng dữ liệu. Trước khi xử lý sự cố, hãy ghi lại mã lỗi, phiên bản SDK, model camera và nhật ký thiết bị.
+
+<Warning>
+  Không xử lý sự cố bằng cách chỉ thay đổi phiên bản SDK. Đồng thời hãy xác nhận tính tương thích giữa firmware camera, thư viện xử lý dữ liệu và môi trường phát triển.
+</Warning>
+
+## Mã lỗi SDK và môi trường phát triển
+
+<AccordionGroup>
+  <Accordion title="LX_ERROR = -1">
+    **Nguyên nhân có thể** Không xác định. **Cách xử lý** Xuất nhật ký thiết bị và gửi cho bộ phận hỗ trợ kỹ thuật MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_SUPPORT = -2">
+    **Nguyên nhân có thể** Chức năng không được hỗ trợ. **Cách xử lý** Thiết bị hiện tại không hỗ trợ tính năng này.
+  </Accordion>
+
+  <Accordion title="LX_E_NETWORK_ERROR = -3">
+    **Nguyên nhân có thể** Lỗi truyền thông mạng. **Cách xử lý** Kiểm tra cấu hình IP, cáp mạng, switch và tình trạng mất gói.
+  </Accordion>
+
+  <Accordion title="LX_E_INPUT_ILLEGAL = -4">
+    **Nguyên nhân có thể** Tham số đầu vào không hợp lệ. **Cách xử lý** Kiểm tra các tham số được truyền vào giao diện.
+  </Accordion>
+
+  <Accordion title="LX_E_RECONNECTING = -5">
+    **Nguyên nhân có thể** Thiết bị đang kết nối lại. **Cách xử lý**
+
+    1. Chờ trong giây lát rồi thử lại cho đến khi kết nối được khôi phục.<br />2. Kiểm tra camera đã được cấp nguồn và kết nối mạng bình thường.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_ERROR = -6">
+    **Nguyên nhân có thể** Thiết bị gặp lỗi hoặc không phản hồi. **Cách xử lý** Khởi động lại ứng dụng hoặc camera rồi thử lại.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+    **Nguyên nhân có thể** Phiên bản thiết bị quá cũ. **Cách xử lý** Nâng cấp firmware.
+  </Accordion>
+
+  <Accordion title="LX_E_API_NEED_UPDATE = -8">
+    **Nguyên nhân có thể** Phiên bản API quá cũ. **Cách xử lý** Cập nhật SDK.
+  </Accordion>
+
+  <Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+    **Nguyên nhân có thể** Không thể nhận quyền điều khiển độc quyền. **Cách xử lý** Chỉ một client chính có thể điều khiển camera. Nếu camera không được tắt bình thường, hãy chờ `3–5 s` để quyền được giải phóng.
+  </Accordion>
+
+  <Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+    **Nguyên nhân có thể** Không thể đọc thông tin thiết bị. **Cách xử lý** Kiểm tra phiên bản firmware thiết bị hoặc liên hệ bộ phận hỗ trợ MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+    **Nguyên nhân có thể** Kích thước hình ảnh được yêu cầu không khớp với luồng. **Cách xử lý** Đóng thiết bị rồi mở lại.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+    **Nguyên nhân có thể** Phân tích hình ảnh không thành công, thường do định dạng pixel không chính xác. **Cách xử lý** Mở lại thiết bị.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+    **Nguyên nhân có thể** Camera chưa được kết nối. **Cách xử lý** Ứng dụng đã cố sử dụng camera chưa được mở. Kiểm tra thứ tự gọi và xác nhận camera đã mở thành công.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+    **Nguyên nhân có thể** Khởi tạo camera không thành công. **Cách xử lý** Mở lại camera.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+    **Nguyên nhân có thể** Không tìm thấy camera hoặc camera phù hợp. **Cách xử lý** Kiểm tra handle camera được truyền vào giao diện có hợp lệ không.
+  </Accordion>
+
+  <Accordion title="LX_E_FILE_INVALID = -16">
+    **Nguyên nhân có thể** Tên tệp, loại, định dạng hoặc đường dẫn tệp không hợp lệ, hoặc không thể mở tệp. **Cách xử lý** Kiểm tra đường dẫn chính xác và thử mở tệp thủ công.
+  </Accordion>
+
+  <Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+    **Nguyên nhân có thể** Xác minh CRC hoặc MD5 không thành công trong quá trình tải lên hoặc tải xuống. **Cách xử lý** Thử truyền lại.
+  </Accordion>
+
+  <Accordion title="LX_E_TIME_OUT = -18">
+    **Nguyên nhân có thể** Yêu cầu đã hết thời gian chờ. **Cách xử lý** Thử lại. Có thể nguyên nhân là mất gói hoặc tốc độ khung hình camera thấp.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_LOSS = -19">
+    **Nguyên nhân có thể** Khung hình bị mất, thường xảy ra ở chế độ callback. **Cách xử lý** Mất không thường xuyên có thể không cần xử lý. Nếu mất thường xuyên, hãy kiểm tra băng thông mạng và bộ đệm.
+  </Accordion>
+
+  <Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+    **Nguyên nhân có thể** Không thể bật cấu hình luồng được yêu cầu. **Cách xử lý** Các phiên bản trước `2.4.9` không cho phép tắt mọi luồng. Mã lỗi này đã lỗi thời trong các phiên bản sau.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+    **Nguyên nhân có thể** Không nhận được dữ liệu luồng. **Cách xử lý** Sử dụng các bước xử lý sự cố khi mở camera nhưng không có luồng dữ liệu.
+  </Accordion>
+
+  <Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+    **Nguyên nhân có thể** Luồng đã bắt đầu nhưng không thể phân tích. **Cách xử lý** Kiểm tra phiên bản firmware hoặc liên hệ bộ phận hỗ trợ MRDVS.
+  </Accordion>
+
+  <Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+    **Nguyên nhân có thể** Xử lý hình ảnh không thành công. **Cách xử lý** Xác nhận phiên bản thư viện xử lý hình ảnh `Dataprocess` tương thích.
+  </Accordion>
+
+  <Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+    **Nguyên nhân có thể** Cài đặt được yêu cầu không được phép ở chế độ liên tục. **Cách xử lý** Ở chế độ liên tục, hãy dừng luồng trước khi thay đổi ROI, chế độ nhiều camera, căn chỉnh hoặc các cài đặt khác liên quan đến luồng. Đặt chế độ camera trước, sau đó áp dụng cài đặt.
+  </Accordion>
+
+  <Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+    **Nguyên nhân có thể** Không thể tải thư viện xử lý hình ảnh. **Cách xử lý** Đảm bảo thư viện động/đối tượng dùng chung `Dataprocess` tồn tại và được đưa vào đường dẫn thư viện. Chạy `source install.sh`.
+  </Accordion>
+
+  <Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+    **Nguyên nhân có thể** Thứ tự gọi hàm hoặc logic điều kiện tiên quyết không hợp lệ. **Cách xử lý** Kiểm tra nhật ký SDK và điều chỉnh thứ tự gọi. Các trường hợp thường gặp gồm:<br />1. Dừng luồng trước khi thay đổi cài đặt làm thay đổi kích thước hình ảnh.<br />2. Không thay đổi kích thước hình ảnh ở chế độ liên tục.<br />3. Tải lên thuật toán và các thuật toán ứng dụng tích hợp sẵn loại trừ lẫn nhau.<br />4. Không bật phơi sáng tự động khi HDR đang bật.<br />5. Các tham số phơi sáng tự động phụ thuộc vào trạng thái phơi sáng tự động.<br />6. Các tham số trigger phụ thuộc vào chế độ trigger.
+  </Accordion>
+
+  <Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+    **Nguyên nhân có thể** Không thể truy cập địa chỉ IP hoặc mạng được cấu hình sai. **Cách xử lý** Xác nhận máy chủ SDK có thể ping camera.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+    **Nguyên nhân có thể** Khung RGB và ToF không được đồng bộ trong khoảng thời gian chờ. **Cách xử lý** Khi bật đồng bộ RGB-D, chọn loại bỏ khung hình hoặc bỏ qua cảnh báo tùy theo ứng dụng ưu tiên đồng bộ hay dữ liệu thời gian thực.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+    **Nguyên nhân có thể** Khung hình chứa tín hiệu nhiễu từ camera khác. **Cách xử lý** Tùy theo ứng dụng, loại bỏ khung hình hoặc bỏ qua cảnh báo.
+  </Accordion>
+
+  <Accordion title="Lỗi `-25` hoặc `LxDataProcess` không tải được">
+    **Nguyên nhân có thể** Trên Linux, thư viện chưa được đưa vào đường dẫn môi trường. **Cách xử lý** Chạy `source install.sh`.
+  </Accordion>
+
+  <Accordion title="Hình ảnh thu được bị chia thành ba phần">
+    **Nguyên nhân có thể** Tỷ lệ khung hình hiển thị không chính xác.
+  </Accordion>
+
+  <Accordion title="ROS 2 xung đột với thư viện SDK">
+    **Cách xử lý** Sử dụng wrapper trong thư mục `util`. Wrapper liên kết gián tiếp với Camera SDK và tránh xung đột thư viện trực tiếp.
+  </Accordion>
+
+  <Accordion title="Làm thế nào để phân biệt camera Lite với camera tiêu chuẩn có RGB?">
+    **Cách xử lý** Gọi `DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb)`. Camera Lite trả về rằng tính năng không được hỗ trợ.
+  </Accordion>
+
+  <Accordion title="Đồng bộ thời gian được xử lý như thế nào?">
+    **Cách xử lý** SDK tự động đồng bộ với PTP ở mỗi lần gọi giao diện. Không cần trigger bổ sung.
+  </Accordion>
+</AccordionGroup>

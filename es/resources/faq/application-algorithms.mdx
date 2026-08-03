@@ -1,0 +1,156 @@
+---
+title: Preguntas frecuentes sobre algoritmos de aplicación
+description: "Soluciona problemas de reconocimiento de palés, evitación de obstáculos e implementación de algoritmos de aplicación."
+---
+
+Antes de solucionar problemas, confirma que el flujo de datos de la cámara, el software de host y el firmware del algoritmo usen versiones compatibles. Registra la configuración actual antes de cambiar parámetros para poder restaurarla.
+
+## Reconocimiento de palés y evitación de obstáculos
+
+<AccordionGroup>
+  <Accordion title="El reconocimiento de palés falla con un palé negro">
+    **Posible causa**
+
+    La nube de puntos del palé negro está incompleta.
+
+    **Resolución**
+
+    1. En **3D Settings** del software de host, establece **High Exposure** en `1400`.<br />2. En **Filter**, establece **Low Signal Threshold** en `20`.<br />3. Establece **Small Signal Detection** en `1`.
+  </Accordion>
+
+  <Accordion title="PalletPro funciona en la herramienta de prueba, pero el vehículo recibe resultados anómalos o fallidos">
+    **Posible causa**
+
+    Las versiones del software de host y del firmware del algoritmo integrado no coinciden.
+
+    **Resolución**
+
+    Actualiza el firmware del algoritmo integrado.
+  </Accordion>
+
+  <Accordion title="La calibración de parámetros externos indica que no se detectó el suelo">
+    **Posible causa**
+
+    No se capturó la nube de puntos del suelo.
+
+    **Resolución**
+
+    Abre la cámara. Establece **High Exposure** en `1400` en **3D Settings**, establece **Low Signal Threshold** en `10` en **Filter** y ejecuta la calibración de parámetros externos. Restaura los valores originales después de la calibración.
+  </Accordion>
+
+  <Accordion title="La calibración de parámetros externos en campo cercano falla">
+    **Resolución**
+
+    1. Comprueba que la nube de puntos del palé esté completa.<br />2. Comprueba que el palé esté aproximadamente a `1300 mm` de la cámara.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-1` o `failed-11`">
+    **Posible causa**
+
+    No se recibieron datos o los datos fueron insuficientes.
+
+    **Resolución**
+
+    Usa el software de host para confirmar que la cámara produce imágenes y que la configuración del filtro no elimina demasiados datos de la nube de puntos.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-2`, `failed-12` o `failed-16`">
+    **Posible causa**
+
+    No hay suficientes datos de la nube de puntos para detectar las patas del palé.
+
+    **Resolución**
+
+    Comprueba las siguientes condiciones:<br />1. Ha cambiado la altura de la cámara o de la elevación de los brazos de la carretilla.<br />2. Las patas del palé están bloqueadas.<br />3. La cámara o los brazos de la carretilla tienen una inclinación excesiva.<br />4. Las patas del palé no se capturan con claridad.<br />5. Un poste reflectante está demasiado cerca de una pata del palé y afecta a la imagen.<br />
+
+    Usa PalletPro para confirmar la situación y ajusta la configuración, el poste reflectante o la posición de la carretilla según sea necesario.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-3` o `failed-13`">
+    **Posible causa**
+
+    Las dimensiones de las patas del palé no cumplen los límites configurados o no se detectó ninguna pata.
+
+    **Resolución**
+
+    Las características de las patas del palé están fuera del rango de reconocimiento. Ajusta el rango del ancho de las patas o del ancho del palé si corresponde.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-4` o `failed-14`">
+    **Posible causa**
+
+    La altura de instalación de la cámara no está configurada.
+
+    **Resolución**
+
+    Establece el parámetro de altura de instalación o ejecuta la calibración de parámetros externos.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-5` o `failed-15`">
+    **Posible causa**
+
+    La verificación del palé falló porque no se detectó el travesaño o el ángulo de inclinación del palé es demasiado grande.
+
+    **Resolución**
+
+    Usa el software de host para desactivar la eliminación de píxeles voladores, acerca la cámara cambiando la distancia de acoplamiento o ajusta la relación de detección del travesaño.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-7`">
+    **Posible causa**
+
+    Los anchos de las patas del palé difieren demasiado dentro del campo de visión.
+
+    **Resolución**
+
+    Comprueba si hay un poste reflectante cerca del palé o si el palé está cerca de una pared y las patas de los extremos no se capturan correctamente.
+  </Accordion>
+
+  <Accordion title="El reconocimiento de palés devuelve `failed-8`">
+    **Posible causa**
+
+    El ángulo de orientación del palé en el campo de visión es demasiado grande (`> 30°`).
+
+    **Resolución**
+
+    Endereza el palé antes de la detección.
+  </Accordion>
+
+  <Accordion title="Cambiar el perfil de evitación de obstáculos mediante comunicación o IO no actualiza el software de host">
+    **Resolución**
+
+    1. Confirma que el perfil de evitación de obstáculos de destino se haya configurado previamente.<br />2. Detén y reinicia el flujo de datos y comprueba si el perfil se actualiza.
+  </Accordion>
+
+  <Accordion title="La salida de evitación de obstáculos que muestra el software es anómala, por ejemplo `1000`">
+    **Posible causa**
+
+    La versión del algoritmo no coincide con el producto.
+
+    **Resolución**
+
+    Actualiza el firmware del algoritmo.
+  </Accordion>
+
+  <Accordion title="IO no tiene salida">
+    **Posibles causas**
+
+    En S2/S2 Max, puede faltar el cableado de pull-up. En S10/S10 Pro, el firmware del algoritmo puede ser demasiado antiguo.
+
+    **Resolución**
+
+    1. Añade una resistencia pull-up para S2/S2 Max según los requisitos del sistema del vehículo.<br />2. Actualiza el firmware del algoritmo de S10/S10 Pro a `V1.1.050E06_250527` o posterior.
+  </Accordion>
+
+  <Accordion title="Las alarmas de obstáculos se activan aunque el espacio delantero esté despejado">
+    **Resolución**
+
+    1. Comprueba la versión del software de host.<br />2. Comprueba la versión del firmware de la cámara.<br />3. Comprueba que la configuración de evitación de obstáculos se haya aplicado a la cámara.
+  </Accordion>
+
+  <Accordion title="Después de actualizar el firmware, el software de algoritmos de aplicación no puede abrir la cámara">
+    **Resolución**
+
+    Reinicia la cámara y activa la actualización en tiempo real en **Global Settings** del software de algoritmos de aplicación.
+  </Accordion>
+</AccordionGroup>

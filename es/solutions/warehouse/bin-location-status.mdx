@@ -1,0 +1,68 @@
+---
+title: Reconocimiento del estado de la ubicación de almacenamiento
+description: "Usa una cámara RGB-D para identificar la ocupación, el estado de la carga y la altura, y sincronizar el resultado con un sistema de gestión de almacén o de despacho."
+---
+
+## Contexto de la aplicación
+
+En un almacén con AGV, el almacenamiento y la recuperación manuales pueden dejar los datos de las ubicaciones del WMS desincronizados con el sitio. Si una ubicación ocupada no se detecta a tiempo, el sistema de despacho puede emitir una tarea de recuperación o almacenamiento inadecuada.
+
+<Frame>
+  ![Aplicación de reconocimiento del estado de la ubicación de almacenamiento](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## Comparación de métodos de reconocimiento
+
+| Método | Información disponible | Limitación habitual |
+| --- | --- | --- |
+| Medición láser de un solo punto | Un valor de distancia | Puede pasar por alto los espacios entre cajas o palés, lo que dificulta representar el estado completo de la ubicación. |
+| Cámara RGB | Color y textura | Es sensible a objetivos fuera del conjunto de entrenamiento, a la iluminación y a la distorsión de los bordes; no puede proporcionar directamente la altura de la carga. |
+| Cámara RGB-D | Color, profundidad y nube de puntos | Los datos 3D se pueden utilizar para determinar la ocupación, la colocación y la altura de la carga. |
+
+## Descripción de la solución
+
+La solución captura datos de color y 3D de las ubicaciones de almacenamiento para identificar si hay una carga, cómo está colocada y si la ocupación es anómala. Los algoritmos en la cámara también pueden distinguir categorías de carga cuando el proyecto lo requiere. Los resultados se pueden enviar al sistema de despacho para respaldar las operaciones del almacén.
+
+<Frame>
+  ![Reconocimiento del estado de la ubicación de almacenamiento con RGB-D](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## Características de la solución
+
+- **Evaluación del estado en 3D:** Combina datos de profundidad y color para identificar la ocupación y el estado de la carga.
+- **Procesamiento en la cámara:** Ejecuta el algoritmo en la cámara para reducir los requisitos de procesamiento externo.
+- **Informe de resultados:** Admite comunicación mediante TCP/IP, UDP y HTTP, con salida JSON al sistema de control.
+- **Coordinación del despacho:** Proporciona datos de ubicación en tiempo real para respaldar la asignación de tareas.
+
+## Notas de implementación
+
+<Columns cols={2}>
+  <Card title="Posición de instalación" icon="camera">
+    Monta la cámara en una columna o en el techo y oriéntala hacia las ubicaciones supervisadas. Confirma la altura de instalación y el campo de visión según las dimensiones de las ubicaciones.
+  </Card>
+
+  <Card title="Requisitos ambientales" icon="triangle-exclamation">
+    Evita el polvo intenso y la condensación. El soporte de montaje debe proporcionar suficiente rigidez y estabilidad.
+  </Card>
+</Columns>
+
+<Frame>
+  ![Demostración del reconocimiento del estado de la ubicación de almacenamiento](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="Recibir una tarea de ubicación">
+    El controlador de nivel superior envía una tarea mientras la cámara captura datos de imagen y profundidad de la ubicación objetivo.
+  </Step>
+  <Step title="Reconocer e informar el resultado">
+    La cámara genera el estado de la ubicación y lo informa al sistema de nivel superior en JSON.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Instalación de la cámara para el reconocimiento del estado de la ubicación de almacenamiento](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="Guía de implementación de la detección de ubicaciones de almacenamiento" icon="book-open" href="/es/developers/deployment/algorithm-detection">
+  Consulta las instrucciones de implementación, interfaces y depuración del algoritmo.
+</Card>

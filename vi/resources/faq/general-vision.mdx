@@ -1,0 +1,119 @@
+---
+title: FAQ về thị giác tổng quát
+description: "Xử lý sự cố nguồn điện, mạng, hình ảnh, bộ lọc và chất lượng đám mây điểm của camera MRDVS."
+---
+
+Trước tiên hãy kiểm tra nguồn điện, mạng và phiên bản phần mềm. Ghi lại các giá trị hình ảnh và bộ lọc hiện tại trước khi thay đổi.
+
+## Phần cứng camera
+
+<AccordionGroup>
+  <Accordion title="Đèn báo nguồn tắt hoặc đèn báo màu xanh yếu">
+    **Nguyên nhân có thể** Điện áp nguồn không ổn định. **Cách xử lý** Sử dụng nguồn `24 V DC / 2 A`.
+  </Accordion>
+
+  <Accordion title="Camera thường xuyên khởi động lại">
+    **Cách xử lý**
+
+    1. Kiểm tra mức sử dụng băng thông mạng.<br />2. Xác nhận nguồn điện đáp ứng yêu cầu của camera.
+  </Accordion>
+
+  <Accordion title="Đầu ra tránh vật cản trong phần mềm máy chủ bình thường nhưng đầu ra IO bất thường">
+    **Cách xử lý**
+
+    1. Kiểm tra dây IO.<br />2. Kiểm tra cáp chức năng.<br />3. Xác nhận firmware hỗ trợ chức năng được yêu cầu.
+  </Accordion>
+
+  <Accordion title="Bộ điều hợp mạng hiển thị trạng thái đã ngắt kết nối">
+    **Nguyên nhân có thể** Kết nối mạng bất thường. **Cách xử lý** Kiểm tra mạng, bộ điều hợp và switch để tìm lỗi hoặc tình trạng lọc.
+  </Accordion>
+
+  <Accordion title="Truyền thông CANopen không trả về dữ liệu hoặc trả về dữ liệu không khớp">
+    **Cách xử lý**
+
+    1. Kiểm tra baud rate và CAN ID có khớp không.<br />2. Kiểm tra dây CAN.
+  </Accordion>
+</AccordionGroup>
+
+## Phần mềm máy chủ và hình ảnh
+
+<AccordionGroup>
+  <Accordion title="Không có dữ liệu sau khi phần mềm máy chủ mở camera">
+    **Nguyên nhân có thể**
+
+    1. Tường lửa đang bật.<br />2. Bộ điều hợp và camera nằm trên các subnet khác nhau.<br />3. Switch đang lọc lưu lượng.<br />4. Mạng máy tính bất thường. **Cách xử lý**
+    1. Tắt tường lửa.<br />2. Đặt máy tính và camera trên cùng subnet.<br />3. Kiểm tra switch.<br />4. Thử với máy tính khác.<br />5. Cấu hình nhiều subnet nếu cần.
+  </Accordion>
+
+  <Accordion title="Bản đồ độ sâu có các khối hình chữ nhật bị thiếu hoặc lỗ đen">
+    **Nguyên nhân có thể** Camera nhận nhầm camera khác. **Cách xử lý** Dừng luồng và tắt chế độ nhiều camera trong **3D Settings**. Nếu cần, thay đổi chế độ thuật toán để tắt chế độ nhiều camera khi đã ngắt kết nối.
+  </Accordion>
+
+  <Accordion title="Camera S10 hoặc S10 Pro không hiển thị hình ảnh hoặc hiển thị hình ảnh độ sâu rất nhỏ">
+    **Nguyên nhân có thể** Phiên bản phần mềm máy chủ không tương thích. **Cách xử lý** Cập nhật lên `Lanxin-MRDVS-1.3.66.0606` hoặc mới hơn.
+  </Accordion>
+
+  <Accordion title="Camera không thể mở do lỗi truyền thông mạng">
+    **Nguyên nhân có thể** Camera và máy tính nằm trên các subnet khác nhau. **Cách xử lý** Cấu hình camera và máy tính trên cùng subnet.
+  </Accordion>
+
+  <Accordion title="Không thể nhận quyền ứng dụng độc quyền">
+    **Nguyên nhân có thể** Có nhiều người dùng đang kết nối với camera. **Cách xử lý** Chỉ cho phép một người dùng kết nối tại một thời điểm. Các phiên bản `2.4.50.0720` trở lên hỗ trợ quyền nhiều người dùng.
+  </Accordion>
+
+  <Accordion title="Camera mở thành công ở chế độ hạn chế nhưng không có luồng">
+    **Nguyên nhân có thể** Có nhiều tiến trình đang kết nối với camera. **Cách xử lý** Tiến trình đầu tiên mở camera có quyền chính và phải bắt đầu luồng trước khi tiến trình ở chế độ hạn chế có thể xem luồng.
+  </Accordion>
+
+  <Accordion title="Đối tượng mục tiêu thưa hoặc không đầy đủ">
+    **Nguyên nhân có thể** Phơi sáng quá thấp hoặc bộ lọc quá mạnh. **Cách xử lý**
+
+    1. Kiểm tra **High Exposure**; phạm vi thường dùng là `600–1200`.<br />2. Kiểm tra **Low Signal Threshold**; phạm vi thường dùng là `10–30`.
+  </Accordion>
+
+  <Accordion title="Luồng bắt đầu và tốc độ khung hình bình thường nhưng không có dữ liệu hình ảnh">
+    **Nguyên nhân có thể** Laser yếu hoặc tắt. **Cách xử lý** Dùng camera điện thoại để kiểm tra mặt trước camera. Nếu laser tắt hoặc yếu, hãy thay phần cứng camera.
+  </Accordion>
+
+  <Accordion title="Đám mây điểm chứa dữ liệu ở nơi không có vật thể phía trước">
+    **Cách xử lý** Kiểm tra môi trường tạo ảnh, độ phơi sáng và cài đặt bộ lọc. Nếu vấn đề vẫn tiếp diễn sau khi xác nhận cấu hình, hãy thu thập nhật ký và dữ liệu mẫu để phân tích.
+  </Accordion>
+
+  <Accordion title="Nhiễu xuất hiện dọc theo cạnh vật thể khi camera hướng vào vật thể">
+    **Nguyên nhân có thể** Lóa sáng. **Cách xử lý**
+
+    1. Bật xử lý tối ưu hóa lóa sáng.<br />2. Tăng **Low Signal Threshold**.
+  </Accordion>
+
+  <Accordion title="Tâm ảnh RGB có màu đỏ hoặc ảnh RGB bị mờ">
+    **Cách xử lý** Thay phần cứng camera.
+  </Accordion>
+
+  <Accordion title="Ảnh RGB hướng về phía trước nhưng ảnh độ sâu bị lệch">
+    **Cách xử lý** Thay phần cứng camera.
+  </Accordion>
+
+  <Accordion title="Đám mây điểm của các vật thể liền kề bị gộp vào nhau">
+    **Cách xử lý** Tăng mức khử nhiễu và làm mượt trong cài đặt bộ lọc.
+  </Accordion>
+
+  <Accordion title="RGB không có dữ liệu sau khi bật căn chỉnh RGB-D">
+    **Nguyên nhân có thể** Phiên bản phần mềm không tương thích. **Cách xử lý** Cập nhật phần mềm. Tải các bản phát hành từ [kho Camera SDK trên GitHub](https://github.com/Lanxin-MRDVS/CameraSDK/releases).
+  </Accordion>
+
+  <Accordion title="Đám mây điểm của S Series có các lớp rõ rệt">
+    **Cách xử lý** Thay phần cứng camera.
+  </Accordion>
+
+  <Accordion title="Độ chính xác ở cạnh của vật thể màu trắng gần camera kém trên S Series">
+    **Nguyên nhân có thể** Lóa sáng. **Cách xử lý** Bật tối ưu hóa lóa sáng. Việc nhận dạng vật thể màu đen có thể trở nên không đầy đủ.
+  </Accordion>
+
+  <Accordion title="Cột phản quang bị quá sáng mạnh trên S Series">
+    **Nguyên nhân có thể** Lóa sáng. **Cách xử lý** Bật xử lý khử lóa sáng.
+  </Accordion>
+
+  <Accordion title="Vật thể màu đen không được thu nhận đầy đủ trên S Series">
+    **Nguyên nhân có thể** Đã bật chế độ phơi sáng cao. **Cách xử lý** Đặt thanh ghi ToF `100130B0` thành `240`.
+  </Accordion>
+</AccordionGroup>

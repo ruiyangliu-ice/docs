@@ -1,0 +1,194 @@
+---
+title: Palettenerkennung mit PalletPro bereitstellen
+sidebarTitle: PalletPro-Bereitstellung
+description: "Installiere, kalibriere, integriere und behebe Fehler bei der Palettenerkennung mit Kameras der M-Serie und PalletPro."
+---
+
+PalletPro konfiguriert Parameter für Palettenerkennung und Andocken für Kameras der M-Serie. Die Kamera führt den Algorithmus auf dem Gerät aus; PalletPro verbindet sich mit der Kamera, prüft die Bildgebung, kalibriert die Extrinsik, passt Erkennungsbereiche an und liest Ergebnisse aus.
+
+<Info>
+  Die Standardabmessungen, Abstände und Parameterbereiche in diesem Leitfaden gelten nur für den Standardworkflow der Erkennung. Bewerte nicht standardmäßige, beinlose oder stark reflektierende Paletten zuerst vor Ort.
+</Info>
+
+## Vorbereitung der Bereitstellung
+
+### Standardpaletten und Installationsanforderungen
+
+Dieser Workflow verwendet eine Standardpalette mit zwei oder drei Kufen. Der ursprüngliche Workflow verwendet Paletten von `1.2 m × 0.8 m` oder `1.2 m × 1.0 m`. Bestätige nicht standardmäßige Abmessungen vor der Bereitstellung mit MRDVS.
+
+| Element | Anforderung |
+| --- | --- |
+| Kameraposition | Halte die Kamera so nah wie möglich an der Mitte zwischen den beiden Gabeln; der Versatz von links nach rechts darf `50 mm` nicht überschreiten. |
+| Kameraausrichtung | Halte die Vorderseite der Kamera senkrecht zum Boden und Pitch und Roll möglichst gering. |
+| Sichtfeld | Bei der nächsten Erkennungsdistanz dürfen die Gabeln die vollständige Palette nicht verdecken. |
+| Mitbewegte Installation | Montiere die Kamera an der Gabelwurzelplatte, sodass sie sich mit den Gabeln bewegt. |
+| Abgesenkte Installation | Montiere die Kamera unter den Gabeln, sodass sie sich bei vollständig abgesenkten Gabeln mit den Gabeln bewegt. |
+
+Für Gabeln bis `1.2 m` Länge beträgt eine empirische Einbauhöhe `0.35–0.4 m`. Verwende für längere Gabeln `0.4–0.8 m` als Ausgangsbereich. Bestätige die endgültige Höhe anhand von Sichtfeld, Bildgebung der Palettenkufen und Andockabstand.
+
+<Frame>
+  ![Mitbewegte Kamerainstallation für die Palettenerkennung](/images/developers/deployment-palletpro-follow-up-installation.avif)
+</Frame>
+
+### Ausrüstung und Software
+
+- Versorge die Kamera mit `24 VDC` und verbinde sie über ein Cat7-Ethernetkabel mit dem Computer.
+- Empfohlener Host: Windows 10 oder höher, Intel® Core™ i5 (7. Generation) oder höher, `8 GB` RAM sowie Intel® UHD Graphics oder eine leistungsfähigere GPU.
+- Akzeptiere bei der Installation von PalletPro die Aufforderung zur Installation der C\+\+-Laufzeit. Eine fehlende Laufzeit kann den Start der Anwendung verhindern.
+
+<Warning>
+  Verwende nur die für das Projekt gelieferte Kamerafirmware und das Palettenalgorithmpaket. Die Kamera startet während eines Upgrades neu und verschwindet vorübergehend aus der Geräteliste. Sichere die geprüfte Kalibrierung vor dem Upgrade.
+</Warning>
+
+## Schnelle Bereitstellung
+
+<Steps>
+  <Step title="Netzwerk konfigurieren und Kamera öffnen">
+    Lege den Computer in das Subnetz `192.168.100.xxx / 255.255.255.0`. Starte PalletPro, suche die Zielkamera und öffne sie.
+  </Step>
+  <Step title="Versionen und Bildgebung prüfen">
+    Prüfe in LxCameraViewer, ob Anwendung, Kamerafirmware und Palettenalgorithmus mit der Projektlieferung übereinstimmen. Bestätige, dass die Palettenkufen in der Punktwolke vollständig sichtbar sind.
+  </Step>
+  <Step title="Anfangshöhe festlegen">
+    Verwende unter **Parameter settings** die Option **Height adaptation**, um einen Anfangswert zu ermitteln. Stimme ihn anhand der Bodenlinie fein ab und wähle anschließend **Save parameters**.
+  </Step>
+  <Step title="Nahbereich einlernen">
+    Verwende eine Standardpalette, halte sie ohne nahe Hindernisse zentriert und wähle **Pallet teaching (near end)**, wenn die Palette etwa `1.3 m` von der Kamera entfernt ist.
+  </Step>
+  <Step title="Fernbereich einlernen">
+    Halte die Palette in derselben seitlichen Position. Fahre das Fahrzeug etwa `600–1000 mm` gerade zurück, bis die Palette etwa `2.0–2.4 m` von der Kamera entfernt ist, und wähle anschließend **Pallet teaching (far end)**.
+  </Step>
+  <Step title="Speichern und prüfen">
+    Speichere die Parameter und teste die Positionen im Nah- und Fernbereich wiederholt. Prüfe X-, Y- und Winkelausgabe sowie die Stabilität der Erkennung.
+  </Step>
+</Steps>
+
+<Tip>
+  Das Einlernen des Fernbereichs kalibriert den Kamera-Pitch. Bewege dich zwischen dem Einlernen des Nah- und Fernbereichs weder seitlich noch in einer Kurve.
+</Tip>
+
+## PalletPro verwenden
+
+### Hauptoberfläche
+
+| Bereich | Zweck |
+| --- | --- |
+| Basic operations | Extrinsikkalibrierung, Parameterspeicherung und Kamerabedienung. |
+| Advanced applications | Erweiterte Parameter, 3D-Anzeige und Offline-Tests. |
+| Camera settings | Kamera suchen, öffnen oder schließen, Live-Daten anzeigen, erkennen und projizieren. |
+| Parameter settings | Kameraname, Einbauhöhe, Ausrichtung und Installationsmethode. |
+| File import | Kalibrierungsdateien, ein einzelnes Bild oder einen Bildordner für Offline-Tests importieren. |
+| Logs and images | Laufzeitprotokolle, Versionen und Live-Erkennungsergebnisse anzeigen. |
+
+### Extrinsikkalibrierung
+
+Lies unter **Basic operations → Extrinsic calibration** vor dem Einlernen die **Calibration notes**. Verwende den Projektnamen und die Fahrzeug-ID als Kundennamen. Der Abstand vom optischen Zentrum der Kamera zum Drehzentrum des Gabelstaplers ist erforderlich.
+
+| Kalibrierungsschritt | Ergebnis |
+| --- | --- |
+| Einlernen des Nahbereichs | Kalibriert Einbauhöhe, seitlichen Versatz, Ausrichtung und Roll. |
+| Einlernen des Fernbereichs | Kalibriert den Pitch anhand des Ergebnisses aus dem Nahbereich. |
+| Save parameters | Sendet die aktuelle Kalibrierung an die Kamera. |
+
+<Frame>
+  ![PalletPro-Oberfläche zum Einlernen einer Palette im Nahbereich](/images/developers/deployment-palletpro-tray-teaching-near-end-explanation.avif)
+</Frame>
+
+### Erweiterte Parameter
+
+Ändere nur die für das Projekt erforderlichen Felder und wähle nach jeder Änderung **Save parameters**.
+
+| Parameter | Zweck |
+| --- | --- |
+| `R` | Kameraausrichtung: Pitch, Ausrichtung und Roll. |
+| `t` | Kameraversatz; der erste Wert ist der seitliche Versatz. |
+| `ground_y` | Kamerahöhe in `mm`. |
+| `orientation` | Installationsmethode: `0` aufrecht, `2` umgekehrt, `1` / `3` seitlich montiert. |
+| `multi_level` | Erkennung mehrerer Paletten: `0` aus, `1` ein. |
+| `quad` | Erkennung von Paletten mit vier Kufen: `0` aus, `1` ein. |
+| `min_z` / `max_z` | Gültiger Bereich entlang der Kameraabstandsachse. |
+| `min_x` / `max_x` | Gültiger horizontaler Bereich. |
+| `two_leg` | Erkennung von Paletten mit zwei Kufen: `0` aus, `1` ein. |
+
+<Note>
+  Ändere keine hier nicht aufgeführten erweiterten Parameter, außer MRDVS fordert dich dazu auf. Bewahre die ursprüngliche Konfiguration und validiere jede Änderung, wenn du Kufenbreite, Balkenerkennung oder Erkennungsbereich anpassen musst.
+</Note>
+
+### Offline-Tests und Protokolle
+
+Ziehe unter **Advanced applications → Offline test** Folgendes hinein:
+
+- die Kalibrierungsdatei `pallet_settings.json`;
+- ein PNG-Bild oder einen Ordner mit Ergebnisbildern.
+
+Wähle einen Einzeldatei- oder Ordnertest und anschließend **Start detection**. Der Protokollbereich zeigt Kamera-API, Firmware, Algorithmus und Erkennungsergebnisse. Verwende **Camera operations**, um Softwareprotokolle zur Fehlerbehebung zu exportieren.
+
+## Kommunikationsintegration
+
+### TCP und UDP
+
+Wähle in LxCameraViewer **Pallet localization** und setze es auf **Always on**. Der TCP-Server verwendet standardmäßig Port `5501`, UDP Port `8000`. Nachrichten verwenden Big-Endian-Byte-Reihenfolge und eine Standard-Frame-Länge von `16` Bytes.
+
+| Richtung | Hex-Befehl | Zweck |
+| --- | --- | --- |
+| Client → PalletPro | `60 04 00 00` | Erkennung starten. |
+| Client → PalletPro | `60 04 00 01` | Erkennung stoppen. |
+
+Der Antwort-Frame enthält Rückgabecode, Länge, Vorzeichen von X / Y / theta / Z, X / Y des vorderen Palettenzentrums, Winkel theta und Palettenhöhe. Setze Erweiterungsbytes im aktuellen Protokoll auf `0`.
+
+### RS485 (nur M4 Pro)
+
+Verwende Modbus RTU mit `9600` Baud und `8N1`. Die Standard-Modbus-Adresse ist `0x17`; verwende das SDK, um eine Adresse aus `1–247` festzulegen.
+
+| Vorgang | Funktionscode | Register | Wert |
+| --- | --- | --- | --- |
+| Erkennung aktivieren/stoppen | `0x06` | `120` (`0x0078`) | `1` aktivieren, `0` stoppen |
+| Ergebnisse lesen | `0x04` | `122` (`0x007A`) | `8` Register lesen |
+
+Ergebnisfelder sind X, Y, Yaw, Rückgabewert und Höhe; jedes wird durch ein 4-Byte-Feld dargestellt.
+
+### CANopen (M4 / M4 Mega)
+
+CAN verwendet Standardframes mit 11 Bit bei `250 Kbit/s`. Der Controller sendet `COB ID 0x212`; `MODE CTRL` `0` deaktiviert die Erkennung und `1` aktiviert sie. Das Gerät gibt Erkennungsstatus, Pose, Position, Höhe und Palettenabmessungen über `0x192`, `0x292`, `0x392` und `0x492` zurück.
+
+### Modbus TCP
+
+Diese Schnittstelle erfordert die Algorithmusversion `0.8.1` oder höher. Der Standardport ist `6601`; er lauscht auf allen Netzwerkschnittstellen und verwendet die Registerstartadresse `0x100`.
+
+| Offset | Register | Inhalt |
+| --- | --- | --- |
+| 0 | `0x100` | Absoluter Rückgabewert; `0` bedeutet erfolgreiche Erkennung. |
+| 1–4 | `0x101–0x104` | Vorzeichen für X, Y, Yaw und Höhe; `0` positiv, `1` negativ. |
+| 5–8 | `0x105–0x108` | X / Y des vorderen Palettenzentrums, Yaw und Höhe. |
+| 9 | `0x109` | Palettenbreite. |
+| 10 | `0x10A` | Anzahl der Palettenkufen. |
+| 11–19 | — | Reserviert. |
+
+## Prüfen und Fehler beheben
+
+### Kalibrierungsabnahme
+
+Fahre wiederholt zwischen den Einlernpositionen für Nah- und Fernbereich. Die Kalibrierung ist akzeptabel, wenn die X- und Y-Fehler innerhalb von `10 mm` liegen und die Erkennung ohne Auslassungen stabil ist. Beispielsweise bedeutet `x = -2000`, `y = 100` und `yaw = 2.3`, dass die Palette `2000 mm` vom optischen Zentrum der Kamera entfernt, `100 mm` rechts davon und in der Draufsicht um `2.3°` gegen den Uhrzeigersinn gedreht ist.
+
+### Häufige Fehlercodes
+
+| Fehlercode | Bedeutung | Prüfung mit Priorität |
+| --: | --- | --- |
+| `0` | Erkennung normal | — |
+| `-1` | Keine Bilddaten oder unzureichende Daten | Bestätige, dass die Kamera Bilder ausgibt. |
+| `-2` / `-6` | Zu wenige Punkte oder Palettenkufen nicht erkannt | Prüfe Einbauhöhe, Gabelausrichtung, Hindernisse und die Bildgebung der Palettenkufen. |
+| `-3` | Abmessungen der Palettenkufen außerhalb der Bedingungen | Passe Kufenbreite oder Grenzwerte für Palettenbreite an. |
+| `-4` | Kamerahöhe nicht festgelegt | Lege die Einbauhöhe fest und speichere sie. |
+| `-5` | Fehler bei der Balkenerkennung oder zu starke Palettenneigung | Prüfe Balkenbildgebung, fliegende Pixel und Andockabstand. |
+| `-7` | Zu großer Unterschied zwischen den Breiten der Palettenkufen | Prüfe, ob Reflektoren, Wände oder andere Objekte die Bildgebung der Randkufen beeinflussen. |
+| `-8` | Palettenwinkel zu groß | Passe die Palettenausrichtung an. |
+
+### Erkennungsbedingungen und Grenzen vor Ort
+
+- Standardbedingungen: Palettenbreite und -länge `800–2000 mm`, Höhe `80–200 mm`, Kufenbreite `40–200 mm`, Öffnungsbreite `300–600 mm`, Balkendicke mindestens `30 mm` und Erkennungsabstand `1200–3000 mm`.
+- Halte die Palette vollständig im Sichtfeld. Vermeide Verdeckungen durch Gabeln, Güter oder nahe Objekte.
+- Teste schwarze, schwach reflektierende und stark reflektierende Paletten vor Ort. Im ursprünglichen Test konnte eine schwarze Palette mit `5%` Reflexionsgrad bei `2 m` abgebildet werden; passe bei Bedarf Integrationszeit und Schwellenwert für schwache Signale an.
+- Halte bei einer Gabelaufnahme in großer Höhe möglichst mindestens `200 mm` zwischen Reflektoren und Palettenkufen ein.
+- Verwende beim Live-Andocken Zeitstempel der Ergebnisse auf Anwendungsebene, um zu bestimmen, ob die Daten aktuell sind, und verzögerte Korrekturen zu verhindern.
+
+Wende dich an MRDVS, um nicht standardmäßige oder beinlose Paletten zu bewerten.

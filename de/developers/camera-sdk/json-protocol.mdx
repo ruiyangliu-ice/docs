@@ -1,0 +1,48 @@
+---
+title: JSON-Kommunikationsprotokoll
+description: Referenz für das TCP-Socket-JSON-Nachrichtenformat und die Felder zur Kommunikation zwischen einer Kamera und einem Roboter oder einer SPS.
+hidden: true
+---
+
+## Übersicht
+
+Die Kamera läuft standardmäßig als TCP-Socket-Server und lauscht auf Port `5501`. Nachrichten sind Text; ASCII wird unterstützt, JSON-Kodierung wird empfohlen.
+
+<Info>
+  Verwende dieses Protokoll, wenn ein Roboter oder eine SPS eine 3D-Vision-Aufgabe auslöst und das von der Kamera zurückgegebene Ergebnis liest.
+</Info>
+
+## Anforderungsnachricht
+
+Sende die folgende Nachricht, um eine 3D-Vision-Aufgabe auszulösen:
+
+```json
+{"action":"3D"}
+```
+
+## Antwortnachricht
+
+Nach Abschluss gibt die Kamera ein JSON-Objekt zurück.
+
+<ResponseField name="result" type="integer" required>
+  Erkennungsstatus. `0` bedeutet, dass die Lokalisierung fehlgeschlagen ist oder kein Ergebnis vorliegt. Jede andere Ganzzahl bedeutet Erfolg und gibt die Anzahl der zurückgegebenen Ergebnisse an.
+</ResponseField>
+
+<ResponseField name="pos" type="number[]" required>
+  Array der Objektposen. Jedes Ergebnis enthält `X`, `Y`, `Z`, `RX`, `RY` und `RZ` im Roboterkoordinatensystem. Die Position wird in mm und die Winkel in ° angegeben; `−180° ≤ RZ ≤ 180°`. Bei fehlgeschlagener Erkennung sind alle Werte `0`.
+</ResponseField>
+
+### Antwortbeispiele
+
+<Tabs>
+  <Tab title="Erfolg">
+    ```json
+    {"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}
+    ```
+  </Tab>
+  <Tab title="Fehler">
+    ```json
+    {"result":0,"pos":[0,0,0,0,0,0]}
+    ```
+  </Tab>
+</Tabs>

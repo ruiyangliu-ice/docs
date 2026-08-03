@@ -1,0 +1,119 @@
+---
+title: Preguntas frecuentes sobre visión general
+description: "Soluciona problemas de alimentación, red, imágenes, filtros y calidad de la nube de puntos de las cámaras MRDVS."
+---
+
+Comprueba primero la alimentación, la red y las versiones del software. Registra los valores actuales de imagen y filtro antes de modificarlos.
+
+## Hardware de la cámara
+
+<AccordionGroup>
+  <Accordion title="El indicador de alimentación está apagado o el indicador azul es débil">
+    **Posible causa** La tensión de alimentación es inestable. **Resolución** Usa una fuente de alimentación de `24 V DC / 2 A`.
+  </Accordion>
+
+  <Accordion title="La cámara se reinicia con frecuencia">
+    **Resolución**
+
+    1. Comprueba el uso del ancho de banda de la red.<br />2. Confirma que la fuente de alimentación cumpla los requisitos de la cámara.
+  </Accordion>
+
+  <Accordion title="La salida de evitación de obstáculos es normal en el software de host, pero la salida IO es anómala">
+    **Resolución**
+
+    1. Comprueba el cableado de IO.<br />2. Comprueba el cable de funciones.<br />3. Confirma que el firmware admita la función solicitada.
+  </Accordion>
+
+  <Accordion title="El adaptador de red aparece desconectado">
+    **Posible causa** La conexión de red es anómala. **Resolución** Comprueba si hay fallos o filtros en la red, el adaptador y el switch.
+  </Accordion>
+
+  <Accordion title="La comunicación CANopen no devuelve datos o devuelve datos que no coinciden">
+    **Resolución**
+
+    1. Comprueba que la velocidad en baudios y el CAN ID coincidan.<br />2. Comprueba el cableado CAN.
+  </Accordion>
+</AccordionGroup>
+
+## Software de host e imágenes
+
+<AccordionGroup>
+  <Accordion title="No aparecen datos después de que el software de host abre la cámara">
+    **Posibles causas**
+
+    1. El firewall está activado.<br />2. El adaptador y la cámara están en subredes diferentes.<br />3. El switch está filtrando el tráfico.<br />4. La red del ordenador presenta anomalías. **Resolución**
+    2. Desactiva el firewall.<br />2. Configura el ordenador y la cámara en la misma subred.<br />3. Comprueba el switch.<br />4. Prueba con otro ordenador.<br />5. Configura varias subredes si es necesario.
+  </Accordion>
+
+  <Accordion title="El mapa de profundidad contiene bloques rectangulares ausentes o agujeros negros">
+    **Posible causa** La cámara detecta por error otra cámara. **Resolución** Detén el flujo y desactiva el modo multicámara en **3D Settings**. Si es necesario, cambia el modo del algoritmo para desactivar el modo multicámara mientras la cámara está desconectada.
+  </Accordion>
+
+  <Accordion title="Una cámara S10 o S10 Pro no muestra ninguna imagen o muestra una imagen de profundidad muy pequeña">
+    **Posible causa** La versión del software de host no es compatible. **Resolución** Actualiza a `Lanxin-MRDVS-1.3.66.0606` o posterior.
+  </Accordion>
+
+  <Accordion title="La cámara no se puede abrir por un error de comunicación de red">
+    **Posible causa** La cámara y el ordenador están en subredes diferentes. **Resolución** Configura la cámara y el ordenador en la misma subred.
+  </Accordion>
+
+  <Accordion title="Falla el permiso exclusivo de la aplicación">
+    **Posible causa** Hay varios usuarios conectados a la cámara. **Resolución** Permite que solo un usuario se conecte cada vez. Las versiones `2.4.50.0720` y posteriores admiten permisos multiusuario.
+  </Accordion>
+
+  <Accordion title="La cámara se abre correctamente en modo restringido, pero el flujo no está disponible">
+    **Posible causa** Hay varios procesos conectados a la cámara. **Resolución** El primer proceso que abre la cámara obtiene el permiso principal y debe iniciar el flujo antes de que un proceso en modo restringido pueda verlo.
+  </Accordion>
+
+  <Accordion title="El objeto de destino aparece disperso o incompleto">
+    **Posible causa** La exposición es demasiado baja o el filtrado es demasiado agresivo. **Resolución**
+
+    1. Comprueba **High Exposure**; un rango habitual es `600–1200`.<br />2. Comprueba **Low Signal Threshold**; un rango habitual es `10–30`.
+  </Accordion>
+
+  <Accordion title="El flujo se inicia y la velocidad de fotogramas es normal, pero no hay datos de imagen disponibles">
+    **Posible causa** El láser es débil o está apagado. **Resolución** Usa la cámara de un teléfono para inspeccionar la parte frontal de la cámara. Si el láser está apagado o es débil, sustituye el hardware de la cámara.
+  </Accordion>
+
+  <Accordion title="La nube de puntos contiene datos donde no hay objetos delante">
+    **Resolución** Comprueba el entorno de imagen, la exposición y la configuración del filtro. Si el problema persiste después de confirmar la configuración, recopila un registro y datos de muestra para analizarlos.
+  </Accordion>
+
+  <Accordion title="Aparece ruido en el lateral de un objeto cuando la cámara está orientada hacia él">
+    **Posible causa** Deslumbramiento. **Resolución**
+
+    1. Activa el procesamiento de optimización del deslumbramiento.<br />2. Aumenta **Low Signal Threshold**.
+  </Accordion>
+
+  <Accordion title="El centro de la imagen RGB es rojizo o la imagen RGB está borrosa">
+    **Resolución** Sustituye el hardware de la cámara.
+  </Accordion>
+
+  <Accordion title="La imagen RGB está orientada hacia delante, pero la imagen de profundidad está inclinada">
+    **Resolución** Sustituye el hardware de la cámara.
+  </Accordion>
+
+  <Accordion title="Las nubes de puntos de objetos adyacentes se fusionan">
+    **Resolución** Aumenta los niveles de reducción de ruido y suavizado en la configuración del filtro.
+  </Accordion>
+
+  <Accordion title="RGB no tiene datos después de activar la alineación RGB-D">
+    **Posible causa** La versión del software no es compatible. **Resolución** Actualiza el software. Descarga las versiones desde el [repositorio de Camera SDK en GitHub](https://github.com/Lanxin-MRDVS/CameraSDK/releases).
+  </Accordion>
+
+  <Accordion title="La nube de puntos de S Series muestra capas evidentes">
+    **Resolución** Sustituye el hardware de la cámara.
+  </Accordion>
+
+  <Accordion title="La precisión de los bordes de un objeto blanco cercano es deficiente en S Series">
+    **Posible causa** Deslumbramiento. **Resolución** Activa la optimización del deslumbramiento. La detección de objetos negros puede quedar incompleta.
+  </Accordion>
+
+  <Accordion title="Un poste reflectante aparece muy sobreexpuesto en S Series">
+    **Posible causa** Deslumbramiento. **Resolución** Activa el procesamiento de supresión del deslumbramiento.
+  </Accordion>
+
+  <Accordion title="Un objeto negro no se captura por completo en S Series">
+    **Posible causa** El modo de alta exposición está activado. **Resolución** Establece el registro ToF `100130B0` en `240`.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,593 @@
+---
+title: Triển khai các thuật toán phát hiện và tích hợp kết quả
+sidebarTitle: Triển khai thuật toán phát hiện
+description: "Triển khai các thuật toán phát hiện người, vị trí lưu trữ và thể tích, cấu hình thông số ngoại tại cùng tham số camera, và lấy kết quả qua TCP, UDP, HTTP hoặc Modbus TCP."
+---
+
+Hướng dẫn này trình bày cách triển khai, hiệu chuẩn, cấu hình và tích hợp kết quả cho các thuật toán phát hiện người, vị trí lưu trữ và thể tích của MRDVS. Thuật toán chạy trên camera; ứng dụng máy chủ thuật toán được dùng để cấu hình, nâng cấp và kiểm tra kết quả.
+
+<Info>
+  Firmware thuật toán và ứng dụng máy chủ thuật toán được cung cấp theo từng dự án. Trước khi nạp firmware thuật toán, hãy xác nhận camera đang chạy phiên bản firmware MDS. Lấy gói cài đặt phù hợp với dự án và model camera.
+</Info>
+
+## Phạm vi hỗ trợ
+
+### Thành phần hệ thống
+
+| Thành phần | Chức năng |
+| --- | --- |
+| Camera 3D | Chụp ảnh RGB và đám mây điểm, đồng thời chạy thuật toán phát hiện trên camera. |
+| Ứng dụng máy chủ thuật toán | Cấu hình thuật toán, hiệu chuẩn thông số ngoại tại, hiển thị kết quả và nâng cấp firmware thuật toán. |
+| Máy tính công nghiệp hoặc hệ thống tầng trên | Chạy ứng dụng máy chủ hoặc đọc kết quả qua giao diện mạng. |
+| LiDAR | `mid360`, được dùng để cấu hình giải pháp dựa trên radar ban đầu. |
+
+### Thuật toán và camera
+
+| Thuật toán | Camera được hỗ trợ |
+| --- | --- |
+| Phát hiện người | M4 Pro |
+| Phát hiện vị trí lưu trữ | S10 Pro |
+| Phát hiện thể tích | S10 và S10 Pro |
+
+Để xem thông tin sản phẩm, hãy tham khảo [trang sản phẩm camera 3D S10](/vi/products/s-series/s10-overview).
+
+### Môi trường ứng dụng máy chủ
+
+| Mục | Cấu hình khuyến nghị |
+| --- | --- |
+| Hệ điều hành | Windows 10 trở lên |
+| CPU | Intel® Core™ i5 (thế hệ thứ 7) trở lên |
+| Bộ nhớ | 8 GB trở lên |
+| GPU | Intel® UHD Graphics hoặc GPU tích hợp hay rời có hiệu năng cao hơn |
+
+## Triển khai phần cứng và mạng
+
+### Lắp đặt camera
+
+Dùng giá đỡ cứng để tránh camera dịch chuyển hoặc rung sau khi lắp đặt. Phát hiện người thường dùng cách lắp đặt ngang hoặc cách lắp đặt có góc không quá 30°.
+
+<Frame>
+  ![Ví dụ lắp đặt giá đỡ camera](/images/developers/deployment-algorithm-detection-camera-installation-methods.avif)
+</Frame>
+
+### Kết nối thiết bị
+
+<Steps>
+  <Step title="Kết nối nguồn và mạng">
+    Cấp nguồn cho camera bằng nguồn điện một chiều 24 V ổn định. Dùng cáp Cat6A hoặc Cat7 để kết nối camera với bộ chuyển mạch gigabit hoặc bộ điều khiển.
+  </Step>
+  <Step title="Triển khai nhiều camera">
+    Lắp từng camera ở độ cao và vị trí được chỉ định trong bản vẽ CAD. Kết nối tất cả camera qua bộ chuyển mạch gigabit, rồi xác minh trạng thái nguồn và liên kết của từng camera.
+  </Step>
+  <Step title="Chuẩn bị đối tượng kiểm thử">
+    Đặt người, pallet hoặc hàng hóa cần phát hiện trong trường nhìn của camera trước khi hiệu chuẩn thông số ngoại tại và cấu hình vùng.
+  </Step>
+</Steps>
+
+### Cấu hình mạng máy chủ
+
+Đặt máy tính máy chủ và camera trên cùng một subnet. Ví dụ ban đầu dùng sơ đồ sau:
+
+| Mục | Ví dụ |
+| --- | --- |
+| Địa chỉ IP máy chủ | `192.168.100.xxx` |
+| Mặt nạ mạng con | `255.255.255.0` |
+| Cổng mặc định | `192.168.100.1` |
+
+<Steps>
+  <Step title="Mở cài đặt bộ điều hợp">
+    Trong Windows, mở **Bảng điều khiển → Trung tâm Mạng và Chia sẻ → Thay đổi cài đặt bộ điều hợp**, sau đó chọn bộ điều hợp Ethernet được kết nối với camera.
+  </Step>
+  <Step title="Cấu hình IPv4">
+    Mở **Giao thức Internet phiên bản 4 (TCP/IPv4)**, chọn **Sử dụng địa chỉ IP sau**, rồi nhập một địa chỉ tĩnh chưa được sử dụng trong subnet của camera.
+  </Step>
+  <Step title="Xác nhận kết nối">
+    Lưu cài đặt, xác nhận liên kết gigabit, rồi dùng ứng dụng máy chủ để tìm hoặc mở camera.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Trung tâm Mạng và Chia sẻ của Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration.avif)
+  </Frame>
+
+  <Frame>
+    ![Cài đặt địa chỉ tĩnh IPv4 của Windows](/images/developers/deployment-algorithm-detection-camera-network-configuration-7.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  Không để tường lửa bị tắt trên mạng sản xuất. Nếu ứng dụng máy chủ không thể kết nối, trước tiên hãy tạo quy tắc cho ứng dụng hoặc cổng cần thiết. Chỉ tạm thời tắt tường lửa trên mạng gỡ lỗi đáng tin cậy, sau đó khôi phục chế độ bảo vệ.
+</Warning>
+
+## Cài đặt và nâng cấp phần mềm
+
+### Cài đặt các ứng dụng máy chủ
+
+1. Lấy ứng dụng máy chủ camera từ trang [tải xuống phần mềm](https://zcnt5g3o2989.feishu.cn/wiki/Q8IYwGiGaiIvIyktiavczymanOe?from=from_copylink "Tải xuống phần mềm").
+2. Cài đặt ứng dụng máy chủ camera bên ngoài ổ đĩa hệ thống.
+3. Sao chép các tệp ứng dụng máy chủ thuật toán do dự án cung cấp vào thư mục `Tools` trong thư mục ứng dụng máy chủ camera. Thay thế các tệp trùng tên, sau đó nhấp đúp vào tệp thực thi để khởi động ứng dụng.
+
+<Frame>
+  ![Cài đặt ứng dụng máy chủ camera](/images/developers/deployment-algorithm-detection-picture-2.avif)
+</Frame>
+
+Để chỉ nâng cấp ứng dụng máy chủ thuật toán, hãy thay thế tệp `.exe` của ứng dụng bằng phiên bản được cung cấp.
+
+### Nâng cấp firmware thuật toán
+
+<Warning>
+  Camera sẽ khởi động lại trong khi nạp firmware. Không ngắt nguồn hoặc mạng, cũng không đóng ứng dụng máy chủ. Gói cài đặt phải phù hợp với model camera, phiên bản firmware MDS và thuật toán của dự án.
+</Warning>
+
+<Tabs>
+  <Tab title="Ứng dụng máy chủ camera">
+    1. Khởi động `LxCameraViewer.exe` và mở camera.
+    2. Chọn **Công cụ cơ bản → Cài đặt chức năng → Nâng cấp firmware**.
+    3. Chọn tệp thuật toán phát hiện được cung cấp và chọn **Chạy**.
+  </Tab>
+  <Tab title="Ứng dụng máy chủ thuật toán">
+    1. Chọn camera mục tiêu trong danh sách thiết bị.
+    2. Chọn **Nâng cấp firmware**, chọn tệp thuật toán phát hiện rồi mở tệp.
+    3. Chờ camera xuất hiện lại trong danh sách thiết bị.
+  </Tab>
+</Tabs>
+
+Khi camera xuất hiện lại sau khi khởi động lại, quá trình nạp firmware đã hoàn tất. Nền camera màu xanh lục trong ứng dụng máy chủ thuật toán cho biết camera đã kết nối và thuật toán khả dụng.
+
+## Ứng dụng máy chủ thuật toán
+
+### Khởi động và trạng thái
+
+Khởi động `LxApplicationViewer.exe`. Biểu tượng màu xanh lục trong danh sách thiết bị cho biết camera đã kết nối. Chọn một thiết bị để chuyển chế độ xem hiện tại giữa RGB và đám mây điểm. Người dùng thông thường có thể xem kết quả; quản trị viên có thể sửa đổi tham số camera và thuật toán.
+
+<Frame>
+  ![Cửa sổ chính của ứng dụng máy chủ thuật toán](/images/developers/deployment-algorithm-detection-administrator.avif)
+</Frame>
+
+### Công cụ cơ bản
+
+| Chức năng | Mô tả |
+| --- | --- |
+| Chuyển đổi người dùng | Chuyển cấp quyền. Quản trị viên có thể cấu hình tham số camera và thuật toán. |
+| Mặt phẳng nền lý tưởng | Hiển thị hoặc ẩn mặt phẳng ngang tham chiếu. |
+| Mặt phẳng nền ngoại tại | Hiển thị hoặc ẩn mặt đất được tính từ hiệu chuẩn ngoại tại. |
+| Hiển thị bộ nhớ đệm | Giữ nguyên. |
+| Hiển thị thuật toán | Hiển thị thuật toán hiện đang bật. |
+| Xuất ảnh đã lưu | Xuất ảnh đã lưu. |
+| Phát lại lịch sử | Xem ảnh RGB và nhật ký dữ liệu ToF. |
+| Chuyển thuật toán ứng dụng | Chọn thuật toán cần chạy, sau đó chọn **Lưu và gửi**. |
+| Hiển thị kết quả phát hiện | Hiển thị đầu ra từ thuật toán hiện tại. |
+
+### Thanh trạng thái và phát lại
+
+| Chức năng | Mô tả |
+| --- | --- |
+| RGB | Hiển thị ảnh RGB. |
+| Đám mây điểm | Hiển thị đám mây điểm. |
+| Dừng thuật toán | Dừng thuật toán hiện tại. Thuật toán không tự động khởi động lại cho đến khi camera được bật nguồn lần nữa. |
+| Nâng cấp firmware | Mở quy trình nâng cấp firmware thuật toán. |
+| Khởi động lại camera | Khởi động lại camera đã chọn. |
+
+Khi trạng thái thay đổi, phần mềm lưu một khung hình RGB và dữ liệu đám mây điểm. Dữ liệu phát lại không được dùng chung giữa các thuật toán. Thời gian phát lại dùng đồng hồ nội bộ của camera, không dùng giờ hệ thống của máy tính máy chủ.
+
+Nếu nền thiết bị có màu vàng, hoặc có màu xanh lục nhưng hình ảnh không cập nhật, hãy bật làm mới tự động để tiếp tục thu nhận hình ảnh.
+
+## Hiệu chuẩn ngoại tại
+
+### Cấu hình camera
+
+| Cấu hình | Mô tả |
+| --- | --- |
+| Tên camera | Nhận dạng camera trong triển khai nhiều camera. |
+| Chế độ mô phỏng | Chức năng nội bộ; để tắt. |
+| Chế độ lưu ảnh | Lưu dữ liệu ảnh thuật toán trên camera. |
+| Chế độ thu nhận ảnh | `MDS` không chiếm quyền truy cập camera. `SDK` thì có; ứng dụng máy chủ không thể mở camera khi thuật toán đang chạy. |
+| `x`, `y`, `z` | Vị trí ngoại tại của camera; `z` là độ cao của camera so với mặt đất. |
+| `roll`, `pitch`, `yaw` | Các góc định hướng ngoại tại của camera. |
+| Mặt phẳng nền lý tưởng | Giữ giá trị mặc định. |
+| Đọc cấu hình từ camera | Đọc cấu hình hiện tại của camera. |
+| Lưu và gửi | Ghi các thay đổi vào camera. Tham số chưa lưu không có hiệu lực. |
+| Hiệu chuẩn ngoại tại | Hiệu chuẩn độ cao và hướng của camera. |
+
+<Tabs>
+  <Tab title="Lắp đặt dọc">
+    1. Mở **Cấu hình camera**. Trước khi hiệu chuẩn, đặt `x`, `y`, `z`, `roll`, `pitch` và `yaw` thành `0`, sau đó chọn **Lưu và gửi**.
+    2. Chọn **Hiệu chuẩn ngoại tại**. Sau khi hiệu chuẩn thành công, xác minh kết quả trong bảng tham số.
+
+    <Frame>
+      ![Hiệu chuẩn ngoại tại khi lắp đặt dọc](/images/developers/deployment-algorithm-detection-vertical-installation-of-external-parameter-calibration.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Lắp đặt ngang">
+    1. Mở **Cấu hình camera** và vào trang hiệu chuẩn tham số.
+    2. Căn chỉnh mặt đất của đám mây điểm với hệ tọa độ: trục `X` màu đỏ và trục `Y` màu xanh lục nằm trên mặt đất, còn trục `Z` màu xanh dương vuông góc và hướng lên khỏi mặt đất.
+    3. Thông thường chỉ điều chỉnh `roll` và `z` trước; đặt các giá trị khác thành `0`. Sau khi xác minh, chọn **Lưu và gửi**.
+
+    <Frame>
+      ![Kết quả hiệu chuẩn ngoại tại khi lắp đặt ngang](/images/developers/deployment-algorithm-detection-1.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Tham chiếu tham số thuật toán
+
+Chọn **Lưu và gửi** sau khi thay đổi bất kỳ tham số thuật toán nào. Giữ các tham số bộ lọc ở giá trị mặc định trừ khi kiểm thử tại hiện trường cho thấy cần điều chỉnh.
+
+<Tabs>
+  <Tab title="Phát hiện người">
+    <Frame>
+      ![Cấu hình phát hiện người toàn cục](/images/developers/deployment-algorithm-detection-global-configuration-of-human-detection.avif)
+    </Frame>
+
+    | Tham số | Mô tả |
+    | --- | --- |
+    | Phiên bản thuật toán | Phiên bản thuật toán hiện tại. |
+    | Tần suất phát hiện | Tần suất làm mới ảnh và kết quả. |
+    | Bộ lọc thời gian | Với `3`, cần có ba kết quả giống hệt nhau liên tiếp trước khi một kết quả được xem là hợp lệ. |
+    | Kích thước kernel | Kích thước kernel cho các phép toán hình thái 2D. Giá trị lớn hơn thu nhỏ mục tiêu và mở rộng nền. |
+    | Ngưỡng khoảng cách | Xác định các điểm tương tự nhau hoặc thuộc cùng một lớp. |
+    | Số điểm tối thiểu | Số điểm đám mây điểm tối thiểu cần cho phân cụm ngữ nghĩa. |
+    | Số điểm phi ngữ nghĩa tối thiểu | Số điểm đám mây điểm tối thiểu cần cho phân cụm phi ngữ nghĩa. |
+    | Kích thước lân cận | Xác định phạm vi lân cận điểm và ảnh hưởng đến độ chi tiết của phân cụm. |
+    | Phát hiện xoay | Khớp với hướng lắp đặt camera; dùng hướng logo quay xuống làm mốc `0°`. |
+
+    | Tham số vùng | Mô tả |
+    | --- | --- |
+    | Thêm / xóa vùng | Tạo hoặc xóa vùng phát hiện người. |
+    | Hộp hiện tại | Chọn vùng phát hiện đang hoạt động. |
+    | `X`, `Y`, `Z` tối thiểu / tối đa | Xác định ranh giới 3D của vùng. |
+    | ID | Tên vùng dùng để phân biệt nhiều vùng. |
+    | Kéo để điều chỉnh vùng | Kéo bằng nút chuột trái theo `x` và `y`; kéo bằng nút phải theo `z`. |
+
+    <Frame>
+      ![Cấu hình vùng phát hiện người](/images/developers/deployment-algorithm-detection-25909893521-171648566990-human-detection-configuration-parameters-1.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Phát hiện vị trí lưu trữ">
+    <Frame>
+      ![Cấu hình phát hiện vị trí lưu trữ toàn cục](/images/developers/deployment-algorithm-detection-global-configuration-of-storage-location-detection.avif)
+    </Frame>
+
+    | Tham số | Mô tả |
+    | --- | --- |
+    | Phiên bản thuật toán | Phiên bản thuật toán hiện tại. |
+    | Bộ lọc AI | Phân đoạn ngữ nghĩa; hiện chưa khả dụng. |
+    | Tần suất phát hiện | Tần suất làm mới kết quả. |
+    | Góc căn chỉnh | Độ lệch góc hàng hóa tối đa được phép khi bật kiểm tra căn chỉnh. |
+    | Kiểm tra căn chỉnh | Kiểm tra độ lệch góc và trạng thái ranh giới. Đối tượng được phát hiện hiển thị bằng các hộp thể tích màu vàng. |
+    | Bộ lọc thời gian | Chỉ xuất trạng thái hợp lệ sau một số kết quả nhất quán liên tiếp. |
+    | Số điểm tối thiểu | Bỏ qua các đối tượng có ít điểm hơn giá trị này. |
+
+    | Chế độ vùng | Cấu hình |
+    | --- | --- |
+    | RGB 2D | Dùng `X` và `Y` pixel tối thiểu và tối đa để xác định vị trí lưu trữ. Cần có chế độ ngữ nghĩa và model ngữ nghĩa. |
+    | Đám mây điểm 3D | Dùng `X`, `Y` và `Z` tối thiểu và tối đa để xác định vị trí. Kéo bằng nút chuột trái theo `x` và `y`, hoặc bằng nút phải theo `z`. |
+
+    | Tính năng nâng cao | Mô tả |
+    | --- | --- |
+    | Sao chép hộp hiện tại | Sao chép vùng vị trí lưu trữ đang hoạt động. |
+    | Hướng, khoảng cách, số lượng | Xác định các bản sao cách đều nhau dọc theo trục `X`, `Y` hoặc `Z`. |
+    | Chạy | Tạo nhiều vùng từ cấu hình. |
+    | Hiệu chuẩn mã QR | Nhập chiều rộng, chiều dài vị trí, `Z_MIN` và `Z_MAX`, sau đó hiệu chuẩn bằng mã QR. |
+
+    <Frame>
+      ![Cấu hình vùng vị trí lưu trữ 3D](/images/developers/deployment-algorithm-detection-storage-location-detection-area-configuration-3d-point-cloud.avif)
+    </Frame>
+  </Tab>
+  <Tab title="Phát hiện thể tích">
+    <Frame>
+      ![Cấu hình phát hiện thể tích toàn cục](/images/developers/deployment-algorithm-detection-global-configuration-of-volume-detection.avif)
+    </Frame>
+
+    | Tham số | Mô tả |
+    | --- | --- |
+    | Phiên bản thuật toán | Phiên bản thuật toán hiện tại. |
+    | Chế độ kích hoạt | Khi bật, thu nhận một ảnh và kết quả cho mỗi lần kích hoạt. |
+    | Phát hiện hướng lên | Phát hiện bằng hệ tọa độ camera đảo ngược. |
+    | Tần suất phát hiện | Tần suất làm mới ảnh và kết quả. |
+    | Khoảng cách mặt phẳng phát hiện | Vị trí tham chiếu của mặt dưới vật thể, tính bằng mm. |
+    | Số lượng lân cận / ngưỡng khoảng cách | Tham số bộ lọc; giữ giá trị mặc định trong hầu hết triển khai. |
+    | Ngưỡng bộ lọc vectơ pháp tuyến | Lọc các mặt phẳng đám mây điểm bị nghiêng. Khuyến nghị ban đầu là `60`. |
+    | Ngưỡng khoảng cách vectơ pháp tuyến | Tham số bộ lọc. Phạm vi được khuyến nghị ban đầu là `20–30`. |
+    | Số điểm tối thiểu | Bỏ qua các đối tượng có ít điểm hơn giá trị này. |
+    | `X`, `Y`, `Z` tối thiểu | Ngưỡng chiều dài, chiều rộng và chiều cao tối thiểu, tính bằng mm. |
+
+    | Tham số vùng | Mô tả |
+    | --- | --- |
+    | `X`, `Y`, `Z` tối thiểu / tối đa | Xác định ranh giới 3D của vùng phát hiện thể tích. |
+
+    <Frame>
+      ![Cấu hình vùng phát hiện thể tích](/images/developers/deployment-algorithm-detection-volume-detection-area-configuration.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Triển khai thuật toán
+
+Chuyển sang chế độ đám mây điểm và cuộn trên vùng ảnh để hiển thị dữ liệu đám mây điểm.
+
+### Phát hiện người
+
+<Steps>
+  <Step title="Hiệu chuẩn cách lắp đặt ngang">
+    Căn chỉnh các trục `X` và `Y` với đám mây điểm mặt đất. Trục `Z` phải vuông góc và hướng lên khỏi mặt đất.
+  </Step>
+  <Step title="Đặt tham số toàn cục">
+    Mở **Phát hiện người**. Thông thường chỉ cần đặt **Phát hiện xoay**. Camera xoay theo chiều kim đồng hồ hỗ trợ `0°`, `90°`, `180°` và `270°`.
+  </Step>
+  <Step title="Tạo vùng phát hiện">
+    Chọn **Thêm vùng phát hiện**, đặt `X`, `Y` và `Z` tối thiểu và tối đa, rồi di chuyển vùng lên mục tiêu. Ví dụ ban đầu dùng vùng `1000 × 1000 × 2000 mm`.
+  </Step>
+  <Step title="Lưu và xác minh">
+    Chọn **Lưu và gửi**, thực hiện kiểm thử người đi qua vùng, rồi xác minh kết quả trong thanh trạng thái hoặc phần phát lại lịch sử.
+  </Step>
+</Steps>
+
+| Quy tắc khớp | Không có người | Người | Chướng ngại vật | Người và chướng ngại vật |
+| --- | --- | --- | --- | --- |
+| Chỉ độ sâu | `0` | `2` | `2` | `2` |
+| Ngữ nghĩa và độ sâu | `0` | `1` | `0` | `1` |
+
+Chế độ chỉ độ sâu báo cáo mọi đối tượng trong vùng. Chế độ ngữ nghĩa và độ sâu chỉ báo cáo các cụm được phân loại là người.
+
+### Phát hiện vị trí lưu trữ
+
+<Steps>
+  <Step title="Hiệu chuẩn camera">
+    Làm theo quy trình hiệu chuẩn ngoại tại. Căn chỉnh `X` và `Y` với mặt đất, giữ `Z` vuông góc và hướng lên.
+  </Step>
+  <Step title="Cấu hình tham số toàn cục">
+    Đặt **Kiểm tra căn chỉnh**, **Góc căn chỉnh** và **Số điểm tối thiểu** cho hiện trường. Bật kiểm tra căn chỉnh khi hàng hóa phải được đặt theo một góc xác định.
+  </Step>
+  <Step title="Tạo vị trí lưu trữ">
+    Trong chế độ đám mây điểm, chọn **Thêm vị trí lưu trữ**, chuyển sang chế độ xem từ trên xuống và nhấn `X` để bắt đầu hoặc dừng vẽ. Kéo hình chữ nhật lên pallet rồi điều chỉnh ranh giới `X`, `Y` và `Z`. Nhấn `X` lần nữa để thoát chế độ vẽ.
+  </Step>
+  <Step title="Lưu và xác minh">
+    Chọn **Lưu và gửi**. Cấu hình các vị trí ở chế độ RGB 2D hoặc đám mây điểm 3D, rồi kiểm tra `Result` trong thanh trạng thái.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Vẽ vùng vị trí lưu trữ trong chế độ đám mây điểm](/images/developers/deployment-algorithm-detection-point-cloud-mode-location-setting-4.avif)
+</Frame>
+
+| Trạng thái vị trí lưu trữ | `Result` |
+| --- | --- |
+| Trống | `0` |
+| Đã chiếm, hoặc đã chiếm và căn chỉnh | `1` |
+| Đã chiếm với góc vượt ngưỡng căn chỉnh | `2` |
+| Đã chiếm và nằm ngoài ranh giới vị trí | `3` |
+
+Đối với bố cục đều, dùng **Sao chép hộp hiện tại** để tạo các vị trí theo hướng và khoảng cách cố định. Nếu cần xác minh bằng mã QR, dùng **Hiệu chuẩn mã QR** để cấu hình kích thước vị trí và phạm vi độ sâu.
+
+### Phát hiện thể tích
+
+<Steps>
+  <Step title="Hiệu chuẩn cách lắp đặt dọc">
+    Phát hiện thể tích hoạt động từ trên xuống dưới. Sau khi hiệu chuẩn, trục `Z` hướng xuống và mặt phẳng `X`/`Y` song song với mặt đất.
+  </Step>
+  <Step title="Đặt mặt phẳng phát hiện">
+    Với hàng hóa đặt trực tiếp trên sàn, đặt mặt phẳng phát hiện ở độ cao của sàn. Để chỉ đo hàng hóa trên pallet, căn chỉnh mặt phẳng với đám mây điểm của pallet.
+  </Step>
+  <Step title="Đặt kích thước tối thiểu và vùng">
+    Đặt các giá trị `X`, `Y` và `Z` tối thiểu để lọc mục tiêu nhỏ. Sau đó đặt ranh giới vùng theo mặt phẳng phát hiện và kích thước hàng hóa.
+  </Step>
+  <Step title="Lưu và xác minh">
+    Chọn **Lưu và gửi**, đặt một hoặc nhiều đối tượng trong vùng, rồi xác minh chiều dài, chiều rộng, chiều cao và số lượng được trả về.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Frame>
+    ![Mặt phẳng phát hiện sàn cho phát hiện thể tích](/images/developers/deployment-algorithm-detection-the-ground-point-cloud-coincides-with-the-detection-plane-1.avif)
+  </Frame>
+
+  <Frame>
+    ![Kết quả phát hiện thể tích của một đối tượng](/images/developers/deployment-algorithm-detection-volumetric-detection-of-a-single-object.avif)
+  </Frame>
+</Columns>
+
+Để dùng chế độ thu nhận theo một lần kích hoạt, bật **Chế độ kích hoạt** trong **Phát hiện thể tích** và chọn **Lưu và gửi**. Sau đó chọn **Kích hoạt một lần** trong **Công cụ cơ bản**, hoặc gửi `TM_TRIGGER` qua TCP hoặc UDP.
+
+## Giao diện giao tiếp
+
+<Note>
+  Địa chỉ IP trong các ví dụ chỉ mang tính minh họa. Thay thế bằng địa chỉ camera tại hiện trường, sau đó xác minh mạng, trạng thái thuật toán và định dạng kết quả trước khi tích hợp với hệ thống tầng trên.
+</Note>
+
+### Phương thức truyền tải
+
+| Giao thức | Cổng | Yêu cầu | Cách dùng |
+| --- | --- | --- | --- |
+| TCP | `14951` | `RESULT_UPDATE` | Lấy kết quả thuật toán hiện tại. |
+| UDP | `14950` | `RESULT_UPDATE` | Lấy kết quả thuật toán hiện tại. |
+| HTTP | `14952` | `RESULT_UPDATE` | Lấy kết quả thuật toán dưới dạng JSON. |
+| TCP / UDP | Cổng kết quả | `TM_TRIGGER` | Chạy một lần phát hiện thể tích được kích hoạt và trả về kết quả. |
+| Modbus TCP | `16502` | Đọc các thanh ghi giữ | Đọc trạng thái vị trí lưu trữ. |
+
+### Yêu cầu kết quả HTTP
+
+Hệ thống tầng trên gửi yêu cầu kết quả đến endpoint thị giác, endpoint này trả về một chuỗi JSON. Dùng các header yêu cầu do dự án cung cấp trong ứng dụng HTTP của bạn cùng với phần thân yêu cầu sau.
+
+<ParamField body="command" default="RESULT_UPDATE" type="string" required>
+  Kích hoạt camera trả về kết quả thuật toán hiện tại.
+</ParamField>
+
+### Các trường phản hồi chung
+
+<ResponseField name="IP" type="string" required>
+  Địa chỉ IP của camera tạo ra dữ liệu.
+</ResponseField>
+
+<ResponseField name="nick_name" type="string" required>
+  Tên camera; thay đổi trong cấu hình camera.
+</ResponseField>
+
+<ResponseField name="ret_code" type="integer" required>
+  Mã trả về; `0` cho biết thành công.
+</ResponseField>
+
+<Tabs>
+  <Tab title="Phát hiện người (SG)">
+    <ResponseField name="SG" type="object" required>
+      Đối tượng trạng thái được lập chỉ mục theo ID vùng phát hiện: `0` nghĩa là không có mục tiêu, `1` nghĩa là đã phát hiện người và `2` nghĩa là chỉ phát hiện đối tượng theo quy tắc độ sâu.
+    </ResponseField>
+
+    <ResponseField name="__object_details" type="string[]">
+      Chi tiết cụm. Mỗi mục là một chuỗi JSON cần được giải tuần tự thêm một lần nữa.
+    </ResponseField>
+
+    <ResponseField name="SG_DATA_TIME" type="string">
+      Dấu thời gian dữ liệu phát hiện người.
+    </ResponseField>
+
+    <ResponseField name="SG_RES_TIME" type="string">
+      Dấu thời gian kết quả phát hiện người.
+    </ResponseField>
+
+    Chi tiết cụm bao gồm `rbx2d`, `rby2d`, `tlx2d` và `tly2d` (tọa độ hộp 2D), `semantic_index`, `traceID`, cùng `x_min`, `x_max`, `y_min`, `y_max`, `z_min` và `z_max` (ranh giới hộp 3D).
+  </Tab>
+  <Tab title="Phát hiện vị trí lưu trữ (SS)">
+    <ResponseField name="SS" type="object" required>
+      Đối tượng trạng thái được lập chỉ mục theo ID vị trí: `0` trống, `1` đã chiếm, `2` đã chiếm với độ lệch góc và `3` đã chiếm nhưng nằm ngoài ranh giới.
+    </ResponseField>
+
+    <ResponseField name="X__detail__info" type="number[]">
+      Chi tiết cho vị trí `X`: tâm `x`, `y` và `z`, chiều dài, chiều rộng, chiều cao và độ lệch góc so với hộp giới hạn. Vị trí được tạo trong 2D trả về toàn bộ giá trị `-1`.
+    </ResponseField>
+
+    <ResponseField name="SS_DATA_TIME" type="string">
+      Dấu thời gian dữ liệu vị trí lưu trữ.
+    </ResponseField>
+
+    <ResponseField name="SS_RES_TIME" type="string">
+      Dấu thời gian kết quả vị trí lưu trữ.
+    </ResponseField>
+  </Tab>
+  <Tab title="Phát hiện thể tích (TM)">
+    <ResponseField name="TM" type="object[]" required>
+      Mảng các hộp thể tích hoàn chỉnh trong vùng phát hiện.
+    </ResponseField>
+
+    <ResponseField name="angle" type="number">
+      Độ lệch góc của hộp thể tích.
+    </ResponseField>
+
+    <ResponseField name="cx" type="number">
+      Tọa độ `x` tâm của hộp thể tích.
+    </ResponseField>
+
+    <ResponseField name="cy" type="number">
+      Tọa độ `y` tâm của hộp thể tích.
+    </ResponseField>
+
+    <ResponseField name="cz" type="number">
+      Tọa độ `z` tâm của hộp thể tích.
+    </ResponseField>
+
+    <ResponseField name="length" type="number">
+      Chiều dài đối tượng.
+    </ResponseField>
+
+    <ResponseField name="width" type="number">
+      Chiều rộng đối tượng.
+    </ResponseField>
+
+    <ResponseField name="height" type="number">
+      Chiều cao đối tượng.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Loại ngữ nghĩa.
+    </ResponseField>
+
+    <ResponseField name="valid" type="boolean">
+      Cho biết kết quả có hợp lệ hay không.
+    </ResponseField>
+
+    <ResponseField name="TM_DATA_TIME" type="string">
+      Dấu thời gian dữ liệu phát hiện thể tích.
+    </ResponseField>
+
+    <ResponseField name="TM_RES_TIME" type="string">
+      Dấu thời gian kết quả phát hiện thể tích.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+### Ví dụ phản hồi phát hiện người
+
+```json
+{
+  "IP": "192.168.100.83",
+  "SG": {
+    "1": 1,
+    "2": 0,
+    "__object_details": []
+  },
+  "SG_DATA_TIME": "2023_03_02_21_52_11.408",
+  "SG_RES_TIME": "2023_03_02_21_52_11.689",
+  "nick_name": "Unknown",
+  "ret_code": 0
+}
+```
+
+### Modbus TCP (phát hiện vị trí lưu trữ)
+
+Kết quả được sắp xếp theo ID vị trí lưu trữ; nhiều nhất chỉ trả về 16 vị trí đầu tiên.
+
+| Cấu hình | Giá trị |
+| --- | --- |
+| Cổng | `16502` |
+| Địa chỉ lắng nghe | `0.0.0.0` (tất cả giao diện mạng) |
+| Số lượng thanh ghi | `16` |
+| Địa chỉ bắt đầu | `0x0100` |
+| Thứ tự byte | Thứ tự byte lớn |
+
+| Thanh ghi | Nội dung | Định dạng dữ liệu |
+| --- | --- | --- |
+| `0x0100 + ID` | Kết quả phát hiện vị trí lưu trữ và dấu mốc | 2 byte `uint16_t` |
+| 8 bit cao | Mã trạng thái vị trí lưu trữ | `0–2` |
+| 8 bit thấp | Mã trạng thái dấu mốc | `0–2`; tính năng này hiện chưa khả dụng, nên có cùng ý nghĩa với mã trạng thái vị trí. |
+
+| Trạng thái vị trí | Ý nghĩa | Điều kiện |
+| --- | --- | --- |
+| `0` | Trống | Không có hàng hóa hoặc pallet. |
+| `1` | Đã chiếm bình thường | Hàng hóa được đặt theo yêu cầu. |
+| `2` | Đã chiếm bất thường | Kích thước hoặc vị trí hàng hóa nằm ngoài yêu cầu. |
+
+| Trạng thái dấu mốc | Ý nghĩa |
+| --- | --- |
+| `0` | Không phát hiện dấu mốc. |
+| `1` | Đã phát hiện dấu mốc. |
+| `2` | Lỗi phát hiện dấu mốc. |
+
+#### Đọc vị trí lưu trữ thứ tư
+
+Ví dụ sau dùng ID giao dịch `0x0001` để đọc một thanh ghi giữ tại địa chỉ `0x0104`. Phản hồi chứa trạng thái `0x0002`.
+
+```text
+Request: 00 01 00 00 00 06 FF 03 01 04 00 01
+Response: 00 01 00 00 00 05 FF 03 02 00 02
+```
+
+| Trường | Giá trị yêu cầu | Mô tả |
+| --- | --- | --- |
+| Mã định danh giao dịch | `00 01` | Số thứ tự của máy khách; phản hồi phải khớp với giá trị này. |
+| Mã định danh giao thức | `00 00` | Giá trị Modbus/TCP cố định. |
+| Độ dài | `00 06` | Số byte trong các trường yêu cầu tiếp theo. |
+| Mã định danh đơn vị | `FF` | Chế độ quảng bá hoặc địa chỉ thiết bị. |
+| Mã chức năng | `03` | Đọc các thanh ghi giữ. |
+| Địa chỉ bắt đầu | `01 04` | `0x0100 + 4`. |
+| Số lượng thanh ghi | `00 01` | Đọc một thanh ghi. |
+
+## Khắc phục sự cố
+
+| Triệu chứng | Kiểm tra ưu tiên |
+| --- | --- |
+| Không tìm thấy camera | Xác nhận máy chủ và camera dùng chung một subnet, bộ điều hợp mạng là gigabit, đồng thời nguồn và liên kết bộ chuyển mạch hoạt động bình thường. |
+| Tham số không có hiệu lực | Xác nhận đã chọn **Lưu và gửi** sau khi thay đổi. |
+| Không có kết quả thuật toán | Xác nhận đã nạp đúng firmware thuật toán, thiết bị có màu xanh lục và thuật toán đã được bật. |
+| Đám mây điểm trống hoặc cũ | Cuộn trên vùng đám mây điểm để hiển thị dữ liệu; bật làm mới tự động nếu cần. |
+| Kết quả vị trí hoặc thể tích bất thường | Kiểm tra lại hướng các trục ngoại tại, mặt phẳng phát hiện và ranh giới vùng, sau đó kiểm thử lại bằng các đối tượng tại hiện trường. |

@@ -1,0 +1,829 @@
+---
+title: LxCameraViewer-Benutzerhandbuch
+description: "Verwenden Sie LxCameraViewer, um MRDVS-3D-Kameras zu verbinden und zu konfigurieren sowie Bilder, Punktwolken und Ergebnisse von Anwendungsalgorithmen anzuzeigen."
+---
+
+LxCameraViewer sucht Kameras und verbindet sich mit ihnen, zeigt Bilder und Punktwolken an, konfiguriert Kameraparameter und stellt Wartungswerkzeuge für Anwendungsalgorithmen bereit.
+
+<Info>
+  Vollständiges PDF-Handbuch: [LxCameraViewer-Benutzerhandbuch](https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/pdf/lxcameraviewer_user_manual.pdf).
+</Info>
+
+## Übersicht
+
+LxCameraViewer basiert auf dem MRDVS Camera SDK und unterstützt Windows und Linux. Verwenden Sie es, um Tiefen-, Intensitäts-, Punktwolken- und RGB-Bilder anzuzeigen und zu speichern, Kamera- und Anwendungsalgorithmusparameter zu lesen und festzulegen sowie Werkzeuge für IP-Konfiguration, Paketerfassung, Kommunikation und Netzwerkkartenkonfiguration aufzurufen.
+
+## Installation und Netzwerkkonfiguration
+
+### Empfohlene Systemkonfiguration
+
+| Konfigurationselement | Windows | Linux |
+| --- | --- | --- |
+| Betriebssystem | Windows 10 (64-bit) oder Windows 11 (64-bit) | Ubuntu (64-bit) |
+| Arbeitsspeicher | 4 GB oder mehr | 4 GB oder mehr |
+| Netzwerkadapter und Kabel | Gigabit Ethernet oder schneller | Gigabit Ethernet oder schneller |
+
+### Konfiguration von IP-Adresse und Gateway
+
+Die Kamera verwendet eine statische IP-Adresse. Ihre Standard-IP-Adresse ist `192.168.100.82`; das Standard-Gateway kann leer bleiben. Verwenden Sie unter Windows die Subnetzmaske `255.255.0.0` und unter Linux `255.255.255.0`.
+
+Setzen Sie den mit der Kamera verbundenen Ethernet-Adapter des Hostcomputers auf `192.168.100.x`, wobei `x` eine beliebige Zahl von `3` bis `254` ist und nicht mit der Kamera-IP übereinstimmt. Wenn die Kamera beispielsweise die IP-Adresse `192.168.100.12` verwendet, setzen Sie die IP-Adresse des Hostcomputers auf `192.168.100.89`.
+
+<Frame>
+  ![Abbildung zur Konfiguration von IP-Adresse und Gateway](/images/developers/software-lxcameraviewer-ip-address-and-gateway-configuration.avif)
+</Frame>
+
+### Software installieren
+
+<Steps>
+  <Step title="Installationsprogramm starten">
+    Doppelklicken Sie auf `Lanxin-MRDVS-x.x.x.xxxx.exe` und erlauben Sie der Anwendung, Änderungen am Gerät vorzunehmen.
+  </Step>
+  <Step title="Sprache und Installationspfad auswählen">
+    Wählen Sie die Installationssprache und den Pfad aus. Behalten Sie den Standardpfad bei, sofern keine besonderen Anforderungen bestehen, und wählen Sie **Desktopverknüpfung erstellen**.
+  </Step>
+  <Step title="Software zum ersten Mal starten">
+    Klicken Sie nach der Installation mit der rechten Maustaste auf das Desktopsymbol und wählen Sie **Als Administrator ausführen**.
+  </Step>
+</Steps>
+
+<Frame>
+  ![Abbildungen zur Installation auf dem Hostcomputer](/images/developers/software-lxcameraviewer-the-installation-of-the-host-computer.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Abbildungen zur Installation auf dem Hostcomputer 2](/images/developers/software-lxcameraviewer-host-computer-installation-2.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![Abbildungen zur Installation auf dem Hostcomputer 3](/images/developers/software-lxcameraviewer-host-computer-installation-3.avif)
+</Frame>
+
+Abbildung 3
+
+<Frame>
+  ![Abbildungen zur Installation auf dem Hostcomputer 4](/images/developers/software-lxcameraviewer-host-computer-installation-4.avif)
+</Frame>
+
+Abbildung 4
+
+<Frame>
+  ![Abbildungen zur Installation auf dem Hostcomputer 5](/images/developers/software-lxcameraviewer-host-computer-installation-5.avif)
+</Frame>
+
+Abbildung 5
+
+### Firewall konfigurieren
+
+Wenn die Software die Kamera nicht öffnen kann, deaktivieren Sie die Firewall für den Kameraadapter vorübergehend in einem vertrauenswürdigen Debugging-Netzwerk. Das folgende Beispiel verwendet Windows 10.
+
+Öffnen Sie die Software und klicken Sie auf **Weitere Tools**.
+
+<Frame>
+  ![Zugehörige Symbole zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration.avif)
+</Frame>
+
+Abbildung 1
+
+Wählen Sie im Bereich auf der rechten Seite **Netzwerkkonfigurationstool** aus.
+
+<Frame>
+  ![Zugehörige Abbildung 2 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-2.avif)
+</Frame>
+
+Abbildung 2
+
+Klicken Sie im Netzwerkkonfigurationstool auf **Öffnen/Schließen**.
+
+<Frame>
+  ![Zugehörige Abbildung 3 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-3.avif)
+</Frame>
+
+<img src="/images/developers/software-lxcameraviewer-firewall-configuration-4.avif" alt="Zugehöriges Symbol 4 zur Firewallkonfiguration" />Abbildung 3
+
+Das in Abbildung 4 gezeigte Popup weist darauf hin, dass die Firewall aktiviert ist. Das in Abbildung 5 gezeigte Popup sowie die Benachrichtigung unten rechts in Abbildung 6 zeigen an, dass sie deaktiviert ist.
+
+![Zugehöriges Symbol 5 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-5.avif)
+
+![Zugehöriges Symbol 6 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-6.avif)
+
+Abbildung 4 Abbildung 5
+
+<Frame>
+  ![Zugehörige Abbildung 7 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-7.avif)
+</Frame>
+
+Abbildung 6
+
+Wenn diese Methode nicht funktioniert, klicken Sie auf **Firewall-Konfigurationsseite** und warten Sie, bis die Seite geöffnet wird.
+
+<Frame>
+  ![Zugehörige Abbildung 8 zur Firewallkonfiguration](/images/developers/software-lxcameraviewer-firewall-configuration-related-diagram-8.avif)
+</Frame>
+
+Abbildung 7
+
+<Warning>
+  Lassen Sie die Firewall in einem Produktionsnetzwerk nicht deaktiviert. Stellen Sie den Schutz nach dem Debugging wieder her oder erstellen Sie eine Regel für die erforderliche Anwendung.
+</Warning>
+
+## LxCameraViewer verwenden
+
+### Übersicht über die Softwareoberfläche
+
+#### Kamera nicht geöffnet
+
+Die Startoberfläche enthält die folgenden Bereiche:
+
+- **Listenbereich**: Geräteliste, aktuelle Informationen und Geräteinformationen.
+- **Obere Menüleiste**: Werkzeuge und Auswahl der Oberflächensprache.
+- **Bildanzeigebereich**: Punktwolken-, Tiefen-, Intensitäts- und RGB-Ansichten.
+- Doppelklicken Sie auf die Menüleiste, um das Fenster zu maximieren oder wiederherzustellen. Ziehen Sie die Menüleiste, um das Fenster zu verschieben.
+
+<Frame>
+  ![Zugehörige Symbole zur Übersicht der Softwareoberfläche bei nicht geöffneter Kamera](/images/developers/software-lxcameraviewer-software-interface-overview-camera-not-opened.avif)
+</Frame>
+
+#### Kamera geöffnet
+
+Nachdem Sie eine Kamera geöffnet haben, wird rechts die Funktionsleiste angezeigt.
+
+- **Grundlegende Tools**: Einstellungen für Bildanzeige, 2D, 3D, Filterung, Hardwareschnittstelle, Aufnahme und Funktionen.
+- **Anwendungsalgorithmen**: Einstellungen für Betriebsmodus und Algorithmusmodus, Algorithmusversion sowie detaillierte Algorithuseinstellungen.
+- **Weitere Tools**: Lokale Punktwolken laden, IP-Konfiguration, Paketerfassung, Netzwerkkartenkonfiguration, Kommunikation, GPU-Aktivierung und Protokollstufe.
+
+<Frame>
+  ![Zugehörige Symbole zur Übersicht der Softwareoberfläche bei geöffneter Kamera](/images/developers/software-lxcameraviewer-software-interface-overview-camera-turned-on.avif)
+</Frame>
+
+### Geräte öffnen und schließen
+
+#### Geräteliste
+
+- Die Geräteliste befindet sich oben links. Verwenden Sie **Aktualisieren**, um nach Kameras zu suchen, und die danebenliegende Schaltfläche, um die Liste ein- oder auszublenden.
+- Für jedes Gerät werden der Öffnungsstatus, die Kamera-ID und die IP-Adresse angezeigt. Bewegen Sie den Mauszeiger über eine Kamera-ID, um deren IP-Adresse anzuzeigen.
+- Klicken Sie auf **Öffnen** oder **Schließen**, um eine Verbindung zu steuern. Die Schaltfläche zeigt auch den aktuellen Status an.
+- Das ausgewählte Gerät wird blau angezeigt. Sie können mehrere Geräte öffnen, wenn das Netzwerk über genügend Bandbreite verfügt; klicken Sie auf eine Kamera-ID, um zwischen Geräten zu wechseln.
+
+<Frame>
+  ![Zugehörige Symbole zur Geräteliste](/images/developers/software-lxcameraviewer-device-list.avif)
+</Frame>
+
+Abbildung 1
+
+![Zugehöriges Symbol 2 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-2.avif)
+
+![Zugehöriges Symbol 3 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-3.avif)
+
+Abbildung 2 Abbildung 3
+
+![Zugehöriges Symbol 4 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-4.avif)
+
+![Zugehöriges Symbol 5 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-5.avif)
+
+Abbildung 4 Abbildung 5
+
+![Zugehöriges Symbol 6 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-6.avif)
+
+![Zugehöriges Symbol 7 zur Geräteliste](/images/developers/software-lxcameraviewer-device-list-7.avif)
+
+Abbildung 6 Abbildung 7
+
+### Aktuelle Informationen
+
+- Der Bereich für aktuelle Informationen befindet sich links in der Mitte der Oberfläche. Er zeigt Kamerainformationen, Softwarevorgänge, Vorgangsergebnisse und Streamergebnisse an.
+- Verwenden Sie die untere Bildlaufleiste oder das Mausrad, um lange Inhalte anzuzeigen. Der Bereich enthält bis zu 25 Einträge; ältere Einträge werden überschrieben.
+- Klicken Sie auf die Ausblendschaltfläche, um den Bereich auszublenden.
+
+<Frame>
+  ![Zugehörige Symbole zu den Anwendungsinformationen](/images/developers/software-lxcameraviewer-application-information.avif)
+</Frame>
+
+Abbildung 1
+
+![Zugehöriges Bild 2 zu den Anwendungsinformationen](/images/developers/software-lxcameraviewer-application-information-2.avif)
+
+![Zugehöriges Bild 3 zu den Anwendungsinformationen](/images/developers/software-lxcameraviewer-application-information-3.avif)
+
+![Zugehöriges Bild 4 zu den Anwendungsinformationen](/images/developers/software-lxcameraviewer-application-information-4.avif)
+
+Abbildung 2 Abbildung 3 Abbildung 4
+
+### Geräteinformationen
+
+- Der Bereich für Geräteinformationen befindet sich unten links und zeigt für das ausgewählte Gerät Folgendes an:
+
+  - Seriennummer
+  - Kamera-ID, die das SDK zum Öffnen des Geräts verwendet
+  - IP-Adresse
+  - MAC-Adresse
+  - Softwareversion
+  - Algorithmusversion (wird nach dem Öffnen der Kamera angezeigt)
+  - Netzwerkgeschwindigkeit (bei geschlossenem Gerät getrennt; bei geöffnetem Gerät je nach Adapter und Kabel 100 Mbps oder Gigabit)
+  - Kameramodell
+  - Bildversion (wird nach dem Öffnen der Kamera angezeigt)
+- Klicken Sie auf die Ausblendschaltfläche, um den Bereich auszublenden. Klicken Sie mit der rechten Maustaste auf ein Element, um dessen Wert zu kopieren.
+
+<Frame>
+  ![Zugehörige Symbole zu den Geräteinformationen](/images/developers/software-lxcameraviewer-device-information.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehöriges Symbol 2 zu den Geräteinformationen](/images/developers/software-lxcameraviewer-device-information-2.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![Zugehöriges Symbol 3 zu den Geräteinformationen](/images/developers/software-lxcameraviewer-device-information-3.avif)
+</Frame>
+
+Abbildung 3
+
+### Bildvorschau und Speichern
+
+#### Vorschau
+
+- Der mittlere Bereich enthält die Bild- und Bilddaten sowie die zugehörigen Bedienfunktionen (im roten Feld in Abbildung 1).
+- \[Stream starten/stoppen\] \[Einzeln speichern\] \[Tiefenkarte\] \[Intensitätskarte\] \[RGB\] \[Punktwolke\] sind die Bedienelemente für Bildvorgänge.
+- Die drei Bilder in der Mitte sind vom Gerät abgerufene Tiefenbilder, Intensitätsbilder, Punktwolkenbilder und RGB-Bilder.
+- Die weiße Schrift unten zeigt Kamera- und Bilddaten an (wie in Abbildung 2 dargestellt).
+
+<Frame>
+  ![Zugehörige Symbole zur Vorschau](/images/developers/software-lxcameraviewer-preview.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehöriges Symbol 2 zur Vorschau](/images/developers/software-lxcameraviewer-preview-2.avif)
+</Frame>
+
+Abbildung 2
+
+#### Streamsteuerung für Bilder
+
+- Schaltfläche \[Stream starten/stoppen\]: Klicken Sie, um den Gerätestream zu starten oder zu stoppen.
+- Schaltfläche \[Einzeln speichern\]: Speichert das Bild der aktivierten Streamdaten.
+
+  - Beispielsweise werden in Abbildung 2 nur das Tiefenbild und das Punktwolkenbild gespeichert. Das RGB-Bild und das Intensitätsbild sind nicht aktiviert und werden daher nicht gespeichert.
+  - Das Suffix für Tiefen- und Intensitätskartendateien ist .pgm, für RGB-Bilddateien .png und für Punktwolkenbilddateien .pcd.
+  - Die gespeicherten Tiefen-, Intensitäts- und Punktwolkenbilder sind die Originalbilder ohne hinzugefügte Falschfarben.
+  - Sie können mehrfach klicken, um fortlaufend zu speichern, jedoch höchstens dreimal hintereinander.
+- Kontrollkästchen \[Tiefenkarte\]: Gibt an, ob die Tiefenkarte angezeigt (aktiviert) wird.
+- Kontrollkästchen \[Intensitätsdiagramm\]: Gibt an, ob das Intensitätsdiagramm angezeigt (aktiviert) wird.
+- Kontrollkästchen \[Punktwolke\]: Gibt an, ob das Punktwolkenbild angezeigt (aktiviert) wird.
+- Kontrollkästchen \[RGB\]: Gibt an, ob das RGB-Bild aktiviert wird.
+- Nach dem Deaktivieren der RGB-/Intensitätskarte beendet das Gerät die Erfassung von RGB-/Intensitätskartenbildern. Tiefendaten werden jedoch erst dann nicht mehr erfasst, wenn Tiefenkarte und Punktwolkenkarte gleichzeitig deaktiviert sind.
+- In Abbildung 2 startet das Gerät den Stream und zeigt Tiefenbilder, Punktwolkenbilder, RGB-Bilder und Intensitätsbilder an.
+- In Abbildung 3 stoppt das Gerät den Stream, und es ist kein Bildtyp sichtbar.
+
+<Frame>
+  ![Zugehörige Symbole zur Bild-Streamsteuerung](/images/developers/software-lxcameraviewer-image-flow-control.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![Zugehörige Abbildung 2 zur Bild-Streamsteuerung](/images/developers/software-lxcameraviewer-image-flow-control-related-diagram-2.avif)
+</Frame>
+
+Abbildung 3
+
+#### Bilddaten
+
+- Kameratemperatur anzeigen (rotes Feld in Abbildung 4).
+- Bildrate der Tiefenkarte anzeigen, wenn die Tiefenkarte aktiviert ist (grünes Feld in Abbildung 4).
+- Bildrate der Intensitätskarte anzeigen, wenn die Intensitätskarte aktiviert ist (blaues Feld in Abbildung 4).
+- Bildrate des RGB-Bildes anzeigen, wenn das RGB-Bild aktiviert ist (rotes Feld in Abbildung 4).
+- Wenn das RGB-Bild aktiviert ist, wird der Wert des ausgewählten Pixels im RGB-Bild angezeigt (schwarzes Feld in Abbildung 4).
+- Wenn die Tiefenkarte aktiviert ist, wird der Wert des ausgewählten Pixels in der Tiefenkarte angezeigt (gelbes Feld in Abbildung 4).
+- Wenn die Intensitätskarte aktiviert ist, wird der Wert des ausgewählten Pixels in der Intensitätskarte angezeigt (oranges Feld in Abbildung 4).
+- Wenn die Punktwolkenkarte aktiviert ist, wird der Punktwolkenwert angezeigt, der dem ausgewählten Pixel in der Tiefenkarte entspricht (violettes Feld in Abbildung 4).
+- Wenn kein Pixel ausgewählt ist, wird standardmäßig das Pixel (0,0) ausgewählt.
+- Bei einer Bildrate über 12 ist die Hintergrundfarbe grün. Bei einem Wert über 6 und unter 12 ist sie orange, bei einem Wert unter 6 rot.
+
+<Frame>
+  ![Zugehörige Symbole zu den Bilddaten](/images/developers/software-lxcameraviewer-image-data.avif)
+</Frame>
+
+Abbildung 4
+
+#### Bildanzeige
+
+- Sie können verschiedene Anzeigemethoden auswählen:
+
+  - Einzelbildschirm: Wenn eines der vier Bilder aktiviert ist, wird ein Einzelbildschirm angezeigt (wie in Abbildung 5).
+  - Doppelbildschirm: Wenn zwei der vier Bilder aktiviert sind, wird ein Doppelbildschirm angezeigt (wie in Abbildung 6).
+  - Drei Bilder: Wenn drei der vier Bilder aktiviert sind, werden drei Bilder angezeigt (wie in Abbildung 7).
+  - Vierfachbildschirm: Wenn alle vier Bilder aktiviert sind, werden vier Bildschirme angezeigt (wie in Abbildung 8).
+- Bewegen Sie den Mauszeiger über das Bild, um mit dem Mausrad um die Mausposition herum zu vergrößern oder zu verkleinern. Halten Sie die linke Maustaste gedrückt und ziehen Sie (vergleichen Sie die RGB-Bilder in Abbildung 5 und Abbildung 6).
+- Klicken Sie mit der linken Maustaste auf das Bild, um Pixel auszuwählen. Mit den Pfeiltasten können Sie die ausgewählten Pixel verschieben (Abbildung 6).
+
+![Zugehöriges Bild zur Bildanzeige](/images/developers/software-lxcameraviewer-image-display.avif)
+
+![Zugehöriges Bild 2 zur Bildanzeige](/images/developers/software-lxcameraviewer-image-display-2.avif)
+
+Abbildung 5 Abbildung 6
+
+![Zugehöriges Bild 3 zur Bildanzeige](/images/developers/software-lxcameraviewer-image-display-3.avif)
+
+![Zugehöriges Bild 4 zur Bildanzeige](/images/developers/software-lxcameraviewer-image-display-4.avif)
+
+Abbildung 7 Abbildung 8
+
+#### Punktwolkenvorgänge
+
+- Halten Sie die linke Taste auf dem Punktwolkenbild gedrückt und ziehen Sie, um die Kameraperspektive zu drehen.
+- Halten Sie die mittlere Maustaste gedrückt und ziehen Sie, um den Fokus zu verschieben.
+- Halten Sie die rechte Maustaste gedrückt und ziehen Sie die Maus nach oben oder unten, oder verwenden Sie das Mausrad, um die Punktwolke zu vergrößern oder zu verkleinern.
+- Die Tastenkürzel für das Punktwolkenbild sind wie folgt:
+
+|  |  |
+| --- | --- |
+| Tastenkürzel | Funktionen |
+| W | Rasteranzeigemodell; drücken Sie S zum Wechseln. |
+| R | Kameransicht zurücksetzen |
+| S | Oberflächenanzeigemodell; drücken Sie W zum Wechseln. |
+| P | Alle Liniensegmente, Oberflächen und Netze ausblenden; drücken Sie W oder S zum Wiederherstellen. |
+| U | Benutzerdefinierte Funktion aufrufen (ungültig) |
+| O | Fisheye-Effekt beseitigen; erneut drücken, um ihn wiederherzustellen. |
+| F | Auf die Mausposition vergrößern und die Mausposition als Drehzentrum festlegen |
+| G | Maßstabsleiste und Maßstab anzeigen; erneut drücken, um sie auszublenden. |
+|  |
+| M | Begrenzungsrahmen der Punktwolke anzeigen; erneut drücken, um die Punktwolke anzuzeigen. |
+| A | Punktwolkendicke auf mindestens 1 reduzieren |
+| D | Punktwolkendicke bis auf 6 erhöhen |
+| E | Zur Ausgangsperspektive zurückkehren |
+| \[ | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur Vorderansicht wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+| \] | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur Rückansicht wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+| ; | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur linken Seitenansicht wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+| ‘ | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur rechten Ansicht wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+| . | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur Draufsicht wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+| / | Den durchschnittlichen Mittelpunkt als Fokus verwenden und zur Ansicht von oben wechseln; im Hindernisvermeidungsmodus nicht unterstützt. |
+
+### Menüleiste
+
+- Die Menüleiste enthält \[Grundlegende Funktionen\] \[Anwendungsalgorithmus\] \[Weitere\] \[Sprache\] (Abbildung 1).
+- Klicken Sie auf \[Grundlegende Funktionen\], um die Anzeige aus Abbildung 2 aufzurufen.
+- Klicken Sie auf \[Algorithmus anwenden\], um die Anzeige aus Abbildung 3 aufzurufen.
+- Klicken Sie auf \[Weitere Tools\], um die Anzeige aus Abbildung 4 aufzurufen.
+- Klicken Sie auf \[Sprache\], um die Anzeige aus Abbildung 5 aufzurufen.
+
+<Frame>
+  ![Zugehörige Symbole zur Menüleiste](/images/developers/software-lxcameraviewer-menu-bar.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehörige Symbole 2 zur Menüleiste](/images/developers/software-lxcameraviewer-menu-bar-2.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![Zugehörige Symbole 3 zur Menüleiste](/images/developers/software-lxcameraviewer-menu-bar-3.avif)
+</Frame>
+
+Abbildung 3
+
+<Frame>
+  ![Zugehörige Symbole 4 zur Menüleiste](/images/developers/software-lxcameraviewer-menu-bar-4.avif)
+</Frame>
+
+Abbildung 4
+
+<Frame>
+  ![Zugehörige Symbole 5 zur Menüleiste](/images/developers/software-lxcameraviewer-menu-bar-5.avif)
+</Frame>
+
+Abbildung 5
+
+### Funktionsleiste
+
+#### Anzeigeoptionen
+
+- Rechte Spalte ausblenden (rotes Feld in Abbildung 1).
+- Alle Bereiche ein- und ausklappen (im blauen Feld in Abbildung 1 bedeutet das Hochzeichen „alle ausklappen“, das Tiefzeichen „alle einklappen“).
+- Klicken Sie auf den Funktionsnamen, um die zugehörigen Einstellungsinformationen im SDK anzuzeigen (im blauen Feld unten in Abbildung 1).
+
+  - Wenn beispielsweise in der Abbildung die Entzerrung unter den 2D-Einstellungen angeklickt wird (Text im grünen Feld), werden die API-Schnittstelle und der Enumerationswert beim Aufruf dieser Funktion im blauen Feld angezeigt.
+- Ausgeklappter und eingeklappter Zustand (2D ist in Abbildung 1 ausgeklappt, die anderen Bereiche sind eingeklappt).
+
+<Frame>
+  ![Zugehörige Symbole zu den Anzeigeoptionen](/images/developers/software-lxcameraviewer-display-function.avif)
+</Frame>
+
+Abbildung 1
+
+#### Grundlegende Tools
+
+- Klicken Sie in der Menüleiste auf \[Grundlegende Tools\], um die zugehörigen Einstellungen der grundlegenden Tools rechts in der Oberfläche anzuzeigen (Abbildung 1).
+- Zu den grundlegenden Tools gehören \[Bildanzeigeeinstellungen\] \[2D-Einstellungen\] \[3D-Einstellungen\] \[Filterung\] \[Hardwareschnittstelle\] \[Aufnahmeeinstellungen\] \[Funktionseinstellungen\] (Abbildung 2).
+- Der zur Oberfläche gehörige Funktionsname und Enumerationswert werden im blauen Feld darunter angezeigt (Abbildung 2).
+
+<Frame>
+  ![Abbildungen zu den grundlegenden Tools](/images/developers/software-lxcameraviewer-basic-tools.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehörige Abbildungen 2 zu den grundlegenden Tools](/images/developers/software-lxcameraviewer-basic-tools-2.avif)
+</Frame>
+
+Abbildung 2
+
+##### Bildanzeigeeinstellungen
+
+- \[Kameramodell anzeigen\] Kameramodell im Punktwolkenbild anzeigen (Abbildung 4) oder nicht anzeigen (Abbildung 5).
+- \[Falschfarben anzeigen\] Tiefenfarben in Punktwolken anzeigen und nach Aktivierung der RGB-Ausrichtung RGB-Farben anzeigen.
+- \[Punktwolkenstabilität\] Kann aktiviert werden, um die Punktwolkenanzeige auf einigen Computern zu stabilisieren, wenn die Punktwolke aufgrund von Anpassungsvorgängen verschwindet.
+- \[Starke Bildsynchronisierung\] Ändert die auf der Oberfläche angezeigte Mindesttiefe der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+- \[Interferenzbilder beibehalten\] Ändert die auf der Oberfläche angezeigte Maximaltiefe der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+- \[Mindesttiefe\] Ändert die auf der Oberfläche angezeigte Mindesttiefe der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+- \[Maximaltiefe\] Ändert die auf der Oberfläche angezeigte Maximaltiefe der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+- \[Mindestintensität\] Ändert die auf der Oberfläche angezeigte Mindestintensität der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+- \[Maximalintensität\] Ändert die auf der Oberfläche angezeigte Maximalintensität der Tiefen- und Punktwolkenkarte; die Kameraausgabe bleibt unverändert.
+
+<Frame>
+  ![Zugehörige Symbole zu den Bildanzeigeeinstellungen](/images/developers/software-lxcameraviewer-image-display-settings.avif)
+</Frame>
+
+Abbildung 3
+
+<Frame>
+  ![Zugehörige Abbildungen 2 zu den Bildanzeigeeinstellungen](/images/developers/software-lxcameraviewer-image-display-settings-2.avif)
+</Frame>
+
+Abbildung 4
+
+<Frame>
+  ![Zugehörige Abbildungen 3 zu den Bildanzeigeeinstellungen](/images/developers/software-lxcameraviewer-image-display-settings-3.avif)
+</Frame>
+
+Abbildung 5
+
+##### 2D-Einstellungen
+
+- \[RGB-Breite\] Pixelbreite des RGB-Bildes; wird durch das Gerätemodell bestimmt und kann nicht festgelegt werden.
+- \[RGB-Höhe\] Pixelhöhe des RGB-Bildes; wird durch das Gerätemodell bestimmt und kann nicht festgelegt werden.
+- \[Pixel-Binning\] Drücken Sie 1\*1, 2\*2 oder N\*N, um die Pixelwerte in der Matrix zu addieren und durch 2\*2 oder N\*N zu teilen und so das Binning-Bild zu erhalten (die Bildgröße wird horizontal und vertikal zur ursprünglichen Größe geteilt durch die Binning-Pixelgröße).
+- \[Entzerrung\] Ruft die Verzerrungsparameter aus den internen Parametern auf, um die Bildverzerrung in der Oberflächenanzeige zu entfernen.
+- \[Entzerrungskoeffizient\] Passt den Verzerrungskoeffizienten an, um die Verzerrung des abgeschirmten Bildes zu verstärken oder abzuschwächen.
+- \[Automatische Belichtung\] Aktiviert oder deaktiviert die automatische Einstellung des RGB-Belichtungswerts durch die Kamera.
+- \[Belichtung\] Manuelle Belichtung; kann festgelegt werden, wenn die automatische Belichtung deaktiviert ist.
+- \[Verstärkung\] Manuelle Verstärkung; kann festgelegt werden, wenn die automatische Belichtung deaktiviert ist.
+
+<Frame>
+  ![Zugehörige Symbole zu den 2D-Einstellungen](/images/developers/software-lxcameraviewer-2d-settings.avif)
+</Frame>
+
+Abbildung 6
+
+##### 3D-Einstellungen
+
+- \[3D-Breite\] Die Breite des Punktwolkenbildes wird durch das Gerätemodell bestimmt und kann nicht festgelegt werden.
+- \[3D-Höhe\] Die Höhe des Punktwolkenbildes wird durch das Gerätemodell bestimmt und kann nicht festgelegt werden.
+- \[Pixel-Binning\] Drücken Sie 1\*1, 2\*2 oder N\*N, um die Pixelwerte in der Matrix zu addieren und durch 2\*2 oder N\*N zu teilen und so das Binning-Bild zu erhalten. Diese Einstellung kann nach dem Stoppen des Streams geändert werden (die Bildgröße wird horizontal und vertikal zur ursprünglichen Größe geteilt durch die Binning-Pixelgröße).
+- \[RGB-Ausrichtung\] Richtet Tiefenkarte, Intensitätskarte, Punktwolke und RGB-Bild aus. Nach der Ausrichtung haben Tiefenkarte und Intensitätskarte dieselbe Breite und Höhe wie das RGB-Bild. Die Punktwolkendaten nehmen zu und können nach dem Stoppen des Streams geändert werden.
+- \[Mehrkameramodus\] Kann bei gleichzeitiger Verwendung mehrerer Kameras aktiviert werden, um Interferenzen durch andere Kameras zu beseitigen. Die Einstellung kann nach dem Stoppen des Streams geändert werden.
+- \[Empfindlichkeit des Mehrmaschinenalgorithmus\] Die integrierten Geräteparameter werden durch das Gerätemodell bestimmt und können nicht festgelegt werden.
+- \[Entzerrung\] Ruft die Verzerrungsparameter aus den internen Parametern auf, um die Bildverzerrung in der Oberflächenanzeige zu entfernen.
+- \[Entzerrungskoeffizient\] Passt den Verzerrungskoeffizienten an, um die Verzerrung des abgeschirmten Bildes zu verstärken oder abzuschwächen.
+- \[Frequenzmodus\] Die integrierten Geräteparameter werden durch das Gerätemodell bestimmt (bei einigen Kameras ist die Frequenz fest und kann nicht eingestellt werden).
+- \[HDR aktivieren\] Die Aktivierung von HDR kann die Bildschärfe bei stark wechselnden hellen und dunklen Szenen verbessern.
+- \[Automatische Belichtung\] Wenn diese Option aktiviert ist, passt das Gerät die Belichtungsparameter automatisch an die Umgebungshelligkeit an.
+- \[Zielintensität\] Intensitätsschwellenwert bei der Aufnahme von Tiefenbildern (kann nicht festgelegt werden).
+- \[Obere Grenze der automatischen Belichtung\] Legt die Obergrenze der automatischen Belichtung fest.
+- \[Untere Grenze der automatischen Belichtung\] Legt die Untergrenze der automatischen Belichtung fest (kann nicht festgelegt werden).
+- \[Verstärkung\] Kann den Intensitätswert um ein Vielfaches erhöhen (kann nicht festgelegt werden).
+- [x] Die x-Koordinate der festgelegten oberen linken Ecke des ROI-Bereichs; kann nach dem Stoppen des Streams geändert werden.
+- \[y\] Legt die y-Koordinate der festgelegten oberen linken Ecke des ROI-Bereichs fest; kann nach dem Stoppen des Streams geändert werden.
+- \[Hohe Integration\] Hohe Integrationszeit (durch Erhöhung kann die Kamera Entfernungen weiter messen).
+- \[Niedrige Integration\] Niedrige Integrationszeit (steuert hauptsächlich die Entfernungsmessung im Nahbereich und muss normalerweise nicht geändert werden).
+- \[x-Offset\] Offsetwert in Breitenrichtung; kann nach dem Stoppen des Streams geändert werden.
+- \[y-Offset\] Offsetwert in Höhenrichtung; kann nach dem Stoppen des Streams geändert werden.
+- \[Breite\] Breite des festgelegten ROI-Bereichs; kann nach dem Stoppen des Streams geändert werden.
+- \[Höhe\] Höhe des festgelegten ROI-Bereichs; kann nach dem Stoppen des Streams geändert werden.
+- \[3D-Bildrate\] Legt die Punktwolkenbildrate innerhalb des Bildratenbereichs des Geräts fest.
+
+<Frame>
+  ![Zugehörige Symbole zu den 3D-Einstellungen](/images/developers/software-lxcameraviewer-3d-settings.avif)
+</Frame>
+
+Abbildung 7
+
+##### Filtereinstellungen
+
+- \[Mindesttiefe\] Untere Grenze der Falschfarbe oder Entfernung der Tiefenkarte. Unterhalb dieses Werts wird die Falschfarbe schwarz angezeigt und zwangsweise auf null gesetzt.
+- \[Maximaltiefe\] Obere Grenze der Falschfarbe oder Entfernung der Tiefenkarte. Oberhalb dieses Werts wird die Falschfarbe schwarz angezeigt und zwangsweise auf null gesetzt.
+- \[Schwellenwert für niedrige Signalstärke\] Untere Grenze des Intensitätswerts. Unterhalb dieses Werts werden die entsprechenden Pixel in der Tiefenkarte zwangsweise auf null gesetzt (für die Intensitätskarte nicht wirksam).
+- \[Schwellenwert für hohe Signalstärke\] Obere Grenze des Intensitätswerts. Wenn dieser Wert überschritten wird, werden die entsprechenden Pixel in der Tiefenkarte zwangsweise auf null gesetzt (für die Intensitätskarte nicht wirksam).
+- \[Messung kleiner Signale\] Legt den Erkennungspegel für kleine Signale fest. Je höher der Pegel, desto leichter ist die Erkennung.
+- \[Filtermodus\] Legt den Filterabschirmungspegel fest.
+- \[Glättungspegel\] Steuert die Glättungsintensität der räumlichen Filterung und erhält Objektkantendetails, während Rauschen geglättet wird.
+- \[Rauschpegel\] Legt den Schwellenwert für die Rauschfilterung fest (je größer der Wert, desto mehr Rauschen).
+- \[Zeitbereichspegel\] Steuert die Intensität der zeitlichen Filterung und verwendet historische Daten mehrerer Frames, um die Kontinuität der Tiefendaten zu verbessern.
+- Hinweis: Wenn Glättungspegel, Rauschpegel und Zeitbereichspegel auf 0 gesetzt werden, ist die Filterung deaktiviert.
+
+<Frame>
+  ![Abbildungen zu den Filtereinstellungen](/images/developers/software-lxcameraviewer-filter-settings.avif)
+</Frame>
+
+Abbildung 8
+
+##### Hardwareschnittstelle
+
+- \[IO-Ausgabemodus\] Legt das Ausgabeformat der IO-Schnittstelle fest.
+- \[IO-Benutzersteuerungsmodus\] Die integrierten Geräteparameter definieren die IO-Schnittstelle und können nicht geändert werden.
+- \[CAN-Baudrate\] Der Standardwert ist 250000. Bei der Kommunikation mit anderen Geräten über CAN muss die Baudrate übereinstimmen.
+- \[CAN-Protokolltyp\] Standardmäßig wird der offizielle MRDVS-Protokolltyp verwendet; er kann in kcrobots geändert werden.
+- \[CAN-Adresse\] Startadresse der CAN-Kommunikation; der Standardwert ist 18.
+- \[MODBUS-Adresse\] Startadresse der MODBUS-Kommunikation; der Standardwert ist 23.
+- \[IO-Status abrufen\] Ruft den aktuellen Rückgabestatus der IO-Schnittstelle ab.
+
+<Frame>
+  ![Abbildung zur Hardwareschnittstelle](/images/developers/software-lxcameraviewer-hardware-interface-diagram.avif)
+</Frame>
+
+Abbildung 9
+
+##### Aufnahmeeinstellungen
+
+- \[Framesynchronisierung\] Steuert, dass die Umgebungsbedingungen für die Aufnahme jedes Bildtyps beim Speichern von Bildern übereinstimmen.
+- \[Trigger-Modus\] Steuert, ob der Stream kontinuierlich, passiv oder aktiv läuft.
+- \[Speichermethode für Punktwolken\]
+
+  - Regulär (ungeordnete Punktwolke): Die Anzahl der Punktwolken bleibt unverändert, width = width\*height, height = 1, wie in Abbildung 3 dargestellt.
+  - Geordnete Punktwolke: Die Anzahl der Punktwolken bleibt unverändert, width = ToF width, height = ToF height, wie in Abbildung 4 dargestellt.
+- \[Speicherformat für Punktwolken\] Legt das Datenformat zum Speichern von Punktwolken fest.
+
+  - BINARY: Speichert im Binärformat.
+  - ASCII: Speichert im ASCII-Code-Format, also im Textmodus.
+- \[Einheit des Punktwolkenwerts\] Legt die Maßeinheit der Daten im Punktwolkenbild fest.
+- \[Bilder speichern starten\] Speichert fortlaufend den aktuell ausgewählten Bildtyp.
+- \[Speicherpfad öffnen\] Öffnet den Pfad zum Speichern von Bildern mit der Funktion \[Einzeln speichern\].
+
+Hinweis: Für ein Bild mit 640\*480 beträgt die ASCII-Speicherzeit etwa 6.6s und die binäre Speicherzeit etwa 32ms. Die binäre Speicherung ist 206-mal schneller als die ASCII-Speicherung. Es wird empfohlen, das Binärformat zu verwenden.
+
+<Frame>
+  ![Zugehörige Symbole zu den Aufnahmeeinstellungen](/images/developers/software-lxcameraviewer-collection-settings.avif)
+</Frame>
+
+Abbildung 10
+
+##### Funktionseinstellungen
+
+- \[Konfiguration auswählen\] Wählt eine festgelegte Kameraparameterkonfiguration aus.
+- \[Konfiguration speichern\] Speichert die aktuelle Kameraparameterkonfiguration manuell.
+- \[Konfiguration laden\] Wendet die festgelegte Kameraparameterkonfiguration auf die aktuelle Kamera an.
+- \[Konfiguration in Datei exportieren\] Verpackt die aktuelle Kameraparameterkonfiguration in eine Datei im JSON-Format und exportiert sie.
+- \[Konfiguration aus Datei laden\] Importiert die JSON-Datei mit der Kameraparameterkonfiguration in die aktuelle Kamera und wendet die Konfiguration an.
+- \[Benutzerdefinierte ID\] Passt die ID der aktuellen Parameterkonfiguration an.
+- \[Algorithmus nach oben verschieben\] Migriert den aktuellen integrierten Algorithmus zur oberen Plattform, um ihn dort auszuführen.
+- \[Interne Parameter abrufen\] Zeigt die integrierte Parameterkonfiguration der Kamera an.
+- \[Werkseinstellungen wiederherstellen\] Versetzt die Kamera in den Werkszustand. Bei diesem Vorgang werden alle festgelegten Konfigurationen, einschließlich unter anderem der Kamera-IP, gelöscht. Die Kamera wird automatisch ausgeschaltet und muss manuell wieder eingeschaltet werden.
+- \[Firmware-Upgrade\] Aktualisiert die Kamerafirmware. Nach dem Klicken wird ein Dateiauswahldialog geöffnet. Wählen Sie die Datei mit dem Suffix .bin aus.
+- \[Kamera neu starten\] Startet die Kamera neu. Die Kamera wird nicht automatisch ausgeschaltet, sondern wechselt in den Wiederverbindungsstatus. Führen Sie während der Wiederverbindung keine anderen Vorgänge aus.
+
+<Frame>
+  ![Zugehörige Symbole zu den Funktionseinstellungen](/images/developers/software-lxcameraviewer-function-settings.avif)
+</Frame>
+
+Abbildung 11
+
+#### Anwendungsalgorithmen
+
+- Klicken Sie in der Menüleiste auf \[Algorithmus anwenden\], um die zugehörigen Einstellungen des Anwendungsalgorithmus rechts in der Oberfläche anzuzeigen (Abbildung 1).
+- \[Betriebsmodus\] Legt fest, dass die Kamera Algorithmusergebnisse auch dann weiter ausgibt, wenn sie vom Hostcomputer getrennt ist.
+- \[Anwendungsalgorithmus\] Wählt den zu aktivierenden Anwendungsalgorithmus aus:
+
+  - \[Schließen\] (Abbildung 2)
+  - \[Hindernisvermeidungsalgorithmus 2.0\] (Abbildung 3)
+  - \[Palettenpositionierung und -erweiterung\] (Abbildung 4)
+- \[Algorithmusversion\] Zeigt die Versionsnummer des aktuell ausgewählten Algorithmus an.
+
+<Frame>
+  ![Abbildungen zu den Anwendungsalgorithmen](/images/developers/software-lxcameraviewer-application-algorithms.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehörige Abbildung 2 zum Anwendungsalgorithmus](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-2.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![Zugehörige Abbildung 3 zum Anwendungsalgorithmus](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-3.avif)
+</Frame>
+
+Abbildung 3
+
+<Frame>
+  ![Zugehörige Abbildung 4 zum Anwendungsalgorithmus](/images/developers/software-lxcameraviewer-application-algorithm-related-diagram-4.avif)
+</Frame>
+
+Abbildung 4
+
+##### Hindernisvermeidungsalgorithmus
+
+- Legen Sie den Anwendungsalgorithmus auf den Hindernisvermeidungsalgorithmus fest. Daraufhin werden die zugehörigen Konfigurationen für die Hindernisvermeidung angezeigt.
+- \[Fahrzeugkarosserie anzeigen\] Blendet das Fahrzeugmodell ein oder aus, das die Position der Fahrzeugkarosserie im Punktwolkenbild anzeigt.
+- \[Hindernisvermeidungsindex\] Für die Hindernisvermeidung können mehrere Konfigurationen vorhanden sein; legen Sie sie über diese Option fest.
+- \[Kamerawinkel-Roll (x-Achse)\] Externer Kameraparameter, Rollwinkel; der Standardwert der Kamera ist 180.
+- \[Kamerawinkel-Pitch (y-Achse)\] Externer Kameraparameter, Nickwinkel; die Standardinstallation ist vertikal mit dem Wert 90.
+- \[Kamerawinkel-Yaw (z-Achse)\] Externer Kameraparameter, Gierwinkel; der Standardwert ist 90.
+- \[Kameraposition (Entfernung x)\] Externer Kameraparameter, Abstand in x-Richtung zum Ursprung; Einheit: Meter.
+- \[Kameraposition (Breite y)\] Externer Kameraparameter, Abstand in y-Richtung zum Ursprung; bei mittiger Installation ist der Wert 0. Einheit: Meter.
+- \[Kameraposition (Höhe z)\] Externer Kameraparameter der Kamera, Abstand in z-Richtung zum Ursprung. Dies kann als Höhe der Kamera über dem Boden verstanden werden. Einheit: Meter.
+- \[Vorwarndistanz (x fern)\] Bereich der Hindernisvermeidung, Abstand vom Fahrzeugmittelpunkt in x-Richtung. Hindernisse außerhalb dieses Abstands gelten als sicher; der Bereich zwischen Vorwarn- und Alarmabstand gilt als Vorwarnverzögerung und wird in der Oberfläche gelb angezeigt. Einheit: Meter.
+- \[Alarmabstand (x Mitte)\] Bereich der Hindernisvermeidung, Abstand vom Fahrzeugmittelpunkt in x-Richtung. Hindernisse unterhalb dieses Abstands gelten als Alarmstopp und werden in der Oberfläche rot angezeigt; der Bereich zwischen Vorwarn- und Alarmabstand gilt als Vorwarnverzögerung und wird gelb angezeigt. Einheit: Meter.
+- \[Abschirmabstand (nah x)\] Bereich der Hindernisvermeidung, Abstand vom Fahrzeugmittelpunkt in x-Richtung. Hindernisse innerhalb dieses Abstands werden ignoriert. Einheit: Meter.
+- \[Linker Bereich der Hindernisvermeidung (y links)\] Bereich der Hindernisvermeidung, Abstand von der linken Seite in y-Richtung zum Fahrzeugmittelpunkt. Einheit: Meter.
+- \[Rechter Bereich der Hindernisvermeidung (y rechts)\] Bereich der Hindernisvermeidung, Abstand von der rechten Seite in y-Richtung zum Fahrzeugmittelpunkt. Einheit: Meter.
+- \[Untere Höhe der Hindernisvermeidung (z unten)\] Bereich der Hindernisvermeidung, Höhe über dem Boden. Unterhalb dieser Höhe wird nichts verarbeitet. Ist die Einstellung zu klein, können aufgrund von Entfernungsmessfehlern Fehlalarme auftreten; ist sie zu groß, können große Hindernisse am Boden herausgefiltert werden, was zu Fehlalarmen führt. Einheit: Meter.
+- \[Obere Höhe der Hindernisvermeidung (z oben)\] Bereich der Hindernisvermeidung, Höhe über dem Boden. Oberhalb dieser Höhe wird nichts verarbeitet. Einheit: Meter.
+- \[Ausgabe der Hindernisvermeidung\] Gibt die Ergebnisse der Hindernisvermeidung aus.
+- \[Externe Kameraparameter zurücksetzen\] Stellt alle Parameter wieder her, die noch nicht in die Kamera geschrieben wurden.
+- \[Externe Parameter festlegen\] Schreibt alle Parameter in die Kamera.
+- Detaillierte Einstellungen zur Hindernisvermeidung finden Sie in der Dokumentation zur Hindernisvermeidung.
+
+##### Palettenpositionierung
+
+- Legen Sie den Anwendungsalgorithmus auf Palettenpositionierung fest. Daraufhin werden die zugehörigen Konfigurationen für die Hindernisvermeidung angezeigt.
+- \[Projektname\] Name der aktuellen Parameterkonfiguration für die Palettenerkennung.
+- \[Schnellkonfiguration\] Mehrere von der Kamera standardmäßig bereitgestellte Konfigurationen.
+- \[Kamerawinkel-Roll (x-Achse)\] Neigungswinkel der Kamera relativ zur X-Achse.
+- \[Kamerawinkel-Pitch (y-Achse)\] Neigungswinkel der Kamera relativ zur Y-Achse.
+- \[Kamerawinkel-Yaw (z-Achse)\] Neigungswinkel der Kamera relativ zur Z-Achse.
+- \[Kameraposition (Entfernung x)\] Relativer Abstand zwischen dem optischen Zentrum der Kamera und dem Drehzentrum des Gabelstaplers in X-Richtung.
+- \[Kameraposition (Breite y)\] Relativer Abstand zwischen dem optischen Zentrum der Kamera und dem Drehzentrum des Gabelstaplers in Y-Richtung.
+- \[Kameraposition (Höhe z)\] Relativer Abstand zwischen dem optischen Zentrum der Kamera und dem Drehzentrum des Gabelstaplers in Z-Richtung.
+- \[Bodenhöhe\] Abstand vom optischen Zentrum der Kamera zum Boden.
+- \[Maximale Breite der Palettenfüße\] Muss mit der maximalen Breite der Palettenfüße des Palettentyps kompatibel sein.
+- \[Minimale Breite der Palettenfüße\] Muss mit der minimalen Breite der Palettenfüße des Palettentyps kompatibel sein.
+- \[Abstand von der Palette\] Abstand vom optischen Zentrum der Kamera zur Palette nach dem Einführen.
+- \[Installationsmethode\] Wird entsprechend der Befestigungsrichtung der Kamera festgelegt; standardmäßig formale Installation (0).
+- \[Minimaler Z-Wert\] Ermittelt die nächstgelegene Tiefenentfernung der Palette.
+- \[Maximaler Z-Wert\] Ermittelt die am weitesten entfernte Tiefenentfernung der Palette.
+- \[Minimaler X-Wert\] Ermittelt die seitliche Grenze der Palette (die linke Grenze, wenn die Kamera als Mittelpunkt verwendet wird).
+- \[Maximaler X-Wert\] Ermittelt die seitliche Grenze der Palette (die rechte Grenze, wenn die Kamera als Mittelpunkt verwendet wird).
+- \[Ausgabe des Palettenalgorithmus\] Zeigt die Ergebnisse des Palettenalgorithmus an.
+- \[Kalibrierungsanweisungen\] Führt automatisch eine Kalibrierung durch, wenn der Boden eben und der Bereich vor der Palette frei ist. Die Palette hat Standardgröße.
+- \[Standardparameter wiederherstellen\] Stellt alle Parameter auf die Werkseinstellungen zurück.
+- \[Externe Parameter aus der Kamera lesen\] Liest alle Parameter aus der Kamera; alle nicht gesendeten Parameter werden überschrieben.
+- \[Parameter senden\] Schreibt alle Parameter in die Kamera.
+- Detaillierte Einstellungen zur Palettenerkennung finden Sie in der Dokumentation zur Palettenerkennungsfunktion.
+
+#### Weitere Tools
+
+- \[Lokale Punktwolke laden\] Öffnet Punktwolkendateien im Format .pcl oder .png und zeigt sie an. Weitere Informationen finden Sie in der Toolbeschreibung.
+- \[IP-Konfigurationstool\] Konfiguriert IP-Adresse, Subnetzmaske und Gateway der Kamera.
+- \[Paketerfassungstool\] Kann zur Erfassung von Netzwerkpaketdaten verwendet werden. Weitere Informationen finden Sie in der Toolbeschreibung.
+- \[Netzwerkkonfigurationstool\] Unterstützt die Einrichtung von Netzwerkkarten und Firewalls. Weitere Informationen finden Sie in der Toolbeschreibung.
+- \[Kommunikationstool\] Unterstützt TCP-, UDP-, MODBUS- und FTP-Kommunikation. Weitere Informationen finden Sie in der Toolbeschreibung.
+- \[GPU aktivieren\] Ermöglicht die Verwendung von GPU-Berechnungen zur Grafikverarbeitung.
+- \[Protokollstufe\] Steuert den Detaillierungsgrad der ausgegebenen Protokollinformationen.
+
+<Frame>
+  ![Zugehörige Symbole zu den weiteren Tools](/images/developers/software-lxcameraviewer-other-tools.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Zugehörige Symbole 2 zu den weiteren Tools](/images/developers/software-lxcameraviewer-other-tools-2.avif)
+</Frame>
+
+Abbildung 2
+
+## Auf das Kamerasystem zugreifen
+
+- Stellen Sie über SSH eine Verbindung zur IP-Adresse der Kamera an Port 22 her.
+
+  - Verwenden Sie MobaXterm als Beispiel und nehmen Sie an, dass die Kamera die IP-Adresse 192.168.100.15 hat (Abbildung 1, Abbildung 2).
+- Benutzername: user, Passwort: user. Nach erfolgreicher Anmeldung wird die Oberfläche wie in Abbildung 3 angezeigt.
+- Das System enthält die in der folgenden Tabelle dargestellte Konfiguration.
+
+|  |  |
+| --- | --- |
+| Integrierte Konfiguration | Versionsnummer |
+
+| Opencv | 4.5.0 |
+| Openmpi | 4.0.5 |
+| Pcl | 1.12.1 |
+| Vtk | 8.1.2 |
+
+**Hinweis: Ändern Sie die integrierte Systemkonfiguration nicht ohne zwingenden Grund, da dies zu einem Systemabsturz führen kann.**
+
+<Frame>
+  ![4. Zugehörige Symbole für den Zugriff auf das Kamerasystem](/images/developers/software-lxcameraviewer-4-access-camera-system.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![4. Zugehörige Abbildungen 2 für den Zugriff auf das Kamerasystem](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-2.avif)
+</Frame>
+
+Abbildung 2
+
+<Frame>
+  ![4. Zugehörige Abbildungen 3 für den Zugriff auf das Kamerasystem](/images/developers/software-lxcameraviewer-4-accessing-the-camera-system-3.avif)
+</Frame>
+
+Abbildung 3
+
+## Toolbeschreibungen
+
+### IP-Konfigurationstool
+
+- Nach dem Öffnen des \[IP-Konfigurationstools\], wie in Abbildung 1 dargestellt:
+- Doppelklicken Sie auf die Information nach der MAC-Adresse, um sie zu kopieren. Doppelklicken Sie auf die Information nach IP-Adresse, Subnetzmaske und Gateway, um sie zu schreiben. Klicken Sie auf andere Optionen, um die Änderung abzubrechen, und drücken Sie die Eingabetaste, um die Änderung zu bestätigen, wie in Abbildung 2 dargestellt.
+
+<Frame>
+  ![Windows-Oberfläche für IPv4-Netzwerkeinstellungen](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface.avif)
+</Frame>
+
+Abbildung 1
+
+<Frame>
+  ![Windows-Oberfläche für IPv4-Netzwerkeinstellungen 2](/images/developers/software-lxcameraviewer-windows-ipv4-network-settings-interface-2.avif)
+</Frame>
+
+Abbildung 2
+
+### Kommunikationstools
+
+- Öffnen Sie \[Kommunikationstools\] wie in Abbildung 1 dargestellt.
+- Die Kommunikationstools unterstützen TCP, UDP, FTP, Modbus TCP, Modbus RTU und CAN (linux).
+- Die Kommunikationstools unterstützen das gleichzeitige Öffnen verschiedener Registerkarten.
+
+<Frame>
+  ![Abbildungen zu den Kommunikationstools](/images/developers/software-lxcameraviewer-communication-tools.avif)
+</Frame>
+
+Abbildung 1
+
+### Netzwerkkonfigurationstool
+
+- Öffnen Sie das \[Tool für lokale Punktwolken\], wie in Abbildung 1 dargestellt.
+- Mit dem Netzwerkkonfigurationstool kann die Firewall eingerichtet werden.
+- Nach Auswahl der Netzwerkkarte können Sie die von Windows bereitgestellte Oberfläche für Netzwerkkarteneigenschaften und -konfiguration öffnen.
+
+- Unterstützt das Öffnen der Firewall-Konfigurationsseite.
+
+- Unterstützt das Öffnen des Task-Managers.
+
+- Unterstützt das Öffnen des Netzwerkverbindungscenters.
+
+- Die Sprache folgt automatisch der Sprache dieser Software.
+
+<Frame>
+  ![Abbildungen zum Netzwerkkonfigurationstool](/images/developers/software-lxcameraviewer-the-network-card-configuration-tool.avif)
+</Frame>
+
+Abbildung 1
+
+## Fehlerbehebung
+
+|  |  |
+| --- | --- |
+| Problembeschreibung | Lösung |
+| Kamera kann nicht gefunden werden | \* Prüfen Sie, ob die Kamera mit Strom versorgt wird. Nach dem Einschalten leuchtet das blaue Licht an der Vorderseite der Kamera dauerhaft. \* Prüfen Sie, ob IP-Adresse und Subnetzmaske korrekt sind. \* Prüfen Sie, ob der Hostcomputer für den Netzwerkzugriff gesperrt ist. |
+| Kamera kann geöffnet werden, aber der Stream schlägt fehl | Prüfen Sie, ob der Hostcomputer mit Administratorrechten gestartet wurde. |
+| Bildverzögerung | Prüfen Sie, ob Netzwerkkarte, Netzwerkkabel und Switch Gigabit unterstützen. Nach dem Aktivieren der RGB-Ausrichtung tritt in einem 100-M-Netzwerk eine gewisse Verzögerung auf. |
+| Kamera verbindet sich häufig neu | Nach dem Wiederherstellen der Werkseinstellungen, einem Firmware-Upgrade oder dem ersten Einschalten der Kamera in einem 100-M-Netzwerk passt die Kamera ihre Einstellungen etwa 30 Sekunden lang an bzw. startet neu. Während dieser 30 Sekunden versucht der Hostcomputer fortlaufend, eine Verbindung zur Kamera herzustellen, bis sie stabil ist. |
+| Keine Tiefendaten, keine Punktwolkendaten | \* Prüfen Sie, ob die Kamera verdeckt ist. \* Prüfen Sie, ob sich das Objekt innerhalb des Aufnahmebereichs der Kamera befindet. \* Prüfen Sie, ob die maximalen/minimalen Tiefenwerte korrekt sind. \* Prüfen Sie, ob die Filterparameter korrekt sind. |
+| Die Punktwolke verschwindet und auf der Oberfläche ist nur der weiße Rahmen sichtbar | Klicken Sie mit der Maus auf das Punktwolkenbild und drücken Sie die Taste 'm', um die Punktwolkenstabilisierung zu aktivieren. |
+| Punktwolkendarstellung ist fehlerhaft | Prüfen Sie, ob ein Tastenkürzel für die Punktwolke verwendet wurde, und aktivieren Sie die Punktwolkenstabilität. |
+| Nach dem Öffnen der Kamera unter Linux wird die Punktwolke nicht angezeigt | Drücken und ziehen Sie mit der Maus auf dem Punktwolkenbild, damit es angezeigt wird. |
+| Anwendungsanzeige: VTK-Laden fehlgeschlagen, Punktwolke wird nicht angezeigt; prüfen Sie Grafikkonfiguration und Grafiktreiber | \* Prüfen Sie, ob die Grafikkonfiguration zu niedrig ist. \* Prüfen Sie, ob der Grafiktreiber ordnungsgemäß läuft. \* Für die Punktwolkendarstellung sind eine Grafikkarte mit eigenem Videospeicher und der zugehörige Treiber erforderlich. |
+
+## Hilfe
+
+### Info
+
+Klicken Sie oben rechts auf \[Info\] oder beim ersten Start der Software in den aktuellen Informationen, um die Softwareversionsnummer, SDK-Versionsnummer und weitere zugehörige Informationen anzuzeigen. Klicken Sie auf die Schaltfläche \[Hilfedokument öffnen\], um dieses Dokument wie in der folgenden Abbildung dargestellt zu öffnen:
+
+<Frame>
+  ![Zugehörige Symbole zu den Informationen](/images/developers/software-lxcameraviewer-about.avif)
+</Frame>
+
+### Benutzerhandbuch
+
+Klicken Sie mit der rechten Maustaste auf die Verknüpfung dieser Software → öffnen Sie den Dateispeicherort → wechseln Sie in das übergeordnete Verzeichnis → dort können Sie alle zugehörigen Dokumente im Ordner Document anzeigen, wie in der folgenden Abbildung dargestellt:
+
+<Frame>
+  ![Zugehörige Symbole zum Benutzerhandbuch](/images/developers/software-lxcameraviewer-user-manual.avif)
+</Frame>

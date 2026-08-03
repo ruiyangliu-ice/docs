@@ -1,0 +1,351 @@
+---
+title: Guida utente V2 Pro
+description: "Specifiche, interfacce, istruzioni per l'installazione, la mappatura e il posizionamento del controller di navigazione V2 Pro."
+---
+
+V2 Pro è un controller di navigazione per il posizionamento di robot mobili e carrelli elevatori a guida manuale. Combina i dati di una telecamera orientata verso l'alto, di un LiDAR 2D e di un'IMU per supportare la mappatura, la localizzazione e la rilocalizzazione.
+
+<Info>
+  Scarica i materiali completi del prodotto dal [Centro download](/it/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Frame caption="Controller di navigazione V2 Pro">
+  ![Controller di navigazione V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller.avif)
+</Frame>
+
+## Panoramica del prodotto
+
+### Funzionamento
+
+Il controller integra una piattaforma di elaborazione e non richiede un computer industriale esterno. Mentre il robot si muove nell'area di destinazione, la telecamera orientata verso l'alto acquisisce le caratteristiche dell'ambiente, il LiDAR 2D fornisce i contorni planari e l'IMU fornisce i dati di movimento. Il controller combina queste fonti per creare una mappa e produrre i risultati della localizzazione.
+
+### Funzionalità principali
+
+- Combina una telecamera orientata verso l'alto con campo visivo `108° × 57°`, una scansione LiDAR 2D di `270°` e un'IMU.
+- Offre prestazioni NPU di `6 TOPS` e un'interfaccia visiva per la mappatura e la gestione delle mappe.
+- Integra Wi-Fi 6 e un'uscita audio per i dati di posizionamento dei carrelli elevatori a guida manuale, i prompt vocali e gli avvisi.
+- Supporta il posizionamento indoor e l'integrazione della navigazione per robot mobili, AGV e carrelli elevatori a guida manuale.
+
+### Applicazioni tipiche
+
+- **Logistica di fabbrica:** posizionamento e navigazione dei robot in magazzini, banchine di carico e officine.
+- **Aggiornamento dei carrelli elevatori a guida manuale:** aggiungi la funzionalità di posizionamento ai carrelli elevatori esistenti ed esponi i dati di posizione a un sistema di livello superiore.
+
+<Frame caption="Scenari applicativi di V2 Pro">
+  ![Applicazioni di V2 Pro su robot mobili e carrelli elevatori](/images/products/v-series-v2-pro-overview-v2-pro-applications.avif)
+</Frame>
+
+## Specifiche
+
+### Specifiche di base
+
+| Modulo | Parametro | Specifica |
+| --- | --- | --- |
+| Telecamera orientata verso l'alto | Distanza operativa | 1–15 m (0–10 kLux di illuminazione ambientale) |
+| Telecamera orientata verso l'alto | Campo visivo | 108° (H) × 57° (V), ±3° |
+| Telecamera orientata verso l'alto | Frequenza dei fotogrammi | 20 fps |
+| Telecamera orientata verso l'alto | Resistenza alle interferenze | Resistenza al riverbero e alla luce ambientale |
+| LiDAR 2D | Frequenza di scansione | 15–25 Hz, selezionabile |
+| LiDAR 2D | Campo visivo orizzontale | 270° |
+| LiDAR 2D | Risoluzione angolare | 0.25° |
+| LiDAR 2D | Distanza di rilevamento | 15 m @ 10% di riflettività; 40 m @ 90% di riflettività |
+| LiDAR 2D | Precisione di misurazione della distanza | ±30 mm (tipica) |
+| Sistema principale | Modulo integrato | IMU (unità di misura inerziale) |
+| Sistema principale | Processore | Piattaforma Arm a 8 core Rockchip |
+| Sistema principale | Prestazioni NPU | 6 TOPS |
+| Sistema principale | Interfacce di comunicazione | 1 × Ethernet; 1 × CAN; 4 × I/O (2 ingressi, 2 uscite) |
+| Sistema principale | Alimentazione | 24 VDC (±4.8 V) |
+| Sistema principale | Consumo energetico | 6.6 W medio; 15.3 W massimo |
+| Sistema principale | Modulo wireless | Wi-Fi 6 |
+| Sistema principale | Uscita audio | 1 × uscita audio a 3 pin (L/R/GND) |
+| Sistema principale | Dimensioni | 146.5 mm × 66.3 mm × 89.4 mm |
+| Sistema principale | Grado di protezione | IP54 |
+| Sistema principale | Temperatura operativa | −20–60 °C |
+| Sistema principale | Temperatura di stoccaggio | −40–80 °C |
+
+<Tip>
+  Usa il modello 3D del prodotto e l'hardware fornito come riferimento per le dimensioni. Prima dell'installazione, verifica lo spazio disponibile, le condizioni di alimentazione e il raggio di curvatura dei cavi.
+</Tip>
+
+### Definizioni delle interfacce
+
+Il controller fornisce interfacce di alimentazione, Ethernet, CAN, I/O e uscita audio.
+
+<Frame caption="Posizioni delle interfacce V2 Pro">
+  ![Interfacce Ethernet, CAN, I/O, alimentazione e audio di V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-interface-definitions.avif)
+</Frame>
+
+| Porta | Definizione | Descrizione |
+| --- | --- | --- |
+| CN6 | Ethernet | Connettore RJ45 femmina |
+| CN7 | CAN | Rosa: CAN\_H; verde chiaro: CAN\_L; nero: GND |
+| CN8 | I/O | Quattro canali I/O: due ingressi e due uscite. Consulta la piedinatura di seguito. |
+| CN9 | Alimentazione | 24 VDC / 3 A; 1: positivo; G: negativo |
+| CN10 | Uscita audio | Spina audio da 3,5 mm |
+
+#### Piedinatura I/O di CN8
+
+| Pin | Segnale | Pin | Segnale |
+| --- | --- | --- | --- |
+| 1 | IN1\+ | 2 | IN1− |
+| 3 | IN2\+ | 4 | IN2− |
+| 5 | OUT1\+ | 6 | OUT1− |
+| 7 | OUT2\+ | 8 | OUT2− |
+
+- **Ingressi:** attivi ad alto livello a 5–24 V.
+- **Uscite:** uscita push-pull che supporta un pilotaggio di 24 V / 100 mA.
+
+## Struttura del prodotto
+
+### Aspetto e dimensioni
+
+<Frame caption="Aspetto di V2 Pro">
+  ![Aspetto del controller di navigazione V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller-02.avif)
+</Frame>
+
+<Frame caption="Disegno meccanico di V2 Pro">
+  ![Disegno meccanico di V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-mechanical-drawing.avif)
+</Frame>
+
+### Componenti
+
+<Frame caption="Panoramica dei componenti di V2 Pro (anteriore)">
+  ![Vista anteriore di V2 Pro con LiDAR 2D, telecamera orientata verso l'alto, illuminatore e connettore dell'antenna Wi-Fi](/images/products/v-series-v2-pro-overview-v2-pro-components.avif)
+</Frame>
+
+<Frame caption="Panoramica dei componenti di V2 Pro (posteriore)">
+  ![Vista posteriore di V2 Pro con fori di montaggio, cavi e targhetta identificativa](/images/products/v-series-v2-pro-overview-v2-pro-component-details.avif)
+</Frame>
+
+| N. | Componente |
+| --- | --- |
+| 1 | Finestra di emissione del LiDAR 2D |
+| 2 | Finestra dell'obiettivo della telecamera orientata verso l'alto |
+| 3 | Illuminatore della telecamera orientata verso l'alto |
+| 4 | Connettore dell'antenna Wi-Fi |
+| 5 | Quattro fori di montaggio M3 |
+| 6 | Cavi del controller: Ethernet, alimentazione, CAN, I/O e audio |
+| 7 | Posizione della targhetta identificativa |
+
+### Modulo di comunicazione wireless
+
+Il controller include un adattatore wireless `2T2R` con MU-MIMO e trasmissione a doppio flusso. Il Wi-Fi opera nella banda ISM `2.400–2.4835 GHz`. Il throughput effettivo dipende dalla configurazione di rete, dalle interferenze presenti nel sito e dai dispositivi connessi.
+
+| Parametro | Specifica |
+| --- | --- |
+| Standard Wi-Fi | IEEE 802.11ax/ac/a/b/g/n (2T2R) |
+| Versioni Bluetooth | Bluetooth 5.3, 5.0, 4.2, 4.1, 4.0 LE, 3.0\+HS, 2.1\+EDR |
+| Velocità dati Wi-Fi | 802.11b: 11 Mbps; 802.11a/g: 54 Mbps; 802.11n: MCS0–15; 802.11ac: MCS0–9; 802.11ax: HE0–11 |
+| Velocità dati Bluetooth | 1 Mbps, 2 Mbps, fino a 3 Mbps |
+| Banda operativa | Banda ISM 2.400–2.4835 GHz; 5 GHz non supportati |
+
+## Integrazione e installazione
+
+### Distanza di rilevamento e sistema di coordinate
+
+<Frame caption="Distanza di rilevamento e sistema di coordinate della telecamera orientata verso l'alto">
+  ![Distanza di rilevamento e sistema di coordinate della telecamera orientata verso l'alto di V2 Pro](/images/products/v-series-v2-pro-overview-camera-detection-range-and-coordinate-system.avif)
+</Frame>
+
+### Installazione
+
+<Frame caption="Installazione di V2 Pro">
+  ![Installazione di V2 Pro su un robot](/images/products/v-series-v2-pro-overview-camera-installation.avif)
+</Frame>
+
+Mantieni liberi il campo visivo della telecamera orientata verso l'alto e quello del LiDAR da veicolo, cavi e altre strutture. Dopo l'installazione, configura i parametri di localizzazione del telaio e i parametri estrinseci dei sensori.
+
+### Applicazione host e SDK
+
+Usa l'applicazione host per visualizzare l'immagine della telecamera orientata verso l'alto, il contorno LiDAR e lo stato della localizzazione. Per l'integrazione, consulta la guida dell'applicazione host MRDVS e la guida allo sviluppo di Camera SDK.
+
+### Ambiente e affidabilità
+
+| Voce | Specifica |
+| --- | --- |
+| Temperatura operativa | −20–60 °C |
+| Illuminamento operativo | 0–50 kLux |
+| Temperatura di stoccaggio | −40–85 °C |
+| Umidità di stoccaggio | Massimo 90% RH |
+| Aumento della temperatura in funzionamento normale | Aumento della temperatura dell'involucro \< 25 °C |
+| ESD | ±4 kV di scarica a contatto; ±8 kV di scarica in aria |
+| RE | Conforme a GB 9254 Classe A |
+| Durata utile | Più di 3 anni |
+| Certificazione ambientale | RoHS |
+
+## Guida rapida
+
+### Contenuto della confezione
+
+| N. | Articolo |
+| --- | --- |
+| 1 | Controller V2 Pro |
+| 2 | Cavo di alimentazione a 2 pin |
+
+### Collega e verifica il dispositivo
+
+<Frame caption="Test di collegamento di V2 Pro">
+  ![Collegamento dell'alimentazione e di Ethernet a V2 Pro](/images/products/v-series-v2-pro-overview-connection-test.avif)
+</Frame>
+
+<Steps>
+  <Step title="Collega l'alimentazione">
+    Collega il cavo di alimentazione all'ingresso DC del controller e collega un'alimentazione DC da `24 V / 3 A`. Un indicatore blu che lampeggia lentamente indica un'alimentazione normale.
+
+    Se l'indicatore è spento o resta rosso, controlla il connettore di alimentazione e l'adattatore.
+  </Step>
+  <Step title="Configura la rete">
+    Collega direttamente l'interfaccia Ethernet del controller al computer con un cavo Cat 6. L'indirizzo IP predefinito di fabbrica è `192.168.100.201`; imposta il computer sulla stessa subnet e consenti la comunicazione con il dispositivo attraverso il firewall.
+
+    Apri `http://192.168.100.201:9998` in un browser sulla LAN per accedere all'interfaccia web senza password.
+  </Step>
+  <Step title="Controlla il flusso di dati">
+    Avvia l'applicazione host e verifica che l'immagine della telecamera orientata verso l'alto sia nitida e priva di artefatti o scatti. Se vengono rilevati più indirizzi IP, risolvi il conflitto LAN e seleziona il dispositivo corretto.
+  </Step>
+</Steps>
+
+### Panoramica dell'interfaccia
+
+<Frame caption="Interfaccia dell'applicazione host di V2 Pro">
+  ![Applicazione host di V2 Pro con menu, mappa dei contorni, vista orientata verso l'alto e stato della localizzazione](/images/products/v-series-v2-pro-overview-v2-pro-interface.avif)
+</Frame>
+
+1. **Area rossa:** menu delle funzioni, inclusi mappatura, rilocalizzazione e gestione delle mappe.
+2. **Area blu:** mappa dei contorni 2D caricata e icona di localizzazione del veicolo.
+3. **Area verde:** immagine RGB in tempo reale della telecamera orientata verso l'alto.
+4. **Area gialla:** intensità del segnale di rilocalizzazione, posizione e velocità del veicolo e coordinate del cursore. I colori del segnale sono verde (eccellente), blu (buono) e rosso (scarso).
+
+### Crea una mappa
+
+<Steps>
+  <Step title="Avvia la mappatura">
+    Seleziona **Avvia mappatura** nel menu.
+
+    <Frame>
+      ![Avvio della mappatura nell'applicazione host di V2 Pro](/images/products/v-series-v2-pro-overview-start-mapping.avif)
+    </Frame>
+  </Step>
+  <Step title="Inserisci un nome per la mappa">
+    Un nome per la mappa può contenere lettere, numeri e caratteri di sottolineatura, ma non può iniziare con un numero.
+  </Step>
+  <Step title="Acquisisci i dati della mappa">
+    Mantieni la velocità lineare pari o inferiore a `0.5 m/s` e la velocità angolare pari o inferiore a `20°/s`. L'interfaccia mostra il contorno LiDAR e l'immagine della telecamera orientata verso l'alto.
+
+    <Frame caption="Interfaccia di mappatura">
+      ![Interfaccia di mappatura di V2 Pro con contorno LiDAR e immagine orientata verso l'alto](/images/products/v-series-v2-pro-overview-mapping-interface.avif)
+    </Frame>
+
+    Procedi lentamente e in modo uniforme, preferibilmente a meno di `0.2 m/s`. Usa percorsi rettilinei e svolte ad angolo retto, evita percorsi ripetuti e vibrazioni casuali, mantieni una sovrapposizione di circa un terzo lungo i percorsi nella stessa direzione e mantieni i percorsi paralleli a circa `2 m` di distanza. Copri l'area di destinazione o il percorso del veicolo nel modo più completo possibile.
+
+    <Frame caption="Percorso di mappatura consigliato">
+      ![Percorso parallelo consigliato per la mappatura di V2 Pro](/images/products/v-series-v2-pro-overview-recommended-mapping-path.avif)
+    </Frame>
+  </Step>
+  <Step title="Termina la mappatura">
+    Dopo aver acquisito l'area, seleziona **Termina mappatura** nel menu. Il tempo di elaborazione dipende dall'area acquisita.
+  </Step>
+</Steps>
+
+### Distribuisci e applica le mappe
+
+<Steps>
+  <Step title="Distribuisci la mappa di sfondo">
+    Apri **Gestione mappe**, trova la nuova mappa nell'elenco delle mappe di sfondo e seleziona **Distribuisci**. Distribuisci ogni mappa che l'host deve utilizzare; le mappe di sfondo possono essere modificate, esportate o eliminate.
+
+    <Frame caption="Gestione delle mappe di sfondo">
+      ![Interfaccia di gestione delle mappe di sfondo di V2 Pro](/images/products/v-series-v2-pro-overview-background-map-management.avif)
+    </Frame>
+  </Step>
+  <Step title="Applica la mappa host">
+    Seleziona **Applica** in **Mappe host**. Riavvia il controller dopo aver applicato una mappa affinché la modifica diventi effettiva. Le mappe host possono essere esportate o eliminate.
+
+    <Frame caption="Gestione delle mappe host">
+      ![Interfaccia di gestione delle mappe host di V2 Pro](/images/products/v-series-v2-pro-overview-host-map-management.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+### Rilocalizzazione e configurazione dei parametri
+
+<Frame caption="Interfaccia di rilocalizzazione">
+  ![Rilocalizzazione di V2 Pro mediante nuvola di punti LiDAR e mappa dei contorni](/images/products/v-series-v2-pro-overview-relocalization.avif)
+</Frame>
+
+In **Rilocalizzazione**, trascina il mouse per specificare una posa approssimativa del veicolo e abbinare la nuvola di punti LiDAR alla mappa dei contorni. Il messaggio di timeout della localizzazione scompare dopo che la rilocalizzazione è riuscita.
+
+<Frame caption="Interfaccia di configurazione dei parametri">
+  ![Configurazione della localizzazione del telaio e degli estrinseci del sensore di V2 Pro](/images/products/v-series-v2-pro-overview-parameter-configuration.avif)
+</Frame>
+
+Controlla e configura i parametri di localizzazione del telaio e i valori di calibrazione estrinseca del LiDAR e della telecamera orientata verso l'alto.
+
+## Risoluzione dei problemi
+
+| Problema | Azione suggerita |
+| --- | --- |
+| Il dispositivo non risponde all'apertura | Controlla le regole del firewall e verifica che la comunicazione con il controller non sia bloccata. |
+| L'applicazione host rileva più indirizzi IP | Risolvi il conflitto degli IP della LAN e seleziona l'indirizzo corretto del dispositivo. |
+| Il flusso è instabile | Usa un cavo Ethernet Gigabit adatto; un cavo a velocità inferiore può rendere instabile il trasferimento iniziale dei dati. |
+| L'applicazione host non si avvia correttamente | Installa il software in una directory con autorizzazioni di lettura e scrittura. |
+
+## Sicurezza e conformità
+
+### Sicurezza laser
+
+<Warning>
+  Il dispositivo emette radiazioni laser invisibili durante il funzionamento. Tieni gli occhi lontani dall'area di emissione e mantieni l'etichetta di sicurezza libera e integra.
+</Warning>
+
+- Il prodotto utilizza un laser di Classe 1.
+- In condizioni di utilizzo normali, il laser emesso non rappresenta un pericolo per le persone se il prodotto viene utilizzato in conformità alla norma EN 60825.
+- Segui le procedure di sicurezza laser del sito durante l'installazione, la manutenzione e la risoluzione dei problemi. Non smontare né modificare i componenti ottici.
+
+<Frame caption="Etichetta di sicurezza laser">
+  ![Etichetta di sicurezza laser di V2 Pro](/images/products/v-series-v2-pro-overview-laser-safety.avif)
+</Frame>
+
+### Contiene una batteria al litio
+
+<Warning>
+  Il dispositivo contiene una batteria al litio. Danni, cortocircuiti, schiacciamento, perforazione o vicinanza al fuoco possono causare un incendio o altri pericoli.
+</Warning>
+
+- Non smontare, modificare o sostituire autonomamente la batteria integrata.
+- Proteggi il dispositivo da urti violenti, schiacciamento, perforazione, temperature elevate e fiamme libere.
+- Rispetta i requisiti locali per il trasporto, lo smaltimento o il riciclaggio delle apparecchiature che contengono una batteria al litio.
+
+<Frame caption="Etichetta della batteria al litio">
+  ![Etichetta della batteria al litio di V2 Pro](/images/products/v-series-v2-pro-overview-lithium-battery-notice.avif)
+</Frame>
+
+## Documenti correlati
+
+<Columns cols={2}>
+  <Card title="Guida operativa per la localizzazione pura V2" icon="book-open" href="/it/developers/v2-localization/pure-localization-guide">
+    Configura e utilizza la versione V2 per la localizzazione pura.
+  </Card>
+
+  <Card title="Protocollo di comunicazione UDP V2 Pro" icon="network" href="/it/developers/v2-localization/udp-protocol">
+    Ottieni i dati di localizzazione e del dispositivo tramite UDP.
+  </Card>
+
+  <Card title="Protocollo LiDAR esterno V2" icon="scan-line" href="/it/developers/v2-localization/external-lidar">
+    Integra un dispositivo LiDAR esterno.
+  </Card>
+
+  <Card title="Protocollo HTTP di localizzazione visiva V2" icon="globe" href="/it/developers/v2-localization/http-protocol">
+    Comunica con il modulo di localizzazione tramite HTTP.
+  </Card>
+
+  <Card title="V2 Service ROS1" icon="box" href="/it/developers/ros/v2-ros1">
+    Esempio di V2 Service ROS1.
+  </Card>
+
+  <Card title="V2 Service ROS2" icon="box" href="/it/developers/ros/v2-ros2">
+    Esempio di V2 Service ROS2.
+  </Card>
+
+  <Card title="Guida ROS essenziale" icon="rocket" href="/it/developers/ros/quickstart">
+    Avvia rapidamente un'integrazione ROS.
+  </Card>
+</Columns>
