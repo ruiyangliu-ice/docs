@@ -1,0 +1,152 @@
+---
+title: 개발 FAQ
+description: "Camera SDK 오류 코드, 장치 연결, 스트리밍 및 개발 환경 문제를 해결하세요."
+---
+
+오류 코드는 SDK, 연결 및 데이터 스트림 문제의 위치를 파악하는 데 도움이 됩니다. 문제를 해결하기 전에 오류 코드, SDK 버전, 카메라 모델 및 장치 로그를 기록하세요.
+
+<Warning>
+  SDK 버전만 변경하여 문제를 해결하려고 하지 마세요. 카메라 펌웨어, 데이터 처리 라이브러리 및 개발 환경의 호환성도 확인하세요.
+</Warning>
+
+## SDK 오류 코드 및 개발 환경
+
+<AccordionGroup>
+  <Accordion title="LX_ERROR = -1">
+    **가능한 원인** 알 수 없는 오류입니다. **해결 방법** 장치 로그를 내보내 MRDVS 기술 지원팀에 보내세요.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_SUPPORT = -2">
+    **가능한 원인** 기능이 지원되지 않습니다. **해결 방법** 현재 장치는 이 기능을 지원하지 않습니다.
+  </Accordion>
+
+  <Accordion title="LX_E_NETWORK_ERROR = -3">
+    **가능한 원인** 네트워크 통신 오류입니다. **해결 방법** IP 구성, 네트워크 케이블, 스위치 및 패킷 손실을 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_INPUT_ILLEGAL = -4">
+    **가능한 원인** 입력 파라미터가 유효하지 않습니다. **해결 방법** 인터페이스에 전달한 파라미터를 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_RECONNECTING = -5">
+    **가능한 원인** 장치가 다시 연결 중입니다. **해결 방법**
+
+    1. 잠시 기다린 후 연결이 복구될 때까지 다시 시도하세요.<br />2. 카메라 전원이 켜져 있고 네트워크 연결이 정상인지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_ERROR = -6">
+    **가능한 원인** 장치에 오류가 발생했거나 응답하지 않습니다. **해결 방법** 애플리케이션 또는 카메라를 다시 시작한 후 재시도하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NEED_UPDATE = -7">
+    **가능한 원인** 장치 버전이 너무 오래되었습니다. **해결 방법** 펌웨어를 업그레이드하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_API_NEED_UPDATE = -8">
+    **가능한 원인** API 버전이 너무 오래되었습니다. **해결 방법** SDK를 업데이트하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_CTRL_PERMISS_ERROR = -9">
+    **가능한 원인** 독점 제어 권한을 얻지 못했습니다. **해결 방법** 한 개의 기본 클라이언트만 카메라를 제어할 수 있습니다. 카메라가 정상적으로 종료되지 않았다면 권한이 해제될 때까지 `3–5 s` 기다리세요.
+  </Accordion>
+
+  <Accordion title="LX_E_GET_DEVICEINFO_ERROR = -10">
+    **가능한 원인** 장치 정보를 읽을 수 없습니다. **해결 방법** 장치 펌웨어 버전을 확인하거나 MRDVS 지원팀에 문의하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_SIZE_ERROR = -11">
+    **가능한 원인** 요청한 영상 크기가 스트림과 일치하지 않습니다. **해결 방법** 장치를 닫았다가 다시 여세요.
+  </Accordion>
+
+  <Accordion title="LX_E_IMAGE_PARTITION_ERROR = -12">
+    **가능한 원인** 영상 파싱에 실패했습니다. 픽셀 형식이 잘못된 경우가 많습니다. **해결 방법** 장치를 다시 여세요.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_CONNECTED = -13">
+    **가능한 원인** 카메라가 연결되지 않았습니다. **해결 방법** 애플리케이션이 열리지 않은 카메라를 사용하려고 했습니다. 호출 순서를 확인하고 카메라가 정상적으로 열렸는지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_INIT_FAILED = -14">
+    **가능한 원인** 카메라 초기화에 실패했습니다. **해결 방법** 카메라를 다시 여세요.
+  </Accordion>
+
+  <Accordion title="LX_E_DEVICE_NOT_FOUND = -15">
+    **가능한 원인** 카메라가 없거나 일치하는 카메라를 찾지 못했습니다. **해결 방법** 인터페이스에 전달한 카메라 핸들이 유효한지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_FILE_INVALID = -16">
+    **가능한 원인** 파일 이름, 형식, 포맷 또는 경로가 유효하지 않거나 파일을 열 수 없습니다. **해결 방법** 경로가 올바르고 파일을 수동으로 열 수 있는지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_CRC_CHECK_FAILED = -17">
+    **가능한 원인** 업로드 또는 다운로드 중 CRC 또는 MD5 검증에 실패했습니다. **해결 방법** 전송을 다시 시도하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_TIME_OUT = -18">
+    **가능한 원인** 요청 시간이 초과되었습니다. **해결 방법** 다시 시도하세요. 패킷 손실 또는 낮은 카메라 프레임 속도가 원인일 수 있습니다.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_LOSS = -19">
+    **가능한 원인** 프레임이 손실되었습니다. 콜백 모드에서 자주 발생합니다. **해결 방법** 가끔 발생하는 손실은 조치가 필요하지 않을 수 있습니다. 자주 발생하면 네트워크 대역폭과 버퍼링을 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_ENABLE_ANYSTREAM_FAILED = -20">
+    **가능한 원인** 요청한 스트림 구성을 활성화할 수 없습니다. **해결 방법** `2.4.9` 이전 버전에서는 모든 스트림을 비활성화할 수 없었습니다. 이후 버전에서는 이 오류 코드가 사용되지 않습니다.
+  </Accordion>
+
+  <Accordion title="LX_E_NOT_RECEIVE_STREAM = -21">
+    **가능한 원인** 스트림 데이터를 수신하지 못했습니다. **해결 방법** 데이터 스트림이 누락될 때의 카메라 열기 문제 해결 절차를 따르세요.
+  </Accordion>
+
+  <Accordion title="LX_E_PARSE_STREAM_FAILED = -22">
+    **가능한 원인** 스트림이 시작되었지만 파싱할 수 없습니다. **해결 방법** 펌웨어 버전을 확인하거나 MRDVS 지원팀에 문의하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_PROCESS_IMAGE_FAILED = -23">
+    **가능한 원인** 영상 처리에 실패했습니다. **해결 방법** `Dataprocess` 영상 처리 라이브러리 버전이 호환되는지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_SETTING_NOT_ALLOWED = -24">
+    **가능한 원인** 연속 모드에서 요청한 설정을 사용할 수 없습니다. **해결 방법** 연속 모드에서는 ROI, 멀티 카메라 모드, 정렬 또는 기타 스트림 관련 설정을 변경하기 전에 스트림을 중지하세요. 먼저 카메라 모드를 설정한 후 해당 설정을 적용하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_LOAD_DATAPROCESSLIB_ERROR = -25">
+    **가능한 원인** 영상 처리 라이브러리를 로드할 수 없습니다. **해결 방법** `Dataprocess` 동적 라이브러리/공유 객체가 존재하고 라이브러리 경로에 포함되어 있는지 확인하세요. `source install.sh`를 실행하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_FUNCTION_CALL_LOGIC_ERROR = -26">
+    **가능한 원인** 함수 호출 순서 또는 사전 조건 로직이 잘못되었습니다. **해결 방법** SDK 로그를 확인하고 호출 순서를 조정하세요. 일반적인 사례는 다음과 같습니다.<br />1. 영상 크기를 변경하는 설정을 바꾸기 전에 스트림을 중지하세요.<br />2. 연속 모드에서는 영상 크기를 변경하지 마세요.<br />3. 알고리즘 업로드와 내장 애플리케이션 알고리즘은 함께 사용할 수 없습니다.<br />4. HDR이 활성화되어 있을 때 자동 노출을 활성화하지 마세요.<br />5. 자동 노출 파라미터는 자동 노출 상태에 따라 달라집니다.<br />6. 트리거 파라미터는 트리거 모드에 따라 달라집니다.
+  </Accordion>
+
+  <Accordion title="LX_E_IPAPPDR_UNREACHABLE_ERROR = -27">
+    **가능한 원인** IP 주소에 연결할 수 없거나 네트워크가 잘못 구성되었습니다. **해결 방법** SDK 호스트에서 카메라로 ping할 수 있는지 확인하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_ID_NOT_MATCH = -28">
+    **가능한 원인** 제한 시간 내에 RGB와 ToF 프레임이 동기화되지 않았습니다. **해결 방법** RGB-D 동기화가 활성화되어 있을 때는 애플리케이션에서 동기화와 실시간 데이터 중 어느 것이 더 중요한지에 따라 프레임을 폐기할지 경고를 무시할지 선택하세요.
+  </Accordion>
+
+  <Accordion title="LX_E_FRAME_MULTI_MACHINE = -29">
+    **가능한 원인** 프레임에 다른 카메라의 간섭 신호가 포함되어 있습니다. **해결 방법** 애플리케이션에 따라 프레임을 폐기하거나 경고를 무시하세요.
+  </Accordion>
+
+  <Accordion title="오류 `-25` 또는 `LxDataProcess` 로드 실패">
+    **가능한 원인** Linux에서 라이브러리가 환경 경로에 포함되어 있지 않습니다. **해결 방법** `source install.sh`를 실행하세요.
+  </Accordion>
+
+  <Accordion title="캡처한 영상이 세 영역으로 나뉩니다">
+    **가능한 원인** 표시되는 영상의 가로 세로 비율이 올바르지 않습니다.
+  </Accordion>
+
+  <Accordion title="ROS 2가 SDK 라이브러리와 충돌합니다">
+    **해결 방법** `util` 디렉터리의 래퍼를 사용하세요. 이 래퍼는 카메라 SDK를 간접적으로 연결하여 직접적인 라이브러리 충돌을 피합니다.
+  </Accordion>
+
+  <Accordion title="Lite 카메라와 RGB가 포함된 표준 카메라를 어떻게 구분하나요?">
+    **해결 방법** `DcGetBoolValue(handle, LX_BOOL_ENABLE_2D_STREAM, &test_rgb)`를 호출하세요. Lite 카메라는 해당 기능이 지원되지 않는다는 결과를 반환합니다.
+  </Accordion>
+
+  <Accordion title="시간 동기화는 어떻게 처리하나요?">
+    **해결 방법** SDK가 각 인터페이스 호출에서 PTP로 자동 동기화합니다. 별도의 트리거는 필요하지 않습니다.
+  </Accordion>
+</AccordionGroup>

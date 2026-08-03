@@ -1,0 +1,204 @@
+---
+title: H3310 카메라 사용자 가이드
+sidebarTitle: H3310 카메라 사용자 가이드
+description: "H3310 RGB-D 구조광 카메라의 사양, 인터페이스, 기구 통합 및 기본 문제 해결 방법을 설명합니다."
+hidden: true
+---
+
+이 가이드는 H3310 RGB-D 구조광 카메라의 사양, 인터페이스 정의, 기구 통합 요구 사항 및 기본 문제 해결 방법을 설명합니다.
+
+## 개정 이력
+
+| 날짜 | 버전 | 설명 |
+| --- | --- | --- |
+| 2023-11-21 | V0.1 | 최초 릴리스 |
+| 2024-11-25 | V1.0 | 보관 온도 업데이트 |
+
+## 용어 및 작동 원리
+
+### 주요 용어
+
+| 용어 | 설명 |
+| --- | --- |
+| 기준선 (Baseline) | 두 스테레오 이미징 장치의 광학 중심 사이의 수평 거리입니다. |
+| 깊이 (Depth) | 각 픽셀과 카메라 사이의 거리를 나타내는 데이터입니다. |
+| FOV | 수평, 수직 및 대각선 각도를 포함하는 시야각입니다. |
+| IR 카메라 | 근적외선 이미징에 사용하는 카메라입니다. |
+| RGB 카메라 | 컬러 이미징 카메라입니다. |
+| 깊이 카메라 | 일반적으로 투사, 이미징 및 깊이 처리 장치를 포함하며 깊이 데이터를 출력하는 이미징 시스템입니다. |
+| SoC | 이미지 처리, 깊이 계산 및 애플리케이션 알고리즘에 사용하는 시스템 온 칩입니다. |
+
+### 양안 코딩 구조광
+
+H3310은 코딩 구조광 투사와 양안 이미징을 결합하여 3D 정보를 얻습니다.
+
+<Steps>
+</Steps>
+
+<Frame>
+  ![양안 코딩 구조광 이미징 및 깊이 계산](/images/products/h-series-h3310-user-guide-how-structured-light-technology-works.avif)
+</Frame>
+
+## 제품 개요
+
+H3310은 무게가 400 g인 산업용 RGB-D 구조광 카메라입니다. 복합 로봇 또는 소형 로봇 팔에 장착할 수 있습니다. 300~600 mm의 작동 범위에서 고정밀 깊이 및 RGB 데이터를 출력하고 애플리케이션 알고리즘을 위한 통합 컴퓨팅 플랫폼을 제공합니다.
+
+<Frame>
+  ![H3310 카메라](/images/products/h-series-h3310-user-guide-h3310-camera.avif)
+</Frame>
+
+### 특징
+
+- 애플리케이션 알고리즘을 위한 통합 6.0 TOPS 컴퓨팅 플랫폼
+- 깊이, RGB 및 진폭 이미지 출력
+- 로봇 팔과 이동 로봇 통합을 위한 개방형 인터페이스
+
+## 사양
+
+| 매개변수 | H3310 |
+| --- | --- |
+| 작동 원리 | 양안 코딩 구조광 |
+| 깊이 해상도 | 1280 × 1024 |
+| RGB 해상도 | 1920 × 1080 |
+| 데이터 캡처 시간 | 약 0.8 s |
+| 출력 데이터 | 깊이 맵, RGB 이미지, 진폭 이미지 |
+| 작동 범위 | 300~600 mm |
+| 시야각 | 55° × 45° |
+| 측정 정확도 | ±0.1 mm (350 mm 기준) |
+| 소비 전력 | 8 W (24 VDC) |
+| 크기 (L × W × H) | 124 × 70 × 53 mm |
+| 무게 | 400 g |
+| 전원 공급 | 12~24 VDC / 3 A |
+| 통신 인터페이스 | Gigabit Ethernet |
+| 방진·방수 등급 | IP55 |
+| 작동 온도 | 0~40 °C |
+| 보관 온도 | −40~85 °C |
+| SDK | C/C\+\+ |
+| 서드파티 지원 | ROS, ROS2 |
+| 지원 운영체제 | Arm Linux (AArch64), Linux (x86\_64), Windows 7/8/10/11 |
+| 냉각 | 수동 |
+| 눈 안전 등급 | Class 3R |
+| 주변광 허용도 | 10 kLux |
+
+## 인터페이스 및 구성 요소
+
+### 카메라 인터페이스
+
+<Frame>
+  ![H3310 전원 및 Ethernet 커넥터 위치](/images/products/h-series-h3310-user-guide-connector-pinout.avif)
+</Frame>
+
+<Frame>
+  ![H3310 커넥터 핀 번호](/images/products/h-series-h3310-user-guide-connector-pinout-2.avif)
+</Frame>
+
+#### Ethernet 커넥터
+
+| 핀 | 신호 | 전선 색상 |
+| --- | --- | --- |
+| 1 | 0\+ | 주황색/흰색 |
+| 2 | 0− | 주황색 |
+| 3 | 1\+ | 녹색/흰색 |
+| 4 | 1− | 녹색 |
+| 5 | 2\+ | 파란색 |
+| 6 | 2− | 파란색/흰색 |
+| 7 | 3\+ | 갈색/흰색 |
+| 8 | 3− | 갈색 |
+
+#### 전원 및 I/O 커넥터
+
+| 핀 | 신호 | 설명 |
+| --- | --- | --- |
+| 1 | CON\_IN | I/O 입력 공통 단자 |
+| 2 | IN\_2 | I/O 입력 2 |
+| 3 | IN\_1 | I/O 입력 1 |
+| 4 | COM\_OUT | I/O 출력 공통 단자 |
+| 5 | OUT\_2 | I/O 출력 2 |
+| 6 | OUT\_1 | I/O 출력 1 |
+| 7 | VIN\+ | 24 VDC 양극 |
+| 8 | VIN− | 24 VDC 음극 |
+
+### 카메라 구성 요소
+
+<Frame>
+  ![H3310 전면 광학 구성 요소](/images/products/h-series-h3310-user-guide-camera-components.avif)
+</Frame>
+
+<Frame>
+  ![H3310 카메라 연결 구성 요소](/images/products/h-series-h3310-user-guide-camera-components-2.avif)
+</Frame>
+
+| 번호 | 구성 요소 |
+| --- | --- |
+| 1 | IR 카메라 |
+| 2 | RGB 카메라 |
+| 3 | 구조광 프로젝터 |
+| 4 | 전원 케이블 |
+| 5 | Ethernet 케이블 |
+
+## 기구 통합
+
+### 시야각 및 좌표계
+
+<Frame>
+  ![H3310 시야각](/images/products/h-series-h3310-user-guide-camera-field-of-view.avif)
+</Frame>
+
+좌표 원점은 카메라 전면에 있습니다. X축과 Y축은 제품에 표시된 X축과 Y축에 맞춰집니다.
+
+<Frame>
+  ![H3310 좌표 원점 및 축](/images/products/h-series-h3310-user-guide-camera-coordinate-origin.avif)
+</Frame>
+
+### 크기
+
+<Frame>
+  ![H3310 전면 및 측면 치수](/images/products/h-series-h3310-user-guide-camera-dimensions.avif)
+</Frame>
+
+<Frame>
+  ![H3310 장착 홀 치수](/images/products/h-series-h3310-user-guide-camera-dimensions-2.avif)
+</Frame>
+
+## 환경 및 신뢰성
+
+| 항목 | 요구 사항 |
+| --- | --- |
+| 작동 온도 | 0~40 °C |
+| 작동 습도 | 0~95% RH, 비응축 |
+| 작동 조도 | 0~30 kLux |
+| 보관 습도 | 10~95% RH, 비응축 |
+| 정상 작동 온도 상승 | 외함 온도 상승 < 20 °C |
+| ESD | 접촉 방전 ±4 kV, 공기 방전 ±8 kV |
+| 방사 방출 | GB 9254 Class A 준수 |
+| 환경 규정 준수 | RoHS |
+
+## 사용 및 안전
+
+<Warning>
+  카메라를 분해, 개조 또는 수리하지 마세요. 렌즈를 가리거나 카메라를 떨어뜨리거나 강한 기계적 응력 또는 직사광선에 노출하지 마세요. 외관상 손상된 카메라의 전원을 켜지 마세요.
+</Warning>
+
+<Frame>
+  ![H3310 레이저 안전 라벨](/images/products/h-series-h3310-user-guide-laser-safety-class.avif)
+</Frame>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="호스트 애플리케이션에서 카메라를 열 수 없습니다">
+    호스트 방화벽이 연결을 차단하고 있지 않은지 확인한 다음 카메라 전원과 네트워크 연결을 점검하세요.
+  </Accordion>
+
+  <Accordion title="장치 목록에 여러 IP 주소가 표시됩니다">
+    LAN에 검색 가능한 장치가 여러 대 있을 수 있습니다. 대상 카메라에 해당하는 IP 주소를 선택하세요.
+  </Accordion>
+
+  <Accordion title="데이터 스트림이 불안정합니다">
+    Gigabit Ethernet 케이블을 사용하세요. 100 Mbps 네트워크에서는 초기 스트림이 불안정할 수 있습니다.
+  </Accordion>
+
+  <Accordion title="설치 후 소프트웨어가 실행되지 않습니다">
+    제한된 디렉터리에 소프트웨어를 설치했다면 파일 및 프로그램 실행 권한을 확인하세요.
+  </Accordion>
+</AccordionGroup>

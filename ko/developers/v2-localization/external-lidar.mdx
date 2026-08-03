@@ -1,0 +1,46 @@
+---
+title: V2에서 외부 LiDAR 사용
+description: V2 로컬라이제이션 모듈이 구독하는 토픽에 외부 LiDAR의 LaserScan 데이터를 게시합니다.
+hidden: true
+---
+
+이 페이지에서는 V2 로컬라이제이션 모듈이 외부 LiDAR ROS 레이저 토픽을 구독하도록 구성하는 방법을 설명합니다.
+
+<Info>
+  외부 LiDAR는 구성된 토픽과 일치하는 `sensor_msgs/LaserScan` 메시지를 계속 게시해야 합니다. 이 페이지에서는 토픽 구성과 구독 확인만 다루며 LiDAR 드라이버 설치나 캘리브레이션은 다루지 않습니다.
+</Info>
+
+## 로컬라이제이션 레이저 토픽 구성
+
+body 구성에서 로컬라이제이션 레이저 입력을 UDP로 설정하고 LaserScan 토픽을 지정하세요.
+
+```yaml
+LxCamera_UploadScan: "/sim/scan"
+```
+
+외부 LiDAR가 같은 토픽에 게시하도록 구성하거나 위 값을 실제 토픽에 맞게 변경하세요.
+
+## ROS 토픽 확인
+
+V2 로컬라이제이션 노드가 해당 토픽을 구독하고 메시지 유형이 `LaserScan`인지 확인하세요.
+
+<Tabs>
+  <Tab title="ROS 1">
+    ```bash
+    rostopic info /sim/scan
+    ```
+
+    출력에 `sensor_msgs/LaserScan`이 표시되고 구독자 목록에 `/lx_localization_node`가 포함되어야 합니다.
+  </Tab>
+  <Tab title="ROS 2">
+    ```bash
+    ros2 topic info /sim/scan
+    ```
+
+    출력에 `sensor_msgs/msg/LaserScan`이 표시되고 구독 수가 `1` 이상이어야 합니다.
+  </Tab>
+</Tabs>
+
+<Tip>
+  구독 수가 `0`이면 토픽 이름, ROS 도메인 구성 및 로컬라이제이션 노드 상태를 확인하세요. 게시자 수가 `0`이면 외부 LiDAR 드라이버를 확인하세요.
+</Tip>

@@ -1,0 +1,79 @@
+---
+title: AGV 지게차 빈 적재
+description: "3D 비전으로 빈의 자세를 추정하고 AGV 지게차의 빈 픽업, 배치 및 다단 적재를 안내합니다."
+---
+
+빈 적재에서는 지게차가 제한된 허용 오차 안에서 위치와 방향을 맞춰야 합니다. 적재 단수, 빈 유형, 하중 형상 및 변화하는 조명이 늘어날수록 인식과 도킹이 어려워집니다.
+
+## 솔루션 개요
+
+이 솔루션은 스마트 지게차에 장착한 3D 카메라로 포크 위의 빈과 대상 빈 사이의 상대 자세를 추정합니다. 위치 및 각도 오프셋을 지게차 컨트롤러에 전송해 픽업과 적재를 안내합니다. 빈, 팔레트 및 기타 정밀 도킹 작업에 사용할 수 있습니다.
+
+## 검증된 기능
+
+- 위치 정확도 최대 **±5 mm**, 각도 정확도 최대 **0.1°**.
+- 빈 오프셋 인식 범위 **±15°**.
+- 프레임당 처리 시간 **100 ms** 미만.
+- **1~4단** 및 `2 × 2` 적재 지원.
+
+<Frame>
+  ![상단 빈과 하단 빈 도킹을 위한 포인트 클라우드 데이터](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+</Frame>
+
+## 설치 방식
+
+<Tabs>
+  <Tab title="단일 카메라 구성">
+    카메라를 리프팅 장치에 장착하고 수평으로 조정해 양쪽 포크의 빈을 향하게 합니다. 카메라와 포크 하단 사이의 거리를 **35~55 cm**로 유지하고 리프팅 장치의 위치 오차가 **1 cm**를 넘지 않도록 합니다.
+
+    <Frame>
+      ![단일 카메라 빈 적재 설치](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+    </Frame>
+  </Tab>
+  <Tab title="듀얼 카메라 구성">
+    지게차 양쪽에 카메라를 하나씩 장착합니다. 포크 표면에서 **30~40 cm** 떨어지고 지면과 **45°**가 되도록 설치합니다. 각 카메라는 해당 측의 빈을 인식합니다.
+
+    <Frame>
+      ![듀얼 카메라 빈 적재 설치](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+    </Frame>
+  </Tab>
+</Tabs>
+
+<Info>
+  M4 Pro 또는 M4 Mega와 같은 M Series를 권장합니다. 작업 거리, 시야 및 빈 크기에 따라 모델을 선택하세요.
+</Info>
+
+## 통신 데이터
+
+시스템은 TCP/IP를 통해 지게차 컨트롤러와 통신합니다. 컨트롤러가 빈의 `X`, `Y` 및 `θ`를 요청하면 카메라는 다음 필드를 반환합니다.
+
+| 필드 | 설명 |
+| --- | --- |
+| `X`, `Y` | 상대 빈 좌표(mm)이며 32비트 부동소수점 값으로 표현됩니다. |
+| `Theta` | **−90°~90°** 범위의 각도 오프셋입니다. |
+| `Error Code` | `0`: 성공, `-1`: 카메라 오류, `-2`: 위치 추정 실패, `-3`: 알고리즘 오류. |
+
+## 작업 흐름
+
+<Tabs>
+  <Tab title="픽업">
+    <Steps>
+    </Steps>
+  </Tab>
+  <Tab title="적재">
+    <Steps>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Warning>
+  먼지가 많고 습한 환경을 피하세요. 카메라 브래킷을 단단하고 안정적으로 유지하며, 선명한 시야를 위해 렌즈를 정기적으로 청소하세요.
+</Warning>
+
+<Frame>
+  ![AGV 지게차 빈 적재 시연](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+</Frame>
+
+<Frame>
+  ![빈 적재 인식 결과](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+</Frame>

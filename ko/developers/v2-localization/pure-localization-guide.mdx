@@ -1,0 +1,190 @@
+---
+title: V2 로컬라이제이션 전용 가이드
+description: "V2 로컬라이제이션 전용 웹 인터페이스를 사용하여 맵 생성, 로컬라이제이션, 맵 관리, 로그 내보내기 및 유지 관리 작업을 수행하세요."
+hidden: true
+---
+
+이 페이지에서는 V2 로컬라이제이션 전용 웹 인터페이스를 설명합니다. 맵을 생성하거나 전환하고 재로컬라이제이션하기 전에 차량, 카메라 및 LiDAR가 정상적으로 작동하는지 확인하세요.
+
+<Warning>
+  맵 전환, 펌웨어 업데이트 및 내장 애플리케이션 재시작은 로컬라이제이션 서비스에 영향을 줍니다. 차량이 정지하고 작업 영역이 안전하며 복구 절차를 사용할 수 있을 때만 수행하세요.
+</Warning>
+
+## 인터페이스 개요
+
+| 영역 | 내용 |
+| --- | --- |
+| 메뉴 바 | 맵 생성, 재로컬라이제이션, 맵 관리 및 유지 관리 기능입니다. |
+| 맵 보기 | 로드된 2D 윤곽 맵과 차량 로컬라이제이션 아이콘입니다. |
+| RGB 보기 | 탑뷰 카메라의 실시간 RGB 이미지입니다. |
+| 상태 영역 | 재로컬라이제이션 신호 강도, 차량 좌표, 속도 및 커서 좌표입니다. 신호 품질은 좋은 순서대로 녹색, 파란색, 빨간색으로 표시됩니다. |
+
+<Frame>
+  ![V2 localization-only web interface areas](/images/developers/v2-localization-pure-localization-guide-interface-description.avif)
+</Frame>
+
+## 맵 생성
+
+### 맵 생성
+
+<Steps>
+  <Step title="맵 생성 시작">
+    웹 인터페이스에서 **Start Mapping**을 클릭하세요.
+
+    <Frame>
+      ![Start Mapping button in the V2 localization-only interface](/images/developers/v2-localization-pure-localization-guide-1-starting-to-build-a-map.avif)
+    </Frame>
+  </Step>
+  <Step title="맵 이름 입력">
+    맵 이름에는 문자, 숫자 및 밑줄만 사용할 수 있으며 문자로 시작해야 합니다.
+
+    <Columns cols={2}>
+      <Frame>
+        ![Map name entry dialog](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-2.avif)
+      </Frame>
+
+      <Frame>
+        ![맵 생성 시작 page](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-3.avif)
+      </Frame>
+    </Columns>
+  </Step>
+  <Step title="영역 캡처 및 맵 생성 중지">
+    AGV를 대상 영역으로 주행하세요. 캡처가 완료되면 **Stop Mapping**을 클릭하고 처리가 끝날 때까지 기다리세요. 처리 시간은 캡처한 영역의 크기에 따라 달라집니다.
+  </Step>
+  <Step title="맵 확인">
+    맵 생성이 완료되면 **Map Management**를 열고 새 맵이 목록에 표시되는지 확인하세요.
+  </Step>
+</Steps>
+
+### 증분 맵 생성
+
+증분 맵 생성을 사용하여 기존 맵에 영역을 추가하세요. 시작하기 전에 재로컬라이제이션을 완료하고 확장할 맵으로 전환하세요.
+
+<Info>
+  증분 맵 생성 is started and stopped with a manual HTTP request at [http://192.168.100.201:9998/tool/rob/sendCMD](http://192.168.100.201:9998/tool/rob/sendCMD).
+</Info>
+
+<Tabs>
+  <Tab title="증분 맵 생성 시작">
+    ```json
+    {
+      "cmd": 904,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="증분 맵 생성 중지">
+    ```json
+    {
+      "cmd": 905,
+      "attach": {
+        "sub_command": 0,
+        "param": ""
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+작업이 완료되면 새로 캡처한 영역이 현재 맵에 기록됩니다. 변경 사항을 적용하려면 로컬라이제이션 서비스를 재시작하세요.
+
+<Frame>
+  ![증분 맵 생성 operation in the V2 localization-only interface](/images/developers/v2-localization-pure-localization-guide-1-starting-mapping-4.avif)
+</Frame>
+
+## 맵 관리
+
+**Map Management**에서 맵을 확인, 적용 또는 삭제하세요. 여러 영역에서 작업할 때는 이 페이지에서 활성 맵을 전환하세요.
+
+<Columns cols={2}>
+  <Frame>
+    ![Map Management page in the V2 localization-only interface](/images/developers/v2-localization-pure-localization-guide-2-map-management.avif)
+  </Frame>
+
+  <Frame>
+    ![Applying a map in the V2 localization-only interface](/images/developers/v2-localization-pure-localization-guide-2-map-management-2.avif)
+  </Frame>
+</Columns>
+
+<Warning>
+  **Apply**를 클릭한 후 새 맵을 적용하려면 내장 애플리케이션을 재시작하세요. 재시작하지 않으면 재로컬라이제이션이 실패할 수 있습니다.
+</Warning>
+
+## 재로컬라이제이션
+
+### 수동 재로컬라이제이션
+
+Click **재로컬라이제이션**, then drag in the map view to provide an approximate vehicle pose so that the LiDAR point cloud matches the contour map. The **Localization timeout** fault disappears after relocalization succeeds.
+
+<Frame>
+  ![수동 재로컬라이제이션 in the V2 localization-only interface](/images/developers/v2-localization-pure-localization-guide-3-relocation.avif)
+</Frame>
+
+### AprilTag 재로컬라이제이션
+
+맵을 생성할 때 선택한 위치에 AprilTag를 배치할 수 있습니다. 완전한 태그가 장치의 시야에 들어오면 시스템이 해당 맵과 포즈를 식별하고 필요하면 맵을 전환한 후 자동으로 재로컬라이제이션합니다.
+
+- [AprilTag 생성기](https://chaitanyantr.github.io/apriltag)로 태그를 생성하세요.
+- 장치의 가시 영역 내에서 태그 ID는 고유해야 합니다.
+- 인터페이스 예제에 표시된 고정 태그 패밀리를 사용하세요.
+
+<Frame>
+  ![AprilTag 재로컬라이제이션 configuration](/images/developers/v2-localization-pure-localization-guide-3-relocation-2.avif)
+</Frame>
+
+## 파라미터 및 로그
+
+### 로컬라이제이션 파라미터 구성
+
+파라미터 페이지에서 섀시 로컬라이제이션 파라미터와 센서 캘리브레이션 값의 LiDAR 및 카메라 외부 파라미터를 확인하거나 구성하세요.
+
+<Frame>
+  ![Localization parameters and sensor extrinsic calibration](/images/developers/v2-localization-pure-localization-guide-4-parameter-configuration-and-display.avif)
+</Frame>
+
+### 로그 내보내기
+
+시간 범위와 모듈 유형으로 로그를 필터링하세요. 필요한 결과를 선택하여 내보내세요.
+
+<Frame>
+  ![Log filtering and export page](/images/developers/v2-localization-pure-localization-guide-5-the-log-export-function.avif)
+</Frame>
+
+## 유지 관리
+
+### 펌웨어 업데이트
+
+업데이트 페이지에서 로컬 펌웨어 패키지를 가져와 섀시, 액추에이터 또는 카메라 펌웨어를 업데이트하세요. 복원 패키지에는 이전 업데이트 전 버전이 기록되며 롤백에 사용할 수 있습니다.
+
+<Warning>
+  표준 호스트 컴퓨터 절차로 업그레이드한 카메라 펌웨어는 롤백할 수 없습니다. 업데이트하기 전에 패키지와 현재 버전을 확인하세요.
+</Warning>
+
+<Columns cols={2}>
+  <Frame>
+    ![Firmware update page for the V2 localization-only system](/images/developers/v2-localization-pure-localization-guide-7-firmware-update.avif)
+  </Frame>
+
+  <Frame>
+    ![Camera firmware update through the host computer](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-2.avif)
+  </Frame>
+</Columns>
+
+### 내장 애플리케이션 중지 또는 재시작
+
+내장 애플리케이션 컨트롤을 사용하여 애플리케이션을 중지하거나 재시작하세요. LxCameraViewer를 카메라에 연결하기 전에 내장 애플리케이션을 중지해야 합니다. 그렇지 않으면 차량이 카메라 제어를 유지하여 통신을 방해할 수 있습니다.
+
+<Frame>
+  ![Built-in application stop and restart controls](/images/developers/v2-localization-pure-localization-guide-main-application-controls.avif)
+</Frame>
+
+### 버전 확인
+
+버전 페이지를 열어 내장 프런트엔드 및 백엔드 버전을 확인하세요.
+
+<Frame>
+  ![Version information page](/images/developers/v2-localization-pure-localization-guide-7-firmware-update-4.avif)
+</Frame>

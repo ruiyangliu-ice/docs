@@ -1,0 +1,385 @@
+---
+title: V2 ROS1 인터페이스 레퍼런스
+description: "V2 로컬라이제이션 ROS1 SDK를 빌드하고 실행한 다음 토픽과 서비스를 사용하여 맵 생성, 로컬라이제이션 및 맵 관리를 수행합니다."
+hidden: true
+---
+
+## 컴파일
+
+Qt5 Core 및 Network 구성 요소를 설치하세요. 설치 명령은 Linux 배포판에 따라 다르며 다음 예제에서는 Ubuntu를 사용합니다.
+
+```bash
+sudo apt install qtbase5-dev qtbase5-dev-tools libqt5network5
+```
+
+공식 지침에 따라 [libzip 다운로드 페이지](https://libzip.org/download/)에서 `libzip`을 다운로드하고 컴파일하세요.
+
+컴파일 the ROS package from `/V2-ROS-SDK-service`, which is at the same level as `src`:
+
+```bash
+catkin_make
+```
+
+## 실행
+
+<Warning>
+  카메라에서 ROS master/slave 설정이 활성화되어 있으면 ROS 샘플을 실행하기 전에 비활성화하세요. 카메라 전원을 켠 후 샘플을 시작하기 전에 약 20초 기다립니다.
+</Warning>
+
+`src`와 같은 수준에 있는 `home/username/V2_ROS_SDK`에서 다음을 실행하세요.
+
+```bash
+catkin_make
+source devel/setup.bash
+```
+
+## ROS 토픽 인터페이스
+
+인터페이스를 테스트하기 전에 카메라 전원을 켜고 내장 프로그램이 시작될 때까지 약 30초 기다리세요. 그런 다음 ROS SDK 노드를 시작합니다.
+
+| 사용 사례 | 관련 토픽 |
+| --- | --- |
+| 로컬라이제이션 | 포즈, 로컬라이제이션 상태, 맵 전환 및 재로컬라이제이션 |
+| 맵 생성 | 맵 생성 status and progress |
+| 유지 관리 및 구성 | 저장 공간 사용량, 오류 모듈, 파라미터 설정 및 맵 업로드/다운로드 |
+
+### 로컬라이제이션 포즈 수신
+
+ROS는 카메라의 `x`, `y`, `theta` 값을 계속 수신하고 이 값과 `theta`에서 변환한 쿼터니언을 `LxCamera_LocationPoseResult`에 게시하며 TF를 통해 포즈를 브로드캐스트합니다.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_LocationPoseResult
+```
+
+### 로컬라이제이션 상태 수신
+
+ROS는 카메라의 로컬라이제이션 상태(`true` 또는 `false`)를 1 Hz로 수신하여 `LxCamera_LocationResult`에 `std_msgs::Bool`로 게시합니다.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_LocationResult
+```
+
+### 카메라 저장 공간 사용량 수신
+
+ROS receives the camera's storage usage ratio at 2 Hz and publishes it as `std_msgs::Float32` on `LxCamera_Capacity_Status`.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Capacity_Status
+```
+
+### 오류 모듈 이름 수신
+
+ROS는 카메라에서 오류가 발생한 모듈 이름을 수신하여 `LxCamera_Module_Error`에 `std_msgs::String`으로 게시합니다.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Module_Error
+```
+
+### 맵 생성 상태 수신
+
+After mapping starts, ROS publishes the mapping status as `std_msgs::Bool` on `LxCamera_맵 생성State`.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_MappingState
+```
+
+### 맵 생성 진행률 수신
+
+After mapping starts, ROS publishes the mapping progress (`0–100`) as `std_msgs::Int32` on `LxCamera_맵 생성_Progress`.
+
+```bash
+rostopic echo /lx_localization_node/LxCamera_Mapping_Progress
+```
+
+### 파라미터 설정
+
+`LxCamera_SetParam`에 `std_msgs/String` 메시지를 게시하세요. 메시지에는 쉼표로 구분된 9개의 부동 소수점 값이 포함됩니다: `x,y,z,yaw,pitch,roll,x,y,yaw`. 처음 6개 값은 카메라 포즈를 정의하고 마지막 3개 값은 LiDAR 포즈를 정의합니다. 업데이트가 성공하면 `/home/fr1511b/hontai/params/config_install_FL21500HAF.ini`의 `[Laser1]` 및 `[Camera1]` 섹션에 해당하는 값이 업데이트됩니다.
+
+```bash
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SetParam std_msgs/String "11,11,10.2,11.2,12.2,13.2,2,2,2"
+```
+
+### 맵 전환
+
+완료된 맵 이름을 포함한 `std_msgs/String` 메시지를 `LxCamera_SwitchMap`에 게시하세요. 카메라 웹 인터페이스를 새로 고치고 표시된 맵 이름이 바뀌면 전환이 성공한 것입니다.
+
+```bash
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_SwitchMap std_msgs/String "for"
+```
+
+### 오도메트리 업로드
+
+1. `nav_msgs::Odometry` 데이터를 `/sim/odom`에 게시하세요. 토픽은 변경할 수 있습니다.
+
+```text
+rostopic pub /odom nav_msgs/Odometry "header: seq: 0 stamp: secs: 0 nsecs: 0 frame_id: 'odom' child_frame_id: 'base_link' pose: pose: position: x: 1.0 y: 2.0 z: 0.0 orientation: x: 0.0 y: 0.0 z: 0.0 w: 1.0 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] twist: twist: linear: x: 0.5 y: 0.0 z: 0.0 angular: x: 0.0 y: 0.0 z: 0.1 covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+```bash
+# lx_camera_udp 디렉터리로 이동합니다.
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/sim/odom std_msgs/String "for"
+```
+
+### 윤곽 맵 다운로드
+
+1. `LxCamera_DownloadMap`에 `std_msgs/String` 메시지를 게시하세요.
+2. 메시지에는 쉼표로 구분된 호스트 절대 경로와 맵 이름이 포함됩니다. 맵 이름은 카메라에 있는 완료된 맵의 `.zip` 파일 이름입니다.
+3. 다운로드가 성공하면 지정한 호스트 경로에 맵 아카이브가 생성됩니다. 압축을 풀어 `PGM` 맵 파일과 `YAML` 구성 파일을 얻으세요.
+
+```bash
+# lx_camera_udp 디렉터리로 이동합니다.
+source devel/setup.bash
+rostopic pub -1 /lx_localization_node/LxCamera_DownloadMap std_msgs/String "/home/zsure/LANXIN,TEST_999"
+```
+
+### 맵 ZIP 파일 업로드(신규)
+
+1. Publish a `std_msgs/String` message to `LxCamera_UploadMapZip`.
+2. 메시지에는 업로드할 맵 아카이브의 경로가 포함됩니다(예: `/home/fr1511b/map.zip`). 맵 다운로드 인터페이스로 다운로드한 아카이브를 사용하세요.
+3. 맵을 찾으면 SDK가 카메라로 전송합니다. 카메라는 이를 `/home/fr1511b/hontai/map/`에 압축 해제합니다.
+
+```bash
+rostopic pub -1 /lx_localization_node/LxCamera_UploadMapZip std_msgs/String "map_path"
+```
+
+### 재로컬라이제이션
+
+1. `geometry_msgs::PoseWithCovarianceStamped` 데이터를 `LxCamera_UploadReloc`에 게시하세요.
+2. 포즈에는 LiDAR 포즈인 `x`, `y`, `yaw`가 포함됩니다.
+3. 카메라 웹 인터페이스에 표시되는 위치가 전송한 포즈로 업데이트되면 재로컬라이제이션이 성공한 것입니다.
+
+```bash
+rostopic pub -1 /lx_localization_node/LxCamera_UploadReloc geometry_msgs/PoseWithCovarianceStamped "
+header:
+  frame_id: ''
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0
+      y: 0
+      z: -0.694658
+      w: 0.71934
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+> 쿼터니언에는 제약이 있으므로 임의로 입력하면 안 됩니다. [Euler-to-quaternion converter](https://www.itutool.com/tools/euler-quaternion-converter "Web tool")를 사용하여 `Euler yaw` 각도를 쿼터니언 `xyzw` 값으로 변환하세요.
+
+## ROS 서비스 인터페이스
+
+맵 생성, map switching, map downloading, and relocalization are also available through ROS services. A service response of `true` indicates success; `false` indicates failure. For operations that require confirmation, prefer the service interface.
+
+<Info>
+  다음 명령에는 `rosservice call`을 사용하세요. 맵 이름은 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+</Info>
+
+### 맵 생성
+
+Service name: `/lx_localization_node/LxCamera_맵 생성_srv`
+
+Service definition:
+
+```text
+bool status      # 맵 생성 시작: 1, 맵 생성 중지: 0
+string mapname   # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_Mapping_srv "status: true
+mapname: 'test_map'"
+```
+
+### 맵 전환
+
+Service name: `/lx_localization_node/LxCamera_SwitchMap_srv`
+
+Service definition:
+
+```text
+string mapname   # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_SwitchMap_srv "mapname: 'zszs999'"
+```
+
+### 맵 다운로드
+
+Service name: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Service definition:
+
+```text
+string mapname    # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+string save_path  # 절대 저장 경로입니다(예: "/home/lx/map"). 끝의 슬래시는 생략합니다.
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_DownloadMap_srv "mapname: 'TEST_999'
+save_path: '/home/fr1511b/T/TEST'"
+```
+
+### 재로컬라이제이션
+
+Service name: `/lx_localization_node/LxCamera_UploadReloc_srv`
+
+Service definition:
+
+```text
+geometry_msgs/PoseWithCovarianceStamped pose
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_UploadReloc_srv "pose:
+  header:
+    seq: 0
+    stamp:
+      secs: 0
+      nsecs: 0
+    frame_id: 'map'
+  pose:
+    pose:
+      position:
+        x: 4.5
+        y: -15.5
+        z: 0.0
+      orientation:
+        x: 0.0
+        y: 0.0
+        z: 0.694658
+        w: 0.71934
+    covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+```
+
+### 현재 맵 이름 가져오기
+
+Service name: `/lx_localization_node/LxCamera_GetCurMapname_srv`
+
+Service definition:
+
+```text
+bool get_cur_mapname # 맵 식별자를 가져옵니다.
+---
+string mapname      # 현재 맵 이름
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_GetCurMapname_srv "get_cur_mapname: true"
+```
+
+### 현재 맵 목록 가져오기
+
+Service name: `/lx_localization_node/LxCamera_GetMapList_srv`
+
+Service definition:
+
+```text
+bool get_map_list # 맵 목록을 가져옵니다.
+---
+string[] map_list # 맵 목록
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_GetMapList_srv "get_map_list: true"
+```
+
+### 맵 생성 종료(사용자 지정 인터페이스)
+
+Service name: `/lx_localization_node/LxCamera_Exit맵 생성_srv`
+
+Service definition:
+
+```text
+bool exit_mapping # 맵 생성을 종료합니다.
+---
+bool state        # true: 성공, false: 실패
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_ExitMapping_srv "exit_mapping: true"
+```
+
+### 맵 삭제
+
+Service name: `/lx_localization_node/LxCamera_EraseMap_srv`
+
+Service definition:
+
+```text
+string mapname    # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+---
+bool result       # true: 성공, false: 실패
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_EraseMap_srv "mapname: 'TEST888'"
+```
+
+### 히트맵 다운로드
+
+Service name: `/lx_localization_node/LxCamera_DownloadMap_srv`
+
+Service definition:
+
+```text
+string mapname    # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+string save_path  # 절대 저장 경로입니다(예: "/home/lx/map"). 끝의 슬래시는 생략합니다.
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_DownloadHeatMap_srv "mapname: 'TEST_999' save_path: '/home/fr1511b/T/TEST'"
+```
+
+### 증분 맵 생성
+
+Service name: `/lx_localization_node/LxCamera_Inc맵 생성_srv`
+
+Service definition:
+
+```text
+bool status      # 맵 생성 시작: 1, 맵 생성 중지: 0
+string mapname   # 맵 이름. 숫자로 시작할 수 없고 30자를 초과할 수 없습니다.
+---
+bool result
+```
+
+서비스 호출:
+
+```bash
+rosservice call /lx_localization_node/LxCamera_IncMapping_srv "status: true
+mapname: 'test_map'"
+```

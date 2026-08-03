@@ -1,0 +1,2488 @@
+---
+title: Linux SDK 예제
+sidebarTitle: Linux SDK 예제
+description: "Linux용 MRDVS Camera SDK에 포함된 C, Java, ROS 및 ROS 2 예제를 설정하고 빌드하고 실행합니다."
+hidden: true
+---
+
+<Info>
+  문서 버전: V1.0, 개정일: 2024-10-12.
+</Info>
+
+## 개요
+
+Linux용 MRDVS Camera SDK에는 C/C\+\+, Java(HTTP 서비스), ROS 및 ROS 2 예제가 포함되어 있습니다. 예제는 기본 SDK 작업 흐름을 보여주므로 프로젝트에 맞는 로직과 오류 처리를 추가하세요.
+
+먼저 환경 설정, 설치 스크립트 및 샘플 디렉터리 확인을 완료하세요. 그런 다음 대상 언어의 컴파일 및 실행 섹션을 따르세요. 부록에는 일반 종속성과 테스트 패키지의 설치 방법이 정리되어 있습니다.
+
+---
+
+## 시스템 및 환경
+
+### 호환 시스템 및 종속성 버전
+
+다음 Linux 시스템을 지원합니다. 기본 프로그램 버전은 아래와 같습니다.
+
+| 시스템 버전 | CMake/GCC | OpenCV | PCL | ROS | ROS2 |
+| --- | --- | --- | --- | --- | --- |
+| Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Kinetic | Ardent、Bouncy |
+| Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodic | Dashing、Eloquent、Crystal |
+| Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetic | Foxy、Galactic |
+| Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、lron |
+
+### 2.2 시스템 및 애플리케이션 버전 확인
+
+#### 2.2.1 시스템 버전 확인
+
+```bash
+uname -a
+```
+
+결과:
+
+<Frame>
+  ![시스템 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-system-version.avif)
+</Frame>
+
+운영체제 릴리스 버전 번호: 5.15.0
+
+- **주 버전 번호:** 5
+- **버전 번호:** 15 \[홀수는 개발 버전이고 짝수는 안정 버전입니다\]
+- **개정 번호:** 0 \[수정 횟수\]
+- **이 버전의 N번째 개정:** 97
+- **커널 버전:** #107~20.0.4.1, 일반적으로 시스템 버전은 커널 버전입니다
+
+#### 2.2.2 CMake 버전 확인
+
+```bash
+cmake --version
+```
+
+결과:
+
+<Frame>
+  ![CMake 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-cmake-version.avif)
+</Frame>
+
+CMake 버전은 3.16.3
+
+#### 2.2.3 GCC 버전 확인
+
+```bash
+gcc -v
+```
+
+결과:
+
+<Frame>
+  ![GCC 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-gcc-version.avif)
+</Frame>
+
+버전 번호는 왼쪽 아래 파란색 상자에 표시됩니다. 여기 표시된 버전은 9.4.0
+
+#### 2.2.4 OpenCV 버전 확인
+
+```bash
+pkg-config --modversion opencv
+```
+
+결과:
+
+<Frame>
+  ![OpenCV 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-opencv-version.avif)
+</Frame>
+
+여기 표시된 버전은 3.2.0
+
+#### 2.2.5 PCL 버전 확인
+
+```bash
+dpkg -l libpcl-dev
+```
+
+결과:
+
+<Frame>
+  ![PCL 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-pcl-version.avif)
+</Frame>
+
+여기 표시된 버전은 1.8.1
+
+#### 2.2.6 ROS 버전 확인
+
+```bash
+rosversion -d
+```
+
+결과:
+
+<Frame>
+  ![ROS 버전 확인 관련 이미지](/images/developers/camera-sdk-linux-examples-view-ros-version.avif)
+</Frame>
+
+여기 표시된 버전은 eloquent (Ubuntu18.04에 해당하는 ROS 2 버전)
+
+<Frame>
+  ![ROS 버전 확인 관련 이미지 2](/images/developers/camera-sdk-linux-examples-view-ros-version-2.avif)
+</Frame>
+
+여기 표시된 버전은 noetic (Ubuntu20에 해당하는 ROS 1 버전)
+
+### 2.3 기본 개발 환경 구성
+
+설치하기 전에 설치 목록을 업데이트해야 합니다.
+
+```bash
+sudo apt update
+```
+
+결과는 다음과 같습니다.
+
+<Frame>
+  ![기본 개발 환경 구성 관련 그림](/images/developers/camera-sdk-linux-examples-building-a-basic-development-environment.avif)
+</Frame>
+
+#### 2.3.1 CMake 설치
+
+```bash
+sudo apt install cmake
+```
+
+<Frame>
+  ![CMake 설치 관련 이미지](/images/developers/camera-sdk-linux-examples-installation-cmake.avif)
+</Frame>
+
+#### 2.3.2 GCC 설치
+
+```bash
+sudo apt install build-essential
+```
+
+<Frame>
+  ![GCC 설치 관련 이미지](/images/developers/camera-sdk-linux-examples-install-gcc.avif)
+</Frame>
+
+### 2.4 선택적 개발 환경 구성
+
+#### 2.4.1 OpenCV 설치 \[카메라 이미지를 표시할 수 있음\]
+
+```bash
+sudo apt-get install libopencv-dev
+```
+
+<Frame>
+  ![OpenCV 설치 \[카메라 이미지를 표시할 수 있음\] 관련 이미지](/images/developers/camera-sdk-linux-examples-install-opencv-can-display-camera-images.avif)
+</Frame>
+
+#### 2.4.2 PCL 설치 \[포인트 클라우드를 표시할 수 있음\]
+
+```bash
+sudo apt-get install libpcl-dev
+```
+
+<Frame>
+  ![PCL 설치 \[포인트 클라우드를 표시할 수 있음\] 관련 이미지](/images/developers/camera-sdk-linux-examples-install-pcl-can-display-point-cloud.avif)
+</Frame>
+
+---
+
+## 샘플 코드 준비
+
+### 3.1 설치 스크립트 실행
+
+1. Lanxin-MRDVS 파일의 압축을 풀고 Lanxin-MRDVS 폴더로 이동하세요.
+
+<Frame>
+  ![설치 스크립트 실행 관련 그림](/images/developers/camera-sdk-linux-examples-executing-the-installation-script.avif)
+</Frame>
+
+2. 마우스 오른쪽 버튼을 클릭하여 콘솔을 여세요.
+3. install.sh 스크립트를 실행하세요.
+
+<Frame>
+  ![설치 스크립트 실행 관련 그림 2](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-2.avif)
+</Frame>
+
+4. /opt/ 디렉터리로 이동하여 설치가 성공했는지 확인하세요.
+
+<Frame>
+  ![설치 스크립트 실행 관련 그림 3](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-3.avif)
+</Frame>
+
+5. 폴더를 찾을 수 있으면 설치가 성공한 것입니다.
+6. 설치에 실패하면 opt 디렉터리에 수동으로 추가해야 합니다.
+7. set\_socket\_buffer\_size.sh 스크립트를 실행하세요.
+
+<Frame>
+  ![설치 스크립트 실행 관련 그림 4](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-4.avif)
+</Frame>
+
+8. 이제 설치 스크립트 실행이 완전히 완료되었습니다!
+
+### 3.2 샘플 코드 소개
+
+Sample 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![샘플 코드 소개 관련 그림](/images/developers/camera-sdk-linux-examples-sample-code-introduction.avif)
+</Frame>
+
+- C 폴더에는 C 및 C\+\+ 관련 코드가 들어 있습니다.
+- Java 폴더에는 SDK를 간접적으로 호출하기 위한 HTTP 서버가 들어 있습니다.
+- ROS 폴더에는 ROS 예제가 들어 있습니다.
+- ROS2 폴더에는 ROS 2 예제가 들어 있습니다.
+
+#### 3.2.1 C 및 C\+\+ 샘플 코드
+
+C 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![C 및 C\+\+ 샘플 코드 관련 그림](/images/developers/camera-sdk-linux-examples-c-and-c-sample-code.avif)
+</Frame>
+
+폴더 9개와 CMakeLists 파일 1개가 있으며 각 폴더에 cpp 파일이 들어 있습니다.
+
+각 cpp의 주요 기능은 다음과 같습니다.
+
+- application\_obstacle: 카메라 스트림 데이터를 가져와 장애물 회피 알고리즘을 활성화하고 알고리즘 결과를 출력합니다.
+- application\_pallet: 카메라 스트림 데이터를 가져와 팔레트 알고리즘을 활성화하고 알고리즘 결과를 출력합니다.
+- arm\_local\_camera: 카메라 \[ARM\]에서 SDK를 호출하고 스트림 데이터를 가져옵니다.
+- frame\_callback: 콜백 방식으로 카메라 스트림 데이터를 가져옵니다.
+- multi\_cameras: 여러 카메라를 열고 스트리밍 데이터를 가져옵니다.
+- single\_camera: 단일 카메라를 열고 스트리밍 데이터를 가져옵니다.
+- single\_camera2: 구조체를 통해 프레임 데이터를 가져옵니다.
+
+필요에 따라 다양한 샘플 코드를 선택하여 테스트하고 수정할 수 있습니다.
+
+#### 3.2.2 Java 샘플 코드
+
+Java 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![Java 샘플 코드 관련 그림](/images/developers/camera-sdk-linux-examples-java-sample-code.avif)
+</Frame>
+
+디렉터리에는 폴더 2개, postman.json 파일 및 README가 있습니다.
+
+- Config: 서버 관련 구성이 저장된 폴더
+- Middleware: 서버 토픽
+- LxCamera.postman\_collection.json: Postman 구성 파일
+- README: Java 가상 서버 사용 안내
+
+#### 3.2.3 ROS 샘플 코드
+
+ros 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![ROS 샘플 코드 관련 그림](/images/developers/camera-sdk-linux-examples-ros-sample-code.avif)
+</Frame>
+
+- lx\_camera\_node\_ws: 표준 ROS 드라이버가 들어 있는 폴더
+- README.EN: 노드를 컴파일하고 새 노드를 만드는 방법을 영어로 설명합니다.
+
+#### 3.2.4 ROS 2 샘플 코드
+
+ros2 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![ROS 2 샘플 코드 관련 이미지](/images/developers/camera-sdk-linux-examples-ros2-sample-code.avif)
+</Frame>
+
+- lx\_camera\_node\_ws: 표준 ROS 2 드라이버가 들어 있는 폴더
+- README.EN: 노드를 컴파일하고 새 노드를 만드는 방법을 영어로 설명합니다.
+
+#### 3.2.5 ros-v1pro 샘플 코드
+
+ros-v1pro 디렉터리로 이동하세요. 디렉터리 내용은 다음과 같습니다.
+
+<Frame>
+  ![ros-v1pro 샘플 코드 관련 그림](/images/developers/camera-sdk-linux-examples-ros-v1pro-sample-code.avif)
+</Frame>
+
+- src: 표준 ROS 드라이버가 들어 있는 폴더
+- README: 이 노드의 사용 방법을 설명합니다.
+- README.pdf: 이 노드의 사용 방법을 설명합니다.
+
+---
+
+## 샘플 컴파일 및 실행
+
+### 4.1 C 및 C\+\+ 샘플 코드 컴파일 및 실행
+
+예제의 C 폴더로 이동하세요.
+
+<Frame>
+  ![C 및 C\+\+ 샘플 코드 컴파일 및 실행 관련 그림](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code.avif)
+</Frame>
+
+C 폴더에서 터미널을 열고 다음을 실행하세요.
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+실행이 성공하면 build 폴더로 이동하세요. 내용은 다음과 같습니다.
+
+<Frame>
+  ![C 및 C\+\+ 샘플 코드 컴파일 및 실행 관련 그림 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-2.avif)
+</Frame>
+
+실행 파일은 bin 디렉터리에 있습니다. bin 디렉터리의 내용은 다음과 같습니다.
+
+<Frame>
+  ![C 및 C\+\+ 샘플 코드 컴파일 및 실행 관련 그림 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-3.avif)
+</Frame>
+
+arm 예제를 제외한 모든 예제가 컴파일됩니다. 실행 파일 이름은 예제 폴더 이름과 같으며 바로 실행할 수 있습니다.
+
+### 4.2 Java 샘플 실행 절차
+
+Java는 다른 샘플 코드와 다릅니다. 소스 코드를 직접 제공하지 않고 HTTP 서버와 Postman 예제를 제공합니다. HTTP를 통해 카메라를 간접적으로 제어하려면 Java 예제를 선택하고 Java 폴더로 이동하세요. 폴더 내용은 다음과 같습니다.
+
+<Frame>
+  ![Java 샘플 실행 절차 관련 그림](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process.avif)
+</Frame>
+
+실행 절차는 다음과 같습니다.
+
+- config 폴더로 이동하여 Configs.json 파일의 http\_sever\_host 필드와 http\_sever\_port 필드를 수정하세요.
+
+<Frame>
+  ![Java 샘플 실행 절차 관련 그림 2](/images/developers/camera-sdk-linux-examples-java-sample-running-process-2.avif)
+</Frame>
+
+- middleware 폴더로 이동하여 start.sh 스크립트를 실행하고 전송 서버를 활성화하세요.
+
+<Frame>
+  ![Java 샘플 실행 절차 관련 그림 3](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process-3.avif)
+</Frame>
+
+- Postman으로 LxCamera.postman\_collection.json 파일을 열어 샘플 포트로 데이터를 보내세요.
+
+### 4.3 ROS 샘플 코드 컴파일 및 실행
+
+ROS 폴더로 이동하여 콘솔을 열고 다음을 실행하세요.
+
+```bash
+roscore
+```
+
+<Frame>
+  ![ROS 샘플 코드 컴파일 및 실행 관련 그림](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code.avif)
+</Frame>
+
+<Frame>
+  ![ROS 샘플 코드 컴파일 및 실행 관련 그림 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-2.avif)
+</Frame>
+
+마우스 오른쪽 버튼을 클릭하여 콘솔을 열고 `lx_camera_node_ws` 폴더로 이동한 다음 다음을 실행하세요.
+
+```bash
+catkin_make
+```
+
+<Frame>
+  ![ROS 샘플 코드 컴파일 및 실행 관련 그림 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-3.avif)
+</Frame>
+
+실행이 성공하면 다음과 같이 표시됩니다.
+
+<Frame>
+  ![ROS 샘플 코드 컴파일 및 실행 관련 그림 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-4.avif)
+</Frame>
+
+이제 폴더에 devel 및 build가 컴파일되어 생성됩니다.
+
+<Frame>
+  ![ROS 샘플 코드 컴파일 및 실행 관련 그림 5](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-5.avif)
+</Frame>
+
+다음 명령을 실행하여 환경을 로드하고 `roslaunch`로 노드를 시작하세요.
+
+```bash
+source devel/setup.bash
+roslaunch lx_camera_ros lx_camera_ros.launch
+roslaunch lx_camera_ros obstacleV2.launch
+roslaunch lx_camera_ros obstacle.launch
+roslaunch lx_camera_ros pallet.launch
+```
+
+위에서부터 일반 노드, 장애물 회피 알고리즘 2 노드, 장애물 회피 알고리즘 노드, 팔레트 알고리즘 노드입니다. 각 노드는 동시에 활성화할 수 없습니다.
+
+### 4.4 ROS 2 샘플 코드 컴파일 및 실행
+
+ros2 폴더로 이동하세요. 폴더 내용은 다음과 같습니다.
+
+<Frame>
+  ![ROS 2 샘플 코드 컴파일 및 실행 관련 그림](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code.avif)
+</Frame>
+
+ROS 노드 예제는 colcon으로 컴파일합니다.
+
+먼저 컴파일 도구를 설치하세요.
+
+```bash
+sudo apt install python3-colcon-common-extensions
+```
+
+<Frame>
+  ![ROS 2 샘플 코드 컴파일 및 실행 관련 그림 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-2.avif)
+</Frame>
+
+그런 다음 `ros-pcl` 종속 패키지를 설치하세요. `foxy`를 시스템에 설치된 ROS 2 배포판 이름으로 바꾸세요.
+
+```bash
+sudo apt-get install ros-foxy-pcl*
+```
+
+설치 후 `lx_camera_node_ws` 디렉터리로 이동하여 프로젝트를 빌드하세요.
+
+```bash
+colcon build
+```
+
+컴퓨터 성능에 따라 컴파일에는 보통 30~120초가 걸립니다. 컴파일이 성공하면 다음과 같이 표시됩니다.
+
+<Frame>
+  ![ROS 2 샘플 코드 컴파일 및 실행 관련 그림 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-3.avif)
+</Frame>
+
+일부 경고는 버전 호환성 문제로 발생하므로 처리하지 않아도 됩니다. 컴파일이 완료되면 폴더 내용은 다음과 같습니다.
+
+<Frame>
+  ![ROS 2 샘플 코드 컴파일 및 실행 관련 그림 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-4.avif)
+</Frame>
+
+다음 명령을 실행하여 환경을 로드하고 `ros2 launch`로 노드를 시작하세요.
+
+```bash
+source install/setup.bash
+ros2 launch lx_camera_ros lx_camera_ros_launch.py
+ros2 launch lx_camera_ros obstacleV2.launch.py
+ros2 launch lx_camera_ros obstacle.launch.py
+ros2 launch lx_camera_ros pallet.launch.py
+```
+
+위에서부터 일반 노드, 장애물 회피 알고리즘 2 노드, 장애물 회피 알고리즘 노드, 팔레트 알고리즘 노드입니다. 각 노드는 동시에 활성화할 수 없습니다.
+
+### 4.5 ros-v1pro 샘플 코드 컴파일 및 실행
+
+ros-v1pro는 V1PRO 카메라 전용 ROS 드라이버입니다. ros-v1pro 폴더의 README.pdf에서 드라이버를 자세히 설명합니다. 이 문서에서는 간단한 소개만 제공합니다.
+
+<Frame>
+  ![ros-v1pro 샘플 코드 컴파일 및 실행 관련 그림](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code.avif)
+</Frame>
+
+`ros-v1pro` 폴더로 이동하여 컴파일하세요.
+
+```bash
+catkin_make
+```
+
+<Frame>
+  ![ros-v1pro 샘플 코드 컴파일 및 실행 관련 그림 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-2.avif)
+</Frame>
+
+환경을 로드하세요.
+
+```bash
+source devel/setup.bash
+```
+
+<Frame>
+  ![ros-v1pro 샘플 코드 컴파일 및 실행 관련 그림 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-3.avif)
+</Frame>
+
+마지막으로 노드를 실행하세요.
+
+- roslaunch lx\_camera\_ros localization.launch
+- roslaunch lx\_camera\_ros mapping.launch
+- roslaunch lx\_camera\_ros sensor\_sim.launch
+
+위에서부터 위치 지정 노드, 맵 생성 노드, 가상 데이터 노드를 실행합니다. 각 노드는 동시에 활성화할 수 없습니다.
+
+---
+
+## 샘플 코드 참고
+
+이 섹션에서는 모든 코드와 의사 코드를 여러 부분으로 나눕니다. 일반적으로 한 섹션의 내용은 같은 파일에 속합니다. 자세한 설명이 있는 특수 파일을 제외하면 소스 코드 파일에는 일반 모듈만 설명되어 있으며 세부 설명은 코드 주석으로 제공됩니다.
+
+### 5.1 C 및 C\+\+
+
+#### 5.1.1 CMakeLists
+
+<Frame>
+  ![CMakeLists 관련 이미지](/images/developers/camera-sdk-linux-examples-cmakelists.avif)
+</Frame>
+
+<Frame>
+  ![CMakeLists 관련 이미지 2](/images/developers/camera-sdk-linux-examples-cmakelists-2.avif)
+</Frame>
+
+<Frame>
+  ![CMakeLists 관련 이미지 3](/images/developers/camera-sdk-linux-examples-cmakelists-3.avif)
+</Frame>
+
+#### 5.1.2 application\_obstacle 및 application\_pallet
+
+<Frame>
+  ![application\\\_obstacle 및 application\\\_pallet 관련 이미지](/images/developers/camera-sdk-linux-examples-application-obstacle-and-application-pallet.avif)
+</Frame>
+
+#### 5.1.3 arm\_local\_camera
+
+<Frame>
+  ![arm\\\_local\\\_camera 관련 이미지](/images/developers/camera-sdk-linux-examples-arm-local-camera.avif)
+</Frame>
+
+#### 5.1.4 frame\_callback
+
+<Frame>
+  ![frame\\\_callback 관련 이미지](/images/developers/camera-sdk-linux-examples-frame-callback.avif)
+</Frame>
+
+#### 5.1.5 multi\_cameras
+
+<Frame>
+  ![multi\\\_cameras 관련 이미지](/images/developers/camera-sdk-linux-examples-multi-cameras.avif)
+</Frame>
+
+#### 5.1.6 single\_camera
+
+<Frame>
+  ![single\\\_camera 관련 이미지](/images/developers/camera-sdk-linux-examples-single-camera.avif)
+</Frame>
+
+<Frame>
+  ![single\\\_camera 관련 이미지 2](/images/developers/camera-sdk-linux-examples-single-camera-2.avif)
+</Frame>
+
+#### 5.1.7 single\_camera2
+
+<Frame>
+  ![single\\\_camera2 관련 이미지](/images/developers/camera-sdk-linux-examples-single-camera2.avif)
+</Frame>
+
+### 5.2 Java
+
+Java 예제는 HTTP 서버만 제공하므로 여기서는 인터페이스와 메시지 형식만 설명합니다. 아래와 같이 Postman으로 샘플 파일을 여세요.
+
+<Frame>
+  ![Java 관련 이미지](/images/developers/camera-sdk-linux-examples-java.avif)
+</Frame>
+
+모든 메시지는 POST 방식입니다. 보내기 전에 IP를 서버 IP로 변경하되 URL은 수정하지 마세요. URL은 서버 내부에 하드 코딩되어 있습니다. 응답 메시지 형식과 내용은 모두 body에 있습니다. 예제에서 제공하는 인터페이스는 다음과 같습니다.
+
+<Frame>
+  ![Java 관련 이미지 2](/images/developers/camera-sdk-linux-examples-java-2.avif)
+</Frame>
+
+1.DcGetApiVersion: SDK 버전 번호를 가져오며 입력 파라미터는 없습니다.
+
+<Frame>
+  ![Java 관련 이미지 3](/images/developers/camera-sdk-linux-examples-java-3.avif)
+</Frame>
+
+2.DcSetInfoOutput: SDK 로그 출력 경로를 설정합니다. 매개변수는 다음과 같습니다.
+
+- log\_path: 로그 출력 경로
+- print\_level: 로그 출력 수준
+- enable\_screen\_print: 콘솔에 로그를 출력할지 여부
+
+3.DcLog: SDK 로그에 로그를 출력합니다. 입력한 내용은 모두 SDK 로그에 표시됩니다.
+
+4.DcGetDeviceList: 장치 목록을 가져옵니다. 입력은 없으며 출력은 JSON입니다.
+
+5.DcOpenDevice: 장치를 열고 다음과 같이 입력합니다.
+
+<Frame>
+  ![Java 관련 이미지 4](/images/developers/camera-sdk-linux-examples-java-4.avif)
+</Frame>
+
+- open\_mode: 카메라를 여는 모드
+- param: 카메라를 열기 위한 매개변수
+
+6.DcStartStream: 특정 카메라가 스트리밍 데이터를 전송하기 시작하도록 합니다. 입력 매개변수는 다음과 같습니다.
+
+<Frame>
+  ![Java 관련 이미지 5](/images/developers/camera-sdk-linux-examples-java-5.avif)
+</Frame>
+
+- handle: 카메라 핸들입니다. DcOpenDevice에서 반환됩니다.
+
+7.DcSetCmd: 카메라에 명령을 전달합니다. 다음과 같이 입력합니다.
+
+<Frame>
+  ![Java 관련 이미지 6](/images/developers/camera-sdk-linux-examples-java-6.avif)
+</Frame>
+
+- handle: 설정할 카메라의 핸들
+- cmd: 명령 번호
+
+8.DcGetPtrValue: 포인터 데이터(이미지, 매개변수 등)를 가져옵니다. 다음과 같이 입력합니다.
+
+- handle: 설정할 카메라의 핸들
+- cmd: 명령 번호
+
+9.DcSetIntValue: 카메라의 int 형식 매개변수를 설정합니다. 다음과 같이 입력합니다.
+
+<Frame>
+  ![Java 관련 이미지 7](/images/developers/camera-sdk-linux-examples-java-7.avif)
+</Frame>
+
+- handle: 설정할 카메라의 핸들
+- cmd: 명령 번호
+- value: 설정할 값
+
+10.DcGetIntValue: 장치의 int 형식 매개변수를 가져옵니다. 다음과 같이 입력합니다.
+
+- handle: 설정할 카메라의 핸들
+- cmd: 명령 번호
+
+11. 기타 관련 지침은 다음 표를 참고하세요.
+
+| 전송 | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | 수신 | `{"errCode" : 0 }` |
+| --- | --- | --- | --- |
+| 전송 | `{"open_mode" : 0, "param" : "0"<br />}` | 수신 | `{"algor_ver" : "VER_1.0.2.230315", "dev_type" : "M4 camera", "errCode" : 0,<br />"firmware_ver" : "V1.0.0.3_230315",<br />"handle" : 174539057817095, "id" : "f13141144bb1",<br />"ip" : "192.168.100.16:3956",<br />"mac" : "9e:be:0a:8a:66:07",<br />"name" :"camera_M4_192.168.100.16_3956",<br />"sn" : "9a5ed62d22b34bb1"<br />}` |
+| 전송 | `{"handle" :174539057817<br />095,<br />"cmd" : 6001<br />}` | 수신 | `{"errCode" : 0,<br />"value" :"\u0011\u0001\u0014\u0001..." }` |
+
+### 5.3 ROS1 및 ROS2
+
+ROS 설명에서는 드라이버 소스 코드 자체보다 launch 파일의 구성에 해당하는 내용, 구성 조정 방법, 메시지 송수신 및 구독 방법을 다룹니다. 제공되는 ROS 노드에는 대부분의 기능이 이미 포함되어 있으므로 드라이버 소스 코드를 직접 수정하지 않는 것이 좋습니다. 특별한 요구 사항이 있다면 먼저 C\+\+ 예제의 코드 흐름을 이해한 후 드라이버 소스 코드를 수정하세요.
+
+**ROS 드라이버를 실행할 때는 시스템 기본 경로에 있는 OpenCV와 PCL 버전이 각각 하나만 존재하는지 확인해야 합니다. 그렇지 않으면 ROS 라이브러리를 링크할 때 오류가 발생하여 컴파일이 실패하거나 실행 중 충돌이 발생할 수 있습니다.**
+
+#### 5.3.1 ROS1 launch 파일 설명
+
+##### 5.3.1.1 모든 launch 파일
+
+1. src/launch 폴더에는 다음 파일이 있습니다.
+
+<Frame>
+  ![모든 launch 파일 관련 이미지](/images/developers/camera-sdk-linux-examples-all-launch-file.avif)
+</Frame>
+
+- localization.launch: 시각 위치 추정 노드 실행 파일
+- lx\_camera\_ros.launch: 일반 노드 실행 파일
+- mapping.launch: 시각 위치 추정 매핑 실행 파일
+- obstacle.launch: 장애물 회피 알고리즘 실행 파일
+- obstacleV2.launch: 장애물 회피 알고리즘 V2 실행 파일
+- pallet.launch: 팔레트 알고리즘 실행 파일
+- sensor\_sim.launch: 위치 추정 데이터를 시뮬레이션하는 실행 파일
+
+2. 서로 다른 launch 파일을 실행하면 노드의 다른 기능을 실행할 수 있습니다. **localization, mapping 및 sensor를 제외하면 모든 노드의 매개변수 내용은 같지만 구성은 다릅니다.** 자세한 내용은 다음 섹션에서 설명합니다. localization, mapping 및 sensor 세 launch 파일의 매개변수에 대한 자세한 설명은 ros-v1pro 노드 설명을 참고하세요.
+
+##### 5.3.1.2 카메라 IP, 스트림 구성, 작동 모드 구성, 포인트 클라우드 단위 등
+
+<Frame>
+  ![카메라 IP, 스트림 구성, 작동 모드 구성, 포인트 클라우드 단위 및 기타 관련 이미지](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other.avif)
+</Frame>
+
+- ip: 연결할 카메라의 IP입니다. 0으로 설정하면 기본적으로 첫 번째 카메라에 연결합니다.
+- log\_path: SDK 로그 저장 경로이며 절대 경로를 입력해야 합니다.
+- is\_xyz: 포인트 클라우드 데이터를 전송할지 여부
+- is\_depth: 깊이 데이터를 전송할지 여부
+- is\_amp: 강도 맵 데이터를 전송할지 여부
+- is\_rgb: RGB 이미지 데이터를 전송할지 여부
+- lx\_work\_mode: 작동 모드
+- lx\_application: 알고리즘 활성화 여부. 0: 끔, 1: 장애물 회피 알고리즘, 2: 팔레트 알고리즘, 3: 위치 추정 알고리즘, 4: 장애물 회피 알고리즘 V2
+- lx\_tof\_unit: 포인트 클라우드 단위. 1은 미터, 0은 밀리미터이며 rviz에서 확인할 때는 1로 변경해야 합니다.
+
+##### 5.3.1.3 카메라 자세 구성
+
+<Frame>
+  ![카메라 자세 구성 관련 그림](/images/developers/camera-sdk-linux-examples-camera-pose-configuration.avif)
+</Frame>
+
+포인트 클라우드의 회전 각도와 변환 벡터를 구성할 수 있습니다.
+
+- X: 포인트 클라우드 중심을 기준으로 한 카메라의 X축 변환량
+- Y: 포인트 클라우드 중심을 기준으로 한 카메라의 Y축 변환량
+- Z: 포인트 클라우드 중심을 기준으로 한 카메라의 Z축 변환량
+- Yaw: Z축을 기준으로 한 포인트 클라우드의 회전 각도
+- Roll: X축을 기준으로 한 포인트 클라우드의 회전 각도
+- Pitch: Y축을 기준으로 한 포인트 클라우드의 회전 각도
+
+##### 5.3.1.4 launch 구성 사용 여부
+
+<Frame>
+  ![launch 구성 사용 여부 관련 이미지](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration.avif)
+</Frame>
+
+launch 파일의 카메라 매개변수 구성을 사용할지 선택할 수 있습니다.
+
+- raw\_param: 0: 카메라의 구성 사용, 1: launch 파일의 구성 사용
+
+이 매개변수를 0 또는 1로 설정하더라도 이 매개변수보다 앞선 모든 매개변수는 설정됩니다. 0과 1은 이 매개변수 뒤의 매개변수에만 적용됩니다.
+
+##### 5.3.1.5 2D 매개변수 구성
+
+<Frame>
+  ![2D 매개변수 구성 관련 이미지](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration.avif)
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+- lx\_2d\_undistort: 2D 왜곡 보정, 0: 끔, 1: 켬
+- lx\_2d\_undistort\_scale: 2D 왜곡 보정 계수
+- lx\_2d\_auto\_exposure: 2D 자동 노출, 0: 끔, 1: 켬
+- lx\_2d\_auto\_exposure\_value: 2D 자동 노출 목표 강도
+- lx\_2d\_exposure: 2D 노출 값
+- lx\_2d\_gain: 2D 게인
+
+##### 5.3.1.6 3D 매개변수 구성
+
+<Frame>
+  ![3D 매개변수 구성 관련 그림](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration.avif)
+</Frame>
+
+- lx\_rgb\_to\_tof: RGB 정렬
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+- lx\_mulit\_mode: 다중 장치 모드. 다중 장치 간섭을 제거할 수 있으며 0: 끔, 1: 켬
+- lx\_3d\_undistort: 3D 왜곡 보정, 0: 끔, 1: 켬
+- lx\_3d\_undistort\_scale: 3D 왜곡 보정 계수
+- lx\_hdr: HDR, 0: 끔, 1: 켬
+- lx\_3d\_auto\_exposure: 3D 자동 노출, 0: 끔, 1: 켬
+- lx\_3d\_auto\_exposure\_value: 3D 자동 노출 목표 강도
+- lx\_3d\_first\_exposure: 3D 고점
+- lx\_3d\_second\_exposure: 3D 저점
+- lx\_3d\_gain: 3D 게인
+
+##### 5.3.1.7 최대 및 최소 깊이
+
+<Frame>
+  ![최대 및 최소 깊이 관련 이미지](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth.avif)
+</Frame>
+
+- lx\_min\_depth: 최소 깊이
+- lx\_max\_depth: 최대 깊이
+
+#### 5.3.2 ROS2 launch 파일 설명
+
+##### 5.3.2.1 모든 launch 파일
+
+src/launch 폴더에는 다음 파일이 있습니다.
+
+<Frame>
+  ![모든 launch 파일 관련 이미지](/images/developers/camera-sdk-linux-examples-all-launch-file-02.avif)
+</Frame>
+
+- localization.launch.py: 시각 위치 추정 노드 실행 파일
+- lx\_camera\_ros.launch.py: 일반 노드 실행 파일
+- mapping.launch.py: 시각 위치 추정 매핑 실행 파일
+- obstacle.launch.py: 장애물 회피 알고리즘 실행 파일
+- obstacleV2.launch.py: 장애물 회피 알고리즘 V2 실행 파일
+- pallet.launch.py: 팔레트 알고리즘 실행 파일
+- sensor\_sim.launch.py: 위치 추정 데이터를 시뮬레이션하는 실행 파일
+
+서로 다른 launch 파일을 실행하면 노드의 다른 기능을 실행할 수 있습니다. **localization, mapping 및 sensor를 제외하면 모든 노드의 매개변수 내용은 같지만 구성은 다릅니다.** 자세한 내용은 다음 섹션에서 설명합니다. localization, mapping 및 sensor 세 launch 파일의 매개변수에 대한 자세한 설명은 ros-v1pro 노드 설명을 참고하세요.
+
+##### 5.3.2.2 카메라 IP, 스트림 구성, 작동 모드 구성, 포인트 클라우드 단위 등
+
+<Frame>
+  ![카메라 IP, 스트림 구성, 작동 모드 구성, 포인트 클라우드 단위 및 기타 관련 이미지](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other-02.avif)
+</Frame>
+
+- ip: 연결할 카메라의 IP입니다. 0으로 설정하면 기본적으로 첫 번째 카메라에 연결합니다.
+- log\_path: SDK 로그 저장 경로이며 절대 경로를 입력해야 합니다.
+- is\_xyz: 포인트 클라우드 데이터를 전송할지 여부
+- is\_depth: 깊이 데이터를 전송할지 여부
+- is\_amp: 강도 맵 데이터를 전송할지 여부
+- is\_rgb: RGB 이미지 데이터를 전송할지 여부
+- lx\_work\_mode: 작동 모드
+- lx\_application: 알고리즘 활성화 여부. 0: 끔, 1: 장애물 회피 알고리즘, 2: 팔레트 알고리즘, 3: 위치 추정 알고리즘, 4: 장애물 회피 알고리즘 V2
+- lx\_tof\_unit: 포인트 클라우드 단위. 1은 미터, 0은 밀리미터이며 rviz에서 확인할 때는 1로 변경해야 합니다.
+
+##### 5.3.2.3 카메라 자세 구성
+
+<Frame>
+  ![카메라 자세 구성 관련 그림](/images/developers/camera-sdk-linux-examples-camera-pose-configuration-02.avif)
+</Frame>
+
+포인트 클라우드의 회전 각도와 변환 벡터를 구성할 수 있습니다.
+
+- X: 포인트 클라우드 중심을 기준으로 한 카메라의 X축 변환량
+- Y: 포인트 클라우드 중심을 기준으로 한 카메라의 Y축 변환량
+- Z: 포인트 클라우드 중심을 기준으로 한 카메라의 Z축 변환량
+- Yaw: Z축을 기준으로 한 포인트 클라우드의 회전 각도
+- Roll: X축을 기준으로 한 포인트 클라우드의 회전 각도
+- Pitch: Y축을 기준으로 한 포인트 클라우드의 회전 각도
+
+##### 5.3.2.4 launch 구성 사용 여부
+
+<Frame>
+  ![launch 구성 사용 여부 관련 이미지](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration-02.avif)
+</Frame>
+
+launch 파일의 카메라 매개변수 구성을 사용할지 선택할 수 있습니다.
+
+- raw\_param: 0: 카메라의 구성 사용, 1: launch 파일의 구성 사용
+
+이 매개변수를 0 또는 1로 설정하더라도 이 매개변수보다 앞선 모든 매개변수는 설정됩니다. 0과 1은 이 매개변수 뒤의 매개변수에만 적용됩니다.
+
+##### 5.3.2.5 2D 매개변수 구성
+
+<Frame>
+  ![2D 매개변수 구성 관련 이미지](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration-02.avif)
+</Frame>
+
+- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
+- lx\_2d\_undistort: 2D 왜곡 보정, 0: 끔, 1: 켬
+- lx\_2d\_undistort\_scale: 2D 왜곡 보정 계수
+- lx\_2d\_auto\_exposure: 2D 자동 노출, 0: 끔, 1: 켬
+- lx\_2d\_auto\_exposure\_value: 2D 자동 노출 목표 강도
+- lx\_2d\_exposure: 2D 노출 값
+- lx\_2d\_gain: 2D 게인
+
+##### 5.3.2.6 3D 매개변수 구성
+
+<Frame>
+  ![3D 매개변수 구성 관련 그림](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration-02.avif)
+</Frame>
+
+- lx\_rgb\_to\_tof: RGB 정렬
+- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
+- lx\_mulit\_mode: 다중 장치 모드. 다중 장치 간섭을 제거할 수 있으며 0: 끔, 1: 켬
+- lx\_3d\_undistort: 3D 왜곡 보정, 0: 끔, 1: 켬
+- lx\_3d\_undistort\_scale: 3D 왜곡 보정 계수
+- lx\_hdr: HDR, 0: 끔, 1: 켬
+- lx\_3d\_auto\_exposure: 3D 자동 노출, 0: 끔, 1: 켬
+- lx\_3d\_auto\_exposure\_value: 3D 자동 노출 목표 강도
+- lx\_3d\_first\_exposure: 3D 고점
+- lx\_3d\_second\_exposure: 3D 저점
+- lx\_3d\_gain: 3D 게인
+
+##### 5.3.2.7 최대 및 최소 깊이
+
+<Frame>
+  ![최대 및 최소 깊이 관련 이미지](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth-02.avif)
+</Frame>
+
+- lx\_min\_depth: 최소 깊이
+- lx\_max\_depth: 최대 깊이
+
+#### 5.3.3 고유 토픽 설명
+
+ROS1과 ROS2의 고유 토픽 형식은 같으므로 여기서는 ROS1을 예로 사용합니다. src/msg 폴더에는 다음 파일이 있습니다.
+
+<Frame>
+  ![고유 토픽 설명 관련 그림](/images/developers/camera-sdk-linux-examples-unique-theme-descriptions.avif)
+</Frame>
+
+##### 5.3.3.1 FrameRate.msg
+
+이 노드는 프레임 속도 정보를 출력합니다. 메시지 형식은 다음과 같습니다.
+
+<Frame>
+  ![FrameRate.msg 관련 이미지](/images/developers/camera-sdk-linux-examples-framerate-msg.avif)
+</Frame>
+
+- header: 현재 데이터의 프레임 정보 및 타임스탬프
+- depth: 깊이 맵을 켜면 깊이 맵의 프레임 속도를 출력합니다.
+- amp: 강도 맵을 켜면 강도 맵의 프레임 속도를 출력합니다.
+- rgb: RGB를 켜면 RGB 프레임 속도를 출력합니다.
+- temperature: 카메라 온도를 출력합니다.
+
+노드가 실행되기 시작하면(시각 위치 추정 관련 노드는 제외) LxCamera\_FrameRate 노드를 구독하여 관련 정보를 가져올 수 있습니다. 출력은 다음과 같습니다.
+
+<Frame>
+  ![FrameRate.msg 관련 이미지 2](/images/developers/camera-sdk-linux-examples-framerate-msg-2.avif)
+</Frame>
+
+##### 5.3.3.2 Obstacle.msg
+
+obstacle은 장애물 회피 알고리즘 결과와 관련된 정보를 출력합니다. obstacle 메시지 형식은 다음과 같습니다.
+
+<Frame>
+  ![Obstacle.msg 관련 이미지](/images/developers/camera-sdk-linux-examples-obstacle-msg.avif)
+</Frame>
+
+- header: 현재 데이터의 프레임 정보 및 타임스탬프
+- status: 장애물 회피에서 반환한 상태 정보
+
+0: 정상적인 장애물 회피
+
+-1: 지면이 설정되지 않음
+
+-2: 입력이 설정되지 않음
+
+-3: 범위 내에 포인트 클라우드가 없음
+
+-4: 지면을 필터링한 후 포인트 클라우드가 비어 있음
+
+-5: 반경 필터링 후 포인트 클라우드가 비어 있음
+
+-6: 세분화 결과를 가져오지 못함
+
+-99: 정의되지 않은 오류
+
+- io\_output: IO 인터페이스에서 출력하는 장애물 회피 정보
+
+0: 정상
+
+1: 경고
+
+2: 종료
+
+- box\_number: 장애물 수
+- box: 장애물 정보. 가변 길이 배열이며 길이는 box\_number로 결정됩니다.
+
+노드가 실행되기 시작하면(장애물 회피 알고리즘을 켜야 함) LxCamera\_Obstacel 노드를 구독하여 관련 정보를 가져올 수 있습니다. 출력은 다음과 같습니다(그림의 데이터는 시뮬레이션 데이터입니다).
+
+<Frame>
+  ![Obstacle.msg 관련 이미지 2](/images/developers/camera-sdk-linux-examples-obstacle-msg-2.avif)
+</Frame>
+
+##### 5.3.3.3 Obstacle\_box.msg
+
+obstacle\_box는 장애물 관련 정보를 출력하며 obstacle\_box 메시지 형식은 다음과 같습니다.
+
+<Frame>
+  ![Obstacle\\\_box.msg 관련 이미지](/images/developers/camera-sdk-linux-examples-obstacle-box-msg.avif)
+</Frame>
+
+- center: 포인트 클라우드에서 장애물의 질량 중심
+- rotation: 장애물 포인트 클라우드의 회전 행렬
+- translation: 장애물 포인트 클라우드의 변환 벡터
+- width: 장애물 프레임의 너비
+- height: 장애물 프레임의 높이
+- depth: 장애물 프레임의 깊이
+
+실행을 시작하면(장애물 회피 알고리즘을 켜야 함) LxCamera\_Obstacel 노드를 구독하여 관련 정보를 가져올 수 있습니다. 출력은 다음과 같습니다.
+
+<Frame>
+  ![Obstacle\\\_box.msg 관련 이미지 2](/images/developers/camera-sdk-linux-examples-obstacle-box-msg-2.avif)
+</Frame>
+
+##### 5.3.3.4 Result.msg
+
+노드의 service에 명령 메시지를 보낸 후 반환되는 값은 Result에 저장됩니다.
+
+<Frame>
+  ![Result.msg 관련 이미지](/images/developers/camera-sdk-linux-examples-result-msg.avif)
+</Frame>
+
+- ret: SDK 실행으로 가져온 반환 값
+- msg: SDK 실행으로 가져온 반환 값에 대한 설명
+
+##### 5.3.3.5 Pallet.msg
+
+팔레트는 팔레트 알고리즘 결과와 관련된 정보를 출력합니다. 팔레트 메시지 형식은 다음과 같습니다.
+
+<Frame>
+  ![Pallet.msg 관련 이미지](/images/developers/camera-sdk-linux-examples-pallet-msg.avif)
+</Frame>
+
+- header: 현재 데이터의 프레임 정보 및 타임스탬프
+- status: 팔레트 인식에서 반환한 상태 정보:
+
+0: 감지 성공
+
+-1: 지면이 감지되지 않음
+
+-2: 팔레트 다리가 감지되지 않음
+
+-3: 팔레트 사이의 거리가 너무 멂
+
+-4: 알 수 없는 오류
+
+- x: 트레이와 카메라 광학 중심 사이의 X 거리
+- y: 트레이와 카메라 광학 중심 사이의 Y 거리
+- yaw: 트레이 중심과 카메라 광학 중심 사이의 세타 각도
+
+노드가 실행되기 시작하면(팔레트 알고리즘을 켜야 함) LxCamera\_Pallet 노드를 구독하여 관련 정보를 가져올 수 있습니다. 출력은 다음과 같습니다.
+
+<Frame>
+  ![Pallet.msg 관련 이미지 2](/images/developers/camera-sdk-linux-examples-pallet-msg-2.avif)
+</Frame>
+
+#### 5.3.4 고유 서비스 설명
+
+ROS1과 ROS2의 고유 서비스 형식은 같으므로 여기서는 ROS1을 예로 사용합니다. src/srv 폴더에는 다음 파일이 있습니다.
+
+<Frame>
+  ![고유 서비스 설명 관련 그림](/images/developers/camera-sdk-linux-examples-unique-service-descriptions.avif)
+</Frame>
+
+이 메시지는 카메라의 특정 매개변수 값을 설정하거나 가져오는 데 사용됩니다.
+
+위쪽 \[---\]는 전송 데이터이고 아래쪽 \[---\]는 반환 데이터입니다.
+
+##### 5.3.4.1 LxBool.srv
+
+<Frame>
+  ![LxBool.srv 관련 이미지](/images/developers/camera-sdk-linux-examples-lxbool-srv.avif)
+</Frame>
+
+- cmd: 가져오거나 설정할 매개변수 번호
+- val: 설정할 때 입력하는 값
+- is\_set: 매개변수를 설정할지 여부입니다. true이면 val의 값이 카메라에 설정되고, false이면 카메라에서 이 매개변수의 값을 읽어 표시합니다.
+- val: 가져오기 또는 설정 작업 후 반환되는 카메라의 현재 매개변수 값
+- 결과: SDK 인터페이스 호출로 반환되는 값과 정보
+
+##### 5.3.4.2 LxCmd.srv
+
+<Frame>
+  ![LxCmd.srv 관련 이미지](/images/developers/camera-sdk-linux-examples-lxcmd-srv.avif)
+</Frame>
+
+- cmd: 가져오거나 설정할 매개변수 번호입니다. 0이면 모든 매개변수 번호를 반환합니다.
+- 결과: SDK 인터페이스 호출로 반환되는 값과 정보입니다. cmd는 여러 값을 반환할 수 있습니다.
+
+##### 5.3.4.3 LxFloat.srv
+
+<Frame>
+  ![LxFloat.srv 관련 이미지](/images/developers/camera-sdk-linux-examples-lxfloat-srv.avif)
+</Frame>
+
+- cmd: 가져오거나 설정할 매개변수 번호
+- val: 설정할 때 입력하는 값
+- is\_set: 매개변수를 설정할지 여부입니다. true이면 val의 값이 카메라에 설정되고, false이면 카메라에서 이 매개변수의 값을 읽어 표시합니다.
+- max\_value: 이 매개변수에 설정할 수 있는 최대값
+- min\_value: 이 매개변수에 설정할 수 있는 최소값
+- cur\_value: 카메라에 설정된 이 매개변수의 현재 값
+- available: 이 매개변수를 설정할 수 있는지 여부
+- 결과: SDK 인터페이스 호출로 반환되는 값과 정보
+
+##### 5.3.4.4 LxInt.srv
+
+<Frame>
+  ![LxInt.srv 관련 이미지](/images/developers/camera-sdk-linux-examples-lxint-srv.avif)
+</Frame>
+
+- cmd: 가져오거나 설정할 매개변수 번호
+- val: 설정할 때 입력하는 값
+- is\_set: 매개변수를 설정할지 여부입니다. true이면 val의 값이 카메라에 설정되고, false이면 카메라에서 이 매개변수의 값을 읽어 표시합니다.
+- max\_value: 이 매개변수에 설정할 수 있는 최대값
+- min\_value: 이 매개변수에 설정할 수 있는 최소값
+- cur\_value: 카메라에 설정된 이 매개변수의 현재 값
+- available: 이 매개변수를 설정할 수 있는지 여부
+- 결과: SDK 인터페이스 호출로 반환되는 값과 정보
+
+##### 5.3.4.5 LxString.srv
+
+<Frame>
+  ![LxString.srv 관련 이미지](/images/developers/camera-sdk-linux-examples-lxstring-srv.avif)
+</Frame>
+
+- cmd: 가져오거나 설정할 매개변수 번호
+- val: 설정할 때 입력하는 값
+- is\_set: 매개변수를 설정할지 여부입니다. true이면 val의 값이 카메라에 설정되고, false이면 카메라에서 이 매개변수의 값을 읽어 표시합니다.
+- val: 가져오기 또는 설정 작업 후 반환되는 카메라의 현재 매개변수 값
+- 결과: SDK 인터페이스 호출로 반환되는 값과 정보
+
+#### 5.3.5 토픽 구독 방식 설명
+
+##### 5.3.5.1 프레임 속도, 팔레트 알고리즘, 장애물 회피 알고리즘 출력 데이터 구독
+
+**프레임 속도 구독**
+
+lx\_camera\_node\_ws 디렉터리에서 다음을 입력합니다: bash rate.sh
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data.avif)
+</Frame>
+
+lx\_camera\_node 노드 이미지가 정상적으로 실행되고 갱신되면 다음 정보를 확인할 수 있습니다.
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림 2](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-2.avif)
+</Frame>
+
+**팔레트 알고리즘 출력 구독**
+
+lx\_camera\_node\_ws 디렉터리에서 다음을 입력합니다: bash pallet.sh
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림 3](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-3.avif)
+</Frame>
+
+lx\_camera\_node 노드 이미지가 정상적으로 실행되고 갱신되면 다음 정보를 확인할 수 있습니다.
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림 4](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-4.avif)
+</Frame>
+
+**장애물 회피 알고리즘 출력 구독**
+
+lx\_camera\_node\_ws 디렉터리에서 다음을 입력합니다: bash obstacle.sh
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림 5](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-5.avif)
+</Frame>
+
+lx\_camera\_node 노드 이미지가 정상적으로 실행되고 갱신되면 다음 정보를 확인할 수 있습니다.
+
+<Frame>
+  ![프레임 속도, 팔레트 알고리즘 및 장애물 회피 알고리즘 출력 데이터 구독 관련 그림 6](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data-6.avif)
+</Frame>
+
+##### 5.3.5.2 이미지 데이터 구독(ROS1)
+
+ROS에 포함된 이미지 도구를 사용하여 노드가 출력하는 이미지 정보를 확인할 수 있습니다.
+
+콘솔에 다음 명령을 입력합니다: rqt\_image\_view
+
+명령을 입력하면 다음 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS1)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros1.avif)
+</Frame>
+
+빨간색 상자에서 모든 노드의 이미지를 선택할 수 있습니다. 그림에는 MRDVS 카메라의 RGB 이미지가 표시되어 있습니다. 스트림을 켠 경우 깊이 맵이나 강도 맵도 선택할 수 있습니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS1) 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-2.avif)
+</Frame>
+
+그림에서 첫 번째 빨간색 상자는 위치 추정 알고리즘 노드가 출력한 RGB 정보이고, 나머지 세 항목은 일반 노드가 출력한 이미지 정보입니다. amp는 강도 맵, depth는 깊이 맵, rgb는 RGB 맵입니다.
+
+항목을 선택하여 서로 다른 이미지를 확인하거나 rviz를 사용하여 이미지 데이터를 확인할 수 있습니다. 콘솔에 rviz 명령을 입력하면 다음 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS1) 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-3.avif)
+</Frame>
+
+왼쪽 아래의 `Add`(추가) 버튼을 클릭하면 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS1) 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-4.avif)
+</Frame>
+
+원하는 이미지 토픽을 선택하고 Image를 선택한 다음 오른쪽 아래의 OK를 클릭하세요. 아래 그림처럼 기본 화면 왼쪽에서 이미지 데이터를 확인할 수 있습니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS1) 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-5.avif)
+</Frame>
+
+##### 5.3.5.3 이미지 데이터 구독(ROS2)
+
+ROS2에 포함된 이미지 도구를 사용하여 노드가 출력하는 이미지 정보를 확인할 수 있습니다. 콘솔에 rqt 명령을 입력하세요.
+
+명령을 입력하면 다음 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros2.avif)
+</Frame>
+
+메뉴 막대 아래쪽의 두 번째 항목에서 첫 번째 `Image View`(이미지 보기)를 선택하세요. 선택하면 다음 화면이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2) 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-2.avif)
+</Frame>
+
+빨간색 상자에서 모든 노드의 이미지를 선택할 수 있습니다. 그림에는 MRDVS 카메라의 RGB 이미지가 표시되어 있습니다. 스트림을 켠 경우 깊이 맵이나 강도 맵도 선택할 수 있습니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2) 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-3.avif)
+</Frame>
+
+그림에서 첫 번째 빨간색 상자는 위치 추정 알고리즘 노드가 출력한 RGB 정보이고, 나머지 세 항목은 일반 노드가 출력한 이미지 정보입니다. amp는 강도 맵, depth는 깊이 맵, rgb는 RGB 맵입니다.
+
+항목을 선택하여 서로 다른 이미지를 확인하거나 rviz2를 사용하여 이미지 데이터를 확인할 수 있습니다. 콘솔에 rviz2 명령을 입력하면 다음 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2) 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-4.avif)
+</Frame>
+
+왼쪽 아래의 `Add`(추가) 버튼을 클릭하면 창이 표시됩니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2) 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-5.avif)
+</Frame>
+
+원하는 이미지 토픽을 선택하고 Image를 선택한 다음 오른쪽 아래의 OK를 클릭하세요. 아래 그림처럼 기본 화면 왼쪽에서 이미지 데이터를 확인할 수 있습니다.
+
+<Frame>
+  ![이미지 데이터 구독 관련 그림(ROS2) 6](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-6.avif)
+</Frame>
+
+**일부 시스템에서는 이미지를 보려면 위 그림의 \[map\]에 \[mrdvs\]를 입력해야 합니다.**
+
+##### 5.3.5.4 포인트 클라우드 데이터 구독
+
+노드가 출력하는 포인트 클라우드 정보는 ROS 또는 ROS2에서 제공하는 포인트 클라우드 도구로 확인할 수 있습니다.
+
+명령: rviz【ROS1】, rviz2【ROS2】
+
+명령을 입력하면 다음 창이 표시됩니다.
+
+<Frame>
+  ![포인트 클라우드 데이터 구독 관련 그림](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data.avif)
+</Frame>
+
+아래 빨간색 상자의 버튼을 클릭하면 다음 상자가 표시됩니다.
+
+<Frame>
+  ![포인트 클라우드 데이터 구독 관련 그림 2](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-2.avif)
+</Frame>
+
+두 번째 탭을 선택하면 lx\_camera\_node라는 노드가 표시됩니다. 이 노드에는 LxCamera\_Cloud라는 토픽이 있고, 토픽에는 PointCloud2라는 메시지가 있습니다. 선택한 후 OK를 클릭하세요. 완료 후 화면은 다음과 같습니다.
+
+<Frame>
+  ![포인트 클라우드 데이터 구독 관련 그림 3](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-3.avif)
+</Frame>
+
+(ROS1 인터페이스)
+
+<Frame>
+  ![포인트 클라우드 데이터 구독 관련 그림 4](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-4.avif)
+</Frame>
+
+(ROS2 인터페이스)
+
+이때 포인트 클라우드가 정상적으로 표시되지 않으면 위 그림의 빨간색 및 초록색 상자에 있는 map에 mrdvs를 입력하세요. 결과는 다음과 같습니다.
+
+<Frame>
+  ![포인트 클라우드 데이터 구독 관련 그림 5](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-5.avif)
+</Frame>
+
+ROS의 기본 포인트 클라우드 단위는 미터입니다. 따라서 rviz로 확인할 때는 launch 파일의 lx\_tof\_unit을 1로 변경해야 합니다 \[기본값은 1\].
+
+#### 5.3.6 서비스 통신 방식 설명
+
+ROS1에서는 Tab 키를 사용하여 모든 명령을 자동 완성할 수 있지만 ROS2에서는 토픽만 자동 완성할 수 있으며 메시지 부분은 직접 입력해야 합니다.
+
+**ROS1에서 데이터를 입력할 때는 자동 완성 형식으로 입력할 수 있습니다. ROS2에서 데이터를 입력할 때는 YAML 파일 형식으로 입력해야 합니다.**
+
+노드가 실행되면 lx\_camera\_node\_ws 폴더에서 터미널을 열고 터미널의 환경을 구성한 후 다음 명령을 입력합니다: source devel/setup.bash
+
+##### 5.3.6.1 모든 매개변수 번호 목록 가져오기(Lx\_Cmd)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
+
+<Frame>
+  ![모든 매개변수 번호 목록 가져오기(Lx\\\_Cmd) 관련 이미지](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd.avif)
+</Frame>
+
+출력을 확인할 수 있습니다.
+
+<Frame>
+  ![모든 매개변수 번호 목록 가져오기(Lx\\\_Cmd) 관련 이미지 2](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-2.avif)
+</Frame>
+
+ret는 매개변수 번호입니다. msg에는 매개변수 형식과 설명이 포함됩니다. 예를 들어 1001은 int 형식이며 첫 번째 노출 값을 가져오고 수정하는 데 사용됩니다.
+
+**ROS2**
+
+터미널에 다음을 입력합니다: ros2 service call /LxCamera\_LxCmd lx\_camera\_ros/srv/LxCmd 'cmd: 0'
+
+<Frame>
+  ![모든 매개변수 번호 목록 가져오기(Lx\\\_Cmd) 관련 이미지 3](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-3.avif)
+</Frame>
+
+다음 출력을 확인할 수 있습니다.
+
+<Frame>
+  ![모든 매개변수 번호 목록 가져오기(Lx\\\_Cmd) 관련 이미지 4](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-4.avif)
+</Frame>
+
+ROS2에서는 매개변수 세부 정보를 확인하기가 불편하므로 모든 매개변수의 번호, 형식 및 설명을 다음 표에도 정리했습니다.
+
+| 번호 | 형식 | ROS 설명 | 상세 설명 |
+| --- | --- | --- | --- |
+| 1001 | INT | FIRST\_EXPOSURE | 기본 고점 적분 노출 값 |
+| 1002 | INT | SECOND\_EXPOSURE | 기본 저점 적분 노출 값 |
+| 1003 | INT | THIRD\_EXPOSURE | 기본 중간점 적분 노출 값 |
+| 1004 | INT | FOURTH\_EXPOSURE | 네 번째 포인트 |
+| 1005 | INT | GAIN | 게인 |
+| 1011 | INT | MIN\_DEPTH | 최소 깊이 값 |
+| 1012 | INT | MAX\_DEPTH | 최대 깊이 값 |
+| 1013 | INT | MIN\_AMPLITUDE | 최소 유효 신호 강도 값 |
+| 1014 | INT | MAX\_AMPLITUDE | 최대 유효 신호 강도 값 |
+| 1016 | INT | CODE\_MODE | 코딩 모드 |
+| 1018 | INT | WORK\_MODE | 작동 모드 |
+| 1019 | INT | LINK\_SPEED | 네트워크 카드 속도 |
+| 1021 | INT | 3D\_IMAGE\_WIDTH | 3D 이미지 해상도 너비 |
+| 1022 | INT | 3D\_IMAGE\_HEIGHT | 3D 이미지 해상도 높이 |
+| 1023 | INT | 3D\_IMAGE\_OFFSET\_X | ROI 가로 오프셋 픽셀 |
+| 1024 | INT | 3D\_IMAGE\_OFFSET\_Y | ROI 세로 오프셋 픽셀 |
+| 1025 | INT | 3D\_BINNING\_MODE | 3D 이미지 비닝 |
+| 1026 | INT | 3D\_DEPTH\_DATA\_TYPE | 깊이 이미지 데이터 형식 |
+| 1031 | INT | 3D\_AMPLITUDE\_CHANNEL | 3D 강도 이미지 채널 번호 |
+| 1032 | INT | 3D\_AMPLITUDE\_GET\_TYPE | 강도 이미지를 가져오는 방법 |
+| 1033 | INT | 3D\_AMPLITUDE\_EXPOSURE | 3D 수동 노출 값 |
+| 1034 | INT | 3D\_AMPLITUDE\_INTENSITY | 3D 자동 목표 조명 강도 |
+| 1035 | INT | 3D\_AMPLITUDE\_DATA\_TYPE | 강도 이미지 데이터 형식 |
+| 1036 | INT | 3D\_AUTO\_EXPOSURE\_LEVEL | 3D 자동 노출 수준 |
+| 1041 | INT | 2D\_IMAGE\_WIDTH | 2D 이미지 해상도 너비 |
+| 1042 | INT | 2D\_IMAGE\_HEIGHT | 2D 이미지 해상도 높이 |
+| 1043 | INT | 2D\_IMAGE\_OFFSET\_X | 2D 이미지 ROI 가로 오프셋 |
+| 1044 | INT | 2D\_IMAGE\_OFFSET\_Y | 2D 이미지 ROI 세로 오프셋 |
+| 1045 | INT | 2D\_BINNING\_MODE | 2D 이미지 비닝 |
+| 1046 | INT | 2D\_IMAGE\_CHANNEL | 2D 이미지 채널 수 |
+| 1047 | INT | 2D\_IMAGE\_DATA\_TYPE | 2D 이미지 데이터 형식 |
+| 1051 | INT | 2D\_MANUAL\_EXPOSURE | 수동 노출 중 2D 노출 값 |
+| 1052 | INT | 2D\_MANUAL\_GAIN | 수동 노출 중 2D 게인 |
+| 1053 | INT | 2D\_ENCODE\_TYPE | 2D 이미지 압축 형식 |
+| 1054 | INT | 2D\_AUTO\_EXPOSURE\_LEVEL | 2D 이미지 자동 노출 등 |
+| 1061 | INT | TOF\_GLOBAL\_OFFSET | ToF 깊이 데이터 오프셋 |
+| 1062 | INT | 3D\_UNDISTORT\_SCALE | ToF 이미지 왜곡 보정 계수 |
+| 1065 | INT | ALGORITHM\_MODE | 내장 애플리케이션 알고리즘 설정 |
+| 1066 | INT | MODBUS\_ADDR | Modbus 주소 |
+| 1067 | INT | HEART\_TIME | 장치와의 하트비트 주기 |
+| 1068 | INT | GVSP\_PACKET\_SIZE | GVSP 단일 패킷 데이터 크기 |
+| 1069 | INT | TRIGGER\_MODE | 트리거 모드 |
+| 1070 | INT | CALCULATE\_UP | 알고리즘 상하 이동 |
+| 1072 | INT | CAN\_BAUD\_RATE | CAN 보드레이트 값 |
+| 1073 | INT | MAX\_3D\_AUTO\_EXPOSURE | 3D 자동 노출 상한 |
+| 1074 | INT | CUSTOM\_PARAM\_GROUP | 사용자 정의 매개변수 그룹 |
+| 2001 | FLOAT | FILTER\_LEVEL | 필터 수준 |
+| 2002 | FLOAT | EST\_OUT\_EXPOSURE | 과다 노출 데이터를 평가할지 여부 |
+| 2003 | FLOAT | LIGHT\_INTENSITY | 광도 |
+| 2004 | FLOAT | 3D\_DEPTH\_FPS | 현재 깊이 맵 프레임 속도 |
+| 2005 | FLOAT | 3D\_AMPLITUDE\_FPS | 현재 강도 맵 프레임 속도 |
+| 2006 | FLOAT | 2D\_IMAGE\_FPS | 현재 RGB 이미지 프레임 속도 |
+| 2007 | FLOAT | DEVICE\_TEMPERATURE | 현재 카메라 온도 |
+| 3001 | BOOL | CONNECT\_STATE | 현재 연결 상태 |
+| 3002 | BOOL | ENABLE\_3D\_DEPTH\_STREAM | 깊이 데이터 스트림 켜기/끄기 |
+| 3003 | BOOL | ENABLE\_3D\_AMP\_STREAM | 강도 데이터 스트림 켜기/끄기 |
+| 3006 | BOOL | ENABLE\_3D\_AUTO\_EXPOSURE | 3D 자동 노출 활성화 |
+| 3007 | BOOL | ENABLE\_3D\_UNDISTORT | 3D 왜곡 보정 활성화 |
+| 3008 | BOOL | ENABLE\_ANTI\_FLICKER | 플리커 방지 활성화 |
+| 3011 | BOOL | ENABLE\_2D\_STREAM | 2D 데이터 스트림 켜기/끄기 |
+| 3012 | BOOL | ENABLE\_2D\_AUTO\_EXPOSURE | 2D 자동 노출 활성화 |
+| 3015 | BOOL | ENABLE\_2D\_UNDISTORT | 2D 이미지 왜곡 보정 활성화 |
+| 3016 | BOOL | ENABLE\_2D\_TO\_DEPTH | 2D-3D 이미지 정렬 활성화 |
+| 3017 | BOOL | ENABLE\_BACKGROUND\_AMP | 강도 배경광 활성화 |
+| 3018 | BOOL | ENABLE\_MULTI\_MACHINE | 다중 장치 모드 활성화 |
+| 3019 | BOOL | ENABLE\_MULTI\_EXPOSURE\_HDR | HDR |
+| 3020 | BOOL | ENABLE\_SYNC\_FRAME | 강제 프레임 동기화 활성화 여부 |
+| 4001 | STRING | DEVICE\_VERSION | 장치 버전 번호 |
+| 4002 | STRING | DEVICE\_LOG\_NAME | 로그 파일 이름 |
+| 4003 | STRING | FIRMWARE\_NAME | 펌웨어 파일 이름 |
+| 4004 | STRING | FILTER\_PARAMS | 필터 알고리즘 매개변수 |
+| 4005 | STRING | ALGORITHM\_PARAMS | 내장 알고리즘 매개변수 |
+| 4006 | STRING | ALGORITHM\_VERSION | 내장 알고리즘 버전 번호 |
+| 4007 | STRING | DEVICE\_OS\_VERSION | 장치 시스템 이미지 버전 번호 |
+| 0 | CMD | GET\_PARAM\_LIST | 모든 매개변수 번호 가져오기 |
+| 1 | CMD | START\_STREAM | 장치 스트림 시작 |
+| 2 | CMD | STOP\_STREAM | 장치 스트림 중지 |
+| 5001 | CMD | GET\_NEW\_FRAME | 현재 최신 데이터 업데이트 |
+| 5002 | CMD | RETURN\_VERSION | 이전 버전으로 되돌리기 |
+| 5003 | CMD | RESTART\_DEVICE | 카메라 다시 시작 |
+| 5004 | CMD | WHITE\_BALANCE | 자동 화이트 밸런스 |
+| 5007 | CMD | RESET\_PARAM | 기본 매개변수 복원 |
+
+**일부 매개변수는 스트림을 중지해야 설정할 수 있거나 설정 순서가 정해져 있습니다. 구체적인 요구 사항은 기술 지원 담당자에게 문의하세요.**
+
+##### 5.3.6.2 Int 매개변수 가져오기(Lx\_Int)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+val: 0
+
+is\_set: false"
+
+<Frame>
+  ![Int 매개변수 가져오기(Lx\\\_Int) 관련 이미지](/images/developers/camera-sdk-linux-examples-get-of-int-parameters-lx-int.avif)
+</Frame>
+
+출력을 확인할 수 있습니다.
+
+<Frame>
+  ![Int 매개변수 가져오기(Lx\\\_Int) 관련 이미지 2](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-2.avif)
+</Frame>
+
+빨간색 상자 안의 값은 반환 값입니다. 그림에서 가져온 값은 고점 적분 시간입니다. 반환 결과에 따르면 최대값은 **3600**, 최소값은 **1**, 현재 값은 **1010**, 설정 지원 여부는 **지원됨**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+<br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
+
+<Frame>
+  ![Int 매개변수 가져오기(Lx\\\_Int) 관련 이미지 3](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-3.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Int 매개변수 가져오기(Lx\\\_Int) 관련 이미지 4](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-4.avif)
+</Frame>
+
+그림에서 가져온 값은 고점 적분 시간입니다. 반환 결과에 따르면 최대값은 **3600**, 최소값은 **1**, 현재 값은 **1010**, 설정 지원 여부는 **지원됨**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+##### 5.3.6.3 Int 매개변수 설정(Lx\_Int)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+
+val: 2000
+
+is\_set: true"
+
+<Frame>
+  ![Int 매개변수 설정(Lx\\\_Int) 관련 그림](/images/developers/camera-sdk-linux-examples-setting-int-parameters-lx-int.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Int 매개변수 설정(Lx\\\_Int) 관련 그림 2](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+빨간색 상자 안의 값은 반환 값입니다. 그림에서는 고점 적분 시간을 설정했습니다. 반환 결과에 따르면 최대값은 **3600**, 최소값은 **1**, 현재 값은 **2000**으로 변경되었고, 설정 지원 여부는 **지원됨**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+<br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
+
+<Frame>
+  ![Int 매개변수 설정(Lx\\\_Int) 관련 그림 3](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Int 매개변수 설정(Lx\\\_Int) 관련 그림 4](/images/developers/camera-sdk-linux-examples-illustration-4-related-to-setting-int-parameters-lx-int.avif)
+</Frame>
+
+그림에서 가져온 값은 고점 적분 시간입니다. 반환 결과에 따르면 최대값은 **3600**, 최소값은 **1**, 현재 값은 **3000**으로 변경되었고, 설정 지원 여부는 **지원됨**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+##### 5.3.6.4 Float 매개변수 가져오기(Lx\_Float)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+val: 0.0
+
+is\_set: false"
+
+<Frame>
+  ![Float 매개변수 가져오기(Lx\\\_Float) 관련 이미지](/images/developers/camera-sdk-linux-examples-get-of-float-parameters-lx-float.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Float 매개변수 가져오기(Lx\\\_Float) 관련 이미지 2](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-2.avif)
+</Frame>
+
+빨간색 상자 안의 값은 반환 값입니다. 그림에서 가져온 값은 카메라 온도입니다. 반환 결과에 따르면 최대값은 **120**, 최소값은 **-40**, 현재 값은 **49.6875**, 설정 지원 여부는 **지원되지 않음**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다. <br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
+
+<Frame>
+  ![Float 매개변수 가져오기(Lx\\\_Float) 관련 이미지 3](/images/developers/camera-sdk-linux-examples-obtain-of-float-parameters-lx-float-3.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Float 매개변수 가져오기(Lx\\\_Float) 관련 이미지 4](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-4.avif)
+</Frame>
+
+그림에서 가져온 값은 카메라 온도입니다. 반환 결과에 따르면 최대값은 **120**, 최소값은 **-40**, 현재 값은 **50.4375**, 설정 지원 여부는 **지원되지 않음**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+##### 5.3.6.5 Float 매개변수 설정(Lx\_Float)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+
+val: 5.0
+
+is\_set: true"
+
+<Frame>
+  ![Float 매개변수 설정(Lx\\\_Float) 관련 그림](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Float 매개변수 설정(Lx\\\_Float) 관련 그림 2](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-float-parameters-lx-float.avif)
+</Frame>
+
+빨간색 상자에 반환 값이 표시됩니다. 그림에서 카메라 온도를 설정했습니다. 반환 결과에 따르면 최댓값은 **120**, 최솟값은 **-40**, 현재 값은 **50.9375**이며 설정 지원 여부는 **지원되지 않음**, 인터페이스 호출 반환 값은 **-2**, 반환 정보는 **지원되지 않음**입니다. 여기서 설정한 값은 5이지만 이 파라미터는 설정을 지원하지 않으므로 현재 값과 설정 값이 다릅니다. <br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
+
+<Frame>
+  ![Float 매개변수 설정(Lx\\\_Float) 관련 그림 3](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-float-parameters-lx-float.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Float 매개변수 설정(Lx\\\_Float) 관련 그림 4](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float-4.avif)
+</Frame>
+
+그림에서 카메라 온도를 설정했습니다. 반환 결과에 따르면 최댓값은 **120**, 최솟값은 **-40**, 현재 값은 **51.125**이며 설정 지원 여부는 **지원되지 않음**, 인터페이스 호출 반환 값은 **-2**, 반환 정보는 **지원되지 않음**입니다. 여기서 설정한 값은 5이지만 이 파라미터는 설정을 지원하지 않으므로 현재 값과 설정 값이 다릅니다.
+
+##### 5.3.6.6 Bool 파라미터 가져오기 (Lx\_Bool)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: false
+
+is\_set: false"
+
+<Frame>
+  ![Bool 파라미터 가져오기 관련 이미지 (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-get-of-bool-parameters-lx-bool.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Bool 파라미터 가져오기 관련 이미지 (Lx\\\_Bool) 2](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-2.avif)
+</Frame>
+
+빨간색 상자에 반환 값이 표시됩니다. 그림은 2D 자동 노출을 보여줍니다. 반환 결과에 따르면 현재 값은 **false**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+<br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
+
+<Frame>
+  ![Bool 파라미터 가져오기 관련 이미지 (Lx\\\_Bool) 3](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-3.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Bool 파라미터 가져오기 관련 이미지 (Lx\\\_Bool) 4](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-4.avif)
+</Frame>
+
+그림은 2D 자동 노출을 보여줍니다. 반환 결과에 따르면 현재 값은 **false**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+##### 5.3.6.7 Bool 파라미터 설정 (Lx\_Bool)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+
+val: true
+
+is\_set: true"
+
+<Frame>
+  ![Bool 파라미터 설정 관련 이미지 (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Bool 파라미터 설정 관련 이미지 2 (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+빨간색 상자에 반환 값이 표시됩니다. 그림에서 2D 자동 노출을 설정했습니다. 반환 결과에 따르면 현재 값은 **true**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**이며 현재 값은 설정 값과 일치합니다.
+
+<br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
+
+<Frame>
+  ![Bool 파라미터 설정 관련 이미지 3 (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-bool-parameters-lx-bool.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![Bool 파라미터 설정 관련 이미지 4 (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool-4.avif)
+</Frame>
+
+그림의 설정 항목은 2D 자동 노출입니다. 반환 결과에 따르면 현재 값은 **true**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**이며 현재 값은 설정 값과 일치합니다.
+
+##### 5.3.6.8 String 매개변수 가져오기(Lx\_String)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: ''
+
+is\_set: false"
+
+<Frame>
+  ![String 매개변수 가져오기(Lx\\\_String) 관련 이미지](/images/developers/camera-sdk-linux-examples-get-of-string-parameters-lx-string.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![String 매개변수 가져오기(Lx\\\_String) 관련 이미지 2](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-2.avif)
+</Frame>
+
+빨간색 상자 안의 값은 반환 값입니다. 그림에서 가져온 값은 장치 버전 번호입니다. 반환 결과에 따르면 현재 값은 **V1.1.33\_231201**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+<br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
+
+<Frame>
+  ![String 매개변수 가져오기(Lx\\\_String) 관련 이미지 3](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-3.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![String 매개변수 가져오기(Lx\\\_String) 관련 이미지 4](/images/developers/camera-sdk-linux-examples-get-the-of-string-parameter-lx-string-4.avif)
+</Frame>
+
+그림에서 가져온 값은 장치 버전 번호입니다. 반환 결과에 따르면 현재 값은 **V1.1.33\_231201**, 인터페이스 호출 반환 값은 **0**, 반환 정보는 **성공**입니다.
+
+##### 5.3.6.9 String 매개변수 설정(Lx\_String)
+
+**ROS1**
+
+터미널에 다음을 입력합니다: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+
+val: 'put:\\"123\\"'
+
+is\_set: true"
+
+<Frame>
+  ![String 매개변수 설정(Lx\\\_String) 관련 그림](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![String 매개변수 설정(Lx\\\_String) 관련 그림 2](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-string-parameters-lx-string.avif)
+</Frame>
+
+빨간색 상자 안의 값은 반환 값입니다. 그림에서는 장치 버전 번호를 설정했습니다. 반환 결과에 따르면 현재 값은 **V1.1.33\_231201**, 인터페이스 호출 반환 값은 **-2**, 반환 정보는 **지원되지 않음**입니다. 이 매개변수는 설정을 지원하지 않으므로 현재 값과 설정 값이 일치하지 않습니다. <br />
+
+**ROS2**
+
+터미널에 다음을 입력합니다: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
+
+<Frame>
+  ![String 매개변수 설정(Lx\\\_String) 관련 그림 3](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-string-parameters-lx-string.avif)
+</Frame>
+
+출력 결과를 확인할 수 있습니다.
+
+<Frame>
+  ![String 매개변수 설정(Lx\\\_String) 관련 그림 4](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string-4.avif)
+</Frame>
+
+그림에서는 장치 버전 번호를 설정했습니다. 반환 결과에 따르면 현재 값은 **V1.1.33\_231201**, 인터페이스 호출 반환 값은 **-2**, 반환 정보는 **지원되지 않음**입니다. 이 매개변수는 설정을 지원하지 않으므로 현재 값과 설정 값이 일치하지 않습니다.
+
+**String 형식 값을 설정할 때는 ROS2의 처음 큰따옴표와 ROS1의 처음 작은따옴표를 제외하고 작은따옴표와 큰따옴표에 이스케이프 문자를 추가해야 합니다. 예를 들어 문자열 \[PUT”123”\]을 입력하려면 이스케이프 문자를 추가하여 \[PUT\\”123\\”\]로 입력해야 합니다.**
+
+---
+
+## ROS 권장 하드웨어 및 리소스 사용량
+
+### 6.1 권장 하드웨어 구성
+
+권장 하드웨어 구성은 CPU 코어 수, CPU 사용량 및 메모리 크기를 기준으로 분석합니다. **이는 권장 구성이지 최소 요구 사항이 아닙니다.** 하드웨어가 권장 사양보다 낮아도 스트림 출력을 줄이거나 포인트 클라우드 계산을 끄거나 알고리즘 부하를 낮추면 안정적으로 작동할 수 있습니다. **사용 가능한 구성보다 높은 부하를 실행하면 ROS 코어 또는 Ubuntu가 충돌할 수 있습니다.** 이 장의 두 번째 및 세 번째 섹션에서는 자세한 사용량 데이터를 제공합니다. 시스템에 가장 적합한 실행 환경과 스트림 구성을 선택하세요. **여기 제시된 모든 데이터는 M4 Pro 카메라를 사용하는 VM에서 수집했습니다.**
+
+**Ubuntu16.04**
+
+| ROS 버전 | CPU | 메모리 | 대역폭 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[쿼드 코어\] | 4G | 1000M |
+
+**Ubuntu18.04**
+
+| ROS 버전 | CPU | 메모리 | 대역폭 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[쿼드 코어\] | 4G | 1000M |
+| ros2 | AMD64 \[쿼드 코어\] | 4G | 1000M |
+
+**Ubuntu20.04**
+
+| ROS 버전 | CPU | 메모리 | 대역폭 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[쿼드 코어\] | 4G | 1000M |
+| ros2 | AMD64 \[쿼드 코어\] | 4G | 1000M |
+
+**Ubuntu22.04**
+
+| ROS 버전 | CPU | 메모리 | 대역폭 |
+| --- | --- | --- | --- |
+| ros | AMD64 \[쿼드 코어\] | 4G | 1000M |
+
+### 6.2 CPU 세부 정보
+
+CPU 세부 정보에는 다양한 작동 조건에서 노드가 사용하는 CPU 리소스가 표시됩니다. 테스트는 **AMD64 \[8코어\], 8G 메모리** 하드웨어 환경을 기준으로 하며, 테스트 카메라는 **M4 Pro**, 테스트 알고리즘은 **팔레트 알고리즘**입니다. **2D 너비와 높이는 1280\*960, 3D 너비와 높이는 640\*480**이고, **2D 왜곡 보정은 켜짐, 3D 왜곡 보정은 꺼짐, 적분 시간 110~3000, 깊이 0~8000, ToF 프레임 속도 14, 스트리밍 모드, 평활화 수준 1, 노이즈 수준 1, 시간 영역 수준 0**으로 설정했습니다. 통계 명령은 **TOP**입니다. 테스트 소프트웨어 환경이 **VM 가상 머신**이므로 실제 장치에서 표시되는 데이터가 문서의 값과 비교해 변동하는 것은 정상입니다. S2와 같은 일부 카메라는 호스트 컴퓨터에서 알고리즘을 계산하므로 리소스 사용량이 많을 수 있으며 이는 정상입니다. <br />
+
+**1. 일부 용어는 다음과 같이 설명합니다.**
+
+- 단일 스트림: RGB, 깊이 및 강도 중 하나의 스트림을 켠 경우
+
+- 듀얼 스트림: RGB, 깊이 및 강도 중 두 스트림을 켠 경우
+
+- 세 스트림: RGB, 깊이 및 강도 세 스트림을 모두 켠 경우
+
+- 네 스트림: RGB, 깊이, 강도 및 포인트 클라우드를 모두 켠 경우
+
+**2. 알고리즘은 일부 스트림과 종속 관계가 있습니다. 종속 관계는 다음과 같습니다.**
+
+- 팔레트 알고리즘을 켜려면 깊이를 활성화해야 합니다.
+- 장애물 회피 알고리즘을 켜려면 깊이를 켜야 합니다.
+- 위치 추정 알고리즘을 켜려면 RGB를 켜야 합니다.
+
+<br />
+
+표에서 연한 파란색 배경은 포인트 클라우드를 활성화한 실행 구성이며, 배경색이 없는 행은 포인트 클라우드를 활성화하지 않은 실행 구성입니다. **아래의 모든 테스트 데이터는 기본적으로 알고리즘을 아래쪽으로 이동한 상태를 기준으로 하므로 S2 시리즈 카메라에서는 일부 테스트 값이 너무 작을 수 있습니다 \[S2 시리즈 카메라의 일부 알고리즘은 강제로 위쪽으로 이동함\].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 10.59 | 0.0~26.7 |
+| 듀얼 스트림 | 14.13 | 0.0~60.0 |
+| 3개 스트림 | 16.56 | 0.0~37.5 |
+| 4개 스트림 | 108.25 | 93.8~162.5 |
+| 포인트 클라우드 \+ 깊이 | 105.13 | 93.8~153.3 |
+| 알고리즘 \+ 깊이 | 5.44 | 0.0~43.0 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 104.39 | 93.8~120.0 |
+| 알고리즘 \+ 깊이 \+ RGB | 13.15 | 6.2~40.0 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 105.96 | 93.8~146.7 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 109.29 | 93.8~162.5 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 10.31 | 0.0~27.5 |
+| 듀얼 스트림 | 12.81 | 5.9~27.8 |
+| 3개 스트림 | 16.23 | 5.9~37.5 |
+| 4개 스트림 | 105.95 | 88.2~131.2 |
+| 포인트 클라우드 \+ 깊이 | 103.55 | 88.2~156.2 |
+| 알고리즘 \+ 깊이 | 56.32 | 0.0~43.8 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 104.07 | 78.3~43.8 |
+| 알고리즘 \+ 깊이 \+ RGB | 15.22 | 5.9~70.6 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 104.56 | 93.8~125.0 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 105.52 | 61.5~204.8 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 19.19 | 5.9~88.2 |
+| 듀얼 스트림 | 23.17 | 6.2~109.1 |
+| 3개 스트림 | 30.59 | 9.1~125.0 |
+| 4개 스트림 | 108.44 | 44.4~158.6 |
+| 포인트 클라우드 \+ 깊이 | 102.19 | 37.5~143.9 |
+| 알고리즘 \+ 깊이 | 6.44 | 0.0~26.7 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 104.45 | 79.2~176.5 |
+| 알고리즘 \+ 깊이 \+ RGB | 14.82 | 5.9~50.0 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 106.89 | 94.1~137.5 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 108.41 | 94.1~162.5 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 11.46 | 0.0~50.0 |
+| 듀얼 스트림 | 14.62 | 6.2~66.7 |
+| 3개 스트림 | 18.46 | 6.2~50.0 |
+| 4개 스트림 | 43.64 | 25.0~143.8 |
+| 포인트 클라우드 \+ 깊이 | 28.37 | 12.5~75.0 |
+| 알고리즘 \+ 깊이 | 6.53 | 0.0~43.8 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 29.28 | 13.3~100 |
+| 알고리즘\+깊이\+RGB | 13.79 | 0.0~50.0 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 40.64 | 25.0~81.2 |
+| 알고리즘\+깊이\+인텐시티\+RGB\+포인트 클라우드 | 44.44 | 25.0~75.0 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 8.07 | 0.0~20.0 |
+| 듀얼 스트림 | 11.25 | 0.0~33.3 |
+| 3개 스트림 | 16.18 | 6.2~62.5 |
+| 4개 스트림 | 33.77 | 0.0~86.7 |
+| 포인트 클라우드 \+ 깊이 | 27.45 | 12.5~81.2 |
+| 알고리즘 \+ 깊이 | 6.13 | 0.0~68.8 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 31.11 | 12.5~56.2 |
+| 알고리즘\+깊이\+RGB | 11.75 | 0.0~68.8 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 38.04 | 6.2~75.0 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 40.85 | 18.8~106.2 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 8.05 | 0.0~23.5 |
+| 듀얼 스트림 | 11.99 | 0.0~75.0 |
+| 3개 스트림 | 18.08 | 0.0~100 |
+| 4개 스트림 | 50.06 | 6.2~200 |
+| 포인트 클라우드 \+ 깊이 | 33.92 | 0.0~106.2 |
+| 알고리즘 \+ 깊이 | 7.70 | 0.0~43.8 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 36.20 | 6.2~131.2 |
+| 알고리즘 \+ 깊이 \+ RGB | 14.46 | 6.2~37.5 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 39.07 | 18.8~94.1 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 45.61 | 12.5~93.8 |
+
+### 6.3 메모리 세부 정보
+
+메모리 세부 정보에는 다양한 작동 조건에서 노드가 사용하는 메모리 리소스가 표시됩니다. 테스트는 **AMD64 \[8코어\], 8G 메모리** 하드웨어 환경을 기준으로 하며, 테스트 카메라는 **M4 Pro**, 테스트 알고리즘은 **팔레트 알고리즘**입니다. **2D 너비와 높이는 1280\*960, 3D 너비와 높이는 640\*480**이고, **2D 왜곡 보정은 켜짐, 3D 왜곡 보정은 꺼짐, 포인트 110~3000, 깊이 0~8000, ToF 프레임 속도 14, 스트리밍 모드, 평활화 수준 1, 노이즈 수준 1, 시간 영역 수준 0**으로 설정했습니다. 통계 명령은 **TOP**입니다. 테스트 소프트웨어 환경이 **VM 가상 머신**이므로 실제 장치에서 표시되는 데이터가 문서의 값과 비교해 변동하는 것은 정상입니다. S2와 같은 일부 카메라는 호스트 컴퓨터에서 알고리즘을 계산하므로 리소스 사용량이 많을 수 있으며 이는 정상입니다. <br />
+
+**1. 일부 용어는 다음과 같이 설명합니다.**
+
+- 단일 스트림: RGB, 깊이 및 인텐시티 중 하나의 스트림을 켠 경우
+
+- 듀얼 스트림: RGB, 깊이 및 인텐시티 중 두 스트림을 켠 경우
+
+- 3개 스트림: RGB, 깊이 및 인텐시티 세 스트림을 모두 켠 경우
+
+- 4개 스트림: RGB, 깊이, 인텐시티 및 포인트 클라우드를 모두 켠 경우
+
+**2. 알고리즘은 일부 스트림과 종속 관계가 있습니다. 종속 관계는 다음과 같습니다.**
+
+- 팔레트 알고리즘을 활성화하려면 깊이를 켜야 합니다.
+- 장애물 회피 알고리즘을 켜려면 깊이를 켜야 합니다.
+- 로컬라이제이션 알고리즘을 켜려면 RGB를 켜야 합니다.
+
+3. 표에서 연한 파란색 배경은 포인트 클라우드를 켠 실행 구성이고, 색상이 없는 배경은 포인트 클라우드를 켜지 않은 실행 구성입니다. **아래의 모든 테스트 데이터는 기본적으로 알고리즘을 아래쪽으로 이동한 상태이므로 S2 시리즈 카메라에서는 모든 테스트 값이 너무 작을 수 있습니다 \[S2 시리즈 카메라의 일부 알고리즘은 강제로 위쪽으로 이동합니다\].**
+
+**Ubuntu16.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 0.60 | 0.6~0.7 |
+| 듀얼 스트림 | 0.61 | 0.6~0.8 |
+| 3개 스트림 | 0.66 | 0.6~0.8 |
+| 4개 스트림 | 0.79 | 0.7~0.9 |
+| 포인트 클라우드 \+ 깊이 | 0.60 | 0.5~0.7 |
+| 알고리즘 \+ 깊이 | 0.50 | 0.5~0.5 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 0.60 | 0.5~0.7 |
+| 알고리즘 \+ 깊이 \+ RGB | 0.62 | 0.6~0.8 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 0.71 | 0.6~0.9 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 0.79 | 0.7~0.9 |
+
+**Ubuntu18.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 1.01 | 1.1~1.2 |
+| 듀얼 스트림 | 1.10 | 1.1~1.2 |
+| 3개 스트림 | 1.10 | 1.1~1.2 |
+| 4개 스트림 | 1.19 | 1.1~1.3 |
+| 포인트 클라우드 \+ 깊이 | 1.09 | 0.9~1.2 |
+| 알고리즘 \+ 깊이 | 0.90 | 0.9~1.0 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 1.09 | 0.9~1.2 |
+| 알고리즘 \+ 깊이 \+ RGB | 1.10 | 1.1~1.2 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 1.19 | 1.1~1.3 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 1.20 | 1.1~1.4 |
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 1.19 | 1.1~1.2 |
+| 듀얼 스트림 | 1.27 | 1.1~1.3 |
+| 3개 스트림 | 1.29 | 1.2~1.3 |
+| 4개 스트림 | 1.57 | 1.3~1.6 |
+| 포인트 클라우드 \+ 깊이 | 1.20 | 1.1~1.3 |
+| 알고리즘 \+ 깊이 | 0.90 | 0.9~0.9 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 1.10 | 1.0~1.2 |
+| 알고리즘 \+ 깊이 \+ RGB | 1.10 | 1.1~1.2 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 1.30 | 1.3~1.4 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 1.41 | 1.3~1.6 |
+
+**Ubuntu20.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 1.21 | 1.2~1.4 |
+| 듀얼 스트림 | 1.30 | 1.3~1.4 |
+| 3개 스트림 | 1.30 | 1.3~1.4 |
+| 4개 스트림 | 1.33 | 1.3~1.5 |
+| 포인트 클라우드 \+ 깊이 | 1.21 | 1.2~1.4 |
+| 알고리즘 \+ 깊이 | 1.19 | 1.1~1.2 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 1.22 | 1.2~1.4 |
+| 알고리즘 \+ 깊이 \+ RGB | 1.30 | 1.3~1.4 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 1.32 | 1.3~1.5 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 1.33 | 1.3~1.5 |
+
+<br />
+
+| ROS2 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 1.20 | 1.2~1.3 |
+| 듀얼 스트림 | 1.20 | 1.2~1.3 |
+| 3개 스트림 | 1.30 | 1.3~1.4 |
+| 4개 스트림 | 1.64 | 1.4~1.7 |
+| 포인트 클라우드 \+ 깊이 | 1.36 | 1.1~1.4 |
+| 알고리즘 \+ 깊이 | 1.10 | 1.1~1.1 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 1.19 | 1.1~1.3 |
+| 알고리즘 \+ 깊이 \+ RGB | 1.40 | 1.4~1.4 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 1.58 | 1.4~1.7 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 1.60 | 1.5~1.7 |
+
+**Ubuntu22.04**
+
+| ROS1 |  |  |
+| --- | --- | --- |
+| 실행 구성 | 평균 % | 범위 % |
+| 단일 스트림 | 1.28 | 1.1~1.3 |
+| 듀얼 스트림 | 1.29 | 1.2~1.3 |
+| 3개 스트림 | 1.20 | 1.2~1.3 |
+| 4개 스트림 | 1.49 | 1.4~1.6 |
+| 포인트 클라우드 \+ 깊이 | 1.11 | 1.1~1.2 |
+| 알고리즘 \+ 깊이 | 1.00 | 1.0~1.0 |
+| 알고리즘 \+ 깊이 \+ 포인트 클라우드 | 1.11 | 1.1~1.2 |
+| 알고리즘 \+ 깊이 \+ RGB | 1.20 | 1.2~1.3 |
+| 알고리즘 \+ 깊이 \+ RGB \+ 포인트 클라우드 | 1.55 | 1.3~1.6 |
+| 알고리즘 \+ 깊이 \+ 인텐시티 \+ RGB \+ 포인트 클라우드 | 1.51 | 1.3~1.7 |
+
+---
+
+## 부록
+
+이 부록에서는 일부 도구의 설치 방법을 제공합니다. 이 방법을 사용하려면 Linux에 대한 기본 지식이 필요합니다. 이 문서의 부록에 소개된 방법으로 모든 컴퓨터에 성공적으로 설치할 수 있다고 보장할 수는 없습니다. 컴퓨터 환경마다 다르고 발생하는 문제도 다를 수 있습니다. 부록에 없는 문제가 발생하면 직접 해결 방법을 검색하세요.
+
+### 1. Cmake 지정 버전 설치 방법
+
+[https://cmake.org/download/](https://cmake.org/download/)로 이동하여 필요한 CMake 버전을 다운로드하세요. `tar -zxvf cmake-XXX.tar.gz`로 다운로드한 패키지의 압축을 풀고 압축 해제된 디렉터리로 이동한 다음 컴파일하고 구성합니다.
+
+./bootstrap
+
+make
+
+sudo make install
+
+CMake 버전을 확인하여 설치가 성공했는지 확인하세요.
+
+cmake --version
+
+### 2. OpenCV 지정 버전 설치 방법
+
+1. 필요한 OpenCV 버전을 다운로드하세요: [Releases-OpenCV](https://opencv.org/releases/ "Releases-OpenCV")
+
+<Frame>
+  ![지정 버전 OpenCV 설치 방법 관련 이미지](/images/developers/camera-sdk-linux-examples-the-installation-method-of-the-specified-version-of-opencv.avif)
+</Frame>
+
+2. 환경을 구성하고 다음 명령을 순서대로 실행하세요.
+
+sudo apt-get install build-essential
+
+sudo apt-getinstallcmake gitlibgtk2.0-devpkg-config libavcodec-dev
+
+libavformat-dev libswscale-dev
+
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev
+
+libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+
+3. 새 opencv 폴더를 만들고 다운로드한 소스 코드를 opencv 폴더에 압축 해제하세요.
+4. 다음 명령을 순서대로 실행하세요.
+5.   cd opencv
+6.   mkdir build && cd build
+7.   sudocmake-DCMAKE\_BUILD\_TYPE=Release-D
+8.   CMAKE\_INSTALL\_PREFIX=/usr/local ..
+9.   sudo make -j4
+10. sudo make install을 실행하고 설치가 완료될 때까지 기다리세요.
+
+### 3. PCL 지정 버전 설치 방법
+
+1. 지원되는 PCL 버전을 확인하세요:
+
+apt-cache madison libpcl-dev
+
+2. 지정한 PCL 버전 설치 (1.10.0은 필요한 버전 번호로 바꿔야 합니다):
+
+sudo apt-get install libpcl-dev=1.10.0
+
+### 4. ROS 설치
+
+**Ubuntu16.04**
+
+1. 소프트웨어 저장소와 비밀 키를 추가하세요:
+
+sudo sh -c 'echo "deb [http://packages.ros.org/ros/ubuntu](http://packages.ros.org/ros/ubuntu) \$(lsb\_release -sc) main" \>
+
+/etc/apt/sources.list.d/ros-latest.list'
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. 비밀 키 추가:
+
+curl -sSL
+
+'[http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654](http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654)' | sudo apt-key add -
+
+3. 저장소 업데이트:
+
+sudo apt-get update
+
+4. ROS 설치 완료:
+
+sudo apt-get install ros-kinetic-desktop-full
+
+5. 환경 변수 구성:
+
+echo "source /opt/ros/kinetic/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+6. ROS 관련 도구 설치:
+
+sudoaptinstallpython-rosinstallpython-rosinstall-generatorpython-wstool
+
+build-essential
+
+7. ROS 1 설치가 완료되면 ROS와 함께 제공되는 예제를 실행하여 설치가 올바른지 확인하세요.
+
+터미널을 열고 입력하세요: roscore
+
+다른 터미널을 열고 입력하세요: rosrun turtlesim turtlesim\_node
+
+다른 터미널을 여세요: rosrun turtlesim turtle\_teleop\_key
+
+세 번째 터미널에서 화살표 키로 작은 거북이를 제어할 수 있습니다.
+
+아래와 같이 정상 실행되면 ROS가 올바르게 설치된 것입니다:
+
+![ROS 설치 관련 이미지](/images/developers/camera-sdk-linux-examples-installation-ros.avif)
+
+<br />
+
+**Ubuntu18.04**
+
+1. 소프트웨어 저장소 설정:
+
+sudo sh -c '. /etc/lsb-release && echo "deb [http://mirrors.ustc.edu.cn/ros/ubuntu/](http://mirrors.ustc.edu.cn/ros/ubuntu/)
+
+\`lsb\_release -cs\` main" \> /etc/apt/sources.list.d/ros-latest.list'
+
+2.공개 키 설정:
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+3. 소프트웨어 목록 업데이트:
+
+sudo apt update
+
+4. Ubuntu18.04용 ROS 1 설치:
+
+sudo apt install ros-melodic-desktop-full
+
+5. 환경 변수 설정:
+
+echo "source /opt/ros/melodic/setup.bash" \>\> ~/.bashrc
+
+zsh를 사용하는 경우: source ~/.bashrc
+
+echo "source /opt/ros/melodic/setup.bash" \>\> ~/.zshrc
+
+source ~/.zshrc
+
+6. ROS 관련 도구 설치:
+
+sudoaptinstallpython-rosdeppython-rosinstallpython-rosinstall-generator
+
+python-wstool build-essential
+
+7. ROS 1 설치가 완료되면 ROS와 함께 제공되는 예제를 실행하여 설치가 올바른지 확인하세요.
+
+터미널을 열고 입력하세요: roscore
+
+다른 터미널을 열고 입력하세요: rosrun turtlesim turtlesim\_node
+
+다른 터미널을 여세요: rosrun turtlesim turtle\_teleop\_key
+
+세 번째 터미널에서 화살표 키로 작은 거북이를 제어할 수 있습니다.
+
+아래와 같이 정상 실행되면 ROS가 올바르게 설치된 것입니다:
+
+<Frame>
+  ![ROS 설치 관련 이미지 2](/images/developers/camera-sdk-linux-examples-installation-ros-2.avif)
+</Frame>
+
+**Ubuntu20.04**
+
+1. 공개 키를 구성하세요.
+
+sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
+
+C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+2. 서버에 연결할 수 없거나 시간이 초과되면 먼저 소프트웨어 저장소 목록을 업데이트하세요.
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+3. 공개 키를 구성한 후 소프트웨어 목록을 다시 업데이트하세요.
+
+sudo apt-get update install ros:
+
+sudo apt install ros-noetic-desktop-full
+
+4. 환경 변수 설정:
+
+echo "source /opt/ros/noetic/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+5. ROS 설치 도구:
+
+sudo apt install python3-rosinstall python3-rosinstall-generator python3-wstool
+
+build-essential
+
+6. ROS 1 설치가 완료되면 ROS와 함께 제공되는 예제를 실행하여 설치가 올바른지 확인하세요.
+
+터미널을 열고 입력하세요: roscore
+
+다른 터미널을 열고 입력하세요: rosrun turtlesim turtlesim\_node
+
+다른 터미널을 여세요: rosrun turtlesim turtle\_teleop\_key
+
+세 번째 터미널에서 화살표 키로 작은 거북이를 제어할 수 있습니다.
+
+아래와 같이 정상 실행되면 ROS가 올바르게 설치된 것입니다:
+
+<Frame>
+  ![ROS 설치 관련 이미지 3](/images/developers/camera-sdk-linux-examples-installation-ros-3.avif)
+</Frame>
+
+**Ubuntu22.04**
+
+Ubuntu22.04에 ROS 1을 설치하는 것은 권장하지 않습니다. 공식적으로 지원되지 않으며 설치하면 많은 종속성 문제가 발생할 수 있습니다.
+
+### 5. ROS에서 새 테스트 패키지 만들기
+
+1. ws 폴더를 만들고 ws 폴더 안에 src 폴더를 만든 다음 src 폴더로 이동하여 다음을 실행하세요.
+
+catkin\_create\_pkg example std\_msgs rospy roscpp
+
+2. 이렇게 하면 std\_msgs, rospy, roscpp에 의존하는 example이라는 새 패키지가 생성됩니다.
+3. 그런 다음 새 패키지를 컴파일하세요: catkin\_make. 이 패키지는 실행 프로그램이 없는 빈 패키지입니다.
+4. 이제 'Hellow world'를 출력하는 패키지를 만드는 방법을 보여줍니다.
+5. 방금 만든 패키지에서 src 폴더(패키지 안의 src)로 이동하여 아래와 같이 새 main.cpp를 만드세요(경로에 유의하세요).
+
+<Frame>
+  ![ROS에서 새 테스트 패키지를 만드는 방법 관련 이미지](/images/developers/camera-sdk-linux-examples-illustration-of-how-to-create-a-new-test-package-in-ros.avif)
+</Frame>
+
+6. main.cpp에 다음 코드를 입력하세요.
+
+<Frame>
+  ![ROS 새 테스트 패키지 만들기 관련 이미지 2](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-2.avif)
+</Frame>
+
+7. 그런 다음 외부 CMakeLists.txt를 수정하고 맨 아래에 다음 줄을 추가하세요: add\_executable(example src/main.cpp)
+
+<Frame>
+  ![ROS 새 테스트 패키지 만들기 관련 이미지 3](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-3.avif)
+</Frame>
+
+8. 그런 다음 ws 디렉터리로 돌아가 컴파일 명령을 실행하세요: catkin\_make
+
+<Frame>
+  ![ROS 새 테스트 패키지 만들기 관련 이미지 4](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-4.avif)
+</Frame>
+
+9. 이 화면이 표시되면 컴파일이 성공한 것입니다.
+10. 다음으로 환경을 구성하세요.
+
+source devel/setup.bash
+
+<Frame>
+  ![ROS 새 테스트 패키지 만들기 관련 그림 5](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-5.avif)
+</Frame>
+
+11. 그런 다음 프로그램을 실행하면 출력 결과를 확인할 수 있습니다.
+
+rosrun example example
+
+<Frame>
+  ![ROS 새 테스트 패키지 만들기 관련 그림 6](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-6.avif)
+</Frame>
+
+### 6. ROS2 설치
+
+**Ubuntu16.04**
+
+1. 비밀 키 추가:
+
+sudo apt-get update && sudo apt-get install curl
+
+curl [http://repo.ros2.org/repos.key](http://repo.ros2.org/repos.key) | sudo apt-key add -
+
+2. 권한 추가:
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+curl-shttps://raw.githubusercontent.com/ros/rosdistro/master/ros.asc|sudo
+
+apt-key add -
+
+3. 이 단계에서 오류가 발생하면 VPN으로 네트워크 제한을 우회한 후 브라우저에서 URL을 열어 내용을 복사하고 새 ros.asc 파일에 붙여 넣으세요. 복사가 완료되면 다음과 같습니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지](/images/developers/camera-sdk-linux-examples-installation-ros2.avif)
+</Frame>
+
+4. 3단계를 다시 실행하세요: sudo apt-key add ros.asc
+5. 계속 실행하세요:
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
+
+main" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. ROS2 설치:
+
+sudo apt update
+
+sudo apt install ros-ardent-desktop
+
+7. 환경 변수 구성:
+
+source /opt/ros/ardent/setup.bash
+
+8. 기능 패키지를 설치하세요.
+
+sudo apt-get update
+
+sudo apt-get install ros-ardent-ros1-bridge sudo apt-get install ros-ardent-turtlebot2-\*
+
+9. 예제 프로그램을 실행해 보세요. 터미널을 열고 다음을 실행합니다.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+10. 다른 터미널에서 실행하세요.
+
+source~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+11. 다음 터미널 출력이 설치 성공을 확인해 줍니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 2](/images/developers/camera-sdk-linux-examples-installation-ros2-2.avif)
+</Frame>
+
+**Ubuntu18.04：**
+
+1. 소프트웨어 저장소를 추가하세요.
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+curl -s [https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc](https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc)
+
+sudo apt-key add ros.asc
+
+2. 이 단계에서 다음과 같은 오류가 발생하면:
+
+<Frame>
+  ![ROS2 설치 관련 이미지 3](/images/developers/camera-sdk-linux-examples-installation-ros2-3.avif)
+</Frame>
+
+3. VPN으로 네트워크 제한을 우회한 후 브라우저에서 URL을 열어 내용을 복사하고 새 ros.asc 파일에 붙여 넣으세요. 복사가 완료되면 다음과 같습니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 4](/images/developers/camera-sdk-linux-examples-installation-ros2-4.avif)
+</Frame>
+
+4. 3단계를 다시 실행하세요: sudo apt-key add ros.asc
+5. 계속 실행하세요:
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
+
+main" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. 완료되면 ROS2 다운로드를 시작하세요. 빨간색으로 표시된 버전은 위 표의 해당 버전으로 바꿔야 합니다.
+
+sudo apt update
+
+sudo apt install ros-eloquent-desktop
+
+7. 설치가 완료될 때까지 기다린 후 Python 라이브러리를 계속 설치하세요. 다음을 실행합니다: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+
+그런 다음 환경 변수를 구성하세요.
+
+echo "source /opt/ros/eloquent/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+8. 샘플 프로그램을 실행해 보세요. 터미널을 열고 다음을 실행합니다.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+9. 다른 터미널에서 실행하세요.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+10. 다음 터미널 출력이 설치 성공을 확인해 줍니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 5](/images/developers/camera-sdk-linux-examples-installation-ros2-5.avif)
+</Frame>
+
+**Ubuntu20.04**
+
+1. 소프트웨어 저장소를 추가하세요.
+
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+
+sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o](https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o)
+
+/usr/share/keyrings/ros-archive-keyring.gpg
+
+2. 다음 오류가 발생하면 "ailed to connect to raw.githubusercontent.com port 443 after 13 ms: connection refused"
+
+<Frame>
+  ![ROS2 설치 관련 이미지 6](/images/developers/camera-sdk-linux-examples-installation-ros2-6.avif)
+</Frame>
+
+sudo vi /etc/hosts
+
+3. 다음 항목을 추가하세요.
+
+185.199.108.133raw.githubusercontent.com
+
+4. 추가된 파일은 다음과 같습니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 7](/images/developers/camera-sdk-linux-examples-installation-ros2-7.avif)
+</Frame>
+
+echo"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
+
+5. 계속 실행하세요:
+
+sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionicmain" \> /etc/apt/sources.list.d/ros2-latest.list'
+
+6. 완료되면 ROS2 다운로드를 시작하세요:
+
+sudo apt update
+
+sudo apt install ros-foxy-desktop
+
+7. 설치가 완료될 때까지 기다린 후 Python 라이브러리를 계속 설치하세요. 다음을 실행합니다: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+8. 그런 다음 환경 변수를 구성하세요:
+
+echo "source /opt/ros/foxy/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+9. 샘플 프로그램을 실행해 보세요. 터미널을 열고 다음을 실행합니다:
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+10. 다른 터미널에서 실행하세요.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+11. 다음 터미널 출력이 설치 성공을 확인해 줍니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 8](/images/developers/camera-sdk-linux-examples-installation-ros2-8.avif)
+</Frame>
+
+**Ubuntu22.04**
+
+1. 소프트웨어 저장소를 추가하세요.
+
+sudo apt update && sudo apt install curl gnupg lsb-release
+
+sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key](https://raw.githubusercontent.com/ros/rosdistro/master/ros.key) -o /usr/share/keyrings/ros-archive-keyring.gpgecho"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
+
+2. 다음 오류가 발생하면 "ailed to connect to raw.githubusercontent.com port 443 after 13 ms: connection refused"
+
+<Frame>
+  ![ROS2 설치 관련 이미지 9](/images/developers/camera-sdk-linux-examples-installation-ros2-9.avif)
+</Frame>
+
+sudo vi /etc/hosts를 실행하고 다음 항목을 추가하세요.
+
+185.199.108.133raw.githubusercontent.com
+
+추가된 파일은 다음과 같습니다:
+
+<Frame>
+  ![ROS2 설치 관련 이미지 10](/images/developers/camera-sdk-linux-examples-installation-ros2-10.avif)
+</Frame>
+
+3. 완료되면 ROS2 다운로드를 시작하세요: sudo apt update
+
+sudo apt install ros-humble-desktop
+
+4. 설치가 완료될 때까지 기다린 후 Python 라이브러리를 계속 설치하세요. 다음을 실행합니다: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+5. 그런 다음 환경 변수를 구성하세요.
+
+echo "source /opt/ros/humble/setup.bash" \>\> ~/.bashrc
+
+source ~/.bashrc
+
+6. 샘플 프로그램을 실행해 보세요. 터미널을 열고 다음을 실행합니다.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_cpp talker
+
+7. 다른 터미널에서 실행하세요.
+
+source ~/.bashrc
+
+ros2 run demo\_nodes\_py listener
+
+8. 다음 터미널 출력이 설치 성공을 확인해 줍니다.
+
+<Frame>
+  ![ROS2 설치 관련 이미지 11](/images/developers/camera-sdk-linux-examples-installation-ros2-11.avif)
+</Frame>
+
+### 7. ROS2에서 새 테스트 패키지 만들기
+
+1. 다음 명령을 실행하세요.
+
+mkdir example\_ws && cd example\_ws
+
+ros2 pkg create --build-type ament\_cmake --node-name example\_n example\_p
+
+colcon build
+
+source install/setup.bash
+
+ros2 run example\_p example\_n
+
+2. example\_p라는 새 패키지와 example\_n이라는 노드를 만들 수 있습니다. 실행하면 hello world example\_p package가 출력됩니다.
+
+<br />
+
+<br />

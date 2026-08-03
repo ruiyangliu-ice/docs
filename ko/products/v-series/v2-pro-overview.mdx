@@ -1,0 +1,351 @@
+---
+title: V2 Pro 사용자 가이드
+description: "V2 Pro 내비게이션 컨트롤러의 사양, 인터페이스, 설치, 매핑 및 측위 방법을 설명합니다."
+---
+
+V2 Pro는 이동 로봇과 수동 운전 지게차의 측위를 위한 내비게이션 컨트롤러입니다. 상향 카메라, 2D LiDAR 및 IMU의 데이터를 융합하여 매핑, 위치 추정 및 재측위를 지원합니다.
+
+<Info>
+  전체 제품 자료는 [다운로드 센터](/ko/resources/downloads/specifications-and-user-guides)에서 다운로드할 수 있습니다.
+</Info>
+
+<Frame caption="V2 Pro 내비게이션 컨트롤러">
+  ![V2 Pro 내비게이션 컨트롤러](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller.avif)
+</Frame>
+
+## 제품 개요
+
+### 작동 방식
+
+컨트롤러에는 통합 컴퓨팅 플랫폼이 탑재되어 있어 외부 산업용 컴퓨터가 필요하지 않습니다. 로봇이 대상 영역을 이동하는 동안 상향 카메라는 환경 특징을 수집하고, 2D LiDAR는 평면 윤곽을 제공하며, IMU는 동작 데이터를 제공합니다. 컨트롤러는 이 데이터를 융합하여 지도를 생성하고 측위 결과를 출력합니다.
+
+### 주요 기능
+
+- `108° × 57°` 상향 카메라, `270°` 2D LiDAR 스캔 및 IMU 데이터를 융합합니다.
+- `6 TOPS` NPU 성능과 매핑 및 지도 관리용 비전 인터페이스를 제공합니다.
+- Wi-Fi 6 및 오디오 출력을 통합하여 수동 운전 지게차의 측위 데이터, 음성 안내 및 알림을 지원합니다.
+- 이동 로봇, AGV 및 수동 운전 지게차의 실내 측위와 내비게이션 통합을 지원합니다.
+
+### 일반적인 적용 분야
+
+- **공장 물류:** 창고, 하역장 및 작업장에서 로봇의 측위와 내비게이션을 지원합니다.
+- **수동 운전 지게차 업그레이드:** 기존 지게차에 측위 기능을 추가하고 위치 데이터를 상위 시스템에 제공합니다.
+
+<Frame caption="V2 Pro 적용 시나리오">
+  ![이동 로봇과 지게차에 적용된 V2 Pro](/images/products/v-series-v2-pro-overview-v2-pro-applications.avif)
+</Frame>
+
+## 사양
+
+### 기본 사양
+
+| 모듈 | 항목 | 사양 |
+| --- | --- | --- |
+| 상향 카메라 | 동작 범위 | 1–15 m (주변 조도 0–10 kLux) |
+| 상향 카메라 | 시야각 | 108° (H) × 57° (V), ±3° |
+| 상향 카메라 | 프레임 속도 | 20 fps |
+| 상향 카메라 | 간섭 내성 | 눈부심 및 주변광 내성 |
+| 2D LiDAR | 스캔 주파수 | 15–25 Hz, 전환 가능 |
+| 2D LiDAR | 수평 시야각 | 270° |
+| 2D LiDAR | 각도 분해능 | 0.25° |
+| 2D LiDAR | 감지 범위 | 10% 반사율에서 15 m; 90% 반사율에서 40 m |
+| 2D LiDAR | 거리 정확도 | ±30 mm (일반값) |
+| 메인 시스템 | 통합 모듈 | IMU (관성 측정 장치) |
+| 메인 시스템 | 프로세서 | Rockchip 8코어 Arm 플랫폼 |
+| 메인 시스템 | NPU 성능 | 6 TOPS |
+| 메인 시스템 | 통신 인터페이스 | 1 × Ethernet; 1 × CAN; 4 × I/O (입력 2개, 출력 2개) |
+| 메인 시스템 | 전원 공급 | 24 VDC (±4.8 V) |
+| 메인 시스템 | 소비 전력 | 평균 6.6 W; 최대 15.3 W |
+| 메인 시스템 | 무선 모듈 | Wi-Fi 6 |
+| 메인 시스템 | 오디오 출력 | 1 × 3핀 오디오 출력 (L/R/GND) |
+| 메인 시스템 | 크기 | 146.5 mm × 66.3 mm × 89.4 mm |
+| 메인 시스템 | 방진방수 등급 | IP54 |
+| 메인 시스템 | 동작 온도 | −20–60 °C |
+| 메인 시스템 | 보관 온도 | −40–80 °C |
+
+<Tip>
+  크기는 제품 3D 모델과 함께 제공된 하드웨어를 기준으로 확인하세요. 설치 전에 사용 가능한 공간, 전원 조건 및 케이블 굽힘 반경을 확인하세요.
+</Tip>
+
+### 인터페이스 정의
+
+컨트롤러는 전원, Ethernet, CAN, I/O 및 오디오 출력 인터페이스를 제공합니다.
+
+<Frame caption="V2 Pro 인터페이스 위치">
+  ![V2 Pro Ethernet, CAN, I/O, 전원 및 오디오 인터페이스](/images/products/v-series-v2-pro-overview-v2-pro-interface-definitions.avif)
+</Frame>
+
+| 포트 | 정의 | 설명 |
+| --- | --- | --- |
+| CN6 | Ethernet | RJ45 암 커넥터 |
+| CN7 | CAN | 분홍색: CAN\_H; 연한 녹색: CAN\_L; 검은색: GND |
+| CN8 | I/O | I/O 4채널: 입력 2개와 출력 2개. 아래 핀 배치를 참조하세요. |
+| CN9 | 전원 | 24 VDC / 3 A; 1: 양극; G: 음극 |
+| CN10 | 오디오 출력 | 3.5 mm 오디오 플러그 |
+
+#### CN8 I/O 핀 배치
+
+| 핀 | 신호 | 핀 | 신호 |
+| --- | --- | --- | --- |
+| 1 | IN1\+ | 2 | IN1− |
+| 3 | IN2\+ | 4 | IN2− |
+| 5 | OUT1\+ | 6 | OUT1− |
+| 7 | OUT2\+ | 8 | OUT2− |
+
+- 입력: 5–24 V에서 액티브 하이.
+- 출력: 24 V / 100 mA 구동을 지원하는 푸시-풀 출력.
+
+## 제품 구조
+
+### 외관 및 크기
+
+<Frame caption="V2 Pro 외관">
+  ![V2 Pro 내비게이션 컨트롤러 외관](/images/products/v-series-v2-pro-overview-v2-pro-navigation-controller-02.avif)
+</Frame>
+
+<Frame caption="V2 Pro 기계 도면">
+  ![V2 Pro 기계 도면](/images/products/v-series-v2-pro-overview-v2-pro-mechanical-drawing.avif)
+</Frame>
+
+### 구성 요소
+
+<Frame caption="V2 Pro 구성 요소 개요(전면)">
+  ![2D LiDAR, 상향 카메라, 조명 장치 및 Wi-Fi 안테나 커넥터를 표시한 V2 Pro 전면](/images/products/v-series-v2-pro-overview-v2-pro-components.avif)
+</Frame>
+
+<Frame caption="V2 Pro 구성 요소 개요(후면)">
+  ![장착 홀, 케이블 및 명판을 표시한 V2 Pro 후면](/images/products/v-series-v2-pro-overview-v2-pro-component-details.avif)
+</Frame>
+
+| 번호 | 구성 요소 |
+| --- | --- |
+| 1 | 2D LiDAR 방출 창 |
+| 2 | 상향 카메라 렌즈 창 |
+| 3 | 상향 카메라 조명 장치 |
+| 4 | Wi-Fi 안테나 커넥터 |
+| 5 | M3 장착 홀 4개 |
+| 6 | 컨트롤러 케이블: Ethernet, 전원, CAN, I/O 및 오디오 |
+| 7 | 명판 위치 |
+
+### 무선 통신 모듈
+
+컨트롤러에는 MU-MIMO 및 듀얼 스트림 전송을 지원하는 `2T2R` 무선 어댑터가 포함되어 있습니다. Wi-Fi는 `2.400–2.4835 GHz` ISM 대역에서 작동합니다. 실제 처리량은 네트워크 구성, 현장 간섭 및 연결된 장치에 따라 달라집니다.
+
+| 항목 | 사양 |
+| --- | --- |
+| Wi-Fi 표준 | IEEE 802.11ax/ac/a/b/g/n (2T2R) |
+| Bluetooth 버전 | Bluetooth 5.3, 5.0, 4.2, 4.1, 4.0 LE, 3.0\+HS, 2.1\+EDR |
+| Wi-Fi 데이터 속도 | 802.11b: 11 Mbps; 802.11a/g: 54 Mbps; 802.11n: MCS0–15; 802.11ac: MCS0–9; 802.11ax: HE0–11 |
+| Bluetooth 데이터 속도 | 1 Mbps, 2 Mbps, 최대 3 Mbps |
+| 동작 대역 | 2.400–2.4835 GHz ISM 대역; 5 GHz는 지원하지 않음 |
+
+## 통합 및 설치
+
+### 감지 범위 및 좌표계
+
+<Frame caption="상향 카메라 감지 범위 및 좌표계">
+  ![V2 Pro 상향 카메라 감지 범위 및 좌표계](/images/products/v-series-v2-pro-overview-camera-detection-range-and-coordinate-system.avif)
+</Frame>
+
+### 설치
+
+<Frame caption="V2 Pro 설치">
+  ![로봇에 설치된 V2 Pro](/images/products/v-series-v2-pro-overview-camera-installation.avif)
+</Frame>
+
+상향 카메라와 LiDAR의 시야가 차량, 케이블 및 기타 구조물에 가리지 않도록 설치하세요. 설치 후 차체 측위 파라미터와 센서 외부 파라미터를 설정하세요.
+
+### 호스트 애플리케이션 및 SDK
+
+호스트 애플리케이션을 사용하여 상향 카메라 이미지, LiDAR 윤곽 및 측위 상태를 확인하세요. 통합 방법은 MRDVS 호스트 애플리케이션 가이드와 Camera SDK 개발 가이드를 참조하세요.
+
+### 환경 및 신뢰성
+
+| 항목 | 사양 |
+| --- | --- |
+| 동작 온도 | −20–60 °C |
+| 동작 조도 | 0–50 kLux |
+| 보관 온도 | −40–85 °C |
+| 보관 습도 | 최대 90% RH |
+| 정상 작동 시 온도 상승 | 인클로저 온도 상승 \< 25 °C |
+| ESD | 접촉 방전 ±4 kV; 기중 방전 ±8 kV |
+| RE | GB 9254 Class A 준수 |
+| 사용 수명 | 3년 초과 |
+| 환경 인증 | RoHS |
+
+## 빠른 시작
+
+### 패키지 구성
+
+| 번호 | 항목 |
+| --- | --- |
+| 1 | V2 Pro 컨트롤러 |
+| 2 | 2핀 전원 케이블 |
+
+### 장치 연결 및 확인
+
+<Frame caption="V2 Pro 연결 테스트">
+  ![V2 Pro 전원 및 Ethernet 연결](/images/products/v-series-v2-pro-overview-connection-test.avif)
+</Frame>
+
+<Steps>
+  <Step title="전원 연결">
+    전원 케이블을 컨트롤러의 DC 입력에 연결하고 `24 V / 3 A` DC 전원 공급 장치를 연결하세요. 파란색 표시등이 천천히 깜박이면 정상적으로 전원이 공급되고 있는 것입니다.
+
+    표시등이 꺼져 있거나 계속 빨간색이면 전원 커넥터와 어댑터를 확인하세요.
+  </Step>
+  <Step title="네트워크 설정">
+    Cat 6 케이블로 컨트롤러의 Ethernet 인터페이스를 컴퓨터에 직접 연결하세요. 출고 시 기본 IP는 `192.168.100.201`입니다. 컴퓨터를 같은 서브넷으로 설정하고 방화벽을 통해 장치 통신을 허용하세요.
+
+    LAN에서 브라우저를 열고 `http://192.168.100.201:9998`에 접속하면 비밀번호 없이 웹 인터페이스에 로그인할 수 있습니다.
+  </Step>
+  <Step title="데이터 스트림 확인">
+    호스트 애플리케이션을 시작하고 상향 카메라 이미지가 선명하며 왜곡이나 끊김이 없는지 확인하세요. 여러 IP 주소가 감지되면 LAN 충돌을 해결한 후 올바른 장치를 선택하세요.
+  </Step>
+</Steps>
+
+### 인터페이스 개요
+
+<Frame caption="V2 Pro 호스트 애플리케이션 인터페이스">
+  ![메뉴, 윤곽 지도, 상향 뷰 및 측위 상태를 표시하는 V2 Pro 호스트 애플리케이션](/images/products/v-series-v2-pro-overview-v2-pro-interface.avif)
+</Frame>
+
+1. **빨간색 영역:** 매핑, 재측위 및 지도 관리를 포함한 기능 메뉴입니다.
+2. **파란색 영역:** 로드된 2D 윤곽 지도와 차량 측위 아이콘입니다.
+3. **녹색 영역:** 상향 카메라의 실시간 RGB 이미지입니다.
+4. **노란색 영역:** 재측위 신호 강도, 차량 위치와 속도 및 커서 좌표입니다. 신호 색상은 녹색(매우 양호), 파란색(양호), 빨간색(불량)으로 표시됩니다.
+
+### 지도 생성
+
+<Steps>
+  <Step title="매핑 시작">
+    메뉴에서 **매핑 시작(Start mapping)**을 선택하세요.
+
+    <Frame>
+      ![V2 Pro 호스트 애플리케이션에서 매핑 시작](/images/products/v-series-v2-pro-overview-start-mapping.avif)
+    </Frame>
+  </Step>
+  <Step title="지도 이름 입력">
+    지도 이름에는 문자, 숫자 및 밑줄을 사용할 수 있지만 숫자로 시작할 수 없습니다.
+  </Step>
+  <Step title="지도 데이터 수집">
+    선속도는 `0.5 m/s` 이하, 각속도는 `20°/s` 이하로 유지하세요. 인터페이스에 LiDAR 윤곽과 상향 카메라 이미지가 표시됩니다.
+
+    <Frame caption="매핑 인터페이스">
+      ![LiDAR 윤곽과 상향 이미지를 표시하는 V2 Pro 매핑 인터페이스](/images/products/v-series-v2-pro-overview-mapping-interface.avif)
+    </Frame>
+
+    가능하면 `0.2 m/s` 이하로 천천히 일정한 속도로 주행하세요. 직선 경로와 직각 회전을 사용하고, 같은 경로의 반복 주행과 불규칙한 진동을 피하세요. 같은 방향의 경로 사이에는 약 3분의 1이 겹치도록 유지하고, 평행 경로 사이의 간격은 약 `2 m`로 설정하세요. 대상 영역이나 차량 경로를 최대한 빠짐없이 포함하세요.
+
+    <Frame caption="권장 매핑 경로">
+      ![V2 Pro 매핑을 위한 권장 평행 경로](/images/products/v-series-v2-pro-overview-recommended-mapping-path.avif)
+    </Frame>
+  </Step>
+  <Step title="매핑 완료">
+    영역 스캔이 끝나면 메뉴에서 **매핑 완료(Finish mapping)**를 선택하세요. 처리 시간은 스캔 영역에 따라 달라집니다.
+  </Step>
+</Steps>
+
+### 지도 배포 및 적용
+
+<Steps>
+  <Step title="배경 지도 배포">
+    **지도 관리(Map management)**를 열고 배경 지도 목록에서 새 지도를 찾은 다음 **배포(Deploy)**를 선택하세요. 호스트에서 사용할 모든 지도를 배포해야 합니다. 배경 지도는 편집, 내보내기 또는 삭제할 수 있습니다.
+
+    <Frame caption="배경 지도 관리">
+      ![V2 Pro 배경 지도 관리 인터페이스](/images/products/v-series-v2-pro-overview-background-map-management.avif)
+    </Frame>
+  </Step>
+  <Step title="호스트 지도 적용">
+    **호스트 지도(Host maps)**에서 **적용(Apply)**을 선택하세요. 지도를 적용한 후 컨트롤러를 다시 시작해야 변경 사항이 적용됩니다. 호스트 지도는 내보내거나 삭제할 수 있습니다.
+
+    <Frame caption="호스트 지도 관리">
+      ![V2 Pro 호스트 지도 관리 인터페이스](/images/products/v-series-v2-pro-overview-host-map-management.avif)
+    </Frame>
+  </Step>
+</Steps>
+
+### 재측위 및 파라미터 설정
+
+<Frame caption="재측위 인터페이스">
+  ![LiDAR 포인트 클라우드와 윤곽 지도를 사용한 V2 Pro 재측위](/images/products/v-series-v2-pro-overview-relocalization.avif)
+</Frame>
+
+**재측위(Relocalization)**에서 마우스를 드래그하여 차량의 대략적인 자세를 지정하고 LiDAR 포인트 클라우드를 윤곽 지도에 맞추세요. 재측위가 완료되면 위치 추정 시간 초과 메시지가 사라집니다.
+
+<Frame caption="파라미터 설정 인터페이스">
+  ![V2 Pro 차체 측위 및 센서 외부 파라미터 설정](/images/products/v-series-v2-pro-overview-parameter-configuration.avif)
+</Frame>
+
+차체 측위 파라미터와 LiDAR 및 상향 카메라의 외부 보정 파라미터를 확인하고 설정하세요.
+
+## 문제 해결
+
+| 문제 | 권장 조치 |
+| --- | --- |
+| 장치를 열 때 응답하지 않음 | 방화벽 규칙을 확인하고 컨트롤러 통신이 차단되지 않았는지 확인하세요. |
+| 호스트 애플리케이션이 여러 IP 주소를 감지함 | LAN IP 충돌을 해결하고 올바른 장치 주소를 선택하세요. |
+| 스트림이 불안정함 | 적합한 Gigabit Ethernet 케이블을 사용하세요. 속도가 낮은 케이블은 초기 데이터 전송을 불안정하게 만들 수 있습니다. |
+| 호스트 애플리케이션이 정상적으로 시작되지 않음 | 읽기 및 쓰기 권한이 있는 디렉터리에 소프트웨어를 설치하세요. |
+
+## 안전 및 규정 준수
+
+### 레이저 안전
+
+<Warning>
+  장치는 작동 중 보이지 않는 레이저를 방출합니다. 방출 영역에 눈을 가까이 대지 말고 안전 라벨을 깨끗하고 손상되지 않은 상태로 유지하세요.
+</Warning>
+
+- 제품은 Class 1 레이저를 사용합니다.
+- EN 60825에 따라 정상적으로 사용하면 방출되는 레이저는 사람에게 위험하지 않습니다.
+- 설치, 유지보수 및 문제 해결 시 현장의 레이저 안전 절차를 따르세요. 광학 부품을 분해하거나 개조하지 마세요.
+
+<Frame caption="레이저 안전 라벨">
+  ![V2 Pro 레이저 안전 라벨](/images/products/v-series-v2-pro-overview-laser-safety.avif)
+</Frame>
+
+### 리튬 배터리 포함
+
+<Warning>
+  장치에는 리튬 배터리가 포함되어 있습니다. 손상, 단락, 압착, 천공 또는 화기 근처에 노출되면 화재나 기타 위험이 발생할 수 있습니다.
+</Warning>
+
+- 내장 배터리를 직접 분해, 개조 또는 교체하지 마세요.
+- 강한 충격, 압착, 천공, 고온 및 화염으로부터 장치를 보호하세요.
+- 리튬 배터리가 포함된 장비를 운송, 폐기 또는 재활용할 때는 현지 요구 사항을 따르세요.
+
+<Frame caption="리튬 배터리 라벨">
+  ![V2 Pro 리튬 배터리 라벨](/images/products/v-series-v2-pro-overview-lithium-battery-notice.avif)
+</Frame>
+
+## 관련 문서
+
+<Columns cols={2}>
+  <Card title="V2 순수 측위 운영 가이드" icon="book-open" href="/ko/developers/v2-localization/pure-localization-guide">
+    V2 순수 측위 버전을 구성하고 사용하는 방법을 설명합니다.
+  </Card>
+
+  <Card title="V2 Pro UDP 통신 프로토콜" icon="network" href="/ko/developers/v2-localization/udp-protocol">
+    UDP를 통해 측위 및 장치 데이터를 수집합니다.
+  </Card>
+
+  <Card title="V2 외부 LiDAR 프로토콜" icon="scan-line" href="/ko/developers/v2-localization/external-lidar">
+    외부 LiDAR 장치를 통합합니다.
+  </Card>
+
+  <Card title="V2 비전 측위 HTTP 프로토콜" icon="globe" href="/ko/developers/v2-localization/http-protocol">
+    HTTP를 통해 측위 모듈과 통신합니다.
+  </Card>
+
+  <Card title="V2 Service ROS1" icon="box" href="/ko/developers/ros/v2-ros1">
+    V2 Service ROS1 예제입니다.
+  </Card>
+
+  <Card title="V2 Service ROS2" icon="box" href="/ko/developers/ros/v2-ros2">
+    V2 Service ROS2 예제입니다.
+  </Card>
+
+  <Card title="ROS 최소 가이드" icon="rocket" href="/ko/developers/ros/quickstart">
+    ROS 통합을 빠르게 시작합니다.
+  </Card>
+</Columns>

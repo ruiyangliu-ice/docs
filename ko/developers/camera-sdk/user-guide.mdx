@@ -1,0 +1,1232 @@
+---
+title: Camera SDK 사용자 가이드
+sidebarTitle: Camera SDK 사용자 가이드
+description: Camera SDK API를 사용하여 x86 Windows 또는 x86 및 Arm Linux 시스템에 지원되는 MRDVS 카메라를 통합합니다.
+hidden: true
+---
+
+## 개요
+
+이 가이드는 카메라 장치를 통합하는 개발자를 위한 문서입니다. M4, M4 Mega, M4 Pro, V1 Pro, S2, S2 Max 및 H3 시리즈 제품의 Camera SDK API를 설명합니다. SDK는 x86 Windows와 x86 또는 Arm Linux 시스템에서 실행됩니다.
+
+Camera SDK는 통합된 장치 액세스 및 매개변수 구성 API를 제공합니다. 깊이, 강도, 포인트 클라우드 및 RGB 데이터를 동기 또는 비동기 방식으로 수집할 수 있습니다. 일부 카메라 모델은 장애물 회피, 도킹 또는 위치 추정 데이터도 제공합니다.
+
+<Info>
+  예제와 API 설명은 제품과 함께 제공된 SDK 버전을 기준으로 합니다. 사용할 수 있는 매개변수는 제품, 펌웨어 및 SDK 버전에 따라 다를 수 있습니다.
+</Info>
+
+예제는 개발 참고용이며 모든 장치 또는 사용 사례를 다루지는 않을 수 있습니다.
+
+---
+
+## 환경 설정
+
+### 권장 호스트 구성
+
+| 구성 항목 | 권장 구성 |
+| --- | --- |
+| 운영 체제 | Windows 7, Windows 10 또는 Windows 11, Ubuntu 16.04 이상 |
+| 메모리 | 4GB 이상 |
+| CPU | 쿼드 코어 Cortex-A57 또는 동급 이상 |
+| 네트워크 어댑터 | 기가비트 이더넷 이상 |
+
+### 연결 및 설치
+
+#### 하드웨어 연결
+
+카메라를 외부 24V 전원에 연결하고, 그림 2.1과 같이 네트워크 케이블로 호스트 컴퓨터에 연결합니다.
+
+<Frame>
+  ![하드웨어 환경 구성도](/images/developers/camera-sdk-user-guide-hardware-environment-construction.avif)
+</Frame>
+
+그림 2.1 카메라 연결도
+
+#### 네트워크 구성
+
+1. 카메라의 기본 IP 네트워크 세그먼트는 192.168.100.\*입니다.
+2. 호스트 컴퓨터에서 카메라에 연결된 네트워크 포트의 IP 주소를 192.168.100.x 네트워크 세그먼트의 주소로 설정하고 장치와 충돌하지 않는지 확인합니다. 서브넷 마스크는 255.255.255.0이며, 다음 그림과 같습니다.
+
+<Frame>
+  ![네트워크 환경 구성도](/images/developers/camera-sdk-user-guide-network-environment-construction.avif)
+</Frame>
+
+3. 카메라에 연결할 때는 다음 그림과 같이 SDK가 실행되는 호스트에서 카메라 데이터 패킷이 차단되지 않도록 방화벽을 끄는 것이 좋습니다.
+
+<Frame>
+  ![네트워크 환경 구성도 2](/images/developers/camera-sdk-user-guide-network-environment-construction-2.avif)
+</Frame>
+
+4. Linux의 네트워크 구성은 Windows와 같습니다. 방화벽 명령은 배포판에 따라 다릅니다. Ubuntu에서는 다음 명령을 실행합니다.
+
+```bash
+sudo systemctl stop ufw.service
+sudo systemctl disable ufw.service
+sudo ufw status
+```
+
+#### SDK 설치
+
+##### Windows
+
+설치 패키지를 열고 Lanxin-MRDVS-xxx.exe를 설치합니다. 모든 사용자용으로 설치하려면 관리자 권한으로 설치 패키지를 실행해야 합니다. 다음 그림은 설치 과정을 보여 줍니다.
+
+<Frame>
+  ![Windows 시스템 설치 화면](/images/developers/camera-sdk-user-guide-windows-system-installation.avif)
+</Frame>
+
+<Frame>
+  ![Windows 시스템 설치 화면 2](/images/developers/camera-sdk-user-guide-windows-system-installation-2.avif)
+</Frame>
+
+<Frame>
+  ![Windows 시스템 설치 화면 3](/images/developers/camera-sdk-user-guide-windows-system-installation-3.avif)
+</Frame>
+
+<Frame>
+  ![Windows 시스템 설치 화면 4](/images/developers/camera-sdk-user-guide-windows-system-installation-4.avif)
+</Frame>
+
+##### Linux
+
+1. 패키지의 압축을 풀고 설치 스크립트를 실행합니다.
+
+```bash
+tar xvf Lanxin-MRDVS-xxx.tar.gz
+cd Lanxin-MRDVS
+sudo su root
+chmod +x install.sh
+./install.sh
+```
+
+설치 스크립트는 SDK를 `/opt/Lanxin-MRDVS`에 설치하고 현재 사용자의 환경 변수를 설정합니다. 다른 사용자로 프로그램을 실행하는 경우 해당 사용자로 스크립트를 다시 실행하거나 해당 사용자의 `~/.bashrc`에 다음 줄을 추가합니다.
+
+```bash
+export LD_LIBRARY_PATH=/opt/Lanxin-MRDVS/lib/:$LD_LIBRARY_PATH
+```
+
+설치 전에 열려 있던 터미널 세션에서는 프로그램을 시작하기 전에 다음 명령을 실행합니다.
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+## Camera SDK 사용
+
+### 디렉터리 구조
+
+Camera SDK 디렉터리에는 다음 항목이 포함되어 있습니다.
+
+<Frame>
+  ![Camera SDK 디렉터리 구조도](/images/developers/camera-sdk-user-guide-camera-sdk-directory-structure-related-diagram.avif)
+</Frame>
+
+- `Document`에는 SDK 관련 문서가 포함되어 있습니다.
+- `FirmWare`에는 카메라 펌웨어 업그레이드 패키지가 포함되어 있습니다.
+- `Sample`에는 다양한 프로그래밍 언어로 Camera SDK를 사용하는 샘플 코드가 포함되어 있습니다.
+- `SDK`에는 Camera SDK의 헤더 파일과 라이브러리 파일이 포함되어 있습니다.
+
+### 개발 워크플로
+
+#### 프로젝트 구성
+
+C/C\+\+를 사용한 SDK 통합을 권장합니다. SDK에는 CMake 빌드용 `CMakeLists.txt` 파일이 포함되어 있으며, `Sample` 폴더에는 여러 언어의 예제가 있습니다. 자세한 내용은 `Sample`의 예제와 [Linux 예제 사용자 가이드](/ko/developers/camera-sdk/linux-examples)를 참조하세요.
+
+#### 동기 호출 흐름
+
+<Frame>
+  ![동기 모드 인터페이스 호출 흐름도](/images/developers/camera-sdk-user-guide-synchronous-mode-interface-call-flow-chart.avif)
+</Frame>
+
+#### 비동기 호출 흐름
+
+<Frame>
+  ![비동기 모드 인터페이스 호출 흐름도](/images/developers/camera-sdk-user-guide-asynchronous-mode-interface-call-flow-chart.avif)
+</Frame>
+
+---
+
+## 호출 요구 사항
+
+### 매개변수 유형 및 해당 API
+
+1. LX\_INT 접두사가 붙은 열거형은 DcSetIntValue 또는 DcGetIntValue를 사용하여 INT 유형 매개변수를 설정하거나 가져옵니다.
+2. LX\_FLOAT 접두사가 붙은 열거형은 DcSetFloatValue 또는 DcGetFloatValue를 사용하여 FLOAT 유형 매개변수를 설정하거나 가져옵니다.
+3. LX\_BOOL 접두사가 붙은 열거형은 DcSetBoolValue 또는 DcGetBoolValue를 사용하여 BOOL 유형 매개변수를 설정하거나 가져옵니다.
+4. LX\_STRING 접두사가 붙은 열거형은 DcSetStringValue 또는 DcGetStringValue를 사용하여 문자열 유형 매개변수를 설정하거나 가져옵니다.
+5. LX\_CMD 접두사가 붙은 열거형의 명령을 실행하려면 DcSetCmd를 사용합니다.
+6. LX\_PTR 접두사가 붙은 열거형의 포인터 유형 결과를 가져오려면 DcGetPtrValue를 사용합니다.
+
+### API 사전 조건
+
+<Warning>
+  스트리밍이 활성화되어 있거나 `LX_INT_WORK_MODE`가 상시 동작 모드로 설정된 경우 아래에 나열된 기능을 설정하지 마세요.
+</Warning>
+
+**1. 스트림이 시작되었거나 작업 모드(LX\_INT\_WORK\_MODE)가 상시 동작 모드인 경우 다음 기능을 설정할 수 없습니다.**
+
+- DcSetRoi
+- LX\_INT\_3D\_BINNING\_MODE;
+- LX\_INT\_2D\_BINNING\_MODE;
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH;
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR;
+- LX\_BOOL\_ENABLE\_MULTI\_MACHINE;
+- LX\_INT\_TRIGGER\_MODE;
+- LX\_INT\_CALCULATE\_UP;
+- LX\_BOOL\_ENABLE\_HDR;
+- LX\_BOOL\_ENABLE\_TOF\_DEPTH\_CALIBE;
+- LX\_BOOL\_ENABLE\_SYNC\_FRAME
+- LX\_INT\_SAVE\_PARAMS\_GROUP
+
+**2. 작업 모드(LX\_INT\_WORK\_MODE)가 상시 동작 모드인 경우에도 다음 설정을 지정할 수 없습니다.**
+
+- LX\_INT\_TOF\_FREQMODE<br />
+
+**3. 3D 자동 노출(LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE)을 켜면 다음 기능 열거형을 조작할 수 없습니다.**
+
+- LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR ;
+- LX\_INT\_FIRST\_EXPOSURE;
+- LX\_INT\_SECOND\_EXPOSURE;
+- LX\_INT\_THIRD\_EXPOSURE;
+- LX\_INT\_GAIN;<br />
+
+**4. 3D 자동 노출(LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE)을 끄면 다음 기능 열거형을 조작할 수 없습니다.**
+
+- LX\_INT\_3D\_AUTO\_EXPOSURE\_LEVEL
+
+3D 자동 노출의 최대값(LX\_INT\_3D\_AUTO\_EXPOSURE\_MAX)과 최소값을 설정할 수 없습니다.
+
+- (LX\_INT\_3D\_AUTO\_EXPOSURE\_MIN)
+
+**5. 2D 자동 노출(LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE)을 켜면 다음 기능 열거형을 조작할 수 없습니다.**
+
+- LX\_INT\_2D\_MANUAL\_EXPOSURE
+
+<br />**6. 2D 자동 노출(LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE)을 끄면 다음 기능 열거형을 조작할 수 없습니다.**
+
+- LX\_INT\_2D\_AUTO\_EXPOSURE\_LEVEL;
+
+<br />7.**특수 필터링 모드에서는 다음 설정을 지정할 수 없습니다.**
+
+- LX\_INT\_FILTER\_SMOOTH\_LEVEL LX\_INT\_FILTER\_NOISE\_LEVEL
+- LX\_INT\_FILTER\_TIME\_LEVEL
+
+<br />8.**2D 왜곡 보정을 켜려면 먼저 RGB-D 정렬을 켜야 합니다.**
+
+- LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH
+
+<br />9.**S2 이외의 장치에서 내장 알고리즘을 켤 때는 먼저 ToF 알고리즘을 설정해야 합니다. 알고리즘 매개변수는 내장 알고리즘(LX\_INT\_ALGORITHM\_MODE)이 켜진 경우에만 설정할 수 있습니다.**
+
+- (LX\_STRING\_ALGORITHM\_PARAMS)
+
+<br />10.**포인트 클라우드 데이터(LX\_PTR\_XYZ\_DATA)를 가져오려면 먼저 깊이 맵을 열어야 합니다.**
+
+- (LX\_BOOL\_ENABLE\_3D\_DEPTH\_STREAM)
+
+---
+
+## 데이터 유형
+
+### 5.1 LX\_STATE
+
+기능: SDK 인터페이스 함수의 반환 상태 코드
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_SUCCESS | 함수 실행 성공 |
+| LX\_ERROR | 함수 실행 실패 |
+| LX\_E\_NOT\_SUPPORT | 연결된 카메라가 이 기능을 지원하지 않음 |
+| LX\_E\_NETWORK\_ERROR | 네트워크 통신 오류 |
+| LX\_E\_INPUT\_ILLEGAL | 잘못된 함수 매개변수가 전달됨 |
+| LX\_E\_RECONNECTING | 장치에 다시 연결하는 중 |
+| LX\_E\_DEVICE\_ERROR | 장치 오류 |
+| LX\_E\_DEVICE\_NEED\_UPDATE | 장치 버전이 너무 낮아 펌웨어를 업그레이드해야 함 |
+| LX\_E\_API\_NEED\_UPDATE | API 버전이 너무 낮아 SDK를 업그레이드해야 함 |
+| LX\_E\_CTRL\_PERMISS\_ERROR | 독점 제어 권한 획득 실패(동시에 연결할 수 있는 SDK는 하나뿐임) |
+| LX\_E\_GET\_DEVICEINFO\_ERROR | 장치 정보 가져오기 실패 |
+| LX\_E\_IMAGE\_SIZE\_ERROR | 이미지 크기가 일치하지 않음. 카메라를 다시 여세요. |
+| LX\_E\_IMAGE\_PARTITION\_ERROR | 이미지 구문 분석 실패 |
+| LX\_E\_DEVICE\_NOT\_CONNECTED | 카메라가 연결되지 않음 |
+| LX\_E\_DEVICE\_INIT\_FAILED | 카메라 초기화 실패 |
+| LX\_E\_DEVICE\_NOT\_FOUND | 일치하는 카메라를 찾을 수 없음 |
+| LX\_E\_FILE\_INVALID | 파일 오류(파일 이름, 유형 또는 형식이 잘못됨) |
+| LX\_E\_CRC\_CHECK\_FAILED | 파일 CRC 또는 MD5 확인 실패 |
+| LX\_E\_TIME\_OUT | 시간 초과 |
+| LX\_E\_FRAME\_LOSS | 프레임 누락 |
+| LX\_E\_ENABLE\_ANYSTREAM\_FAILED | 스트림을 열지 못함 |
+| LX\_E\_NOT\_RECEIVE\_STREAM | 스트리밍 데이터를 받지 못함 |
+| LX\_E\_PARSE\_STREAM\_FAILED | 스트리밍은 시작되었지만 스트림 데이터 구문 분석 실패 |
+| LX\_E\_PROCESS\_IMAGE\_FAILED | 이미지 계산 처리 실패 |
+| LX\_E\_SETTING\_NOT\_ALLOWED | 상시 동작 모드에서 설정할 수 없음 |
+| LX\_E\_LOAD\_DATAPROCESSLIB\_ERROR | 이미지 처리 알고리즘 라이브러리 로드 오류 |
+| LX\_E\_FUNCTION\_CALL\_LOGIC\_ERROR | 함수 호출 논리 오류 |
+| LX\_E\_IPAPPDR\_UNREACHABLE\_ERROR | IP에 연결할 수 없거나 네트워크 구성 오류 |
+| LX\_E\_FRAME\_ID\_NOT\_MATCH | 제한 시간 내 프레임 동기화 오류 |
+| LX\_E\_FRAME\_MULTI\_MACHINE | 프레임에서 다중 장치 간섭 신호가 감지됨 |
+
+### 5.2 LX\_DATA\_TYPE
+
+기능: 데이터 형식입니다. 3D 강도 맵과 깊이 맵은 서로 다른 데이터 형식을 사용합니다. 데이터 포인터를 가져오려면 해당 기능을 사용해야 합니다.
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_DATA\_UNSIGNED\_CHAR | 부호 없는 문자 유형 |
+| LX\_DATA\_UNSIGNED\_SHORT | 부호 없는 short 정수 유형 |
+| LX\_DATA\_SIGNED\_SHORT | 부호 있는 short 유형 |
+| LX\_DATA\_FLOAT | 부동 소수점 유형 |
+| LX\_DATA\_OBSTACLE | 장애물 회피 알고리즘 구조체 유형 |
+| LX\_DATA\_PALLET | 팔레트 알고리즘 구조체 유형 |
+| LX\_DATA\_LOCATION | 시각적 위치 추정 알고리즘 구조체 유형 |
+| LX\_DATA\_OBSTACLE | 장애물 회피 알고리즘 V2 구조체 유형 |
+
+### 5.3 LX\_BINNING\_MODE
+
+기능: 비닝 모드
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_BINNING\_1X1 | 1x1 비닝 |
+| LX\_BINNING\_2X2 | 2x2 비닝 |
+| LX\_BINNING\_4X4 | 4x4 비닝 |
+
+### 5.4 LX\_STRUCT\_LIGHT\_CODE\_MODE
+
+기능:
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_CODE\_NORMAL | 일반 |
+| LX\_CODE\_STATBLE | 안정 |
+| LX\_CODE\_ENHANCE | 고정밀 향상 |
+
+### 5.5 LX\_ALGORITHM\_MODE
+
+기능:
+
+| 키워드 | 설명 |
+| --- | --- |
+| MODE\_ALL\_OFF | 카메라 내장 알고리즘 끄기 |
+| MODE\_AVOID\_OBSTACLE | 내장 장애물 회피 알고리즘 |
+| MODE\_PALLET\_LOCATE | 내장 팔레트 알고리즘 |
+| MODE\_VISION\_LOCATION | 내장 시각적 위치 추정 알고리즘 |
+| MODE\_AVOID\_OBSTACLE2 | 내장 장애물 회피 알고리즘 V2 |
+
+### 5.6 LX\_CAMERA\_WORK\_MODE
+
+기능:
+
+| 키워드 | 설명 |
+| --- | --- |
+| KEEP\_HEARTBEAT | 하트비트 모드. 하트비트가 끊기면 SDK 카메라가 대기 상태로 전환됨 |
+| WORK\_FOREVER | 상시 동작 모드. 카메라가 계속 작동함 |
+
+### 5.7 LX\_TRIGGER\_MODE
+
+기능:
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_TRIGGER\_MODE\_OFF | 트리거 끄기 모드, 스트리밍 모드, 기본값 |
+| LX\_TRIGGER\_SOFTWARE | 소프트웨어 트리거 모드 |
+| LX\_TRIGGER\_HARDWARE | 하드웨어 트리거 모드 |
+
+### 5.8 LX\_CAMERA\_FEATURE
+
+기능: 읽고 쓸 수 있는 다양한 매개변수
+
+#### 5.8.1 int 유형 매개변수
+
+##### 5.8.1.1 일반 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_INT\_FIRST\_EXPOSURE | 노출 값(단위: us). 다중 포인트의 경우 첫 번째 포인트의 노출 시간 |
+| LX\_INT\_SECOND\_EXPOSURE | 다중 포인트에서 두 번째 포인트의 노출 시간 |
+| LX\_INT\_THIRD\_EXPOSURE | 다중 포인트에서 세 번째 포인트의 노출 시간. 일부 모델에서 지원 |
+| LX\_INT\_FOURTH\_EXPOSURE | 다중 포인트에서 네 번째 포인트의 노출 시간. 일부 모델에서 지원 |
+| LX\_INT\_GAIN | 게인. 노출 효과에 해당하며 노이즈가 발생할 수 있습니다. 노출 매개변수가 지나치게 커지지 않도록 게인을 적절히 조정하세요. |
+| LX\_INT\_MIN\_DEPTH | 최소 깊이 값. 범위를 벗어난 값은 유효하지 않음 |
+| LX\_INT\_MAX\_DEPTH | 최대 깊이 값. 범위를 벗어난 값은 유효하지 않음 |
+| LX\_INT\_MIN\_AMPLITUDE | 유효한 신호 강도의 최솟값. 범위를 벗어난 깊이 값은 유효하지 않음 |
+| LX\_INT\_MAX\_AMPLITUDE | 유효한 신호 강도의 최댓값. 범위를 벗어난 깊이 값은 유효하지 않게 설정됨 |
+| LX\_INT\_CODE\_MODE | 구조광 카메라 인코딩 모드. CODE\_MODE를 참조하세요(일부 모델에서 지원). |
+| LX\_INT\_WORK\_MODE | 작업 모드. LX\_CAMERA\_WORK\_MODE를 참조하세요. |
+| LX\_INT\_LINK\_SPEED | 협상된 네트워크 카드 속도(100: 100Mbit/s, 1000: 1000Mbit/s). 가져오기만 지원하며 설정할 수 없음 |
+| LX\_INT\_TOF\_GLOBAL\_OFFSET | ToF 깊이 데이터 오프셋 |
+| LX\_INT\_ALGORITHM\_MODE | 내장 알고리즘 활성화 모드. 일부 모델에서 지원하며 해당 값은 LX\_ALGORITHM\_MODE를 참조하세요. |
+| LX\_INT\_TRIGGER\_MODE | 트리거 모드. 해당 값은 LX\_TRIGGER\_MODE를 참조하세요. |
+| LX\_INT\_MODBUS\_ADDR | Modbus 주소. 일부 모델은 직렬 포트를 통한 MODBUS 프로토콜 출력을 지원합니다. |
+| LX\_INT\_HEART\_TIME | 하트비트 시간. 시간 초과 후 하트비트를 받지 못하면 카메라가 자동으로 대기 상태가 됨 |
+| LX\_INT\_GVSP\_PACKET\_SIZE | GVSP 단일 패킷의 데이터 크기(단위: byte) |
+| LX\_INT\_CALCULATE\_UP | ToF 또는 RGB 알고리즘을 호스트 컴퓨터나 카메라에서 실행할지 설정합니다. 호스트 컴퓨터나 카메라의 연산량을 줄일 수 있지만 프레임 속도와 지연 시간에 영향을 줄 수 있습니다. |
+| LX\_INT\_CAN\_BAUD\_RATE | CAN 보드레이트 값(단위: bps) |
+| LX\_INT\_SAVE\_PARAMS\_GROUP | 현재 카메라 구성을 지정된 매개변수 그룹으로 저장 |
+| LX\_INT\_LOAD\_PARAMS\_GROUP | 지정된 인덱스의 매개변수 그룹을 한 번에 로드 |
+
+##### 5.8.1.2 3D 이미지 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_INT\_3D\_IMAGE\_WIDTH | 현재 3D 이미지 해상도의 너비 |
+| LX\_INT\_3D\_IMAGE\_HEIGHT | 현재 3D 이미지 해상도의 높이 |
+| LX\_INT\_3D\_IMAGE\_OFFSET\_X | ROI 가로 오프셋 픽셀. 매개변수 설정에는 DcSetRoI를 사용하세요. |
+| LX\_INT\_3D\_IMAGE\_OFFSET\_Y | ROI 세로 오프셋 픽셀. 매개변수 설정에는 DcSetRoI를 사용하세요. |
+| LX\_INT\_3D\_BINNING\_MODE | 픽셀 병합. LX\_BINNING\_MODE를 참조하세요. |
+| LX\_INT\_3D\_DEPTH\_DATA\_TYPE | 깊이 이미지 데이터 형식. 가져오기만 가능합니다. 해당 값은 LX\_DATA\_TYPE을 참조하세요. |
+| LX\_INT\_3D\_AMPLITUDE\_CHANNEL | 3D 강도 이미지 채널 수. 깊이 이미지 채널과 공유됨 |
+| LX\_INT\_3D\_AMPLITUDE\_DATA\_TYPE | 강도 이미지 데이터 형식. 가져오기만 가능합니다. 해당 값은 LX\_DATA\_TYPE을 참조하세요. |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_LEVEL | 3D 자동 노출이 켜져 있을 때의 노출 수준. 이때는 노출 값과 게인을 설정할 수 없음 |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_MAX | 3D 자동 노출 상한 |
+| LX\_INT\_3D\_AUTO\_EXPOSURE\_MIN | 3D 자동 노출 하한 |
+| LX\_INT\_3D\_UNDISTORT\_SCALE | 3D 이미지 왜곡 보정 계수 |
+
+##### 5.8.1.4 2D 이미지 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_INT\_2D\_IMAGE\_CHANNEL | 2D 이미지 채널 수. 흑백은 1, 컬러는 3 |
+| LX\_INT\_2D\_IMAGE\_WIDTH | 현재 2D 이미지 해상도의 너비 |
+| LX\_INT\_2D\_IMAGE\_HEIGHT | 현재 2D 이미지 해상도의 높이 |
+| LX\_INT\_2D\_IMAGE\_OFFSET\_X | 2D 이미지 ROI 가로 오프셋 픽셀. 가져오기만 가능하며 매개변수 설정에는 DcSetRoI를 사용하세요. |
+| LX\_INT\_2D\_IMAGE\_OFFSET\_Y | 2D 이미지 ROI 세로 오프셋 픽셀. 가져오기만 가능하며 매개변수 설정에는 DcSetRoI를 사용하세요. |
+| LX\_INT\_2D\_BINNING\_MODE | 픽셀 병합. LX\_BINNING\_MODE를 참조하세요. |
+| LX\_INT\_2D\_MANUAL\_EXPOSURE | 2D 수동 노출 시의 노출 값 |
+| LX\_INT\_2D\_MANUAL\_GAIN | 2D 수동 노출 시의 게인 값 |
+| LX\_INT\_2D\_AUTO\_EXPOSURE\_LEVEL | 2D 이미지 자동 노출 시의 노출 수준 |
+| LX\_INT\_2D\_IMAGE\_DATA\_TYPE | 2D 이미지 데이터 형식. 가져오기만 가능합니다. 해당 값은 LX\_DATA\_TYPE을 참조하세요. |
+| LX\_INT\_2D\_UNDISTORT\_SCALE | 2D 이미지 왜곡 보정 계수 |
+
+##### 5.8.1.5 트리거 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_INT\_TRIGGER\_MODE | 트리거 모드. 해당 값은 LX\_TRIGGER\_MODE를 참조하세요. |
+| LX\_INT\_HARDWARE\_TRIGGER\_FILTER\_TIME | 하드웨어 트리거 필터 시간(단위: us) |
+| LX\_INT\_TRIGGER\_MIN\_PERIOD\_TIME | 최소 트리거 시간 간격(단위: us) |
+| LX\_INT\_TRIGGER\_DELAY\_TIME | 트리거 지연 시간(단위: µs). 값이 \<= 1000이면 즉시 적용되고, 1000보다 크면 지연 후 적용됩니다. 이 기능은 예약되어 있습니다. |
+| LX\_INT\_TRIGGER\_FRAME\_COUNT | 단일 트리거 프레임 수 |
+| LX\_INT\_IO\_WORK\_MODE | GPIO 신호 출력 제어 모드. LX\_IO\_WORK\_MODE를 참조하세요. |
+| LX\_INT\_IO\_OUTPUT\_STATE | GPIO 신호 출력의 사용자 제어 모드. LX\_IO\_OUTPUT\_STATE를 참조하세요. |
+
+##### 5.8.1.6 필터 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_INT\_FILTER\_MODE | 필터 모드. LX\_FILTER\_MODE를 참조하세요. |
+| LX\_INT\_FILTER\_SMOOTH\_LEVEL | LX\_INT\_FILTER\_MODE가 FILTER\_NORMAL일 때 <br /> 설정할 수 있는 필터 평활화 수준(\[0, 3\]). 값이 클수록 필터링 강도가 높음 |
+| LX\_INT\_FILTER\_NOISE\_LEVEL | LX\_INT\_FILTER\_MODE가 FILTER\_NORMAL일 때 <br /> 설정할 수 있는 필터 노이즈 수준(\[0, 3\]). 값이 클수록 필터링 강도가 높음 |
+| LX\_INT\_FILTER\_TIME\_LEVEL | LX\_INT\_FILTER\_MODE가 FILTER\_NORMAL일 때 <br /> 설정할 수 있는 필터 시간 영역 수준(\[0, 3\]). 값이 클수록 필터링 강도가 높음 |
+
+#### 5.8.2 float 유형 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_FLOAT\_FILTER\_LEVEL | 필터링 수준(0~1). 값이 클수록 필터링 강도가 높음 |
+| LX\_FLOAT\_EST\_OUT\_EXPOSURE | 과다 노출 데이터를 평가할지 여부(0~1). 1이면 과다 노출 데이터가 유효하지 않음 |
+| LX\_FLOAT\_LIGHT\_INTENSITY | 광도. 일부 모델에서 지원 |
+| LX\_FLOAT\_3D\_DEPTH\_FPS | 현재 깊이 맵 프레임 속도 |
+| LX\_FLOAT\_3D\_AMPLITUDE\_FPS | 현재 강도 맵 프레임 속도 |
+| LX\_FLOAT\_2D\_IAMGE\_FPS | 현재 RGB 이미지 프레임 속도 |
+| LX\_FLOAT\_DEVICE\_TEMPERATURE | 현재 카메라 온도 가져오기 |
+
+#### 5.8.3 bool 유형 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_BOOL\_CONNECT\_STATE | 현재 연결 상태 |
+| LX\_BOOL\_ENABLE\_3D\_DEPTH\_STREAM | 깊이 맵 켜기/끄기(일부 카메라에서 지원) |
+| LX\_BOOL\_ENABLE\_3D\_AMP\_STREAM | 강도 맵 켜기/끄기(일부 카메라에서 지원) |
+| LX\_BOOL\_ENABLE\_3D\_AUTO\_EXPOSURE | 3D 자동 노출 활성화 |
+| LX\_BOOL\_ENABLE\_3D\_UNDISTORT | 3D 왜곡 보정 활성화 |
+| LX\_BOOL\_ENABLE\_BACKGROUND\_AMP | 강도 맵 배경광 활성화 |
+| LX\_BOOL\_ENABLE\_ANTI\_FLICKER | 플리커 방지 활성화. LED 주변 조명으로 데이터에 뚜렷한 물결무늬가 생길 수 있으며 일부 모델에서 지원 |
+| LX\_BOOL\_ENABLE\_2D\_STREAM | RGB 켜기/끄기 |
+| LX\_BOOL\_ENABLE\_2D\_AUTO\_EXPOSURE | 2D 자동 노출 활성화 |
+| LX\_BOOL\_ENABLE\_2D\_UNDISTORT | 2D 왜곡 보정 활성화 |
+| LX\_BOOL\_ENABLE\_2D\_TO\_DEPTH | RGB-D 좌표 정렬 활성화 |
+| LX\_BOOL\_ENABLE\_MULTI\_MACHINE | 다중 장치 모드 활성화. 일부 모델에서 지원 |
+| LX\_BOOL\_ENABLE\_MULTI\_EXPOSURE\_HDR | HDR(다중 노출 고동적 범위 모드) 활성화 |
+| LX\_BOOL\_ENABLE\_SYNC\_FRAME | 강제 프레임 동기화를 활성화할지 여부. 기본적으로 데이터 실시간 처리를 우선하며 RGB-D 동기화가 필요하면 <br /> 이 모드를 활성화해야 함 |
+
+#### 5.8.4 string 유형 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_STRING\_DEVICE\_VERSION | 장치 버전 번호 |
+| LX\_STRING\_FIRMWARE\_NAME | 장치 버전 업그레이드에 사용할 펌웨어 파일 이름. 설정만 가능 |
+| LX\_STRING\_FILTER\_PARAMS | 필터 알고리즘 매개변수(JSON 형식 문자열) |
+| LX\_STRING\_ALGORITHM\_PARAMS | 내장 알고리즘 매개변수. 모드마다 해당 JSON 형식 문자열이 다르며, <br /> 사전에 LX\_ALGORITHM\_MODE를 설정해야 함 |
+| LX\_STRING\_ALGORITHM\_VERSION | 내장 알고리즘 버전 번호. 모드마다 해당 버전 번호를 반환하며 가져오기만 가능하고, <br /> 사전에 LX\_ALGORITHM\_MODE를 설정해야 함 |
+| LX\_STRING\_DEVICE\_OS\_VERSION | 장치 시스템 이미지 버전 번호 |
+| LX\_STRING\_IMPORT\_PARAMS\_FROM\_FILE | 로컬 파일의 매개변수를 카메라로 로드 |
+| LX\_STRING\_EXPORT\_PARAMS\_TO\_FILE | 카메라의 현재 매개변수를 로컬 파일로 내보내기 |
+
+#### 5.8.5 명령 유형 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_CMD\_GET\_NEW\_FRAME | 데이터를 한 번 갱신. 기본 시간 초과는 1초 |
+| LX\_CMD\_RETURN\_VERSION | 이전 버전으로 롤백 |
+| LX\_CMD\_RESTART\_DEVICE | 카메라 다시 시작 |
+| LX\_CMD\_WHITE\_BALANCE | 자동 화이트 밸런스 |
+| LX\_CMD\_RESET\_PARAM | 기본 매개변수 복원 |
+
+#### 5.8.6 ptr 유형 매개변수
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_PTR\_2D\_IMAGE\_DATA | 2D 이미지 데이터 포인터 가져오기. 데이터 길이는 2D 이미지 크기, 채널 수 및 데이터 형식(LX\_INT\_2D\_IMAGE\_DATA\_TYPE)에 따라 결정됨 |
+| LX\_PTR\_3D\_AMP\_DATA | 3D 강도 맵 데이터 포인터 가져오기. 데이터 길이는 3D 이미지 크기, 채널 수 및 데이터 형식(LX\_INT\_3D\_AMPLITUDE\_DATA\_TYPE)에 따라 결정됨 |
+| LX\_PTR\_3D\_DEPTH\_DATA | 3D 깊이 맵 데이터 포인터 가져오기. 데이터 길이는 3D 이미지 크기, 채널 수 및 데이터 형식(LX\_INT\_3D\_DEPTH\_DATA\_TYPE)에 따라 결정됨 |
+| LX\_PTR\_XYZ\_DATA | 포인트 클라우드 데이터 포인터 가져오기. float\* 유형의 3개 채널(x, y, z가 한 세트이며 순서대로 반복)이고, 데이터 길이는 LX\_INT\_3D\_IMAGE\_WIDTH\_LX\_INT\_3D\_IMAGE\_HEIG HT\_sizeof(float)\*3 |
+| LX\_PTR\_ALGORITHM\_OUTPUT | 내장 알고리즘 출력 가져오기. 알고리즘 모드에 따라 달라집니다. MODE\_AVOID\_OBSTACLE은 LxAvoidanceOutput 포인터, MODE\_PALLET\_LOCATE는 LxPalletPose 포인터, MODE\_VISION\_LOCATION은 LxLocation 참조 포인터입니다. |
+| LX\_PTR\_2D\_INTRIC\_PARAM | 2D 이미지 내부 매개변수 가져오기. float\* 유형 포인터이며, <br /> 길이는 9\*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3)로 고정됨 |
+| LX\_PTR\_3D\_INTRIC\_PARAM | 3D 이미지 내부 매개변수 가져오기. float\* 유형 포인터이며, <br /> 길이는 9\*sizeof(float)(fx,fy,cx,cy,k1,k2,p1,p2,k3)로 고정됨 |
+| LX\_PTR\_3D\_EXTRIC\_PARAM | 3D 이미지 외부 매개변수 가져오기. float\* 유형 포인터이며, <br /> 길이는 12\*sizeof(float)로 고정됩니다(처음 9개는 회전 행렬, 마지막 3개는 이동 벡터). |
+| LX\_PTR\_FRAME\_DATA | 전체 데이터 프레임 가져오기. 출력 결과는 FrameInfo 구조체를 참조함 |
+
+### 5.9 LxDeviceInfo
+
+기능: 장치 속성 정보 구조체
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| handle | DcHandle | 장치 고유 식별자 |
+| dev\_type | LX\_DEVICE\_TYPE | 장치 유형 |
+| id | Char array | 장치 ID |
+| ip | Char array | 장치 IP:포트 |
+| sn | Char array | 장치 일련번호 |
+| mac | Char array | 장치 MAC 주소 |
+| firmware\_ver | Char array | 장치 소프트웨어 버전 번호 |
+| algor\_ver | Char array | 장치 알고리즘 버전 번호 |
+| name | Char array | 장치 이름(예: camera\_M3\_192.168.11.13\_9803) |
+| reserve | Char array | 예약 필드, 서브넷 마스크 |
+| reserve2 | Char array | 예약 필드 2, 게이트웨이 |
+| reserve3 | Char array | 예약 필드 3 |
+| reserve4 | Char array | 예약 필드 4 |
+
+### 5.10 LxIntValueInfo
+
+기능: 장치 속성 정보 구조체
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| set\_available | Bool | 현재 값을 설정할 수 있는지 여부. true - 설정 가능, false - 설정 불가 |
+| cur\_value | Int | 현재 값 |
+| max\_value | Int | 최댓값 |
+| min\_value | Int | 최솟값 |
+| reserve | Int array | 예약 필드 |
+
+### 5.11 LxFloatValueInfo
+
+기능: 장치 속성 정보 구조체
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| set\_available | Bool | 현재 값을 설정할 수 있는지 여부. true - 설정 가능, false - 설정 불가 |
+| cur\_value | float | 현재 값 |
+| max\_value | float | 최댓값 |
+| min\_value | float | 최솟값 |
+| reserve | float array | 예약 필드 |
+
+### 5.12 LX\_DEVICE\_TYPE
+
+기능: 장치 유형
+
+| 키워드 | 설명 |
+| --- | --- |
+| LX\_DEVICE\_M2 | M2 카메라 |
+| LX\_DEVICE\_M3 | M3 카메라 |
+| LX\_DEVICE\_M4 Pro | M4 Pro 카메라 |
+| LX\_DEVICE\_M4\_MEGA | M4 Mega 카메라 |
+| LX\_DEVICE\_M4 | M4 카메라 |
+| LX\_DEVICE\_S1 | S1 카메라 |
+| LX\_DEVICE\_S2 | S2 카메라 |
+| LX\_DEVICE\_I1 | I1 카메라 |
+| LX\_DEVICE\_I2 | I2 카메라 |
+| LX\_DEVICE\_T1 | T1 카메라 |
+| LX\_DEVICE\_T2 | T2 카메라 |
+| LX\_DEVICE\_H3 | H3 카메라 |
+| LX\_DEVICE\_V1Pro | V1Pro 카메라 |
+| LX\_DEVICE\_NULL | 예약됨 |
+
+### 5.13 LX\_OPEN\_MODE
+
+기능: 장치 유형
+
+| 키워드 | 설명 |
+| --- | --- |
+| OPEN\_BY\_INDEX | 검색 목록의 인덱스 첨자에 따라 엽니다. 해당 매개변수는 인덱스 번호입니다. 검색된 장치 목록이 변경되면 <br /> 열리는 장치도 달라집니다. |
+| OPEN\_BY\_IP | 검색 목록에서 해당 IP에 따라 엽니다. 해당 매개변수는 장치 IP 또는 IP:포트입니다. |
+| OPEN\_BY\_SN | 검색 목록에서 해당 SN 모드에 따라 엽니다. 해당 매개변수는 장치 SN입니다. |
+| OPEN\_BY\_ID | 검색 목록에서 해당 ID에 따라 엽니다. 해당 매개변수는 장치 ID입니다. |
+
+### 5.14 FrameDataInfo
+
+기능: 이미지 표시 정보 구조체
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| frame\_data\_type | LX\_DATA\_TYPE | 프레임 데이터 유형 |
+| frame\_width | Int | 프레임 데이터 이미지 너비 |
+| frame\_height | Int | 프레임 데이터 이미지 높이 |
+| frame\_channel | Int | 프레임 데이터 채널 수 |
+| frame\_data | Void \*pointer type | 프레임 데이터 내용 |
+| sensor\_timestamp | Unsigned long long type | 센서 이미지 타임스탬프 |
+| recv\_timestamp | Unsigned long long type | 프레임 데이터를 수신한 시점의 타임스탬프 |
+
+### 5.15 FrameInfo
+
+기능: 데이터 프레임 정보 구조체
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| frame\_state | LX\_STATE | 프레임 데이터 상태 |
+| handle | DcHandle | 장치 고유 식별자 |
+| depth\_data | FrameDataInfo type | 깊이 맵 프레임 데이터 구조체 |
+| amp\_data | FrameDataInfo type | 강도 맵 프레임 데이터 구조체 |
+| rgb\_data | FrameDataInfo type | RGB 프레임 데이터 구조체 |
+| app\_data | FrameDataInfo type | 알고리즘 출력 구조체 |
+| reserve\_data | Void \*pointer type | 확장 예약 필드 |
+
+---
+
+## API 레퍼런스
+
+<Info>
+  API 프로토타입은 SDK 헤더와 제공된 SDK 버전에 정의되어 있습니다. 별도로 명시하지 않는 한 `LX_SUCCESS`는 호출 성공을 의미합니다.
+</Info>
+
+### 6.1 카메라 검색, 연결 및 종료
+
+#### 6.1.1 DcGetDeviceList
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetDeviceList 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetdevicelist.avif)
+</Frame>
+
+**함수 기능:**
+
+지원되는 카메라 목록을 가져옵니다.
+
+**함수 매개변수:**
+
+- \[out\]devlist 검색된 카메라 목록
+- \[out\]devnum 검색된 카메라 수
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 메모리는 내부적으로 관리되므로 외부 메모리를 할당할 필요가 없습니다. 단, 검색할 때마다 기존 내용이 삭제되므로 외부 스레드 안전성을 확보해야 합니다.
+
+#### 6.1.2 DcOpenDevice
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcOpenDevice 설명 이미지](/images/developers/camera-sdk-user-guide-dcopendevice.avif)
+</Frame>
+
+**함수 기능:**
+
+장치에 연결합니다.
+
+**함수 매개변수:**
+
+- \[in\]open\_mode 열기 모드. 자세한 내용은 OpenMode를 참조하세요.
+- \[in\]param 열기 방법에 따라 해당 매개변수를 입력합니다.
+- \[out\]handle 연결 성공 후 반환되는 장치 핸들입니다. 이후의 모든 인터페이스 액세스는 이 핸들을 사용합니다.
+- \[out\]info 연결 성공 후 반환되는 카메라 세부 정보
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.1.3 DcCloseDevice
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcCloseDevice 설명 이미지](/images/developers/camera-sdk-user-guide-dcclosedevice.avif)
+</Frame>
+
+**함수 기능:**
+
+장치를 종료합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.2 스트리밍 시작 및 종료
+
+#### 6.2.1 DcStartStream
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcStartStream 설명 이미지](/images/developers/camera-sdk-user-guide-dcstartstream.avif)
+</Frame>
+
+\*\*함수:\*\* 데이터 스트림 열기
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.2.2 DcStopStream
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcStopStream 설명 이미지](/images/developers/camera-sdk-user-guide-dcstopstream.avif)
+</Frame>
+
+\*\*함수:\*\* 데이터 스트림 닫기
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.3 카메라 매개변수 읽기 및 설정
+
+#### 6.3.1 DcSetIntValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetIntValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetintvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+int 유형 매개변수를 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[in\]value 설정할 매개변수 값
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.2 DcGetIntValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetIntValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetintvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+int 유형 매개변수를 가져옵니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[out\]value 매개변수 구조체, 매개변수의 최댓값과 최솟값, 현재 값 등을 반환
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.3 DcSetFloatValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetFloatValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetfloatvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+float 유형 매개변수를 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[in\]value 설정할 매개변수 값
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.4 DcGetFloatValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetFloatValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetfloatvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+float 유형 매개변수를 가져옵니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[out\]value 매개변수 구조체, 매개변수의 최댓값과 최솟값, 현재 값 등을 반환
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.5 DcSetBoolValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetBoolValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetboolvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+bool 유형 매개변수를 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[in\]value 설정할 매개변수 값
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.6 DcGetBoolValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetBoolValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetboolvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+bool 유형 매개변수를 가져옵니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[out\]value 매개변수 반환
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.7 DcSetStringValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetStringValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetstringvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+string 유형 매개변수를 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[in\]value 설정할 매개변수 값
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.8 DcGetStringValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetStringValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetstringvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+string 유형 매개변수를 가져옵니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[out\]value 외부 메모리 할당 없이 매개변수 반환
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.9 DcGetPtrValue
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetPtrValue 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetptrvalue.avif)
+</Frame>
+
+**함수 기능:**
+
+pointer 유형 매개변수를 가져옵니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+- \[out\]value 외부 메모리 할당 없이 매개변수 반환
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.3.10 DcSetCmd
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetCmd 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetcmd.avif)
+</Frame>
+
+**함수 기능:**
+
+해당 CMD 유형 명령 작업을 실행합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]cmd LX\_CAMERA\_FEATURE 참조
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.4 포인트 클라우드 저장
+
+#### 6.4.1 DcSaveXYZ
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSaveXYZ 설명 이미지](/images/developers/camera-sdk-user-guide-dcsavexyz.avif)
+</Frame>
+
+**함수 기능:**
+
+포인트 클라우드를 저장하고 직접 호출합니다.
+
+**함수 매개변수:**
+
+- handle 장치 핸들
+- filename 파일 이름. txt, ply 및 pcd 형식을 지원합니다. txt 형식은 이미지 순서대로 모든 데이터를 저장하고, ply와 pcd는 0이 아닌 데이터만 저장합니다.
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.5 특수 제어
+
+#### 6.5.1 DcSpecialControl
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSpecialControl 설명 이미지](/images/developers/camera-sdk-user-guide-dcspecialcontrol.avif)
+</Frame>
+
+**함수 기능:**
+
+정의된 범위를 벗어난 LX\_CAMERA\_FEATURE 특수 작업을 수행합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]param 작업
+- \[inout\]value 설정할 때는 해당 입력 매개변수이고 가져올 때는 해당 출력 매개변수입니다. 외부 메모리를 할당하지 않습니다.
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.6 ROI 및 매개변수 경로 설정
+
+#### 6.6.1 DcSetRoI
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetRoI 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetroi.avif)
+</Frame>
+
+**함수 기능:**
+
+ROI 영역을 설정합니다. 입력 값이 8의 정수 배수가 아니면 대상 값과 가장 가까운 8의 정수 배수로 내부에서 자동 처리됩니다. 설정 후에는 이미지 크기 매개변수를 업데이트해야 합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]offsetx 시작점의 가로 오프셋(픽셀)
+- \[in\]offsety 시작점의 세로 오프셋(픽셀)
+- \[in\]widthroi 대상 영역의 너비
+- \[in\]heightroi 대상 영역의 높이
+- \[in\]type 0 - 3D 이미지, 1 - 2D 이미지
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.7 카메라 IP 설정
+
+#### 6.7.1 DcSetCameraIp
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetCameraIp 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetcameraip.avif)
+</Frame>
+
+**함수 기능:**
+
+카메라 IP, 서브넷 마스크 및 게이트웨이를 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]ip 장치 IP
+- \[in\]netmask 서브넷 마스크(비어 있으면 내부 기본값은 "255.255.0.0")
+- \[in\]gateway 게이트웨이 IP(비어 있으면 내부 기본값은 IP의 마지막 네트워크 세그먼트를 "1"로 설정한 값)
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 장치가 연결되지 않은 경우 먼저 검색을 통해 장치를 가져와야 합니다. 장치가 게이트웨이와 서브넷 마스크 수정을 지원하면 게이트웨이를 동일한 네트워크 세그먼트로, 서브넷 마스크를 "255.255.0.0"으로 설정하세요. 수정 후 장치 목록이 변경되므로 DcGetDeviceList 인터페이스를 다시 호출하여 새 장치 목록을 가져와야 합니다.
+
+### 6.8 로그 정보 및 버전 정보
+
+#### 6.8.1 DcGetApiVersion
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcGetApiVersion 설명 이미지](/images/developers/camera-sdk-user-guide-dcgetapiversion.avif)
+</Frame>
+
+**함수 기능:**
+
+API 버전 번호를 가져옵니다.
+
+**함수 매개변수:**
+
+**반환 값:**
+
+char 포인터 데이터입니다.
+
+**비고:**
+
+#### 6.8.2 DcSetInfoOutput
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcSetInfoOutput 설명 이미지](/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif)
+</Frame>
+
+**함수 기능:**
+
+출력 정보 수준을 설정합니다.
+
+**함수 매개변수:**
+
+- \[in\]print\_level 0: 모든 디버깅 정보 출력, 1: 중요 정보 및 경고 디버깅 정보 출력, 2: 오류 정보만 출력
+- \[in\]enable\_screen\_print 창에 출력할지 여부
+- \[in\]log\_path 로그 파일 저장 경로(로그 파일 이름 제외). 비워 둘 수 있습니다. Windows의 기본값은 현재 사용자 경로이고 Linux의 기본값은 /var/log 경로입니다.
+- \[in\]language 언어(아직 사용되지 않음)
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.8.3 DcLog
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcLog 설명 이미지](/images/developers/camera-sdk-user-guide-dclog.avif)
+</Frame>
+
+**함수 기능:**
+
+사용자가 로그 파일에 디버깅 정보를 출력할 수 있도록 합니다.
+
+**함수 매개변수:**
+
+- \[in\]str 출력할 문자열. '\\0'으로 종료됩니다.
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.8.4 DcRegisterFrameCallback
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcRegisterFrameCallback 설명 이미지](/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif)
+</Frame>
+
+**함수 기능:**
+
+데이터 프레임 콜백 함수를 등록하고 새 데이터를 수신하면 자동으로 호출합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]func 프레임 데이터 콜백 함수
+- \[in\]usr\_data 사용자 정의 매개변수. 비워 둘 수 있음
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.8.5 DcUnregisterFrameCallback
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcUnregisterFrameCallback 설명 이미지](/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif)
+</Frame>
+
+**함수 기능:**
+
+프레임 콜백을 취소합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+### 6.9 장치 상태 콜백
+
+#### 6.9.1 DcRegisterCameraStatusCallback
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcRegisterCameraStatusCallback 설명 이미지](/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif)
+</Frame>
+
+**함수 기능:**
+
+카메라 상태 콜백 함수를 등록합니다. 카메라 상태가 변경되면 자동으로 호출됩니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+- \[in\]func 프레임 데이터 콜백 함수
+- \[in\]usr\_data 사용자 정의 매개변수. 비워 둘 수 있음
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+#### 6.9.2 DcUnregisterCameraStatusCallback
+
+**함수 프로토타입:**
+
+<Frame>
+  ![DcUnregisterCameraStatusCallback 설명 이미지](/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif)
+</Frame>
+
+**함수 기능:**
+
+카메라 상태 등록 콜백을 취소합니다.
+
+**함수 매개변수:**
+
+- \[in\]handle 장치 핸들
+
+**반환 값:**
+
+Int 데이터. 이 값이 LX\_SUCCESS이면 인터페이스 호출이 성공한 것입니다.
+
+**참고:** 전달하는 매개변수가 유효한지 확인하세요.
+
+---
+
+## 버전 및 업데이트
+
+| 버전 번호 | 업데이트 내용 |
+| --- | --- |
+| 2.4.16 | 1. S2 카메라 지원 <br />2. 매개변수 가져오기 및 내보내기와 매개변수 그룹 전환 추가 <br />3. 관련 기능 설정 추가 |
+| 2.4.9 | 1. 일부 기능 및 구성 매개변수 최적화와 추가 2. 타임스탬프 단위를 us로 변경 |
+| 2.4.2 | M4/M4 Mega/M4 Pro/V1Pro/S2/H3 카메라 지원 |
+| 2.0.2 | 알려진 일부 문제를 수정하고 인터페이스와 매개변수 조정 |

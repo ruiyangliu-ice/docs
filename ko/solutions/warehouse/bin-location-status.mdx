@@ -1,0 +1,68 @@
+---
+title: 보관 위치 상태 인식
+description: "RGB-D 카메라로 점유 여부, 적재 상태 및 높이를 식별한 후 결과를 창고 또는 디스패치 시스템과 동기화합니다."
+---
+
+## 적용 배경
+
+AGV 창고에서는 수동 입고 및 출고로 인해 WMS의 보관 위치 데이터가 현장과 일치하지 않을 수 있습니다. 점유된 위치를 제때 감지하지 못하면 디스패치 시스템이 적합하지 않은 출고 또는 입고 작업을 지시할 수 있습니다.
+
+<Frame>
+  ![보관 위치 상태 인식 적용 사례](/images/solutions/warehouse-bin-location-status-background-introduction.avif)
+</Frame>
+
+## 인식 방식 비교
+
+| 방식 | 제공 정보 | 일반적인 한계 |
+| --- | --- | --- |
+| 단일 지점 레이저 거리 측정 | 하나의 거리 값 | 상자나 팔레트 사이의 틈을 놓칠 수 있어 위치 전체 상태를 표현하기 어렵습니다. |
+| RGB 카메라 | 색상과 질감 | 학습 데이터에 없는 대상, 조명 및 가장자리 왜곡에 민감하며 적재 높이를 직접 제공할 수 없습니다. |
+| RGB-D 카메라 | 색상, 깊이 및 포인트 클라우드 | 3D 데이터를 사용해 점유 여부, 배치 상태 및 적재 높이를 판단할 수 있습니다. |
+
+## 솔루션 개요
+
+이 솔루션은 보관 위치의 색상 및 3D 데이터를 포착해 적재물이 있는지, 어떻게 배치되어 있는지, 점유 상태가 비정상인지 식별합니다. 프로젝트에서 요구하는 경우 카메라 측 알고리즘으로 적재물의 분류도 구분할 수 있습니다. 결과는 디스패치 시스템에 전송되어 창고 운영을 지원합니다.
+
+<Frame>
+  ![RGB-D 보관 위치 상태 인식 솔루션](/images/solutions/warehouse-bin-location-status-solution-overview-related-graphics.avif)
+</Frame>
+
+## 솔루션 특징
+
+- **3D 상태 평가:** 깊이와 색상 데이터를 결합해 점유 여부와 적재 상태를 식별합니다.
+- **카메라 내 처리:** 카메라에서 알고리즘을 실행해 외부 연산 장치의 필요성을 줄입니다.
+- **결과 보고:** TCP/IP, UDP 및 HTTP 통신을 지원하고 제어 시스템에 JSON으로 결과를 출력합니다.
+- **디스패치 연계:** 작업 할당에 필요한 실시간 위치 데이터를 제공합니다.
+
+## 배포 참고 사항
+
+<Columns cols={2}>
+  <Card title="설치 위치" icon="camera">
+    카메라를 기둥이나 천장에 장착하고 모니터링할 위치를 향하게 합니다. 설치 높이와 시야가 위치의 크기에 맞는지 확인하세요.
+  </Card>
+
+  <Card title="환경 요구 사항" icon="triangle-exclamation">
+    먼지가 많거나 결로가 발생하는 환경을 피하세요. 장착 브래킷은 충분한 강성과 안정성을 제공해야 합니다.
+  </Card>
+</Columns>
+
+<Frame>
+  ![보관 위치 상태 인식 시연](/images/solutions/warehouse-bin-location-status-scene-demonstration.avif)
+</Frame>
+
+<Steps>
+  <Step title="위치 작업 수신">
+    상위 컨트롤러가 작업을 전송하면 카메라는 대상 위치의 이미지와 깊이 데이터를 포착합니다.
+  </Step>
+  <Step title="결과 인식 및 보고">
+    카메라는 위치 상태를 출력하고 JSON으로 상위 시스템에 보고합니다.
+  </Step>
+</Steps>
+
+<Frame>
+  ![보관 위치 상태 인식 카메라 설치](/images/solutions/warehouse-bin-location-status-work-instructions.avif)
+</Frame>
+
+<Card title="보관 위치 감지 배포 가이드" icon="book-open" href="/ko/developers/deployment/algorithm-detection">
+  알고리즘 배포, 인터페이스 및 디버깅 지침을 확인하세요.
+</Card>

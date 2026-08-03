@@ -1,0 +1,93 @@
+---
+title: 작업자 안전 감시
+description: M Series 3D 카메라와 사람 인식 소프트웨어로 제한 구역에 진입하는 사람을 감지합니다.
+---
+
+산업용 제한 구역, 자동화 생산 라인 및 창고 작업 구역에서는 허가되지 않은 진입이 운영 위험을 만들 수 있습니다. 이 솔루션은 3D 카메라와 사람 인식 소프트웨어를 사용해 설정된 구역의 진입을 감지하고 이벤트를 상위 시스템에 보고합니다.
+
+<Frame>
+  ![작업자 안전 감시 솔루션](/images/solutions/mobile-robots-human-safety-human-safety-protection.avif)
+</Frame>
+
+## 솔루션 개요
+
+시스템은 M Series 3D 카메라로 RGB-D 데이터를 포착합니다. 사람 인식 소프트웨어는 설정된 ROI 안에서 사람이 경계를 넘는지 확인합니다. 감지 이벤트는 상위 시스템의 경보 또는 다른 동작을 트리거할 수 있습니다.
+
+<Frame caption="제한 구역 진입 감지 흐름">
+  ![제한 구역 진입 감지 흐름](/images/solutions/mobile-robots-human-safety-solution-overview-related-graphics.avif)
+</Frame>
+
+## 시스템 구성
+
+### M4 Pro 3D 깊이 카메라
+
+- 모니터링 공간에서 이동하는 사람의 3D 정보를 제공합니다.
+- 깊이 해상도: `640 × 480`, RGB 해상도: `1920 × 1080`.
+- 공간과 시간 측면에서 RGB와 깊이 데이터를 정렬합니다.
+- 지원되는 알고리즘을 디바이스에서 실행해 외부 산업용 컴퓨터의 필요성을 줄일 수 있습니다.
+
+<Frame caption="작업자 안전 감시에 M4 Pro 적용">
+  ![M4 Pro 작업자 안전 감시 적용](/images/solutions/mobile-robots-human-safety-system-composition.avif)
+</Frame>
+
+### 지능형 사람 인식 소프트웨어
+
+- 관심 영역(ROI)을 설정합니다.
+- 제한 경계를 넘는 사람을 감지하고 보고합니다.
+
+<Columns cols={2}>
+  <Frame>
+    ![작업자 안전 소프트웨어의 ROI 설정](/images/solutions/mobile-robots-human-safety-system-composition-2.avif)
+  </Frame>
+
+  <Frame>
+    ![작업자 안전 소프트웨어의 감지 결과](/images/solutions/mobile-robots-human-safety-system-composition-3.avif)
+  </Frame>
+</Columns>
+
+## 작업 흐름
+
+<Steps>
+  <Step title="제한 구역 설정">
+    현장 배치와 카메라 시야를 기준으로 ROI를 정의하고 감지 대상이 아닌 영역은 제외합니다.
+  </Step>
+  <Step title="지속적으로 모니터링">
+    카메라는 제한 구역을 포착하고 소프트웨어는 사람이 설정된 경계에 진입하거나 경계를 넘는지 확인합니다.
+  </Step>
+  <Step title="이벤트 보고">
+    이벤트가 감지되면 시스템은 이를 상위 시스템에 보고합니다. 상위 시스템은 경보, 작업 중지 또는 설정된 다른 동작을 실행할 수 있습니다.
+  </Step>
+</Steps>
+
+## 적용 시나리오
+
+- 자동화 생산 라인
+- 창고 및 물류 구역
+- 위험 물질 보관 구역
+- 작업자 출입 제한이 필요한 작업장 또는 실험실
+
+## 성능 참고 사항
+
+원본 테스트 기록은 이상적인 실험실 조건에서 단일 프레임 오탐률과 미검출률을 보고합니다. 테스트는 열린 시야, 카메라에서 `5 m` 이내의 가림 없는 사람, `3 m/s` 미만의 이동 속도 및 양호한 주변 조명 조건에서 수행되었습니다. 실제 결과는 카메라 높이, 시야, 가림, 자세, 조명, 모션 블러 및 필터 설정에 따라 달라집니다.
+
+<Tip>
+  소프트웨어 필터 창을 조정하면 감지 안정성과 응답 시간이 달라집니다. 대상 현장의 결과를 검수 기준으로 사용하세요.
+</Tip>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_1.mp4" title="작업자 안전 감시 시연 1" alt="작업자 안전 감시 시연 영상 1" aria-label="작업자 안전 감시 시연 영상 1" />
+</Frame>
+
+<Frame>
+  <video controls src="https://pub-f1dc758884b94eaba9d8c5d3d7575b62.r2.dev/docs/video/human_safety_protection_demo_2.mp4" title="작업자 안전 감시 시연 2" alt="작업자 안전 감시 시연 영상 2" aria-label="작업자 안전 감시 시연 영상 2" />
+</Frame>
+
+<Warning>
+  이 솔루션은 구역에 진입하는 사람을 감지합니다. 라이트 커튼, 비상 정지, 인터록, 기능 안전 제어 또는 현장 위험 평가를 대체하지 않습니다. 관련 규정과 표준을 충족하는 시스템에서 전체 안전 기능을 구현하고 검증하세요.
+</Warning>
+
+## 배포 권장 사항
+
+- 렌즈를 깨끗하게 유지하고 카메라 시야를 가리는 요소가 없는지 정기적으로 확인합니다.
+- 먼지가 많거나 반사가 강한 환경 등 극한 조건의 구역에 배포하기 전에 현장에서 시스템을 검증합니다.
+- 카메라 위치, 감지 영역 또는 상위 동작 로직을 변경한 후 감지 범위와 응답 체인을 다시 검증합니다.
