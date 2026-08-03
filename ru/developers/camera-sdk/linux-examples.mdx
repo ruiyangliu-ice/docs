@@ -1,58 +1,58 @@
 ---
-title: Linux SDK Examples
-sidebarTitle: Linux SDK examples
-description: "Set up, build, and run the C, Java, ROS, and ROS 2 examples included with the MRDVS Camera SDK for Linux."
+title: Примеры Linux SDK
+sidebarTitle: Примеры Linux SDK
+description: "Настройте, соберите и запустите примеры C, Java, ROS и ROS 2, входящие в Camera SDK MRDVS для Linux."
 hidden: true
 ---
 
 <Info>
-  Document version: V1.0; revision date: 2024-10-12.
+  Версия документа: V1.0; дата редакции: 2024-10-12.
 </Info>
 
-## Overview
+## Обзор
 
-The MRDVS Camera SDK for Linux includes C/C\+\+, Java (HTTP service), ROS, and ROS 2 examples. The examples show the basic SDK workflow; add application-specific logic and error handling for your project.
+Camera SDK MRDVS для Linux включает примеры на C/C\+\+, Java (HTTP-сервис), ROS и ROS 2. Примеры показывают базовый рабочий процесс SDK; добавьте логику приложения и обработку ошибок, необходимые для вашего проекта.
 
-Complete the environment setup, installation script, and sample-directory checks first. Then follow the compilation and execution section for your target language. The appendix lists installation methods for common dependencies and test packages.
+Сначала завершите настройку среды, выполните установочный скрипт и проверьте каталоги примеров. Затем следуйте разделу компиляции и запуска для нужного языка. В приложении приведены способы установки распространённых зависимостей и тестовых пакетов.
 
 ---
 
-## System and environment
+## Система и среда
 
-### Compatible systems and dependency versions
+### Совместимые системы и версии зависимостей
 
-The following Linux systems are supported. The default program versions are listed below:
+Поддерживаются следующие системы Linux. Версии программ по умолчанию приведены ниже:
 
-| System version | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
+| Версия системы | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
 | --- | --- | --- | --- | --- | --- |
 | Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Kinetic | Ardent、Bouncy |
 | Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodic | Dashing、Eloquent、Crystal |
 | Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetic | Foxy、Galactic |
 | Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、lron |
 
-### 2.2 Check the system version and application version
+### 2.2 Проверка версии системы и приложений
 
-#### 2.2.1 Check the system version
+#### 2.2.1 Проверка версии системы
 
 ```bash
 uname -a
 ```
 
-result:
+Результат:
 
 <Frame>
   ![View system version related icons](/images/developers/camera-sdk-linux-examples-view-system-version.avif)
 </Frame>
 
-Operating system release version number: 5.15.0
+Номер версии выпуска операционной системы: 5.15.0
 
-- **Main version number:** 5
-- **Version number:** 15 \[Odd numbers are development versions, even numbers are stable versions\]
-- **Revision number:** 0 \[Number of modifications\]
-- **Nth revision of this version:** 97
-- **Kernel version:** #107~20.0.4.1, usually the system version is the kernel version
+- **Основной номер версии:** 5
+- **Номер версии:** 15 \[Нечётные номера соответствуют версиям разработки, чётные — стабильным версиям\]
+- **Номер редакции:** 0 \[Количество изменений\]
+- **Номер редакции этой версии:** 97
+- **Версия ядра:** #107~20.0.4.1; обычно версия системы совпадает с версией ядра
 
-#### 2.2.2 Check Cmake version
+#### 2.2.2 Проверка версии CMake
 
 ```bash
 cmake --version
@@ -64,9 +64,9 @@ result:
   ![View Cmake version related icons](/images/developers/camera-sdk-linux-examples-view-cmake-version.avif)
 </Frame>
 
-Represents the version of Cmake 3.16.3
+Отображается версия CMake 3.16.3
 
-#### 2.2.3 Check Gcc version
+#### 2.2.3 Проверка версии GCC
 
 ```bash
 gcc -v
@@ -78,9 +78,9 @@ result:
   ![View Gcc version related icons](/images/developers/camera-sdk-linux-examples-view-gcc-version.avif)
 </Frame>
 
-The version number is in the blue box in the lower left corner. The version here is: 9.4.0
+Номер версии находится в синем поле в левом нижнем углу. В данном примере версия: 9.4.0
 
-#### 2.2.4 View Opencv version
+#### 2.2.4 Просмотр версии OpenCV
 
 ```bash
 pkg-config --modversion opencv
@@ -92,9 +92,9 @@ result:
   ![View Opencv version related icons](/images/developers/camera-sdk-linux-examples-view-opencv-version.avif)
 </Frame>
 
-The version here is 3.2.0
+В данном примере версия — 3.2.0
 
-#### 2.2.5 Check Pcl version
+#### 2.2.5 Проверка версии PCL
 
 ```bash
 dpkg -l libpcl-dev
@@ -106,9 +106,9 @@ result:
   ![View Pcl version related icons](/images/developers/camera-sdk-linux-examples-view-pcl-version.avif)
 </Frame>
 
-The version here is 1.8.1
+В данном примере версия — 1.8.1
 
-#### 2.2.6 View ROS version
+#### 2.2.6 Просмотр версии ROS
 
 ```bash
 rosversion -d
@@ -120,29 +120,29 @@ result:
   ![View ROS version related icons](/images/developers/camera-sdk-linux-examples-view-ros-version.avif)
 </Frame>
 
-The version here is eloquent (the ros2 version corresponding to Ubuntu18.04)
+В данном примере версия — eloquent (версия ROS 2, соответствующая Ubuntu 18.04)
 
 <Frame>
   ![View ROS version related icon 2](/images/developers/camera-sdk-linux-examples-view-ros-version-2.avif)
 </Frame>
 
-The version here is noetic (the ros1 version corresponding to Ubuntu20)
+В данном примере версия — noetic (версия ROS 1, соответствующая Ubuntu 20)
 
-### 2.3 Build a basic development environment
+### 2.3 Создание базовой среды разработки
 
-You need to update the installation list before installation:
+Перед установкой необходимо обновить список пакетов:
 
 ```bash
 sudo apt update
 ```
 
-The result is as follows:
+Результат выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to building a basic development environment](/images/developers/camera-sdk-linux-examples-building-a-basic-development-environment.avif)
 </Frame>
 
-#### 2.3.1 Install Cmake
+#### 2.3.1 Установка CMake
 
 ```bash
 sudo apt install cmake
@@ -152,7 +152,7 @@ sudo apt install cmake
   ![Installation Cmake related icons](/images/developers/camera-sdk-linux-examples-installation-cmake.avif)
 </Frame>
 
-#### 2.3.2 Install Gcc
+#### 2.3.2 Установка GCC
 
 ```bash
 sudo apt install build-essential
@@ -162,9 +162,9 @@ sudo apt install build-essential
   ![Install Gcc related icons](/images/developers/camera-sdk-linux-examples-install-gcc.avif)
 </Frame>
 
-### 2.4 Build optional development environment
+### 2.4 Создание дополнительной среды разработки
 
-#### 2.4.1 Install Opencv \[can display camera images\]
+#### 2.4.1 Установка OpenCV \[для отображения изображений камеры\]
 
 ```bash
 sudo apt-get install libopencv-dev
@@ -174,7 +174,7 @@ sudo apt-get install libopencv-dev
   ![Install Opencv \[can display camera images\] related icons](/images/developers/camera-sdk-linux-examples-install-opencv-can-display-camera-images.avif)
 </Frame>
 
-#### 2.4.2 Install Pcl \[can display point cloud\]
+#### 2.4.2 Установка PCL \[для отображения облака точек\]
 
 ```bash
 sudo apt-get install libpcl-dev
@@ -186,136 +186,136 @@ sudo apt-get install libpcl-dev
 
 ---
 
-## Prepare the sample code
+## Подготовка примеров кода
 
-### 3.1 Execute the installation script
+### 3.1 Выполнение установочного скрипта
 
-1. Unzip the Lanxin-MRDVS file and enter the Lanxin-MRDVS folder
+1. Распакуйте файл Lanxin-MRDVS и перейдите в папку Lanxin-MRDVS.
 
 <Frame>
   ![Illustrations related to executing the installation script](/images/developers/camera-sdk-linux-examples-executing-the-installation-script.avif)
 </Frame>
 
-2. Right click to open the console
-3. Execute install.sh script
+2. Щёлкните правой кнопкой мыши и откройте консоль.
+3. Выполните скрипт install.sh.
 
 <Frame>
   ![Illustration related to executing the installation script 2](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-2.avif)
 </Frame>
 
-4. Enter the /opt/ directory to check whether the installation is successful.
+4. Перейдите в каталог /opt/ и проверьте успешность установки.
 
 <Frame>
   ![Illustration related to executing the installation script 3](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-3.avif)
 </Frame>
 
-5. If the folder can be found, the installation is successful.
-6. If the installation fails, you need to manually add it to the opt directory.
-7. Execute the set\_socket\_buffer\_size.sh script
+5. Если папка найдена, установка выполнена успешно.
+6. Если установка не удалась, вручную добавьте её в каталог opt.
+7. Выполните скрипт set\_socket\_buffer\_size.sh.
 
 <Frame>
   ![Illustrations related to executing the installation script 4](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-4.avif)
 </Frame>
 
-8. At this point, the installation script has been completely executed!
+8. На этом установочный скрипт выполнен полностью.
 
-### 3.2 Sample code introduction
+### 3.2 Обзор примеров кода
 
-Enter the Sample directory. The directory contents are as follows:
+Перейдите в каталог Sample. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to sample code introduction](/images/developers/camera-sdk-linux-examples-sample-code-introduction.avif)
 </Frame>
 
-- The C folder contains C and C\+\+ related code
-- The Java folder contains an http server for indirectly calling the sdk
-- The Ros folder contains an example of ros
-- The Ros2 folder contains an example of ros2
+- Папка C содержит код на C и C\+\+.
+- Папка Java содержит HTTP-сервер для косвенного вызова SDK.
+- Папка Ros содержит пример ROS.
+- Папка Ros2 содержит пример ROS 2.
 
-#### 3.2.1 C and C\+\+ sample code
+#### 3.2.1 Примеры кода C и C\+\+
 
-Enter the C directory. The directory contents are as follows:
+Перейдите в каталог C. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-c-and-c-sample-code.avif)
 </Frame>
 
-Contains 9 folders and 1 Cmakelist file, each folder contains a cpp file
+Каталог содержит 9 папок и один файл CMakeLists; в каждой папке находится файл cpp.
 
-The roughly implemented functions of each cpp are as follows:
+Основные функции каждого файла cpp следующие:
 
-- application\_obstacle: Obtain camera stream data and enable obstacle avoidance algorithm, output algorithm results
-- application\_pallet: Obtain camera stream data and enable the pallet algorithm, output algorithm results
-- arm\_local\_camera: Call the SDK in the camera \[ARM\] and obtain the stream data
-- frame\_callback: Use callback method to obtain camera stream data
-- multi\_cameras: open multiple cameras and get streaming data
-- single\_camera: Open a single camera and get streaming data
-- single\_camera2: Get frame data through structure
+- application\_obstacle: получение данных потока камеры, включение алгоритма объезда препятствий и вывод результатов алгоритма;
+- application\_pallet: получение данных потока камеры, включение алгоритма паллет и вывод результатов алгоритма;
+- arm\_local\_camera: вызов SDK на камере \[ARM\] и получение данных потока;
+- frame\_callback: получение данных потока камеры с помощью callback-функции;
+- multi\_cameras: открытие нескольких камер и получение потоковых данных;
+- single\_camera: открытие одной камеры и получение потоковых данных;
+- single\_camera2: получение данных кадра через структуру.
 
-Different sample codes can be selected for testing and modification according to different needs.
+Выбирайте разные примеры кода для тестирования и изменения в зависимости от задачи.
 
-#### 3.2.2 Java sample code
+#### 3.2.2 Пример кода Java
 
-Enter the java directory. The directory contents are as follows:
+Перейдите в каталог java. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to Java sample code](/images/developers/camera-sdk-linux-examples-java-sample-code.avif)
 </Frame>
 
-The directory contains 2 folders and a postman.json file and README
+Каталог содержит две папки, файл postman.json и README.
 
-- Config: Server-related configurations are stored in the folder
-- Middleware: server theme
-- LxCamera.postman\_collection.json: postman configuration file
-- README: java virtual server usage tutorial
+- Config: папка с конфигурацией сервера;
+- Middleware: серверное промежуточное ПО;
+- LxCamera.postman\_collection.json: файл конфигурации Postman;
+- README: руководство по использованию виртуального сервера Java.
 
-#### 3.2.3 ROS sample code
+#### 3.2.3 Пример кода ROS
 
-Enter the ros directory. The directory contents are as follows:
+Перейдите в каталог ros. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to ROS sample code](/images/developers/camera-sdk-linux-examples-ros-sample-code.avif)
 </Frame>
 
-- lx\_camera\_node\_ws: The folder contains a standard ros driver
-- README.EN: explains in English how to compile a node and create a new node
+- lx\_camera\_node\_ws: папка содержит стандартный драйвер ROS;
+- README.EN: на английском языке объясняется, как скомпилировать узел и создать новый узел.
 
-#### 3.2.4 ROS2 sample code
+#### 3.2.4 Пример кода ROS 2
 
-Enter the ros2 directory. The directory contents are as follows:
+Перейдите в каталог ros2. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![ROS2 sample code related images](/images/developers/camera-sdk-linux-examples-ros2-sample-code.avif)
 </Frame>
 
-- lx\_camera\_node\_ws: The folder contains a standard ros2 driver
-- README.EN: explains in English how to compile a node and create a new node
+- lx\_camera\_node\_ws: папка содержит стандартный драйвер ROS 2;
+- README.EN: на английском языке объясняется, как скомпилировать узел и создать новый узел.
 
-#### 3.2.5 ros-v1pro sample code
+#### 3.2.5 Пример кода ros-v1pro
 
-Enter the ros-v1pro directory. The directory contents are as follows:
+Перейдите в каталог ros-v1pro. Его содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to ros-v1pro sample code](/images/developers/camera-sdk-linux-examples-ros-v1pro-sample-code.avif)
 </Frame>
 
-- src: The folder contains a standard ros driver
-- README: explains how to use this node
-- README.pdf: explains how to use this node
+- src: папка содержит стандартный драйвер ROS;
+- README: объясняет, как использовать этот узел;
+- README.pdf: объясняет, как использовать этот узел.
 
 ---
 
-## Compile and run the samples
+## Компиляция и запуск примеров
 
-### 4.1 Compiling and running C and C\+\+ sample code
+### 4.1 Компиляция и запуск примеров C и C\+\+
 
-Go to the C folder in the example:
+Перейдите в папку C в каталоге примера:
 
 <Frame>
   ![Illustrations related to compiling and running C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code.avif)
 </Frame>
 
-Open a terminal in the C folder and run:
+Откройте терминал в папке C и выполните:
 
 ```bash
 mkdir build
@@ -324,47 +324,47 @@ cmake ..
 make
 ```
 
-After successful execution, enter the build folder and it should be as follows:
+После успешного выполнения перейдите в папку build. Её содержимое должно выглядеть следующим образом:
 
 <Frame>
   ![Illustrations related to compiling and running C and C\+\+ sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-2.avif)
 </Frame>
 
-The executable file is in the bin directory. Entering the bin directory should be as follows:
+Исполняемый файл находится в каталоге bin. После перехода в каталог bin должно отображаться следующее:
 
 <Frame>
   ![Illustrations related to compiling and running C and C\+\+ sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-3.avif)
 </Frame>
 
-Except for the arm example, all other examples will be compiled. The executable file name is the same as the example folder name. You can run it directly.
+Будут скомпилированы все примеры, кроме примера arm. Имя исполняемого файла совпадает с именем папки примера, поэтому его можно запустить напрямую.
 
-### 4.2 java sample running process
+### 4.2 Процесс запуска примера Java
 
-Java is different from other sample codes. It does not directly provide source code. It provides an http server and a postman example. If you need to control the camera indirectly through http, you can select the java example and enter the java folder. The folder content is as follows:
+Пример Java отличается от других примеров. Он не содержит исходный код напрямую, а предоставляет HTTP-сервер и пример Postman. Если нужно косвенно управлять камерой через HTTP, выберите пример Java и перейдите в папку java. Её содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to the java sample running process](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process.avif)
 </Frame>
 
-The running process is as follows:
+Процесс запуска выглядит следующим образом:
 
-- Enter the config folder and modify the http\_sever\_host field and http\_sever\_port field in the Configs.json file:
+- Перейдите в папку config и измените поля http\_sever\_host и http\_sever\_port в файле Configs.json:
 
 <Frame>
   ![Illustrations related to java sample running process 2](/images/developers/camera-sdk-linux-examples-java-sample-running-process-2.avif)
 </Frame>
 
-- Enter the middleware folder and execute the start.sh script to enable the transfer server
+- Перейдите в папку middleware и выполните скрипт start.sh, чтобы включить сервер передачи данных.
 
 <Frame>
   ![Illustrations related to the java sample running process 3](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process-3.avif)
 </Frame>
 
-- Use postman to open the LxCamera.postman\_collection.json file to send data to the sample port
+- Откройте файл LxCamera.postman\_collection.json в Postman и отправьте данные на порт примера.
 
-### 4.3 Compiling and running ROS sample code
+### 4.3 Компиляция и запуск примера ROS
 
-Enter the ROS folder, open a console, and run:
+Перейдите в папку ROS, откройте консоль и выполните:
 
 ```bash
 roscore
@@ -378,7 +378,7 @@ roscore
   ![Illustrations related to compiling and running ROS sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-2.avif)
 </Frame>
 
-Right-click to open a console, enter the `lx_camera_node_ws` folder, and run:
+Щёлкните правой кнопкой мыши, откройте консоль, перейдите в папку `lx_camera_node_ws` и выполните:
 
 ```bash
 catkin_make
@@ -388,19 +388,19 @@ catkin_make
   ![Illustrations related to compiling and running ROS sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-3.avif)
 </Frame>
 
-After successful execution, the following will be displayed:
+После успешного выполнения отобразится следующее:
 
 <Frame>
   ![Illustrations related to compiling and running ROS sample code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-4.avif)
 </Frame>
 
-At this time devel and build in the folder are compiled and generated:
+На этом этапе в папке будут скомпилированы и созданы каталоги devel и build:
 
 <Frame>
   ![Illustrations related to compiling and running ROS sample code 5](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-5.avif)
 </Frame>
 
-Run the following commands to source the environment and start a node with `roslaunch`:
+Выполните следующие команды, чтобы загрузить среду и запустить узел с помощью `roslaunch`:
 
 ```bash
 source devel/setup.bash
@@ -410,19 +410,19 @@ roslaunch lx_camera_ros obstacle.launch
 roslaunch lx_camera_ros pallet.launch
 ```
 
-From top to bottom, they are: running ordinary nodes, running obstacle avoidance algorithm 2 nodes, running obstacle avoidance algorithm nodes, running pallet algorithm nodes. Each node cannot be enabled at the same time.
+Сверху вниз показаны: запуск обычных узлов, запуск двух узлов алгоритма объезда препятствий, запуск узлов алгоритма объезда препятствий и запуск узлов алгоритма паллет. Одновременно можно включить только один узел.
 
-### 4.4 Compiling and running ROS2 sample code
+### 4.4 Компиляция и запуск примера ROS 2
 
-Enter the ros2 folder. The contents of the folder are as follows:
+Перейдите в папку ros2. Её содержимое выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to compiling and running ROS2 sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code.avif)
 </Frame>
 
-Example ros node is compiled using colcon
+Пример узла ROS компилируется с помощью colcon.
 
-First, install the compilation tools:
+Сначала установите инструменты компиляции:
 
 ```bash
 sudo apt install python3-colcon-common-extensions
@@ -432,31 +432,31 @@ sudo apt install python3-colcon-common-extensions
   ![Illustrations related to compiling and running ROS2 sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-2.avif)
 </Frame>
 
-Then install the `ros-pcl` dependency package. Replace `foxy` with the ROS 2 distribution installed on your system:
+Затем установите пакет зависимости `ros-pcl`. Замените `foxy` на дистрибутив ROS 2, установленный в вашей системе:
 
 ```bash
 sudo apt-get install ros-foxy-pcl*
 ```
 
-After installation, enter the `lx_camera_node_ws` directory and build the project:
+После установки перейдите в каталог `lx_camera_node_ws` и соберите проект:
 
 ```bash
 colcon build
 ```
 
-Depending on the computer performance, compilation usually takes 30 seconds to 120 seconds. After successful compilation, it will be displayed as follows:
+В зависимости от производительности компьютера компиляция обычно занимает от 30 до 120 секунд. После успешной компиляции отобразится следующее:
 
 <Frame>
   ![Illustrations related to compiling and running ROS2 sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-3.avif)
 </Frame>
 
-Some warnings are due to version compatibility issues and do not need to be processed. After compilation is completed, the contents of the folder are as follows:
+Некоторые предупреждения вызваны проблемами совместимости версий и не требуют обработки. После завершения компиляции содержимое папки выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to compiling and running ROS2 sample code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-4.avif)
 </Frame>
 
-Run the following commands to source the environment and start a node with `ros2 launch`:
+Выполните следующие команды, чтобы загрузить среду и запустить узел с помощью `ros2 launch`:
 
 ```bash
 source install/setup.bash
@@ -466,17 +466,17 @@ ros2 launch lx_camera_ros obstacle.launch.py
 ros2 launch lx_camera_ros pallet.launch.py
 ```
 
-From top to bottom, they are: running ordinary nodes, running obstacle avoidance algorithm 2 nodes, running obstacle avoidance algorithm nodes, running pallet algorithm nodes. Each node cannot be enabled at the same time.
+Сверху вниз показаны: запуск обычных узлов, запуск двух узлов алгоритма объезда препятствий, запуск узлов алгоритма объезда препятствий и запуск узлов алгоритма паллет. Одновременно можно включить только один узел.
 
-### 4.5 Compilation and operation of ros-v1pro sample code
+### 4.5 Компиляция и запуск примера ros-v1pro
 
-ros-v1pro is a dedicated ros driver for the V1PRO camera. There is a README.pdf in the ros-v1pro folder that describes the driver in detail. This document only gives a brief introduction to it:
+ros-v1pro — специализированный драйвер ROS для камеры V1PRO. В папке ros-v1pro находится файл README.pdf с подробным описанием драйвера. В этом документе приведён только краткий обзор:
 
 <Frame>
   ![Illustrations related to compiling and running the ros-v1pro sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code.avif)
 </Frame>
 
-Enter the `ros-v1pro` folder and compile it:
+Перейдите в папку `ros-v1pro` и скомпилируйте её:
 
 ```bash
 catkin_make
@@ -486,7 +486,7 @@ catkin_make
   ![Illustrations related to compiling and running the ros-v1pro sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-2.avif)
 </Frame>
 
-Load the environment:
+Загрузите среду:
 
 ```bash
 source devel/setup.bash
@@ -496,21 +496,21 @@ source devel/setup.bash
   ![Illustrations related to compiling and running the ros-v1pro sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-3.avif)
 </Frame>
 
-Finally run the node:
+Наконец, запустите узел:
 
 - roslaunch lx\_camera\_ros localization.launch
 - roslaunch lx\_camera\_ros mapping.launch
 - roslaunch lx\_camera\_ros sensor\_sim.launch
 
-From top to bottom: run the positioning node, run the mapping node, and run the virtual data node. Each node cannot be enabled at the same time.
+Сверху вниз показаны: запуск узла позиционирования, запуск узла картографирования и запуск узла виртуальных данных. Одновременно можно включить только один узел.
 
 ---
 
-## Sample code reference
+## Справочник по примерам кода
 
-In this section, all codes and pseudocode will be divided into several parts. Generally speaking, everything in a section belongs to the same file. Except for special files with detailed explanations, the source code files only explain the general modules. Detailed explanations are commented in the code.
+В этом разделе весь код и псевдокод разделены на несколько частей. Как правило, всё содержимое одного раздела относится к одному файлу. Если для специальных файлов не приведено подробное описание, в исходных файлах описаны только общие модули. Подробные пояснения приведены в комментариях к коду.
 
-### 5.1 C and C\+\+
+### 5.1 C и C\+\+
 
 #### 5.1.1 CMakeLists
 
@@ -526,7 +526,7 @@ In this section, all codes and pseudocode will be divided into several parts. Ge
   ![CMakeLists related icons 3](/images/developers/camera-sdk-linux-examples-cmakelists-3.avif)
 </Frame>
 
-#### 5.1.2 application\_obstacle and application\_pallet
+#### 5.1.2 application\_obstacle и application\_pallet
 
 <Frame>
   ![application\\\_obstacle and application\\\_pallet related icons](/images/developers/camera-sdk-linux-examples-application-obstacle-and-application-pallet.avif)
@@ -566,306 +566,304 @@ In this section, all codes and pseudocode will be divided into several parts. Ge
   ![single\\\_camera2 related icons](/images/developers/camera-sdk-linux-examples-single-camera2.avif)
 </Frame>
 
-### 5.2 java
+### 5.2 Java
 
-The Java example provides only an HTTP server, so the description is only a description of the interface and message format. Use postman to open the sample file as shown below:
+Пример Java предоставляет только HTTP-сервер, поэтому здесь описаны интерфейс и формат сообщений. Откройте файл примера в Postman, как показано ниже:
 
 <Frame>
   ![java related icons](/images/developers/camera-sdk-linux-examples-java.avif)
 </Frame>
 
-The messages are all in post mode. Before sending, remember to change the IP to the server's IP, but do not modify the URL. The URL is hard-coded internally in the server. The response message format and content are both in the body. The interface provided in the example is as follows:
+Все сообщения отправляются методом POST. Перед отправкой измените IP-адрес на IP-адрес сервера, но не изменяйте URL: он жёстко задан внутри сервера. Формат и содержимое ответа находятся в теле сообщения. В примере доступны следующие интерфейсы:
 
 <Frame>
   ![java related icons 2](/images/developers/camera-sdk-linux-examples-java-2.avif)
 </Frame>
 
-1.DcGetApiVersion: Get the version number of the SDK, no parameter input
+1. DcGetApiVersion: получить номер версии SDK; параметры не требуются.
 
 <Frame>
   ![java related icons 3](/images/developers/camera-sdk-linux-examples-java-3.avif)
 </Frame>
 
-2.DcSetInfoOutput: Set the path for SDK log output. The parameters are as follows:
+2. DcSetInfoOutput: задать путь для вывода журнала SDK. Параметры:
 
-- log\_path: path of log output
-- print\_level: log printing level
-- enable\_screen\_print: whether the log is printed on the console
+- log\_path: путь вывода журнала;
+- print\_level: уровень вывода журнала;
+- enable\_screen\_print: выводится ли журнал в консоль.
 
-3.DcLog: Output the log to the SDK log. Any input content will be printed to the SDK log.
-
-4.DcGetDeviceList: Get the device list, no input, input is JSON
-
-5.DcOpenDevice: Open the device and enter the following:
+3. DcLog: вывести сообщение в журнал SDK. Любое переданное содержимое будет записано в журнал SDK.
+4. DcGetDeviceList: получить список устройств; входные параметры не требуются, вывод имеет формат JSON.
+5. DcOpenDevice: открыть устройство и передать следующие параметры:
 
 <Frame>
   ![java related icons 4](/images/developers/camera-sdk-linux-examples-java-4.avif)
 </Frame>
 
-- open\_mode: open the camera mode
-- param: parameters for opening the camera
+- open\_mode: режим открытия камеры;
+- param: параметры открытия камеры.
 
-6.DcStartStream: Let a certain camera start pushing streaming data. The input parameters are as follows:
+6. DcStartStream: запустить передачу потоковых данных с выбранной камеры. Входные параметры:
 
 <Frame>
   ![java related icons 5](/images/developers/camera-sdk-linux-examples-java-5.avif)
 </Frame>
 
-- handle: The handle of the camera, which will be returned in DcOpenDevice
+- handle: дескриптор камеры, возвращаемый функцией DcOpenDevice.
 
-7.DcSetCmd: Issue commands to the camera, enter as follows:
+7. DcSetCmd: отправить команды камере. Передайте следующие параметры:
 
 <Frame>
   ![java related icons 6](/images/developers/camera-sdk-linux-examples-java-6.avif)
 </Frame>
 
-- handle: the handle of the camera to be set
-- cmd: command number
+- handle: дескриптор настраиваемой камеры;
+- cmd: номер команды.
 
-8.DcGetPtrValue: Get pointer data (image, parameters, etc.), enter as follows:
+8. DcGetPtrValue: получить данные указателя (изображение, параметры и т. д.). Передайте следующие параметры:
 
-- handle: the handle of the camera to be set
-- cmd: command number
+- handle: дескриптор настраиваемой камеры;
+- cmd: номер команды.
 
-9.DcSetIntValue: Set the camera int type parameters, input as follows:
+9. DcSetIntValue: задать параметры камеры типа int. Входные параметры:
 
 <Frame>
   ![java related icons 7](/images/developers/camera-sdk-linux-examples-java-7.avif)
 </Frame>
 
-- handle: the handle of the camera to be set
-- cmd: command number
-- value: the value to be set
+- handle: дескриптор настраиваемой камеры;
+- cmd: номер команды;
+- value: задаваемое значение.
 
-10.DcGetIntValue: Get the int type parameter of the device, input as follows:
+10. DcGetIntValue: получить параметр устройства типа int. Входные параметры:
 
-- handle: the handle of the camera to be set
-- cmd: command number
+- handle: дескриптор настраиваемой камеры;
+- cmd: номер команды.
 
-11. Please see the table below for other relevant instructions:
+11. Другие соответствующие инструкции приведены в таблице ниже:
 
 | Send | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | Receive | `{"errCode" : 0 }` |
 | --- | --- | --- | --- |
 | Send | `{"open_mode" : 0, "param" : "0"<br />}` | Receive | `{"algor_ver" : "VER_1.0.2.230315", "dev_type" : "M4 camera", "errCode" : 0,<br />"firmware_ver" : "V1.0.0.3_230315",<br />"handle" : 174539057817095, "id" : "f13141144bb1",<br />"ip" : "192.168.100.16:3956",<br />"mac" : "9e:be:0a:8a:66:07",<br />"name" :"camera_M4_192.168.100.16_3956",<br />"sn" : "9a5ed62d22b34bb1"<br />}` |
 | Send | `{"handle" :174539057817<br />095,<br />"cmd" : 6001<br />}` | Receive | `{"errCode" : 0,<br />"value" :"\u0011\u0001\u0014\u0001..." }` |
 
-### 5.3 ROS1 & ROS2
+### 5.3 ROS 1 и ROS 2
 
-In the ros description, we will not talk about the driver source code, but about the content corresponding to the configuration in the launch file, how to adjust the configuration, and how to send and subscribe to messages. The provided ros node already contains most of the functions, so it is not recommended to directly modify the driver source code. If you have special needs, you can first understand the code flow in the C\+\+ example and then modify the driver source code.
+В описании ROS рассматриваются не исходный код драйвера, а параметры конфигурации в launch-файле, их настройка, а также отправка и подписка на сообщения. Предоставленный узел ROS уже содержит большинство функций, поэтому напрямую изменять исходный код драйвера не рекомендуется. При особых требованиях сначала изучите поток выполнения в примере C\+\+, а затем изменяйте исходный код драйвера.
 
-**When executing the ros driver, you must ensure that the versions of opencv and pcl in the system default path are unique, otherwise an error will occur when linking the ros library, which may cause compilation failure or runtime crash.**
+**При запуске драйвера ROS убедитесь, что в системном пути по умолчанию присутствует только одна версия OpenCV и PCL. В противном случае при связывании библиотеки ROS возникнет ошибка, которая может привести к сбою компиляции или аварийному завершению во время выполнения.**
 
-#### 5.3.1 ROS1 launch file description
+#### 5.3.1 Описание launch-файлов ROS 1
 
-##### 5.3.1.1 All launch files
+##### 5.3.1.1 Все launch-файлы
 
-1. There are the following files in the src/launch folder:
+1. В папке src/launch находятся следующие файлы:
 
 <Frame>
   ![All launch file related icons](/images/developers/camera-sdk-linux-examples-all-launch-file.avif)
 </Frame>
 
-- localization.launch: Run file for visual positioning nodes
-- lx\_camera\_ros.launch: running file of ordinary nodes
-- mapping.launch: running file for visual positioning mapping
-- obstacle.launch: running file of obstacle avoidance algorithm
-- obstacleV2.launch: running file of obstacle avoidance algorithm V2
-- pallet.launch: pallet algorithm running file
-- sensor\_sim.launch: running file for simulating positioning data
+- localization.launch: файл запуска узлов визуального позиционирования;
+- lx\_camera\_ros.launch: файл запуска обычных узлов;
+- mapping.launch: файл запуска визуального картографирования;
+- obstacle.launch: файл запуска алгоритма объезда препятствий;
+- obstacleV2.launch: файл запуска алгоритма объезда препятствий V2;
+- pallet.launch: файл запуска алгоритма паллет;
+- sensor\_sim.launch: файл запуска для имитации данных позиционирования.
 
-2. You can execute different functions of the node by running different launch files. **Except for localization, mapping and sensor, the parameter contents are the same in all nodes, but the configuration is different**. This will be introduced in detail in the following sections. For a detailed introduction to the parameters of the three launch files of localization, mapping and sensor, please see the introduction in the ros-v1pro node.
+2. Запускайте разные функции узла с помощью разных launch-файлов. **Кроме localization, mapping и sensor, набор параметров во всех узлах одинаков, но их значения различаются**. Подробности приведены в следующих разделах. Описание параметров трёх launch-файлов localization, mapping и sensor см. в разделе об узле ros-v1pro.
 
-##### 5.3.1.2 Camera IP, stream configuration, working mode configuration, point cloud unit, etc.
+##### 5.3.1.2 IP камеры, настройка потока и рабочего режима, единица облака точек и т. д.
 
 <Frame>
   ![Camera IP, stream configuration, working mode configuration, point cloud unit and other related icons](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other.avif)
 </Frame>
 
-- ip: The camera IP that needs to be connected. If it is 0, the first one will be connected by default.
-- log\_path: SDK log storage path, the absolute path needs to be filled in
-- is\_xyz: whether to push point cloud data
-- is\_depth: whether to push depth data
-- is\_amp: whether to push intensity map data
-- is\_rgb: whether to push RGB image data
-- lx\_work\_mode: work mode
-- lx\_application: whether to enable the algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
-- lx\_tof\_unit: point cloud unit, 1 is meter, 0 is millimeter, needs to be changed to 1 when viewing with rviz
+- ip: IP-адрес подключаемой камеры. Если задано 0, по умолчанию подключается первая камера;
+- log\_path: путь хранения журнала SDK; необходимо указать абсолютный путь;
+- is\_xyz: передавать ли данные облака точек;
+- is\_depth: передавать ли данные глубины;
+- is\_amp: передавать ли данные карты интенсивности;
+- is\_rgb: передавать ли данные RGB-изображения;
+- lx\_work\_mode: рабочий режим;
+- lx\_application: включение алгоритма: 0 — выключен, 1 — объезд препятствий, 2 — алгоритм паллет, 3 — позиционирование, 4 — объезд препятствий V2;
+- lx\_tof\_unit: единица облака точек: 1 — метр, 0 — миллиметр; при просмотре в rviz необходимо изменить значение на 1.
 
-##### 5.3.1.3 Camera pose configuration
+##### 5.3.1.3 Настройка положения камеры
 
 <Frame>
   ![Illustrations related to camera pose configuration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration.avif)
 </Frame>
 
-The rotation angle and translation vector of the point cloud can be configured.
+Можно настроить угол поворота и вектор перемещения облака точек.
 
-- X: X translation amount of the camera from the center of the point cloud
-- Y: Y translation amount of the camera from the center of the point cloud
-- Z: Z translation amount of the camera from the center of the point cloud
-- Yaw: the angle of rotation of the point cloud around the Z axis
-- Roll: The angle of rotation of the point cloud around the X-axis
-- Pitch: The angle of rotation of the point cloud around the Y axis
+- X: смещение камеры по X относительно центра облака точек;
+- Y: смещение камеры по Y относительно центра облака точек;
+- Z: смещение камеры по Z относительно центра облака точек;
+- Yaw: угол поворота облака точек вокруг оси Z;
+- Roll: угол поворота облака точек вокруг оси X;
+- Pitch: угол поворота облака точек вокруг оси Y.
 
-##### 5.3.1.4 Whether to use launch configuration
+##### 5.3.1.4 Использование конфигурации launch-файла
 
 <Frame>
   ![Whether to use launch configuration related icons](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration.avif)
 </Frame>
 
-You can choose whether to use the camera parameter configuration in the launch file.
+Можно выбрать, использовать ли конфигурацию параметров камеры из launch-файла.
 
-- raw\_param: 0: use the configuration in the camera, 1: use the configuration in the launch file
+- raw\_param: 0 — использовать конфигурацию камеры, 1 — использовать конфигурацию launch-файла.
 
-Regardless of whether this parameter is set to 0 or 1, all parameters before this parameter will be set, 0 and 1 are only valid for parameters after this parameter.
+Независимо от того, задан ли этот параметр равным 0 или 1, будут установлены все параметры до него; значения 0 и 1 действуют только для параметров после него.
 
-##### 5.3.1.5 2D parameter configuration
+##### 5.3.1.5 Настройка параметров 2D
 
 <Frame>
   ![2D parameter configuration related icons](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration.avif)
 </Frame>
 
-- lx\_2d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_2d\_undistort: ​​2d anti-distortion, 0: off, 1: on
-- lx\_2d\_undistort\_scale: 2D anti-distortion coefficient
-- lx\_2d\_auto\_exposure: 2D automatic exposure, 0: off, 1: on
-- lx\_2d\_auto\_exposure\_value: 2D automatic exposure target intensity
-- lx\_2d\_exposure: 2D exposure value
-- lx\_2d\_gain: 2D gain
+- lx\_2d\_binning: 0 — 1x1, 1 — 2x2, 2 — 4x4;
+- lx\_2d\_undistort: устранение искажений 2D, 0 — выключено, 1 — включено;
+- lx\_2d\_undistort\_scale: коэффициент устранения искажений 2D;
+- lx\_2d\_auto\_exposure: автоматическая экспозиция 2D, 0 — выключена, 1 — включена;
+- lx\_2d\_auto\_exposure\_value: целевая интенсивность автоматической экспозиции 2D;
+- lx\_2d\_exposure: значение экспозиции 2D;
+- lx\_2d\_gain: усиление 2D.
 
-##### 5.3.1.6 3D parameter configuration
+##### 5.3.1.6 Настройка параметров 3D
 
 <Frame>
   ![Illustrations related to 3D parameter configuration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration.avif)
 </Frame>
 
-- lx\_rgb\_to\_tof: RGB alignment
-- lx\_3d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_mulit\_mode: multi-machine mode, which can eliminate multi-machine interference, 0: off, 1: on
-- lx\_3d\_undistort: ​​3d anti-distortion, 0: off, 1: on
-- lx\_3d\_undistort\_scale: 3D anti-distortion coefficient
-- lx\_hdr: hdr, 0: off, 1: on
-- lx\_3d\_auto\_exposure: 3D automatic exposure, 0: off, 1: on
-- lx\_3d\_auto\_exposure\_value: 3D automatic exposure target intensity
-- lx\_3d\_first\_exposure: 3D high points
-- lx\_3d\_second\_exposure: 3D low points
-- lx\_3d\_gain: 3D gain
+- lx\_rgb\_to\_tof: выравнивание RGB;
+- lx\_3d\_binning: 0 — 1x1, 1 — 2x2, 2 — 4x4;
+- lx\_mulit\_mode: многокамерный режим для устранения помех между камерами, 0 — выключен, 1 — включён;
+- lx\_3d\_undistort: устранение искажений 3D, 0 — выключено, 1 — включено;
+- lx\_3d\_undistort\_scale: коэффициент устранения искажений 3D;
+- lx\_hdr: HDR, 0 — выключен, 1 — включён;
+- lx\_3d\_auto\_exposure: автоматическая экспозиция 3D, 0 — выключена, 1 — включена;
+- lx\_3d\_auto\_exposure\_value: целевая интенсивность автоматической экспозиции 3D;
+- lx\_3d\_first\_exposure: верхняя точка 3D;
+- lx\_3d\_second\_exposure: нижняя точка 3D;
+- lx\_3d\_gain: усиление 3D.
 
-##### 5.3.1.7 Maximum and minimum depth
+##### 5.3.1.7 Максимальная и минимальная глубина
 
 <Frame>
   ![Maximum and minimum depth related icons](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth.avif)
 </Frame>
 
-- lx\_min\_depth: minimum depth
-- lx\_max\_depth: maximum depth
+- lx\_min\_depth: минимальная глубина;
+- lx\_max\_depth: максимальная глубина.
 
-#### 5.3.2 ROS2 launch file description
+#### 5.3.2 Описание launch-файлов ROS2
 
-##### 5.3.2.1 All launch files
+##### 5.3.2.1 Все launch-файлы
 
-There are the following files in the src/launch folder:
+В папке `src/launch` находятся следующие файлы:
 
 <Frame>
   ![All launch file related icons](/images/developers/camera-sdk-linux-examples-all-launch-file-02.avif)
 </Frame>
 
-- localization.launch.py: running file of visual positioning node
-- lx\_camera\_ros.launch.py: running file of ordinary node
-- mapping.launch.py: running file for visual positioning mapping
-- obstacle.launch.py: running file of obstacle avoidance algorithm
-- obstacleV2.launch.py: running file of obstacle avoidance algorithm V2
-- pallet.launch.py: pallet algorithm running file
-- sensor\_sim.launch.py: running file for simulating positioning data
+- localization.launch.py: файл запуска узла визуального позиционирования
+- lx\_camera\_ros.launch.py: файл запуска обычного узла
+- mapping.launch.py: файл запуска построения карты визуального позиционирования
+- obstacle.launch.py: файл запуска алгоритма предотвращения столкновений
+- obstacleV2.launch.py: файл запуска алгоритма предотвращения столкновений V2
+- pallet.launch.py: файл запуска алгоритма распознавания палет
+- sensor\_sim.launch.py: файл запуска симуляции данных позиционирования
 
-You can execute different functions of the node by running different launch files. **Except for localization, mapping and sensor, the parameter content is the same in all nodes, but the configuration is different**. It will be introduced in detail in the following sections. For a detailed introduction to the parameters of the three launch files of localization, mapping and sensor, please see the introduction in the ros-v1pro node.
+Разные функции узла можно запускать с помощью разных launch-файлов. **За исключением localization, mapping и sensor, набор параметров у всех узлов одинаков, но их значения различаются**. Подробное описание приведено в следующих разделах. Описание параметров трёх launch-файлов — localization, mapping и sensor — см. в разделе об узле ros-v1pro.
 
-##### 5.3.2.2 Camera IP, stream configuration, working mode configuration, point cloud unit, etc.
+##### 5.3.2.2 IP-адрес камеры, настройка потоков и режима работы, единица измерения облака точек и другие параметры
 
 <Frame>
   ![Camera IP, stream configuration, working mode configuration, point cloud unit and other related icons](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other-02.avif)
 </Frame>
 
-- ip: The camera IP that needs to be connected. If it is 0, the first one will be connected by default.
-- log\_path: SDK log storage path, the absolute path needs to be filled in
-- is\_xyz: whether to push point cloud data
-- is\_depth: whether to push depth data
-- is\_amp: whether to push intensity map data
-- is\_rgb: whether to push RGB image data
-- lx\_work\_mode: work mode
-- lx\_application: whether to enable the algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
-- lx\_tof\_unit: point cloud unit, 1 is meter, 0 is millimeter, needs to be changed to 1 when viewing with rviz
+- ip: IP-адрес подключаемой камеры. Если указать 0, по умолчанию будет подключена первая камера.
+- log\_path: путь хранения журналов SDK; необходимо указать абсолютный путь
+- is\_xyz: передавать ли данные облака точек
+- is\_depth: передавать ли данные глубины
+- is\_amp: передавать ли данные карты интенсивности
+- is\_rgb: передавать ли данные изображения RGB
+- lx\_work\_mode: режим работы
+- lx\_application: включить ли алгоритм: 0 — выключено, 1 — алгоритм предотвращения столкновений, 2 — алгоритм распознавания палет, 3 — алгоритм позиционирования, 4 — алгоритм предотвращения столкновений V2
+- lx\_tof\_unit: единица измерения облака точек: 1 — метр, 0 — миллиметр. При просмотре в rviz необходимо установить значение 1
 
-##### 5.3.2.3 Camera pose configuration
+##### 5.3.2.3 Настройка положения камеры
 
 <Frame>
   ![Illustrations related to camera pose configuration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration-02.avif)
 </Frame>
 
-The rotation angle and translation vector of the point cloud can be configured.
+Можно настроить угол поворота и вектор смещения облака точек.
 
-- X: X translation amount of the camera from the center of the point cloud
-- Y: Y translation amount of the camera from the center of the point cloud
-- Z: Z translation amount of the camera from the center of the point cloud
-- Yaw: the angle of rotation of the point cloud around the Z axis
-- Roll: The angle of rotation of the point cloud around the X-axis
-- Pitch: The angle of rotation of the point cloud around the Y axis
+- X: смещение камеры по оси X относительно центра облака точек
+- Y: смещение камеры по оси Y относительно центра облака точек
+- Z: смещение камеры по оси Z относительно центра облака точек
+- Yaw: угол поворота облака точек вокруг оси Z
+- Roll: угол поворота облака точек вокруг оси X
+- Pitch: угол поворота облака точек вокруг оси Y
 
-##### 5.3.2.4 Whether to use launch configuration
+##### 5.3.2.4 Использование конфигурации launch-файла
 
 <Frame>
   ![Whether to use launch configuration related icons](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration-02.avif)
 </Frame>
 
-You can choose whether to use the camera parameter configuration in the launch file.
+Можно выбрать, использовать ли конфигурацию параметров камеры из launch-файла.
 
-- raw\_param: 0: use the configuration in the camera, 1: use the configuration in the launch file
+- raw\_param: 0 — использовать конфигурацию камеры, 1 — использовать конфигурацию launch-файла
 
-Regardless of whether this parameter is set to 0 or 1, all parameters before this parameter will be set, 0 and 1 are only valid for parameters after this parameter.
+Независимо от того, установлено ли для этого параметра значение 0 или 1, будут установлены все параметры, расположенные до него. Значения 0 и 1 применяются только к параметрам, расположенным после него.
 
-##### 5.3.2.5 2D parameter configuration
+##### 5.3.2.5 Настройка параметров 2D
 
 <Frame>
   ![2D parameter configuration related icons](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration-02.avif)
 </Frame>
 
 - lx\_2d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_2d\_undistort: ​​2d anti-distortion, 0: off, 1: on
-- lx\_2d\_undistort\_scale: 2D anti-distortion coefficient
-- lx\_2d\_auto\_exposure: 2D automatic exposure, 0: off, 1: on
-- lx\_2d\_auto\_exposure\_value: 2D automatic exposure target intensity
-- lx\_2d\_exposure: 2D exposure value
-- lx\_2d\_gain: 2D gain
+- lx\_2d\_undistort: коррекция искажений 2D, 0 — выключено, 1 — включено
+- lx\_2d\_undistort\_scale: коэффициент коррекции искажений 2D
+- lx\_2d\_auto\_exposure: автоматическая экспозиция 2D, 0 — выключено, 1 — включено
+- lx\_2d\_auto\_exposure\_value: целевая интенсивность автоматической экспозиции 2D
+- lx\_2d\_exposure: значение экспозиции 2D
+- lx\_2d\_gain: усиление 2D
 
-##### 5.3.2.6 3D parameter configuration
+##### 5.3.2.6 Настройка параметров 3D
 
 <Frame>
   ![Illustrations related to 3D parameter configuration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration-02.avif)
 </Frame>
 
-- lx\_rgb\_to\_tof: RGB alignment
+- lx\_rgb\_to\_tof: выравнивание RGB
 - lx\_3d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_mulit\_mode: multi-machine mode, which can eliminate multi-machine interference, 0: off, 1: on
-- lx\_3d\_undistort: ​​3d anti-distortion, 0: off, 1: on
-- lx\_3d\_undistort\_scale: 3D anti-distortion coefficient
-- lx\_hdr: hdr, 0: off, 1: on
-- lx\_3d\_auto\_exposure: 3D automatic exposure, 0: off, 1: on
-- lx\_3d\_auto\_exposure\_value: 3D automatic exposure target intensity
-- lx\_3d\_first\_exposure: 3D high points
-- lx\_3d\_second\_exposure: 3D low points
-- lx\_3d\_gain: 3D gain
+- lx\_mulit\_mode: многокамерный режим для устранения помех между камерами, 0 — выключено, 1 — включено
+- lx\_3d\_undistort: коррекция искажений 3D, 0 — выключено, 1 — включено
+- lx\_3d\_undistort\_scale: коэффициент коррекции искажений 3D
+- lx\_hdr: HDR, 0 — выключено, 1 — включено
+- lx\_3d\_auto\_exposure: автоматическая экспозиция 3D, 0 — выключено, 1 — включено
+- lx\_3d\_auto\_exposure\_value: целевая интенсивность автоматической экспозиции 3D
+- lx\_3d\_first\_exposure: высокая экспозиция 3D
+- lx\_3d\_second\_exposure: низкая экспозиция 3D
+- lx\_3d\_gain: усиление 3D
 
-##### 5.3.2.7 Maximum and minimum depth
+##### 5.3.2.7 Максимальная и минимальная глубина
 
 <Frame>
   ![Maximum and minimum depth related icons](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth-02.avif)
 </Frame>
 
-- lx\_min\_depth: minimum depth
-- lx\_max\_depth: maximum depth
+- lx\_min\_depth: минимальная глубина
+- lx\_max\_depth: максимальная глубина
 
-#### 5.3.3 Unique theme description
+#### 5.3.3 Описание уникальных топиков
 
-Since the unique topic types of ROS1 and ROS2 are the same, ROS1 is used as an example here. There are the following files in the src/msg folder:
+Поскольку уникальные типы топиков ROS1 и ROS2 одинаковы, далее в качестве примера используется ROS1. В папке `src/msg` находятся следующие файлы:
 
 <Frame>
   ![Illustrations related to unique theme descriptions](/images/developers/camera-sdk-linux-examples-unique-theme-descriptions.avif)
@@ -873,19 +871,19 @@ Since the unique topic types of ROS1 and ROS2 are the same, ROS1 is used as an e
 
 ##### 5.3.3.1 FrameRate.msg
 
-This node outputs frame rate information. The message format is as follows:
+Этот узел выводит информацию о частоте кадров. Формат сообщения выглядит следующим образом:
 
 <Frame>
   ![FrameRate.msg related icons](/images/developers/camera-sdk-linux-examples-framerate-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- depth: When the depth map is turned on, output the depth map frame rate
-- amp: When the intensity map is turned on, output the intensity map frame rate
-- rgb: When rgb is on, output rgb frame rate
-- temperature: output camera temperature
+- header: информация о кадре и временная метка текущих данных
+- depth: частота кадров карты глубины, если карта глубины включена
+- amp: частота кадров карты интенсивности, если карта интенсивности включена
+- rgb: частота кадров RGB, если RGB включён
+- temperature: температура камеры
 
-After the node starts running (except for nodes related to visual positioning), you can subscribe to the LxCamera\_FrameRate node to obtain relevant information. The output is as follows:
+После запуска узла (за исключением узлов, связанных с визуальным позиционированием) можно подписаться на узел LxCamera\_FrameRate и получить соответствующую информацию. Результат выглядит следующим образом:
 
 <Frame>
   ![FrameRate.msg related icons 2](/images/developers/camera-sdk-linux-examples-framerate-msg-2.avif)
@@ -893,43 +891,43 @@ After the node starts running (except for nodes related to visual positioning), 
 
 ##### 5.3.3.2 Obstacle.msg
 
-obstacle outputs information related to the obstacle avoidance algorithm results. The obstacle message format is as follows:
+Топик obstacle содержит информацию о результатах алгоритма предотвращения столкновений. Формат сообщения obstacle выглядит следующим образом:
 
 <Frame>
   ![Obstacle.msg related icons](/images/developers/camera-sdk-linux-examples-obstacle-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- status: status information returned by obstacle avoidance
+- header: информация о кадре и временная метка текущих данных
+- status: сведения о состоянии, возвращённые алгоритмом предотвращения столкновений
 
-0: Normal obstacle avoidance
+0: обычная работа алгоритма предотвращения столкновений
 
--1: No ground set
+-1: поверхность не задана
 
--2: Input not set
+-2: входные данные не заданы
 
--3: No point cloud within the range
+-3: в заданном диапазоне нет облака точек
 
--4: The point cloud is empty after filtering the ground
+-4: после фильтрации поверхности облако точек пусто
 
--5: The point cloud is empty after radius filtering
+-5: после радиальной фильтрации облако точек пусто
 
--6: No segmentation result was obtained
+-6: результат сегментации не получен
 
--99: undefined error
+-99: неопределённая ошибка
 
-- io\_output: Obstacle avoidance information output by the io interface
+- io\_output: информация о предотвращении столкновений, полученная через интерфейс io
 
-0: normal
+0: нормальная работа
 
-1: warning
+1: предупреждение
 
-2: Shutdown
+2: завершение работы
 
-- box\_number: number of obstacles
-- box: obstacle information, variable length array, the length is determined by box\_number
+- box\_number: количество препятствий
+- box: информация о препятствиях; массив переменной длины, определяемой параметром box\_number
 
-After the node starts running (the obstacle avoidance algorithm needs to be turned on), you can subscribe to the LxCamera\_Obstacel node to obtain relevant information. The output is as follows (the data in the picture is simulated data):
+После запуска узла (необходимо включить алгоритм предотвращения столкновений) можно подписаться на узел LxCamera\_Obstacel и получить соответствующую информацию. Результат показан ниже (данные на изображении смоделированы):
 
 <Frame>
   ![Obstacle.msg related icons 2](/images/developers/camera-sdk-linux-examples-obstacle-msg-2.avif)
@@ -937,20 +935,20 @@ After the node starts running (the obstacle avoidance algorithm needs to be turn
 
 ##### 5.3.3.3 Obstacle\_box.msg
 
-obstacle\_box outputs obstacle-related information, and the obstacle\_box message format is as follows:
+Топик obstacle\_box содержит информацию о препятствиях. Формат сообщения obstacle\_box выглядит следующим образом:
 
 <Frame>
   ![Obstacle\\\_box.msg related icons](/images/developers/camera-sdk-linux-examples-obstacle-box-msg.avif)
 </Frame>
 
-- center: the center of mass of the obstacle in the point cloud
-- rotation: rotation matrix of obstacle point cloud
-- translation: translation vector of obstacle point cloud
-- width: width of the obstacle frame
-- height: height of obstacle frame
-- depth: the depth of the obstacle frame
+- center: центр масс препятствия в облаке точек
+- rotation: матрица поворота облака точек препятствия
+- translation: вектор смещения облака точек препятствия
+- width: ширина рамки препятствия
+- height: высота рамки препятствия
+- depth: глубина рамки препятствия
 
-After starting the operation (the obstacle avoidance algorithm needs to be turned on), you can subscribe to the LxCamera\_Obstacel node to obtain relevant information. The output is as follows:
+После запуска узла (необходимо включить алгоритм предотвращения столкновений) можно подписаться на узел LxCamera\_Obstacel и получить соответствующую информацию. Результат показан ниже:
 
 <Frame>
   ![Obstacle\\\_box.msg related icon 2](/images/developers/camera-sdk-linux-examples-obstacle-box-msg-2.avif)
@@ -958,57 +956,57 @@ After starting the operation (the obstacle avoidance algorithm needs to be turne
 
 ##### 5.3.3.4 Result.msg
 
-The return value obtained after sending the command message to the servic in the node is stored in Result:
+Возвращаемое значение после отправки командного сообщения в сервис узла сохраняется в Result:
 
 <Frame>
   ![Result.msg related icons](/images/developers/camera-sdk-linux-examples-result-msg.avif)
 </Frame>
 
-- ret: the return value obtained by executing the SDK
-- msg: Description of the return value obtained by executing the SDK
+- ret: возвращаемое значение, полученное при выполнении SDK
+- msg: описание возвращаемого значения, полученного при выполнении SDK
 
 ##### 5.3.3.5 Pallet.msg
 
-The pallet outputs information related to the pallet algorithm results. The pallet message format is as follows:
+Топик pallet содержит информацию о результатах алгоритма распознавания палет. Формат сообщения pallet выглядит следующим образом:
 
 <Frame>
   ![Pallet.msg related icons](/images/developers/camera-sdk-linux-examples-pallet-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- status: status information returned by pallet recognition:
+- header: информация о кадре и временная метка текущих данных
+- status: сведения о состоянии, возвращённые алгоритмом распознавания палет:
 
-0: Detection successful
+0: распознавание выполнено успешно
 
--1: No ground detected
+-1: поверхность не обнаружена
 
--2: Pallet legs not detected
+-2: ножки палеты не обнаружены
 
--3: The distance between the pallets is too far
+-3: расстояние между палетами слишком велико
 
--4: unknown error
+-4: неизвестная ошибка
 
-- x: X distance between the tray and the optical center of the camera
-- y: Y distance between the tray and the optical center of the camera
-- yaw: theta angle between the center of the tray and the optical center of the camera
+- x: расстояние по оси X между палетой и оптическим центром камеры
+- y: расстояние по оси Y между палетой и оптическим центром камеры
+- yaw: угол theta между центром палеты и оптическим центром камеры
 
-After the node starts running (the pallet algorithm needs to be turned on), you can subscribe to the LxCamera\_Pallet node to obtain relevant information. The output is as follows:
+После запуска узла (необходимо включить алгоритм распознавания палет) можно подписаться на узел LxCamera\_Pallet и получить соответствующую информацию. Результат показан ниже:
 
 <Frame>
   ![Pallet.msg related icons 2](/images/developers/camera-sdk-linux-examples-pallet-msg-2.avif)
 </Frame>
 
-#### 5.3.4 Unique Service Description
+#### 5.3.4 Описание уникальных сервисов
 
-Since the unique service types of ROS1 and ROS2 are the same, ROS1 is used as an example here. There are the following files in the src/srv folder:
+Поскольку уникальные типы сервисов ROS1 и ROS2 одинаковы, далее в качестве примера используется ROS1. В папке `src/srv` находятся следующие файлы:
 
 <Frame>
   ![Illustrations related to unique service descriptions](/images/developers/camera-sdk-linux-examples-unique-service-descriptions.avif)
 </Frame>
 
-These messages are used to set or obtain certain parameter values ​​of the camera.
+Эти сообщения используются для задания или получения значений параметров камеры.
 
-Above \[---\] is the sent data, below \[---\] is the returned data
+Данные над \[---\] отправляются, а данные под \[---\] возвращаются.
 
 ##### 5.3.4.1 LxBool.srv
 
@@ -1016,11 +1014,11 @@ Above \[---\] is the sent data, below \[---\] is the returned data
   ![LxBool.srv related icons](/images/developers/camera-sdk-linux-examples-lxbool-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- val: The value of the camera's current parameter returned when getting or setting it
-- result: the value and information returned by calling the SDK interface
+- cmd: номер параметра, который требуется получить или установить
+- val: задаваемое значение
+- is\_set: нужно ли устанавливать параметр. Если значение true, значение val будет установлено в камере. Если значение false, параметр будет считан из камеры и выведен.
+- val: текущее значение параметра камеры, возвращаемое при чтении или установке
+- result: значение и информация, возвращённые при вызове интерфейса SDK
 
 ##### 5.3.4.2 LxCmd.srv
 
@@ -1028,8 +1026,8 @@ Above \[---\] is the sent data, below \[---\] is the returned data
   ![LxCmd.srv related icons](/images/developers/camera-sdk-linux-examples-lxcmd-srv.avif)
 </Frame>
 
-- cmd: The parameter number that needs to be obtained or set. When it is 0, all parameter numbers will be returned.
-- result: the value and information returned by calling the SDK interface, cmd may have multiple return values
+- cmd: номер параметра, который требуется получить или установить. При значении 0 возвращаются номера всех параметров.
+- result: значение и информация, возвращённые при вызове интерфейса SDK; cmd может иметь несколько возвращаемых значений
 
 ##### 5.3.4.3 LxFloat.srv
 
@@ -1037,14 +1035,14 @@ Above \[---\] is the sent data, below \[---\] is the returned data
   ![LxFloat.srv related icons](/images/developers/camera-sdk-linux-examples-lxfloat-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- max\_value: the maximum value that can be set for this parameter
-- min\_value: the minimum value that can be set for this parameter
-- cur\_value: the current value of this parameter in the camera
-- available: whether this parameter supports setting
-- result: the value and information returned by calling the SDK interface
+- cmd: номер параметра, который требуется получить или установить
+- val: задаваемое значение
+- is\_set: нужно ли устанавливать параметр. Если значение true, значение val будет установлено в камере. Если значение false, параметр будет считан из камеры и выведен.
+- max\_value: максимальное значение, которое можно установить для этого параметра
+- min\_value: минимальное значение, которое можно установить для этого параметра
+- cur\_value: текущее значение этого параметра в камере
+- available: поддерживает ли этот параметр установку значения
+- result: значение и информация, возвращённые при вызове интерфейса SDK
 
 ##### 5.3.4.4 LxInt.srv
 
@@ -1052,14 +1050,14 @@ Above \[---\] is the sent data, below \[---\] is the returned data
   ![LxInt.srv related icons](/images/developers/camera-sdk-linux-examples-lxint-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- max\_value: the maximum value that can be set for this parameter
-- min\_value: the minimum value that can be set for this parameter
-- cur\_value: the current value of this parameter in the camera
-- available: whether this parameter supports setting
-- result: the value and information returned by calling the SDK interface
+- cmd: номер параметра, который требуется получить или установить
+- val: задаваемое значение
+- is\_set: нужно ли устанавливать параметр. Если значение true, значение val будет установлено в камере. Если значение false, параметр будет считан из камеры и выведен.
+- max\_value: максимальное значение, которое можно установить для этого параметра
+- min\_value: минимальное значение, которое можно установить для этого параметра
+- cur\_value: текущее значение этого параметра в камере
+- available: поддерживает ли этот параметр установку значения
+- result: значение и информация, возвращённые при вызове интерфейса SDK
 
 ##### 5.3.4.5 LxString.srv
 
@@ -1067,191 +1065,191 @@ Above \[---\] is the sent data, below \[---\] is the returned data
   ![LxString.srv related icons](/images/developers/camera-sdk-linux-examples-lxstring-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- val: The value of the camera's current parameter returned when getting or setting it
-- result: the value and information returned by calling the SDK interface
+- cmd: номер параметра, который требуется получить или установить
+- val: задаваемое значение
+- is\_set: нужно ли устанавливать параметр. Если значение true, значение val будет установлено в камере. Если значение false, параметр будет считан из камеры и выведен.
+- val: текущее значение параметра камеры, возвращаемое при чтении или установке
+- result: значение и информация, возвращённые при вызове интерфейса SDK
 
-#### 5.3.5 Description of topic subscription methods
+#### 5.3.5 Описание способов подписки на топики
 
-##### 5.3.5.1 Subscription frame rate, tray algorithm, obstacle avoidance algorithm output data
+##### 5.3.5.1 Подписка на данные о частоте кадров и результаты алгоритмов распознавания палет и предотвращения столкновений
 
-**Subscribe Frame Rate**
+**Подписка на частоту кадров**
 
-In the lx\_camera\_node\_ws directory, enter: bash rate.sh
+В каталоге lx\_camera\_node\_ws выполните команду: bash rate.sh
 
 <Frame>
   ![Illustrations related to subscription frame rate, tray algorithm, and obstacle avoidance algorithm output data](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+После нормального запуска и обновления образа узла lx\_camera\_node появится следующая информация:
 
 <Frame>
   ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 2](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-2.avif)
 </Frame>
 
-**Subscribe to pallet algorithm output**
+**Подписка на результаты алгоритма распознавания палет**
 
-In the lx\_camera\_node\_ws directory, enter: bash pallet.sh
+В каталоге lx\_camera\_node\_ws выполните команду: bash pallet.sh
 
 <Frame>
   ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 3](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-3.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+После нормального запуска и обновления образа узла lx\_camera\_node появится следующая информация:
 
 <Frame>
   ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 4](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-4.avif)
 </Frame>
 
-**Subscribe to obstacle avoidance algorithm output**
+**Подписка на результаты алгоритма предотвращения столкновений**
 
-In the lx\_camera\_node\_ws directory, enter: bash obstacle.sh
+В каталоге lx\_camera\_node\_ws выполните команду: bash obstacle.sh
 
 <Frame>
   ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 5](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-5.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+После нормального запуска и обновления образа узла lx\_camera\_node появится следующая информация:
 
 <Frame>
   ![Illustrations related to subscription frame rate, tray algorithm, and obstacle avoidance algorithm output data 6](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data-6.avif)
 </Frame>
 
-##### 5.3.5.2 Subscribe to image data (ROS1)
+##### 5.3.5.2 Подписка на данные изображений (ROS1)
 
-You can view the image information output by the node through the image tool that comes with ros:
+Информацию об изображениях, выводимую узлом, можно просматривать с помощью инструмента изображений, входящего в ROS:
 
-Console input command: rqt\_image\_view
+Введите в консоли команду: rqt\_image\_view
 
-After entering the command, the following window will pop up:
+После выполнения команды появится следующее окно:
 
 <Frame>
   ![Illustrations related to subscribing image data (ROS1)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros1.avif)
 </Frame>
 
-The red box can select the images in all nodes. The picture shows the MRDVS camera RGB image. You can also select the depth map or intensity map (provided that the stream has been turned on):
+В красном поле можно выбрать изображения всех узлов. На рисунке показано RGB-изображение камеры MRDVS. Также можно выбрать карту глубины или карту интенсивности, если соответствующий поток включён:
 
 <Frame>
   ![Subscription image data (ROS1) related diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-2.avif)
 </Frame>
 
-In the figure, the first red box is the RGB information output by the positioning algorithm node, and the remaining three are image information output by the ordinary nodes. amp is the intensity map, depth is the depth map, and rgb is the rgb map.
+На рисунке в первом красном поле показана информация RGB, выводимая узлом алгоритма позиционирования, а в остальных трёх — информация об изображениях, выводимая обычными узлами. `amp` — карта интенсивности, `depth` — карта глубины, `rgb` — карта RGB.
 
-Select different items to view different images or use rviz to view image data. Enter the command on the console: rviz will pop up the following window:
+Выбирайте разные элементы для просмотра разных изображений или используйте rviz для просмотра данных изображений. Введите в консоли команду `rviz`, после чего появится следующее окно:
 
 <Frame>
   ![Subscription image data (ROS1) related diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-3.avif)
 </Frame>
 
-After clicking the Add button at the bottom left, a window will pop up:
+После нажатия кнопки Add в левом нижнем углу появится следующее окно:
 
 <Frame>
   ![Subscription image data (ROS1) related diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-4.avif)
 </Frame>
 
-Select the desired image topic and select Image and click OK in the lower right corner. You can see the image data on the left side of the main interface, as shown below:
+Выберите нужный топик изображения, выберите Image и нажмите OK в правом нижнем углу. Данные изображения появятся в левой части главного интерфейса, как показано ниже:
 
 <Frame>
   ![Subscription image data (ROS1) related diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-5.avif)
 </Frame>
 
-##### 5.3.5.3 Subscribe to image data (ROS2)
+##### 5.3.5.3 Подписка на данные изображений (ROS2)
 
-You can view the image information output by the node through the image tool that comes with ros2: Enter the command on the console: rqt
+Информацию об изображениях, выводимую узлом, можно просматривать с помощью инструмента изображений, входящего в ROS2. Введите в консоли команду `rqt`.
 
-After entering the command, the following window will pop up:
+После выполнения команды появится следующее окно:
 
 <Frame>
   ![Illustrations related to subscribing image data (ROS2)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros2.avif)
 </Frame>
 
-Select the first Image View of the second option at the bottom of the menu bar. After selection, the following interface will pop up:
+Выберите первый пункт Image View во втором элементе в нижней части строки меню. После выбора появится следующий интерфейс:
 
 <Frame>
   ![Subscription image data (ROS2) related diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-2.avif)
 </Frame>
 
-The red box can select the images in all nodes. The picture shows the MRDVS camera RGB image. You can also select the depth map or intensity map (provided that the stream has been turned on):
+В красном поле можно выбрать изображения всех узлов. На рисунке показано RGB-изображение камеры MRDVS. Также можно выбрать карту глубины или карту интенсивности, если соответствующий поток включён:
 
 <Frame>
   ![Subscription image data (ROS2) related diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-3.avif)
 </Frame>
 
-In the figure, the first red box is the RGB information output by the positioning algorithm node, and the remaining three are image information output by the ordinary nodes. amp is the intensity map, depth is the depth map, and rgb is the rgb map.
+На рисунке в первом красном поле показана информация RGB, выводимая узлом алгоритма позиционирования, а в остальных трёх — информация об изображениях, выводимая обычными узлами. `amp` — карта интенсивности, `depth` — карта глубины, `rgb` — карта RGB.
 
-Select different items to view different images or use rviz2 to view image data. Enter the command on the console: rviz2 will pop up the following window:
+Выбирайте разные элементы для просмотра разных изображений или используйте rviz2 для просмотра данных изображений. Введите в консоли команду `rviz2`, после чего появится следующее окно:
 
 <Frame>
   ![Subscription image data (ROS2) related diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-4.avif)
 </Frame>
 
-After clicking the Add button at the bottom left, a window will pop up:
+После нажатия кнопки Add в левом нижнем углу появится следующее окно:
 
 <Frame>
   ![Subscription image data (ROS2) related diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-5.avif)
 </Frame>
 
-Select the desired image topic and select Image and click OK in the lower right corner. You can see the image data on the left side of the main interface, as shown below:
+Выберите нужный топик изображения, выберите Image и нажмите OK в правом нижнем углу. Данные изображения появятся в левой части главного интерфейса, как показано ниже:
 
 <Frame>
   ![Subscription image data (ROS2) related diagram 6](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-6.avif)
 </Frame>
 
-**Some systems need to fill in \[mrdvs\] in the \[map\] in the above picture to see the image**
+**В некоторых системах для просмотра изображения необходимо указать \[mrdvs\] в поле \[map\], показанном на рисунке выше.**
 
-##### 5.3.5.4 Subscribe to point cloud data
+##### 5.3.5.4 Подписка на данные облака точек
 
-The point cloud information output by the node can be viewed through the point cloud tool provided by ros or ros2:
+Информацию об облаке точек, выводимую узлом, можно просматривать с помощью инструмента облака точек из ROS или ROS2:
 
-Command: rviz【ROS1】, rviz2【ROS2】
+Команды: rviz【ROS1】, rviz2【ROS2】
 
-After entering the command, the following window will pop up:
+После выполнения команды появится следующее окно:
 
 <Frame>
   ![Illustrations related to subscribing to point cloud data](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data.avif)
 </Frame>
 
-Click the button in the red box below and the following box will pop up:
+Нажмите кнопку в красном поле ниже, после чего появится следующее окно:
 
 <Frame>
   ![Illustration related to subscribing to point cloud data 2](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-2.avif)
 </Frame>
 
-Select the second tab, and there will be a node named lx\_camera\_node. There is a topic named LxCamera\_Cloud in the node. There is a message named PointCloud2 in the topic. After selecting, click OK. The interface after completion is as follows:
+Выберите вторую вкладку. В ней будет узел `lx\_camera\_node`, содержащий топик `LxCamera\_Cloud`. В этом топике находится сообщение `PointCloud2`. Выберите его и нажмите OK. После этого интерфейс будет выглядеть следующим образом:
 
 <Frame>
   ![Illustrations related to subscribing to point cloud data 3](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-3.avif)
 </Frame>
 
-(ROS1 interface)
+(интерфейс ROS1)
 
 <Frame>
   ![Illustrations related to subscribing to point cloud data 4](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-4.avif)
 </Frame>
 
-(ROS2 interface)
+(интерфейс ROS2)
 
-At this time, the point cloud cannot be displayed normally. Fill in mrdvs in the red and green box map above to see the point cloud. The effect is as follows:
+На этом этапе облако точек не отображается корректно. Укажите `mrdvs` в поле карты, выделенном красным и зелёным цветом выше, чтобы увидеть облако точек. Результат выглядит следующим образом:
 
 <Frame>
   ![Illustrations related to subscribing to point cloud data 5](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-5.avif)
 </Frame>
 
-The default point cloud unit in ROS is meters, so when viewing using rviz, you need to modify lx\_tof\_unit in the launch file to 1 \[the default is 1\]
+Единицей измерения облака точек по умолчанию в ROS являются метры. Поэтому при просмотре в rviz необходимо установить для lx\_tof\_unit в launch-файле значение 1 \[значение по умолчанию — 1\].
 
-#### 5.3.6 Description of service communication methods
+#### 5.3.6 Описание способов обмена данными с сервисами
 
-In ROS1, all commands can be completed using the Tab key, but in ROS2, only topics can be completed, and the message part needs to be entered manually.
+В ROS1 все команды можно дополнять клавишей Tab, а в ROS2 таким образом дополняются только топики; часть с сообщением необходимо вводить вручную.
 
-**When inputting data in ROS1, you can input it in the completion format. When inputting data in ROS2, you need to input it in the format of the yaml file.**
+**В ROS1 данные можно вводить в формате автодополнения. В ROS2 данные необходимо вводить в формате YAML-файла.**
 
-After the node is running, open a terminal under the lx\_camera\_node\_ws folder, configure the environment in the terminal, and enter the command: source devel/setup.bash
+После запуска узла откройте терминал в папке lx\_camera\_node\_ws, настройте окружение и выполните команду: `source devel/setup.bash`.
 
-##### 5.3.6.1 Get the list of all parameter numbers (Lx\_Cmd)
+##### 5.3.6.1 Получение списка номеров всех параметров (Lx\_Cmd)
 
-**ros1**
+**ROS1**
 
 Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
 
@@ -1259,15 +1257,15 @@ Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0
   ![Get all parameter number list (Lx\\\_Cmd) related icons](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd.avif)
 </Frame>
 
-You can see the output:
+Вы увидите следующий результат:
 
 <Frame>
   ![Get all parameter number list (Lx\\\_Cmd) related icon 2](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-2.avif)
 </Frame>
 
-ret is the number of the parameter. The msg describes the parameter type and description, for example: 1001. This parameter is of type int. The parameter is used to obtain and modify the first exposure value.
+`ret` — номер параметра. В `msg` указаны тип и описание параметра. Например, параметр 1001 имеет тип int и используется для получения и изменения значения первой экспозиции.
 
-**ros2**
+**ROS2**
 
 Enter in the terminal: ros2 service call /LxCamera\_LxCmd lx\_camera\_ros/srv/LxCmd 'cmd: 0'
 
@@ -1275,15 +1273,15 @@ Enter in the terminal: ros2 service call /LxCamera\_LxCmd lx\_camera\_ros/srv/Lx
   ![Get all parameter number list (Lx\\\_Cmd) related icon 3](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-3.avif)
 </Frame>
 
-You can see the following output:
+Вы увидите следующий результат:
 
 <Frame>
   ![Get all parameter number list (Lx\\\_Cmd) related icon 4](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-4.avif)
 </Frame>
 
-Since it is not convenient to view parameter details in ROS2, the numbers, types and descriptions of all parameters are also listed in the following table:
+Поскольку в ROS2 просматривать сведения о параметрах неудобно, номера, типы и описания всех параметров также приведены в таблице ниже:
 
-| Number | Type | Description in ROS | Detailed description |
+| Номер | Тип | Описание в ROS | Подробное описание |
 | --- | --- | --- | --- |
 | 1001 | INT | FIRST\_EXPOSURE | Default high integral exposure value |
 | 1002 | INT | SECOND\_EXPOSURE | Default low integral exposure value |

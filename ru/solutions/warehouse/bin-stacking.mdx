@@ -1,79 +1,79 @@
 ---
-title: AGV forklift bin stacking
-description: "Use 3D vision to estimate bin pose and guide an AGV forklift through bin pickup, placement, and multi-level stacking."
+title: Укладка контейнеров вилочным погрузчиком AGV
+description: "Используйте 3D-зрение для оценки позы контейнера и управления вилочным погрузчиком AGV при захвате, размещении и многоуровневой укладке контейнеров."
 ---
 
-Bin stacking requires the forklift to align position and orientation within a limited tolerance. More stacking levels, bin types, load shapes, and changing lighting increase the difficulty of recognition and docking.
+При укладке контейнеров вилочный погрузчик должен выровнять положение и ориентацию в пределах ограниченного допуска. Чем больше уровней укладки, типов контейнеров и форм грузов, а также чем сильнее меняется освещение, тем сложнее распознавание и стыковка.
 
-## Solution overview
+## Обзор решения
 
-The solution uses a 3D camera mounted on the smart forklift to estimate the relative pose of the bin on the forks and the target bin. Position and angle offsets are sent to the forklift controller to guide pickup and stacking. The solution suits bins, pallets, and other precision-docking tasks.
+Решение использует 3D-камеру, установленную на интеллектуальном вилочном погрузчике, для оценки относительной позы контейнера на вилах и целевого контейнера. Смещения положения и угла передаются в контроллер погрузчика для управления захватом и укладкой. Решение подходит для контейнеров, палет и других задач точной стыковки.
 
-## Verified capabilities
+## Подтвержденные возможности
 
-- Positioning accuracy up to **±5 mm** and angle accuracy up to **0.1°**.
-- Bin-offset recognition range of **±15°**.
-- Per-frame processing time below **100 ms**.
-- Support for **1–4 levels** and `2 × 2` stacking.
+- Точность позиционирования до **±5 mm** и точность определения угла до **0.1°**.
+- Диапазон распознавания углового смещения контейнера **±15°**.
+- Время обработки одного кадра менее **100 ms**.
+- Поддержка **1–4 уровней** и укладки `2 × 2`.
 
 <Frame>
-  ![Point-cloud data for upper and lower bin docking](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
+  ![Данные облака точек для стыковки верхнего и нижнего контейнеров](/images/solutions/warehouse-bin-stacking-core-strengths.avif)
 </Frame>
 
-## Installation options
+## Варианты установки
 
 <Tabs>
-  <Tab title="Single-camera setup">
-    Mount the camera on the lifting mechanism and point it horizontally at the bins on both forks. Keep the camera **35–55 cm** from the lower edge of the forks; the lifting mechanism position error should not exceed **1 cm**.
+  <Tab title="Конфигурация с одной камерой">
+    Установите камеру на механизме подъема и направьте ее горизонтально на контейнеры на обеих вилах. Расстояние от камеры до нижнего края вил должно составлять **35–55 cm**; погрешность положения механизма подъема не должна превышать **1 cm**.
 
     <Frame>
-      ![Single-camera bin-stacking installation](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
+      ![Установка одной камеры для укладки контейнеров](/images/solutions/warehouse-bin-stacking-work-instructions.avif)
     </Frame>
   </Tab>
-  <Tab title="Dual-camera setup">
-    Mount one camera on each side of the forklift, **30–40 cm** from the fork surface, at **45°** to the ground. Each camera recognizes the bin on its corresponding side.
+  <Tab title="Конфигурация с двумя камерами">
+    Установите по одной камере с каждой стороны погрузчика на расстоянии **30–40 cm** от поверхности вил под углом **45°** к земле. Каждая камера распознает контейнер с соответствующей стороны.
 
     <Frame>
-      ![Dual-camera bin-stacking installation](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
+      ![Установка двух камер для укладки контейнеров](/images/solutions/warehouse-bin-stacking-work-description-related-graphics-2.avif)
     </Frame>
   </Tab>
 </Tabs>
 
 <Info>
-  The M Series, such as the M4 Pro or M4 Mega, is recommended. Select the model based on working distance, field of view, and bin dimensions.
+  Рекомендуется серия M, например M4 Pro или M4 Mega. Выбирайте модель с учетом рабочего расстояния, поля зрения и размеров контейнера.
 </Info>
 
-## Communication data
+## Данные обмена
 
-The system communicates with the forklift controller over TCP/IP. The controller requests the bin's `X`, `Y`, and `θ`; the camera returns the following fields.
+Система обменивается данными с контроллером погрузчика по TCP/IP. Контроллер запрашивает координаты `X`, `Y` и `θ` контейнера, а камера возвращает следующие поля.
 
-| Field | Description |
+| Поле | Описание |
 | --- | --- |
-| `X`, `Y` | Relative bin coordinates in mm, represented as 32-bit floating-point values. |
-| `Theta` | Angular offset from **−90° to 90°**. |
-| `Error Code` | `0`: success; `-1`: camera fault; `-2`: localization failure; `-3`: algorithm error. |
+| `X`, `Y` | Относительные координаты контейнера в мм, представленные 32-битными числами с плавающей точкой. |
+| `Theta` | Угловое смещение от **−90° до 90°**. |
+| `Error Code` | `0`: успех; `-1`: ошибка камеры; `-2`: ошибка локализации; `-3`: ошибка алгоритма. |
 
-## Workflow
+## Рабочий процесс
 
 <Tabs>
-  <Tab title="Pickup">
+  <Tab title="Захват">
     <Steps>
     </Steps>
   </Tab>
-  <Tab title="Stacking">
+  <Tab title="Укладка">
     <Steps>
     </Steps>
   </Tab>
 </Tabs>
 
 <Warning>
-  Avoid heavy dust and humid environments. Keep the camera bracket rigid and stable, and clean the lens regularly to maintain a clear field of view.
+  Избегайте сильной запыленности и влажной среды. Крепление камеры должно быть жестким и устойчивым; регулярно очищайте объектив, чтобы сохранять четкое поле зрения.
 </Warning>
 
 <Frame>
-  ![AGV forklift bin-stacking demonstration](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
+  ![Демонстрация укладки контейнеров вилочным погрузчиком AGV](/images/solutions/warehouse-bin-stacking-animation-demonstration.avif)
 </Frame>
 
 <Frame>
-  ![Bin-stacking recognition result](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
+  ![Результат распознавания при укладке контейнеров](/images/solutions/warehouse-bin-stacking-work-description-3.avif)
 </Frame>

@@ -649,202 +649,27 @@ Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llama
 
 **Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
 
-### 6.7 Establecer la IP de la cámara
-
-#### 6.7.1 DcSetCameraIp
+#### 6.1.3 DcCloseDevice
 
 **Prototipo de la función:**
 
 <Frame>
-  ![Iconos relacionados con DcSetCameraIp](/images/developers/camera-sdk-user-guide-dcsetcameraip.avif)
+  ![Iconos relacionados con DcCloseDevice](/images/developers/camera-sdk-user-guide-dcclosedevice.avif)
 </Frame>
 
 **Función:**
 
-Establece la IP de la cámara, la máscara de subred y la puerta de enlace.
+Apaga el dispositivo.
 
 **Parámetros de la función:**
 
-- \[in\]handle identificador del dispositivo,
-- \[in\]ip IP del dispositivo,
-- \[in\]netmask máscara de subred (si está vacía, el valor predeterminado interno es "255.255.0.0")
-- \[in\]gateway IP de la puerta de enlace (si está vacía, el valor predeterminado interno establece como puerta de enlace el último segmento de red de ip en "1")
-
-**Valor devuelto:**
-
-Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
-
-**Nota:** Cuando el dispositivo no está conectado, primero debes obtenerlo mediante una búsqueda. Si el dispositivo admite modificar la puerta de enlace y la máscara de subred, establece la puerta de enlace en el mismo segmento de red y la máscara de subred en "255.255.0.0". Después de la modificación, la lista de dispositivos cambiará y debes volver a llamar a la interfaz DcGetDeviceList para obtener la nueva lista de dispositivos.
-
-### 6.8 Información de registro y de versión
-
-#### 6.8.1 DcGetApiVersion
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcGetApiVersion](/images/developers/camera-sdk-user-guide-dcgetapiversion.avif)
-</Frame>
-
-**Función:**
-
-Obtiene el número de versión de la API.
-
-**Parámetros de la función:**
-
-**Valor devuelto:**
-
-Datos de tipo puntero a char.
-
-**Observación:**
-
-#### 6.8.2 DcSetInfoOutput
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcSetInfoOutput](/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif)
-</Frame>
-
-**Función:**
-
-Establece el nivel de información que se muestra.
-
-**Parámetros de la función:**
-
-- \[in\]print\_level 0: toda la información de depuración; 1: información de depuración importante y de advertencia; 2: solo muestra información de error
-- \[in\]enable\_screen\_print indica si se muestra en la ventana
-- \[in\]log\_path ruta donde se guarda el archivo de registro (no incluye el nombre del archivo de registro); puede estar vacía. En Windows, la ruta predeterminada es la del usuario actual y en Linux es la ruta /var/log.
-- \[in\]language idioma (todavía no se utiliza)
+- \[in\]handle identificador del dispositivo
 
 **Valor devuelto:**
 
 Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
 
 **Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
-#### 6.8.3 DcLog
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcLog](/images/developers/camera-sdk-user-guide-dclog.avif)
-</Frame>
-
-**Función:**
-
-Permite a los usuarios enviar información de depuración al archivo de registro.
-
-**Parámetros de la función:**
-
-- \[in\]str cadena que se va a enviar, terminada en '\\0'
-
-**Valor devuelto:**
-
-Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
-
-**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
-#### 6.8.4 DcRegisterFrameCallback
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcRegisterFrameCallback](/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif)
-</Frame>
-
-**Función:**
-
-Registra una función de devolución de llamada para los fotogramas de datos y la llama automáticamente cuando se reciben datos nuevos.
-
-**Parámetros de la función:**
-
-- \[in\]handle identificador del dispositivo,
-- \[in\]func función de devolución de llamada para los datos del fotograma,
-- \[in\]usr\_data parámetros definidos por el usuario; se puede dejar vacío
-
-**Valor devuelto:**
-
-Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
-
-**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
-#### 6.8.5 DcUnregisterFrameCallback
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcUnregisterFrameCallback](/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif)
-</Frame>
-
-**Función:**
-
-Cancela la devolución de llamada del fotograma.
-
-**Parámetros de la función:**
-
-- \[in\]handle identificador del dispositivo,
-
-**Valor devuelto:**
-
-Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
-
-**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
-### 6.9 Devolución de llamada del estado del dispositivo
-
-#### 6.9.1 DcRegisterCameraStatusCallback
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcRegisterCameraStatusCallback](/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif)
-</Frame>
-
-**Función:**
-
-Registra la función de devolución de llamada del estado de la cámara, que se llama automáticamente cuando cambia el estado de la cámara.
-
-**Parámetros de la función:**
-
-- \[in\]handle identificador del dispositivo,
-- \[in\]func función de devolución de llamada para los datos del fotograma,
-- \[in\]usr\_data parámetros definidos por el usuario; se puede dejar vacío
-
-**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
-#### 6.9.2 DcUnregisterCameraStatusCallback
-
-**Prototipo de la función:**
-
-<Frame>
-  ![Iconos relacionados con DcUnregisterCameraStatusCallback](/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif)
-</Frame>
-
-**Función:**
-
-Cancela la devolución de llamada registrada del estado de la cámara.
-
-**Parámetros de la función:**
-
-- \[in\]handle identificador del dispositivo,
-
-**Valor devuelto:**
-
-Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
-
-**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
-
----
-
-## Versiones y actualizaciones
-
-| Número de versión | Instrucciones de actualización |
-| --- | --- |
-| 2.4.16 | 1. Admite la cámara S2 <br />2. Añade la importación y exportación de parámetros y el cambio de grupos de parámetros <br />3. Añade configuraciones de funciones relacionadas |
-| 2.4.9 | 1. Optimiza y añade algunas funciones y parámetros de configuración 2. Cambia la marca de tiempo a us |
-| 2.4.2 | Admite las cámaras M4/M4 Mega/M4 Pro/V1Pro/S2/H3 |
-| 2.0.2 | Corrige algunos problemas conocidos y ajusta algunas interfaces y parámetros |
 
 ### 6.2 Iniciar y cerrar la transmisión
 
@@ -1209,24 +1034,199 @@ Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llama
 
 **Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
 
-#### 6.1.3 DcCloseDevice
+### 6.7 Establecer la IP de la cámara
+
+#### 6.7.1 DcSetCameraIp
 
 **Prototipo de la función:**
 
 <Frame>
-  ![Iconos relacionados con DcCloseDevice](/images/developers/camera-sdk-user-guide-dcclosedevice.avif)
+  ![Iconos relacionados con DcSetCameraIp](/images/developers/camera-sdk-user-guide-dcsetcameraip.avif)
 </Frame>
 
 **Función:**
 
-Apaga el dispositivo.
+Establece la IP de la cámara, la máscara de subred y la puerta de enlace.
 
 **Parámetros de la función:**
 
-- \[in\]handle identificador del dispositivo
+- \[in\]handle identificador del dispositivo,
+- \[in\]ip IP del dispositivo,
+- \[in\]netmask máscara de subred (si está vacía, el valor predeterminado interno es "255.255.0.0")
+- \[in\]gateway IP de la puerta de enlace (si está vacía, el valor predeterminado interno establece como puerta de enlace el último segmento de red de ip en "1")
+
+**Valor devuelto:**
+
+Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
+
+**Nota:** Cuando el dispositivo no está conectado, primero debes obtenerlo mediante una búsqueda. Si el dispositivo admite modificar la puerta de enlace y la máscara de subred, establece la puerta de enlace en el mismo segmento de red y la máscara de subred en "255.255.0.0". Después de la modificación, la lista de dispositivos cambiará y debes volver a llamar a la interfaz DcGetDeviceList para obtener la nueva lista de dispositivos.
+
+### 6.8 Información de registro y de versión
+
+#### 6.8.1 DcGetApiVersion
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcGetApiVersion](/images/developers/camera-sdk-user-guide-dcgetapiversion.avif)
+</Frame>
+
+**Función:**
+
+Obtiene el número de versión de la API.
+
+**Parámetros de la función:**
+
+**Valor devuelto:**
+
+Datos de tipo puntero a char.
+
+**Observación:**
+
+#### 6.8.2 DcSetInfoOutput
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcSetInfoOutput](/images/developers/camera-sdk-user-guide-dcsetinfooutput.avif)
+</Frame>
+
+**Función:**
+
+Establece el nivel de información que se muestra.
+
+**Parámetros de la función:**
+
+- \[in\]print\_level 0: toda la información de depuración; 1: información de depuración importante y de advertencia; 2: solo muestra información de error
+- \[in\]enable\_screen\_print indica si se muestra en la ventana
+- \[in\]log\_path ruta donde se guarda el archivo de registro (no incluye el nombre del archivo de registro); puede estar vacía. En Windows, la ruta predeterminada es la del usuario actual y en Linux es la ruta /var/log.
+- \[in\]language idioma (todavía no se utiliza)
 
 **Valor devuelto:**
 
 Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
 
 **Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+#### 6.8.3 DcLog
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcLog](/images/developers/camera-sdk-user-guide-dclog.avif)
+</Frame>
+
+**Función:**
+
+Permite a los usuarios enviar información de depuración al archivo de registro.
+
+**Parámetros de la función:**
+
+- \[in\]str cadena que se va a enviar, terminada en '\\0'
+
+**Valor devuelto:**
+
+Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
+
+**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+#### 6.8.4 DcRegisterFrameCallback
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcRegisterFrameCallback](/images/developers/camera-sdk-user-guide-dcregisterframecallback.avif)
+</Frame>
+
+**Función:**
+
+Registra una función de devolución de llamada para los fotogramas de datos y la llama automáticamente cuando se reciben datos nuevos.
+
+**Parámetros de la función:**
+
+- \[in\]handle identificador del dispositivo,
+- \[in\]func función de devolución de llamada para los datos del fotograma,
+- \[in\]usr\_data parámetros definidos por el usuario; se puede dejar vacío
+
+**Valor devuelto:**
+
+Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
+
+**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+#### 6.8.5 DcUnregisterFrameCallback
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcUnregisterFrameCallback](/images/developers/camera-sdk-user-guide-dcunregisterframecallback.avif)
+</Frame>
+
+**Función:**
+
+Cancela la devolución de llamada del fotograma.
+
+**Parámetros de la función:**
+
+- \[in\]handle identificador del dispositivo,
+
+**Valor devuelto:**
+
+Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
+
+**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+### 6.9 Devolución de llamada del estado del dispositivo
+
+#### 6.9.1 DcRegisterCameraStatusCallback
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcRegisterCameraStatusCallback](/images/developers/camera-sdk-user-guide-dcregistercamerastatuscallback.avif)
+</Frame>
+
+**Función:**
+
+Registra la función de devolución de llamada del estado de la cámara, que se llama automáticamente cuando cambia el estado de la cámara.
+
+**Parámetros de la función:**
+
+- \[in\]handle identificador del dispositivo,
+- \[in\]func función de devolución de llamada para los datos del fotograma,
+- \[in\]usr\_data parámetros definidos por el usuario; se puede dejar vacío
+
+**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+#### 6.9.2 DcUnregisterCameraStatusCallback
+
+**Prototipo de la función:**
+
+<Frame>
+  ![Iconos relacionados con DcUnregisterCameraStatusCallback](/images/developers/camera-sdk-user-guide-dcunregistercamerastatuscallback.avif)
+</Frame>
+
+**Función:**
+
+Cancela la devolución de llamada registrada del estado de la cámara.
+
+**Parámetros de la función:**
+
+- \[in\]handle identificador del dispositivo,
+
+**Valor devuelto:**
+
+Datos de tipo Int; este valor es igual a LX\_SUCCESS, lo que indica que la llamada a la interfaz se ha realizado correctamente.
+
+**Nota:** Asegúrate de que los parámetros que se pasan sean válidos.
+
+---
+
+## Versiones y actualizaciones
+
+| Número de versión | Instrucciones de actualización |
+| --- | --- |
+| 2.4.16 | 1. Admite la cámara S2 <br />2. Añade la importación y exportación de parámetros y el cambio de grupos de parámetros <br />3. Añade configuraciones de funciones relacionadas |
+| 2.4.9 | 1. Optimiza y añade algunas funciones y parámetros de configuración 2. Cambia la marca de tiempo a us |
+| 2.4.2 | Admite las cámaras M4/M4 Mega/M4 Pro/V1Pro/S2/H3 |
+| 2.0.2 | Corrige algunos problemas conocidos y ajusta algunas interfaces y parámetros |

@@ -1,47 +1,47 @@
 ---
-title: Coordinated forklift localization and storage-location recognition
-sidebarTitle: "Forklift localization & storage recognition"
-description: "Combine forklift pose and storage-location status data to support manual-forklift dispatch, load tracking, and location management."
+title: Согласованная локализация вилочного погрузчика и распознавание мест хранения
+sidebarTitle: Локализация погрузчика и распознавание мест хранения
+description: "Объединяйте данные о позе вилочного погрузчика и состоянии мест хранения для диспетчеризации погрузчика с ручным управлением, отслеживания грузов и управления местами хранения."
 ---
 
-Manual forklift operations often depend on driver experience, while storage-location records can lag behind the actual site. Path efficiency, location status, and safety in narrow aisles are common warehouse-management concerns.
+Работа вилочного погрузчика с ручным управлением часто зависит от опыта водителя, а данные о местах хранения могут не соответствовать фактическому состоянию объекта. Эффективность маршрута, состояние мест хранения и безопасность в узких проходах — типичные задачи управления складом.
 
-## Solution architecture
+## Архитектура решения
 
-The solution combines a manual-forklift localization system with a storage-location status system. The first provides forklift position and pose; the second provides occupancy and load status. Both data streams can be sent to a higher-level system for task dispatch and load tracking.
+Решение объединяет систему локализации вилочного погрузчика с ручным управлением и систему определения состояния мест хранения. Первая система предоставляет положение и позу погрузчика, вторая — занятость и состояние груза. Оба потока данных можно передавать в систему верхнего уровня для диспетчеризации задач и отслеживания грузов.
 
-## Manual forklift localization
+## Локализация вилочного погрузчика с ручным управлением
 
-Mount a 3D vision camera on top of the forklift. The system localizes using natural features on the ceiling and walls, with IMU assistance. Project records report **1–5 cm** positioning accuracy; actual accuracy depends on site features, installation, and calibration.
-
-<Frame>
-  ![Manual forklift visual localization system](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
-</Frame>
-
-The system can alert the driver to nearby people, vehicles, and potential risks and can be configured with restricted areas. Localization results can also be combined with location status to record load placement and help adjust task routes.
+Установите камеру 3D-зрения на верхней части погрузчика. Система выполняет локализацию по естественным признакам на потолке и стенах с помощью IMU. Согласно данным проекта, точность позиционирования составляет **1–5 cm**; фактическая точность зависит от особенностей объекта, установки и калибровки.
 
 <Frame>
-  ![Forklift localization and warehouse-operation coordination](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+  ![Система визуальной локализации вилочного погрузчика с ручным управлением](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution.avif)
 </Frame>
 
-## Storage-location status recognition
+Система может предупреждать водителя о находящихся рядом людях, транспортных средствах и потенциальных рисках, а также поддерживает настройку зон ограниченного доступа. Результаты локализации можно объединять с данными о состоянии мест хранения, чтобы фиксировать размещение грузов и корректировать маршруты задач.
 
-An RGB-D camera captures 3D and color information to identify whether a location contains a load, how it is placed, and whether occupancy is abnormal. The algorithm can distinguish load categories when required, and camera-side results can be sent to the dispatch system.
+<Frame>
+  ![Координация локализации погрузчика и складских операций](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-2.avif)
+</Frame>
 
-| Feature | Description |
+## Распознавание состояния мест хранения
+
+RGB-D-камера получает 3D-данные и информацию о цвете, чтобы определить наличие груза в месте хранения, его размещение и наличие аномалий занятости. При необходимости алгоритм может различать категории грузов, а результаты обработки на камере можно передавать в систему диспетчеризации.
+
+| Возможность | Описание |
 | --- | --- |
-| 3D monitoring | Combine depth and color data to identify location status. |
-| On-camera processing | Reduce the need for an external industrial computer. |
-| Communication integration | Support TCP/IP, UDP, and HTTP, with JSON output. |
-| Dispatch coordination | Provide real-time location information for task assignment. |
+| 3D-мониторинг | Объединяйте данные о глубине и цвете для определения состояния места хранения. |
+| Обработка на камере | Снижайте потребность во внешнем промышленном компьютере. |
+| Интеграция обмена данными | Поддерживайте TCP/IP, UDP и HTTP с выводом JSON. |
+| Координация диспетчеризации | Предоставляйте информацию о местах хранения в реальном времени для назначения задач. |
 
 <Frame>
-  ![Storage-location status recognition system](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
+  ![Система распознавания состояния мест хранения](/images/solutions/warehouse-forklift-localization-and-bin-detection-solution-related-graphics-3.avif)
 </Frame>
 
-## Coordination workflow
+## Рабочий процесс координации
 
-1. The localization system continuously outputs forklift position and pose.
-2. The location camera reports occupancy and load status for the target location.
-3. The higher-level system associates vehicle, load, and location data to confirm pickup and placement tasks and record load positions.
-4. When location or vehicle status changes, the higher-level system can update task routes and resource allocation.
+1. Система локализации непрерывно передает положение и позу вилочного погрузчика.
+2. Камера мест хранения сообщает занятость и состояние груза в целевом месте.
+3. Система верхнего уровня сопоставляет данные о транспортном средстве, грузе и месте хранения, чтобы подтвердить задачи захвата и размещения и зафиксировать положение груза.
+4. При изменении состояния места хранения или транспортного средства система верхнего уровня может обновлять маршруты задач и распределение ресурсов.

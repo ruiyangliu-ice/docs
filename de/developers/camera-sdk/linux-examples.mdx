@@ -1,321 +1,321 @@
 ---
-title: Linux SDK Examples
-sidebarTitle: Linux SDK examples
-description: "Set up, build, and run the C, Java, ROS, and ROS 2 examples included with the MRDVS Camera SDK for Linux."
+title: Linux-SDK-Beispiele
+sidebarTitle: Linux-SDK-Beispiele
+description: "Richten Sie die im MRDVS Camera SDK für Linux enthaltenen C-, Java-, ROS- und ROS-2-Beispiele ein, kompilieren Sie sie und führen Sie sie aus."
 hidden: true
 ---
 
 <Info>
-  Document version: V1.0; revision date: 2024-10-12.
+  Dokumentversion: V1.0; Änderungsdatum: 2024-10-12.
 </Info>
 
-## Overview
+## Übersicht
 
-The MRDVS Camera SDK for Linux includes C/C\+\+, Java (HTTP service), ROS, and ROS 2 examples. The examples show the basic SDK workflow; add application-specific logic and error handling for your project.
+Das MRDVS Camera SDK für Linux enthält Beispiele für C/C\+\+, Java (HTTP-Service), ROS und ROS 2. Die Beispiele zeigen den grundlegenden SDK-Ablauf. Ergänzen Sie projektspezifische Logik und Fehlerbehandlung.
 
-Complete the environment setup, installation script, and sample-directory checks first. Then follow the compilation and execution section for your target language. The appendix lists installation methods for common dependencies and test packages.
+Schließen Sie zuerst die Einrichtung der Umgebung, die Ausführung des Installationsskripts und die Prüfung der Beispielverzeichnisse ab. Folgen Sie anschließend dem Abschnitt zum Kompilieren und Ausführen für die gewünschte Sprache. Der Anhang enthält Installationsmethoden für häufig verwendete Abhängigkeiten und Testpakete.
 
 ---
 
-## System and environment
+## System und Umgebung
 
-### Compatible systems and dependency versions
+### Kompatible Systeme und Abhängigkeitsversionen
 
-The following Linux systems are supported. The default program versions are listed below:
+Die folgenden Linux-Systeme werden unterstützt. Die Standardversionen der Programme sind unten aufgeführt:
 
-| System version | Cmake/Gcc | Opencv | Pcl | Ros | Ros2 |
+| Systemversion | CMake/GCC | OpenCV | PCL | ROS | ROS 2 |
 | --- | --- | --- | --- | --- | --- |
 | Ubuntu16.04 | 3.5/Gcc-5 | 3.2.0 | 1.7.2 | Kinetic | Ardent、Bouncy |
 | Ubuntu18.04 | 3.18/Gcc-7 | 4.5.1 | 1.9.1 | Melodic | Dashing、Eloquent、Crystal |
 | Ubuntu20.04 | 3.22/9.3.0 | 4.5.1 | 1.12.1 | Noetic | Foxy、Galactic |
 | Ubuntu22.04 | 3.22/11.3.0 | 4.6.0 | 1.12.1 | Ninjemys | Humble、lron |
 
-### 2.2 Check the system version and application version
+### 2.2 System- und Anwendungsversion prüfen
 
-#### 2.2.1 Check the system version
+#### 2.2.1 Systemversion prüfen
 
 ```bash
 uname -a
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View system version related icons](/images/developers/camera-sdk-linux-examples-view-system-version.avif)
+  ![Abbildungen zur Systemversion anzeigen](/images/developers/camera-sdk-linux-examples-view-system-version.avif)
 </Frame>
 
-Operating system release version number: 5.15.0
+Versionsnummer des Betriebssystems: 5.15.0
 
-- **Main version number:** 5
-- **Version number:** 15 \[Odd numbers are development versions, even numbers are stable versions\]
-- **Revision number:** 0 \[Number of modifications\]
-- **Nth revision of this version:** 97
-- **Kernel version:** #107~20.0.4.1, usually the system version is the kernel version
+- **Hauptversionsnummer:** 5
+- **Versionsnummer:** 15 \[Ungerade Zahlen sind Entwicklungsversionen, gerade Zahlen stabile Versionen\]
+- **Revisionsnummer:** 0 \[Anzahl der Änderungen\]
+- **N-te Revision dieser Version:** 97
+- **Kernelversion:** #107~20.0.4.1; normalerweise entspricht die Systemversion der Kernelversion
 
-#### 2.2.2 Check Cmake version
+#### 2.2.2 CMake-Version prüfen
 
 ```bash
 cmake --version
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View Cmake version related icons](/images/developers/camera-sdk-linux-examples-view-cmake-version.avif)
+  ![Abbildungen zur CMake-Version anzeigen](/images/developers/camera-sdk-linux-examples-view-cmake-version.avif)
 </Frame>
 
-Represents the version of Cmake 3.16.3
+Dies ist die CMake-Version 3.16.3.
 
-#### 2.2.3 Check Gcc version
+#### 2.2.3 GCC-Version prüfen
 
 ```bash
 gcc -v
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View Gcc version related icons](/images/developers/camera-sdk-linux-examples-view-gcc-version.avif)
+  ![Abbildungen zur GCC-Version anzeigen](/images/developers/camera-sdk-linux-examples-view-gcc-version.avif)
 </Frame>
 
-The version number is in the blue box in the lower left corner. The version here is: 9.4.0
+Die Versionsnummer steht im blauen Feld unten links. Die Version ist 9.4.0.
 
-#### 2.2.4 View Opencv version
+#### 2.2.4 OpenCV-Version anzeigen
 
 ```bash
 pkg-config --modversion opencv
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View Opencv version related icons](/images/developers/camera-sdk-linux-examples-view-opencv-version.avif)
+  ![OpenCV-Version anzeigen zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-view-opencv-version.avif)
 </Frame>
 
-The version here is 3.2.0
+Die Version ist 3.2.0
 
-#### 2.2.5 Check Pcl version
+#### 2.2.5 PCL-Version prüfen
 
 ```bash
 dpkg -l libpcl-dev
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View Pcl version related icons](/images/developers/camera-sdk-linux-examples-view-pcl-version.avif)
+  ![Abbildungen zur PCL-Version anzeigen](/images/developers/camera-sdk-linux-examples-view-pcl-version.avif)
 </Frame>
 
-The version here is 1.8.1
+Die Version ist 1.8.1
 
-#### 2.2.6 View ROS version
+#### 2.2.6 ROS-Version anzeigen
 
 ```bash
 rosversion -d
 ```
 
-result:
+Ergebnis:
 
 <Frame>
-  ![View ROS version related icons](/images/developers/camera-sdk-linux-examples-view-ros-version.avif)
+  ![ROS-Version anzeigen zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-view-ros-version.avif)
 </Frame>
 
-The version here is eloquent (the ros2 version corresponding to Ubuntu18.04)
+Die Version ist Eloquent, die zu Ubuntu 18.04 gehörende ROS-2-Version.
 
 <Frame>
-  ![View ROS version related icon 2](/images/developers/camera-sdk-linux-examples-view-ros-version-2.avif)
+  ![ROS-Version anzeigen zugehörig icon 2](/images/developers/camera-sdk-linux-examples-view-ros-version-2.avif)
 </Frame>
 
-The version here is noetic (the ros1 version corresponding to Ubuntu20)
+Die Version ist Noetic, die zu Ubuntu 20.04 gehörende ROS-1-Version.
 
-### 2.3 Build a basic development environment
+### 2.3 Grundlegende Entwicklungsumgebung einrichten
 
-You need to update the installation list before installation:
+Aktualisieren Sie vor der Installation die Paketliste:
 
 ```bash
 sudo apt update
 ```
 
-The result is as follows:
+Das Ergebnis sieht wie folgt aus:
 
 <Frame>
-  ![Illustrations related to building a basic development environment](/images/developers/camera-sdk-linux-examples-building-a-basic-development-environment.avif)
+  ![Abbildungen zum Einrichten einer grundlegenden Entwicklungsumgebung](/images/developers/camera-sdk-linux-examples-building-a-basic-development-environment.avif)
 </Frame>
 
-#### 2.3.1 Install Cmake
+#### 2.3.1 CMake installieren
 
 ```bash
 sudo apt install cmake
 ```
 
 <Frame>
-  ![Installation Cmake related icons](/images/developers/camera-sdk-linux-examples-installation-cmake.avif)
+  ![Installation Cmake zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-installation-cmake.avif)
 </Frame>
 
-#### 2.3.2 Install Gcc
+#### 2.3.2 GCC installieren
 
 ```bash
 sudo apt install build-essential
 ```
 
 <Frame>
-  ![Install Gcc related icons](/images/developers/camera-sdk-linux-examples-install-gcc.avif)
+  ![GCC installieren zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-install-gcc.avif)
 </Frame>
 
-### 2.4 Build optional development environment
+### 2.4 Optionale Entwicklungsumgebung einrichten
 
-#### 2.4.1 Install Opencv \[can display camera images\]
+#### 2.4.1 OpenCV installieren \[kann Kamerabilder anzeigen\]
 
 ```bash
 sudo apt-get install libopencv-dev
 ```
 
 <Frame>
-  ![Install Opencv \[can display camera images\] related icons](/images/developers/camera-sdk-linux-examples-install-opencv-can-display-camera-images.avif)
+  ![Abbildungen zur OpenCV-Installation \[kann Kamerabilder anzeigen\]](/images/developers/camera-sdk-linux-examples-install-opencv-can-display-camera-images.avif)
 </Frame>
 
-#### 2.4.2 Install Pcl \[can display point cloud\]
+#### 2.4.2 PCL installieren \[kann Punktwolken anzeigen\]
 
 ```bash
 sudo apt-get install libpcl-dev
 ```
 
 <Frame>
-  ![Install Pcl \[can display point cloud\] related icons](/images/developers/camera-sdk-linux-examples-install-pcl-can-display-point-cloud.avif)
+  ![Abbildungen zur PCL-Installation \[kann Punktwolken anzeigen\]](/images/developers/camera-sdk-linux-examples-install-pcl-can-display-point-cloud.avif)
 </Frame>
 
 ---
 
-## Prepare the sample code
+## Beispielcode vorbereiten
 
-### 3.1 Execute the installation script
+### 3.1 Installationsskript ausführen
 
-1. Unzip the Lanxin-MRDVS file and enter the Lanxin-MRDVS folder
-
-<Frame>
-  ![Illustrations related to executing the installation script](/images/developers/camera-sdk-linux-examples-executing-the-installation-script.avif)
-</Frame>
-
-2. Right click to open the console
-3. Execute install.sh script
+1. Entpacken Sie die Lanxin-MRDVS-Datei und öffnen Sie den Ordner Lanxin-MRDVS.
 
 <Frame>
-  ![Illustration related to executing the installation script 2](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-2.avif)
+  ![Abbildungen zur Ausführung des Installationsskripts](/images/developers/camera-sdk-linux-examples-executing-the-installation-script.avif)
 </Frame>
 
-4. Enter the /opt/ directory to check whether the installation is successful.
+2. Klicken Sie mit der rechten Maustaste, um die Konsole zu öffnen.
+3. Führen Sie das Skript install.sh aus.
 
 <Frame>
-  ![Illustration related to executing the installation script 3](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-3.avif)
+  ![Illustration zugehörig zu executing die Installation Skript 2](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-2.avif)
 </Frame>
 
-5. If the folder can be found, the installation is successful.
-6. If the installation fails, you need to manually add it to the opt directory.
-7. Execute the set\_socket\_buffer\_size.sh script
+4. Öffnen Sie das Verzeichnis /opt/, um zu prüfen, ob die Installation erfolgreich war.
 
 <Frame>
-  ![Illustrations related to executing the installation script 4](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-4.avif)
+  ![Illustration zugehörig zu executing die Installation Skript 3](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-3.avif)
 </Frame>
 
-8. At this point, the installation script has been completely executed!
-
-### 3.2 Sample code introduction
-
-Enter the Sample directory. The directory contents are as follows:
+5. Wenn der Ordner gefunden wird, war die Installation erfolgreich.
+6. Wenn die Installation fehlschlägt, müssen Sie die Dateien manuell zum Verzeichnis opt hinzufügen.
+7. Führen Sie das Skript set\_socket\_buffer\_size.sh aus.
 
 <Frame>
-  ![Illustrations related to sample code introduction](/images/developers/camera-sdk-linux-examples-sample-code-introduction.avif)
+  ![Illustrations zugehörig zu executing die Installation Skript 4](/images/developers/camera-sdk-linux-examples-executing-the-installation-script-4.avif)
 </Frame>
 
-- The C folder contains C and C\+\+ related code
-- The Java folder contains an http server for indirectly calling the sdk
-- The Ros folder contains an example of ros
-- The Ros2 folder contains an example of ros2
+8. Damit ist das Installationsskript vollständig ausgeführt.
 
-#### 3.2.1 C and C\+\+ sample code
+### 3.2 Einführung in den Beispielcode
 
-Enter the C directory. The directory contents are as follows:
+Öffnen Sie das Verzeichnis Sample. Der Inhalt des Verzeichnisses ist wie folgt:
 
 <Frame>
-  ![Illustrations related to C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-c-and-c-sample-code.avif)
+  ![Illustrations zugehörig zu Beispiel Code introduction](/images/developers/camera-sdk-linux-examples-sample-code-introduction.avif)
 </Frame>
 
-Contains 9 folders and 1 Cmakelist file, each folder contains a cpp file
+- Der Ordner C enthält C- und C\+\+-bezogenen Code.
+- Die Java Ordner enthält an http Server für indirectly calling die sdk
+- Die Ros Ordner enthält an Beispiel von ros
+- Die Ros2 Ordner enthält an Beispiel von ros2
 
-The roughly implemented functions of each cpp are as follows:
+#### 3.2.1 C und C\+\+ Beispiel Code
 
-- application\_obstacle: Obtain camera stream data and enable obstacle avoidance algorithm, output algorithm results
-- application\_pallet: Obtain camera stream data and enable the pallet algorithm, output algorithm results
-- arm\_local\_camera: Call the SDK in the camera \[ARM\] and obtain the stream data
-- frame\_callback: Use callback method to obtain camera stream data
-- multi\_cameras: open multiple cameras and get streaming data
-- single\_camera: Open a single camera and get streaming data
-- single\_camera2: Get frame data through structure
-
-Different sample codes can be selected for testing and modification according to different needs.
-
-#### 3.2.2 Java sample code
-
-Enter the java directory. The directory contents are as follows:
+Enter die C Verzeichnis. Die Verzeichnis Inhalt sind wie folgt:
 
 <Frame>
-  ![Illustrations related to Java sample code](/images/developers/camera-sdk-linux-examples-java-sample-code.avif)
+  ![Illustrations zugehörig zu C und C\+\+ Beispiel Code](/images/developers/camera-sdk-linux-examples-c-and-c-sample-code.avif)
 </Frame>
 
-The directory contains 2 folders and a postman.json file and README
+Contains 9 Ordner und 1 Cmakelist Datei, each Ordner enthält a cpp Datei
 
-- Config: Server-related configurations are stored in the folder
-- Middleware: server theme
-- LxCamera.postman\_collection.json: postman configuration file
-- README: java virtual server usage tutorial
+Die roughly implemented functions von each cpp sind wie folgt:
 
-#### 3.2.3 ROS sample code
+- Anwendung\_obstacle: Obtain Kamera Stream Daten und enable obstacle avoidance algorithm, Ausgabe algorithm Ergebnisse
+- Anwendung\_pallet: Obtain Kamera Stream Daten und enable die pallet algorithm, Ausgabe algorithm Ergebnisse
+- arm\_local\_camera: Call die SDK in die Kamera \[ARM\] und obtain die Stream Daten
+- frame\_callback: Use callback method zu obtain Kamera Stream Daten
+- multi\_cameras: öffnen multiple Kameras und abrufen streaming Daten
+- single\_camera: Open a single Kamera und abrufen streaming Daten
+- single\_camera2: Get frame Daten through structure
 
-Enter the ros directory. The directory contents are as follows:
+Je nach Bedarf können unterschiedliche Beispiele zum Testen und Anpassen ausgewählt werden.
+
+#### 3.2.2 Java Beispiel Code
+
+Enter die java Verzeichnis. Die Verzeichnis Inhalt sind wie folgt:
 
 <Frame>
-  ![Illustrations related to ROS sample code](/images/developers/camera-sdk-linux-examples-ros-sample-code.avif)
+  ![Illustrations zugehörig zu Java Beispiel Code](/images/developers/camera-sdk-linux-examples-java-sample-code.avif)
 </Frame>
 
-- lx\_camera\_node\_ws: The folder contains a standard ros driver
-- README.EN: explains in English how to compile a node and create a new node
+Die Verzeichnis enthält 2 Ordner und a postman.json Datei und README
 
-#### 3.2.4 ROS2 sample code
+- Config: Server-zugehörig configurations sind stored in die Ordner
+- Middleware: Server theme
+- LxCamera.Postman\_collection.json: Postman Konfiguration Datei
+- README: java virtual Server usage tutorial
 
-Enter the ros2 directory. The directory contents are as follows:
+#### 3.2.3 ROS Beispiel Code
+
+Enter die ros Verzeichnis. Die Verzeichnis Inhalt sind wie folgt:
 
 <Frame>
-  ![ROS2 sample code related images](/images/developers/camera-sdk-linux-examples-ros2-sample-code.avif)
+  ![Illustrations zugehörig zu ROS Beispiel Code](/images/developers/camera-sdk-linux-examples-ros-sample-code.avif)
 </Frame>
 
-- lx\_camera\_node\_ws: The folder contains a standard ros2 driver
-- README.EN: explains in English how to compile a node and create a new node
+- lx\_camera\_node\_ws: Die Ordner enthält a standard ros driver
+- README.EN: explains in English how zu kompilieren a node und create a new node
 
-#### 3.2.5 ros-v1pro sample code
+#### 3.2.4 ROS2 Beispiel Code
 
-Enter the ros-v1pro directory. The directory contents are as follows:
+Enter die ros2 Verzeichnis. Die Verzeichnis Inhalt sind wie folgt:
 
 <Frame>
-  ![Illustrations related to ros-v1pro sample code](/images/developers/camera-sdk-linux-examples-ros-v1pro-sample-code.avif)
+  ![ROS2 Beispiel Code zugehörig Bilder](/images/developers/camera-sdk-linux-examples-ros2-sample-code.avif)
 </Frame>
 
-- src: The folder contains a standard ros driver
-- README: explains how to use this node
-- README.pdf: explains how to use this node
+- lx\_camera\_node\_ws: Die Ordner enthält a standard ros2 driver
+- README.EN: explains in English how zu kompilieren a node und create a new node
+
+#### 3.2.5 ros-v1pro Beispiel Code
+
+Enter die ros-v1pro Verzeichnis. Die Verzeichnis Inhalt sind wie folgt:
+
+<Frame>
+  ![Illustrations zugehörig zu ros-v1pro Beispiel Code](/images/developers/camera-sdk-linux-examples-ros-v1pro-sample-code.avif)
+</Frame>
+
+- src: Die Ordner enthält a standard ros driver
+- README: explains how zu verwenden dies node
+- README.pdf: explains how zu verwenden dies node
 
 ---
 
-## Compile and run the samples
+## Beispiele kompilieren und ausführen
 
-### 4.1 Compiling and running C and C\+\+ sample code
+### 4.1 Compiling und Ausführung C und C\+\+ Beispiel Code
 
-Go to the C folder in the example:
+Go zu die C Ordner in die Beispiel:
 
 <Frame>
-  ![Illustrations related to compiling and running C and C\+\+ sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung C und C\+\+ Beispiel Code](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code.avif)
 </Frame>
 
-Open a terminal in the C folder and run:
+Open a terminal in die C Ordner und ausführen:
 
 ```bash
 mkdir build
@@ -324,83 +324,83 @@ cmake ..
 make
 ```
 
-After successful execution, enter the build folder and it should be as follows:
+After erfolgreich Ausführung, öffnen die build Ordner und it should be wie folgt:
 
 <Frame>
-  ![Illustrations related to compiling and running C and C\+\+ sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-2.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung C und C\+\+ Beispiel Code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-2.avif)
 </Frame>
 
-The executable file is in the bin directory. Entering the bin directory should be as follows:
+Die ausführbare Datei befindet sich im Verzeichnis bin. Entering die bin Verzeichnis should be wie folgt:
 
 <Frame>
-  ![Illustrations related to compiling and running C and C\+\+ sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-3.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung C und C\+\+ Beispiel Code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-c-and-c-sample-code-3.avif)
 </Frame>
 
-Except for the arm example, all other examples will be compiled. The executable file name is the same as the example folder name. You can run it directly.
+Except für die arm Beispiel, alle andere Beispiele wird be compiled. Die executable Datei Name ist die gleich wie die Beispiel Ordner Name. You kann ausführen it directly.
 
-### 4.2 java sample running process
+### 4.2 Ablauf zum Ausführen des Java-Beispiels
 
-Java is different from other sample codes. It does not directly provide source code. It provides an http server and a postman example. If you need to control the camera indirectly through http, you can select the java example and enter the java folder. The folder content is as follows:
+Java ist unterschiedlich aus andere Beispiel codes. It does not directly provide Quelle Code. It provides an http Server und a Postman Beispiel. Wenn you müssen zu control die Kamera indirectly through http, you kann select die java Beispiel und öffnen die java Ordner. Die Ordner content ist wie folgt:
 
 <Frame>
-  ![Illustrations related to the java sample running process](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process.avif)
+  ![Illustrations zugehörig zu die Ablauf zum Ausführen des Java-Beispiels](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process.avif)
 </Frame>
 
-The running process is as follows:
+Die Ausführung process ist wie folgt:
 
-- Enter the config folder and modify the http\_sever\_host field and http\_sever\_port field in the Configs.json file:
+- Enter die config Ordner und modify die http\_sever\_host Feld und http\_sever\_port Feld in die Configs.json Datei:
 
 <Frame>
-  ![Illustrations related to java sample running process 2](/images/developers/camera-sdk-linux-examples-java-sample-running-process-2.avif)
+  ![Illustrations zugehörig zu Ablauf zum Ausführen des Java-Beispiels 2](/images/developers/camera-sdk-linux-examples-java-sample-running-process-2.avif)
 </Frame>
 
-- Enter the middleware folder and execute the start.sh script to enable the transfer server
+- Enter die middleware Ordner und execute die start.sh Skript zu enable die transfer Server
 
 <Frame>
-  ![Illustrations related to the java sample running process 3](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process-3.avif)
+  ![Illustrations zugehörig zu die Ablauf zum Ausführen des Java-Beispiels 3](/images/developers/camera-sdk-linux-examples-the-java-sample-running-process-3.avif)
 </Frame>
 
-- Use postman to open the LxCamera.postman\_collection.json file to send data to the sample port
+- Use Postman zu öffnen die LxCamera.Postman\_collection.json Datei zu send Daten zu die Beispiel port
 
-### 4.3 Compiling and running ROS sample code
+### 4.3 ROS-Beispielcode kompilieren und ausführen
 
-Enter the ROS folder, open a console, and run:
+Enter die ROS Ordner, öffnen a console, und ausführen:
 
 ```bash
 roscore
 ```
 
 <Frame>
-  ![Illustrations related to compiling and running ROS sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS Beispiel Code](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code.avif)
 </Frame>
 
 <Frame>
-  ![Illustrations related to compiling and running ROS sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-2.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS Beispiel Code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-2.avif)
 </Frame>
 
-Right-click to open a console, enter the `lx_camera_node_ws` folder, and run:
+Right-click zu öffnen a console, öffnen die `lx_camera_node_ws` Ordner, und ausführen:
 
 ```bash
 catkin_make
 ```
 
 <Frame>
-  ![Illustrations related to compiling and running ROS sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-3.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS Beispiel Code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-3.avif)
 </Frame>
 
-After successful execution, the following will be displayed:
+Nach erfolgreicher Ausführung wird Folgendes angezeigt:
 
 <Frame>
-  ![Illustrations related to compiling and running ROS sample code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-4.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS Beispiel Code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-4.avif)
 </Frame>
 
-At this time devel and build in the folder are compiled and generated:
+At dies time devel und build in die Ordner sind compiled und generated:
 
 <Frame>
-  ![Illustrations related to compiling and running ROS sample code 5](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-5.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS Beispiel Code 5](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros-sample-code-5.avif)
 </Frame>
 
-Run the following commands to source the environment and start a node with `roslaunch`:
+Run die folgende Befehle zu Quelle die Umgebung und starten a node mit `roslaunch`:
 
 ```bash
 source devel/setup.bash
@@ -410,53 +410,53 @@ roslaunch lx_camera_ros obstacle.launch
 roslaunch lx_camera_ros pallet.launch
 ```
 
-From top to bottom, they are: running ordinary nodes, running obstacle avoidance algorithm 2 nodes, running obstacle avoidance algorithm nodes, running pallet algorithm nodes. Each node cannot be enabled at the same time.
+From top zu bottom, they sind: Ausführung ordinary nodes, Ausführung obstacle avoidance algorithm 2 nodes, Ausführung obstacle avoidance algorithm nodes, Ausführung pallet algorithm nodes. Die Nodes können nicht gleichzeitig aktiviert werden.
 
-### 4.4 Compiling and running ROS2 sample code
+### 4.4 ROS2-Beispielcode kompilieren und ausführen
 
-Enter the ros2 folder. The contents of the folder are as follows:
+Enter die ros2 Ordner. Die Inhalt von die Ordner sind wie folgt:
 
 <Frame>
-  ![Illustrations related to compiling and running ROS2 sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS2 Beispiel Code](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code.avif)
 </Frame>
 
-Example ros node is compiled using colcon
+Example ros node ist compiled using colcon
 
-First, install the compilation tools:
+Installieren Sie zuerst die Kompilierungswerkzeuge:
 
 ```bash
 sudo apt install python3-colcon-common-extensions
 ```
 
 <Frame>
-  ![Illustrations related to compiling and running ROS2 sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-2.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS2 Beispiel Code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-2.avif)
 </Frame>
 
-Then install the `ros-pcl` dependency package. Replace `foxy` with the ROS 2 distribution installed on your system:
+Anschließend installieren die `ros-pcl` dependency package. Replace `foxy` mit die ROS 2 distribution installed on Ihr System:
 
 ```bash
 sudo apt-get install ros-foxy-pcl*
 ```
 
-After installation, enter the `lx_camera_node_ws` directory and build the project:
+After Installation, öffnen die `lx_camera_node_ws` Verzeichnis und build die Projekt:
 
 ```bash
 colcon build
 ```
 
-Depending on the computer performance, compilation usually takes 30 seconds to 120 seconds. After successful compilation, it will be displayed as follows:
+Depending on die computer performance, Kompilierung normalerweise takes 30 seconds zu 120 seconds. After erfolgreich Kompilierung, it wird be displayed wie folgt:
 
 <Frame>
-  ![Illustrations related to compiling and running ROS2 sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-3.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS2 Beispiel Code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-3.avif)
 </Frame>
 
-Some warnings are due to version compatibility issues and do not need to be processed. After compilation is completed, the contents of the folder are as follows:
+Einige Warnungen sind auf Versionskompatibilitätsprobleme zurückzuführen und müssen nicht behandelt werden. After Kompilierung ist completed, die Inhalt von die Ordner sind wie folgt:
 
 <Frame>
-  ![Illustrations related to compiling and running ROS2 sample code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-4.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung ROS2 Beispiel Code 4](/images/developers/camera-sdk-linux-examples-compiling-and-running-ros2-sample-code-4.avif)
 </Frame>
 
-Run the following commands to source the environment and start a node with `ros2 launch`:
+Run die folgende Befehle zu Quelle die Umgebung und starten a node mit `ros2 launch`:
 
 ```bash
 source install/setup.bash
@@ -466,183 +466,183 @@ ros2 launch lx_camera_ros obstacle.launch.py
 ros2 launch lx_camera_ros pallet.launch.py
 ```
 
-From top to bottom, they are: running ordinary nodes, running obstacle avoidance algorithm 2 nodes, running obstacle avoidance algorithm nodes, running pallet algorithm nodes. Each node cannot be enabled at the same time.
+From top zu bottom, they sind: Ausführung ordinary nodes, Ausführung obstacle avoidance algorithm 2 nodes, Ausführung obstacle avoidance algorithm nodes, Ausführung pallet algorithm nodes. Die Nodes können nicht gleichzeitig aktiviert werden.
 
-### 4.5 Compilation and operation of ros-v1pro sample code
+### 4.5 Kompilieren und Ausführen des ros-v1pro-Beispielcodes
 
-ros-v1pro is a dedicated ros driver for the V1PRO camera. There is a README.pdf in the ros-v1pro folder that describes the driver in detail. This document only gives a brief introduction to it:
+ros-v1pro ist a dedicated ros driver für die V1PRO Kamera. There ist a README.pdf in die ros-v1pro Ordner that describes die driver in detail. Dies document nur gives a brief introduction zu it:
 
 <Frame>
-  ![Illustrations related to compiling and running the ros-v1pro sample code](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung die ros-v1pro Beispiel Code](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code.avif)
 </Frame>
 
-Enter the `ros-v1pro` folder and compile it:
+Enter die `ros-v1pro` Ordner und kompilieren it:
 
 ```bash
 catkin_make
 ```
 
 <Frame>
-  ![Illustrations related to compiling and running the ros-v1pro sample code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-2.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung die ros-v1pro Beispiel Code 2](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-2.avif)
 </Frame>
 
-Load the environment:
+Laden Sie die Umgebung:
 
 ```bash
 source devel/setup.bash
 ```
 
 <Frame>
-  ![Illustrations related to compiling and running the ros-v1pro sample code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-3.avif)
+  ![Illustrations zugehörig zu Kompilieren und Ausführung die ros-v1pro Beispiel Code 3](/images/developers/camera-sdk-linux-examples-compiling-and-running-the-ros-v1pro-sample-code-3.avif)
 </Frame>
 
-Finally run the node:
+Führen Sie abschließend den Node aus:
 
 - roslaunch lx\_camera\_ros localization.launch
 - roslaunch lx\_camera\_ros mapping.launch
 - roslaunch lx\_camera\_ros sensor\_sim.launch
 
-From top to bottom: run the positioning node, run the mapping node, and run the virtual data node. Each node cannot be enabled at the same time.
+From top zu bottom: ausführen die positioning node, ausführen die mapping node, und ausführen die virtual Daten node. Die Nodes können nicht gleichzeitig aktiviert werden.
 
 ---
 
-## Sample code reference
+## Referenz zum Beispielcode
 
-In this section, all codes and pseudocode will be divided into several parts. Generally speaking, everything in a section belongs to the same file. Except for special files with detailed explanations, the source code files only explain the general modules. Detailed explanations are commented in the code.
+In dies Abschnitt, alle codes und pseudocode wird be divided into several parts. Generally speaking, everything in a Abschnitt belongs zu die gleich Datei. Except für special Dateien mit detailed explanations, die Quelle Code Dateien nur explain die general modules. Detailed explanations sind commented in die Code.
 
-### 5.1 C and C\+\+
+### 5.1 C und C\+\+
 
 #### 5.1.1 CMakeLists
 
 <Frame>
-  ![CMakeLists related icons](/images/developers/camera-sdk-linux-examples-cmakelists.avif)
+  ![CMakeLists zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-cmakelists.avif)
 </Frame>
 
 <Frame>
-  ![CMakeLists related icons 2](/images/developers/camera-sdk-linux-examples-cmakelists-2.avif)
+  ![CMakeLists zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-cmakelists-2.avif)
 </Frame>
 
 <Frame>
-  ![CMakeLists related icons 3](/images/developers/camera-sdk-linux-examples-cmakelists-3.avif)
+  ![CMakeLists zugehörig Abbildungen 3](/images/developers/camera-sdk-linux-examples-cmakelists-3.avif)
 </Frame>
 
-#### 5.1.2 application\_obstacle and application\_pallet
+#### 5.1.2 Anwendung\_obstacle und Anwendung\_pallet
 
 <Frame>
-  ![application\\\_obstacle and application\\\_pallet related icons](/images/developers/camera-sdk-linux-examples-application-obstacle-and-application-pallet.avif)
+  ![Anwendung\\\_obstacle und Anwendung\\\_pallet zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-application-obstacle-and-application-pallet.avif)
 </Frame>
 
 #### 5.1.3 arm\_local\_camera
 
 <Frame>
-  ![arm\\\_local\\\_camera related icons](/images/developers/camera-sdk-linux-examples-arm-local-camera.avif)
+  ![arm\\\_local\\\_camera zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-arm-local-camera.avif)
 </Frame>
 
 #### 5.1.4 frame\_callback
 
 <Frame>
-  ![frame\\\_callback related icons](/images/developers/camera-sdk-linux-examples-frame-callback.avif)
+  ![frame\\\_callback zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-frame-callback.avif)
 </Frame>
 
 #### 5.1.5 multi\_cameras
 
 <Frame>
-  ![multi\\\_cameras related icons](/images/developers/camera-sdk-linux-examples-multi-cameras.avif)
+  ![multi\\\_cameras zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-multi-cameras.avif)
 </Frame>
 
 #### 5.1.6 single\_camera
 
 <Frame>
-  ![single\\\_camera related icons](/images/developers/camera-sdk-linux-examples-single-camera.avif)
+  ![single\\\_camera zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-single-camera.avif)
 </Frame>
 
 <Frame>
-  ![single\\\_camera related icon 2](/images/developers/camera-sdk-linux-examples-single-camera-2.avif)
+  ![single\\\_camera zugehörig icon 2](/images/developers/camera-sdk-linux-examples-single-camera-2.avif)
 </Frame>
 
 #### 5.1.7 single\_camera2
 
 <Frame>
-  ![single\\\_camera2 related icons](/images/developers/camera-sdk-linux-examples-single-camera2.avif)
+  ![single\\\_camera2 zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-single-camera2.avif)
 </Frame>
 
 ### 5.2 java
 
-The Java example provides only an HTTP server, so the description is only a description of the interface and message format. Use postman to open the sample file as shown below:
+Die Java Beispiel provides nur an HTTP Server, so die Beschreibung ist nur a Beschreibung von die interface und Nachricht format. Use Postman zu öffnen die Beispiel Datei wie shown below:
 
 <Frame>
-  ![java related icons](/images/developers/camera-sdk-linux-examples-java.avif)
+  ![java zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-java.avif)
 </Frame>
 
-The messages are all in post mode. Before sending, remember to change the IP to the server's IP, but do not modify the URL. The URL is hard-coded internally in the server. The response message format and content are both in the body. The interface provided in the example is as follows:
+Die Nachrichten sind alle in post mode. Before sending, remember zu change die IP zu die Server's IP, but do not modify die URL. Die URL ist hard-coded internally in die Server. Die response Nachricht format und content sind both in die body. Die interface provided in die Beispiel ist wie folgt:
 
 <Frame>
-  ![java related icons 2](/images/developers/camera-sdk-linux-examples-java-2.avif)
+  ![java zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-java-2.avif)
 </Frame>
 
-1.DcGetApiVersion: Get the version number of the SDK, no parameter input
+1.DcGetApiVersion: Get die Version Nummer von die SDK, no Parameter Eingabe
 
 <Frame>
-  ![java related icons 3](/images/developers/camera-sdk-linux-examples-java-3.avif)
+  ![java zugehörig Abbildungen 3](/images/developers/camera-sdk-linux-examples-java-3.avif)
 </Frame>
 
-2.DcSetInfoOutput: Set the path for SDK log output. The parameters are as follows:
+2.DcSetInfoOutput: Set die Pfad für SDK log Ausgabe. Die Parameter sind wie folgt:
 
-- log\_path: path of log output
+- log\_path: Pfad von log Ausgabe
 - print\_level: log printing level
-- enable\_screen\_print: whether the log is printed on the console
+- enable\_screen\_print: whether die log ist printed on die console
 
-3.DcLog: Output the log to the SDK log. Any input content will be printed to the SDK log.
+3.DcLog: Output die log zu die SDK log. Any Eingabe content wird be printed zu die SDK log.
 
-4.DcGetDeviceList: Get the device list, no input, input is JSON
+4.DcGetDeviceList: Get die Gerät Liste, no Eingabe, Eingabe ist JSON
 
-5.DcOpenDevice: Open the device and enter the following:
-
-<Frame>
-  ![java related icons 4](/images/developers/camera-sdk-linux-examples-java-4.avif)
-</Frame>
-
-- open\_mode: open the camera mode
-- param: parameters for opening the camera
-
-6.DcStartStream: Let a certain camera start pushing streaming data. The input parameters are as follows:
+5.DcOpenDevice: Open die Gerät und öffnen die folgende:
 
 <Frame>
-  ![java related icons 5](/images/developers/camera-sdk-linux-examples-java-5.avif)
+  ![java zugehörig Abbildungen 4](/images/developers/camera-sdk-linux-examples-java-4.avif)
 </Frame>
 
-- handle: The handle of the camera, which will be returned in DcOpenDevice
+- öffnen\_mode: öffnen die Kamera mode
+- param: Parameter für opening die Kamera
 
-7.DcSetCmd: Issue commands to the camera, enter as follows:
+6.DcStartStream: Let a certain Kamera starten pushing streaming Daten. Die Eingabe Parameter sind wie folgt:
 
 <Frame>
-  ![java related icons 6](/images/developers/camera-sdk-linux-examples-java-6.avif)
+  ![java zugehörig Abbildungen 5](/images/developers/camera-sdk-linux-examples-java-5.avif)
 </Frame>
 
-- handle: the handle of the camera to be set
-- cmd: command number
+- handle: Die handle von die Kamera, which wird be returned in DcOpenDevice
 
-8.DcGetPtrValue: Get pointer data (image, parameters, etc.), enter as follows:
-
-- handle: the handle of the camera to be set
-- cmd: command number
-
-9.DcSetIntValue: Set the camera int type parameters, input as follows:
+7.DcSetCmd: Issue Befehle zu die Kamera, öffnen wie folgt:
 
 <Frame>
-  ![java related icons 7](/images/developers/camera-sdk-linux-examples-java-7.avif)
+  ![java zugehörig Abbildungen 6](/images/developers/camera-sdk-linux-examples-java-6.avif)
 </Frame>
 
-- handle: the handle of the camera to be set
-- cmd: command number
-- value: the value to be set
+- handle: die handle von die Kamera zu be festlegen
+- cmd: Befehl Nummer
 
-10.DcGetIntValue: Get the int type parameter of the device, input as follows:
+8.DcGetPtrValue: Get pointer Daten (Bild, Parameter, etc.), öffnen wie folgt:
 
-- handle: the handle of the camera to be set
-- cmd: command number
+- handle: die handle von die Kamera zu be festlegen
+- cmd: Befehl Nummer
 
-11. Please see the table below for other relevant instructions:
+9.DcSetIntValue: Set die Kamera int Typ Parameter, Eingabe wie folgt:
+
+<Frame>
+  ![java zugehörig Abbildungen 7](/images/developers/camera-sdk-linux-examples-java-7.avif)
+</Frame>
+
+- handle: die handle von die Kamera zu be festlegen
+- cmd: Befehl Nummer
+- Wert: die Wert zu be festlegen
+
+10.DcGetIntValue: Get die int Typ Parameter von die Gerät, Eingabe wie folgt:
+
+- handle: die handle von die Kamera zu be festlegen
+- cmd: Befehl Nummer
+
+11. Please see die table below für andere relevant instructions:
 
 | Send | `{"log_path" : "./", "print_level" : 2, "enable_screen_print" : 0 }` | Receive | `{"errCode" : 0 }` |
 | --- | --- | --- | --- |
@@ -651,274 +651,274 @@ The messages are all in post mode. Before sending, remember to change the IP to 
 
 ### 5.3 ROS1 & ROS2
 
-In the ros description, we will not talk about the driver source code, but about the content corresponding to the configuration in the launch file, how to adjust the configuration, and how to send and subscribe to messages. The provided ros node already contains most of the functions, so it is not recommended to directly modify the driver source code. If you have special needs, you can first understand the code flow in the C\+\+ example and then modify the driver source code.
+In die ros Beschreibung, we wird not talk about die driver Quelle Code, but about die content entsprechend zu die Konfiguration in die launch Datei, how zu adjust die Konfiguration, und how zu send und subscribe zu Nachrichten. Die provided ros node already enthält most von die functions, so it ist not empfohlen zu directly modify die driver Quelle Code. Wenn you have special needs, you kann zuerst understand die Code flow in die C\+\+ Beispiel und then modify die driver Quelle Code.
 
-**When executing the ros driver, you must ensure that the versions of opencv and pcl in the system default path are unique, otherwise an error will occur when linking the ros library, which may cause compilation failure or runtime crash.**
+**When executing die ros driver, you muss ensure that die Versionen von opencv und pcl in die System Standard Pfad sind unique, otherwise an Fehler wird occur wenn linking die ros library, which may cause Kompilierung Fehler oder runtime crash.**
 
-#### 5.3.1 ROS1 launch file description
+#### 5.3.1 ROS1 launch Datei Beschreibung
 
-##### 5.3.1.1 All launch files
+##### 5.3.1.1 All launch Dateien
 
-1. There are the following files in the src/launch folder:
-
-<Frame>
-  ![All launch file related icons](/images/developers/camera-sdk-linux-examples-all-launch-file.avif)
-</Frame>
-
-- localization.launch: Run file for visual positioning nodes
-- lx\_camera\_ros.launch: running file of ordinary nodes
-- mapping.launch: running file for visual positioning mapping
-- obstacle.launch: running file of obstacle avoidance algorithm
-- obstacleV2.launch: running file of obstacle avoidance algorithm V2
-- pallet.launch: pallet algorithm running file
-- sensor\_sim.launch: running file for simulating positioning data
-
-2. You can execute different functions of the node by running different launch files. **Except for localization, mapping and sensor, the parameter contents are the same in all nodes, but the configuration is different**. This will be introduced in detail in the following sections. For a detailed introduction to the parameters of the three launch files of localization, mapping and sensor, please see the introduction in the ros-v1pro node.
-
-##### 5.3.1.2 Camera IP, stream configuration, working mode configuration, point cloud unit, etc.
+1. There sind die folgende Dateien in die src/launch Ordner:
 
 <Frame>
-  ![Camera IP, stream configuration, working mode configuration, point cloud unit and other related icons](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other.avif)
+  ![All launch Datei zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-all-launch-file.avif)
 </Frame>
 
-- ip: The camera IP that needs to be connected. If it is 0, the first one will be connected by default.
-- log\_path: SDK log storage path, the absolute path needs to be filled in
-- is\_xyz: whether to push point cloud data
-- is\_depth: whether to push depth data
-- is\_amp: whether to push intensity map data
-- is\_rgb: whether to push RGB image data
+- localization.launch: Run Datei für visual positioning nodes
+- lx\_camera\_ros.launch: Ausführung Datei von ordinary nodes
+- mapping.launch: Ausführung Datei für visual positioning mapping
+- obstacle.launch: Ausführung Datei von obstacle avoidance algorithm
+- obstacleV2.launch: Ausführung Datei von obstacle avoidance algorithm V2
+- pallet.launch: pallet algorithm Ausführung Datei
+- sensor\_sim.launch: Ausführung Datei für simulating positioning Daten
+
+2. You kann execute unterschiedlich functions von die node durch Ausführung unterschiedlich launch Dateien. **Except für localization, mapping und sensor, die Parameter Inhalt sind die gleich in alle nodes, but die Konfiguration ist unterschiedlich**. Dies wird be introduced in detail in die folgende sections. For a detailed introduction zu die Parameter von die three launch Dateien von localization, mapping und sensor, please see die introduction in die ros-v1pro node.
+
+##### 5.3.1.2 Camera IP, Stream Konfiguration, working mode Konfiguration, Punkt Wolke unit, etc.
+
+<Frame>
+  ![Camera IP, Stream Konfiguration, working mode Konfiguration, Punkt Wolke unit und andere zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other.avif)
+</Frame>
+
+- ip: Die Kamera IP that needs zu be connected. Wenn it ist 0, die zuerst one wird be connected durch Standard.
+- log\_path: SDK log storage Pfad, die absolute Pfad needs zu be filled in
+- ist\_xyz: whether zu push Punkt Wolke Daten
+- ist\_depth: whether zu push Tiefe Daten
+- ist\_amp: whether zu push Intensität map Daten
+- ist\_rgb: whether zu push RGB Bild Daten
 - lx\_work\_mode: work mode
-- lx\_application: whether to enable the algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
-- lx\_tof\_unit: point cloud unit, 1 is meter, 0 is millimeter, needs to be changed to 1 when viewing with rviz
+- lx\_application: whether zu enable die algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
+- lx\_tof\_unit: Punkt Wolke unit, 1 ist meter, 0 ist millimeter, needs zu be changed zu 1 wenn viewing mit rviz
 
-##### 5.3.1.3 Camera pose configuration
+##### 5.3.1.3 Camera pose Konfiguration
 
 <Frame>
-  ![Illustrations related to camera pose configuration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration.avif)
+  ![Illustrations zugehörig zu Kamera pose Konfiguration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration.avif)
 </Frame>
 
-The rotation angle and translation vector of the point cloud can be configured.
+Die rotation angle und translation vector von die Punkt Wolke kann be configured.
 
-- X: X translation amount of the camera from the center of the point cloud
-- Y: Y translation amount of the camera from the center of the point cloud
-- Z: Z translation amount of the camera from the center of the point cloud
-- Yaw: the angle of rotation of the point cloud around the Z axis
-- Roll: The angle of rotation of the point cloud around the X-axis
-- Pitch: The angle of rotation of the point cloud around the Y axis
+- X: X translation amount von die Kamera aus die center von die Punkt Wolke
+- Y: Y translation amount von die Kamera aus die center von die Punkt Wolke
+- Z: Z translation amount von die Kamera aus die center von die Punkt Wolke
+- Yaw: die angle von rotation von die Punkt Wolke around die Z axis
+- Roll: Die angle von rotation von die Punkt Wolke around die X-axis
+- Pitch: Die angle von rotation von die Punkt Wolke around die Y axis
 
-##### 5.3.1.4 Whether to use launch configuration
+##### 5.3.1.4 Whether zu verwenden launch Konfiguration
 
 <Frame>
-  ![Whether to use launch configuration related icons](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration.avif)
+  ![Whether zu verwenden launch Konfiguration zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration.avif)
 </Frame>
 
-You can choose whether to use the camera parameter configuration in the launch file.
+You kann choose whether zu verwenden die Kamera Parameter Konfiguration in die launch Datei.
 
-- raw\_param: 0: use the configuration in the camera, 1: use the configuration in the launch file
+- raw\_param: 0: verwenden die Konfiguration in die Kamera, 1: verwenden die Konfiguration in die launch Datei
 
-Regardless of whether this parameter is set to 0 or 1, all parameters before this parameter will be set, 0 and 1 are only valid for parameters after this parameter.
+Regardless von whether dies Parameter ist festlegen zu 0 oder 1, alle Parameter vor dies Parameter wird be festlegen, 0 und 1 sind nur valid für Parameter nach dies Parameter.
 
-##### 5.3.1.5 2D parameter configuration
+##### 5.3.1.5 2D Parameter Konfiguration
 
 <Frame>
-  ![2D parameter configuration related icons](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration.avif)
+  ![2D Parameter Konfiguration zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration.avif)
 </Frame>
 
 - lx\_2d\_binning：0：1x1，1：2x2，2：4x4
 - lx\_2d\_undistort: ​​2d anti-distortion, 0: off, 1: on
 - lx\_2d\_undistort\_scale: 2D anti-distortion coefficient
 - lx\_2d\_auto\_exposure: 2D automatic exposure, 0: off, 1: on
-- lx\_2d\_auto\_exposure\_value: 2D automatic exposure target intensity
-- lx\_2d\_exposure: 2D exposure value
+- lx\_2d\_auto\_exposure\_value: 2D automatic exposure Ziel Intensität
+- lx\_2d\_exposure: 2D exposure Wert
 - lx\_2d\_gain: 2D gain
 
-##### 5.3.1.6 3D parameter configuration
+##### 5.3.1.6 3D Parameter Konfiguration
 
 <Frame>
-  ![Illustrations related to 3D parameter configuration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration.avif)
+  ![Illustrations zugehörig zu 3D Parameter Konfiguration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration.avif)
 </Frame>
 
 - lx\_rgb\_to\_tof: RGB alignment
 - lx\_3d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_mulit\_mode: multi-machine mode, which can eliminate multi-machine interference, 0: off, 1: on
+- lx\_mulit\_mode: multi-machine mode, which kann eliminate multi-machine interference, 0: off, 1: on
 - lx\_3d\_undistort: ​​3d anti-distortion, 0: off, 1: on
 - lx\_3d\_undistort\_scale: 3D anti-distortion coefficient
 - lx\_hdr: hdr, 0: off, 1: on
 - lx\_3d\_auto\_exposure: 3D automatic exposure, 0: off, 1: on
-- lx\_3d\_auto\_exposure\_value: 3D automatic exposure target intensity
+- lx\_3d\_auto\_exposure\_value: 3D automatic exposure Ziel Intensität
 - lx\_3d\_first\_exposure: 3D high points
 - lx\_3d\_second\_exposure: 3D low points
 - lx\_3d\_gain: 3D gain
 
-##### 5.3.1.7 Maximum and minimum depth
+##### 5.3.1.7 Maximum und minimal Tiefe
 
 <Frame>
-  ![Maximum and minimum depth related icons](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth.avif)
+  ![Maximum und minimal Tiefe zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth.avif)
 </Frame>
 
-- lx\_min\_depth: minimum depth
-- lx\_max\_depth: maximum depth
+- lx\_min\_depth: minimal Tiefe
+- lx\_max\_depth: maximal Tiefe
 
-#### 5.3.2 ROS2 launch file description
+#### 5.3.2 ROS2 launch Datei Beschreibung
 
-##### 5.3.2.1 All launch files
+##### 5.3.2.1 All launch Dateien
 
-There are the following files in the src/launch folder:
+There sind die folgende Dateien in die src/launch Ordner:
 
 <Frame>
-  ![All launch file related icons](/images/developers/camera-sdk-linux-examples-all-launch-file-02.avif)
+  ![All launch Datei zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-all-launch-file-02.avif)
 </Frame>
 
-- localization.launch.py: running file of visual positioning node
-- lx\_camera\_ros.launch.py: running file of ordinary node
-- mapping.launch.py: running file for visual positioning mapping
-- obstacle.launch.py: running file of obstacle avoidance algorithm
-- obstacleV2.launch.py: running file of obstacle avoidance algorithm V2
-- pallet.launch.py: pallet algorithm running file
-- sensor\_sim.launch.py: running file for simulating positioning data
+- localization.launch.py: Ausführung Datei von visual positioning node
+- lx\_camera\_ros.launch.py: Ausführung Datei von ordinary node
+- mapping.launch.py: Ausführung Datei für visual positioning mapping
+- obstacle.launch.py: Ausführung Datei von obstacle avoidance algorithm
+- obstacleV2.launch.py: Ausführung Datei von obstacle avoidance algorithm V2
+- pallet.launch.py: pallet algorithm Ausführung Datei
+- sensor\_sim.launch.py: Ausführung Datei für simulating positioning Daten
 
-You can execute different functions of the node by running different launch files. **Except for localization, mapping and sensor, the parameter content is the same in all nodes, but the configuration is different**. It will be introduced in detail in the following sections. For a detailed introduction to the parameters of the three launch files of localization, mapping and sensor, please see the introduction in the ros-v1pro node.
+You kann execute unterschiedlich functions von die node durch Ausführung unterschiedlich launch Dateien. **Except für localization, mapping und sensor, die Parameter content ist die gleich in alle nodes, but die Konfiguration ist unterschiedlich**. It wird be introduced in detail in die folgende sections. For a detailed introduction zu die Parameter von die three launch Dateien von localization, mapping und sensor, please see die introduction in die ros-v1pro node.
 
-##### 5.3.2.2 Camera IP, stream configuration, working mode configuration, point cloud unit, etc.
+##### 5.3.2.2 Camera IP, Stream Konfiguration, working mode Konfiguration, Punkt Wolke unit, etc.
 
 <Frame>
-  ![Camera IP, stream configuration, working mode configuration, point cloud unit and other related icons](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other-02.avif)
+  ![Camera IP, Stream Konfiguration, working mode Konfiguration, Punkt Wolke unit und andere zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-camera-ip-stream-configuration-working-mode-configuration-point-cloud-unit-and-other-02.avif)
 </Frame>
 
-- ip: The camera IP that needs to be connected. If it is 0, the first one will be connected by default.
-- log\_path: SDK log storage path, the absolute path needs to be filled in
-- is\_xyz: whether to push point cloud data
-- is\_depth: whether to push depth data
-- is\_amp: whether to push intensity map data
-- is\_rgb: whether to push RGB image data
+- ip: Die Kamera IP that needs zu be connected. Wenn it ist 0, die zuerst one wird be connected durch Standard.
+- log\_path: SDK log storage Pfad, die absolute Pfad needs zu be filled in
+- ist\_xyz: whether zu push Punkt Wolke Daten
+- ist\_depth: whether zu push Tiefe Daten
+- ist\_amp: whether zu push Intensität map Daten
+- ist\_rgb: whether zu push RGB Bild Daten
 - lx\_work\_mode: work mode
-- lx\_application: whether to enable the algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
-- lx\_tof\_unit: point cloud unit, 1 is meter, 0 is millimeter, needs to be changed to 1 when viewing with rviz
+- lx\_application: whether zu enable die algorithm, 0: off, 1: obstacle avoidance algorithm, 2: pallet algorithm, 3: positioning algorithm, 4: obstacle avoidance algorithm V2
+- lx\_tof\_unit: Punkt Wolke unit, 1 ist meter, 0 ist millimeter, needs zu be changed zu 1 wenn viewing mit rviz
 
-##### 5.3.2.3 Camera pose configuration
+##### 5.3.2.3 Camera pose Konfiguration
 
 <Frame>
-  ![Illustrations related to camera pose configuration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration-02.avif)
+  ![Illustrations zugehörig zu Kamera pose Konfiguration](/images/developers/camera-sdk-linux-examples-camera-pose-configuration-02.avif)
 </Frame>
 
-The rotation angle and translation vector of the point cloud can be configured.
+Die rotation angle und translation vector von die Punkt Wolke kann be configured.
 
-- X: X translation amount of the camera from the center of the point cloud
-- Y: Y translation amount of the camera from the center of the point cloud
-- Z: Z translation amount of the camera from the center of the point cloud
-- Yaw: the angle of rotation of the point cloud around the Z axis
-- Roll: The angle of rotation of the point cloud around the X-axis
-- Pitch: The angle of rotation of the point cloud around the Y axis
+- X: X translation amount von die Kamera aus die center von die Punkt Wolke
+- Y: Y translation amount von die Kamera aus die center von die Punkt Wolke
+- Z: Z translation amount von die Kamera aus die center von die Punkt Wolke
+- Yaw: die angle von rotation von die Punkt Wolke around die Z axis
+- Roll: Die angle von rotation von die Punkt Wolke around die X-axis
+- Pitch: Die angle von rotation von die Punkt Wolke around die Y axis
 
-##### 5.3.2.4 Whether to use launch configuration
+##### 5.3.2.4 Whether zu verwenden launch Konfiguration
 
 <Frame>
-  ![Whether to use launch configuration related icons](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration-02.avif)
+  ![Whether zu verwenden launch Konfiguration zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-whether-to-use-launch-configuration-02.avif)
 </Frame>
 
-You can choose whether to use the camera parameter configuration in the launch file.
+You kann choose whether zu verwenden die Kamera Parameter Konfiguration in die launch Datei.
 
-- raw\_param: 0: use the configuration in the camera, 1: use the configuration in the launch file
+- raw\_param: 0: verwenden die Konfiguration in die Kamera, 1: verwenden die Konfiguration in die launch Datei
 
-Regardless of whether this parameter is set to 0 or 1, all parameters before this parameter will be set, 0 and 1 are only valid for parameters after this parameter.
+Regardless von whether dies Parameter ist festlegen zu 0 oder 1, alle Parameter vor dies Parameter wird be festlegen, 0 und 1 sind nur valid für Parameter nach dies Parameter.
 
-##### 5.3.2.5 2D parameter configuration
+##### 5.3.2.5 2D Parameter Konfiguration
 
 <Frame>
-  ![2D parameter configuration related icons](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration-02.avif)
+  ![2D Parameter Konfiguration zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-2d-parameter-configuration-02.avif)
 </Frame>
 
 - lx\_2d\_binning：0：1x1，1：2x2，2：4x4
 - lx\_2d\_undistort: ​​2d anti-distortion, 0: off, 1: on
 - lx\_2d\_undistort\_scale: 2D anti-distortion coefficient
 - lx\_2d\_auto\_exposure: 2D automatic exposure, 0: off, 1: on
-- lx\_2d\_auto\_exposure\_value: 2D automatic exposure target intensity
-- lx\_2d\_exposure: 2D exposure value
+- lx\_2d\_auto\_exposure\_value: 2D automatic exposure Ziel Intensität
+- lx\_2d\_exposure: 2D exposure Wert
 - lx\_2d\_gain: 2D gain
 
-##### 5.3.2.6 3D parameter configuration
+##### 5.3.2.6 3D Parameter Konfiguration
 
 <Frame>
-  ![Illustrations related to 3D parameter configuration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration-02.avif)
+  ![Illustrations zugehörig zu 3D Parameter Konfiguration](/images/developers/camera-sdk-linux-examples-3d-parameter-configuration-02.avif)
 </Frame>
 
 - lx\_rgb\_to\_tof: RGB alignment
 - lx\_3d\_binning：0：1x1，1：2x2，2：4x4
-- lx\_mulit\_mode: multi-machine mode, which can eliminate multi-machine interference, 0: off, 1: on
+- lx\_mulit\_mode: multi-machine mode, which kann eliminate multi-machine interference, 0: off, 1: on
 - lx\_3d\_undistort: ​​3d anti-distortion, 0: off, 1: on
 - lx\_3d\_undistort\_scale: 3D anti-distortion coefficient
 - lx\_hdr: hdr, 0: off, 1: on
 - lx\_3d\_auto\_exposure: 3D automatic exposure, 0: off, 1: on
-- lx\_3d\_auto\_exposure\_value: 3D automatic exposure target intensity
+- lx\_3d\_auto\_exposure\_value: 3D automatic exposure Ziel Intensität
 - lx\_3d\_first\_exposure: 3D high points
 - lx\_3d\_second\_exposure: 3D low points
 - lx\_3d\_gain: 3D gain
 
-##### 5.3.2.7 Maximum and minimum depth
+##### 5.3.2.7 Maximum und minimal Tiefe
 
 <Frame>
-  ![Maximum and minimum depth related icons](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth-02.avif)
+  ![Maximum und minimal Tiefe zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-maximum-and-minimum-depth-02.avif)
 </Frame>
 
-- lx\_min\_depth: minimum depth
-- lx\_max\_depth: maximum depth
+- lx\_min\_depth: minimal Tiefe
+- lx\_max\_depth: maximal Tiefe
 
-#### 5.3.3 Unique theme description
+#### 5.3.3 Unique theme Beschreibung
 
-Since the unique topic types of ROS1 and ROS2 are the same, ROS1 is used as an example here. There are the following files in the src/msg folder:
+Since die unique topic types von ROS1 und ROS2 sind die gleich, ROS1 ist used wie an Beispiel here. There sind die folgende Dateien in die src/msg Ordner:
 
 <Frame>
-  ![Illustrations related to unique theme descriptions](/images/developers/camera-sdk-linux-examples-unique-theme-descriptions.avif)
+  ![Illustrations zugehörig zu unique theme descriptions](/images/developers/camera-sdk-linux-examples-unique-theme-descriptions.avif)
 </Frame>
 
 ##### 5.3.3.1 FrameRate.msg
 
-This node outputs frame rate information. The message format is as follows:
+Dies node outputs frame rate Informationen. Die Nachricht format ist wie folgt:
 
 <Frame>
-  ![FrameRate.msg related icons](/images/developers/camera-sdk-linux-examples-framerate-msg.avif)
+  ![FrameRate.msg zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-framerate-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- depth: When the depth map is turned on, output the depth map frame rate
-- amp: When the intensity map is turned on, output the intensity map frame rate
-- rgb: When rgb is on, output rgb frame rate
-- temperature: output camera temperature
+- header: frame Informationen und timestamp von die aktuell Daten
+- Tiefe: When die Tiefe map ist turned on, Ausgabe die Tiefe map frame rate
+- amp: When die Intensität map ist turned on, Ausgabe die Intensität map frame rate
+- rgb: When rgb ist on, Ausgabe rgb frame rate
+- temperature: Ausgabe Kamera temperature
 
-After the node starts running (except for nodes related to visual positioning), you can subscribe to the LxCamera\_FrameRate node to obtain relevant information. The output is as follows:
+After die node starts Ausführung (except für nodes zugehörig zu visual positioning), you kann subscribe zu die LxCamera\_FrameRate node zu obtain relevant Informationen. Die Ausgabe ist wie folgt:
 
 <Frame>
-  ![FrameRate.msg related icons 2](/images/developers/camera-sdk-linux-examples-framerate-msg-2.avif)
+  ![FrameRate.msg zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-framerate-msg-2.avif)
 </Frame>
 
 ##### 5.3.3.2 Obstacle.msg
 
-obstacle outputs information related to the obstacle avoidance algorithm results. The obstacle message format is as follows:
+obstacle outputs Informationen zugehörig zu die obstacle avoidance algorithm Ergebnisse. Die obstacle Nachricht format ist wie folgt:
 
 <Frame>
-  ![Obstacle.msg related icons](/images/developers/camera-sdk-linux-examples-obstacle-msg.avif)
+  ![Obstacle.msg zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-obstacle-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- status: status information returned by obstacle avoidance
+- header: frame Informationen und timestamp von die aktuell Daten
+- Status: Status Informationen returned durch obstacle avoidance
 
 0: Normal obstacle avoidance
 
--1: No ground set
+-1: No ground festlegen
 
--2: Input not set
+-2: Input not festlegen
 
--3: No point cloud within the range
+-3: No Punkt Wolke within die range
 
--4: The point cloud is empty after filtering the ground
+-4: Die Punkt Wolke ist empty nach filtering die ground
 
--5: The point cloud is empty after radius filtering
+-5: Die Punkt Wolke ist empty nach radius filtering
 
--6: No segmentation result was obtained
+-6: No segmentation Ergebnis was obtained
 
--99: undefined error
+-99: undefined Fehler
 
-- io\_output: Obstacle avoidance information output by the io interface
+- io\_output: Obstacle avoidance Informationen Ausgabe durch die io interface
 
 0: normal
 
@@ -926,1041 +926,1041 @@ obstacle outputs information related to the obstacle avoidance algorithm results
 
 2: Shutdown
 
-- box\_number: number of obstacles
-- box: obstacle information, variable length array, the length is determined by box\_number
+- Feld\_number: Nummer von obstacles
+- Feld: obstacle Informationen, variable length array, die length ist determined durch Feld\_number
 
-After the node starts running (the obstacle avoidance algorithm needs to be turned on), you can subscribe to the LxCamera\_Obstacel node to obtain relevant information. The output is as follows (the data in the picture is simulated data):
+After die node starts Ausführung (die obstacle avoidance algorithm needs zu be turned on), you kann subscribe zu die LxCamera\_Obstacel node zu obtain relevant Informationen. Die Ausgabe ist wie folgt (die Daten in die picture ist simulated Daten):
 
 <Frame>
-  ![Obstacle.msg related icons 2](/images/developers/camera-sdk-linux-examples-obstacle-msg-2.avif)
+  ![Obstacle.msg zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-obstacle-msg-2.avif)
 </Frame>
 
 ##### 5.3.3.3 Obstacle\_box.msg
 
-obstacle\_box outputs obstacle-related information, and the obstacle\_box message format is as follows:
+obstacle\_box outputs obstacle-zugehörig Informationen, und die obstacle\_box Nachricht format ist wie folgt:
 
 <Frame>
-  ![Obstacle\\\_box.msg related icons](/images/developers/camera-sdk-linux-examples-obstacle-box-msg.avif)
+  ![Obstacle\\\_box.msg zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-obstacle-box-msg.avif)
 </Frame>
 
-- center: the center of mass of the obstacle in the point cloud
-- rotation: rotation matrix of obstacle point cloud
-- translation: translation vector of obstacle point cloud
-- width: width of the obstacle frame
-- height: height of obstacle frame
-- depth: the depth of the obstacle frame
+- center: die center von mass von die obstacle in die Punkt Wolke
+- rotation: rotation matrix von obstacle Punkt Wolke
+- translation: translation vector von obstacle Punkt Wolke
+- Breite: Breite von die obstacle frame
+- Höhe: Höhe von obstacle frame
+- Tiefe: die Tiefe von die obstacle frame
 
-After starting the operation (the obstacle avoidance algorithm needs to be turned on), you can subscribe to the LxCamera\_Obstacel node to obtain relevant information. The output is as follows:
+After starting die operation (die obstacle avoidance algorithm needs zu be turned on), you kann subscribe zu die LxCamera\_Obstacel node zu obtain relevant Informationen. Die Ausgabe ist wie folgt:
 
 <Frame>
-  ![Obstacle\\\_box.msg related icon 2](/images/developers/camera-sdk-linux-examples-obstacle-box-msg-2.avif)
+  ![Obstacle\\\_box.msg zugehörig icon 2](/images/developers/camera-sdk-linux-examples-obstacle-box-msg-2.avif)
 </Frame>
 
 ##### 5.3.3.4 Result.msg
 
-The return value obtained after sending the command message to the servic in the node is stored in Result:
+Die return Wert obtained nach sending die Befehl Nachricht zu die servic in die node ist stored in Result:
 
 <Frame>
-  ![Result.msg related icons](/images/developers/camera-sdk-linux-examples-result-msg.avif)
+  ![Result.msg zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-result-msg.avif)
 </Frame>
 
-- ret: the return value obtained by executing the SDK
-- msg: Description of the return value obtained by executing the SDK
+- ret: die return Wert obtained durch executing die SDK
+- msg: Description von die return Wert obtained durch executing die SDK
 
 ##### 5.3.3.5 Pallet.msg
 
-The pallet outputs information related to the pallet algorithm results. The pallet message format is as follows:
+Die pallet outputs Informationen zugehörig zu die pallet algorithm Ergebnisse. Die pallet Nachricht format ist wie folgt:
 
 <Frame>
-  ![Pallet.msg related icons](/images/developers/camera-sdk-linux-examples-pallet-msg.avif)
+  ![Pallet.msg zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-pallet-msg.avif)
 </Frame>
 
-- header: frame information and timestamp of the current data
-- status: status information returned by pallet recognition:
+- header: frame Informationen und timestamp von die aktuell Daten
+- Status: Status Informationen returned durch pallet recognition:
 
-0: Detection successful
+0: Detection erfolgreich
 
 -1: No ground detected
 
 -2: Pallet legs not detected
 
--3: The distance between the pallets is too far
+-3: Die distance between die pallets ist too far
 
--4: unknown error
+-4: unknown Fehler
 
-- x: X distance between the tray and the optical center of the camera
-- y: Y distance between the tray and the optical center of the camera
-- yaw: theta angle between the center of the tray and the optical center of the camera
+- x: X distance between die tray und die optical center von die Kamera
+- y: Y distance between die tray und die optical center von die Kamera
+- yaw: theta angle between die center von die tray und die optical center von die Kamera
 
-After the node starts running (the pallet algorithm needs to be turned on), you can subscribe to the LxCamera\_Pallet node to obtain relevant information. The output is as follows:
+After die node starts Ausführung (die pallet algorithm needs zu be turned on), you kann subscribe zu die LxCamera\_Pallet node zu obtain relevant Informationen. Die Ausgabe ist wie folgt:
 
 <Frame>
-  ![Pallet.msg related icons 2](/images/developers/camera-sdk-linux-examples-pallet-msg-2.avif)
+  ![Pallet.msg zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-pallet-msg-2.avif)
 </Frame>
 
 #### 5.3.4 Unique Service Description
 
-Since the unique service types of ROS1 and ROS2 are the same, ROS1 is used as an example here. There are the following files in the src/srv folder:
+Since die unique Service types von ROS1 und ROS2 sind die gleich, ROS1 ist used wie an Beispiel here. There sind die folgende Dateien in die src/srv Ordner:
 
 <Frame>
-  ![Illustrations related to unique service descriptions](/images/developers/camera-sdk-linux-examples-unique-service-descriptions.avif)
+  ![Illustrations zugehörig zu unique Service descriptions](/images/developers/camera-sdk-linux-examples-unique-service-descriptions.avif)
 </Frame>
 
-These messages are used to set or obtain certain parameter values ​​of the camera.
+These Nachrichten sind used zu festlegen oder obtain certain Parameter Werte ​​von die Kamera.
 
-Above \[---\] is the sent data, below \[---\] is the returned data
+Above \[---\] ist die sent Daten, below \[---\] ist die returned Daten
 
 ##### 5.3.4.1 LxBool.srv
 
 <Frame>
-  ![LxBool.srv related icons](/images/developers/camera-sdk-linux-examples-lxbool-srv.avif)
+  ![LxBool.srv zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-lxbool-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- val: The value of the camera's current parameter returned when getting or setting it
-- result: the value and information returned by calling the SDK interface
+- cmd: die Parameter Nummer that needs zu be obtained oder festlegen
+- val: die Wert festlegen wenn setting
+- ist\_set: Whether zu festlegen die Parameter. When it ist true, die Wert in val wird be festlegen zu die Kamera. When it ist false, die Wert von dies Parameter wird be read aus die Kamera und displayed.
+- val: Die Wert von die Kamera's aktuell Parameter returned wenn getting oder setting it
+- Ergebnis: die Wert und Informationen returned durch calling die SDK interface
 
 ##### 5.3.4.2 LxCmd.srv
 
 <Frame>
-  ![LxCmd.srv related icons](/images/developers/camera-sdk-linux-examples-lxcmd-srv.avif)
+  ![LxCmd.srv zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-lxcmd-srv.avif)
 </Frame>
 
-- cmd: The parameter number that needs to be obtained or set. When it is 0, all parameter numbers will be returned.
-- result: the value and information returned by calling the SDK interface, cmd may have multiple return values
+- cmd: Die Parameter Nummer that needs zu be obtained oder festlegen. When it ist 0, alle Parameter Zahlen wird be returned.
+- Ergebnis: die Wert und Informationen returned durch calling die SDK interface, cmd may have multiple return Werte
 
 ##### 5.3.4.3 LxFloat.srv
 
 <Frame>
-  ![LxFloat.srv related icons](/images/developers/camera-sdk-linux-examples-lxfloat-srv.avif)
+  ![LxFloat.srv zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-lxfloat-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- max\_value: the maximum value that can be set for this parameter
-- min\_value: the minimum value that can be set for this parameter
-- cur\_value: the current value of this parameter in the camera
-- available: whether this parameter supports setting
-- result: the value and information returned by calling the SDK interface
+- cmd: die Parameter Nummer that needs zu be obtained oder festlegen
+- val: die Wert festlegen wenn setting
+- ist\_set: Whether zu festlegen die Parameter. When it ist true, die Wert in val wird be festlegen zu die Kamera. When it ist false, die Wert von dies Parameter wird be read aus die Kamera und displayed.
+- max\_value: die maximal Wert that kann be festlegen für dies Parameter
+- min\_value: die minimal Wert that kann be festlegen für dies Parameter
+- cur\_value: die aktuell Wert von dies Parameter in die Kamera
+- verfügbar: whether dies Parameter supports setting
+- Ergebnis: die Wert und Informationen returned durch calling die SDK interface
 
 ##### 5.3.4.4 LxInt.srv
 
 <Frame>
-  ![LxInt.srv related icons](/images/developers/camera-sdk-linux-examples-lxint-srv.avif)
+  ![LxInt.srv zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-lxint-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- max\_value: the maximum value that can be set for this parameter
-- min\_value: the minimum value that can be set for this parameter
-- cur\_value: the current value of this parameter in the camera
-- available: whether this parameter supports setting
-- result: the value and information returned by calling the SDK interface
+- cmd: die Parameter Nummer that needs zu be obtained oder festlegen
+- val: die Wert festlegen wenn setting
+- ist\_set: Whether zu festlegen die Parameter. When it ist true, die Wert in val wird be festlegen zu die Kamera. When it ist false, die Wert von dies Parameter wird be read aus die Kamera und displayed.
+- max\_value: die maximal Wert that kann be festlegen für dies Parameter
+- min\_value: die minimal Wert that kann be festlegen für dies Parameter
+- cur\_value: die aktuell Wert von dies Parameter in die Kamera
+- verfügbar: whether dies Parameter supports setting
+- Ergebnis: die Wert und Informationen returned durch calling die SDK interface
 
 ##### 5.3.4.5 LxString.srv
 
 <Frame>
-  ![LxString.srv related icons](/images/developers/camera-sdk-linux-examples-lxstring-srv.avif)
+  ![LxString.srv zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-lxstring-srv.avif)
 </Frame>
 
-- cmd: the parameter number that needs to be obtained or set
-- val: the value set when setting
-- is\_set: Whether to set the parameter. When it is true, the value in val will be set to the camera. When it is false, the value of this parameter will be read from the camera and displayed.
-- val: The value of the camera's current parameter returned when getting or setting it
-- result: the value and information returned by calling the SDK interface
+- cmd: die Parameter Nummer that needs zu be obtained oder festlegen
+- val: die Wert festlegen wenn setting
+- ist\_set: Whether zu festlegen die Parameter. When it ist true, die Wert in val wird be festlegen zu die Kamera. When it ist false, die Wert von dies Parameter wird be read aus die Kamera und displayed.
+- val: Die Wert von die Kamera's aktuell Parameter returned wenn getting oder setting it
+- Ergebnis: die Wert und Informationen returned durch calling die SDK interface
 
-#### 5.3.5 Description of topic subscription methods
+#### 5.3.5 Description von topic subscription Methoden
 
-##### 5.3.5.1 Subscription frame rate, tray algorithm, obstacle avoidance algorithm output data
+##### 5.3.5.1 Subscription frame rate, tray algorithm, obstacle avoidance algorithm Ausgabe Daten
 
 **Subscribe Frame Rate**
 
-In the lx\_camera\_node\_ws directory, enter: bash rate.sh
+In die lx\_camera\_node\_ws Verzeichnis, öffnen: bash rate.sh
 
 <Frame>
-  ![Illustrations related to subscription frame rate, tray algorithm, and obstacle avoidance algorithm output data](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data.avif)
+  ![Illustrations zugehörig zu subscription frame rate, tray algorithm, und obstacle avoidance algorithm Ausgabe Daten](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+After die lx\_camera\_node node Bild runs normally und ist refreshed, you kann see die folgende Informationen:
 
 <Frame>
-  ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 2](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-2.avif)
+  ![Illustrations zugehörig zu subscription frame rate, pallet algorithm, und obstacle avoidance algorithm Ausgabe Daten 2](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-2.avif)
 </Frame>
 
-**Subscribe to pallet algorithm output**
+**Subscribe zu pallet algorithm Ausgabe**
 
-In the lx\_camera\_node\_ws directory, enter: bash pallet.sh
+In die lx\_camera\_node\_ws Verzeichnis, öffnen: bash pallet.sh
 
 <Frame>
-  ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 3](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-3.avif)
+  ![Illustrations zugehörig zu subscription frame rate, pallet algorithm, und obstacle avoidance algorithm Ausgabe Daten 3](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-3.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+After die lx\_camera\_node node Bild runs normally und ist refreshed, you kann see die folgende Informationen:
 
 <Frame>
-  ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 4](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-4.avif)
+  ![Illustrations zugehörig zu subscription frame rate, pallet algorithm, und obstacle avoidance algorithm Ausgabe Daten 4](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-4.avif)
 </Frame>
 
-**Subscribe to obstacle avoidance algorithm output**
+**Subscribe zu obstacle avoidance algorithm Ausgabe**
 
-In the lx\_camera\_node\_ws directory, enter: bash obstacle.sh
+In die lx\_camera\_node\_ws Verzeichnis, öffnen: bash obstacle.sh
 
 <Frame>
-  ![Illustrations related to subscription frame rate, pallet algorithm, and obstacle avoidance algorithm output data 5](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-5.avif)
+  ![Illustrations zugehörig zu subscription frame rate, pallet algorithm, und obstacle avoidance algorithm Ausgabe Daten 5](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-pallet-algorithm-and-obstacle-avoidance-algorithm-output-data-5.avif)
 </Frame>
 
-After the lx\_camera\_node node image runs normally and is refreshed, you can see the following information:
+After die lx\_camera\_node node Bild runs normally und ist refreshed, you kann see die folgende Informationen:
 
 <Frame>
-  ![Illustrations related to subscription frame rate, tray algorithm, and obstacle avoidance algorithm output data 6](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data-6.avif)
+  ![Illustrations zugehörig zu subscription frame rate, tray algorithm, und obstacle avoidance algorithm Ausgabe Daten 6](/images/developers/camera-sdk-linux-examples-subscription-frame-rate-tray-algorithm-and-obstacle-avoidance-algorithm-output-data-6.avif)
 </Frame>
 
-##### 5.3.5.2 Subscribe to image data (ROS1)
+##### 5.3.5.2 Subscribe zu Bild Daten (ROS1)
 
-You can view the image information output by the node through the image tool that comes with ros:
+You kann view die Bild Informationen Ausgabe durch die node through die Bild tool that comes mit ros:
 
-Console input command: rqt\_image\_view
+Console Eingabe Befehl: rqt\_image\_view
 
-After entering the command, the following window will pop up:
+After entering die Befehl, die folgende window wird pop up:
 
 <Frame>
-  ![Illustrations related to subscribing image data (ROS1)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros1.avif)
+  ![Illustrations zugehörig zu subscribing Bild Daten (ROS1)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros1.avif)
 </Frame>
 
-The red box can select the images in all nodes. The picture shows the MRDVS camera RGB image. You can also select the depth map or intensity map (provided that the stream has been turned on):
+Die red Feld kann select die Bilder in alle nodes. Die picture shows die MRDVS Kamera RGB Bild. You kann auch select die Tiefe map oder Intensität map (provided that die Stream has been turned on):
 
 <Frame>
-  ![Subscription image data (ROS1) related diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-2.avif)
+  ![Subscription Bild Daten (ROS1) zugehörig diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-2.avif)
 </Frame>
 
-In the figure, the first red box is the RGB information output by the positioning algorithm node, and the remaining three are image information output by the ordinary nodes. amp is the intensity map, depth is the depth map, and rgb is the rgb map.
+In die figure, die zuerst red Feld ist die RGB Informationen Ausgabe durch die positioning algorithm node, und die remaining three sind Bild Informationen Ausgabe durch die ordinary nodes. amp ist die Intensität map, Tiefe ist die Tiefe map, und rgb ist die rgb map.
 
-Select different items to view different images or use rviz to view image data. Enter the command on the console: rviz will pop up the following window:
+Select unterschiedlich items zu view unterschiedlich Bilder oder verwenden rviz zu view Bild Daten. Enter die Befehl on die console: rviz wird pop up die folgende window:
 
 <Frame>
-  ![Subscription image data (ROS1) related diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-3.avif)
+  ![Subscription Bild Daten (ROS1) zugehörig diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-3.avif)
 </Frame>
 
-After clicking the Add button at the bottom left, a window will pop up:
+After clicking die Add button at die bottom links, a window wird pop up:
 
 <Frame>
-  ![Subscription image data (ROS1) related diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-4.avif)
+  ![Subscription Bild Daten (ROS1) zugehörig diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-4.avif)
 </Frame>
 
-Select the desired image topic and select Image and click OK in the lower right corner. You can see the image data on the left side of the main interface, as shown below:
+Select die desired Bild topic und select Image und click OK in die unten right Ecke. You kann see die Bild Daten on die links side von die main interface, wie shown below:
 
 <Frame>
-  ![Subscription image data (ROS1) related diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-5.avif)
+  ![Subscription Bild Daten (ROS1) zugehörig diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros1-related-diagram-5.avif)
 </Frame>
 
-##### 5.3.5.3 Subscribe to image data (ROS2)
+##### 5.3.5.3 Subscribe zu Bild Daten (ROS2)
 
-You can view the image information output by the node through the image tool that comes with ros2: Enter the command on the console: rqt
+You kann view die Bild Informationen Ausgabe durch die node through die Bild tool that comes mit ros2: Enter die Befehl on die console: rqt
 
-After entering the command, the following window will pop up:
+After entering die Befehl, die folgende window wird pop up:
 
 <Frame>
-  ![Illustrations related to subscribing image data (ROS2)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros2.avif)
+  ![Illustrations zugehörig zu subscribing Bild Daten (ROS2)](/images/developers/camera-sdk-linux-examples-subscribing-image-data-ros2.avif)
 </Frame>
 
-Select the first Image View of the second option at the bottom of the menu bar. After selection, the following interface will pop up:
+Select die zuerst Image View von die second option at die bottom von die menu bar. After selection, die folgende interface wird pop up:
 
 <Frame>
-  ![Subscription image data (ROS2) related diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-2.avif)
+  ![Subscription Bild Daten (ROS2) zugehörig diagram 2](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-2.avif)
 </Frame>
 
-The red box can select the images in all nodes. The picture shows the MRDVS camera RGB image. You can also select the depth map or intensity map (provided that the stream has been turned on):
+Die red Feld kann select die Bilder in alle nodes. Die picture shows die MRDVS Kamera RGB Bild. You kann auch select die Tiefe map oder Intensität map (provided that die Stream has been turned on):
 
 <Frame>
-  ![Subscription image data (ROS2) related diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-3.avif)
+  ![Subscription Bild Daten (ROS2) zugehörig diagram 3](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-3.avif)
 </Frame>
 
-In the figure, the first red box is the RGB information output by the positioning algorithm node, and the remaining three are image information output by the ordinary nodes. amp is the intensity map, depth is the depth map, and rgb is the rgb map.
+In die figure, die zuerst red Feld ist die RGB Informationen Ausgabe durch die positioning algorithm node, und die remaining three sind Bild Informationen Ausgabe durch die ordinary nodes. amp ist die Intensität map, Tiefe ist die Tiefe map, und rgb ist die rgb map.
 
-Select different items to view different images or use rviz2 to view image data. Enter the command on the console: rviz2 will pop up the following window:
+Select unterschiedlich items zu view unterschiedlich Bilder oder verwenden rviz2 zu view Bild Daten. Enter die Befehl on die console: rviz2 wird pop up die folgende window:
 
 <Frame>
-  ![Subscription image data (ROS2) related diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-4.avif)
+  ![Subscription Bild Daten (ROS2) zugehörig diagram 4](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-4.avif)
 </Frame>
 
-After clicking the Add button at the bottom left, a window will pop up:
+After clicking die Add button at die bottom links, a window wird pop up:
 
 <Frame>
-  ![Subscription image data (ROS2) related diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-5.avif)
+  ![Subscription Bild Daten (ROS2) zugehörig diagram 5](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-5.avif)
 </Frame>
 
-Select the desired image topic and select Image and click OK in the lower right corner. You can see the image data on the left side of the main interface, as shown below:
+Select die desired Bild topic und select Image und click OK in die unten right Ecke. You kann see die Bild Daten on die links side von die main interface, wie shown below:
 
 <Frame>
-  ![Subscription image data (ROS2) related diagram 6](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-6.avif)
+  ![Subscription Bild Daten (ROS2) zugehörig diagram 6](/images/developers/camera-sdk-linux-examples-subscription-image-data-ros2-related-diagram-6.avif)
 </Frame>
 
-**Some systems need to fill in \[mrdvs\] in the \[map\] in the above picture to see the image**
+**Some Systeme müssen zu fill in \[mrdvs\] in die \[map\] in die above picture zu see die Bild**
 
-##### 5.3.5.4 Subscribe to point cloud data
+##### 5.3.5.4 Subscribe zu Punkt Wolke Daten
 
-The point cloud information output by the node can be viewed through the point cloud tool provided by ros or ros2:
+Die Punkt Wolke Informationen Ausgabe durch die node kann be viewed through die Punkt Wolke tool provided durch ros oder ros2:
 
 Command: rviz【ROS1】, rviz2【ROS2】
 
-After entering the command, the following window will pop up:
+After entering die Befehl, die folgende window wird pop up:
 
 <Frame>
-  ![Illustrations related to subscribing to point cloud data](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data.avif)
+  ![Illustrations zugehörig zu subscribing zu Punkt Wolke Daten](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data.avif)
 </Frame>
 
-Click the button in the red box below and the following box will pop up:
+Click die button in die red Feld below und die folgende Feld wird pop up:
 
 <Frame>
-  ![Illustration related to subscribing to point cloud data 2](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-2.avif)
+  ![Illustration zugehörig zu subscribing zu Punkt Wolke Daten 2](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-2.avif)
 </Frame>
 
-Select the second tab, and there will be a node named lx\_camera\_node. There is a topic named LxCamera\_Cloud in the node. There is a message named PointCloud2 in the topic. After selecting, click OK. The interface after completion is as follows:
+Select die second tab, und there wird be a node named lx\_camera\_node. There ist a topic named LxCamera\_Cloud in die node. There ist a Nachricht named PointCloud2 in die topic. After selecting, click OK. Die interface nach completion ist wie folgt:
 
 <Frame>
-  ![Illustrations related to subscribing to point cloud data 3](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-3.avif)
+  ![Illustrations zugehörig zu subscribing zu Punkt Wolke Daten 3](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-3.avif)
 </Frame>
 
 (ROS1 interface)
 
 <Frame>
-  ![Illustrations related to subscribing to point cloud data 4](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-4.avif)
+  ![Illustrations zugehörig zu subscribing zu Punkt Wolke Daten 4](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-4.avif)
 </Frame>
 
 (ROS2 interface)
 
-At this time, the point cloud cannot be displayed normally. Fill in mrdvs in the red and green box map above to see the point cloud. The effect is as follows:
+At dies time, die Punkt Wolke cannot be displayed normally. Fill in mrdvs in die red und green Feld map above zu see die Punkt Wolke. Die effect ist wie folgt:
 
 <Frame>
-  ![Illustrations related to subscribing to point cloud data 5](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-5.avif)
+  ![Illustrations zugehörig zu subscribing zu Punkt Wolke Daten 5](/images/developers/camera-sdk-linux-examples-subscribing-to-point-cloud-data-5.avif)
 </Frame>
 
-The default point cloud unit in ROS is meters, so when viewing using rviz, you need to modify lx\_tof\_unit in the launch file to 1 \[the default is 1\]
+Die Standard Punkt Wolke unit in ROS ist meters, so wenn viewing using rviz, you müssen zu modify lx\_tof\_unit in die launch Datei zu 1 \[die Standard ist 1\]
 
-#### 5.3.6 Description of service communication methods
+#### 5.3.6 Description von Service communication Methoden
 
-In ROS1, all commands can be completed using the Tab key, but in ROS2, only topics can be completed, and the message part needs to be entered manually.
+In ROS1, alle Befehle kann be completed using die Tab key, but in ROS2, nur topics kann be completed, und die Nachricht part needs zu be entered manuell.
 
-**When inputting data in ROS1, you can input it in the completion format. When inputting data in ROS2, you need to input it in the format of the yaml file.**
+**When inputting Daten in ROS1, you kann Eingabe it in die completion format. When inputting Daten in ROS2, you müssen zu Eingabe it in die format von die yaml Datei.**
 
-After the node is running, open a terminal under the lx\_camera\_node\_ws folder, configure the environment in the terminal, and enter the command: source devel/setup.bash
+After die node ist Ausführung, öffnen a terminal under die lx\_camera\_node\_ws Ordner, configure die Umgebung in die terminal, und öffnen die Befehl: Quelle devel/Einrichtung.bash
 
-##### 5.3.6.1 Get the list of all parameter numbers (Lx\_Cmd)
+##### 5.3.6.1 Get die Liste von alle Parameter Zahlen (Lx\_Cmd)
 
 **ros1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxCmd "cmd: 0"
 
 <Frame>
-  ![Get all parameter number list (Lx\\\_Cmd) related icons](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd.avif)
+  ![Get alle Parameter Nummer Liste (Lx\\\_Cmd) zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get all parameter number list (Lx\\\_Cmd) related icon 2](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-2.avif)
+  ![Get alle Parameter Nummer Liste (Lx\\\_Cmd) zugehörig icon 2](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-2.avif)
 </Frame>
 
-ret is the number of the parameter. The msg describes the parameter type and description, for example: 1001. This parameter is of type int. The parameter is used to obtain and modify the first exposure value.
+ret ist die Nummer von die Parameter. Die msg describes die Parameter Typ und Beschreibung, für Beispiel: 1001. Dies Parameter ist von Typ int. Die Parameter ist used zu obtain und modify die zuerst exposure Wert.
 
 **ros2**
 
-Enter in the terminal: ros2 service call /LxCamera\_LxCmd lx\_camera\_ros/srv/LxCmd 'cmd: 0'
+Enter in die terminal: ros2 Service call /LxCamera\_LxCmd lx\_camera\_ros/srv/LxCmd 'cmd: 0'
 
 <Frame>
-  ![Get all parameter number list (Lx\\\_Cmd) related icon 3](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-3.avif)
+  ![Get alle Parameter Nummer Liste (Lx\\\_Cmd) zugehörig icon 3](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-3.avif)
 </Frame>
 
-You can see the following output:
+You kann see die folgende Ausgabe:
 
 <Frame>
-  ![Get all parameter number list (Lx\\\_Cmd) related icon 4](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-4.avif)
+  ![Get alle Parameter Nummer Liste (Lx\\\_Cmd) zugehörig icon 4](/images/developers/camera-sdk-linux-examples-get-all-parameter-number-list-lx-cmd-4.avif)
 </Frame>
 
-Since it is not convenient to view parameter details in ROS2, the numbers, types and descriptions of all parameters are also listed in the following table:
+Since it ist not convenient zu view Parameter Details in ROS2, die Zahlen, types und descriptions von alle Parameter sind auch listed in die folgende table:
 
-| Number | Type | Description in ROS | Detailed description |
+| Nummer | Type | Description in ROS | Detailed Beschreibung |
 | --- | --- | --- | --- |
-| 1001 | INT | FIRST\_EXPOSURE | Default high integral exposure value |
-| 1002 | INT | SECOND\_EXPOSURE | Default low integral exposure value |
-| 1003 | INT | THIRD\_EXPOSURE | Default medium integral exposure value |
-| 1004 | INT | FOURTH\_EXPOSURE | The fourth point |
+| 1001 | INT | FIRST\_EXPOSURE | Default high integral exposure Wert |
+| 1002 | INT | SECOND\_EXPOSURE | Default low integral exposure Wert |
+| 1003 | INT | THIRD\_EXPOSURE | Default medium integral exposure Wert |
+| 1004 | INT | FOURTH\_EXPOSURE | Die fourth Punkt |
 | 1005 | INT | GAIN | Gain |
-| 1011 | INT | MIN\_DEPTH | Minimum depth value |
-| 1012 | INT | MAX\_DEPTH | Maximum depth value |
-| 1013 | INT | MIN\_AMPLITUDE | Minimum effective signal strength value |
-| 1014 | INT | MAX\_AMPLITUDE | Maximum effective signal strength value |
+| 1011 | INT | MIN\_DEPTH | Minimum Tiefe Wert |
+| 1012 | INT | MAX\_DEPTH | Maximum Tiefe Wert |
+| 1013 | INT | MIN\_AMPLITUDE | Minimum effective signal strength Wert |
+| 1014 | INT | MAX\_AMPLITUDE | Maximum effective signal strength Wert |
 | 1016 | INT | CODE\_MODE | Coding mode |
 | 1018 | INT | WORK\_MODE | Working mode |
 | 1019 | INT | LINK\_SPEED | Network card network speed |
-| 1021 | INT | 3D\_IMAGE\_WIDTH | 3D image resolution width |
-| 1022 | INT | 3D\_IMAGE\_HEIGHT | 3D image resolution height |
+| 1021 | INT | 3D\_IMAGE\_WIDTH | 3D Bild resolution Breite |
+| 1022 | INT | 3D\_IMAGE\_HEIGHT | 3D Bild resolution Höhe |
 | 1023 | INT | 3D\_IMAGE\_OFFSET\_X | ROI horizontal offset pixels |
 | 1024 | INT | 3D\_IMAGE\_OFFSET\_Y | ROI vertical offset pixels |
-| 1025 | INT | 3D\_BINNING\_MODE | 3D image binnin |
-| 1026 | INT | 3D\_DEPTH\_DATA\_TYPE | Depth image data format |
-| 1031 | INT | 3D\_AMPLITUDE\_CHANNEL | 3D intensity image channel number |
-| 1032 | INT | 3D\_AMPLITUDE\_GET\_TYPE | How to get intensity image |
-| 1033 | INT | 3D\_AMPLITUDE\_EXPOSURE | 3D manual exposure value |
-| 1034 | INT | 3D\_AMPLITUDE\_INTENSITY | 3D automatic target lighting |
-| 1035 | INT | 3D\_AMPLITUDE\_DATA\_TYPE | Intensity image data format |
+| 1025 | INT | 3D\_BINNING\_MODE | 3D Bild binnin |
+| 1026 | INT | 3D\_DEPTH\_DATA\_TYPE | Depth Bild Daten format |
+| 1031 | INT | 3D\_AMPLITUDE\_CHANNEL | 3D Intensität Bild channel Nummer |
+| 1032 | INT | 3D\_AMPLITUDE\_GET\_TYPE | How zu abrufen Intensität Bild |
+| 1033 | INT | 3D\_AMPLITUDE\_EXPOSURE | 3D manual exposure Wert |
+| 1034 | INT | 3D\_AMPLITUDE\_INTENSITY | 3D automatic Ziel lighting |
+| 1035 | INT | 3D\_AMPLITUDE\_DATA\_TYPE | Intensity Bild Daten format |
 | 1036 | INT | 3D\_AUTO\_EXPOSURE\_LEVEL | 3D automatic exposure level |
-| 1041 | INT | 2D\_IMAGE\_WIDTH | 2D image resolution width |
-| 1042 | INT | 2D\_IMAGE\_HEIGHT | 2D image high resolution |
-| 1043 | INT | 2D\_IMAGE\_OFFSET\_X | 2D image ROI horizontal offset |
-| 1044 | INT | 2D\_IMAGE\_OFFSET\_Y | 2D image ROI vertical offset |
-| 1045 | INT | 2D\_BINNING\_MODE | 2D image binnin |
-| 1046 | INT | 2D\_IMAGE\_CHANNEL | Number of 2D image channels |
-| 1047 | INT | 2D\_IMAGE\_DATA\_TYPE | 2D image data format |
-| 1051 | INT | 2D\_MANUAL\_EXPOSURE | 2D exposure value during manual exposure |
+| 1041 | INT | 2D\_IMAGE\_WIDTH | 2D Bild resolution Breite |
+| 1042 | INT | 2D\_IMAGE\_HEIGHT | 2D Bild high resolution |
+| 1043 | INT | 2D\_IMAGE\_OFFSET\_X | 2D Bild ROI horizontal offset |
+| 1044 | INT | 2D\_IMAGE\_OFFSET\_Y | 2D Bild ROI vertical offset |
+| 1045 | INT | 2D\_BINNING\_MODE | 2D Bild binnin |
+| 1046 | INT | 2D\_IMAGE\_CHANNEL | Nummer von 2D Bild channels |
+| 1047 | INT | 2D\_IMAGE\_DATA\_TYPE | 2D Bild Daten format |
+| 1051 | INT | 2D\_MANUAL\_EXPOSURE | 2D exposure Wert during manual exposure |
 | 1052 | INT | 2D\_MANUAL\_GAIN | 2D gain during manual exposure |
-| 1053 | INT | 2D\_ENCODE\_TYPE | 2D image compression format |
-| 1054 | INT | 2D\_AUTO\_EXPOSURE\_LEVEL | 2D image automatic exposure, etc. |
-| 1061 | INT | TOF\_GLOBAL\_OFFSET | ToF depth data offset |
-| 1062 | INT | 3D\_UNDISTORT\_SCALE | ToF image anti-distortion coefficient |
-| 1065 | INT | ALGORITHM\_MODE | Set built-in application algorithm |
+| 1053 | INT | 2D\_ENCODE\_TYPE | 2D Bild compression format |
+| 1054 | INT | 2D\_AUTO\_EXPOSURE\_LEVEL | 2D Bild automatic exposure, etc. |
+| 1061 | INT | TOF\_GLOBAL\_OFFSET | ToF Tiefe Daten offset |
+| 1062 | INT | 3D\_UNDISTORT\_SCALE | ToF Bild anti-distortion coefficient |
+| 1065 | INT | ALGORITHM\_MODE | Set built-in Anwendung algorithm |
 | 1066 | INT | MODBUS\_ADDR | modbus address |
-| 1067 | INT | HEART\_TIME | Heartbeat time with the device |
-| 1068 | INT | GVSP\_PACKET\_SIZE | GVSP single packet data packet size |
+| 1067 | INT | HEART\_TIME | Heartbeat time mit die Gerät |
+| 1068 | INT | GVSP\_PACKET\_SIZE | GVSP single packet Daten packet size |
 | 1069 | INT | TRIGGER\_MODE | Trigger mode |
-| 1070 | INT | CALCULATE\_UP | Algorithm shift up and down |
-| 1072 | INT | CAN\_BAUD\_RATE | baud rate value of can |
+| 1070 | INT | CALCULATE\_UP | Algorithm shift up und down |
+| 1072 | INT | CAN\_BAUD\_RATE | baud rate Wert von kann |
 | 1073 | INT | MAX\_3D\_AUTO\_EXPOSURE | 3d automatic exposure limit |
-| 1074 | INT | CUSTOM\_PARAM\_GROUP | User-defined parameter group |
+| 1074 | INT | CUSTOM\_PARAM\_GROUP | User-defined Parameter group |
 | 2001 | FLOAT | FILTER\_LEVEL | Filter level |
-| 2002 | FLOAT | EST\_OUT\_EXPOSURE | Whether to evaluate overexposure data |
-| 2003 | FLOAT | LIGHT\_INTENSITY | light intensity |
-| 2004 | FLOAT | 3D\_DEPTH\_FPS | Current frame rate of depth map |
-| 2005 | FLOAT | 3D\_AMPLITUDE\_FPS | Intensity map current frame rate |
-| 2006 | FLOAT | 2D\_IMAGE\_FPS | RGB image current frame rate |
-| 2007 | FLOAT | DEVICE\_TEMPERATURE | Current camera temperature |
-| 3001 | BOOL | CONNECT\_STATE | Current connection status |
-| 3002 | BOOL | ENABLE\_3D\_DEPTH\_STREAM | Turn on/off depth data stream |
-| 3003 | BOOL | ENABLE\_3D\_AMP\_STREAM | Turn on/off intensity data stream |
+| 2002 | FLOAT | EST\_OUT\_EXPOSURE | Whether zu evaluate overexposure Daten |
+| 2003 | FLOAT | LIGHT\_INTENSITY | light Intensität |
+| 2004 | FLOAT | 3D\_DEPTH\_FPS | Current frame rate von Tiefe map |
+| 2005 | FLOAT | 3D\_AMPLITUDE\_FPS | Intensity map aktuell frame rate |
+| 2006 | FLOAT | 2D\_IMAGE\_FPS | RGB Bild aktuell frame rate |
+| 2007 | FLOAT | DEVICE\_TEMPERATURE | Current Kamera temperature |
+| 3001 | BOOL | CONNECT\_STATE | Current connection Status |
+| 3002 | BOOL | ENABLE\_3D\_DEPTH\_STREAM | Turn on/off Tiefe Daten Stream |
+| 3003 | BOOL | ENABLE\_3D\_AMP\_STREAM | Turn on/off Intensität Daten Stream |
 | 3006 | BOOL | ENABLE\_3D\_AUTO\_EXPOSURE | 3D automatic exposure enable |
 | 3007 | BOOL | ENABLE\_3D\_UNDISTORT | 3D anti-distortion enable |
 | 3008 | BOOL | ENABLE\_ANTI\_FLICKER | Anti-flicker enable |
-| 3011 | BOOL | ENABLE\_2D\_STREAM | Turn on/off 2D data stream |
+| 3011 | BOOL | ENABLE\_2D\_STREAM | Turn on/off 2D Daten Stream |
 | 3012 | BOOL | ENABLE\_2D\_AUTO\_EXPOSURE | 2D automatic exposure enable |
-| 3015 | BOOL | ENABLE\_2D\_UNDISTORT | 2D image anti-distortion enabler |
-| 3016 | BOOL | ENABLE\_2D\_TO\_DEPTH | 2D3D image alignment enable |
+| 3015 | BOOL | ENABLE\_2D\_UNDISTORT | 2D Bild anti-distortion enabler |
+| 3016 | BOOL | ENABLE\_2D\_TO\_DEPTH | 2D3D Bild alignment enable |
 | 3017 | BOOL | ENABLE\_BACKGROUND\_AMP | Intensity background light enable |
 | 3018 | BOOL | ENABLE\_MULTI\_MACHINE | Multi-machine mode enable |
 | 3019 | BOOL | ENABLE\_MULTI\_EXPOSURE\_HDR | HDR |
-| 3020 | BOOL | ENABLE\_SYNC\_FRAME | Whether to enable forced frame synchronization |
-| 4001 | STRING | DEVICE\_VERSION | Device version number |
-| 4002 | STRING | DEVICE\_LOG\_NAME | Log file name |
-| 4003 | STRING | FIRMWARE\_NAME | Firmware file name |
-| 4004 | STRING | FILTER\_PARAMS | Filter algorithm parameters |
-| 4005 | STRING | ALGORITHM\_PARAMS | Built-in algorithm parameters |
-| 4006 | STRING | ALGORITHM\_VERSION | Built-in algorithm version number |
-| 4007 | STRING | DEVICE\_OS\_VERSION | Device system image version number |
-| 0 | CMD | GET\_PARAM\_LIST | Get all parameter numbers |
+| 3020 | BOOL | ENABLE\_SYNC\_FRAME | Whether zu enable forced frame synchronization |
+| 4001 | STRING | DEVICE\_VERSION | Device Version Nummer |
+| 4002 | STRING | DEVICE\_LOG\_NAME | Log Datei Name |
+| 4003 | STRING | FIRMWARE\_NAME | Firmware Datei Name |
+| 4004 | STRING | FILTER\_PARAMS | Filter algorithm Parameter |
+| 4005 | STRING | ALGORITHM\_PARAMS | Built-in algorithm Parameter |
+| 4006 | STRING | ALGORITHM\_VERSION | Built-in algorithm Version Nummer |
+| 4007 | STRING | DEVICE\_OS\_VERSION | Device System Bild Version Nummer |
+| 0 | CMD | GET\_PARAM\_LIST | Get alle Parameter Zahlen |
 | 1 | CMD | START\_STREAM | Device startup |
 | 2 | CMD | STOP\_STREAM | Equipment stops flowing |
-| 5001 | CMD | GET\_NEW\_FRAME | Update current latest data |
-| 5002 | CMD | RETURN\_VERSION | Roll back to the previous version |
-| 5003 | CMD | RESTART\_DEVICE | Restart camera |
+| 5001 | CMD | GET\_NEW\_FRAME | Update aktuell latest Daten |
+| 5002 | CMD | RETURN\_VERSION | Roll back zu die previous Version |
+| 5003 | CMD | RESTART\_DEVICE | Restart Kamera |
 | 5004 | CMD | WHITE\_BALANCE | Auto white balance |
-| 5007 | CMD | RESET\_PARAM | Restore default parameters |
+| 5007 | CMD | RESET\_PARAM | Restore Standard Parameter |
 
-**Some parameters need to stop the flow before they can be set, or there is a sequence of settings. Please contact the technical support staff for specific needs.**
+**Some Parameter müssen zu stoppen die flow vor they kann be festlegen, oder there ist a sequence von settings. Please contact die technical support staff für specific needs.**
 
-##### 5.3.6.2 Get Int parameter (Lx\_Int)
+##### 5.3.6.2 Get Int Parameter (Lx\_Int)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
 
 val: 0
 
-is\_set: false"
+ist\_set: false"
 
 <Frame>
-  ![Get related icons of Int parameters (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-get-of-int-parameters-lx-int.avif)
+  ![Get zugehörig Abbildungen von Int Parameter (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-get-of-int-parameters-lx-int.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get the related icon of Int parameter (Lx\\\_Int) 2](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-2.avif)
+  ![Get die zugehörig icon von Int Parameter (Lx\\\_Int) 2](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-2.avif)
 </Frame>
 
-What is in the red box is the return value. What is obtained in the figure is the high integration time. According to the return result, you can see that the maximum value is **3600**, the minimum value is **1**, the current value is **1010**, whether the setting is supported is **supported**, the interface call return value is **0**, and the return value information is **success**.
+What ist in die red Feld ist die return Wert. What ist obtained in die figure ist die high integration time. According zu die return Ergebnis, you kann see that die maximal Wert ist **3600**, die minimal Wert ist **1**, die aktuell Wert ist **1010**, whether die setting ist unterstützt ist **unterstützt**, die interface call return Wert ist **0**, und die return Wert Informationen ist **Erfolg**.
 
 <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 0,is_set: false}'`
 
 <Frame>
-  ![Get the related icon of Int parameter (Lx\\\_Int) 3](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-3.avif)
+  ![Get die zugehörig icon von Int Parameter (Lx\\\_Int) 3](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-3.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get the related icon of Int parameter (Lx\\\_Int) 4](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-4.avif)
+  ![Get die zugehörig icon von Int Parameter (Lx\\\_Int) 4](/images/developers/camera-sdk-linux-examples-get-the-of-int-parameter-lx-int-4.avif)
 </Frame>
 
-What is obtained in the figure is the high integration time. According to the returned results, we can see that the maximum value is **3600**, the minimum value is **1**, the current value is **1010**, whether the setting is supported is **supported**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist obtained in die figure ist die high integration time. According zu die returned Ergebnisse, we kann see that die maximal Wert ist **3600**, die minimal Wert ist **1**, die aktuell Wert ist **1010**, whether die setting ist unterstützt ist **unterstützt**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
-##### 5.3.6.3 Set Int parameters (Lx\_Int)
+##### 5.3.6.3 Set Int Parameter (Lx\_Int)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxInt "cmd: 1001
 
 val: 2000
 
-is\_set: true"
+ist\_set: true"
 
 <Frame>
-  ![Illustrations related to setting Int parameters (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-setting-int-parameters-lx-int.avif)
+  ![Illustrations zugehörig zu setting Int Parameter (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-setting-int-parameters-lx-int.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustration 2 related to setting Int parameters (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-int-parameters-lx-int.avif)
+  ![Illustration 2 zugehörig zu setting Int Parameter (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-int-parameters-lx-int.avif)
 </Frame>
 
-What is in the red box is the return value. The high integration time is set in the figure. According to the return result, you can see that the maximum value is **3600**, the minimum value is **1**, the current value has been modified to **2000**, whether the support setting is **supported**, the interface call return value is **0**, and the return value information is **success**.
+What ist in die red Feld ist die return Wert. Die high integration time ist festlegen in die figure. According zu die return Ergebnis, you kann see that die maximal Wert ist **3600**, die minimal Wert ist **1**, die aktuell Wert has been modified zu **2000**, whether die support setting ist **unterstützt**, die interface call return Wert ist **0**, und die return Wert Informationen ist **Erfolg**.
 
 <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxInt lx_camera_ros/srv/LxInt '{cmd: 1001,val: 3000,is_set: true}'`
 
 <Frame>
-  ![Illustration 3 related to setting Int parameters (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-int-parameters-lx-int.avif)
+  ![Illustration 3 zugehörig zu setting Int Parameter (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-int-parameters-lx-int.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustration 4 related to setting Int parameters (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-4-related-to-setting-int-parameters-lx-int.avif)
+  ![Illustration 4 zugehörig zu setting Int Parameter (Lx\\\_Int)](/images/developers/camera-sdk-linux-examples-illustration-4-related-to-setting-int-parameters-lx-int.avif)
 </Frame>
 
-What is obtained in the figure is the high integration time. According to the returned results, we can see that the maximum value is **3600**, the minimum value is **1**, the current value has been modified to **3000**, whether the setting is supported is **supported**, the interface call return value is **0**, and the return value information is **success**.
+What ist obtained in die figure ist die high integration time. According zu die returned Ergebnisse, we kann see that die maximal Wert ist **3600**, die minimal Wert ist **1**, die aktuell Wert has been modified zu **3000**, whether die setting ist unterstützt ist **unterstützt**, die interface call return Wert ist **0**, und die return Wert Informationen ist **Erfolg**.
 
-##### 5.3.6.4 Get Float parameters (Lx\_Float)
+##### 5.3.6.4 Get Float Parameter (Lx\_Float)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
 
 val: 0.0
 
-is\_set: false"
+ist\_set: false"
 
 <Frame>
-  ![Get related icons of Float parameters (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-get-of-float-parameters-lx-float.avif)
+  ![Get zugehörig Abbildungen von Float Parameter (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-get-of-float-parameters-lx-float.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get the related icon of Float parameter (Lx\\\_Float) 2](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-2.avif)
+  ![Get die zugehörig icon von Float Parameter (Lx\\\_Float) 2](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-2.avif)
 </Frame>
 
-What is in the red box is the return value. What is obtained in the picture is the camera temperature. According to the return result, you can see that the maximum value is **120**, the minimum value is **-40**, the current value is **49.6875**, whether the setting is supported is **not supported**, the interface call return value is **0**, and the return value information is **success**. <br />
+What ist in die red Feld ist die return Wert. What ist obtained in die picture ist die Kamera temperature. According zu die return Ergebnis, you kann see that die maximal Wert ist **120**, die minimal Wert ist **-40**, die aktuell Wert ist **49.6875**, whether die setting ist unterstützt ist **not unterstützt**, die interface call return Wert ist **0**, und die return Wert Informationen ist **Erfolg**. <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 0,is_set: false}'`
 
 <Frame>
-  ![Obtain related icons of Float parameters (Lx\\\_Float) 3](/images/developers/camera-sdk-linux-examples-obtain-of-float-parameters-lx-float-3.avif)
+  ![Obtain zugehörig Abbildungen von Float Parameter (Lx\\\_Float) 3](/images/developers/camera-sdk-linux-examples-obtain-of-float-parameters-lx-float-3.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get the related icon of Float parameter (Lx\\\_Float) 4](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-4.avif)
+  ![Get die zugehörig icon von Float Parameter (Lx\\\_Float) 4](/images/developers/camera-sdk-linux-examples-get-the-of-float-parameter-lx-float-4.avif)
 </Frame>
 
-What is obtained in the picture is the camera temperature. According to the returned results, you can see that the maximum value is **120**, the minimum value is **-40**, the current value is **50.4375**, whether the setting is supported is **not supported**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist obtained in die picture ist die Kamera temperature. According zu die returned Ergebnisse, you kann see that die maximal Wert ist **120**, die minimal Wert ist **-40**, die aktuell Wert ist **50.4375**, whether die setting ist unterstützt ist **not unterstützt**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
-##### 5.3.6.5 Set Float parameters (Lx\_Float)
+##### 5.3.6.5 Set Float Parameter (Lx\_Float)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxFloat "cmd: 2007
 
 val: 5.0
 
-is\_set: true"
+ist\_set: true"
 
 <Frame>
-  ![Illustrations related to setting Float parameters (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float.avif)
+  ![Illustrations zugehörig zu setting Float Parameter (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustration 2 related to setting Float parameters (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-float-parameters-lx-float.avif)
+  ![Illustration 2 zugehörig zu setting Float Parameter (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-float-parameters-lx-float.avif)
 </Frame>
 
-The red box is the return value. The camera temperature is set in the picture. According to the return result, you can see that the maximum value is **120**, the minimum value is **-40**, the current value is **50.9375**, whether the setting is supported is **not supported**, the interface call return value is **-2**, the return value information is **not supported**, the value set here is 5, the current value and the set value are inconsistent because the parameter does not support setting. <br />
+Die red Feld ist die return Wert. Die Kamera temperature ist festlegen in die picture. According zu die return Ergebnis, you kann see that die maximal Wert ist **120**, die minimal Wert ist **-40**, die aktuell Wert ist **50.9375**, whether die setting ist unterstützt ist **not unterstützt**, die interface call return Wert ist **-2**, die return Wert Informationen ist **not unterstützt**, die Wert festlegen here ist 5, die aktuell Wert und die festlegen Wert sind inconsistent because die Parameter does not support setting. <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxFloat lx_camera_ros/srv/LxFloat '{cmd: 2007,val: 5.0,is_set: true}'`
 
 <Frame>
-  ![Illustration 3 related to setting Float parameters (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-float-parameters-lx-float.avif)
+  ![Illustration 3 zugehörig zu setting Float Parameter (Lx\\\_Float)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-float-parameters-lx-float.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustrations related to setting Float parameters (Lx\\\_Float) 4](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float-4.avif)
+  ![Illustrations zugehörig zu setting Float Parameter (Lx\\\_Float) 4](/images/developers/camera-sdk-linux-examples-setting-float-parameters-lx-float-4.avif)
 </Frame>
 
-The camera temperature is set in the picture. According to the returned results, you can see that the maximum value is **120**, the minimum value is **-40**, the current value is **51.125**, whether the setting is supported is **not supported**, the return value of the interface call is **-2**, the return value information is **not supported**, the value set here is 5, the current value and the set value are inconsistent because the parameter does not support setting.
+Die Kamera temperature ist festlegen in die picture. According zu die returned Ergebnisse, you kann see that die maximal Wert ist **120**, die minimal Wert ist **-40**, die aktuell Wert ist **51.125**, whether die setting ist unterstützt ist **not unterstützt**, die return Wert von die interface call ist **-2**, die return Wert Informationen ist **not unterstützt**, die Wert festlegen here ist 5, die aktuell Wert und die festlegen Wert sind inconsistent because die Parameter does not support setting.
 
-##### 5.3.6.6 Get Bool parameters (Lx\_Bool)
+##### 5.3.6.6 Get Bool Parameter (Lx\_Bool)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
 
 val: false
 
-is\_set: false"
+ist\_set: false"
 
 <Frame>
-  ![Get related icons of Bool parameters (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-get-of-bool-parameters-lx-bool.avif)
+  ![Get zugehörig Abbildungen von Bool Parameter (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-get-of-bool-parameters-lx-bool.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get Bool parameter (Lx\\\_Bool) related icon 2](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-2.avif)
+  ![Get Bool Parameter (Lx\\\_Bool) zugehörig icon 2](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-2.avif)
 </Frame>
 
-What is in the red box is the return value. What is obtained in the picture is 2D automatic exposure. According to the return result, we can see that the current value is **false**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist in die red Feld ist die return Wert. What ist obtained in die picture ist 2D automatic exposure. According zu die return Ergebnis, we kann see that die aktuell Wert ist **false**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
 <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: false,is_set: false}'`
 
 <Frame>
-  ![Get Bool parameter (Lx\\\_Bool) related icon 3](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-3.avif)
+  ![Get Bool Parameter (Lx\\\_Bool) zugehörig icon 3](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-3.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get Bool parameter (Lx\\\_Bool) related icon 4](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-4.avif)
+  ![Get Bool Parameter (Lx\\\_Bool) zugehörig icon 4](/images/developers/camera-sdk-linux-examples-get-bool-parameter-lx-bool-4.avif)
 </Frame>
 
-What is obtained in the figure is 2D automatic exposure. According to the return result, we can see that the current value is **false**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist obtained in die figure ist 2D automatic exposure. According zu die return Ergebnis, we kann see that die aktuell Wert ist **false**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
-##### 5.3.6.7 Set Bool parameters (Lx\_Bool)
+##### 5.3.6.7 Set Bool Parameter (Lx\_Bool)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxBool "cmd: 3012
 
 val: true
 
-is\_set: true"
+ist\_set: true"
 
 <Frame>
-  ![Illustrations related to setting Bool parameters (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool.avif)
+  ![Illustrations zugehörig zu setting Bool Parameter (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustration 2 related to setting Bool parameters (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-bool-parameters-lx-bool.avif)
+  ![Illustration 2 zugehörig zu setting Bool Parameter (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-bool-parameters-lx-bool.avif)
 </Frame>
 
-What is in the red box is the return value. The 2D automatic exposure is set in the picture. According to the return result, we can see that the current value is **true**, the return value of the interface call is **0**, the return value information is **success**, and the current value is consistent with the set value.
+What ist in die red Feld ist die return Wert. Die 2D automatic exposure ist festlegen in die picture. According zu die return Ergebnis, we kann see that die aktuell Wert ist **true**, die return Wert von die interface call ist **0**, die return Wert Informationen ist **Erfolg**, und die aktuell Wert ist consistent mit die festlegen Wert.
 
 <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxBool lx_camera_ros/srv/LxBool '{cmd: 3012,val: true,is_set: true}'`
 
 <Frame>
-  ![Illustration 3 related to setting Bool parameters (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-bool-parameters-lx-bool.avif)
+  ![Illustration 3 zugehörig zu setting Bool Parameter (Lx\\\_Bool)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-bool-parameters-lx-bool.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustrations related to setting Bool parameters (Lx\\\_Bool) 4](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool-4.avif)
+  ![Illustrations zugehörig zu setting Bool Parameter (Lx\\\_Bool) 4](/images/developers/camera-sdk-linux-examples-setting-bool-parameters-lx-bool-4.avif)
 </Frame>
 
-The setting in the picture is 2D automatic exposure. According to the return result, we can see that the current value is **true**, the return value of the interface call is **0**, the return value information is **success**, and the current value is consistent with the set value.
+Die setting in die picture ist 2D automatic exposure. According zu die return Ergebnis, we kann see that die aktuell Wert ist **true**, die return Wert von die interface call ist **0**, die return Wert Informationen ist **Erfolg**, und die aktuell Wert ist consistent mit die festlegen Wert.
 
-##### 5.3.6.8 Get String parameter (Lx\_String)
+##### 5.3.6.8 Get String Parameter (Lx\_String)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
 
 val: ''
 
-is\_set: false"
+ist\_set: false"
 
 <Frame>
-  ![Get related icons of String parameters (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-get-of-string-parameters-lx-string.avif)
+  ![Get zugehörig Abbildungen von String Parameter (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-get-of-string-parameters-lx-string.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Obtain String parameter (Lx\\\_String) related icon 2](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-2.avif)
+  ![Obtain String Parameter (Lx\\\_String) zugehörig icon 2](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-2.avif)
 </Frame>
 
-What is in the red box is the return value. What is obtained in the figure is the device version number. According to the return result, we can see that the current value is **V1.1.33\_231201**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist in die red Feld ist die return Wert. What ist obtained in die figure ist die Gerät Version Nummer. According zu die return Ergebnis, we kann see that die aktuell Wert ist **V1.1.33\_231201**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
 <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: '',is_set: false}'`
 
 <Frame>
-  ![Obtain String parameter (Lx\\\_String) related icon 3](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-3.avif)
+  ![Obtain String Parameter (Lx\\\_String) zugehörig icon 3](/images/developers/camera-sdk-linux-examples-obtain-string-parameter-lx-string-3.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Get the related icon of String parameter (Lx\\\_String) 4](/images/developers/camera-sdk-linux-examples-get-the-of-string-parameter-lx-string-4.avif)
+  ![Get die zugehörig icon von String Parameter (Lx\\\_String) 4](/images/developers/camera-sdk-linux-examples-get-the-of-string-parameter-lx-string-4.avif)
 </Frame>
 
-What is obtained in the figure is the device version number. According to the return result, we can see that the current value is **V1.1.33\_231201**, the return value of the interface call is **0**, and the return value information is **success**.
+What ist obtained in die figure ist die Gerät Version Nummer. According zu die return Ergebnis, we kann see that die aktuell Wert ist **V1.1.33\_231201**, die return Wert von die interface call ist **0**, und die return Wert Informationen ist **Erfolg**.
 
-##### 5.3.6.9 Set String parameters (Lx\_String)
+##### 5.3.6.9 Set String Parameter (Lx\_String)
 
 **ROS1**
 
-Enter in the terminal: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
+Enter in die terminal: rosservice call /lx\_camera\_node/LxCamera\_LxString "cmd: 4001
 
 val: 'put:\\"123\\"'
 
-is\_set: true"
+ist\_set: true"
 
 <Frame>
-  ![Illustrations related to setting String parameters (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string.avif)
+  ![Illustrations zugehörig zu setting String Parameter (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustration 2 related to setting String parameters (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-string-parameters-lx-string.avif)
+  ![Illustration 2 zugehörig zu setting String Parameter (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-illustration-2-related-to-setting-string-parameters-lx-string.avif)
 </Frame>
 
-The red box is the return value. The device version number is set in the figure. According to the return result, we can see that the current value is **V1.1.33\_231201**, the return value of the interface call is **-2**, and the return value information is **not supported**. The current value and the set value are inconsistent because this parameter does not support setting. <br />
+Die red Feld ist die return Wert. Die Gerät Version Nummer ist festlegen in die figure. According zu die return Ergebnis, we kann see that die aktuell Wert ist **V1.1.33\_231201**, die return Wert von die interface call ist **-2**, und die return Wert Informationen ist **not unterstützt**. Die aktuell Wert und die festlegen Wert sind inconsistent because dies Parameter does not support setting. <br />
 
 **ROS2**
 
-Enter in the terminal: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
+Enter in die terminal: `ros2 service call /LxCamera_LxString lx_camera_ros/srv/LxString '{cmd: 4001,val: "put:\\"123\\"",is_set: true}'`
 
 <Frame>
-  ![Illustration 3 related to setting String parameters (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-string-parameters-lx-string.avif)
+  ![Illustration 3 zugehörig zu setting String Parameter (Lx\\\_String)](/images/developers/camera-sdk-linux-examples-illustration-3-related-to-setting-string-parameters-lx-string.avif)
 </Frame>
 
-You can see the output:
+You kann see die Ausgabe:
 
 <Frame>
-  ![Illustrations related to setting String parameters (Lx\\\_String) 4](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string-4.avif)
+  ![Illustrations zugehörig zu setting String Parameter (Lx\\\_String) 4](/images/developers/camera-sdk-linux-examples-setting-string-parameters-lx-string-4.avif)
 </Frame>
 
-The device version number is set in the figure. According to the returned result, we can see that the current value is **V1.1.33\_231201**, the return value of the interface call is **-2**, and the return value information is **not supported**. The current value is inconsistent with the set value because this parameter does not support setting.
+Die Gerät Version Nummer ist festlegen in die figure. According zu die returned Ergebnis, we kann see that die aktuell Wert ist **V1.1.33\_231201**, die return Wert von die interface call ist **-2**, und die return Wert Informationen ist **not unterstützt**. Die aktuell Wert ist inconsistent mit die festlegen Wert because dies Parameter does not support setting.
 
-**When setting a value of String type, escape characters must be added to single quotes and double quotes, except for the initial double quotes in ROS2 and the initial single quotes in ROS1. For example, if you want to input the string \[PUT”123”\], you must add escape characters to become: \[PUT\\”123\\”\].**
+**When setting a Wert von String Typ, escape characters muss be added zu single quotes und double quotes, except für die initial double quotes in ROS2 und die initial single quotes in ROS1. For Beispiel, if you want zu Eingabe die string \[PUT”123”\], you muss ergänzen escape characters zu become: \[PUT\\”123\\”\].**
 
 ---
 
-## ROS recommended hardware and resource usage
+## Empfohlene ROS-Hardware und Ressourcenverbrauch
 
-### 6.1 Recommended hardware configuration
+### 6.1 Empfohlene Hardware-Konfiguration
 
-In the recommended hardware configuration, the analysis is based on CPU core count, CPU usage, and memory size. **These are recommended configurations, not minimum requirements.** If your hardware is below the recommendation, stable operation may still be possible by reducing stream output, disabling point-cloud computation, or lowering the algorithm load. **Running a workload above the available configuration may crash the ROS core or Ubuntu.** The second and third sections of this chapter provide detailed usage data. Choose the operating environment and stream configuration that best fits your system. **All data here was collected in a VM using an M4 Pro camera.**
+In die empfohlen hardware Konfiguration, die analysis ist based on CPU core count, CPU usage, und Speicher size. **These sind empfohlen configurations, not minimal requirements.** Wenn Ihr hardware ist below die recommendation, stabil operation may still be possible durch reducing Stream Ausgabe, disabling Punkt-Wolke computation, oder lowering die algorithm load. **Running a workload above die verfügbar Konfiguration may crash die ROS core oder Ubuntu.** Die second und third sections von dies chapter provide detailed usage Daten. Choose die operating Umgebung und Stream Konfiguration that best fits Ihr System. **All Daten here was collected in a VM using an M4 Pro Kamera.**
 
 **Ubuntu16.04**
 
-| ROS version | CPU | Memory | Bandwidth |
+| ROS Version | CPU | Memory | Bandwidth |
 | --- | --- | --- | --- |
 | ros | AMD64 \[Quad-core\] | 4G | 1000M |
 
 **Ubuntu18.04**
 
-| ROS version | CPU | Memory | Bandwidth |
+| ROS Version | CPU | Memory | Bandwidth |
 | --- | --- | --- | --- |
 | ros | AMD64 \[Quad-core\] | 4G | 1000M |
 | ros2 | AMD64 \[Quad-core\] | 4G | 1000M |
 
 **Ubuntu20.04**
 
-| ROS version | CPU | Memory | Bandwidth |
+| ROS Version | CPU | Memory | Bandwidth |
 | --- | --- | --- | --- |
 | ros | AMD64 \[Quad-core\] | 4G | 1000M |
 | ros2 | AMD64 \[Quad-core\] | 4G | 1000M |
 
 **Ubuntu22.04**
 
-| ROS version | CPU | Memory | Bandwidth |
+| ROS Version | CPU | Memory | Bandwidth |
 | --- | --- | --- | --- |
 | ros | AMD64 \[Quad-core\] | 4G | 1000M |
 
-### 6.2 CPU details
+### 6.2 CPU-Details
 
-The CPU details will show the amount of CPU resources occupied by the node under different operating conditions. The test is based on **AMD64 \[8 cores\], 8G memory** hardware environment, the test camera is **M4 Pro**, the test algorithm is **tray algorithm**, **2D width and height are 1280\*960, and 3D width and height are 640\*480**, **2D anti-distortion is on, 3D anti-distortion is off, and integration 110 - 3000, depth 0 - 8000, ToF frame rate 14, streaming mode, smoothing level 1, noise level 1, time domain level 0**, statistics command is **TOP**. Because the test soft environment is **VM virtual machine**, it is normal for the data displayed by the physical machine to fluctuate compared with that in the document. For some cameras, such as S2, some algorithms are calculated on the host computer, which results in a large amount of resource usage, which is normal. <br />
+Die CPU-Details wird zeigen die amount von CPU resources occupied durch die node under unterschiedlich operating conditions. Die Test ist based on **AMD64 \[8 cores\], 8G Speicher** hardware Umgebung, die Test Kamera ist **M4 Pro**, die Test algorithm ist **tray algorithm**, **2D Breite und Höhe sind 1280\*960, und 3D Breite und Höhe sind 640\*480**, **2D anti-distortion ist on, 3D anti-distortion ist off, und integration 110 - 3000, Tiefe 0 - 8000, ToF frame rate 14, streaming mode, smoothing level 1, noise level 1, time domain level 0**, statistics Befehl ist **TOP**. Because die Test soft Umgebung ist **VM virtual machine**, it ist normal für die Daten displayed durch die physical machine zu fluctuate compared mit that in die document. For some Kameras, such wie S2, some algorithms sind calculated on die host computer, which Ergebnisse in a large amount von resource usage, which ist normal. <br />
 
-**1. Some nouns are explained as follows:**
+**1. Some nouns sind explained wie folgt:**
 
--Single stream: refers to turning on any stream of RGB, depth, and intensity
+-Single Stream: refers zu turning on any Stream von RGB, Tiefe, und Intensität
 
-- Dual stream: refers to turning on any two streams of RGB, depth and intensity
+- Dual Stream: refers zu turning on any two streams von RGB, Tiefe und Intensität
 
--Three streams: refers to RGB, depth, and intensity all three streams are turned on
+-Three streams: refers zu RGB, Tiefe, und Intensität alle three streams sind turned on
 
-- Four streams: means RGB, depth, intensity, and point cloud are all turned on
+- Four streams: means RGB, Tiefe, Intensität, und Punkt Wolke sind alle turned on
 
-**2. The algorithm has a binding relationship with some streams. The binding relationship is as follows:**
+**2. Die algorithm has a binding relationship mit some streams. Die binding relationship ist wie folgt:**
 
-- To enable the pallet algorithm, the depth must be enabled
-- To turn on the obstacle avoidance algorithm, you must turn on depth
-- To turn on the positioning algorithm, you must turn on RGB
+- To enable die pallet algorithm, die Tiefe muss be enabled
+- To turn on die obstacle avoidance algorithm, you muss turn on Tiefe
+- To turn on die positioning algorithm, you muss turn on RGB
 
 <br />
 
-The light blue background in the table is the running configuration with point cloud enabled, and the colorless background is the running configuration without point cloud enabled. **All the test data below have the algorithm shifted down by default, so for S2 series cameras, all test values ​​may be too small \[some algorithms of S2 series cameras are forced to move up\].**
+Die light blau background in die table ist die Ausführung Konfiguration mit Punkt Wolke enabled, und die colorless background ist die Ausführung Konfiguration ohne Punkt Wolke enabled. **All die Test Daten below have die algorithm shifted down durch Standard, so für S2 series Kameras, alle Test Werte ​​may be too small \[some algorithms von S2 series Kameras sind forced zu move up\].**
 
 **Ubuntu16.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 10.59 | 0.0~26.7 |
-| Dual stream | 14.13 | 0.0~60.0 |
+| Single Stream | 10.59 | 0.0~26.7 |
+| Dual Stream | 14.13 | 0.0~60.0 |
 | Third rate | 16.56 | 0.0~37.5 |
 | Fourth rate | 108.25 | 93.8~162.5 |
-| Point cloud \+ depth | 105.13 | 93.8~153.3 |
+| Point Wolke \+ Tiefe | 105.13 | 93.8~153.3 |
 | Algorithm \+ Depth | 5.44 | 0.0~43.0 |
 | Algorithm \+ Depth \+ Point Cloud | 104.39 | 93.8~120.0 |
 | Algorithm \+ Depth \+ RGB | 13.15 | 6.2~40.0 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 105.96 | 93.8~146.7 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 109.29 | 93.8~162.5 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 105.96 | 93.8~146.7 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 109.29 | 93.8~162.5 |
 
 **Ubuntu18.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 10.31 | 0.0~27.5 |
-| Dual stream | 12.81 | 5.9~27.8 |
+| Single Stream | 10.31 | 0.0~27.5 |
+| Dual Stream | 12.81 | 5.9~27.8 |
 | Third rate | 16.23 | 5.9~37.5 |
 | Fourth rate | 105.95 | 88.2~131.2 |
-| Point cloud \+ depth | 103.55 | 88.2~156.2 |
+| Point Wolke \+ Tiefe | 103.55 | 88.2~156.2 |
 | Algorithm \+ Depth | 56.32 | 0.0~43.8 |
 | Algorithm \+ Depth \+ Point Cloud | 104.07 | 78.3~43.8 |
 | Algorithm \+ Depth \+ RGB | 15.22 | 5.9~70.6 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 104.56 | 93.8~125.0 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 105.52 | 61.5~204.8 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 104.56 | 93.8~125.0 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 105.52 | 61.5~204.8 |
 
 | ROS2 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 19.19 | 5.9~88.2 |
-| Dual stream | 23.17 | 6.2~109.1 |
+| Single Stream | 19.19 | 5.9~88.2 |
+| Dual Stream | 23.17 | 6.2~109.1 |
 | Third rate | 30.59 | 9.1~125.0 |
 | Fourth rate | 108.44 | 44.4~158.6 |
-| Point cloud \+ depth | 102.19 | 37.5~143.9 |
+| Point Wolke \+ Tiefe | 102.19 | 37.5~143.9 |
 | Algorithm \+ Depth | 6.44 | 0.0~26.7 |
 | Algorithm \+ Depth \+ Point Cloud | 104.45 | 79.2~176.5 |
 | Algorithm \+ Depth \+ RGB | 14.82 | 5.9~50.0 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 106.89 | 94.1~137.5 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 108.41 | 94.1~162.5 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 106.89 | 94.1~137.5 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 108.41 | 94.1~162.5 |
 
 **Ubuntu20.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 11.46 | 0.0~50.0 |
-| Dual stream | 14.62 | 6.2~66.7 |
+| Single Stream | 11.46 | 0.0~50.0 |
+| Dual Stream | 14.62 | 6.2~66.7 |
 | Third rate | 18.46 | 6.2~50.0 |
 | Fourth rate | 43.64 | 25.0~143.8 |
-| Point cloud \+ depth | 28.37 | 12.5~75.0 |
+| Point Wolke \+ Tiefe | 28.37 | 12.5~75.0 |
 | Algorithm \+ Depth | 6.53 | 0.0~43.8 |
 | Algorithm \+ Depth \+ Point Cloud | 29.28 | 13.3~100 |
 | Algorithm\+Depth\+RGB | 13.79 | 0.0~50.0 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 40.64 | 25.0~81.2 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 40.64 | 25.0~81.2 |
 | Algorithm\+Depth\+Intensity\+RGB\+Point Cloud | 44.44 | 25.0~75.0 |
 
 | ROS2 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 8.07 | 0.0~20.0 |
-| Dual stream | 11.25 | 0.0~33.3 |
+| Single Stream | 8.07 | 0.0~20.0 |
+| Dual Stream | 11.25 | 0.0~33.3 |
 | Third rate | 16.18 | 6.2~62.5 |
 | Fourth rate | 33.77 | 0.0~86.7 |
-| Point cloud \+ depth | 27.45 | 12.5~81.2 |
+| Point Wolke \+ Tiefe | 27.45 | 12.5~81.2 |
 | Algorithm \+ Depth | 6.13 | 0.0~68.8 |
-| Algorithm \+ depth \+ point cloud | 31.11 | 12.5~56.2 |
+| Algorithm \+ Tiefe \+ Punkt Wolke | 31.11 | 12.5~56.2 |
 | Algorithm\+Depth\+RGB | 11.75 | 0.0~68.8 |
 | Algorithm \+ Depth \+ RGB \+ Point Cloud | 38.04 | 6.2~75.0 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 40.85 | 18.8~106.2 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 40.85 | 18.8~106.2 |
 
 **Ubuntu22.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 8.05 | 0.0~23.5 |
-| Dual stream | 11.99 | 0.0~75.0 |
+| Single Stream | 8.05 | 0.0~23.5 |
+| Dual Stream | 11.99 | 0.0~75.0 |
 | Third rate | 18.08 | 0.0~100 |
 | Fourth rate | 50.06 | 6.2~200 |
-| Point cloud \+ depth | 33.92 | 0.0~106.2 |
+| Point Wolke \+ Tiefe | 33.92 | 0.0~106.2 |
 | Algorithm \+ Depth | 7.70 | 0.0~43.8 |
 | Algorithm \+ Depth \+ Point Cloud | 36.20 | 6.2~131.2 |
 | Algorithm \+ Depth \+ RGB | 14.46 | 6.2~37.5 |
 | Algorithm \+ Depth \+ RGB \+ Point Cloud | 39.07 | 18.8~94.1 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 45.61 | 12.5~93.8 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 45.61 | 12.5~93.8 |
 
-### 6.3 Memory details
+### 6.3 Speicher-Details
 
-The memory details will show the amount of memory resources occupied by the node under different operating conditions. The test is based on **AMD64 \[8 cores\], 8G memory** hardware environment, the test camera is **M4 Pro**, the test algorithm is **tray algorithm**, **2D width and height are 1280\*960, and 3D width and height are 640\*480**, **2D anti-distortion is on, 3D anti-distortion is off, points 110 - 3000, depth 0 - 8000, ToF frame rate 14, streaming mode, smoothing level 1, noise level 1, time domain level 0**, statistics command is **TOP**. Because the test soft environment is **VM virtual machine**, it is normal for the data displayed by the physical machine to fluctuate compared with that in the document. For some cameras, such as S2, some algorithms are calculated on the host computer, which results in a large amount of resource usage, which is normal. <br />
+Die Speicher Details wird zeigen die amount von Speicher resources occupied durch die node under unterschiedlich operating conditions. Die Test ist based on **AMD64 \[8 cores\], 8G Speicher** hardware Umgebung, die Test Kamera ist **M4 Pro**, die Test algorithm ist **tray algorithm**, **2D Breite und Höhe sind 1280\*960, und 3D Breite und Höhe sind 640\*480**, **2D anti-distortion ist on, 3D anti-distortion ist off, points 110 - 3000, Tiefe 0 - 8000, ToF frame rate 14, streaming mode, smoothing level 1, noise level 1, time domain level 0**, statistics Befehl ist **TOP**. Because die Test soft Umgebung ist **VM virtual machine**, it ist normal für die Daten displayed durch die physical machine zu fluctuate compared mit that in die document. For some Kameras, such wie S2, some algorithms sind calculated on die host computer, which Ergebnisse in a large amount von resource usage, which ist normal. <br />
 
-**1. Some nouns are explained as follows:**
+**1. Some nouns sind explained wie folgt:**
 
--Single stream: refers to turning on any stream of RGB, depth, and intensity
+-Single Stream: refers zu turning on any Stream von RGB, Tiefe, und Intensität
 
-- Dual stream: refers to turning on any two streams of RGB, depth and intensity
+- Dual Stream: refers zu turning on any two streams von RGB, Tiefe und Intensität
 
--Three streams: refers to RGB, depth, and intensity all three streams are turned on
+-Three streams: refers zu RGB, Tiefe, und Intensität alle three streams sind turned on
 
-- Four streams: means RGB, depth, intensity, and point cloud are all turned on
+- Four streams: means RGB, Tiefe, Intensität, und Punkt Wolke sind alle turned on
 
-**2. The algorithm has a binding relationship with some streams. The binding relationship is as follows:**
+**2. Die algorithm has a binding relationship mit some streams. Die binding relationship ist wie folgt:**
 
-- To enable the pallet algorithm, the depth must be enabled
-- To turn on the obstacle avoidance algorithm, you must turn on depth
-- To turn on the positioning algorithm, you must turn on RGB
+- To enable die pallet algorithm, die Tiefe muss be enabled
+- To turn on die obstacle avoidance algorithm, you muss turn on Tiefe
+- To turn on die positioning algorithm, you muss turn on RGB
 
-3. The light blue background in the table is the running configuration with point cloud enabled, and the colorless background is the running configuration without point cloud enabled. **All the test data below have the algorithm shifted down by default, so for S2 series cameras, all test values ​​may be too small \[some algorithms of S2 series cameras are forced to move up\].**
+3. Die light blau background in die table ist die Ausführung Konfiguration mit Punkt Wolke enabled, und die colorless background ist die Ausführung Konfiguration ohne Punkt Wolke enabled. **All die Test Daten below have die algorithm shifted down durch Standard, so für S2 series Kameras, alle Test Werte ​​may be too small \[some algorithms von S2 series Kameras sind forced zu move up\].**
 
 **Ubuntu16.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 0.60 | 0.6~0.7 |
-| Dual stream | 0.61 | 0.6~0.8 |
+| Single Stream | 0.60 | 0.6~0.7 |
+| Dual Stream | 0.61 | 0.6~0.8 |
 | Third rate | 0.66 | 0.6~0.8 |
 | Fourth rate | 0.79 | 0.7~0.9 |
-| Point cloud \+ depth | 0.60 | 0.5~0.7 |
+| Point Wolke \+ Tiefe | 0.60 | 0.5~0.7 |
 | Algorithm \+ Depth | 0.50 | 0.5~0.5 |
-| Algorithm \+ depth \+ point cloud | 0.60 | 0.5~0.7 |
+| Algorithm \+ Tiefe \+ Punkt Wolke | 0.60 | 0.5~0.7 |
 | Algorithm \+ Depth \+ RGB | 0.62 | 0.6~0.8 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 0.71 | 0.6~0.9 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 0.79 | 0.7~0.9 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 0.71 | 0.6~0.9 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 0.79 | 0.7~0.9 |
 
 **Ubuntu18.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 1.01 | 1.1~1.2 |
-| Dual stream | 1.10 | 1.1~1.2 |
+| Single Stream | 1.01 | 1.1~1.2 |
+| Dual Stream | 1.10 | 1.1~1.2 |
 | Third rate | 1.10 | 1.1~1.2 |
 | Fourth rate | 1.19 | 1.1~1.3 |
-| Point cloud \+ depth | 1.09 | 0.9~1.2 |
+| Point Wolke \+ Tiefe | 1.09 | 0.9~1.2 |
 | Algorithm \+ Depth | 0.90 | 0.9~1.0 |
-| Algorithm \+ depth \+ point cloud | 1.09 | 0.9~1.2 |
+| Algorithm \+ Tiefe \+ Punkt Wolke | 1.09 | 0.9~1.2 |
 | Algorithm \+ Depth \+ RGB | 1.10 | 1.1~1.2 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 1.19 | 1.1~1.3 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 1.20 | 1.1~1.4 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 1.19 | 1.1~1.3 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 1.20 | 1.1~1.4 |
 
 | ROS2 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 1.19 | 1.1~1.2 |
-| Dual stream | 1.27 | 1.1~1.3 |
+| Single Stream | 1.19 | 1.1~1.2 |
+| Dual Stream | 1.27 | 1.1~1.3 |
 | Third rate | 1.29 | 1.2~1.3 |
 | Fourth rate | 1.57 | 1.3~1.6 |
-| Point cloud \+ depth | 1.20 | 1.1~1.3 |
+| Point Wolke \+ Tiefe | 1.20 | 1.1~1.3 |
 | Algorithm \+ Depth | 0.90 | 0.9~0.9 |
-| Algorithm \+ depth \+ point cloud | 1.10 | 1.0~1.2 |
+| Algorithm \+ Tiefe \+ Punkt Wolke | 1.10 | 1.0~1.2 |
 | Algorithm \+ Depth \+ RGB | 1.10 | 1.1~1.2 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 1.30 | 1.3~1.4 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 1.41 | 1.3~1.6 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 1.30 | 1.3~1.4 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 1.41 | 1.3~1.6 |
 
 **Ubuntu20.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 1.21 | 1.2~1.4 |
-| Dual stream | 1.30 | 1.3~1.4 |
+| Single Stream | 1.21 | 1.2~1.4 |
+| Dual Stream | 1.30 | 1.3~1.4 |
 | Third rate | 1.30 | 1.3~1.4 |
 | Fourth rate | 1.33 | 1.3~1.5 |
-| Point cloud \+ depth | 1.21 | 1.2~1.4 |
+| Point Wolke \+ Tiefe | 1.21 | 1.2~1.4 |
 | Algorithm \+ Depth | 1.19 | 1.1~1.2 |
-| Algorithm \+ depth \+ point cloud | 1.22 | 1.2~1.4 |
+| Algorithm \+ Tiefe \+ Punkt Wolke | 1.22 | 1.2~1.4 |
 | Algorithm \+ Depth \+ RGB | 1.30 | 1.3~1.4 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 1.32 | 1.3~1.5 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 1.33 | 1.3~1.5 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 1.32 | 1.3~1.5 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 1.33 | 1.3~1.5 |
 
 <br />
 
 | ROS2 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 1.20 | 1.2~1.3 |
-| Dual stream | 1.20 | 1.2~1.3 |
+| Single Stream | 1.20 | 1.2~1.3 |
+| Dual Stream | 1.20 | 1.2~1.3 |
 | Third rate | 1.30 | 1.3~1.4 |
 | Fourth rate | 1.64 | 1.4~1.7 |
-| Point cloud \+ depth | 1.36 | 1.1~1.4 |
+| Point Wolke \+ Tiefe | 1.36 | 1.1~1.4 |
 | Algorithm \+ Depth | 1.10 | 1.1~1.1 |
 | Algorithm \+ Depth \+ Point Cloud | 1.19 | 1.1~1.3 |
 | Algorithm \+ Depth \+ RGB | 1.40 | 1.4~1.4 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 1.58 | 1.4~1.7 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 1.60 | 1.5~1.7 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 1.58 | 1.4~1.7 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 1.60 | 1.5~1.7 |
 
 **Ubuntu22.04**
 
 | ROS1 |  |  |
 | --- | --- | --- |
 | Run Configuration | Mean % | Interval % |
-| Single stream | 1.28 | 1.1~1.3 |
-| Dual stream | 1.29 | 1.2~1.3 |
+| Single Stream | 1.28 | 1.1~1.3 |
+| Dual Stream | 1.29 | 1.2~1.3 |
 | Third rate | 1.20 | 1.2~1.3 |
 | Fourth rate | 1.49 | 1.4~1.6 |
-| Point cloud \+ depth | 1.11 | 1.1~1.2 |
+| Point Wolke \+ Tiefe | 1.11 | 1.1~1.2 |
 | Algorithm \+ Depth | 1.00 | 1.0~1.0 |
 | Algorithm \+ Depth \+ Point Cloud | 1.11 | 1.1~1.2 |
 | Algorithm \+ Depth \+ RGB | 1.20 | 1.2~1.3 |
-| Algorithm \+ depth \+ RGB \+ point cloud | 1.55 | 1.3~1.6 |
-| Algorithm \+ depth \+ intensity \+ RGB \+ point cloud | 1.51 | 1.3~1.7 |
+| Algorithm \+ Tiefe \+ RGB \+ Punkt Wolke | 1.55 | 1.3~1.6 |
+| Algorithm \+ Tiefe \+ Intensität \+ RGB \+ Punkt Wolke | 1.51 | 1.3~1.7 |
 
 ---
 
-## Appendix
+## Anhang
 
-This appendix provides installation methods for some tools. When using these methods, you need to have at least some basic knowledge of Linux. There is no guarantee that every computer can be successfully installed through the methods shown in the appendix of this document. The environment of each computer is different, and the problems encountered may not be consistent. If you encounter problems not shown in this appendix, please search for solutions yourself.
+Dies Anhang provides Installation Methoden für some tools. When using these Methoden, you müssen zu have at least some grundlegenden knowledge von Linux. There ist no guarantee that every computer kann be successfully installed through die Methoden shown in die Anhang von dies document. Die Umgebung von each computer ist unterschiedlich, und die problems encountered may not be consistent. Wenn you encounter problems not shown in dies Anhang, please search für solutions yourself.
 
-### 1. Cmake specified version installation method
+### 1. Cmake specified Version Installation method
 
-Go to [https://cmake.org/download/](https://cmake.org/download/) and download the required CMake version. Extract the downloaded package with `tar -zxvf cmake-XXX.tar.gz`. Enter the extracted directory, then compile and configure it:
+Öffnen Sie [https://cmake.org/download/](https://cmake.org/download/), laden Sie die erforderliche CMake-Version herunter und entpacken Sie das Paket mit `tar -zxvf cmake-XXX.tar.gz`. Wechseln Sie in das entpackte Verzeichnis und kompilieren und konfigurieren Sie CMake:
 
 ./bootstrap
 
@@ -1968,19 +1968,19 @@ make
 
 sudo make install
 
-Check the Cmake version to see if the installation is successful:
+Check die Cmake Version zu see if die Installation ist erfolgreich:
 
 cmake --version
 
-### 2. Opencv specified version installation method
+### 2. Opencv specified Version Installation method
 
-1. Download the required version of opencv: [Releases-OpenCV](https://opencv.org/releases/ "Releases-OpenCV")
+1. Download die erforderlich Version von opencv: [Releases-OpenCV](https://opencv.org/releases/ "Releases-OpenCV")
 
 <Frame>
-  ![Illustrations related to the installation method of the specified version of Opencv](/images/developers/camera-sdk-linux-examples-the-installation-method-of-the-specified-version-of-opencv.avif)
+  ![Illustrations zugehörig zu die Installation method von die specified Version von Opencv](/images/developers/camera-sdk-linux-examples-the-installation-method-of-the-specified-version-of-opencv.avif)
 </Frame>
 
-2. Environment configuration, execute the following commands in sequence:
+2. Environment Konfiguration, execute die folgende Befehle in sequence:
 
 sudo apt-get install build-essential
 
@@ -1992,30 +1992,30 @@ sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev
 
 libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
-3. Create a new opencv folder and extract the downloaded source code into the opencv folder.
-4. Execute the following commands in sequence:
+3. Create a new opencv Ordner und extract die downloaded Quelle Code into die opencv Ordner.
+4. Ausführen die folgende Befehle in sequence:
 5.   cd opencv
 6.   mkdir build && cd build
 7.   sudocmake-DCMAKE\_BUILD\_TYPE=Release-D
 8.   CMAKE\_INSTALL\_PREFIX=/usr/local ..
 9.   sudo make -j4
-10. sudo make install and wait for the installation to complete
+10. sudo make installieren und wait für die Installation zu complete
 
-### 3. Pcl specified version installation method
+### 3. Pcl specified Version Installation method
 
-1. Check the supported pcl version:
+1. Check die unterstützt pcl Version:
 
 apt-cache madison libpcl-dev
 
-2. Install the specified pcl version (where 1.10.0 needs to be replaced with the required version number):
+2. Installieren die specified pcl Version (where 1.10.0 needs zu be replaced mit die erforderlich Version Nummer):
 
 sudo apt-get install libpcl-dev=1.10.0
 
-### 4. Install ROS
+### 4. ROS installieren
 
 **Ubuntu16.04**
 
-1. Add the software source and set the secret key:
+1. Add die software Quelle und festlegen die secret key:
 
 sudo sh -c 'echo "deb [http://packages.ros.org/ros/ubuntu](http://packages.ros.org/ros/ubuntu) \$(lsb\_release -sc) main" \>
 
@@ -2031,199 +2031,199 @@ curl -sSL
 
 '[http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654](http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654)' | sudo apt-key add -
 
-3. Update source:
+3. Update Quelle:
 
 sudo apt-get update
 
-4. Install complete ros:
+4. Installieren complete ros:
 
 sudo apt-get install ros-kinetic-desktop-full
 
-5. Configure environment variables:
+5. Configure Umgebung variables:
 
-echo "source /opt/ros/kinetic/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/kinetic/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc
 
-6. Complete ROS-related tools:
+6. Schließen Sie ab ROS-zugehörig tools:
 
 sudoaptinstallpython-rosinstallpython-rosinstall-generatorpython-wstool
 
 build-essential
 
-7. Now that the installation of ROS1 is complete, run the example that comes with ROS to check whether the installation is correct:
+7. Now that die Installation von ROS1 ist complete, ausführen die Beispiel that comes mit ROS zu prüfen whether die Installation ist correct:
 
-Open a terminal and enter: roscore
+Open a terminal und öffnen: roscore
 
-Open another terminal and enter: rosrun turtlesim turtlesim\_node
+Open another terminal und öffnen: rosrun turtlesim turtlesim\_node
 
 Open another terminal: rosrun turtlesim turtle\_teleop\_key
 
-In the third terminal, you can control the little turtle through the arrow keys
+In die third terminal, you kann control die little turtle through die arrow keys
 
-If it can run normally as shown below, it means that ros has been installed correctly:
+Wenn it kann ausführen normally wie shown below, it means that ros has been installed correctly:
 
-![Installation ROS related icons](/images/developers/camera-sdk-linux-examples-installation-ros.avif)
+![Installation ROS zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-installation-ros.avif)
 
 <br />
 
 **Ubuntu18.04**
 
-1. Set up the software source:
+1. Set up die software Quelle:
 
 sudo sh -c '. /etc/lsb-release && echo "deb [http://mirrors.ustc.edu.cn/ros/ubuntu/](http://mirrors.ustc.edu.cn/ros/ubuntu/)
 
-\`lsb\_release -cs\` main" \> /etc/apt/sources.list.d/ros-latest.list'
+\`lsb\_release -cs\` main" \> /etc/apt/sources.Liste.d/ros-latest.Liste'
 
-2.Set the public key:
+2.Set die public key:
 
 sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
 
 C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 
-3. Update software list:
+3. Update software Liste:
 
 sudo apt update
 
-4. Install Ubuntu18.04 version of ROS1:
+4. Installieren Ubuntu18.04 Version von ROS1:
 
 sudo apt install ros-melodic-desktop-full
 
-5. Set environment variables:
+5. Set Umgebung variables:
 
-echo "source /opt/ros/melodic/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/melodic/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc if it is zsh:
 
-echo "source /opt/ros/melodic/setup.bash" \>\> ~/.zshrc
+echo "Quelle /opt/ros/melodic/Einrichtung.bash" \>\> ~/.zshrc
 
 source ~/.zshrc
 
-6. Complete ROS-related tools:
+6. Schließen Sie ab ROS-zugehörig tools:
 
 sudoaptinstallpython-rosdeppython-rosinstallpython-rosinstall-generator
 
 python-wstool build-essential
 
-7. Now that the installation of ROS1 is complete, run the example that comes with ROS to check whether the installation is correct:
+7. Now that die Installation von ROS1 ist complete, ausführen die Beispiel that comes mit ROS zu prüfen whether die Installation ist correct:
 
-Open a terminal and enter: roscore
+Open a terminal und öffnen: roscore
 
-Open another terminal and enter: rosrun turtlesim turtlesim\_node
+Open another terminal und öffnen: rosrun turtlesim turtlesim\_node
 
 Open another terminal: rosrun turtlesim turtle\_teleop\_key
 
-In the third terminal, you can control the little turtle through the arrow keys
+In die third terminal, you kann control die little turtle through die arrow keys
 
-If it can run normally as shown below, it means that ros has been installed correctly:
+Wenn it kann ausführen normally wie shown below, it means that ros has been installed correctly:
 
 <Frame>
-  ![Installation ROS related icons 2](/images/developers/camera-sdk-linux-examples-installation-ros-2.avif)
+  ![Installation ROS zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-installation-ros-2.avif)
 </Frame>
 
 **Ubuntu20.04**
 
-1. Configure the public key:
+1. Configure die public key:
 
 sudoapt-keyadv--keyserver'hkp://keyserver.ubuntu.com:80'--recv-key
 
 C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 
-2. If it shows that it cannot connect to the server or times out, please update the software source list first:
+2. Wenn it shows that it cannot connect zu die Server oder times out, please aktualisieren die software Quelle Liste zuerst:
 
 sudo apt-get update
 
 sudo apt-get upgrade
 
-3. After configuring the public key, update the software list again:
+3. After configuring die public key, aktualisieren die software Liste again:
 
 sudo apt-get update install ros:
 
 sudo apt install ros-noetic-desktop-full
 
-4. Set environment variables:
+4. Set Umgebung variables:
 
-echo "source /opt/ros/noetic/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/noetic/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc
 
-5. Install ROS tools:
+5. ROS installieren tools:
 
 sudo apt install python3-rosinstall python3-rosinstall-generator python3-wstool
 
 build-essential
 
-6. Now that the installation of ROS1 is complete, run the example that comes with ROS to check whether the installation is correct:
+6. Now that die Installation von ROS1 ist complete, ausführen die Beispiel that comes mit ROS zu prüfen whether die Installation ist correct:
 
-Open a terminal and enter: roscore
+Open a terminal und öffnen: roscore
 
-Open another terminal and enter: rosrun turtlesim turtlesim\_node
+Open another terminal und öffnen: rosrun turtlesim turtlesim\_node
 
 Open another terminal: rosrun turtlesim turtle\_teleop\_key
 
-In the third terminal, you can control the little turtle through the arrow keys
+In die third terminal, you kann control die little turtle through die arrow keys
 
-If it can run normally as shown below, it means that ros has been installed correctly:
+Wenn it kann ausführen normally wie shown below, it means that ros has been installed correctly:
 
 <Frame>
-  ![Installation ROS related icons 3](/images/developers/camera-sdk-linux-examples-installation-ros-3.avif)
+  ![Installation ROS zugehörig Abbildungen 3](/images/developers/camera-sdk-linux-examples-installation-ros-3.avif)
 </Frame>
 
 **Ubuntu22.04**
 
-It is not recommended to install ros1 in Ubuntu22.04. It is not officially supported. If you want to install it, you will encounter a lot of dependency problems.
+It ist not empfohlen zu installieren ros1 in Ubuntu22.04. It ist not officially unterstützt. Wenn you want zu installieren it, you wird encounter a lot von dependency problems.
 
-### 5. How to create a new test package in Ros
+### 5. Neues Testpaket in ROS erstellen
 
-1. Create a new folder ws, create a new src folder in the ws folder, enter the src folder and execute:
+1. Create a new Ordner ws, create a new src Ordner in die ws Ordner, öffnen die src Ordner und execute:
 
 catkin\_create\_pkg example std\_msgs rospy roscpp
 
-2. This creates a new package named example, which depends on std\_msgs rospy roscpp
-3. Then compile this new package: catkin\_make This is an empty package, there will not be any executable program, it is just a package
-4. Next, we will demonstrate how to create a package that can output 'Hellow world'
-5. Based on the package just now, we enter the src folder (src in the package) and create a new main.cpp, as shown below (pay attention to the path):
+2. Dies creates a new package named Beispiel, which depends on std\_msgs rospy roscpp
+3. Anschließend kompilieren dies new package: catkin\_make Dies ist an empty package, there wird not be any executable program, it ist just a package
+4. Next, we wird demonstrate how zu create a package that kann Ausgabe 'Hellow world'
+5. Based on die package just now, we öffnen die src Ordner (src in die package) und create a new main.cpp, wie shown below (pay attention zu die Pfad):
 
 <Frame>
-  ![Illustration of how to create a new test package in Ros](/images/developers/camera-sdk-linux-examples-illustration-of-how-to-create-a-new-test-package-in-ros.avif)
+  ![Illustration von how zu create a new Test package in Ros](/images/developers/camera-sdk-linux-examples-illustration-of-how-to-create-a-new-test-package-in-ros.avif)
 </Frame>
 
-6. In main.cpp, we enter some codes:
+6. In main.cpp, we öffnen some codes:
 
 <Frame>
-  ![Ros How to Create a New Test Package Related Illustration 2](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-2.avif)
+  ![Ros How zu Create a New Test Package Related Illustration 2](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-2.avif)
 </Frame>
 
-7. Then we change the outside CMakeLists.txt and add a line at the bottom: add\_executable(example src/main.cpp)
+7. Anschließend we change die outside CMakeLists.txt und ergänzen a line at die bottom: ergänzen\_executable(Beispiel src/main.cpp)
 
 <Frame>
-  ![Ros How to Create a New Test Package Related Illustration 3](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-3.avif)
+  ![Ros How zu Create a New Test Package Related Illustration 3](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-3.avif)
 </Frame>
 
-8. Then return to the ws directory to compile and execute the command: catkin\_make
+8. Anschließend return zu die ws Verzeichnis zu kompilieren und execute die Befehl: catkin\_make
 
 <Frame>
-  ![Ros How to Create a New Test Package Related Illustration 4](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-4.avif)
+  ![Ros How zu Create a New Test Package Related Illustration 4](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-4.avif)
 </Frame>
 
-9. Seeing these means the compilation is successful.
-10. Next we configure the environment:
+9. Seeing these means die Kompilierung ist erfolgreich.
+10. Next we configure die Umgebung:
 
 source devel/setup.bash
 
 <Frame>
-  ![Ros How to Create a New Test Package Related Illustrations 5](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-5.avif)
+  ![Ros How zu Create a New Test Package Related Illustrations 5](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-5.avif)
 </Frame>
 
-11. Then execute the program and you can see the output:
+11. Anschließend execute die program und you kann see die Ausgabe:
 
 rosrun example example
 
 <Frame>
-  ![Ros How to Create a New Test Package Related Illustrations 6](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-6.avif)
+  ![Ros How zu Create a New Test Package Related Illustrations 6](/images/developers/camera-sdk-linux-examples-ros-how-to-create-a-new-test-package-6.avif)
 </Frame>
 
-### 6. Install ROS2
+### 6. ROS installieren2
 
 **Ubuntu16.04**
 
@@ -2241,56 +2241,56 @@ curl-shttps://raw.githubusercontent.com/ros/rosdistro/master/ros.asc|sudo
 
 apt-key add -
 
-3. If an error is reported in this step, use VPN to bypass the wall and then open the browser, enter the URL, and copy the content, then create a new ros.asc and copy the content to the file. After the copy is completed, the following is as follows:
+3. Wenn an Fehler ist reported in dies step, verwenden VPN zu bypass die wall und then öffnen die browser, öffnen die URL, und copy die content, then create a new ros.asc und copy die content zu die Datei. After die copy ist completed, die folgende ist wie folgt:
 
 <Frame>
-  ![Installation ROS2 related icons](/images/developers/camera-sdk-linux-examples-installation-ros2.avif)
+  ![Installation ROS2 zugehörig Abbildungen](/images/developers/camera-sdk-linux-examples-installation-ros2.avif)
 </Frame>
 
-4. Then re-execute step 3: sudo apt-key add ros.asc
-5. Continue execution:
+4. Anschließend re-execute step 3: sudo apt-key ergänzen ros.asc
+5. Continue Ausführung:
 
 sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
 
 main" \> /etc/apt/sources.list.d/ros2-latest.list'
 
-6. Install ROS2:
+6. ROS installieren2:
 
 sudo apt update
 
 sudo apt install ros-ardent-desktop
 
-7. Configure environment variables:
+7. Configure Umgebung variables:
 
 source /opt/ros/ardent/setup.bash
 
-8. Install the function package:
+8. Installieren die Funktion package:
 
 sudo apt-get update
 
 sudo apt-get install ros-ardent-ros1-bridge sudo apt-get install ros-ardent-turtlebot2-\*
 
-9. Try running the example program, open a terminal and run:
+9. Try Ausführung die Beispiel program, öffnen a terminal und ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_cpp talker
 
-10. Open another interrupt to run:
+10. Open another interrupt zu ausführen:
 
 source~/.bashrc
 
 ros2 run demo\_nodes\_cpp talker
 
-11. The following terminal output proves that the installation is successful:
+11. Die folgende terminal Ausgabe proves that die Installation ist erfolgreich:
 
 <Frame>
-  ![Installation ROS2 related icons 2](/images/developers/camera-sdk-linux-examples-installation-ros2-2.avif)
+  ![Installation ROS2 zugehörig Abbildungen 2](/images/developers/camera-sdk-linux-examples-installation-ros2-2.avif)
 </Frame>
 
 **Ubuntu18.04：**
 
-1. Add software source
+1. Add software Quelle
 
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 
@@ -2298,60 +2298,60 @@ curl -s [https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc](https:/
 
 sudo apt-key add ros.asc
 
-2. If this step reports an error as follows:
+2. Wenn dies step reports an Fehler wie folgt:
 
 <Frame>
-  ![Installation ROS2 related icons 3](/images/developers/camera-sdk-linux-examples-installation-ros2-3.avif)
+  ![Installation ROS2 zugehörig Abbildungen 3](/images/developers/camera-sdk-linux-examples-installation-ros2-3.avif)
 </Frame>
 
-3. Use VPN to bypass the wall, then open the browser, enter the URL, and copy the content, then create a new ros.asc and copy the content to the file. After the copy is completed, it is as follows:
+3. Use VPN zu bypass die wall, then öffnen die browser, öffnen die URL, und copy die content, then create a new ros.asc und copy die content zu die Datei. After die copy ist completed, it ist wie folgt:
 
 <Frame>
-  ![Installation ROS2 related icons 4](/images/developers/camera-sdk-linux-examples-installation-ros2-4.avif)
+  ![Installation ROS2 zugehörig Abbildungen 4](/images/developers/camera-sdk-linux-examples-installation-ros2-4.avif)
 </Frame>
 
-4. Then re-execute step 3: sudo apt-key add ros.asc
-5. Continue execution:
+4. Anschließend re-execute step 3: sudo apt-key ergänzen ros.asc
+5. Continue Ausführung:
 
 sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionic
 
 main" \> /etc/apt/sources.list.d/ros2-latest.list'
 
-6. After completion, start downloading ros2, in which the red fonts need to be replaced with different versions (see the table above):
+6. After completion, starten downloading ros2, in which die red fonts müssen zu be replaced mit unterschiedlich Versionen (see die table above):
 
 sudo apt update
 
 sudo apt install ros-eloquent-desktop
 
-7. Wait for the installation to complete and continue to install the python library. Execute: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
+7. Wait für die Installation zu complete und continue zu installieren die python library. Ausführen: sudo apt installieren -y libpython3-dev python3-pip pip3 installieren -U argcomplete
 
-Then configure the environment variables:
+Anschließend configure die Umgebung variables:
 
-echo "source /opt/ros/eloquent/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/eloquent/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc
 
-8. Try running the sample program, open a terminal and run:
+8. Try Ausführung die Beispiel program, öffnen a terminal und ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_cpp talker
 
-9. Open another interrupt to run:
+9. Open another interrupt zu ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_py listener
 
-10. The following terminal output proves that the installation is successful:
+10. Die folgende terminal Ausgabe proves that die Installation ist erfolgreich:
 
 <Frame>
-  ![Installation ROS2 related icons 5](/images/developers/camera-sdk-linux-examples-installation-ros2-5.avif)
+  ![Installation ROS2 zugehörig Abbildungen 5](/images/developers/camera-sdk-linux-examples-installation-ros2-5.avif)
 </Frame>
 
 **Ubuntu20.04**
 
-1. Add software source
+1. Add software Quelle
 
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 
@@ -2359,117 +2359,117 @@ sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key-o
 
 /usr/share/keyrings/ros-archive-keyring.gpg
 
-2. If you encounter the error "ailed to connect to raw.githubusercontent.com port 443 after 13 ms: connection refused"
+2. Wenn you encounter die Fehler "ailed zu connect zu raw.githubusercontent.com port 443 nach 13 ms: connection refused"
 
 <Frame>
-  ![Installation ROS2 related icons 6](/images/developers/camera-sdk-linux-examples-installation-ros2-6.avif)
+  ![Installation ROS2 zugehörig Abbildungen 6](/images/developers/camera-sdk-linux-examples-installation-ros2-6.avif)
 </Frame>
 
 sudo vi /etc/hosts
 
-3. Add the following analysis
+3. Add die folgende analysis
 
 185.199.108.133raw.githubusercontent.com
 
-4. The added files are as follows:
+4. Die added Dateien sind wie folgt:
 
 <Frame>
-  ![Installation ROS2 related icons 7](/images/developers/camera-sdk-linux-examples-installation-ros2-7.avif)
+  ![Installation ROS2 zugehörig Abbildungen 7](/images/developers/camera-sdk-linux-examples-installation-ros2-7.avif)
 </Frame>
 
-echo"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
+echo"deb\[arch=(Quelle/etc/os-Veröffentlichungs&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.Liste.d/ros2.Liste \> /dev/null
 
-5. Continue execution:
+5. Continue Ausführung:
 
 sudo sh -c 'echo "deb \[arch=amd64\] [http://packages.ros.org/ros2/ubuntu](http://packages.ros.org/ros2/ubuntu) bionicmain" \> /etc/apt/sources.list.d/ros2-latest.list'
 
-6. After completion, start downloading ros2:
+6. After completion, starten downloading ros2:
 
 sudo apt update
 
 sudo apt install ros-foxy-desktop
 
-7. Wait for the installation to complete and continue to install the python library. Execute: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
-8. Then configure the environment variables:
+7. Wait für die Installation zu complete und continue zu installieren die python library. Ausführen: sudo apt installieren -y libpython3-dev python3-pip pip3 installieren -U argcomplete
+8. Anschließend configure die Umgebung variables:
 
-echo "source /opt/ros/foxy/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/foxy/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc
 
-9. Try running the sample program, open a terminal and run:
+9. Try Ausführung die Beispiel program, öffnen a terminal und ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_cpp talker
 
-10. Open another interrupt to run:
+10. Open another interrupt zu ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_py listener
 
-11. The following terminal output proves that the installation is successful:
+11. Die folgende terminal Ausgabe proves that die Installation ist erfolgreich:
 
 <Frame>
-  ![Installation ROS2 related icons 8](/images/developers/camera-sdk-linux-examples-installation-ros2-8.avif)
+  ![Installation ROS2 zugehörig Abbildungen 8](/images/developers/camera-sdk-linux-examples-installation-ros2-8.avif)
 </Frame>
 
 **Ubuntu22.04**
 
-1. Add software source
+1. Add software Quelle
 
 sudo apt update && sudo apt install curl gnupg lsb-release
 
 sudo curl -sSL [https://raw.githubusercontent.com/ros/rosdistro/master/ros.key](https://raw.githubusercontent.com/ros/rosdistro/master/ros.key) -o /usr/share/keyrings/ros-archive-keyring.gpgecho"deb\[arch=(source/etc/os-release&&echo\$UBUNTU\_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list \> /dev/null
 
-2. If you encounter the error "ailed to connect to raw.githubusercontent.com port 443 after 13 ms: connection refused"
+2. Wenn you encounter die Fehler "ailed zu connect zu raw.githubusercontent.com port 443 nach 13 ms: connection refused"
 
 <Frame>
-  ![Installation ROS2 related icons 9](/images/developers/camera-sdk-linux-examples-installation-ros2-9.avif)
+  ![Installation ROS2 zugehörig Abbildungen 9](/images/developers/camera-sdk-linux-examples-installation-ros2-9.avif)
 </Frame>
 
 sudo vi /etc/hosts adds the following analysis
 
 185.199.108.133raw.githubusercontent.com
 
-The added files are as follows:
+Die added Dateien sind wie folgt:
 
 <Frame>
-  ![Installation ROS2 related icons 10](/images/developers/camera-sdk-linux-examples-installation-ros2-10.avif)
+  ![Installation ROS2 zugehörig Abbildungen 10](/images/developers/camera-sdk-linux-examples-installation-ros2-10.avif)
 </Frame>
 
-3. After completion, start downloading ros2: sudo apt update
+3. After completion, starten downloading ros2: sudo apt aktualisieren
 
 sudo apt install ros-humble-desktop
 
-4. Wait for the installation to complete and continue to install the python library. Execute: sudo apt install -y libpython3-dev python3-pip pip3 install -U argcomplete
-5. Then configure the environment variables:
+4. Wait für die Installation zu complete und continue zu installieren die python library. Ausführen: sudo apt installieren -y libpython3-dev python3-pip pip3 installieren -U argcomplete
+5. Anschließend configure die Umgebung variables:
 
-echo "source /opt/ros/humble/setup.bash" \>\> ~/.bashrc
+echo "Quelle /opt/ros/humble/Einrichtung.bash" \>\> ~/.bashrc
 
 source ~/.bashrc
 
-6. Try running the sample program, open a terminal and run:
+6. Try Ausführung die Beispiel program, öffnen a terminal und ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_cpp talker
 
-7. Open another interrupt to run:
+7. Open another interrupt zu ausführen:
 
 source ~/.bashrc
 
 ros2 run demo\_nodes\_py listener
 
-8. The following terminal output proves that the installation is successful:
+8. Die folgende terminal Ausgabe proves that die Installation ist erfolgreich:
 
 <Frame>
-  ![Installation ROS2 related icons 11](/images/developers/camera-sdk-linux-examples-installation-ros2-11.avif)
+  ![Installation ROS2 zugehörig Abbildungen 11](/images/developers/camera-sdk-linux-examples-installation-ros2-11.avif)
 </Frame>
 
-### 7. How to create a new test package in Ros2
+### 7. Neues Testpaket in ROS erstellen2
 
-1. Execute the command:
+1. Ausführen die Befehl:
 
 mkdir example\_ws && cd example\_ws
 
@@ -2481,7 +2481,7 @@ source install/setup.bash
 
 ros2 run example\_p example\_n
 
-2. You can create a new package named example\_p and a node named example\_n. After running, it will output: hello world example\_p package
+2. You kann create a new package named Beispiel\_p und a node named Beispiel\_n. After Ausführung, it wird Ausgabe: hello world Beispiel\_p package
 
 <br />
 

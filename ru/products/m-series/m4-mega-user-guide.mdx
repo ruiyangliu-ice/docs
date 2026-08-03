@@ -1,144 +1,144 @@
 ---
-title: M4 Mega user guide
-description: "Specifications, interfaces, triggering, installation, accuracy, and software instructions for the M4 Mega iToF RGB-D camera."
+title: Руководство пользователя M4 Mega
+description: "Технические характеристики, интерфейсы, триггеры, установка, точность и инструкции по программному обеспечению для iToF RGB-D камеры M4 Mega."
 hidden: true
 ---
 
-## Revision history
+## История изменений
 
-| Date | Version | Change |
+| Дата | Версия | Изменение |
 | --- | --- | --- |
-| 2024/01/30 | V0.1 | Initial document |
-| 2023/04/03 | V1.0 | Added software and hardware trigger instructions |
-| 2024/05/10 | V1.1 | Corrected camera information and parameters |
-| 2024/06/17 | V1.2 | Corrected the camera wire order and added a certificate of conformity to the package |
-| 2024/11/125 | V1.3 | Updated the camera storage temperature |
+| 2024/01/30 | V0.1 | Первоначальный документ |
+| 2023/04/03 | V1.0 | Добавлены инструкции по программному и аппаратному триггерам |
+| 2024/05/10 | V1.1 | Исправлены сведения о камере и её параметры |
+| 2024/06/17 | V1.2 | Исправлен порядок проводов камеры, в комплект добавлен сертификат соответствия |
+| 2024/11/125 | V1.3 | Обновлена температура хранения камеры |
 
-## Product overview
+## Обзор продукта
 
-This guide describes the M4 Mega camera developed by Zhejiang MRDVS Technology Co., Ltd., including its specifications, features, and operating instructions.
+В этом руководстве описана камера M4 Mega, разработанная компанией Zhejiang MRDVS Technology Co., Ltd., включая её технические характеристики, возможности и инструкции по эксплуатации.
 
-The M4 Mega product family includes the M4 Mega camera. This ToF product uses a Gigabit Ethernet communication interface and a 24VDC power supply.
+Семейство M4 Mega включает камеру M4 Mega. Этот ToF-продукт использует интерфейс связи Gigabit Ethernet и питание 24 VDC.
 
 <Frame>
-  ![M4 Mega camera overview](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-overview.avif)
+  ![Обзор камеры M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-overview.avif)
 </Frame>
 
-Figure 1.1. M4 Mega camera
+Рисунок 1.1. Камера M4 Mega
 
-### Product features
+### Возможности продукта
 
-- Built-in 1Tops compute capacity for operation without an external CPU
-- RGB-D support
-- Standalone obstacle avoidance, docking, localization, soft-package grasping, storage-location detection, and volume measurement
-- Gigabit Ethernet port
-- IP67 ingress protection
+- Встроенная вычислительная мощность 1 TOPS для работы без внешнего ЦП
+- Поддержка RGB-D
+- Автономные функции объезда препятствий, стыковки, локализации, захвата мягких упаковок, обнаружения мест хранения и измерения объёма
+- Порт Gigabit Ethernet
+- Степень защиты IP67
 
-### Terms of use
+### Условия эксплуатации
 
-**Observe the following requirements during use:**
+**Соблюдайте следующие требования при эксплуатации:**
 
-- Do not remove labels from the product.
-- Do not disassemble the product. Disassembly may damage it.
-- Do not use the product in strong magnetic fields.
-- Do not use the product under intense sunlight above 100 kLux.
-- To clean the enclosure, wipe it with a soft, lint-free cloth lightly dampened with purified water or alcohol.
-- Keep the original packaging and use it whenever possible during transport.
+- Не удаляйте этикетки с продукта.
+- Не разбирайте продукт. Разборка может его повредить.
+- Не используйте продукт в сильных магнитных полях.
+- Не используйте продукт под интенсивным солнечным светом свыше 100 kLux.
+- Для очистки корпуса протирайте его мягкой безворсовой тканью, слегка смоченной очищенной водой или спиртом.
+- Сохраняйте оригинальную упаковку и по возможности используйте её при транспортировке.
 
 ---
 
-## Working principle and specifications
+## Принцип работы и технические характеристики
 
-### ToF ranging principle
+### Принцип измерения расстояния ToF
 
-The M4 Mega camera uses time-of-flight (ToF) ranging. It measures the time between emitting light and receiving the reflection from an object to calculate the distance between the object and camera.
+Камера M4 Mega измеряет расстояние методом time-of-flight (ToF). Она измеряет время между излучением света и получением его отражения от объекта, чтобы вычислить расстояние между объектом и камерой.
 
-The M4 Mega camera captures depth directly, providing high-quality depth information with minimal compute resources and building depth scenes at a high frame rate. Like LiDAR, ToF cameras can use pulsed ToF (P\_ToF) or continuous-wave modulated ToF (CW\_ToF). P\_ToF emits light pulses, usually invisible, and calculates distance from their round-trip time. CW\_ToF emits modulated continuous light and calculates distance from the phase difference between the emitted and returned light.
+Камера M4 Mega напрямую получает глубину, обеспечивая высококачественные данные глубины при минимальных вычислительных ресурсах и формируя сцены глубины с высокой частотой кадров. Как и LiDAR, ToF-камеры могут использовать импульсный ToF (P\_ToF) или непрерывный модулированный ToF (CW\_ToF). P\_ToF излучает световые импульсы, обычно невидимые, и вычисляет расстояние по времени их прохождения туда и обратно. CW\_ToF излучает непрерывный модулированный свет и вычисляет расстояние по разности фаз между излучённым и возвращённым светом.
 
 <Frame>
-  ![ToF distance measurement principle](/images/products/m-series-m4-mega-user-guide-tof-distance-measurement-principle.avif)
+  ![Принцип измерения расстояния ToF](/images/products/m-series-m4-mega-user-guide-tof-distance-measurement-principle.avif)
 </Frame>
 
-Figure 2.1. Detection principle
+Рисунок 2.1. Принцип обнаружения
 
-### Product overview
+### Обзор продукта
 
-This compact industrial RGB-D camera integrates a Sony CW iToF camera with three-channel true-color RGB output. It provides depth data from 0.2m~5m and aligns RGB and depth images spatially and temporally. The camera can also output structured pallet-recognition results over CAN.
+Эта компактная промышленная RGB-D камера объединяет камеру Sony CW iToF с трёхканальным полноцветным выводом RGB. Она выдаёт данные глубины в диапазоне 0.2m~5m и выравнивает изображения RGB и глубины в пространстве и времени. Камера также может выводить результаты распознавания паллет по CAN.
 
-### Key specifications
+### Основные технические характеристики
 
-Table 2-1. Product specifications
+Таблица 2-1. Технические характеристики продукта
 
-| Camera | Model | Eagle-M4 Mega |
+| Камера | Модель | Eagle-M4 Mega |
 | --- | --- | --- |
-| Performance | Sensor | Sony sensor |
-| ㅤ | Measurement method | Time of flight |
-| ㅤ | Operating wavelength | 940nm |
-| ㅤ | ToF resolution and frame rate | 640 × 480 (typical 15 fps, max. 25 fps) |
-| ㅤ | ToF field of view | 81° × 61° |
-| ㅤ | RGB resolution and frame rate | 1280×960 (typical 15fps, Max 25fps) |
-| ㅤ | RGB field of view | 86°×55° |
-| ㅤ | Measurement range | 0.2~~5m (90% reflectivity); 0.2~~2.5m (10% reflectivity) |
-| ㅤ | Measurement accuracy | ±3mm\+0.25%×depth |
-| Electrical | Communication interface | Ethernet / CAN / IO |
-| ㅤ | Power connector | Industrial 5-pin circular connector |
-| ㅤ | Power supply | 24V DC / 2A |
-| ㅤ | Average power consumption | 6.8w |
-| Mechanical | Dimensions | 92mm×47mm×51mm |
-| ㅤ | Weight | 449g |
-| ㅤ | Ingress protection | IP67 |
-| ㅤ | Operating temperature | -20℃~60℃ |
-| ㅤ | Storage temperature | -40℃~85℃ |
-| ㅤ | Humidity | 10%~90%RH, non-condensing |
-| Other | Ambient-light immunity | Supports sunlight up to 100 kLux |
-| ㅤ | Shadow-to-light transition | Less than 1cm variation across a 100 kLux shadow-light boundary |
-| ㅤ | Software environment | C / C\+\+ / ROS SDK |
-| ㅤ | Supported operating systems | Windows7/8/10/11, Linux, Arm Linux/ROS |
-| ㅤ | Cooling | Passive |
+| Производительность | Датчик | Датчик Sony |
+| ㅤ | Метод измерения | Time of flight |
+| ㅤ | Рабочая длина волны | 940nm |
+| ㅤ | Разрешение ToF и частота кадров | 640 × 480 (обычно 15 fps, максимум 25 fps) |
+| ㅤ | Поле зрения ToF | 81° × 61° |
+| ㅤ | Разрешение RGB и частота кадров | 1280×960 (обычно 15fps, максимум 25fps) |
+| ㅤ | Поле зрения RGB | 86°×55° |
+| ㅤ | Диапазон измерения | 0.2~~5m (отражательная способность 90%); 0.2~~2.5m (отражательная способность 10%) |
+| ㅤ | Точность измерения | ±3mm\+0.25%×depth |
+| Электрические характеристики | Интерфейс связи | Ethernet / CAN / IO |
+| ㅤ | Разъём питания | Промышленный круглый разъём на 5 контактов |
+| ㅤ | Питание | 24V DC / 2A |
+| ㅤ | Среднее энергопотребление | 6.8w |
+| Механические характеристики | Габариты | 92mm×47mm×51mm |
+| ㅤ | Масса | 449g |
+| ㅤ | Степень защиты | IP67 |
+| ㅤ | Рабочая температура | -20℃~60℃ |
+| ㅤ | Температура хранения | -40℃~85℃ |
+| ㅤ | Влажность | 10%~90%RH, без конденсации |
+| Прочие характеристики | Устойчивость к внешнему освещению | Поддерживается солнечный свет до 100 kLux |
+| ㅤ | Переход от тени к свету | Изменение менее 1cm на границе тени и света при освещённости 100 kLux |
+| ㅤ | Программная среда | C / C\+\+ / ROS SDK |
+| ㅤ | Поддерживаемые операционные системы | Windows7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Охлаждение | Пассивное |
 
-Note: Refer to the 3D model for product dimensions.
+Примечание: габариты продукта указаны в 3D-модели.
 
 ---
 
-## Imaging and measurement characteristics
+## Характеристики формирования изображений и измерений
 
-### Electrical characteristics
+### Электрические характеристики
 
-Table 3-1. Electrical characteristics
+Таблица 3-1. Электрические характеристики
 
-| Parameter | Symbol | Condition | Minimum | Typical | Maximum | Unit |
+| Параметр | Обозначение | Условие | Минимум | Типичное значение | Максимум | Единица |
 | --- | --- | --- | --- | --- | --- | --- |
-| Supply voltage | VDD | ㅤ | 18 | 24 | 30 | V |
-| Digital I/O | IN | ㅤ | 3.3 | ㅤ | 24 | V |
+| Напряжение питания | VDD | ㅤ | 18 | 24 | 30 | V |
+| Цифровой ввод-вывод | IN | ㅤ | 3.3 | ㅤ | 24 | V |
 | CAN | ㅤ | ㅤ | 0 | ㅤ | 5V | V |
-| Operating temperature | Ta | ㅤ | -20 | ㅤ | 60 | ℃ |
-| Operating humidity | ㅤ | ㅤ | 20 | ㅤ | 80 | % |
-| Storage humidity | ㅤ | ㅤ | -25 | ㅤ | 80 | % |
-| Storage temperature | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+| Рабочая температура | Ta | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Рабочая влажность | ㅤ | ㅤ | 20 | ㅤ | 80 | % |
+| Влажность при хранении | ㅤ | ㅤ | -25 | ㅤ | 80 | % |
+| Температура хранения | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
 
-### Output data
+### Выходные данные
 
-By default, the M4 Mega camera outputs a depth image (Figure 3.1), per-pixel signal intensity data (Figure 3.2), and a point cloud generated from the depth data (Figure 3.3). The object shown is an aluminum profile.
-
-<Frame>
-  ![M4 Mega depth image](/images/products/m-series-m4-mega-user-guide-m4-mega-depth-image.avif)
-</Frame>
-
-Figure 3.1. Depth image
+По умолчанию камера M4 Mega выдаёт изображение глубины (рисунок 3.1), данные интенсивности сигнала для каждого пикселя (рисунок 3.2) и облако точек, построенное по данным глубины (рисунок 3.3). На изображении показан алюминиевый профиль.
 
 <Frame>
-  ![M4 Mega amplitude image](/images/products/m-series-m4-mega-user-guide-m4-mega-amplitude-image.avif)
+  ![Изображение глубины M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-depth-image.avif)
 </Frame>
 
-Figure 3.2. Amplitude image
+Рисунок 3.1. Изображение глубины
 
 <Frame>
-  ![M4 Mega point cloud](/images/products/m-series-m4-mega-user-guide-m4-mega-point-cloud.avif)
+  ![Амплитудное изображение M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-amplitude-image.avif)
 </Frame>
 
-Figure 3.3. Point cloud
+Рисунок 3.2. Амплитудное изображение
 
-The camera uses inter-frame high dynamic range (HDR) to extend the measurement range. The sensor outputs two depth frames with different integration times and calibration parameters. For each pixel, the host application selects the frame with the higher intensity and combines the results into the final output, improving depth accuracy across measurement ranges.
+<Frame>
+  ![Облако точек M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-point-cloud.avif)
+</Frame>
+
+Рисунок 3.3. Облако точек
+
+Камера использует межкадровый расширенный динамический диапазон (HDR), чтобы увеличить диапазон измерения. Датчик выдаёт два кадра глубины с разными временами интегрирования и параметрами калибровки. Для каждого пикселя хост-приложение выбирает кадр с большей интенсивностью и объединяет результаты в итоговый вывод, повышая точность глубины во всём диапазоне измерений.
 
 ### Field of view and operating range
 
@@ -170,54 +170,54 @@ Table 3-2. Material reflectivity
 | 10 | Clear glass | 140% |
 | 11 | Glossy, light-colored metal surface | 150% |
 
-### Dimensions
+### Габариты
 
 <Frame>
-  ![M4 Mega camera dimensions](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-dimensions.avif)
+  ![Габариты камеры M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-dimensions.avif)
 </Frame>
 
-Figure 3.5. M4 Mega camera dimensions
+Рисунок 3.5. Габариты камеры M4 Mega
 
-### Optical coordinate systems and origin
+### Оптические системы координат и начало координат
 
-**Optical coordinate systems:**
+**Оптические системы координат:**
 
-- The optical coordinate systems include the camera coordinate system (CCS) and world coordinate system (WCS).
-- The camera coordinate system is the two-dimensional depth-image coordinate system. Its origin is the optical center.
-- The world coordinate system is the three-dimensional point-cloud coordinate system.
-- Use the camera intrinsics to convert depth-image coordinates to 3D point-cloud coordinates. See the SDK examples.
+- Оптические системы координат включают систему координат камеры (CCS) и мировую систему координат (WCS).
+- Система координат камеры — это двумерная система координат изображения глубины. Её начало находится в оптическом центре.
+- Мировая система координат — это трёхмерная система координат облака точек.
+- Используйте внутренние параметры камеры для преобразования координат изображения глубины в координаты 3D-облака точек. См. примеры SDK.
 
 <Frame>
-  ![Optical coordinate systems](/images/products/m-series-m4-mega-user-guide-optical-coordinate-systems.avif)
+  ![Оптические системы координат](/images/products/m-series-m4-mega-user-guide-optical-coordinate-systems.avif)
 </Frame>
 
-Figure 3.6. Optical coordinate systems
+Рисунок 3.6. Оптические системы координат
 
-**The camera origin is defined as follows:**
+**Начало координат камеры определяется следующим образом:**
 
-1. The X-coordinate origin aligns with the product's X-axis.
-2. The Y-coordinate origin aligns with the product's Y-axis.
-3. The Z-coordinate origin is on the front surface of the camera.
+1. Начало координат X совпадает с осью X продукта.
+2. Начало координат Y совпадает с осью Y продукта.
+3. Начало координат Z находится на передней поверхности камеры.
 
 <Frame>
-  ![M4 Mega camera origin](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-origin.avif)
+  ![Начало координат камеры M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-origin.avif)
 </Frame>
 
-Figure 3.7. Camera origin
+Рисунок 3.7. Начало координат камеры
 
-### Product interfaces
+### Интерфейсы продукта
 
-### Camera-side interfaces
+### Интерфейсы камеры
 
-The camera has three interfaces: a DC24V power port, a Gigabit Ethernet port, and an I/O/CAN function port.
+Камера имеет три интерфейса: порт питания DC24V, порт Gigabit Ethernet и функциональный порт I/O/CAN.
 
 <Frame>
-  ![M4 Mega camera-side interfaces](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-side-interfaces.avif)
+  ![Интерфейсы камеры M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-side-interfaces.avif)
 </Frame>
 
-Table 3-3. Pin definitions
+Таблица 3-3. Назначение контактов
 
-| Port | Pin | Signal | Description |
+| Разъём | Контакт | Сигнал | Описание |
 | --- | --- | --- | --- |
 | Ethernet | 1 | MDI0\_N | Gigabit Ethernet |
 | ㅤ | 2 | MDI0\_p | ㅤ |
@@ -227,345 +227,345 @@ Table 3-3. Pin definitions
 | ㅤ | 6 | MDI2\_p | ㅤ |
 | ㅤ | 7 | MDI3\_N | ㅤ |
 | ㅤ | 8 | MDI3\_p | ㅤ |
-| Function port | 1 | CAN\_H | CAN\_H |
+| Функциональный порт | 1 | CAN\_H | CAN\_H |
 | ㅤ | 2 | CAN\_L | CAN\_L |
-| ㅤ | 3 | GND | CAN GND |
-| ㅤ | 4 | OUT\_1 | I/O output 1 |
-| ㅤ | 5 | COM | I/O COM terminal |
-| ㅤ | 6 | OUT\_2 | I/O output 2 |
-| ㅤ | 7 | IN\_1 | I/O input 1 |
-| ㅤ | 8 | IN\_2 | I/O input 2 |
-| Power port | 1 | 24\+ | DC power female connector, 5.5-2.1mm |
+| ㅤ | 3 | GND | Земля CAN |
+| ㅤ | 4 | OUT\_1 | Выход ввода-вывода 1 |
+| ㅤ | 5 | COM | Общий контакт ввода-вывода |
+| ㅤ | 6 | OUT\_2 | Выход ввода-вывода 2 |
+| ㅤ | 7 | IN\_1 | Вход ввода-вывода 1 |
+| ㅤ | 8 | IN\_2 | Вход ввода-вывода 2 |
+| Порт питания | 1 | 24\+ | Гнездовой разъём питания DC, 5.5-2.1mm |
 | ㅤ | G | 24- | ㅤ |
 
-### Function cable wire order
+### Порядок проводов функционального кабеля
 
 <Frame>
-  ![M4 Mega function cable wire order](/images/products/m-series-m4-mega-user-guide-m4-mega-function-cable-wire-order.avif)
+  ![Порядок проводов функционального кабеля M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-function-cable-wire-order.avif)
 </Frame>
 
-Table 3-4. Function cable wire order
+Таблица 3-4. Порядок проводов функционального кабеля
 
-| Cable | Color | Pin | Description |
+| Кабель | Цвет | Контакт | Описание |
 | --- | --- | --- | --- |
-| Function cable | Orange | CAN\_H | CAN\_H |
-| ㅤ | Yellow | CAN\_L | CAN\_L |
-| ㅤ | Green | GND | CAN GND |
-| ㅤ | Brown | IN\_1 | I/O input 1 |
-| ㅤ | White | IN\_2 | I/O input 2 |
-| ㅤ | Purple | COM | I/O COM terminal |
-| ㅤ | Blue | OUT\_1 | I/O output 1 |
-| ㅤ | Gray | OUT\_2 | I/O output 2 |
-| Power cable | Red | 24V\+ | Positive power terminal |
-| ㅤ | Black | GND | Negative power terminal |
+| Функциональный кабель | Оранжевый | CAN\_H | CAN\_H |
+| ㅤ | Жёлтый | CAN\_L | CAN\_L |
+| ㅤ | Зелёный | GND | Земля CAN |
+| ㅤ | Коричневый | IN\_1 | Вход ввода-вывода 1 |
+| ㅤ | Белый | IN\_2 | Вход ввода-вывода 2 |
+| ㅤ | Фиолетовый | COM | Общий контакт ввода-вывода |
+| ㅤ | Синий | OUT\_1 | Выход ввода-вывода 1 |
+| ㅤ | Серый | OUT\_2 | Выход ввода-вывода 2 |
+| Кабель питания | Красный | 24V\+ | Положительный контакт питания |
+| ㅤ | Чёрный | GND | Отрицательный контакт питания |
 
-Note: Some older function cables use different colors. Connect wires according to their labels.
+Примечание: в некоторых старых функциональных кабелях используются другие цвета. Подключайте провода в соответствии с их маркировкой.
 
-### Hardware trigger
+### Аппаратный триггер
 
-1. Hardware triggering works only when the product is in hardware-trigger mode. Hardware-trigger and obstacle-avoidance modes are mutually exclusive. In hardware-trigger mode, the camera waits for a valid pulse on I/O input pin 1, exposes one frame, and returns to the waiting state.
-2. The hardware trigger signal must be 3.3V~24V and provide at least 10mA drive current. Add a decoupling circuit to the trigger signal pin to prevent false triggers from pulse noise.
+1. Аппаратный триггер работает только в режиме аппаратного триггера. Режимы аппаратного триггера и объезда препятствий взаимоисключающие. В режиме аппаратного триггера камера ожидает корректный импульс на контакте 1 входа ввода-вывода, экспонирует один кадр и возвращается в состояние ожидания.
+2. Сигнал аппаратного триггера должен иметь напряжение 3.3V~24V и обеспечивать ток управления не менее 10mA. Добавьте развязывающую цепь к контакту сигнала триггера, чтобы предотвратить ложные срабатывания из-за импульсных помех.
 
-### Configure hardware triggering in the host application
+### Настройка аппаратного триггера в хост-приложении
 
-Open the camera → verify that the obstacle-avoidance algorithm is off → stop the stream → **Basic tools** → **Acquisition settings** → switch **Trigger mode** to **Hardware trigger** → configure the parameters → start the stream and wait for an external trigger signal.
+Откройте камеру → убедитесь, что алгоритм объезда препятствий отключён → остановите поток → **Основные инструменты** → **Настройки захвата** → переключите **Режим триггера** на **Аппаратный триггер** → настройте параметры → запустите поток и дождитесь внешнего сигнала триггера.
 
-**1. Hardware trigger parameters**
+**1. Параметры аппаратного триггера**
 
-**Filter time:** Time to wait before checking the trigger signal again after the hardware trigger input receives it. This filters noise. Use a value below 5ms. A larger value may filter valid trigger signals.
+**Время фильтрации:** время ожидания перед повторной проверкой сигнала триггера после его получения входом аппаратного триггера. Этот параметр фильтрует шум. Используйте значение менее 5ms. Большее значение может отфильтровать корректные сигналы триггера.
 
-**Minimum interval:** Interval between two consecutive automatic trigger signals. The range is 70000~100000000μs, and the value must exceed the integration time.
+**Минимальный интервал:** интервал между двумя последовательными автоматическими сигналами триггера. Диапазон составляет 70000~100000000μs, а значение должно превышать время интегрирования.
 
-**Trigger time:** Delay after checking the trigger signal again. Set to 0 for immediate triggering. The range is 0~100000000μs.
+**Время триггера:** задержка после повторной проверки сигнала триггера. Для немедленного срабатывания задайте 0. Диапазон составляет 0~100000000μs.
 
-**Frames per trigger:** Number of consecutive frames triggered by one hardware trigger. The range is 1~200 frames.
+**Кадров на один триггер:** количество последовательных кадров, запускаемых одним аппаратным триггером. Диапазон составляет 1~200 кадров.
 
-**2. Hardware trigger examples**
+**2. Примеры аппаратного триггера**
 
-**Example 1:** Filter time: 1000; minimum interval: 70000 (minimum); trigger time: 2000; frames per trigger: 10.
+**Пример 1:** время фильтрации: 1000; минимальный интервал: 70000 (минимум); время триггера: 2000; кадров на один триггер: 10.
 
-After receiving the signal, the camera waits 1ms and checks it again. It waits another 2ms before triggering the first frame, then waits 70ms between subsequent frames until frame 10. Trigger signals received during this sequence are ignored.
+После получения сигнала камера ждёт 1ms и проверяет его снова. Перед запуском первого кадра она ждёт ещё 2ms, затем ждёт 70ms между последующими кадрами до кадра 10. Сигналы триггера, полученные в этой последовательности, игнорируются.
 
-**Example 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+**Пример 2:** время фильтрации: 1000; минимальный интервал: отключён; время триггера: 0; кадров на один триггер: 1.
 
-After receiving the signal, the camera waits 1ms, checks it again, and triggers immediately. The minimum interval does not apply when frames per trigger is 1.
+После получения сигнала камера ждёт 1ms, проверяет его снова и немедленно срабатывает. Минимальный интервал не применяется, если количество кадров на один триггер равно 1.
 
-**Example 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+**Пример 3:** время фильтрации: 1000; минимальный интервал: 200000; время триггера: 0; кадров на один триггер: 200.
 
-### Software trigger
+### Программный триггер
 
-Software triggering works only when the product is in software-trigger mode. Software-trigger and obstacle-avoidance modes are mutually exclusive. In software-trigger mode, the camera waits for a valid software trigger signal, exposes one frame, and returns to the waiting state.
+Программный триггер работает только в режиме программного триггера. Режимы программного триггера и объезда препятствий взаимоисключающие. В режиме программного триггера камера ожидает корректный программный сигнал триггера, экспонирует один кадр и возвращается в состояние ожидания.
 
-### Configure software triggering in the host application
+### Настройка программного триггера в хост-приложении
 
-Open the camera → verify that the obstacle-avoidance algorithm is off → stop the stream → **Basic tools** → **Acquisition settings** → switch **Trigger mode** to **Software trigger** → configure the parameters → start the stream → select **Send software trigger**.
+Откройте камеру → убедитесь, что алгоритм объезда препятствий отключён → остановите поток → **Основные инструменты** → **Настройки захвата** → переключите **Режим триггера** на **Программный триггер** → настройте параметры → запустите поток → выберите **Отправить программный триггер**.
 
-1. **Software trigger parameters**
+1. **Параметры программного триггера**
 
-**Filter time:** Time to wait before checking the trigger signal again after the software trigger input receives it. This filters noise. Use a value below 5ms. A larger value may filter valid trigger signals.
+**Время фильтрации:** время ожидания перед повторной проверкой сигнала триггера после его получения входом программного триггера. Этот параметр фильтрует шум. Используйте значение менее 5ms. Большее значение может отфильтровать корректные сигналы триггера.
 
-**Minimum interval:** Interval between two consecutive automatic trigger signals. The range is 70000~100000000μs, and the value must exceed the integration time.
+**Минимальный интервал:** интервал между двумя последовательными автоматическими сигналами триггера. Диапазон составляет 70000~100000000μs, а значение должно превышать время интегрирования.
 
-**Trigger time:** Delay after checking the trigger signal again. Set to 0 for immediate triggering. The range is 0~100000000μs.
+**Время триггера:** задержка после повторной проверки сигнала триггера. Для немедленного срабатывания задайте 0. Диапазон составляет 0~100000000μs.
 
-**Frames per trigger:** Number of consecutive frames triggered by one software trigger. The range is 1~200 frames.
+**Кадров на один триггер:** количество последовательных кадров, запускаемых одним программным триггером. Диапазон составляет 1~200 кадров.
 
-1. **Software trigger examples**
+1. **Примеры программного триггера**
 
-**Example 1:** Filter time: 1000; minimum interval: 70000 (minimum); trigger time: 2000; frames per trigger: 10.
+**Пример 1:** время фильтрации: 1000; минимальный интервал: 70000 (минимум); время триггера: 2000; кадров на один триггер: 10.
 
-After receiving the signal, the camera waits 1ms and checks it again. It waits another 2ms before triggering the first frame, then waits 70ms between subsequent frames until frame 10. Trigger signals received during this sequence are ignored.
+После получения сигнала камера ждёт 1ms и проверяет его снова. Перед запуском первого кадра она ждёт ещё 2ms, затем ждёт 70ms между последующими кадрами до кадра 10. Сигналы триггера, полученные в этой последовательности, игнорируются.
 
-**Example 2:** Filter time: 1000; minimum interval: disabled; trigger time: 0; frames per trigger: 1.
+**Пример 2:** время фильтрации: 1000; минимальный интервал: отключён; время триггера: 0; кадров на один триггер: 1.
 
-After receiving the signal, the camera waits 1ms, checks it again, and triggers immediately. The minimum interval does not apply when frames per trigger is 1.
+После получения сигнала камера ждёт 1ms, проверяет его снова и немедленно срабатывает. Минимальный интервал не применяется, если количество кадров на один триггер равно 1.
 
-**Example 3:** Filter time: 1000; minimum interval: 200000; trigger time: 0; frames per trigger: 200.
+**Пример 3:** время фильтрации: 1000; минимальный интервал: 200000; время триггера: 0; кадров на один триггер: 200.
 
-### Camera components
+### Компоненты камеры
 
 <Frame>
-  ![M4 Mega camera components](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-components.avif)
+  ![Компоненты камеры M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-camera-components.avif)
 </Frame>
 
-| No. | Component |
+| № | Компонент |
 | --- | --- |
-| 1 | Power indicator; flashes slowly after power-on |
-| 2 | 940 light source |
-| 3 | Multi-camera interference source detection module |
-| 4 | ToF lens |
-| 5 | RGB lens |
+| 1 | Индикатор питания; медленно мигает после включения |
+| 2 | Источник света 940 |
+| 3 | Модуль обнаружения источников помех между камерами |
+| 4 | Объектив ToF |
+| 5 | Объектив RGB |
 
-### Recommended installation
+### Рекомендуемая установка
 
-**Use one of the following three installation methods.**
+**Используйте один из следующих трёх способов установки.**
 
-**Installation 1:** Neither the right wall nor floor is visible. Place the camera in a corner with only the wall ahead in its field of view. This configuration provides good ranging performance.
-
-<Frame>
-  ![Recommended M4 Mega installation 1](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-1.avif)
-</Frame>
-
-Figure 3.8. Installation 1
-
-**Installation 2:** The right wall is visible, but the floor is not. Place the camera in a corner at least 20cm from the right wall, measured by distance `d`. This configuration can achieve ±15mm ranging accuracy.
+**Установка 1:** правая стена и пол не видны. Разместите камеру в углу так, чтобы в поле зрения находилась только передняя стена. Такая конфигурация обеспечивает хорошие результаты измерения расстояния.
 
 <Frame>
-  ![Recommended M4 Mega installation 2](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-2.avif)
+  ![Рекомендуемая установка M4 Mega 1](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-1.avif)
 </Frame>
 
-Figure 3.9. Installation 2
+Рисунок 3.8. Установка 1
 
-**Installation 3:** The floor is visible, but the right wall is not. Install the camera at a recommended height of 10cm~30cm above the floor.
+**Установка 2:** правая стена видна, а пол — нет. Разместите камеру в углу на расстоянии не менее 20cm от правой стены, измеренном как расстояние `d`. Такая конфигурация обеспечивает точность измерения расстояния ±15mm.
 
 <Frame>
-  ![Recommended M4 Mega installation 3](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-3.avif)
+  ![Рекомендуемая установка M4 Mega 2](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-2.avif)
 </Frame>
 
-Figure 3.10. Installation 3
+Рисунок 3.9. Установка 2
 
-When the camera is close to the floor, the nearby floor becomes overexposed and affects other areas. Stray light and multipath reflections also affect near-floor measurements, as shown in Figure 3.11.
+**Установка 3:** пол виден, а правая стена — нет. Установите камеру на рекомендуемой высоте 10cm~30cm над полом.
 
 <Frame>
-  ![Near-floor multipath effects](/images/products/m-series-m4-mega-user-guide-near-floor-multipath-effects.avif)
+  ![Рекомендуемая установка M4 Mega 3](/images/products/m-series-m4-mega-user-guide-recommended-m4-mega-installation-3.avif)
 </Frame>
 
-Figure 3.11. Near-floor multipath effects
+Рисунок 3.10. Установка 3
 
-In imaging optics, stray light primarily appears as ghosting and flare, as shown in Figure 3.12.
+Когда камера находится близко к полу, ближайшая область пола переэкспонируется и влияет на другие области. Рассеянный свет и многолучевые отражения также влияют на измерения вблизи пола, как показано на рисунке 3.11.
 
 <Frame>
-  ![Ghosting and flare from stray light](/images/products/m-series-m4-mega-user-guide-ghosting-and-flare-from-stray-light.avif)
+  ![Многолучевые эффекты вблизи пола](/images/products/m-series-m4-mega-user-guide-near-floor-multipath-effects.avif)
 </Frame>
 
-Figure 3.12. Ghosting and flare
+Рисунок 3.11. Многолучевые эффекты вблизи пола
 
-**Do not install the product where both the right wall and floor are visible**, as shown below. Stray light from the floor and multipath reflections from the wall can affect measurements in complex ways.
+В оптике формирования изображений рассеянный свет проявляется главным образом как двоение и засветка, как показано на рисунке 3.12.
 
 <Frame>
-  ![Unsupported M4 Mega installation](/images/products/m-series-m4-mega-user-guide-unsupported-m4-mega-installation.avif)
+  ![Двоение и засветка от рассеянного света](/images/products/m-series-m4-mega-user-guide-ghosting-and-flare-from-stray-light.avif)
 </Frame>
 
-Figure 3.13. Unsupported installation
+Рисунок 3.12. Двоение и засветка
+
+**Не устанавливайте продукт там, где видны и правая стена, и пол**, как показано ниже. Рассеянный свет от пола и многолучевые отражения от стены могут сложным образом влиять на измерения.
+
+<Frame>
+  ![Недопустимая установка M4 Mega](/images/products/m-series-m4-mega-user-guide-unsupported-m4-mega-installation.avif)
+</Frame>
+
+Рисунок 3.13. Недопустимая установка
 
 ---
 
-## Accuracy and multi-camera deployment
+## Точность и развёртывание нескольких камер
 
-### Accuracy
+### Точность
 
-Calibration removes fixed offsets between sensor measurements and actual values by mapping one to the other. To calibrate an M4 Mega camera, mount it on a rail and point it at a white wall. Map each pixel's measured value to the distance between the camera and the corresponding wall area, then correct measurements with this mapping, as shown in Figure 4.1.
-
-<Frame>
-  ![M4 Mega calibration setup](/images/products/m-series-m4-mega-user-guide-m4-mega-calibration-setup.avif)
-</Frame>
-
-Figure 4.1. Calibration
-
-The M4 Mega uses active ranging, so many factors affect its accuracy. Improper installation can introduce multipath effects and distort measurements.
-
-This is especially noticeable when measuring a low-reflectivity target beside a highly reflective object. Ideally, light follows the blue path. Light reflected from a wall may also reach the target and return to the camera along the green path. Illumination reflected directly from the adjacent high-reflectivity object may enter the camera along the red path. Optical imperfections turn this light into glare that interferes with ranging, as shown in Figure 4.2.
+Калибровка устраняет фиксированное смещение между измерениями датчика и фактическими значениями, устанавливая соответствие между ними. Для калибровки камеры M4 Mega установите её на направляющей и направьте на белую стену. Сопоставьте измеренное значение каждого пикселя с расстоянием между камерой и соответствующей областью стены, затем скорректируйте измерения по этому соответствию, как показано на рисунке 4.1.
 
 <Frame>
-  ![M4 Mega installation and reflection paths](/images/products/m-series-m4-mega-user-guide-m4-mega-installation-and-reflection-paths.avif)
+  ![Настройка калибровки M4 Mega](/images/products/m-series-m4-mega-user-guide-m4-mega-calibration-setup.avif)
 </Frame>
 
-Figure 4.2. Camera installation
+Рисунок 4.1. Калибровка
 
-### Precision
+M4 Mega использует активное измерение расстояния, поэтому на точность влияют многие факторы. Неправильная установка может вызвать многолучевые эффекты и исказить измерения.
 
-Precision typically refers to single-point variation (1-σ). As an optoelectronic measurement device, the M4 Mega is affected by ADC conversion, signal-to-noise ratio, and system noise. Figure 4.3 shows the relationship between measurement precision and signal intensity.
+Это особенно заметно при измерении цели с низкой отражательной способностью рядом с объектом с высокой отражательной способностью. В идеальном случае свет распространяется по синей траектории. Свет, отражённый от стены, также может попасть на цель и вернуться в камеру по зелёной траектории. Свет, напрямую отражённый от соседнего объекта с высокой отражательной способностью, может попасть в камеру по красной траектории. Оптические несовершенства превращают этот свет в блики, мешающие измерению расстояния, как показано на рисунке 4.2.
 
 <Frame>
-  ![Measurement precision and signal intensity](/images/products/m-series-m4-mega-user-guide-measurement-precision-and-signal-intensity.avif)
+  ![Установка M4 Mega и траектории отражения](/images/products/m-series-m4-mega-user-guide-m4-mega-installation-and-reflection-paths.avif)
 </Frame>
 
-Figure 4.3. Measurement precision and signal intensity
+Рисунок 4.2. Установка камеры
 
-The M4 Mega converts optoelectronic analog signals into digital data. During ADC conversion, the analog value is rounded to the smallest resolution step, introducing noise. A 1.1V signal may be represented as 1V, producing 10% error. A 10.1V signal may become 10V, and a 100.1V signal may become 100V, each producing about 1% error. ADC conversion therefore introduces more noise and error at low signal levels. A ToF camera's signal-to-noise ratio generally follows SNR∝1/√t, where `t` is integration time. Increasing integration time raises signal intensity.
+### Прецизионность
+
+Под прецизионностью обычно понимают разброс измерений в одной точке (1-σ). Как оптоэлектронное измерительное устройство, M4 Mega подвержена влиянию аналого-цифрового преобразования, отношения сигнал/шум и системного шума. На рисунке 4.3 показана связь между прецизионностью измерений и интенсивностью сигнала.
+
+<Frame>
+  ![Прецизионность измерений и интенсивность сигнала](/images/products/m-series-m4-mega-user-guide-measurement-precision-and-signal-intensity.avif)
+</Frame>
+
+Рисунок 4.3. Прецизионность измерений и интенсивность сигнала
+
+M4 Mega преобразует оптоэлектронные аналоговые сигналы в цифровые данные. При аналого-цифровом преобразовании аналоговое значение округляется до минимального шага разрешения, что вносит шум. Сигнал 1.1V может быть представлен как 1V, что даёт ошибку 10%. Сигнал 10.1V может стать 10V, а сигнал 100.1V — 100V; в обоих случаях ошибка составляет около 1%. Поэтому при низком уровне сигнала аналого-цифровое преобразование вносит больше шума и ошибок. Отношение сигнал/шум ToF-камеры обычно подчиняется зависимости SNR∝1/√t, где `t` — время интегрирования. Увеличение времени интегрирования повышает интенсивность сигнала.
 
 ---
 
-## Multi-camera interference
+## Помехи между камерами
 
-### Parallel interference
+### Параллельные помехи
 
-When two cameras are installed in parallel, each can receive both its own reflected illumination and illumination from the other camera, interfering with depth data. Parallel interference increases measurement error when two M4 Mega cameras face the same direction.
+Когда две камеры установлены параллельно, каждая из них может принимать как отражённое собственное освещение, так и освещение от другой камеры, что создаёт помехи в данных глубины. Параллельные помехи увеличивают ошибку измерения, когда две камеры M4 Mega направлены в одну сторону.
 
 <Frame>
-  ![Parallel camera interference](/images/products/m-series-m4-mega-user-guide-parallel-camera-interference.avif)
+  ![Параллельные помехи между камерами](/images/products/m-series-m4-mega-user-guide-parallel-camera-interference.avif)
 </Frame>
 
-To avoid parallel interference, install the cameras at an angle to the horizontal. If they must be installed at 0° to the horizontal plane, contact MRDVS for a custom configuration.
+Чтобы избежать параллельных помех, устанавливайте камеры под углом к горизонтали. Если их необходимо установить под углом 0° к горизонтальной плоскости, обратитесь в MRDVS за пользовательской конфигурацией.
 
 ---
 
-## Software and data
+## Программное обеспечение и данные
 
 ### SDK
 
-Use the SDK to initialize and start the camera, retrieve data, and close the camera. For platforms other than Linux or Windows, port the application by referring to the SDK source code.
+Используйте SDK для инициализации и запуска камеры, получения данных и закрытия камеры. Для платформ, отличных от Linux и Windows, портируйте приложение, ориентируясь на исходный код SDK.
 
-Table 6-1. SDK details
+Таблица 6-1. Сведения о SDK
 
-| Operating system | Linux&Windows |
+| Операционная система | Linux и Windows |
 | --- | --- |
-| Programming language | C/C\+\+ |
-| Data format | 16-bit unsigned short |
-| Integration | Shared library (.so), dynamic-link library (.dll), or integrated SDK source code |
+| Язык программирования | C/C\+\+ |
+| Формат данных | 16-битовое беззнаковое значение short |
+| Интеграция | Разделяемая библиотека (.so), динамическая библиотека (.dll) или встроенный исходный код SDK |
 
-### SDK output order
+### Порядок вывода SDK
 
 <Frame>
-  ![SDK output order](/images/products/m-series-m4-mega-user-guide-sdk-output-order.avif)
+  ![Порядок вывода SDK](/images/products/m-series-m4-mega-user-guide-sdk-output-order.avif)
 </Frame>
 
-Figure 6.1. SDK output order
+Рисунок 6.1. Порядок вывода SDK
 
-The SDK outputs one frame each of depth and amplitude data at the configured resolution. Each frame is stored as a one-dimensional array, beginning at the upper-left pixel and proceeding from left to right, then top to bottom. Figure 6.1 shows output along the x-axis followed by the y-axis, producing this order:
+SDK выдаёт по одному кадру данных глубины и амплитуды в настроенном разрешении. Каждый кадр хранится как одномерный массив, начиная с пикселя в левом верхнем углу и проходя слева направо, затем сверху вниз. На рисунке 6.1 показан вывод сначала по оси x, затем по оси y, в следующем порядке:
 
 (x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
 
-Each depth-image pixel is a 16-bit unsigned short representing the distance from the measured object to the camera plane.
+Каждый пиксель изображения глубины представляет собой 16-битовое беззнаковое значение short, которое обозначает расстояние от измеряемого объекта до плоскости камеры.
 
-Each amplitude-image pixel is a 16-bit unsigned short representing the returned signal intensity.
+Каждый пиксель амплитудного изображения представляет собой 16-битовое беззнаковое значение short, которое обозначает интенсивность возвращённого сигнала.
 
-### IP address
+### IP-адрес
 
-The M4 Mega camera's default IP address is 192.168.100.82. To change the IP address or enable DHCP, use the demo application provided by MRDVS.
+IP-адрес камеры M4 Mega по умолчанию — 192.168.100.82. Чтобы изменить IP-адрес или включить DHCP, используйте демонстрационное приложение MRDVS.
 
-### Demo application
+### Демонстрационное приложение
 
-### IP configuration
+### Настройка IP
 
-Connect the power cable, then connect the camera to the computer with an Ethernet cable. Because the camera's factory-default IP address is 192.168.100.82, set the computer to the 192.168.100.x subnet, excluding 100.82, with subnet mask 255.255.255.0. Open **Settings** → **Ethernet** → **Change adapter options**. Right-click **Ethernet**, select **Properties**, then select **Internet Protocol Version 4 (TCP/IPv4)**. For example, set the IP address to 192.168.100.20 and the subnet mask to 255.255.255.0.
+Подключите кабель питания, затем соедините камеру с компьютером кабелем Ethernet. Поскольку заводской IP-адрес камеры — 192.168.100.82, настройте компьютер в подсети 192.168.100.x, исключив 100.82, с маской подсети 255.255.255.0. Откройте **Параметры** → **Ethernet** → **Изменить параметры адаптера**. Щёлкните правой кнопкой мыши **Ethernet**, выберите **Свойства**, затем выберите **Internet Protocol Version 4 (TCP/IPv4)**. Например, задайте IP-адрес 192.168.100.20 и маску подсети 255.255.255.0.
 
-### Open the application
+### Открытие приложения
 
-Download and install the software, then double-click the LxCameraViwer demo icon. The host application opens, searches for a camera, opens it, and starts acquisition automatically when one camera is connected.
+Скачайте и установите программу, затем дважды щёлкните значок демонстрационного приложения LxCameraViwer. Хост-приложение запускается, ищет камеру, открывает её и автоматически начинает сбор данных при подключении одной камеры.
 
-**Note: On first launch, some systems require you to allow the application through the firewall.**
+**Примечание: при первом запуске в некоторых системах необходимо разрешить приложению доступ через брандмауэр.**
 
-The application includes basic controls, image selection, camera configuration, and camera information. Camera information includes the IP address, ID, MAC address, serial number, and software and algorithm versions. Select the depth, amplitude, RGB, or point-cloud checkbox to display that view in the center panel.
+Приложение предоставляет основные элементы управления, выбор изображений, настройку камеры и сведения о камере. Сведения о камере включают IP-адрес, идентификатор, MAC-адрес, серийный номер, а также версии программного обеспечения и алгоритмов. Установите флажок глубины, амплитуды, RGB или облака точек, чтобы отобразить соответствующее представление на центральной панели.
 
 <Frame>
-  ![LxCameraViewer image display](/images/products/m-series-m4-mega-user-guide-lxcameraviewer-image-display.avif)
+  ![Отображение изображений в LxCameraViewer](/images/products/m-series-m4-mega-user-guide-lxcameraviewer-image-display.avif)
 </Frame>
 
-Figure 6.2. Image display
+Рисунок 6.2. Отображение изображений
 
-### Save images
+### Сохранение изображений
 
-Select **Save** to save the selected images to the `./data` folder in the installation directory. The terminal also prints the path, for example: `save path= ./data/<camera-ID>`.
+Выберите **Save**, чтобы сохранить выбранные изображения в папку `./data` каталога установки. Терминал также выводит путь, например: `save path= ./data/<camera-ID>`.
 
-After saving, `_a` identifies an amplitude image, `_d` a depth image, and `_r` an RGB (MONO) image. `.pcd` identifies a point cloud. Depth and amplitude images use PGM format, RGB images use PNG, and point clouds use PCD.
+После сохранения `_a` обозначает амплитудное изображение, `_d` — изображение глубины, а `_r` — RGB-изображение (MONO). Расширение `.pcd` обозначает облако точек. Для изображений глубины и амплитуды используется формат PGM, для RGB-изображений — PNG, а для облаков точек — PCD.
 
 <Frame>
-  ![Saved image files](/images/products/m-series-m4-mega-user-guide-saved-image-files.avif)
+  ![Сохранённые файлы изображений](/images/products/m-series-m4-mega-user-guide-saved-image-files.avif)
 </Frame>
 
-Figure 6.3. Saved images
+Рисунок 6.3. Сохранённые изображения
 
-### Change the IP address
+### Изменение IP-адреса
 
-Enter the required IP address, such as 192.168.10.199. Enter subnet mask 255.255.255.0 and gateway 192.168.10.1. The gateway must be on the same subnet as the required IP address; set its last octet to 1. Confirm the change, then power-cycle the camera.
+Введите требуемый IP-адрес, например 192.168.10.199. Введите маску подсети 255.255.255.0 и шлюз 192.168.10.1. Шлюз должен находиться в той же подсети, что и требуемый IP-адрес; последний октет обычно задаётся равным 1. Подтвердите изменение, затем выключите и снова включите камеру.
 
 <Frame>
-  ![Change the camera IP address](/images/products/m-series-m4-mega-user-guide-change-the-camera-ip-address.avif)
+  ![Изменение IP-адреса камеры](/images/products/m-series-m4-mega-user-guide-change-the-camera-ip-address.avif)
 </Frame>
 
 ---
 
-## 7. Main features
+## 7. Основные функции
 
-### Distance range
+### Диапазон расстояний
 
-The M4 Mega camera measures from 0.2~5m. Contact MRDVS if you need a custom range.
+Камера M4 Mega измеряет расстояния от 0.2 до 5m. Если нужен пользовательский диапазон, обратитесь в MRDVS.
 
-### Filtering
+### Фильтрация
 
-The MRDVS SDK provides these filters:
+SDK MRDVS предоставляет следующие фильтры:
 
-- Median filter
-- Mode filter
-- Flying-pixel removal
+- Медианный фильтр
+- Модальный фильтр
+- Удаление «летающих» пикселей
 
 ---
 
-## Safety and troubleshooting
+## Безопасность и устранение неполадок
 
-### Laser safety class
+### Класс лазерной безопасности
 
 <Frame>
-  ![Laser safety class](/images/products/m-series-m4-mega-user-guide-laser-safety-class.avif)
+  ![Класс лазерной безопасности](/images/products/m-series-m4-mega-user-guide-laser-safety-class.avif)
 </Frame>
 
-### Correct operation
+### Правильная эксплуатация
 
-The M4 Mega camera uses a 24V DC power supply. Connect the power cable before applying power. Do not reverse the positive and negative terminals, as this may damage the product.
+Камера M4 Mega использует источник питания 24V DC. Подключите кабель питания до подачи напряжения. Не меняйте местами положительный и отрицательный контакты, поскольку это может повредить продукт.
 
-| No. | Issue | Resolution |
+| № | Проблема | Решение |
 | --- | --- | --- |
-| 1 | The camera does not respond when opened | Confirm that the firewall is disabled. |
-| 2 | The host application detects multiple IP addresses | A duplicate IP address exists on the LAN. Select the required IP address. |
-| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable. Data may initially be unstable over a 100Mbps cable. |
-| 4 | Software installation location | Installing to the default location on the C drive may require permission changes. |
+| 1 | Камера не отвечает после открытия | Убедитесь, что брандмауэр отключён. |
+| 2 | Хост-приложение обнаруживает несколько IP-адресов | В локальной сети существует дублирующийся IP-адрес. Выберите требуемый IP-адрес. |
+| 3 | Данные камеры нестабильны после открытия | Используйте кабель Gigabit Ethernet. При использовании кабеля 100Mbps данные могут быть нестабильными в начале работы. |
+| 4 | Место установки программы | При установке в расположение по умолчанию на диске C может потребоваться изменить разрешения. |
 
 ---
 
-### Operating temperature
+### Рабочая температура
 
-Keep the ambient temperature within the range specified in Table 2-1. Mount the product on a thermally conductive component, such as a metal bracket, to improve heat dissipation and achieve optimal performance.
+Поддерживайте температуру окружающей среды в диапазоне, указанном в таблице 2-1. Установите продукт на теплопроводящем компоненте, например металлическом кронштейне, чтобы улучшить отвод тепла и обеспечить оптимальную производительность.
 
 ---
 
-### FAQ
+### Часто задаваемые вопросы
 
-Table 9-1. Frequently asked questions
+Таблица 9-1. Часто задаваемые вопросы
 
-| No. | Issue | Resolution |
+| № | Проблема | Решение |
 | --- | --- | --- |
-| 1 | The camera does not respond when opened | Confirm that the firewall is disabled. |
-| 2 | The host application detects multiple IP addresses | A duplicate IP address exists on the LAN. Select the required IP address. |
-| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable. Data may initially be unstable over a 100Mbps cable. |
-| 4 | Software installation location | Installing to the default location on the C drive may require permission changes. |
+| 1 | Камера не отвечает после открытия | Убедитесь, что брандмауэр отключён. |
+| 2 | Хост-приложение обнаруживает несколько IP-адресов | В локальной сети существует дублирующийся IP-адрес. Выберите требуемый IP-адрес. |
+| 3 | Данные камеры нестабильны после открытия | Используйте кабель Gigabit Ethernet. При использовании кабеля 100Mbps данные могут быть нестабильными в начале работы. |
+| 4 | Место установки программы | При установке в расположение по умолчанию на диске C может потребоваться изменить разрешения. |

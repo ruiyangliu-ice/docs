@@ -1,120 +1,120 @@
 ---
-title: V2 Pro UDP communication protocol
-sidebarTitle: V2 Pro UDP protocol
-description: "Configure V2 Pro UDP communication and parse odometry, relocation, mapping, map, and localization-result messages."
+title: Протокол обмена данными V2 Pro по UDP
+sidebarTitle: Протокол V2 Pro UDP
+description: "Настройте обмен данными V2 Pro по UDP и разбирайте сообщения об одометрии, релокации, построении карт, переключении карт и результатах локализации."
 hidden: true
 ---
 
-V2 Pro exchanges control and localization data with a client over UDP. In the web host application, set `portName` to the target device IP address and `portCode` to the listening port. V2 Pro listens on port `8001` for incoming messages.
+V2 Pro обменивается с клиентом данными управления и локализации по протоколу UDP. В веб-хост-приложении задайте для `portName` IP-адрес целевого устройства, а для `portCode` — порт прослушивания. V2 Pro принимает входящие сообщения на порту `8001`.
 
 <Frame>
-  ![UDP target address configuration in the V2 Pro web host application](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
+  ![Настройка адреса UDP в веб-хост-приложении V2 Pro](/images/developers/v2-localization-udp-protocol-v2pro-udp-communication-protocol.avif)
 </Frame>
 
-## Message conventions
+## Формат сообщений
 
-| Item | Convention |
+| Элемент | Правило |
 | --- | --- |
-| Byte order | Big-endian: the high byte precedes the low byte. |
-| Frame structure | Header, length, command, data, and checksum. |
-| Checksum | One byte. XOR all bytes except the header and checksum itself. |
-| Length field | Excludes the header and checksum. Some messages do not contain a length field. |
-| Map name | ASCII letters, digits, and underscores only; the first character must be a letter. |
+| Порядок байтов | Big-endian: старший байт расположен перед младшим. |
+| Структура кадра | Заголовок, длина, команда, данные и контрольная сумма. |
+| Контрольная сумма | Один байт. Примените XOR ко всем байтам, кроме заголовка и самой контрольной суммы. |
+| Поле длины | Не включает заголовок и контрольную сумму. Некоторые сообщения не содержат поля длины. |
+| Имя карты | Только буквы ASCII, цифры и символы подчёркивания; первый символ должен быть буквой. |
 
 <Note>
-  Byte numbering starts at Byte 0. All multi-byte integers use big-endian order.
+  Нумерация байтов начинается с Byte 0. Для всех многоразрядных целых чисел используется порядок big-endian.
 </Note>
 
-## Messages received by V2 Pro
+## Сообщения, получаемые V2 Pro
 
-### Odometry
+### Одометрия
 
-| Byte range | Content |
+| Диапазон байтов | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0x0A |
-| Byte 4–7 | V3 V2 V1 V0, 4-byte integer velocity |
-| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, 4-byte integer angle |
-| Byte 12 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0x0A |
+| Byte 4–7 | V3 V2 V1 V0, 4-байтовое целое значение скорости |
+| Byte 8–11 | Theta3 Theta2 Theta1 Theta0, 4-байтовое целое значение угла |
+| Byte 12 | Контрольная сумма |
 
-Velocity `v` is in mm/s. Angle `theta` is in 0.01°; for example, 90° is sent as 9000.
+Скорость `v` указывается в мм/с. Угол `theta` указывается в сотых долях градуса; например, угол 90° передаётся как 9000.
 
-### Relocation
+### Релокация
 
-| Byte range | Content |
+| Диапазон байтов | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0x02 |
-| Byte 4–7 | X3 X2 X1 X0, 4-byte integer X coordinate |
-| Byte 8–11 | Y3 Y2 Y1 Y0, 4-byte integer Y coordinate |
-| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, 4-byte integer angle |
-| Byte 16 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0x02 |
+| Byte 4–7 | X3 X2 X1 X0, 4-байтовое целое значение координаты X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, 4-байтовое целое значение координаты Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, 4-байтовое целое значение угла |
+| Byte 16 | Контрольная сумма |
 
-`x` and `y` are in mm. `theta` is in 0.01°; for example, 90° is sent as 9000.
+`x` и `y` указываются в мм. `theta` указывается в сотых долях градуса; например, угол 90° передаётся как 9000.
 
-### Start or stop mapping
+### Запуск или остановка построения карты
 
-| Byte range | Content |
+| Диапазон байтов | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0x02 |
-| Byte 4 | Status: 0x01 starts mapping; 0x00 stops mapping |
-| Byte 5–34 | Map name, fixed 30-byte ASCII; pad unused bytes with 0x00 |
-| Byte 35 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0x02 |
+| Byte 4 | Состояние: 0x01 запускает построение карты; 0x00 останавливает построение карты |
+| Byte 5–34 | Имя карты, фиксированное поле ASCII длиной 30 байт; незадействованные байты заполняются значением 0x00 |
+| Byte 35 | Контрольная сумма |
 
-Send the start command once per mapping task. Do not send it repeatedly.
+Отправляйте команду запуска один раз для каждой задачи построения карты. Не отправляйте её повторно.
 
-### Switch maps
+### Переключение карт
 
-| Byte range | Content |
+| Диапазон байтов | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0x0C |
-| Byte 4–33 | Map name, fixed 30-byte ASCII; pad unused bytes with 0x00 |
-| Byte 34 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0x0C |
+| Byte 4–33 | Имя карты, фиксированное поле ASCII длиной 30 байт; незадействованные байты заполняются значением 0x00 |
+| Byte 34 | Контрольная сумма |
 
-Confirm that the target map has been built before sending the command.
+Перед отправкой команды убедитесь, что целевая карта построена.
 
-## Messages sent by V2 Pro
+## Сообщения, отправляемые V2 Pro
 
-### Localization result
+### Результат локализации
 
-| Byte range | Content |
+| Диапазон байтов | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0x01 |
-| Byte 4–7 | X3 X2 X1 X0, X coordinate |
-| Byte 8–11 | Y3 Y2 Y1 Y0, Y coordinate |
-| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, orientation |
-| Byte 16–23 | Timestamp7 through Timestamp0, timestamp |
-| Byte 24 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0x01 |
+| Byte 4–7 | X3 X2 X1 X0, координата X |
+| Byte 8–11 | Y3 Y2 Y1 Y0, координата Y |
+| Byte 12–15 | Theta3 Theta2 Theta1 Theta0, ориентация |
+| Byte 16–23 | Timestamp7–Timestamp0, временная метка |
+| Byte 24 | Контрольная сумма |
 
-`X` and `Y` are in mm. `THETA` is in 0.001 rad. After successful relocation, V2 Pro continuously sends this message.
+`X` и `Y` указываются в мм. `THETA` указывается в тысячных долях радиана. После успешной релокации V2 Pro непрерывно отправляет это сообщение.
 
-### Task result
+### Результат задачи
 
-Start mapping, stop mapping, and switch-map commands return their status in the following message.
+Команды запуска и остановки построения карты, а также переключения карты возвращают состояние в следующем сообщении.
 
-| Byte | Content |
+| Byte | Содержимое |
 | --- | --- |
-| Byte 0–1 | Header: AC ED |
-| Byte 2 | Length: Length |
-| Byte 3 | Command: 0xFF |
-| Byte 4 | Task ID |
-| Byte 5 | Status: 0x01 success; 0x00 failure |
-| Byte 6 | Checksum |
+| Byte 0–1 | Заголовок: AC ED |
+| Byte 2 | Длина: Length |
+| Byte 3 | Команда: 0xFF |
+| Byte 4 | Идентификатор задачи |
+| Byte 5 | Состояние: 0x01 — успех; 0x00 — ошибка |
+| Byte 6 | Контрольная сумма |
 
-| Task ID | Operation |
+| Идентификатор задачи | Операция |
 | --- | --- |
-| 0x01 | Start mapping |
-| 0x02 | Stop mapping |
-| 0x03 | Switch map |
+| 0x01 | Запуск построения карты |
+| 0x02 | Остановка построения карты |
+| 0x03 | Переключение карты |
 
 <Info>
-  Stopping mapping can take time. Completion usually takes about one-third of the data-collection duration. Wait for the task-result message before starting another operation.
+  Остановка построения карты может занять некоторое время. Обычно она занимает около трети времени сбора данных. Дождитесь сообщения с результатом задачи, прежде чем запускать другую операцию.
 </Info>

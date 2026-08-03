@@ -1,46 +1,46 @@
 ---
-title: JSON communication protocol
-description: TCP Socket JSON message format and field reference for communication between a camera and a robot or PLC.
+title: Protocollo di comunicazione JSON
+description: Formato dei messaggi JSON tramite socket TCP e riferimento ai campi per la comunicazione tra una fotocamera e un robot o PLC.
 hidden: true
 ---
 
-## Overview
+## Panoramica
 
-The camera runs as a TCP Socket server and listens on port `5501` by default. Messages are text; ASCII is supported, and JSON encoding is recommended.
+La fotocamera funziona come server TCP Socket e ascolta sulla porta `5501` per impostazione predefinita. I messaggi sono testuali; ASCII è supportato e si consiglia la codifica JSON.
 
 <Info>
-  Use this protocol when a robot or PLC triggers a 3D vision task and reads the result returned by the camera.
+  Usa questo protocollo quando un robot o PLC avvia un’attività di visione 3D e legge il risultato restituito dalla fotocamera.
 </Info>
 
-## Request message
+## Messaggio di richiesta
 
-Send the following message to trigger a 3D vision task:
+Invia il messaggio seguente per avviare un’attività di visione 3D:
 
 ```json
 {"action":"3D"}
 ```
 
-## Response message
+## Messaggio di risposta
 
-After the camera finishes, it returns a JSON object.
+Al termine dell’elaborazione, la fotocamera restituisce un oggetto JSON.
 
 <ResponseField name="result" type="integer" required>
-  Detection status. `0` indicates localization failure or no result. Any other integer indicates success and gives the number of returned results.
+  Stato del rilevamento. `0` indica un errore di localizzazione o nessun risultato. Qualsiasi altro intero indica il successo e specifica il numero di risultati restituiti.
 </ResponseField>
 
 <ResponseField name="pos" type="number[]" required>
-  Array of object poses. Each result contains `X`, `Y`, `Z`, `RX`, `RY`, and `RZ` in the robot coordinate system. Position is in mm and angles are in °; `−180° ≤ RZ ≤ 180°`. All values are `0` when detection fails.
+  Array delle pose degli oggetti. Ogni risultato contiene `X`, `Y`, `Z`, `RX`, `RY` e `RZ` nel sistema di coordinate del robot. La posizione è espressa in mm e gli angoli in °; `−180° ≤ RZ ≤ 180°`. Tutti i valori sono `0` quando il rilevamento non riesce.
 </ResponseField>
 
-### Response examples
+### Esempi di risposta
 
 <Tabs>
-  <Tab title="Success">
+  <Tab title="Successo">
     ```json
     {"result":2,"pos":[100,107.3,1530,179,89,89,112,432.1,1500,179,89,75]}
     ```
   </Tab>
-  <Tab title="Failure">
+  <Tab title="Errore">
     ```json
     {"result":0,"pos":[0,0,0,0,0,0]}
     ```

@@ -1,446 +1,446 @@
 ---
-title: S2 Max user guide
-description: "Specifications, installation, SDK, host application operation, and usage notes for the S2 Max camera."
+title: Руководство пользователя S2 Max
+description: "Технические характеристики, установка, SDK, работа с хост-приложением и примечания по эксплуатации камеры S2 Max."
 hidden: true
 ---
 
 <Info>
-  This is an archived user guide. For the first connection and stream setup, start with the [S2 Max quickstart](/ru/products/s-series/s2-max-quickstart).
+  Это архивное руководство пользователя. Для первого подключения и настройки потока начните с [краткого руководства S2 Max](/ru/products/s-series/s2-max-quickstart).
 </Info>
 
-## Revision history
+## История изменений
 
-| Date | Version | Changes |
+| Дата | Версия | Изменения |
 | --- | --- | --- |
-| 2024/01/30 | V0.1 | Initial release |
-| 2024/05/10 | V1.0 | Updated camera parameters |
-| 2024/06/17 | V1.1 | 1. Updated the pinout and added electrical specifications. 2. Added the inspection certificate to the package contents. |
-| 2024/11/25 | V1.2 | Updated camera storage temperature |
+| 2024/01/30 | V0.1 | Первоначальный выпуск |
+| 2024/05/10 | V1.0 | Обновлены параметры камеры |
+| 2024/06/17 | V1.1 | 1. Обновлена схема контактов и добавлены электрические характеристики. 2. В комплект добавлен сертификат проверки. |
+| 2024/11/25 | V1.2 | Обновлена температура хранения камеры |
 
-## Product overview
+## Обзор продукта
 
-This document describes the S2 Max camera developed by Zhejiang MRDVS Technology Co., Ltd., including its specifications, features, and operating instructions.
+В этом документе описана камера S2 Max, разработанная компанией Zhejiang MRDVS Technology Co., Ltd., включая её технические характеристики, возможности и инструкции по эксплуатации.
 
-The S2 Max is an MRDVS ToF camera with a Gigabit Ethernet communication interface and 24V DC power input.
+S2 Max — ToF-камера MRDVS с интерфейсом связи Gigabit Ethernet и входным питанием 24V DC.
 
 <Frame>
-  ![S2 Max camera](/images/products/s-series-s2-max-user-guide-s2-max-camera.avif)
+  ![Камера S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-camera.avif)
 </Frame>
 
-Figure 1.1. S2 Max camera
+Рисунок 1.1. Камера S2 Max
 
-### 1.1 Features
+### 1.1 Возможности
 
-- Integrated 1 TOPS compute capacity; requires no external CPU
-- RGB-D output
-- Standalone obstacle avoidance, bin detection, and volume measurement
+- Встроенная вычислительная мощность 1 TOPS; внешний ЦП не требуется
+- Вывод RGB-D
+- Автономные функции объезда препятствий, обнаружения ячеек и измерения объёма
 - Gigabit Ethernet
 
-### 1.2 Terms of use
+### 1.2 Условия эксплуатации
 
-**Observe the following requirements during use:**
+**Соблюдайте следующие требования при эксплуатации:**
 
-- Do not remove labels from the product.
-- Do not disassemble the product. Doing so can damage it.
-- Do not use the product in a strong magnetic field.
-- Do not use the product in direct sunlight above 100 kLux.
-- Clean the enclosure with a soft lint-free cloth dampened with a small amount of purified water or alcohol.
-- Retain the original packaging and use it for transport when possible.
+- Не удаляйте этикетки с продукта.
+- Не разбирайте продукт. Это может его повредить.
+- Не используйте продукт в сильном магнитном поле.
+- Не используйте продукт под прямыми солнечными лучами свыше 100 kLux.
+- Очищайте корпус мягкой безворсовой тканью, слегка смоченной очищенной водой или спиртом.
+- Сохраняйте оригинальную упаковку и по возможности используйте её при транспортировке.
 
 ---
 
-## Ranging principle and specifications
+## Принцип измерения расстояния и технические характеристики
 
-### Ranging principle
+### Принцип измерения расстояния
 
-The S2 Max measures distance using time of flight (ToF): it measures the time between emitting light and receiving the reflection from an object.
+S2 Max измеряет расстояние методом time-of-flight (ToF): камера измеряет время между излучением света и получением его отражения от объекта.
 
-The S2 Max uses direct measurement for depth imaging, generating high-quality depth data with minimal compute resources and building depth scenes at a high frame rate. Like LiDAR, ToF cameras are divided into pulsed ToF (P\_ToF) and continuous-wave ToF (CW\_ToF). P\_ToF emits light pulses, usually invisible, and calculates distance from their round-trip time. CW\_ToF emits modulated continuous light and calculates flight time from the phase difference between transmitted and returned light.
+S2 Max напрямую измеряет глубину, формируя высококачественные данные глубины при минимальных вычислительных ресурсах и создавая сцены глубины с высокой частотой кадров. Как и LiDAR, ToF-камеры делятся на камеры с импульсным ToF (P\_ToF) и непрерывным ToF (CW\_ToF). P\_ToF излучает световые импульсы, обычно невидимые, и вычисляет расстояние по времени их прохождения туда и обратно. CW\_ToF излучает непрерывный модулированный свет и вычисляет время прохождения по разности фаз между переданным и возвращённым светом.
 
 <Frame>
-  ![ToF detection principle](/images/products/s-series-s2-max-user-guide-tof-detection-principle.avif)
+  ![Принцип обнаружения ToF](/images/products/s-series-s2-max-user-guide-tof-detection-principle.avif)
 </Frame>
 
-Figure 2.1. Detection principle
+Рисунок 2.1. Принцип обнаружения
 
-### Product specifications
+### Технические характеристики продукта
 
-Table 2-1. Product specifications
+Таблица 2-1. Технические характеристики продукта
 
-| Camera | Parameter | Eagle-S2 Max |
+| Камера | Параметр | Eagle-S2 Max |
 | --- | --- | --- |
-| Performance | Chip | Sony chip |
-| ㅤ | Ranging method | Time of flight |
-| ㅤ | Operating wavelength | 940nm |
-| ㅤ | ToF resolution and frame rate | 320 × 240 (typical 12 fps) |
-| ㅤ | ToF field of view | 81° × 61° |
-| ㅤ | RGB resolution and frame rate | 1920×1080 (typical 12fps) |
-| ㅤ | RGB field of view | 88°×56° |
-| ㅤ | Range | 0.2~~5m (90% reflectivity), 0.2~~2.5m (10% reflectivity) |
-| ㅤ | Accuracy | ±3mm\+0.5%×depth |
-| Electrical | Communication interface | Ethernet / CAN |
-| ㅤ | Power interface | Industrial 5-pin circular connector |
-| ㅤ | Power input | 24V DC / 2A |
-| ㅤ | Average power consumption | 6.6W |
-| Mechanical | Dimensions | 88mm×47mm×47mm |
-| ㅤ | Weight | 333g |
-| ㅤ | IP rating | IP42 |
-| ㅤ | Operating temperature | -20℃~60℃ |
-| ㅤ | Storage temperature | -40℃~85℃ |
-| ㅤ | Humidity | 10%~90% RH, non-condensing |
-| Other | Ambient-light resistance | Up to 100 kLux sunlight |
-| ㅤ | Shadow-to-light resistance | Less than 1cm change across a 100 kLux shadow-light boundary |
-| ㅤ | Software environment | C / C\+\+ / ROS SDK |
-| ㅤ | Operating system support | Windows 7/8/10/11, Linux, Arm Linux/ROS |
-| ㅤ | Cooling | Passive |
+| Производительность | Микросхема | Микросхема Sony |
+| ㅤ | Метод измерения расстояния | Time of flight |
+| ㅤ | Рабочая длина волны | 940nm |
+| ㅤ | Разрешение ToF и частота кадров | 320 × 240 (обычно 12 fps) |
+| ㅤ | Поле зрения ToF | 81° × 61° |
+| ㅤ | Разрешение RGB и частота кадров | 1920×1080 (обычно 12fps) |
+| ㅤ | Поле зрения RGB | 88°×56° |
+| ㅤ | Диапазон | 0.2~~5m (отражательная способность 90%), 0.2~~2.5m (отражательная способность 10%) |
+| ㅤ | Точность | ±3mm\+0.5%×depth |
+| Электрические характеристики | Интерфейс связи | Ethernet / CAN |
+| ㅤ | Интерфейс питания | Промышленный круглый разъём на 5 контактов |
+| ㅤ | Вход питания | 24V DC / 2A |
+| ㅤ | Среднее энергопотребление | 6.6W |
+| Механические характеристики | Габариты | 88mm×47mm×47mm |
+| ㅤ | Масса | 333g |
+| ㅤ | Степень защиты | IP42 |
+| ㅤ | Рабочая температура | -20℃~60℃ |
+| ㅤ | Температура хранения | -40℃~85℃ |
+| ㅤ | Влажность | 10%~90% RH, без конденсации |
+| Прочие характеристики | Устойчивость к внешнему освещению | Солнечный свет до 100 kLux |
+| ㅤ | Устойчивость к переходу от тени к свету | Изменение менее 1cm на границе тени и света при освещённости 100 kLux |
+| ㅤ | Программная среда | C / C\+\+ / ROS SDK |
+| ㅤ | Поддерживаемые операционные системы | Windows 7/8/10/11, Linux, Arm Linux/ROS |
+| ㅤ | Охлаждение | Пассивное |
 
-Note: The 3D model defines the product dimensions.
+Примечание: габариты продукта указаны в 3D-модели.
 
 ---
 
-## Output, detection, and structure
+## Вывод, обнаружение и структура
 
-### Electrical characteristics
+### Электрические характеристики
 
-Table 3-1. Product electrical specifications
+Таблица 3-1. Электрические характеристики продукта
 
-| Parameter | Symbol | Condition | Minimum | Typical | Maximum | Unit |
+| Параметр | Обозначение | Условие | Минимум | Типичное значение | Максимум | Единица |
 | --- | --- | --- | --- | --- | --- | --- |
-| Supply voltage | VDD | ㅤ | 22 | 24 | 26 | V |
+| Напряжение питания | VDD | ㅤ | 22 | 24 | 26 | V |
 | CAN | ㅤ | ㅤ | ㅤ | TBD | ㅤ | V |
-| Operating temperature | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
-| Operating humidity | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
-| Storage humidity | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
-| Storage temperature | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
+| Рабочая температура | ㅤ | ㅤ | -20 | ㅤ | 60 | ℃ |
+| Рабочая влажность | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Влажность при хранении | ㅤ | ㅤ | 10 | ㅤ | 90 | % |
+| Температура хранения | ㅤ | ㅤ | -40 | ㅤ | 85 | ℃ |
 
-### Output data
+### Выходные данные
 
-By default, the S2 Max outputs a depth image (Figure 3.1), corresponding per-pixel signal intensity data (Figure 3.2), and a point cloud generated from the depth data (Figure 3.3). The object shown is an aluminum profile.
-
-<Frame>
-  ![Depth image](/images/products/s-series-s2-max-user-guide-depth-image.avif)
-</Frame>
-
-Figure 3.1. Depth image
+По умолчанию S2 Max выдаёт изображение глубины (рисунок 3.1), соответствующие данные интенсивности сигнала для каждого пикселя (рисунок 3.2) и облако точек, построенное по данным глубины (рисунок 3.3). На изображении показан алюминиевый профиль.
 
 <Frame>
-  ![Intensity image](/images/products/s-series-s2-max-user-guide-intensity-image.avif)
+  ![Изображение глубины](/images/products/s-series-s2-max-user-guide-depth-image.avif)
 </Frame>
 
-Figure 3.2. Intensity image
+Рисунок 3.1. Изображение глубины
 
 <Frame>
-  ![Point cloud](/images/products/s-series-s2-max-user-guide-point-cloud.avif)
+  ![Изображение интенсивности](/images/products/s-series-s2-max-user-guide-intensity-image.avif)
 </Frame>
 
-Figure 3.3. Point cloud
-
-Depth detection uses alternating-frame high dynamic range (HDR) to extend the measurement range. The sensor outputs two depth frames with different integration times and calibration parameters. For each pixel, the host software selects the frame with the higher intensity value and combines the selections into the final output, providing accurate depth across the measurement ranges.
-
-### Detection range
-
-Figure 3.1 shows the S2 Max detection region. The horizontal detection angle is 81°, and the vertical angle is 61°. Detection distance depends on optical power. Higher optical power and target reflectivity increase the near blind zone and reduce the far blind zone. Lower optical power and target reflectivity reduce the near blind zone and increase the far blind zone. For targets with 10%~~90% reflectivity, the S2 Max range is 0.2~~5m. Beyond 5m, low reflected-signal strength and ambient-light interference cause substantial ranging errors.
+Рисунок 3.2. Изображение интенсивности
 
 <Frame>
-  ![Detection range](/images/products/s-series-s2-max-user-guide-detection-range.avif)
+  ![Облако точек](/images/products/s-series-s2-max-user-guide-point-cloud.avif)
 </Frame>
 
-Figure 3.4. Field of view
+Рисунок 3.3. Облако точек
 
-### 3.4 Reflectivity reference
+Для обнаружения глубины используется межкадровый расширенный динамический диапазон (HDR), чтобы увеличить диапазон измерения. Датчик выдаёт два кадра глубины с разными временами интегрирования и параметрами калибровки. Для каждого пикселя хост-программа выбирает кадр с большим значением интенсивности и объединяет выбранные данные в итоговый вывод, обеспечивая точную глубину во всём диапазоне измерений.
 
-Reflectivity in this specification is measured against a Kodak standard white board. Typical reflectivity values for other materials follow.
+### Дальность обнаружения
 
-Table 3-2. Material reflectivity
+На рисунке 3.1 показана область обнаружения S2 Max. Горизонтальный угол обнаружения составляет 81°, вертикальный — 61°. Расстояние обнаружения зависит от оптической мощности. Более высокая оптическая мощность и отражательная способность цели увеличивают ближнюю мёртвую зону и уменьшают дальнюю. Более низкая оптическая мощность и отражательная способность цели уменьшают ближнюю мёртвую зону и увеличивают дальнюю. Для целей с отражательной способностью 10–90% дальность S2 Max составляет 0.2~~5m. За пределами 5m низкая мощность отражённого сигнала и помехи внешнего освещения вызывают значительные ошибки измерения расстояния.
 
-| No. | Material | Reflectivity |
+<Frame>
+  ![Дальность обнаружения](/images/products/s-series-s2-max-user-guide-detection-range.avif)
+</Frame>
+
+Рисунок 3.4. Поле зрения
+
+### 3.4 Справочные значения отражательной способности
+
+Отражательная способность в этой спецификации измерена относительно стандартной белой доски Kodak. Ниже приведены типичные значения отражательной способности для других материалов.
+
+Таблица 3-2. Отражательная способность материалов
+
+| № | Материал | Отражательная способность |
 | --- | --- | --- |
-| 1 | Black rubber | 22% |
-| 2 | Black ceramic cup | 34% |
-| 3 | Black plastic sheet | 42% |
-| 4 | Newspaper | 45% |
-| 5 | Black fabric | 78% |
-| 6 | Opaque plastic bottle | 85% |
-| 7 | Smooth wood panel | 90% |
-| 8 | White paper | 90% |
-| 9 | Kodak standard white board | 100% |
-| 10 | Clear glass | 140% |
-| 11 | Glossy light-colored metal surface | 150% |
+| 1 | Чёрная резина | 22% |
+| 2 | Чёрная керамическая чашка | 34% |
+| 3 | Чёрный пластиковый лист | 42% |
+| 4 | Газетная бумага | 45% |
+| 5 | Чёрная ткань | 78% |
+| 6 | Непрозрачная пластиковая бутылка | 85% |
+| 7 | Гладкая деревянная панель | 90% |
+| 8 | Белая бумага | 90% |
+| 9 | Стандартная белая доска Kodak | 100% |
+| 10 | Прозрачное стекло | 140% |
+| 11 | Блестящая светлая металлическая поверхность | 150% |
 
-### 3.5 Dimensions
-
-<Frame>
-  ![S2 Max dimensions](/images/products/s-series-s2-max-user-guide-s2-max-dimensions.avif)
-</Frame>
-
-Figure 3.5. S2 Max dimensions
-
-### 3.6 Optical coordinate system and origin
-
-**Optical coordinate system:**
-
-- The optical coordinate system includes the camera coordinate system (CCS) and world coordinate system (WCS).
-- The camera coordinate system is the 2D depth-image coordinate system. Its origin is the optical center.
-- The world coordinate system is the 3D point-cloud coordinate system.
-- Use the camera intrinsics to transform depth-image coordinates into 3D point-cloud coordinates. See the SDK examples.
+### 3.5 Габариты
 
 <Frame>
-  ![Optical coordinate system](/images/products/s-series-s2-max-user-guide-optical-coordinate-system.avif)
+  ![Габариты S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-dimensions.avif)
 </Frame>
 
-Figure 3.6. Optical coordinate system
+Рисунок 3.5. Габариты S2 Max
 
-**The camera origin is defined as follows:**
+### 3.6 Оптическая система координат и начало координат
 
-1. The X-coordinate origin aligns with the product's X-axis.
-2. The Y-coordinate origin aligns with the product's Y-axis.
-3. The Z-coordinate origin is on the camera's front surface.
+**Оптическая система координат:**
+
+- Оптическая система координат включает систему координат камеры (CCS) и мировую систему координат (WCS).
+- Система координат камеры — это двумерная система координат изображения глубины. Её начало находится в оптическом центре.
+- Мировая система координат — это трёхмерная система координат облака точек.
+- Используйте внутренние параметры камеры для преобразования координат изображения глубины в координаты 3D-облака точек. См. примеры SDK.
 
 <Frame>
-  ![Camera origin](/images/products/s-series-s2-max-user-guide-camera-origin.avif)
+  ![Оптическая система координат](/images/products/s-series-s2-max-user-guide-optical-coordinate-system.avif)
 </Frame>
 
-Figure 3.7. Camera origin
+Рисунок 3.6. Оптическая система координат
 
-### 3.7 Product interface
+**Начало координат камеры определяется следующим образом:**
 
-The S2 Max 5-pin port is defined below. **Note: Reserve 35mm at the cable exit for installation and bend radius.**
+1. Начало координат X совпадает с осью X продукта.
+2. Начало координат Y совпадает с осью Y продукта.
+3. Начало координат Z находится на передней поверхности камеры.
 
 <Frame>
-  ![S2 Max 5-pin interface](/images/products/s-series-s2-max-user-guide-s2-max-5-pin-interface.avif)
+  ![Начало координат камеры](/images/products/s-series-s2-max-user-guide-camera-origin.avif)
 </Frame>
 
-Table 3-3. Pin definitions
+Рисунок 3.7. Начало координат камеры
 
-| Port | Pin | Signal | Description | Note |
+### 3.7 Интерфейс продукта
+
+Ниже приведено назначение 5-контактного разъёма S2 Max. **Примечание: оставьте 35mm у выхода кабеля для установки и радиуса изгиба.**
+
+<Frame>
+  ![5-контактный интерфейс S2 Max](/images/products/s-series-s2-max-user-guide-s2-max-5-pin-interface.avif)
+</Frame>
+
+Таблица 3-3. Назначение контактов
+
+| Разъём | Контакт | Сигнал | Описание | Примечание |
 | --- | --- | --- | --- | --- |
-| Socket | 1 | VIN\+ | Positive 24V power input | Brown |
-| ㅤ | 2 | CAN\_L | CAN\_L | White |
-| ㅤ | 3 | GND | Signal ground | Blue |
-| ㅤ | 4 | VIN- | Negative 24V power input | Black |
-| ㅤ | 5 | CAN\_H | CAN\_H | Gray |
+| Гнездо | 1 | VIN\+ | Положительный вход питания 24V | Коричневый |
+| ㅤ | 2 | CAN\_L | CAN\_L | Белый |
+| ㅤ | 3 | GND | Сигнальная земля | Синий |
+| ㅤ | 4 | VIN- | Отрицательный вход питания 24V | Чёрный |
+| ㅤ | 5 | CAN\_H | CAN\_H | Серый |
 
-### 3.8 Recommended installation
+### 3.8 Рекомендуемая установка
 
-**The following three installation methods are recommended.**
+**Рекомендуются следующие три способа установки.**
 
-**Installation 1:** Neither the right wall nor floor is visible. Place the camera in a corner with only the front wall in view. This configuration provides good ranging.
-
-<Frame>
-  ![Recommended installation 1](/images/products/s-series-s2-max-user-guide-recommended-installation-1.avif)
-</Frame>
-
-Figure 3.8. Installation 1
-
-**Installation 2:** The right wall is visible but the floor is not. Place the camera in a corner at least 20cm from the right wall. Ranging accuracy can meet ±15mm.
+**Установка 1:** правая стена и пол не видны. Разместите камеру в углу так, чтобы была видна только передняя стена. Такая конфигурация обеспечивает хорошие результаты измерения расстояния.
 
 <Frame>
-  ![Recommended installation 2](/images/products/s-series-s2-max-user-guide-recommended-installation-2.avif)
+  ![Рекомендуемая установка 1](/images/products/s-series-s2-max-user-guide-recommended-installation-1.avif)
 </Frame>
 
-Figure 3.9. Installation 2
+Рисунок 3.8. Установка 1
 
-**Installation 3:** The floor is visible but the right wall is not. Mount the camera 10cm~30cm above the floor.
+**Установка 2:** правая стена видна, а пол — нет. Разместите камеру в углу на расстоянии не менее 20cm от правой стены. Точность измерения расстояния может достигать ±15mm.
 
 <Frame>
-  ![Recommended installation 3](/images/products/s-series-s2-max-user-guide-recommended-installation-3.avif)
+  ![Рекомендуемая установка 2](/images/products/s-series-s2-max-user-guide-recommended-installation-2.avif)
 </Frame>
 
-Figure 3.10. Installation 3
+Рисунок 3.9. Установка 2
 
-Near the floor, the area closest to the camera can be overexposed and affect other regions because of stray light and multipath reflections.
+**Установка 3:** пол виден, а правая стена — нет. Установите камеру на высоте 10cm~30cm над полом.
 
 <Frame>
-  ![Near-floor multipath effect](/images/products/s-series-s2-max-user-guide-near-floor-multipath-effect.avif)
+  ![Рекомендуемая установка 3](/images/products/s-series-s2-max-user-guide-recommended-installation-3.avif)
 </Frame>
 
-Figure 3.11. Near-floor multipath effect
+Рисунок 3.10. Установка 3
 
-In imaging optics, stray light primarily appears as ghosting and flare.
+Вблизи пола ближайшая к камере область может переэкспонироваться и влиять на другие области из-за рассеянного света и многолучевых отражений.
 
 <Frame>
-  ![Ghosting and flare](/images/products/s-series-s2-max-user-guide-ghosting-and-flare.avif)
+  ![Многолучевой эффект вблизи пола](/images/products/s-series-s2-max-user-guide-near-floor-multipath-effect.avif)
 </Frame>
 
-Figure 3.12. Stray-light ghosting and flare
+Рисунок 3.11. Многолучевой эффект вблизи пола
 
-**Do not use this product** in an installation where both the right wall and floor are visible. Floor stray light and wall multipath reflections create complex ranging interference.
+В оптике формирования изображений рассеянный свет проявляется главным образом как двоение и засветка.
 
 <Frame>
-  ![Installation not recommended](/images/products/s-series-s2-max-user-guide-installation-not-recommended.avif)
+  ![Двоение и засветка](/images/products/s-series-s2-max-user-guide-ghosting-and-flare.avif)
 </Frame>
 
-Figure 3.13. Installation not recommended
+Рисунок 3.12. Двоение и засветка от рассеянного света
+
+**Не используйте этот продукт** в конфигурации, где видны и правая стена, и пол. Рассеянный свет от пола и многолучевые отражения от стены создают сложные помехи при измерении расстояния.
+
+<Frame>
+  ![Нерекомендуемая установка](/images/products/s-series-s2-max-user-guide-installation-not-recommended.avif)
+</Frame>
+
+Рисунок 3.13. Нерекомендуемая установка
 
 ---
 
-## Accuracy, precision, and multi-camera interference
+## Точность, прецизионность и помехи между камерами
 
-### 4.1 Accuracy
+### 4.1 Точность
 
-Calibration removes a fixed offset between sensor measurements and actual values by establishing a mapping between them. For the S2 Max, mount the camera on a rail facing a white wall and map each pixel's measurement to the distance between the camera and the imaged wall region. Correcting measurements with this mapping provides more accurate distance values, as shown in Figure 4.1.
-
-<Frame>
-  ![Calibration setup](/images/products/s-series-s2-max-user-guide-calibration-setup.avif)
-</Frame>
-
-Figure 4.1. Calibration
-
-The S2 Max uses active ranging. Installation and other factors can introduce multipath interference and distort accuracy.
-
-This effect is especially pronounced when measuring a low-reflectivity target beside a highly reflective object. The ideal measurement follows the blue path, but light can reflect from the wall to the target and back to the camera (green path). Illumination can also reflect directly from the nearby high-reflectivity object into the camera (red path). Optical imperfections create glare that interferes with ranging, as shown in Figure 4.2.
+Калибровка устраняет фиксированное смещение между измерениями датчика и фактическими значениями, устанавливая соответствие между ними. Для S2 Max установите камеру на направляющей напротив белой стены и сопоставьте измерение каждого пикселя с расстоянием между камерой и соответствующей областью стены. Коррекция измерений по этому соответствию обеспечивает более точные значения расстояния, как показано на рисунке 4.1.
 
 <Frame>
-  ![Camera installation light paths](/images/products/s-series-s2-max-user-guide-camera-installation-light-paths.avif)
+  ![Настройка калибровки](/images/products/s-series-s2-max-user-guide-calibration-setup.avif)
 </Frame>
 
-Figure 4.2. Camera installation
+Рисунок 4.1. Калибровка
 
-### 4.2 Precision
+S2 Max использует активное измерение расстояния. Установка и другие факторы могут вызвать многолучевые помехи и исказить точность.
 
-Precision usually means single-point variation (1-σ). As an optoelectronic measurement device, the S2 Max is affected by AD conversion, signal-to-noise ratio, system noise, and other factors. Figure 4.3 shows the relationship between precision and signal strength.
+Этот эффект особенно заметен при измерении цели с низкой отражательной способностью рядом с объектом с высокой отражательной способностью. В идеальном случае измерение соответствует синей траектории, но свет может отражаться от стены к цели и обратно к камере (зелёная траектория). Освещение также может напрямую отражаться от расположенного рядом объекта с высокой отражательной способностью в камеру (красная траектория). Оптические несовершенства создают блики, мешающие измерению расстояния, как показано на рисунке 4.2.
 
 <Frame>
-  ![Precision and signal strength](/images/products/s-series-s2-max-user-guide-precision-and-signal-strength.avif)
+  ![Траектории света при установке камеры](/images/products/s-series-s2-max-user-guide-camera-installation-light-paths.avif)
 </Frame>
 
-Figure 4.3. Precision and signal strength
+Рисунок 4.2. Установка камеры
 
-The S2 Max converts optoelectronic analog signals into digital data. ADC quantizes the analog signal at its minimum resolution and introduces noise. For example, a 1.1V signal may be read as 1V, an error of 10%; 10.1V may be read as 10V, an error of 1%; and 100.1V may be read as 100V. AD conversion therefore introduces proportionally more noise and error at low signal strength. A ToF camera's signal-to-noise ratio is typically related to integration time t by SNR∝1/√t, so increasing integration time raises signal strength.
+### 4.2 Прецизионность
+
+Под прецизионностью обычно понимают разброс измерений в одной точке (1-σ). Как оптоэлектронное измерительное устройство, S2 Max подвержена влиянию аналого-цифрового преобразования, отношения сигнал/шум, системного шума и других факторов. На рисунке 4.3 показана связь между прецизионностью и мощностью сигнала.
+
+<Frame>
+  ![Прецизионность и мощность сигнала](/images/products/s-series-s2-max-user-guide-precision-and-signal-strength.avif)
+</Frame>
+
+Рисунок 4.3. Прецизионность и мощность сигнала
+
+S2 Max преобразует оптоэлектронные аналоговые сигналы в цифровые данные. АЦП квантует аналоговый сигнал с минимальным разрешением, внося шум. Например, сигнал 1.1V может быть считан как 1V с ошибкой 10%; сигнал 10.1V — как 10V с ошибкой 1%; сигнал 100.1V — как 100V. Поэтому при низкой мощности сигнала аналого-цифровое преобразование вносит пропорционально больше шума и ошибок. Отношение сигнал/шум ToF-камеры обычно связано со временем интегрирования t зависимостью SNR∝1/√t, поэтому увеличение времени интегрирования повышает мощность сигнала.
 
 ---
 
-### Multi-camera interference
+### Помехи между камерами
 
-### 5.1 Parallel interference
+### 5.1 Параллельные помехи
 
-When two cameras are mounted in parallel, each camera receives light returned from both itself and the other camera, interfering with depth data. Parallel interference is the increased detection error caused when two S2 Max cameras point in the same direction.
+Когда две камеры установлены параллельно, каждая камера принимает свет, возвращённый как от неё самой, так и от другой камеры, что создаёт помехи в данных глубины. Параллельные помехи — это увеличение ошибки обнаружения, возникающее, когда две камеры S2 Max направлены в одну сторону.
 
 <Frame>
-  ![Parallel camera interference](/images/products/s-series-s2-max-user-guide-parallel-camera-interference.avif)
+  ![Параллельные помехи между камерами](/images/products/s-series-s2-max-user-guide-parallel-camera-interference.avif)
 </Frame>
 
-To avoid parallel interference, install the cameras at an angle to the horizontal plane. If they must be installed at 0°, contact MRDVS for a custom configuration.
+Чтобы избежать параллельных помех, устанавливайте камеры под углом к горизонтальной плоскости. Если их необходимо установить под углом 0°, обратитесь в MRDVS за пользовательской конфигурацией.
 
 ---
 
-## SDK and host application
+## SDK и хост-приложение
 
 ### 6.1 SDK
 
-Use the SDK to initialize and start the camera, acquire data, and close the camera. For platforms other than Linux or Windows, use the SDK source as a reference when porting the camera application.
+Используйте SDK для инициализации и запуска камеры, получения данных и закрытия камеры. Для платформ, отличных от Linux и Windows, используйте исходный код SDK в качестве справочного материала при портировании приложения камеры.
 
-Table 6-1. SDK
+Таблица 6-1. SDK
 
-| Operating system | Linux & Windows |
+| Операционная система | Linux и Windows |
 | --- | --- |
-| Programming language | C/C\+\+ |
-| Data format | 16-bit unsigned short |
-| Integration | Shared library (.so), dynamic-link library (.dll), or SDK source |
+| Язык программирования | C/C\+\+ |
+| Формат данных | 16-битовое беззнаковое значение short |
+| Интеграция | Разделяемая библиотека (.so), динамическая библиотека (.dll) или исходный код SDK |
 
-### 6.2 SDK output order
+### 6.2 Порядок вывода SDK
 
 <Frame>
-  ![SDK output order](/images/products/s-series-s2-max-user-guide-sdk-output-order.avif)
+  ![Порядок вывода SDK](/images/products/s-series-s2-max-user-guide-sdk-output-order.avif)
 </Frame>
 
-Figure 6.1. SDK output order
+Рисунок 6.1. Порядок вывода SDK
 
-The SDK outputs depth and intensity data one frame at a time as one-dimensional arrays at the configured resolution. The top-left pixel is the origin, and output proceeds from left to right and top to bottom. Figure 6.1 shows x-axis output followed by y-axis output:
+SDK выдаёт данные глубины и интенсивности по одному кадру в виде одномерных массивов в настроенном разрешении. Началом является пиксель в левом верхнем углу, а вывод выполняется слева направо и сверху вниз. На рисунке 6.1 показан вывод сначала по оси x, затем по оси y:
 
 (x,y):(0,0)(0,1)(0,2)(0,…)(1,0)(1,1)(1,2)(1,…)(2,…)(3,…)(…,…).
 
-Each depth pixel is a 16-bit unsigned short that represents the distance from the measured object to the camera plane.
+Каждый пиксель глубины представляет собой 16-битовое беззнаковое значение short, которое обозначает расстояние от измеряемого объекта до плоскости камеры.
 
-Each intensity pixel is a 16-bit unsigned short that represents the returned signal intensity.
+Каждый пиксель интенсивности представляет собой 16-битовое беззнаковое значение short, которое обозначает интенсивность возвращённого сигнала.
 
-### 6.3 IP address
+### 6.3 IP-адрес
 
-The S2 Max factory-default IP address is 192.168.100.82. Use the MRDVS demo tool to change the IP address or enable DHCP.
+Заводской IP-адрес S2 Max — 192.168.100.82. Используйте демонстрационный инструмент MRDVS, чтобы изменить IP-адрес или включить DHCP.
 
-### 6.4 Demo software
+### 6.4 Демонстрационная программа
 
-### 6.4.1 IP configuration
+### 6.4.1 Настройка IP
 
-Connect the power cable, then connect the camera to the computer with an Ethernet cable. Because the factory-default camera IP is 192.168.100.82, configure the computer to 192.168.100.x, excluding 100.82, with subnet mask 255.255.255.0. Open **Settings** → **Ethernet** → **Change adapter options**, right-click **Ethernet**, and select **Internet Protocol Version 4 (TCP/IPv4)**. For example, set the IP address to 192.168.100.20 and the subnet mask to 255.255.255.0.
+Подключите кабель питания, затем соедините камеру с компьютером кабелем Ethernet. Поскольку заводской IP-адрес камеры — 192.168.100.82, настройте компьютер в подсети 192.168.100.x, исключив 100.82, с маской подсети 255.255.255.0. Откройте **Параметры** → **Ethernet** → **Изменить параметры адаптера**, щёлкните правой кнопкой мыши **Ethernet** и выберите **Internet Protocol Version 4 (TCP/IPv4)**. Например, задайте IP-адрес 192.168.100.20 и маску подсети 255.255.255.0.
 
-### 6.4.2 Open the software
+### 6.4.2 Открытие программы
 
-Download and install the software, then double-click the LxCameraViwer demo icon. The host software opens, searches for cameras, opens the camera, and starts acquisition automatically when one camera is connected.
+Скачайте и установите программу, затем дважды щёлкните значок демонстрационного приложения LxCameraViwer. Хост-программа запускается, ищет камеры, открывает камеру и автоматически начинает сбор данных при подключении одной камеры.
 
-**Note: On first launch, some systems require you to grant firewall access.**
+**Примечание: при первом запуске в некоторых системах необходимо разрешить доступ через брандмауэр.**
 
-The software provides basic functions, image selection, camera configuration, and camera information. Camera information includes the camera IP, ID, MAC address, serial number, and software and algorithm versions. Select **Depth**, **Intensity**, **RGB**, or **Point cloud** to display the corresponding image.
+Программа предоставляет основные функции, выбор изображений, настройку камеры и сведения о камере. Сведения о камере включают IP-адрес камеры, идентификатор, MAC-адрес, серийный номер, а также версии программного обеспечения и алгоритмов. Выберите **Глубина**, **Интенсивность**, **RGB** или **Облако точек**, чтобы отобразить соответствующее изображение.
 
 <Frame>
-  ![LxCameraViewer image display](/images/products/s-series-s2-max-user-guide-lxcameraviewer-image-display.avif)
+  ![Отображение изображений в LxCameraViewer](/images/products/s-series-s2-max-user-guide-lxcameraviewer-image-display.avif)
 </Frame>
 
-Figure 6.2. Image display
+Рисунок 6.2. Отображение изображений
 
-### 6.4.3 Save images
+### 6.4.3 Сохранение изображений
 
-Click **Save** to save the selected images to the `./data` folder in the software installation directory. The terminal also prints the path, for example: `save path= ./data/camera ID`.
+Нажмите **Save**, чтобы сохранить выбранные изображения в папку `./data` каталога установки программы. Терминал также выводит путь, например: `save path= ./data/camera ID`.
 
-In the saved files, `_a` is the intensity image, `_d` is the depth image, `_r` is the RGB (MONO) image, and `.pcd` is the point cloud. Depth and intensity images use PGM, RGB images use PNG, and point clouds use PCD.
+В сохранённых файлах `_a` обозначает изображение интенсивности, `_d` — изображение глубины, `_r` — RGB-изображение (MONO), а `.pcd` — облако точек. Для изображений глубины и интенсивности используется PGM, для RGB-изображений — PNG, а для облаков точек — PCD.
 
 <Frame>
-  ![Saved image files](/images/products/s-series-s2-max-user-guide-saved-image-files.avif)
+  ![Сохранённые файлы изображений](/images/products/s-series-s2-max-user-guide-saved-image-files.avif)
 </Frame>
 
-Figure 6.3. Saved images
+Рисунок 6.3. Сохранённые изображения
 
-### 6.4.4 Change the IP address
+### 6.4.4 Изменение IP-адреса
 
-Enter the required IP address, such as 192.168.10.199. Enter subnet mask 255.255.255.0 and gateway 192.168.10.1. The gateway must be on the same subnet as the required IP and normally ends in 1. Confirm the change, then power-cycle the camera.
+Введите требуемый IP-адрес, например 192.168.10.199. Введите маску подсети 255.255.255.0 и шлюз 192.168.10.1. Шлюз должен находиться в той же подсети, что и требуемый IP-адрес, и обычно оканчиваться на 1. Подтвердите изменение, затем выключите и снова включите камеру.
 
 <Frame>
-  ![Change the camera IP address](/images/products/s-series-s2-max-user-guide-change-the-camera-ip-address.avif)
+  ![Изменение IP-адреса камеры](/images/products/s-series-s2-max-user-guide-change-the-camera-ip-address.avif)
 </Frame>
 
 ---
 
-## Main functions
+## Основные функции
 
-### 7.1 Range
+### 7.1 Диапазон
 
-The S2 Max range is 0.2~5m. Contact MRDVS for a custom range.
+Диапазон S2 Max составляет 0.2~5m. Если нужен пользовательский диапазон, обратитесь в MRDVS.
 
-### 7.2 Filtering
+### 7.2 Фильтрация
 
-The MRDVS SDK provides the following filters:
+SDK MRDVS предоставляет следующие фильтры:
 
-- Median filter
-- Mode filter
-- Flying-pixel removal
+- Медианный фильтр
+- Модальный фильтр
+- Удаление «летающих» пикселей
 
 ---
 
-## Safety and troubleshooting
+## Безопасность и устранение неполадок
 
-### 8.1 Laser safety class
+### 8.1 Класс лазерной безопасности
 
 <Frame>
-  ![Laser safety class](/images/products/s-series-s2-max-user-guide-laser-safety-class.avif)
+  ![Класс лазерной безопасности](/images/products/s-series-s2-max-user-guide-laser-safety-class.avif)
 </Frame>
 
-### 8.2 Correct operation
+### 8.2 Правильная эксплуатация
 
-The S2 Max camera uses a 24V DC supply. Connect the power cable before applying power, and do not reverse the positive and negative terminals. Reverse polarity can damage the product.
+Камера S2 Max использует источник питания 24V DC. Подключите кабель питания до подачи напряжения и не меняйте местами положительный и отрицательный контакты. Обратная полярность может повредить продукт.
 
-### 8.3 Operating temperature
+### 8.3 Рабочая температура
 
-Keep the ambient temperature within the range in the product specifications (Table 2-1). Mount the product on a thermally conductive component such as a metal bracket to improve heat dissipation and achieve optimal performance.
+Поддерживайте температуру окружающей среды в диапазоне, указанном в технических характеристиках продукта (таблица 2-1). Установите продукт на теплопроводящем компоненте, например металлическом кронштейне, чтобы улучшить отвод тепла и обеспечить оптимальную производительность.
 
 ---
 
-### Troubleshooting
+### Устранение неполадок
 
-Table 9-1. Troubleshooting
+Таблица 9-1. Устранение неполадок
 
-| No. | Problem | Resolution |
+| № | Проблема | Решение |
 | --- | --- | --- |
-| 1 | Camera does not respond when opened | Verify that the firewall is disabled |
-| 2 | Host software detects multiple IP addresses | Another device on the LAN uses the same IP; select the required IP address |
-| 3 | Camera data is unstable after opening | Use a Gigabit Ethernet cable; data can initially be unstable over Fast Ethernet |
-| 4 | Software installation location | A default installation on drive C may be affected by permission settings |
+| 1 | Камера не отвечает после открытия | Убедитесь, что брандмауэр отключён |
+| 2 | Хост-программа обнаруживает несколько IP-адресов | Другое устройство в локальной сети использует тот же IP-адрес; выберите требуемый IP-адрес |
+| 3 | Данные камеры нестабильны после открытия | Используйте кабель Gigabit Ethernet; при использовании Fast Ethernet данные могут быть нестабильными в начале работы |
+| 4 | Место установки программы | На разрешения может влиять установка в расположение по умолчанию на диске C |
