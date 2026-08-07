@@ -1,0 +1,143 @@
+---
+title: S20 RGB-D camera
+description: "Specifications, mechanical design, SLAM integration, and deployment guidance for the S20 dToF ultra-wide-angle RGB-D camera."
+tag: NEW
+---
+
+<Info>
+  Complete product materials are available from the [Download center](/en/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Note>
+  S20 is the upgraded successor to the [S10 Ultra](/en/products/s-series/s10-ultra-overview), extending the horizontal field of view to 170° and the maximum range to 80 m while retaining RGB-D alignment, a 200 Hz IMU, software triggering, and MIPI module support.
+</Note>
+
+## Product overview
+
+S20 is an industrial near-panoramic RGB-D camera designed for indoor and outdoor 3D perception. Based on dToF technology, it outputs depth maps, IR images, point clouds, and RGB images, with RGB and depth data aligned spatially and temporally inside the camera.
+
+The device integrates a 200 Hz IMU and SoC, supports software triggering, and works with SLAM algorithms such as the FastLio family for mapping, localization, and environmental perception. In addition to the standard camera, S20 is available as a smaller custom MIPI module.
+
+<Frame caption="S20 product rendering; appearance and configuration are subject to the delivered product.">
+  ![S20 ultra-wide-angle RGB-D camera](/images/products/s-series-s20-overview-s20-camera.avif)
+</Frame>
+
+## Core capabilities
+
+<Columns cols={2}>
+  <Card title="170° ultra-wide field of view" icon="scan">
+    The ToF horizontal field of view is 170°, supporting near-panoramic environmental perception and wide-area spatial data acquisition.
+  </Card>
+
+  <Card title="Up to 80 m range" icon="ruler">
+    The specified range is 0.2–80 m at 90% reflectivity, with ambient-light resistance up to 100 kLux.
+  </Card>
+
+  <Card title="Synchronized RGB-D alignment" icon="layers">
+    Outputs depth, IR, point-cloud, and RGB data, with RGB and depth aligned spatially and temporally inside the camera.
+  </Card>
+
+  <Card title="IMU and SLAM integration" icon="route">
+    Integrates a 200 Hz IMU and SoC and supports software triggering for mapping and localization workflows using the FastLio family and similar algorithms.
+  </Card>
+</Columns>
+
+## Specifications
+
+| Parameter | S20 |
+| --- | --- |
+| Product model | S20 |
+| Operating principle | dToF |
+| Output data | Depth map, IR image, point cloud, RGB image |
+| ToF resolution and frame rate | 240 × 90, 10 fps |
+| ToF field of view | 170° × 68° ± 3° |
+| RGB resolution and frame rate | 1600 × 900, 10 fps |
+| RGB field of view | 170° × 90° |
+| Operating range | 0.2–50 m (10% reflectivity); 0.2–80 m (90% reflectivity), specified at 100 kLux ambient light |
+| Accuracy | ≤ ±30 mm at 20 m; ±50 mm at 50 m, 1σ |
+| Average operating power | \< 9 W |
+| Peak power | \< 20 W |
+| Laser wavelength | 940 nm |
+| Dimensions | 105 × 69 × 44 mm |
+| Time synchronization | PTP |
+| Weight | Approximately 420 g (subject to the delivered product) |
+| Power supply | 12–27 VDC |
+| Communication interface | Ethernet; MIPI (custom module) |
+| Ingress protection | IP67 |
+| Operating temperature | −20–75 °C |
+| Storage temperature | −40–85 °C |
+| Ambient-light resistance | 100 kLux |
+| IMU output rate | 200 Hz |
+
+<Card title="Measurement conditions" type="note">
+  The reflectivity values in the operating range describe target reflection conditions, and accuracy is stated using the 1σ convention from the product specification. Actual ranging performance also depends on target material, ambient light, mounting structure, and algorithm configuration. Validate performance in the intended operating environment during integration.
+</Card>
+
+## Mechanical design and interfaces
+
+<Tabs>
+  <Tab title="Standard camera" icon="camera">
+    The standard camera uses Ethernet communication and supports 12–27 VDC power, PTP time synchronization, and IP67 ingress protection. Its specified dimensions are 105 × 69 × 44 mm, and it weighs approximately 420 g.
+  </Tab>
+
+  <Tab title="MIPI module" icon="microchip">
+    S20 is available as a smaller custom MIPI module for space-constrained devices. Mechanical dimensions, interface definitions, and power requirements are specified in the custom delivery documentation.
+  </Tab>
+</Tabs>
+
+<Frame caption="S20 standard camera mechanical design and dimensions; engineering dimensions and tolerances are subject to the delivered drawing.">
+  ![S20 standard camera mechanical design and dimensions](/images/products/s-series-s20-overview-s20-dimensions-en.avif)
+</Frame>
+
+## Integration and deployment
+
+<Warning>
+  S20 has a 170° horizontal field of view. Mounting structures, protective windows, bezels, and cables must not obstruct the field of view. If a protective window is required, verify its transmittance at 940 nm and its effect on ranging accuracy.
+</Warning>
+
+<Steps>
+  <Step title="Plan the field of view and mounting space">
+    Reserve clearance based on the 170° × 68° ± 3° ToF field of view, and keep mirrors, bright metal surfaces, and narrow reflective cavities out of the near-field view.
+  </Step>
+  <Step title="Select the interface and power architecture">
+    The standard camera uses Ethernet and 12–27 VDC power. For space-constrained devices, evaluate the custom MIPI module and complete the mechanical and electrical design according to its delivery documentation.
+  </Step>
+  <Step title="Configure synchronization and data links">
+    Configure PTP, the 200 Hz IMU, and software triggering for the system architecture, and confirm stable reception of depth, IR, point-cloud, and RGB data.
+  </Step>
+  <Step title="Validate the target environment">
+    Validate operating range, accuracy, RGB-D alignment, and SLAM stability under the target reflectivity, ambient light, temperature, vibration, and motion-speed conditions.
+  </Step>
+</Steps>
+
+## Typical applications
+
+<Columns cols={2}>
+  <Card title="Robotic lawn mowers" icon="leaf">
+    Localization, navigation, and wide-area environmental perception in yards and lawns.
+  </Card>
+
+  <Card title="Industrial quadruped robots" icon="bot">
+    Localization, navigation, and 3D perception for research, inspection, and exploration.
+  </Card>
+
+  <Card title="Humanoid robots" icon="accessibility">
+    Environmental perception for data acquisition, industrial work, home services, and retail patrols.
+  </Card>
+
+  <Card title="Multirotor drones" icon="plane">
+    Localization, navigation, obstacle avoidance, and environmental perception for inspection and surveying.
+  </Card>
+</Columns>
+
+## Related resources
+
+<Columns cols={2}>
+  <Card title="S10 Ultra 3D camera" icon="camera" href="/en/products/s-series/s10-ultra-overview">
+    View specifications, installation guidance, and operating instructions for the previous-generation model.
+  </Card>
+
+  <Card title="Download center" icon="download" href="/en/resources/downloads/specifications-and-user-guides">
+    Download product specifications, user manuals, and supporting materials.
+  </Card>
+</Columns>

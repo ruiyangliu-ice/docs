@@ -1,0 +1,143 @@
+---
+title: Cámara RGB-D S20
+description: "Especificaciones, diseño mecánico, integración con SLAM y guía de despliegue para la cámara RGB-D dToF ultra gran angular S20."
+tag: NUEVO
+---
+
+<Info>
+  Descarga los materiales completos del producto desde el [Centro de descargas](/es/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Note>
+  La S20 es el modelo sucesor actualizado de la [S10 Ultra](/es/products/s-series/s10-ultra-overview). Amplía el campo de visión horizontal a 170° y el alcance máximo a 80 m, y mantiene la alineación RGB-D, la IMU de 200 Hz, el disparo por software y la compatibilidad con el módulo MIPI.
+</Note>
+
+## Descripción general del producto
+
+La S20 es una cámara RGB-D industrial casi panorámica diseñada para la percepción 3D en interiores y exteriores. Se basa en tecnología dToF y genera mapas de profundidad, imágenes IR, nubes de puntos e imágenes RGB. Los datos RGB y de profundidad se alinean espacial y temporalmente dentro de la cámara.
+
+El dispositivo integra una IMU de 200 Hz y un SoC, admite disparo por software y funciona con algoritmos SLAM como la familia FastLio para mapeo, localización y percepción del entorno. Además de la cámara estándar, la S20 está disponible como un módulo MIPI personalizado más pequeño.
+
+<Frame caption="Representación del producto S20; el aspecto y la configuración dependen del producto entregado.">
+  ![Cámara RGB-D ultra gran angular S20](/images/products/s-series-s20-overview-s20-camera.avif)
+</Frame>
+
+## Capacidades principales
+
+<Columns cols={2}>
+  <Card title="Campo de visión ultra gran angular de 170°" icon="scan">
+    El campo de visión horizontal ToF es de 170°, lo que permite una percepción del entorno casi panorámica y la captura de datos espaciales en áreas extensas.
+  </Card>
+
+  <Card title="Alcance de hasta 80 m" icon="ruler">
+    El alcance especificado es de 0.2–80 m con una reflectividad del 90 % y una resistencia a la luz ambiental de hasta 100 kLux.
+  </Card>
+
+  <Card title="Alineación RGB-D sincronizada" icon="layers">
+    Genera datos de profundidad, IR, nube de puntos y RGB, y alinea espacial y temporalmente RGB y profundidad dentro de la cámara.
+  </Card>
+
+  <Card title="Integración de IMU y SLAM" icon="route">
+    Integra una IMU de 200 Hz y un SoC y admite disparo por software para flujos de mapeo y localización con la familia FastLio y algoritmos similares.
+  </Card>
+</Columns>
+
+## Especificaciones
+
+| Parámetro | S20 |
+| --- | --- |
+| Modelo de producto | S20 |
+| Principio de funcionamiento | dToF |
+| Datos de salida | Mapa de profundidad, imagen IR, nube de puntos, imagen RGB |
+| Resolución y frecuencia de imagen ToF | 240 × 90, 10 fps |
+| Campo de visión ToF | 170° × 68° ± 3° |
+| Resolución y frecuencia de imagen RGB | 1600 × 900, 10 fps |
+| Campo de visión RGB | 170° × 90° |
+| Alcance de funcionamiento | 0.2–50 m (10 % de reflectividad); 0.2–80 m (90 % de reflectividad), especificado con 100 kLux de luz ambiental |
+| Precisión | ≤ ±30 mm a 20 m; ±50 mm a 50 m, 1σ |
+| Consumo medio en funcionamiento | \< 9 W |
+| Potencia pico | \< 20 W |
+| Longitud de onda del láser | 940 nm |
+| Dimensiones | 105 × 69 × 44 mm |
+| Sincronización temporal | PTP |
+| Peso | Aproximadamente 420 g (se aplica el producto entregado) |
+| Alimentación | 12–27 VCC |
+| Interfaz de comunicación | Ethernet; MIPI (módulo personalizado) |
+| Protección contra la entrada de agentes | IP67 |
+| Temperatura de funcionamiento | −20–75 °C |
+| Temperatura de almacenamiento | −40–85 °C |
+| Resistencia a la luz ambiental | 100 kLux |
+| Frecuencia de salida de la IMU | 200 Hz |
+
+<Card title="Condiciones de medición" type="note">
+  Los valores de reflectividad del alcance de funcionamiento describen las condiciones de reflexión del objetivo, y la precisión se expresa según la convención 1σ de la especificación del producto. El rendimiento real de medición también depende del material del objetivo, la luz ambiental, la estructura de montaje y la configuración de los algoritmos. Durante la integración, valida el rendimiento en el entorno operativo previsto.
+</Card>
+
+## Diseño mecánico e interfaces
+
+<Tabs>
+  <Tab title="Cámara estándar" icon="camera">
+    La cámara estándar utiliza comunicación Ethernet y admite alimentación de 12–27 VCC, sincronización temporal PTP y protección IP67. Sus dimensiones especificadas son 105 × 69 × 44 mm y pesa aproximadamente 420 g.
+  </Tab>
+
+  <Tab title="Módulo MIPI" icon="microchip">
+    La S20 está disponible como un módulo MIPI personalizado más pequeño para dispositivos con espacio limitado. Las dimensiones mecánicas, las definiciones de interfaces y los requisitos de alimentación se especifican en la documentación de entrega personalizada.
+  </Tab>
+</Tabs>
+
+<Frame caption="Diseño mecánico y dimensiones de la cámara estándar S20; las dimensiones de ingeniería y las tolerancias dependen del plano de entrega.">
+  ![Diseño mecánico y dimensiones de la cámara estándar S20](/images/products/s-series-s20-overview-s20-dimensions-en.avif)
+</Frame>
+
+## Integración y despliegue
+
+<Warning>
+  La S20 tiene un campo de visión horizontal de 170°. Las estructuras de montaje, las ventanas protectoras, los marcos y los cables no deben obstruir el campo de visión. Si se necesita una ventana protectora, valida su transmitancia a 940 nm y su efecto sobre la precisión de medición.
+</Warning>
+
+<Steps>
+  <Step title="Planificar el campo de visión y el espacio de montaje">
+    Reserva un espacio libre basado en el campo de visión ToF de 170° × 68° ± 3° y mantén los espejos, las superficies metálicas brillantes y las cavidades reflectantes estrechas fuera del campo cercano.
+  </Step>
+  <Step title="Seleccionar la interfaz y la arquitectura de alimentación">
+    La cámara estándar utiliza Ethernet y alimentación de 12–27 VCC. Para dispositivos con espacio limitado, evalúa el módulo MIPI personalizado y completa el diseño mecánico y eléctrico según la documentación de entrega.
+  </Step>
+  <Step title="Configurar la sincronización y los enlaces de datos">
+    Configura PTP, la IMU de 200 Hz y el disparo por software según la arquitectura del sistema, y confirma la recepción estable de datos de profundidad, IR, nube de puntos y RGB.
+  </Step>
+  <Step title="Validar el entorno de destino">
+    Valida el alcance de funcionamiento, la precisión, la alineación RGB-D y la estabilidad de SLAM bajo las condiciones previstas de reflectividad, luz ambiental, temperatura, vibración y velocidad de movimiento.
+  </Step>
+</Steps>
+
+## Aplicaciones habituales
+
+<Columns cols={2}>
+  <Card title="Robots cortacésped" icon="leaf">
+    Localización, navegación y percepción del entorno en áreas extensas de jardines y céspedes.
+  </Card>
+
+  <Card title="Robots cuadrúpedos industriales" icon="bot">
+    Localización, navegación y percepción 3D para investigación, inspección y exploración.
+  </Card>
+
+  <Card title="Robots humanoides" icon="accessibility">
+    Percepción del entorno para adquisición de datos, trabajos industriales, servicios domésticos y patrullas en comercios.
+  </Card>
+
+  <Card title="Drones multirrotor" icon="plane">
+    Localización, navegación, evitación de obstáculos y percepción del entorno para tareas de inspección y topografía.
+  </Card>
+</Columns>
+
+## Información relacionada
+
+<Columns cols={2}>
+  <Card title="Cámara 3D S10 Ultra" icon="camera" href="/es/products/s-series/s10-ultra-overview">
+    Consulta las especificaciones, la guía de instalación y las instrucciones de funcionamiento del modelo de generación anterior.
+  </Card>
+
+  <Card title="Centro de descargas" icon="download" href="/es/resources/downloads/specifications-and-user-guides">
+    Descarga las especificaciones del producto, los manuales de usuario y los materiales de apoyo.
+  </Card>
+</Columns>

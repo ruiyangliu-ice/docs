@@ -1,0 +1,143 @@
+---
+title: Camera RGB-D S20
+description: "Thông số kỹ thuật, thiết kế cơ khí, tích hợp SLAM và hướng dẫn triển khai cho camera RGB-D dToF góc siêu rộng S20."
+tag: MỚI
+---
+
+<Info>
+  Tải toàn bộ tài liệu sản phẩm tại [Trung tâm tải xuống](/vi/resources/downloads/specifications-and-user-guides).
+</Info>
+
+<Note>
+  S20 là phiên bản kế nhiệm nâng cấp của [S10 Ultra](/vi/products/s-series/s10-ultra-overview), mở rộng trường nhìn ngang lên 170° và phạm vi tối đa lên 80 m, đồng thời duy trì khả năng căn chỉnh RGB-D, IMU 200 Hz, kích hoạt bằng phần mềm và hỗ trợ module MIPI.
+</Note>
+
+## Tổng quan sản phẩm
+
+S20 là camera RGB-D công nghiệp gần toàn cảnh, được thiết kế cho nhận biết 3D trong nhà và ngoài trời. Dựa trên công nghệ dToF, camera xuất bản đồ độ sâu, hình ảnh IR, đám mây điểm và hình ảnh RGB, đồng thời căn chỉnh dữ liệu RGB và độ sâu theo không gian và thời gian ngay trong camera.
+
+Thiết bị tích hợp IMU 200 Hz và SoC, hỗ trợ kích hoạt bằng phần mềm và hoạt động với các thuật toán SLAM như dòng FastLio để lập bản đồ, định vị và nhận biết môi trường. Ngoài camera tiêu chuẩn, S20 còn được cung cấp dưới dạng module MIPI tùy chỉnh nhỏ hơn.
+
+<Frame caption="Hình dựng sản phẩm S20; hình thức và cấu hình phụ thuộc vào sản phẩm được giao.">
+  ![Camera RGB-D góc siêu rộng S20](/images/products/s-series-s20-overview-s20-camera.avif)
+</Frame>
+
+## Khả năng chính
+
+<Columns cols={2}>
+  <Card title="Trường nhìn siêu rộng 170°" icon="scan">
+    Trường nhìn ngang ToF là 170°, hỗ trợ nhận biết môi trường gần toàn cảnh và thu thập dữ liệu không gian trên diện rộng.
+  </Card>
+
+  <Card title="Phạm vi lên đến 80 m" icon="ruler">
+    Phạm vi quy định là 0.2–80 m ở độ phản xạ 90%, với khả năng chống ánh sáng môi trường lên đến 100 kLux.
+  </Card>
+
+  <Card title="Căn chỉnh RGB-D đồng bộ" icon="layers">
+    Xuất dữ liệu độ sâu, IR, đám mây điểm và RGB, đồng thời căn chỉnh RGB và độ sâu theo không gian và thời gian ngay trong camera.
+  </Card>
+
+  <Card title="Tích hợp IMU và SLAM" icon="route">
+    Tích hợp IMU 200 Hz và SoC, đồng thời hỗ trợ kích hoạt bằng phần mềm cho quy trình lập bản đồ và định vị sử dụng dòng FastLio cùng các thuật toán tương tự.
+  </Card>
+</Columns>
+
+## Thông số kỹ thuật
+
+| Tham số | S20 |
+| --- | --- |
+| Model sản phẩm | S20 |
+| Nguyên lý hoạt động | dToF |
+| Dữ liệu ngõ ra | Bản đồ độ sâu, hình ảnh IR, đám mây điểm, hình ảnh RGB |
+| Độ phân giải và tốc độ khung hình ToF | 240 × 90, 10 fps |
+| Trường nhìn ToF | 170° × 68° ± 3° |
+| Độ phân giải và tốc độ khung hình RGB | 1600 × 900, 10 fps |
+| Trường nhìn RGB | 170° × 90° |
+| Phạm vi hoạt động | 0.2–50 m (độ phản xạ 10%); 0.2–80 m (độ phản xạ 90%), quy định ở ánh sáng môi trường 100 kLux |
+| Độ chính xác | ≤ ±30 mm tại 20 m; ±50 mm tại 50 m, 1σ |
+| Công suất hoạt động trung bình | \< 9 W |
+| Công suất đỉnh | \< 20 W |
+| Bước sóng laser | 940 nm |
+| Kích thước | 105 × 69 × 44 mm |
+| Đồng bộ thời gian | PTP |
+| Khối lượng | Khoảng 420 g (phụ thuộc vào sản phẩm được giao) |
+| Nguồn cấp | 12–27 VDC |
+| Giao diện truyền thông | Ethernet; MIPI (module tùy chỉnh) |
+| Cấp bảo vệ chống xâm nhập | IP67 |
+| Nhiệt độ hoạt động | −20–75 °C |
+| Nhiệt độ lưu trữ | −40–85 °C |
+| Khả năng chống ánh sáng môi trường | 100 kLux |
+| Tần số ngõ ra IMU | 200 Hz |
+
+<Card title="Điều kiện đo" type="note">
+  Các giá trị độ phản xạ trong phạm vi hoạt động mô tả điều kiện phản xạ của mục tiêu, còn độ chính xác được nêu theo quy ước 1σ trong thông số kỹ thuật sản phẩm. Hiệu suất đo khoảng cách thực tế còn phụ thuộc vào vật liệu mục tiêu, ánh sáng môi trường, kết cấu lắp đặt và cấu hình thuật toán. Hãy xác nhận hiệu suất trong môi trường vận hành dự kiến khi tích hợp.
+</Card>
+
+## Thiết kế cơ khí và giao diện
+
+<Tabs>
+  <Tab title="Camera tiêu chuẩn" icon="camera">
+    Camera tiêu chuẩn sử dụng giao tiếp Ethernet và hỗ trợ nguồn 12–27 VDC, đồng bộ thời gian PTP cùng cấp bảo vệ IP67. Kích thước quy định là 105 × 69 × 44 mm và khối lượng khoảng 420 g.
+  </Tab>
+
+  <Tab title="Module MIPI" icon="microchip">
+    S20 được cung cấp dưới dạng module MIPI tùy chỉnh nhỏ hơn cho các thiết bị có không gian hạn chế. Kích thước cơ khí, định nghĩa giao diện và yêu cầu nguồn được quy định trong tài liệu giao hàng tùy chỉnh.
+  </Tab>
+</Tabs>
+
+<Frame caption="Thiết kế cơ khí và kích thước camera tiêu chuẩn S20; kích thước kỹ thuật và dung sai phụ thuộc vào bản vẽ giao hàng.">
+  ![Thiết kế cơ khí và kích thước camera tiêu chuẩn S20](/images/products/s-series-s20-overview-s20-dimensions-en.avif)
+</Frame>
+
+## Tích hợp và triển khai
+
+<Warning>
+  S20 có trường nhìn ngang 170°. Kết cấu lắp đặt, cửa sổ bảo vệ, viền và cáp không được che khuất trường nhìn. Nếu cần cửa sổ bảo vệ, hãy xác nhận độ truyền qua ở 940 nm và ảnh hưởng của cửa sổ đến độ chính xác đo khoảng cách.
+</Warning>
+
+<Steps>
+  <Step title="Lập kế hoạch trường nhìn và không gian lắp đặt">
+    Dành vùng khoảng hở theo trường nhìn ToF 170° × 68° ± 3° và giữ gương, bề mặt kim loại sáng cùng các khoang phản xạ hẹp ngoài trường nhìn gần.
+  </Step>
+  <Step title="Chọn giao diện và kiến trúc nguồn">
+    Camera tiêu chuẩn sử dụng Ethernet và nguồn 12–27 VDC. Với thiết bị có không gian hạn chế, hãy đánh giá module MIPI tùy chỉnh và hoàn thiện thiết kế cơ khí, điện theo tài liệu giao hàng.
+  </Step>
+  <Step title="Cấu hình đồng bộ và liên kết dữ liệu">
+    Cấu hình PTP, IMU 200 Hz và kích hoạt bằng phần mềm theo kiến trúc hệ thống, đồng thời xác nhận khả năng nhận ổn định dữ liệu độ sâu, IR, đám mây điểm và RGB.
+  </Step>
+  <Step title="Xác nhận trong môi trường mục tiêu">
+    Xác nhận phạm vi hoạt động, độ chính xác, căn chỉnh RGB-D và độ ổn định SLAM trong các điều kiện mục tiêu về độ phản xạ, ánh sáng môi trường, nhiệt độ, độ rung và tốc độ chuyển động.
+  </Step>
+</Steps>
+
+## Ứng dụng điển hình
+
+<Columns cols={2}>
+  <Card title="Robot cắt cỏ" icon="leaf">
+    Định vị, điều hướng và nhận biết môi trường trên diện rộng trong sân vườn và bãi cỏ.
+  </Card>
+
+  <Card title="Robot bốn chân công nghiệp" icon="bot">
+    Định vị, điều hướng và nhận biết 3D cho nghiên cứu, kiểm tra và thăm dò.
+  </Card>
+
+  <Card title="Robot hình người" icon="accessibility">
+    Nhận biết môi trường để thu thập dữ liệu, làm việc công nghiệp, phục vụ gia đình và tuần tra bán lẻ.
+  </Card>
+
+  <Card title="Drone đa cánh quạt" icon="plane">
+    Định vị, điều hướng, tránh chướng ngại vật và nhận biết môi trường cho nhiệm vụ kiểm tra và khảo sát.
+  </Card>
+</Columns>
+
+## Tài liệu liên quan
+
+<Columns cols={2}>
+  <Card title="Camera 3D S10 Ultra" icon="camera" href="/vi/products/s-series/s10-ultra-overview">
+    Xem thông số kỹ thuật, hướng dẫn lắp đặt và hướng dẫn vận hành của model thế hệ trước.
+  </Card>
+
+  <Card title="Trung tâm tải xuống" icon="download" href="/vi/resources/downloads/specifications-and-user-guides">
+    Tải thông số kỹ thuật sản phẩm, hướng dẫn sử dụng và tài liệu hỗ trợ.
+  </Card>
+</Columns>

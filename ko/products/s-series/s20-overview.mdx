@@ -1,0 +1,143 @@
+---
+title: S20 RGB-D 카메라
+description: "S20 dToF 초광각 RGB-D 카메라의 사양, 기구 설계, SLAM 통합 및 배치 지침입니다."
+tag: 신제품
+---
+
+<Info>
+  전체 제품 자료는 [다운로드 센터](/ko/resources/downloads/specifications-and-user-guides)에서 내려받을 수 있습니다.
+</Info>
+
+<Note>
+  S20은 [S10 Ultra](/ko/products/s-series/s10-ultra-overview)의 업그레이드 후속 모델입니다. 수평 시야각을 170°로, 최대 측정 거리를 80m로 확장하면서 RGB-D 정렬, 200Hz IMU, 소프트웨어 트리거 및 MIPI 모듈 지원을 유지합니다.
+</Note>
+
+## 제품 개요
+
+S20은 실내외 3D 인식을 위해 설계된 산업용 준파노라마 RGB-D 카메라입니다. dToF 기술을 기반으로 깊이 맵, IR 이미지, 포인트 클라우드 및 RGB 이미지를 출력하며, 카메라 내부에서 RGB와 깊이 데이터를 시간적·공간적으로 정렬합니다.
+
+이 장치는 200Hz IMU와 SoC를 통합하고 소프트웨어 트리거를 지원하며, FastLio 계열과 같은 SLAM 알고리즘을 사용한 매핑, 위치 추정 및 환경 인식에 활용할 수 있습니다. 표준 카메라 외에도 더 작은 맞춤형 MIPI 모듈로 제공됩니다.
+
+<Frame caption="S20 제품 렌더링 이미지입니다. 외관과 구성은 실제 납품 제품을 기준으로 합니다.">
+  ![S20 초광각 RGB-D 카메라](/images/products/s-series-s20-overview-s20-camera.avif)
+</Frame>
+
+## 핵심 기능
+
+<Columns cols={2}>
+  <Card title="170° 초광각 시야" icon="scan">
+    ToF 수평 시야각은 170°로, 준파노라마 환경 인식과 넓은 영역의 공간 데이터 수집을 지원합니다.
+  </Card>
+
+  <Card title="최대 80m 측정 거리" icon="ruler">
+    반사율 90%에서 규정 작동 범위는 0.2–80m이며, 주변광 내성은 최대 100kLux입니다.
+  </Card>
+
+  <Card title="동기화된 RGB-D 정렬" icon="layers">
+    깊이, IR, 포인트 클라우드 및 RGB 데이터를 출력하며, 카메라 내부에서 RGB와 깊이를 시간적·공간적으로 정렬합니다.
+  </Card>
+
+  <Card title="IMU 및 SLAM 통합" icon="route">
+    200Hz IMU와 SoC를 통합하고 소프트웨어 트리거를 지원하여 FastLio 계열 및 유사 알고리즘을 사용하는 매핑 및 위치 추정 워크플로에 활용할 수 있습니다.
+  </Card>
+</Columns>
+
+## 사양
+
+| 항목 | S20 |
+| --- | --- |
+| 제품 모델 | S20 |
+| 작동 원리 | dToF |
+| 출력 데이터 | 깊이 맵, IR 이미지, 포인트 클라우드, RGB 이미지 |
+| ToF 해상도 및 프레임 속도 | 240 × 90, 10 fps |
+| ToF 시야각 | 170° × 68° ± 3° |
+| RGB 해상도 및 프레임 속도 | 1600 × 900, 10 fps |
+| RGB 시야각 | 170° × 90° |
+| 작동 범위 | 0.2–50m(반사율 10%), 0.2–80m(반사율 90%), 규정 주변광 100kLux |
+| 정확도 | 20m에서 ≤ ±30mm, 50m에서 ±50mm, 1σ |
+| 평균 작동 전력 | \< 9W |
+| 피크 전력 | \< 20W |
+| 레이저 파장 | 940nm |
+| 크기 | 105 × 69 × 44mm |
+| 시간 동기화 | PTP |
+| 무게 | 약 420g(실제 납품 제품 기준) |
+| 전원 공급 | 12~27VDC |
+| 통신 인터페이스 | Ethernet, MIPI(맞춤형 모듈) |
+| 보호 등급 | IP67 |
+| 작동 온도 | −20~75 °C |
+| 보관 온도 | −40~85 °C |
+| 주변광 내성 | 100kLux |
+| IMU 출력 주파수 | 200Hz |
+
+<Card title="측정 조건" type="note">
+  작동 범위의 반사율 값은 대상 물체의 반사 조건을 나타내며, 정확도는 제품 사양서의 1σ 기준으로 표기했습니다. 실제 거리 측정 성능은 대상 재질, 주변광, 장착 구조 및 알고리즘 구성의 영향도 받습니다. 통합 과정에서 목표 작동 환경의 성능을 검증하십시오.
+</Card>
+
+## 기구 설계 및 인터페이스
+
+<Tabs>
+  <Tab title="표준 카메라" icon="camera">
+    표준 카메라는 Ethernet 통신을 사용하며 12~27VDC 전원, PTP 시간 동기화 및 IP67 보호 등급을 지원합니다. 규정 크기는 105 × 69 × 44mm이고 무게는 약 420g입니다.
+  </Tab>
+
+  <Tab title="MIPI 모듈" icon="microchip">
+    S20은 공간이 제한된 장치를 위해 더 작은 맞춤형 MIPI 모듈로도 제공됩니다. 기구 크기, 인터페이스 정의 및 전원 요구 사항은 맞춤형 납품 문서에 명시됩니다.
+  </Tab>
+</Tabs>
+
+<Frame caption="S20 표준 카메라의 기구 설계 및 크기입니다. 엔지니어링 치수와 공차는 납품 도면을 기준으로 합니다.">
+  ![S20 표준 카메라 기구 설계 및 크기](/images/products/s-series-s20-overview-s20-dimensions-en.avif)
+</Frame>
+
+## 통합 및 배치
+
+<Warning>
+  S20의 수평 시야각은 170°입니다. 장착 구조물, 보호 창, 베젤 및 케이블이 시야를 가리지 않도록 하십시오. 보호 창이 필요한 경우 940nm에서의 투과율과 거리 측정 정확도에 미치는 영향을 검증하십시오.
+</Warning>
+
+<Steps>
+  <Step title="시야각과 장착 공간 계획">
+    170° × 68° ± 3° ToF 시야각을 기준으로 여유 공간을 확보하고, 거울, 밝은 금속 표면 및 좁은 반사 공간이 근거리 시야에 들어오지 않도록 합니다.
+  </Step>
+  <Step title="인터페이스 및 전원 구조 선택">
+    표준 카메라는 Ethernet과 12~27VDC 전원을 사용합니다. 공간이 제한된 장치에서는 맞춤형 MIPI 모듈을 검토하고 납품 문서에 따라 기구 및 전기 설계를 완료합니다.
+  </Step>
+  <Step title="동기화 및 데이터 링크 구성">
+    시스템 구조에 맞게 PTP, 200Hz IMU 및 소프트웨어 트리거를 구성하고 깊이, IR, 포인트 클라우드 및 RGB 데이터가 안정적으로 수신되는지 확인합니다.
+  </Step>
+  <Step title="목표 환경 검증">
+    목표 반사율, 주변광, 온도, 진동 및 이동 속도 조건에서 작동 범위, 정확도, RGB-D 정렬 및 SLAM 안정성을 검증합니다.
+  </Step>
+</Steps>
+
+## 주요 적용 분야
+
+<Columns cols={2}>
+  <Card title="로봇 잔디깎이" icon="leaf">
+    정원과 잔디밭에서 위치 추정, 내비게이션 및 광역 환경 인식에 사용합니다.
+  </Card>
+
+  <Card title="산업용 4족 보행 로봇" icon="bot">
+    연구, 검사 및 탐사에서 위치 추정, 내비게이션 및 3D 인식에 사용합니다.
+  </Card>
+
+  <Card title="휴머노이드 로봇" icon="accessibility">
+    데이터 수집, 산업 작업, 가정 서비스 및 매장 순찰을 위한 환경 인식에 사용합니다.
+  </Card>
+
+  <Card title="멀티로터 드론" icon="plane">
+    검사와 측량에서 위치 추정, 내비게이션, 장애물 회피 및 환경 인식에 사용합니다.
+  </Card>
+</Columns>
+
+## 관련 정보
+
+<Columns cols={2}>
+  <Card title="S10 Ultra 3D 카메라" icon="camera" href="/ko/products/s-series/s10-ultra-overview">
+    이전 세대 모델의 사양, 설치 지침 및 작동 방법을 확인합니다.
+  </Card>
+
+  <Card title="다운로드 센터" icon="download" href="/ko/resources/downloads/specifications-and-user-guides">
+    제품 사양서, 사용자 설명서 및 관련 자료를 내려받습니다.
+  </Card>
+</Columns>
